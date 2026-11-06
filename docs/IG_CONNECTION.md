@@ -1,6 +1,6 @@
 # The IG connection
 
-The `ig/` part is the only part of the bot that talks to IG's servers. It logs in, chooses the bot's account and handles IG's errors. It does not fetch prices or place orders; the price feed and the order sender will use it for that later.
+The `ig/` part is the only part of the bot that talks to IG's servers. It logs in, chooses the bot's account and handles IG's errors. It also runs the live price stream (see `docs/PRICES_AND_CANDLES.md`). It does not place orders; the order sender will use it for that later. **It never asks IG for historical prices**: any call to a `/prices` address is refused before it is sent.
 
 - Code: `ig/client.py` (talking to IG), `ig/errors.py` (the error rules and the exit code), `ig/secrets.py` (reading `.env`), `ig/check.py` (the one real check).
 - It talks to IG's REST API directly with the `requests` library (version pinned in `requirements.txt`). It does not use the `trading_ig` library.
@@ -93,6 +93,13 @@ The real check **passed on 6 November 2026** (exit code 0), after the other bots
 | `DELETE /session` | HTTP 204 | Logged out |
 
 (The first run, before the other bots were stopped, was refused by IG with `exceeded-api-key-allowance`.)
+
+## The price stream and logging in
+
+The live price stream (`ig/stream.py`) follows these same rules:
+
+- A dropped stream **never** causes a login. It reconnects with the same session tokens after increasing waits.
+- If IG **refuses the stream's login**, that counts as the session no longer being accepted: **one controlled re-login** (and switch back to the account, with `defaultAccount: false`), then the stream connects again. If IG refuses again before the stream has been healthy for `stream.healthy_after_minutes`, or the re-login fails, the bot **stops with exit code 78**.
 
 ## Tests
 

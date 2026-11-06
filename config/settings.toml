@@ -62,3 +62,53 @@ close_percent_at_opposite_band = 50
 demo_base_url = "https://demo-api.ig.com/gateway/deal"
 slowed_down_waits_seconds = [60, 90, 120, 180]
 request_timeout_seconds = 30
+
+[market]
+# IG epic for GBPUSD on the spread bet account. Found with one market search
+# (GET /markets?searchTerm=GBPUSD) on 6 November 2026: "GBP/USD", expiry DFB.
+epic = "CS.D.GBPUSD.TODAY.IP"
+
+[market_hours]
+# IG's trading hours for GBPUSD, UK time. Source: IG Help Centre, "Forex
+# spread betting product details", note 1: "Normal dealing hours for all pairs
+# are from 21.00 (London time) on Sunday until 21.59 (London time) on Friday".
+# https://www.ig.com/uk/help-and-support/spread-betting-and-cfds-5064504a/products-markets-and-trading-hours-008e7240/forex-spread-betting-product-details-3134d533
+# 21:59 is written 22:00 here: the last 5-minute candle runs 21:55 to 22:00.
+opens_day = "Sunday"
+opens_at = "21:00"
+closes_day = "Friday"
+closes_at = "22:00"
+
+[stream]
+# Waits before each reconnect after the price stream drops, in order. After
+# the last one, every further wait is the last value.
+reconnect_waits_seconds = [5, 10, 20, 40, 80, 160, 300]
+# Warn if no prices arrive for this long while the market is open.
+no_prices_warning_seconds = 120
+# Once the stream has stayed connected this long, the reconnect waits start
+# again from the first one, and one more controlled re-login is allowed.
+healthy_after_minutes = 60
+
+[candles]
+folder = "/opt/autobot/data/candles"
+# 1-hour candles start at this minute past each hour.
+hour_starts_at_minute = 0
+# 4-hour candles start at this time and every 4 hours after it.
+four_hour_starts_at = "22:00"
+# Daily candles start (and end) at this UK time.
+day_starts_at = "22:00"
+# Weekly candles start on this day at day_starts_at.
+week_starts_day = "Sunday"
+# A 1-hour, 4-hour, daily or weekly candle missing some 5-minute candles is
+# built only after waiting this long past its end for a late one.
+wait_for_late_candle_seconds = 300
+# Candle files older than this many days are compressed (never deleted).
+compress_after_days = 30
+
+[housekeeping]
+log_folder = "/opt/autobot/logs"
+log_max_file_mb = 10
+log_new_file_every_hours = 24
+log_keep_files = 20
+log_max_age_days = 30
+min_free_disk_mb = 2048

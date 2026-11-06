@@ -88,7 +88,8 @@ def test_ig_is_the_only_part_that_talks_to_ig():
         if rel.parts[0] in ("ig", "tests", ".venv"):
             continue
         text = f.read_text()
-        for http_library in ("import requests", "from requests", "urllib", "http.client", "socket"):
+        for http_library in ("import requests", "from requests", "urllib", "http.client", "socket",
+                             "import lightstreamer", "from lightstreamer"):
             assert http_library not in text, (rel, http_library)
         if rel.parts[0] != "config":
             assert "ig.com" not in text, rel

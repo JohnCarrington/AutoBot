@@ -6,8 +6,8 @@ AutoBot trades GBPUSD on an IG demo account. It is split into parts, each in its
 
 | Folder | What it does |
 |---|---|
-| `ig/` | The only part that talks to IG's servers. Logs in, chooses the bot's account without changing IG's default account, and handles IG's errors. The price feed and the order sender make their IG calls through it. See `docs/IG_CONNECTION.md`. |
-| `prices/` | Receives live GBPUSD prices from IG and builds candles: tick, 5-minute, 1-hour, 4-hour, daily and weekly. |
+| `ig/` | The only part that talks to IG's servers. Logs in, chooses the bot's account without changing IG's default account, and handles IG's errors. It also runs IG's live price stream (`ig/stream.py`), reconnecting with increasing waits, and refuses any call for historical prices. The order sender will make its IG calls through it. See `docs/IG_CONNECTION.md` and `docs/PRICES_AND_CANDLES.md`. |
+| `prices/` | Takes the live GBPUSD ticks and IG's finished 5-minute candles from the stream, stores the candles (buy and sell kept apart, UTC, one file per day per size, safe writes, never overwritten), builds 1-hour, 4-hour, daily and weekly candles from them, and checks the store. See `docs/PRICES_AND_CANDLES.md`. |
 | `levels/` | Works out pivots, round numbers, the previous day's high and low, session highs and lows, and recent turning levels. |
 | `rejection/` | Works out whether price has been rejected at a level or band. Shared by the analyser, the strategies and the trade manager. |
 | `analyser/` | Decides which of five market states the market is in, and which strategies are allowed. |
@@ -19,6 +19,8 @@ AutoBot trades GBPUSD on an IG demo account. It is split into parts, each in its
 | `dashboard/` | Shows trades, the market state and warnings. |
 | `alerts/` | Sends Telegram alerts. |
 | `config/` | The settings file (`settings.toml`) and the code that loads and checks it. Every part reads its numbers from here. |
+| `housekeeping/` | Log files rotated by size and age (so they can never fill the disk), and the low disk space warning. |
+| `data/candles/` | The candle store, on the server only (not in git). Never deleted; old files are compressed. |
 
 ## How they connect
 
@@ -28,8 +30,8 @@ AutoBot trades GBPUSD on an IG demo account. It is split into parts, each in its
         │  (all IG calls)
        ig ── logs in, chooses the account, handles IG's errors
         │
-        ▼  live prices
-  prices ──────► candles
+        ▼  live prices (stream: ticks + IG's finished 5-minute candles)
+  prices ──────► candle store (data/candles: 5m, 1h, 4h, 1d, 1w)
                    │
       ┌────────────┼──────────────┐
       ▼            ▼              ▼
@@ -59,7 +61,7 @@ AutoBot trades GBPUSD on an IG demo account. It is split into parts, each in its
 In words:
 
 1. **The IG part connects first.** It logs in to the IG demo account, switches to the bot's account and keeps the streaming address. If it cannot, the bot stops with exit code 78 and is not restarted automatically.
-2. **Prices feed candles.** The prices part receives live GBPUSD prices from IG through the IG part and builds them into candles of every size.
+2. **Prices feed candles.** The IG part streams live GBPUSD ticks and IG's own 5-minute candles. The prices part stores each 5-minute candle once IG marks it finished, builds the 1-hour, 4-hour, daily and weekly candles from the stored 5-minute candles, and checks the store at start-up and after every new candle. If the stream drops, the IG part reconnects with increasing waits. Historical prices are never asked for.
 3. **The analyser reads candles, levels and the rejection part,** and decides which of the five market states the market is in and which strategies are allowed.
 4. **A strategy's trade idea passes the safety rules,** which check trade size, how many trades are open, trading hours, big news and the off switch. An idea that fails any check is dropped.
 5. **Then it goes to the order sender,** which sends it to IG through the IG part, with a stop loss and take profit attached.
@@ -68,7 +70,9 @@ In words:
 
 ## Rules that hold everywhere
 
-- No part except `ig/` talks to IG's servers, and no part except `orders/` asks it to place, change or close a trade.
+- No part except `ig/` talks to IG's servers (REST or the price stream), and no part except `orders/` asks it to place, change or close a trade.
+- **The bot never asks IG for historical prices.** Gaps are recorded, never filled.
+- Times are stored in UTC and shown to people in UK time.
 - IG's default account is never changed: other bots share this IG login.
 - Secrets (passwords, keys, tokens, account numbers) are never printed, logged or committed.
 - Every order has a stop loss and a take profit.

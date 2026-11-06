@@ -59,6 +59,35 @@ EXPECTED = {
     },
     "possible_reversal": {"min_trend_move_pips": 30},
     "range_trade": {"close_percent_at_opposite_band": 50},
+    "market": {"epic": "CS.D.GBPUSD.TODAY.IP"},
+    "market_hours": {
+        "opens_day": 6,              # Sunday (Monday is 0)
+        "opens_at": time(21, 0),
+        "closes_day": 4,             # Friday
+        "closes_at": time(22, 0),
+    },
+    "stream": {
+        "reconnect_waits_seconds": (5, 10, 20, 40, 80, 160, 300),
+        "no_prices_warning_seconds": 120,
+        "healthy_after_minutes": 60,
+    },
+    "candles": {
+        "folder": Path("/opt/autobot/data/candles"),
+        "hour_starts_at_minute": 0,
+        "four_hour_starts_at": time(22, 0),
+        "day_starts_at": time(22, 0),
+        "week_starts_day": 6,        # Sunday
+        "wait_for_late_candle_seconds": 300,
+        "compress_after_days": 30,
+    },
+    "housekeeping": {
+        "log_folder": Path("/opt/autobot/logs"),
+        "log_max_file_mb": 10,
+        "log_new_file_every_hours": 24,
+        "log_keep_files": 20,
+        "log_max_age_days": 30,
+        "min_free_disk_mb": 2048,
+    },
     "ig": {
         "demo_base_url": "https://demo-api.ig.com/gateway/deal",
         "slowed_down_waits_seconds": (60, 90, 120, 180),
@@ -198,6 +227,19 @@ INVALID = [
     ("ig", "slowed_down_waits_seconds", [], "non-empty list"),
     ("ig", "slowed_down_waits_seconds", [60, 0], "must be between"),
     ("ig", "request_timeout_seconds", 0, "must be between"),
+    ("market", "epic", "GBPUSD", "must be an IG epic"),
+    ("market_hours", "opens_day", "Sun", "must be a day name"),
+    ("market_hours", "closes_at", "21:59", "5-minute mark"),
+    ("stream", "reconnect_waits_seconds", [], "non-empty list"),
+    ("stream", "no_prices_warning_seconds", 0, "must be between"),
+    ("candles", "folder", "data/candles", "full folder path"),
+    ("candles", "hour_starts_at_minute", 7, "multiple of 5"),
+    ("candles", "day_starts_at", "22:03", "5-minute mark"),
+    ("candles", "week_starts_day", "Funday", "must be a day name"),
+    ("candles", "compress_after_days", 0, "must be between"),
+    ("housekeeping", "log_max_file_mb", 0, "must be between"),
+    ("housekeeping", "log_keep_files", 0, "must be between"),
+    ("housekeeping", "min_free_disk_mb", 0, "must be between"),
 ]
 
 
@@ -250,6 +292,19 @@ def test_close_time_not_before_last_new_trade(tmp_path):
     data = _raw()
     data["hours"]["close_all_trades_at"] = "20:00"
     with pytest.raises(SettingsError, match="close_all_trades_at must not be earlier"):
+        load_settings(_write(tmp_path, data))
+
+
+@pytest.mark.parametrize("section,key,value,message", [
+    ("stream", "reconnect_waits_seconds", [60, 5], "must go up"),
+    ("candles", "four_hour_starts_at", "21:00", "must line up with day_starts_at"),
+    ("candles", "day_starts_at", "22:05", "must start on an hour boundary"),
+    ("market_hours", "closes_day", "Sunday", "must be different days"),
+])
+def test_candle_and_stream_settings_must_fit_together(tmp_path, section, key, value, message):
+    data = _raw()
+    data[section][key] = value
+    with pytest.raises(SettingsError, match=message):
         load_settings(_write(tmp_path, data))
 
 

@@ -113,6 +113,54 @@ def _timeframes(v: Any) -> tuple[str, ...]:
     return tuple(v)
 
 
+_WEEKDAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+
+
+class Weekday(int):
+    """A day of the week: works as a number (Monday 0 ... Sunday 6, as in
+    Python's datetime.weekday()) and prints as its name."""
+
+    def __str__(self) -> str:
+        return _WEEKDAYS[self]
+
+    __repr__ = __str__
+
+
+def _weekday(v: Any) -> Weekday:
+    if v not in _WEEKDAYS:
+        raise ValueError(f"must be a day name ({', '.join(_WEEKDAYS)}), got {v!r}")
+    return Weekday(_WEEKDAYS.index(v))
+
+
+def _clock_time_on_5_minutes(v: Any) -> time:
+    t = _clock_time(v)
+    if t.minute % 5:
+        raise ValueError(f"must be on a 5-minute mark (candles are built from 5-minute candles), got {v!r}")
+    return t
+
+
+def _minute_on_5(v: Any) -> int:
+    m = _whole_number(0, 55)(v)
+    if m % 5:
+        raise ValueError(f"must be a multiple of 5 (candles are built from 5-minute candles), got {m}")
+    return m
+
+
+_EPIC_RE = re.compile(r"^[A-Z0-9]+(\.[A-Z0-9]+)+$")
+
+
+def _epic(v: Any) -> str:
+    if not isinstance(v, str) or not _EPIC_RE.match(v):
+        raise ValueError(f"must be an IG epic like 'CS.D.GBPUSD.TODAY.IP', got {v!r}")
+    return v
+
+
+def _absolute_folder(v: Any) -> Path:
+    if not isinstance(v, str) or not v.startswith("/"):
+        raise ValueError(f"must be a full folder path starting with '/', got {v!r}")
+    return Path(v)
+
+
 # ---- the full list of settings ---------------------------------------------
 # section -> setting -> check.  Every setting in settings.toml must be listed
 # here and nothing else is allowed.
@@ -174,6 +222,37 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "range_trade": {
         "close_percent_at_opposite_band": _whole_number(1, 100),
     },
+    "market": {
+        "epic": _epic,
+    },
+    "market_hours": {
+        "opens_day": _weekday,
+        "opens_at": _clock_time_on_5_minutes,
+        "closes_day": _weekday,
+        "closes_at": _clock_time_on_5_minutes,
+    },
+    "stream": {
+        "reconnect_waits_seconds": _whole_numbers(1, 600),
+        "no_prices_warning_seconds": _whole_number(10, 3600),
+        "healthy_after_minutes": _whole_number(1, 1440),
+    },
+    "candles": {
+        "folder": _absolute_folder,
+        "hour_starts_at_minute": _minute_on_5,
+        "four_hour_starts_at": _clock_time_on_5_minutes,
+        "day_starts_at": _clock_time_on_5_minutes,
+        "week_starts_day": _weekday,
+        "wait_for_late_candle_seconds": _whole_number(0, 3600),
+        "compress_after_days": _whole_number(8, 3650),
+    },
+    "housekeeping": {
+        "log_folder": _absolute_folder,
+        "log_max_file_mb": _whole_number(1, 1000),
+        "log_new_file_every_hours": _whole_number(1, 168),
+        "log_keep_files": _whole_number(1, 1000),
+        "log_max_age_days": _whole_number(1, 3650),
+        "min_free_disk_mb": _whole_number(100, 1_000_000),
+    },
     "ig": {
         # Demo only: the bot refuses to start with any other address.
         "demo_base_url": _exactly("https://demo-api.ig.com/gateway/deal"),
@@ -226,6 +305,23 @@ def _check_together(v: dict[str, dict[str, Any]]) -> None:
         )
 
 
+def _check_candles_together(v: dict[str, dict[str, Any]]) -> None:
+    c, mh = v["candles"], v["market_hours"]
+    w = v["stream"]["reconnect_waits_seconds"]
+    if list(w) != sorted(w):
+        raise SettingsError("Setting [stream] reconnect_waits_seconds must go up (never get shorter).")
+    if c["day_starts_at"].minute != c["hour_starts_at_minute"]:
+        raise SettingsError("Setting [candles] day_starts_at must start on an hour boundary "
+                            "(its minutes must equal hour_starts_at_minute).")
+    four = c["four_hour_starts_at"]
+    day = c["day_starts_at"]
+    if four.minute != day.minute or (four.hour - day.hour) % 4:
+        raise SettingsError("Setting [candles] four_hour_starts_at must line up with day_starts_at, "
+                            "so that 4-hour candles fit exactly into each day.")
+    if mh["opens_day"] == mh["closes_day"]:
+        raise SettingsError("Settings [market_hours] opens_day and closes_day must be different days.")
+
+
 def load_settings(path: str | Path | None = None) -> Settings:
     """Load and check the settings file. Raises SettingsError if anything is wrong."""
     if path is None:
@@ -274,6 +370,7 @@ def load_settings(path: str | Path | None = None) -> Settings:
         )
 
     _check_together(checked)
+    _check_candles_together(checked)
     return Settings(checked)
 
 

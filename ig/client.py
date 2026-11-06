@@ -30,6 +30,17 @@ from ig.secrets import IGCredentials, last4
 log = logging.getLogger("autobot.ig")
 
 
+class HistoricalPricesForbidden(RuntimeError):
+    """The bot never asks IG for historical prices. Any attempt is a bug."""
+
+
+def is_historical_prices_path(path: str) -> bool:
+    """IG's historical prices live under /prices (GET /prices/{epic}, with or
+    without a resolution and dates). The bot must never call them."""
+    p = path.split("?", 1)[0].rstrip("/").lower()
+    return p == "/prices" or p.startswith("/prices/")
+
+
 @dataclass(frozen=True)
 class IGAccount:
     account_id: str
@@ -154,6 +165,10 @@ class IGClient:
     def _send(self, method: str, path: str, version: str, body: Any = None,
               with_session: bool = True) -> Any:
         """One HTTP request. Raises IGRequestError on a network problem."""
+        if is_historical_prices_path(path):
+            # Refused before anything is sent, and not recorded as a call.
+            raise HistoricalPricesForbidden(
+                f"Refused {method} {path.split('?', 1)[0]}: the bot never asks IG for historical prices.")
         try:
             response = self._http.request(
                 method, self.base_url + path,
@@ -349,6 +364,24 @@ class IGClient:
         if not 200 <= r.status_code < 300:
             raise IGRequestError(what, r.status_code, error_code_of(r))
         return r
+
+    # ---- for the price stream (ig/stream.py) ---------------------------------
+
+    def stream_login(self) -> tuple[str, str]:
+        """The user and password IG's streaming server expects: the bot's
+        account, and the current session tokens. Secret: never log these."""
+        if not self.account_active or not self.logged_in:
+            raise RuntimeError("Not connected to the bot's IG account. Call connect() first.")
+        return self._creds.account_id, f"CST-{self._cst}|XST-{self._security_token}"
+
+    def relogin_for_stream(self) -> None:
+        """The one controlled re-login after IG refused the stream's login,
+        then the switch back to the bot's account. Stops (IGLoginFailure) if
+        that fails. The stream decides when this is allowed."""
+        if not self.retries:
+            raise IGLoginFailure("stream-login-refused", "IG refused the price stream's login. "
+                                                         "Retries are switched off for this run, so stopping.")
+        self._relogin(self._session_number)
 
     def logout(self) -> bool:
         """Log out (one call, no retries). Returns True if IG confirmed it."""
