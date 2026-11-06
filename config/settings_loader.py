@@ -258,6 +258,17 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     },
     "range_trade": {
         "close_percent_at_opposite_band": _whole_number(1, 100),
+        "rejection_candle_within_candles": _whole_number(1, 10),
+        "trigger_within_candles": _whole_number(1, 10),
+    },
+    "indicators": {
+        "bollinger_periods": _whole_number(2, 200),
+        "bollinger_std_devs": _whole_number(1, 5),
+    },
+    "rejection": {
+        "candle_timeframe": _one_of("5m", "1h", "4h"),
+        "near_level_within_pips": _whole_number(0, 50),
+        "max_spread_pips": _whole_number(1, 100),
     },
     "market": {
         "epic": _epic,

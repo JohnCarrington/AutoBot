@@ -138,13 +138,15 @@ EMAs: 8, 13 and 21 on the 5-minute chart. No fanning rule.
 
 ### 3.3 Bollinger band bounce (sell)
 
-1. Price pierces a level or the Bollinger band.
+1. Price pierces a level or the Bollinger band. For a level, a candle that comes within 3 pips of it counts the same as a pierce (a setting). The Bollinger band needs a real pierce.
 2. The reversal candle is the first red candle after the pierce, with no size rule. If none appears within 3 candles, the setup expires.
 3. A later confirmation candle closes below the reversal candle's low, within 3 candles of it, or the setup expires. A wick below without a close does not count.
 4. The sell opens as soon as the live price goes below the confirmation candle's low.
 5. If price goes above the reversal candle's high at any point, the setup is cancelled.
 
 The bot records, for each bounce, how big the reversal candle was compared with the piercing candle, for later review. It never filters on it.
+
+Spread spikes are ignored: when IG's spread on a candle is abnormally wide (over 3 pips, a setting; this happens at the 22:00 rollover and at news), that candle's sell-price highs and lows cannot start a setup or cancel one. The candle is still stored as normal.
 
 ### 3.4 Range trade (sell at the upper band)
 
@@ -154,6 +156,8 @@ The bot records, for each bounce, how big the reversal candle was compared with 
 4. If price goes above the rejection candle's high first, the setup is cancelled.
 
 Half the trade closes when price reaches the other band.
+
+Spread spikes are ignored in the same way as for the bounce (3.3).
 
 ---
 
@@ -187,6 +191,7 @@ All levels use the sell (bid) price, with daily candles running midnight to midn
 - London and New York session highs and lows (times are settings; starting values from 161 for Johnny to confirm).
 - Turning levels: hourly highs and lows where price clearly reversed, in the last 2 weeks.
 - Levels line up when within 5 pips of each other, pivot included. A setting.
+- A candle that comes within 3 pips of a level counts the same as a pierce of that level, for rejections (a setting). This applies to levels only: the Bollinger band needs a real pierce.
 - The levels that matter most: S2, R2, the daily pivot, round numbers and turning levels.
 
 Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.3450, a round number next to an earlier level, and price shot back up at 12:00.
@@ -220,7 +225,7 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 - Only one guarded part of the code may ask IG for history. A refusal writes a block marker that survives restarts.
 - History is only requested for a candle genuinely missing during market hours. It only fills gaps and never overwrites stored candles.
 - The weekend is never missing data. Market hours: open Sunday 21:00 UK, close Friday 17:00 New York time (22:00 UK most of the year, 21:00 in the clock-change weeks).
-- Every candle keeps buy and sell prices separately, never mixed. Times stored in UTC, shown in UK time.
+- Every candle keeps buy and sell prices separately, never mixed. Times stored in UTC, shown in UK time. Candles with a spread spike are stored as normal; only the rejection rules ignore their highs and lows (3.3).
 - Daily candles run midnight to midnight UK, with IG's short Sunday candle, matching IG's chart. Hourly, 4-hour, daily and weekly are built from the bot's own 5-minute candles.
 - Candles are kept, not deleted; older files are compressed. Logs are rotated by size and age. The store is checked automatically for gaps, duplicates and bad prices.
 - The price stream runs all the time as a service. On a restart it records any gap and does not ask IG for history.

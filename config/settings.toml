@@ -88,6 +88,29 @@ min_trend_move_pips = 30
 
 [range_trade]
 close_percent_at_opposite_band = 50
+# The rejection candle must be the candle straight after the one that pierced
+# the band (1 = the next candle) ...
+rejection_candle_within_candles = 1
+# ... and the trigger must come during the candle after that (1 = that candle only).
+trigger_within_candles = 1
+
+[indicators]
+# Bollinger bands, as on the owner's IG chart: 20 periods, 2 standard deviations,
+# on the chart price ([chart] price).
+bollinger_periods = 20
+bollinger_std_devs = 2
+
+[rejection]
+# The candle size the shared rejection part watches.
+candle_timeframe = "5m"
+# A candle that comes within this many pips of a level counts the same as a
+# pierce of it (levels only: the Bollinger band needs a real pierce).
+near_level_within_pips = 3
+# When IG's spread on a candle (the widest buy-minus-sell gap of its open, high,
+# low and close) is over this many pips, that candle's highs and lows cannot
+# start or cancel a setup. Normal is 0.9 to 1.5; the 22:00 rollover and news
+# reach 4 to 26. STARTING VALUE (docs/REJECTION.md).
+max_spread_pips = 3
 
 [ig]
 demo_base_url = "https://demo-api.ig.com/gateway/deal"
