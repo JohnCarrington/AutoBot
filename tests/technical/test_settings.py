@@ -59,6 +59,11 @@ EXPECTED = {
     },
     "possible_reversal": {"min_trend_move_pips": 30},
     "range_trade": {"close_percent_at_opposite_band": 50},
+    "ig": {
+        "demo_base_url": "https://demo-api.ig.com/gateway/deal",
+        "slowed_down_waits_seconds": (60, 90, 120, 180),
+        "request_timeout_seconds": 30,
+    },
 }
 
 ALL_VALUES = [
@@ -189,6 +194,10 @@ INVALID = [
     ("ema_pullback", "setup_expires_after_minutes", 0, "must be between"),
     ("possible_reversal", "min_trend_move_pips", 0, "must be between"),
     ("range_trade", "close_percent_at_opposite_band", 150, "must be between"),
+    ("ig", "demo_base_url", "https://api.ig.com/gateway/deal", "must be 'https://demo-api.ig.com/gateway/deal'"),
+    ("ig", "slowed_down_waits_seconds", [], "non-empty list"),
+    ("ig", "slowed_down_waits_seconds", [60, 0], "must be between"),
+    ("ig", "request_timeout_seconds", 0, "must be between"),
 ]
 
 

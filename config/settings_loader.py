@@ -39,6 +39,16 @@ def _whole_number(minimum: int, maximum: int) -> Callable[[Any], int]:
     return check
 
 
+def _whole_numbers(minimum: int, maximum: int) -> Callable[[Any], tuple[int, ...]]:
+    one = _whole_number(minimum, maximum)
+
+    def check(v: Any) -> tuple[int, ...]:
+        if not isinstance(v, list) or not v:
+            raise ValueError(f"must be a non-empty list of whole numbers, got {v!r}")
+        return tuple(one(x) for x in v)
+    return check
+
+
 def _exactly(expected: str) -> Callable[[Any], str]:
     def check(v: Any) -> str:
         if v != expected:
@@ -163,6 +173,12 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     },
     "range_trade": {
         "close_percent_at_opposite_band": _whole_number(1, 100),
+    },
+    "ig": {
+        # Demo only: the bot refuses to start with any other address.
+        "demo_base_url": _exactly("https://demo-api.ig.com/gateway/deal"),
+        "slowed_down_waits_seconds": _whole_numbers(1, 600),
+        "request_timeout_seconds": _whole_number(1, 120),
     },
 }
 
