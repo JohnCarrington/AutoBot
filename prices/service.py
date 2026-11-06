@@ -78,8 +78,9 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
             stream.request_stop()
         if now() >= next_status[0]:
             next_status[0] = now() + every
-            log.info("Status: %d ticks and %d five-minute candles stored since start; last tick %s; "
-                     "stream connections %d, drops %d, re-logins %d.", feed.ticks, len(feed.stored),
+            log.info("Status: %d ticks (%d with a price carried forward, %d skipped) and %d five-minute "
+                     "candles stored since start; last tick %s; stream connections %d, drops %d, re-logins %d.",
+                     feed.ticks, feed.carried_forward, feed.bad_ticks, len(feed.stored),
                      feed.describe_last_tick(), stream.stats.connects, stream.stats.drops, stream.stats.relogins)
 
     try:
@@ -88,6 +89,7 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
         client.connect()
         stream = PriceStream(client, settings.market.epic, settings.stream, transport_factory,
                              on_tick=feed.on_tick, on_candle=feed.on_candle,
+                             on_new_connection=feed.new_connection,
                              market_open_since=feed.market_open_since, now=now, warn=feed.warn)
         if stop.is_set():
             stream.request_stop()

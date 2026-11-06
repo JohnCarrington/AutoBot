@@ -56,6 +56,7 @@ def main(argv: list[str] | None = None) -> int:
         client.connect()
         stream = PriceStream(client, settings.market.epic, settings.stream, LightstreamerTransport,
                              on_tick=feed.on_tick, on_candle=feed.on_candle,
+                             on_new_connection=feed.new_connection,
                              market_open_since=feed.market_open_since, warn=feed.warn)
         stream.start()
         stream.run_until(started + timedelta(minutes=args.minutes))
@@ -74,7 +75,8 @@ def main(argv: list[str] | None = None) -> int:
     say()
     say(f"Run ended {uk(ended)} ({(ended - started).total_seconds() / 60:.1f} minutes).")
     say()
-    say(f"TICKS RECEIVED: {feed.ticks}" + (f" (plus {feed.bad_ticks} unreadable, skipped)" if feed.bad_ticks else ""))
+    say(f"TICKS RECEIVED: {feed.ticks}" + (f" (plus {feed.bad_ticks} skipped)" if feed.bad_ticks else ""))
+    say(f"  with one price carried forward (IG sent only the price that changed): {feed.carried_forward}")
     if feed.first_tick:
         say(f"  first: {uk(feed.first_tick.time)}  buy {plain(feed.first_tick.buy)}  sell {plain(feed.first_tick.sell)}")
         say(f"  last:  {feed.describe_last_tick()}")

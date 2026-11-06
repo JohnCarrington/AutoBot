@@ -30,6 +30,7 @@ def make(tmp_path, at=OPEN_TIME):
     client = FakeClient()
     stream = PriceStream(client, EPIC, SETTINGS.stream, new_transport,
                          on_tick=feed.on_tick, on_candle=feed.on_candle,
+                         on_new_connection=feed.new_connection,
                          market_open_since=feed.market_open_since, now=clock,
                          wait=lambda s: (waits.append(s), clock.advance(seconds=s)), warn=feed.warn)
     return stream, feed, client, clock, waits, store
@@ -273,3 +274,160 @@ def test_with_the_real_ig_client_a_refused_stream_relogs_in_once_and_switches_ba
                           ("POST", "/session"), ("PUT", "/session")]
     assert ig.sent[-1].json == {"accountId": CREDS.account_id, "defaultAccount": False}
     assert current().args[2] == "CST-CST-token-2|XST-XST-again"
+
+
+# ---- IG sends only the tick price that changed ------------------------------------
+# A blank BID or OFR means "unchanged": the last value received ON THIS CONNECTION
+# is carried forward, only once both have been received on it. Every new
+# connection starts fresh. BID is always the sell price, OFR the buy price.
+
+def _connected(tmp_path):
+    stream, feed, client, clock, waits, store = make(tmp_path)
+    stream.start()
+    current().connect()
+    return stream, feed, client, clock
+
+
+def _tick(stream, s, bid, ofr):
+    current().tick(T(2026, 11, 4, 10, 0, s), bid=bid, ofr=ofr)
+    stream.pump()
+
+
+def test_bid_is_the_sell_price_and_ofr_is_the_buy_price(tmp_path, caplog):
+    caplog.set_level(logging.INFO)
+    stream, feed, *_ = _connected(tmp_path)
+    _tick(stream, 0, bid="1.30000", ofr="1.40000")
+    assert str(feed.last_tick.sell) == "1.30000" and str(feed.last_tick.buy) == "1.40000"
+    _tick(stream, 1, bid="", ofr="")      # skipped-tick log labels each side correctly
+    _tick(stream, 2, bid="junk", ofr="1.40001")
+    assert "BID (sell)='junk' OFR (buy)='1.40001'" in caplog.text
+    assert "buy 1.40000 sell 1.30000" in feed.describe_last_tick()
+
+
+@pytest.mark.parametrize("blank", ["", None, "  "])
+def test_a_blank_bid_carries_forward_the_last_sell_price(tmp_path, blank):
+    stream, feed, *_ = _connected(tmp_path)
+    _tick(stream, 0, bid="1.31000", ofr="1.31010")
+    _tick(stream, 1, bid=blank, ofr="1.31020")
+    t = feed.last_tick
+    assert str(t.sell) == "1.31000" and str(t.buy) == "1.31020"
+    assert t.time == T(2026, 11, 4, 10, 0, 1)
+    assert feed.ticks == 2 and feed.carried_forward == 1 and feed.bad_ticks == 0
+
+
+@pytest.mark.parametrize("blank", ["", None])
+def test_a_blank_ofr_carries_forward_the_last_buy_price(tmp_path, blank):
+    stream, feed, *_ = _connected(tmp_path)
+    _tick(stream, 0, bid="1.31000", ofr="1.31010")
+    _tick(stream, 1, bid="1.30990", ofr=blank)
+    t = feed.last_tick
+    assert str(t.sell) == "1.30990" and str(t.buy) == "1.31010"
+    assert feed.ticks == 2 and feed.carried_forward == 1
+
+
+def test_carrying_forward_always_uses_the_latest_value_received(tmp_path):
+    stream, feed, *_ = _connected(tmp_path)
+    _tick(stream, 0, bid="1.31000", ofr="1.31010")
+    _tick(stream, 1, bid="1.31002", ofr="")
+    _tick(stream, 2, bid="", ofr="1.31015")
+    _tick(stream, 3, bid="", ofr="1.31016")
+    assert str(feed.last_tick.sell) == "1.31002" and str(feed.last_tick.buy) == "1.31016"
+    _tick(stream, 4, bid="1.31004", ofr="")
+    assert str(feed.last_tick.sell) == "1.31004" and str(feed.last_tick.buy) == "1.31016"
+    assert feed.ticks == 5 and feed.carried_forward == 4
+
+
+def test_nothing_is_carried_forward_until_both_prices_were_received_on_this_connection(tmp_path):
+    stream, feed, *_ = _connected(tmp_path)
+    _tick(stream, 0, bid="1.31000", ofr="")      # OFR never received yet: skipped
+    assert feed.ticks == 0 and feed.bad_ticks == 1 and feed.last_tick is None
+    _tick(stream, 1, bid="", ofr="")             # still nothing to go on for OFR
+    assert feed.ticks == 0 and feed.bad_ticks == 2
+    _tick(stream, 2, bid="", ofr="1.31010")      # now both have been received on this connection
+    assert feed.ticks == 1
+    assert str(feed.last_tick.sell) == "1.31000" and str(feed.last_tick.buy) == "1.31010"
+
+
+def test_a_reconnect_starts_fresh_and_never_carries_forward_an_older_price(tmp_path):
+    stream, feed, client, clock = _connected(tmp_path)
+    _tick(stream, 0, bid="1.31000", ofr="1.31010")
+    current().drop()
+    stream.pump()
+    current().connect()
+    _tick(stream, 10, bid="", ofr="1.32010")     # BID from before the drop must NOT be used
+    assert feed.ticks == 1 and feed.bad_ticks == 1
+    assert str(feed.last_tick.sell) == "1.31000"   # last tick is still the one before the drop
+    _tick(stream, 11, bid="1.32000", ofr="")     # both now received on the new connection
+    assert feed.ticks == 2
+    assert str(feed.last_tick.sell) == "1.32000" and str(feed.last_tick.buy) == "1.32010"
+    current().drop()                             # and again: a second reconnect forgets these too
+    stream.pump()
+    current().connect()
+    _tick(stream, 40, bid="1.32100", ofr="")
+    _tick(stream, 41, bid="", ofr="")
+    assert feed.ticks == 2 and feed.bad_ticks == 3
+    assert client.relogins == 0
+
+
+def test_a_failed_reconnect_attempt_also_starts_fresh(tmp_path):
+    stream, feed, *_ = _connected(tmp_path)
+    _tick(stream, 0, bid="1.31000", ofr="1.31010")
+    for _ in range(3):
+        current().drop()
+        stream.pump()
+    current().connect()
+    _tick(stream, 30, bid="", ofr="1.31020")
+    assert feed.ticks == 1 and feed.bad_ticks == 1
+    assert feed.connections == stream.stats.connects == 4
+
+
+def test_a_relogin_starts_fresh_too(tmp_path):
+    stream, feed, client, clock = _connected(tmp_path)
+    _tick(stream, 0, bid="1.31000", ofr="1.31010")
+    current().refuse()
+    stream.pump()
+    assert client.relogins == 1
+    current().connect()
+    _tick(stream, 5, bid="1.31005", ofr="")
+    assert feed.ticks == 1 and feed.bad_ticks == 1
+    _tick(stream, 6, bid="1.31006", ofr="1.31016")
+    assert feed.ticks == 2 and feed.carried_forward == 0
+
+
+def test_a_late_tick_from_the_old_connection_cannot_seed_the_new_one(tmp_path):
+    stream, feed, *_ = _connected(tmp_path)
+    old = current()
+    old.drop()
+    stream.pump()
+    old.tick(T(2026, 11, 4, 10, 0, 1), bid="1.29000", ofr="1.29010")   # arrives after the drop
+    stream.pump()
+    current().connect()
+    _tick(stream, 2, bid="", ofr="1.31010")
+    assert feed.ticks == 0 and feed.last_tick is None
+
+
+def test_an_unreadable_price_is_not_used_and_that_side_must_arrive_fresh(tmp_path):
+    stream, feed, *_ = _connected(tmp_path)
+    _tick(stream, 0, bid="1.31000", ofr="1.31010")
+    _tick(stream, 1, bid="not-a-price", ofr="1.31020")     # skipped; BID now unknown
+    assert feed.ticks == 1 and feed.bad_ticks == 1
+    _tick(stream, 2, bid="", ofr="1.31030")                # the old 1.31000 is NOT carried forward
+    assert feed.ticks == 1 and feed.bad_ticks == 2
+    _tick(stream, 3, bid="1.31025", ofr="")                # OFR 1.31030 was real, so it carries
+    assert feed.ticks == 2
+    assert str(feed.last_tick.sell) == "1.31025" and str(feed.last_tick.buy) == "1.31030"
+
+
+def test_a_tick_without_a_readable_time_is_skipped(tmp_path):
+    stream, feed, *_ = _connected(tmp_path)
+    current().emit(__import__("ig.stream", fromlist=["TickUpdate"]).TickUpdate(
+        {"BID": "1.31000", "OFR": "1.31010", "UTM": None}))
+    stream.pump()
+    assert feed.ticks == 0 and feed.bad_ticks == 1
+
+
+def test_the_live_run_and_the_service_both_reset_the_feed_on_every_new_connection():
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[2]
+    for f in ("prices/run.py", "prices/service.py"):
+        assert "on_new_connection=feed.new_connection" in (root / f).read_text(), f

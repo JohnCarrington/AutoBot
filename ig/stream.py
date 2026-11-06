@@ -24,6 +24,9 @@ The rules:
 
 Callers get prices through on_tick(fields) and on_candle(fields), as plain
 dictionaries of what IG sent. The prices part turns them into ticks and candles.
+on_new_connection() is called each time a new connection is opened (first
+connect, reconnect, re-login), before anything from it arrives: IG sends only
+the tick price that changed, so the prices part starts fresh on each one.
 """
 
 from __future__ import annotations
@@ -118,6 +121,7 @@ class PriceStream:
     def __init__(self, client: Any, epic: str, stream_settings: Any,
                  transport_factory: Callable[[], Transport], *,
                  on_tick: Callable[[dict], None], on_candle: Callable[[dict], None],
+                 on_new_connection: Callable[[], None] = lambda: None,
                  market_open_since: Callable[[datetime], datetime | None] = lambda now: now,
                  now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
                  wait: Callable[[float], None] | None = None,
@@ -129,6 +133,7 @@ class PriceStream:
         self.healthy_after = timedelta(minutes=stream_settings.healthy_after_minutes)
         self.transport_factory = transport_factory
         self.on_tick, self.on_candle = on_tick, on_candle
+        self.on_new_connection = on_new_connection
         self.market_open_since = market_open_since
         self.now = now
         self._stop = threading.Event()
@@ -155,6 +160,9 @@ class PriceStream:
         endpoint = self.client.streaming_endpoint
         self.generation += 1
         gen = self.generation
+        # Every connection (first, reconnect, re-login) starts fresh: the
+        # prices part forgets the last BID/OFR before anything new arrives.
+        self.on_new_connection()
         t = self.transport_factory()
         self.transport = t
         self.connected_since = None

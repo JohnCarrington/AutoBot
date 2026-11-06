@@ -2,7 +2,15 @@
 the store checks.
 
 * Every tick is counted and the latest one kept (buy and sell separately).
-  Ticks are not stored on disk.
+  Ticks are not stored on disk. IG's BID is the sell price and its OFR the
+  buy price.
+* IG sends only the price that changed: a blank BID or OFR means "unchanged".
+  The blank side is filled with the last value received ON THIS CONNECTION,
+  and only once both BID and OFR have been received at least once on it.
+  Every new connection (first connect, reconnect, re-login) starts fresh, so
+  a value from before a reconnect is never carried forward. A value that is
+  present but unreadable is not used, and that side is unknown again until IG
+  sends a fresh one.
 * IG's 5-minute candle is stored only once IG marks it finished (CONS_END = 1).
   An unfinished candle is never stored.
 * After each new 5-minute candle: the new candle is checked, bigger candles
@@ -18,6 +26,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal
 from typing import Any, Callable
 
 from prices.builder import build_due
@@ -56,7 +65,12 @@ class PriceFeed:
         self.ticks = 0
         self.first_tick: Tick | None = None
         self.last_tick: Tick | None = None
-        self.bad_ticks = 0
+        self.bad_ticks = 0                    # ticks skipped, for any reason
+        self.carried_forward = 0              # ticks that used a carried-forward price
+        self.connections = 0                  # stream connections seen by the feed
+        # The last BID (sell) and OFR (buy) received on the current connection.
+        self._sell: Decimal | None = None
+        self._buy: Decimal | None = None
         self.stored: list[Candle] = []        # 5-minute candles stored by this run
         self.built: list[Candle] = []         # bigger candles built by this run
         self.unfinished_seen = 0
@@ -116,16 +130,45 @@ class PriceFeed:
 
     # ---- from the stream ---------------------------------------------------------
 
+    def new_connection(self) -> None:
+        """Called by the stream each time it opens a new connection (first
+        connect, reconnect or re-login). Forgets the last prices, so nothing
+        from before the reconnect is ever carried forward."""
+        self.connections += 1
+        self._sell = None
+        self._buy = None
+
     def on_tick(self, fields: dict) -> None:
+        problems: list[str] = []
+        carried = False
+        # BID is the sell price, OFR the buy price.
+        for name, side in (("BID", "_sell"), ("OFR", "_buy")):
+            raw = fields.get(name)
+            if raw is None or str(raw).strip() == "":
+                if getattr(self, side) is None:
+                    problems.append(f"{name} blank and not yet received on this connection")
+                else:
+                    carried = True
+                continue
+            try:
+                setattr(self, side, price(raw))
+            except ValueError as e:
+                setattr(self, side, None)   # the real price is unknown until IG sends a fresh one
+                problems.append(f"{name} {e}")
         try:
-            tick = Tick(utc_ms(fields["UTM"]), buy=price(fields.get("OFR")), sell=price(fields.get("BID")))
-        except (ValueError, TypeError, KeyError) as e:
+            time = utc_ms(fields["UTM"])
+        except (ValueError, TypeError, KeyError, OverflowError, OSError):
+            problems.append("UTM missing or unreadable")
+        if problems:
             self.bad_ticks += 1
             # Show exactly what IG sent (prices and time are not secret), so the
             # reason can be found. Nothing is guessed.
-            log.info("Tick with a missing or unreadable value skipped (%s). IG sent: BID=%r OFR=%r UTM=%r",
-                     e, fields.get("BID"), fields.get("OFR"), fields.get("UTM"))
+            log.info("Tick skipped (%s). IG sent: BID (sell)=%r OFR (buy)=%r UTM=%r",
+                     "; ".join(problems), fields.get("BID"), fields.get("OFR"), fields.get("UTM"))
             return
+        tick = Tick(time, buy=self._buy, sell=self._sell)
+        if carried:
+            self.carried_forward += 1
         self.ticks += 1
         if self.first_tick is None:
             self.first_tick = tick
