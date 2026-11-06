@@ -11,6 +11,7 @@ An automated trading bot for GBPUSD on an IG **demo** account. It reads live pri
 - `docs/ARCHITECTURE.md`: the parts of the bot and how they connect
 - `docs/SETTINGS.md`: every setting, what it does, and its value
 - `docs/IG_CONNECTION.md`: how the bot logs in to IG, chooses its account and handles IG's errors
+- `deploy/autobot-prices.service`: the systemd service for the price stream
 - `docs/PRICES_AND_CANDLES.md`: the live price stream, the candles, the candle store and its checks, the history door and the one-off fill
 - `/opt/autobot/data/history/`: the history door's records (points ledger, IG's allowance, daily record, block marker)
 - `prices/`: candles, the candle store and its checks
@@ -57,13 +58,17 @@ This prints every setting, or stops with a message saying which setting is missi
 
 This is the only command that contacts the real IG. It logs in to the IG demo account once, lists the accounts (showing only the last 4 characters of each number), switches to `IG_ACCOUNT_ID` without changing IG's default account, confirms the streaming address was received (without showing it), and logs out. That is four IG calls, with no retries. The tests never contact IG.
 
+## The price stream service
+
+The price stream runs all the time as the systemd service `autobot-prices` (`deploy/autobot-prices.service`). It never restarts after a login failure (exit code 78). How to install, start, stop and check it: `docs/PRICES_AND_CANDLES.md`, "Running the price stream as a service".
+
 ## Running the live price stream
 
 ```
 .venv/bin/python -m prices.run --minutes 20
 ```
 
-This logs in to IG, checks the candle store and reports its newest candle, streams live GBPUSD prices for the given number of minutes (storing IG's finished 5-minute candles and building the bigger ones), then logs out. It reports the ticks received, the candles stored, the store checks, and a count of every IG call made. See `docs/PRICES_AND_CANDLES.md`.
+This is a timed run, by hand (stop the service first). It logs in to IG, checks the candle store and reports its newest candle, streams live GBPUSD prices for the given number of minutes (storing IG's finished 5-minute candles and building the bigger ones), then logs out. It reports the ticks received, the candles stored, the store checks, and a count of every IG call made. See `docs/PRICES_AND_CANDLES.md`.
 
 The one-off history fill (`.venv/bin/python -m prices.history_fill plan` / `go`) ran once on 6 November 2026 and will not run again.
 

@@ -52,6 +52,7 @@ All settings live in one file: `config/settings.toml`. The code that loads and c
 | `stream.reconnect_waits_seconds` | After the price stream drops, how long to wait before each reconnect, in order. After the last one, every further wait is the last value. Must go up. | 5, 10, 20, 40, 80, 160, 300 seconds |
 | `stream.no_prices_warning_seconds` | Write a warning if no prices arrive for this long while the market is open. | 120 seconds |
 | `stream.healthy_after_minutes` | Once the stream has stayed connected this long, the reconnect waits start again from the first one, and one more controlled re-login is allowed. | 60 minutes |
+| `stream.status_log_minutes` | When the price stream runs as a service, it writes a status line to the log this often: ticks and candles stored since start, the last tick, connections, drops and re-logins. | 60 minutes |
 | `candles.folder` | Where the candle store is kept. | `/opt/autobot/data/candles` |
 | `candles.hour_starts_at_minute` | 1-hour candles start at this many minutes past each hour. | 0 (on the hour) |
 | `candles.four_hour_starts_at` | 4-hour candles start at this time and every 4 hours after it. Must line up with `day_starts_at`. | 00:00 (so 00:00, 04:00, 08:00, 12:00, 16:00, 20:00) |

@@ -1,0 +1,32 @@
+# AutoBot live price stream and candle store, running all the time.
+# Install: see docs/PRICES_AND_CANDLES.md, "Running the price stream as a service".
+[Unit]
+Description=AutoBot live GBPUSD price stream and candle store
+Documentation=file:///opt/autobot/docs/PRICES_AND_CANDLES.md
+After=network-online.target
+Wants=network-online.target
+# A crash loop must never become a login loop: at most 5 starts in any hour,
+# after which systemd stops trying and a person must look.
+StartLimitIntervalSec=3600
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=autobot
+Group=autobot
+WorkingDirectory=/opt/autobot
+ExecStart=/opt/autobot/.venv/bin/python -m prices.service
+Environment=PYTHONUNBUFFERED=1
+# Restart after a crash, waiting 30 seconds first...
+Restart=on-failure
+RestartSec=30
+# ...but never after an IG login failure (exit code 78): restarting would mean
+# logging in again and again. A person must check IG and start it again.
+RestartPreventExitStatus=78
+# On stop: SIGTERM, then the bot stops the stream and logs out of IG.
+KillSignal=SIGTERM
+TimeoutStopSec=30
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

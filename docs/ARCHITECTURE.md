@@ -19,6 +19,7 @@ AutoBot trades GBPUSD on an IG demo account. It is split into parts, each in its
 | `dashboard/` | Shows trades, the market state and warnings. |
 | `alerts/` | Sends Telegram alerts. |
 | `config/` | The settings file (`settings.toml`) and the code that loads and checks it. Every part reads its numbers from here. |
+| `deploy/` | The systemd service file: the price stream runs all the time as `autobot-prices`, restarting after a crash but never after a login failure (exit code 78). |
 | `housekeeping/` | Log files rotated by size and age (so they can never fill the disk), and the low disk space warning. |
 | `data/candles/` | The candle store, on the server only (not in git). Never deleted; old files are compressed. |
 | `data/history/` | The history door's records: points ledger, IG's allowance figures, daily record, block marker, and the one-off fill record. |

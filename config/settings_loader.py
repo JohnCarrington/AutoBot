@@ -243,6 +243,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "reconnect_waits_seconds": _whole_numbers(1, 600),
         "no_prices_warning_seconds": _whole_number(10, 3600),
         "healthy_after_minutes": _whole_number(1, 1440),
+        "status_log_minutes": _whole_number(1, 1440),
     },
     "candles": {
         "folder": _absolute_folder,

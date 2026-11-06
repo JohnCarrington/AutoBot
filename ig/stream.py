@@ -173,6 +173,11 @@ class PriceStream:
         self.transport = None
         self.generation += 1  # anything still coming from the old connection is ignored
 
+    def request_stop(self) -> None:
+        """Ask the stream to stop (safe from a signal handler). It also ends a
+        reconnect wait at once. Call stop() afterwards to close the connection."""
+        self._stop.set()
+
     def stop(self) -> None:
         self._stop.set()
         self._close()

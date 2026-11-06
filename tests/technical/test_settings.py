@@ -73,6 +73,7 @@ EXPECTED = {
         "reconnect_waits_seconds": (5, 10, 20, 40, 80, 160, 300),
         "no_prices_warning_seconds": 120,
         "healthy_after_minutes": 60,
+        "status_log_minutes": 60,
     },
     "candles": {
         "folder": Path("/opt/autobot/data/candles"),

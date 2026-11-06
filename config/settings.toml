@@ -97,6 +97,9 @@ no_prices_warning_seconds = 120
 # Once the stream has stayed connected this long, the reconnect waits start
 # again from the first one, and one more controlled re-login is allowed.
 healthy_after_minutes = 60
+# When running as a service, write a short status line (ticks, candles stored,
+# connection) to the log this often.
+status_log_minutes = 60
 
 [candles]
 folder = "/opt/autobot/data/candles"

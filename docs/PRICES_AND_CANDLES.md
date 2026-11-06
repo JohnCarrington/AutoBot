@@ -169,6 +169,48 @@ When IG's candles start arriving again, the gap already recorded is not warned a
 - `.venv/bin/python -m ig.find_market` is the one market search. It has been run once already and should not be needed again.
 - `.venv/bin/python -m prices.history_fill plan` shows the one-off history fill plan (no IG contact). `... go` ran it once, on 6 November 2026, and it will not run again.
 
+## Running the price stream as a service
+
+The price stream runs all the time as a systemd service, `autobot-prices`, so the candle store keeps growing.
+
+- **Service file:** `deploy/autobot-prices.service` in the repository, installed as `/etc/systemd/system/autobot-prices.service`. It runs `/opt/autobot/.venv/bin/python -m prices.service` as the `autobot` user, from `/opt/autobot`, and starts on boot once the network is up.
+- **On start** it does exactly what the live run does: it checks the store, reports the newest candle and its age, and **records any gap** since that candle. **It never asks IG for history**: the service does not use the history door at all, and a test checks that. Then it logs in and streams.
+- **After a crash** (any exit other than 0 or 78) systemd restarts it **after 30 seconds** (`RestartSec=30`). It never starts more than **5 times in an hour** (`StartLimitBurst=5`, `StartLimitIntervalSec=3600`), so a crash loop can never become a login loop. After that, systemd gives up and a person must look.
+- **After an IG login failure (exit code 78) it does NOT restart** (`RestartPreventExitStatus=78`). A person must find out what went wrong, then start it again.
+- **On stop** (`systemctl stop`) it stops the stream, logs out of IG and exits with code 0.
+- **While running** it writes a status line to the log every 60 minutes (`stream.status_log_minutes`).
+- **Logs** go to the systemd journal and to `/opt/autobot/logs/prices.log`. The log file is rotated by size and age (see Housekeeping). The journal has systemd's own size limits.
+
+### Installing it (once; needs sudo)
+
+```
+sudo cp /opt/autobot/deploy/autobot-prices.service /etc/systemd/system/autobot-prices.service
+sudo systemctl daemon-reload
+sudo systemctl enable autobot-prices
+sudo systemctl start autobot-prices
+```
+
+After changing the service file in the repository, copy it again and run `sudo systemctl daemon-reload`, then `sudo systemctl restart autobot-prices`.
+
+### Starting, stopping and checking it
+
+| To | Command |
+|---|---|
+| Start | `sudo systemctl start autobot-prices` |
+| Stop (logs out of IG cleanly) | `sudo systemctl stop autobot-prices` |
+| Restart (for example after a code change) | `sudo systemctl restart autobot-prices` |
+| Is it running? | `systemctl status autobot-prices` |
+| Its log for the last 10 minutes | `journalctl -u autobot-prices --since "10 min ago"` |
+| Follow its log live | `journalctl -u autobot-prices -f` |
+| The newest candles in the store, and their age | `cd /opt/autobot && .venv/bin/python -m prices.status` (contacts nobody) |
+| Stop it starting on boot | `sudo systemctl disable autobot-prices` |
+| After exit code 78, once the IG problem is fixed | `sudo systemctl reset-failed autobot-prices` then `sudo systemctl start autobot-prices` |
+| After 5 crashes in an hour, once the cause is fixed | `sudo systemctl reset-failed autobot-prices` then `sudo systemctl start autobot-prices` |
+
+`systemctl status` shows `active (running)` when it is running. After a login failure it shows `failed` with `status=78`.
+
+Stop the service before running `prices.run` or `prices.history_fill` by hand, so that only one copy of the bot is logged in to IG at a time.
+
 ## The live run (6 November 2026)
 
 `.venv/bin/python -m prices.run --minutes 20` ran from 19:20:39 to 19:40:40 GMT and exited normally (exit code 0).
@@ -191,4 +233,5 @@ None of these tests contact IG. They use a pretend price stream (`tests/technica
 | `test_price_stream.py` | The streaming address and account are used. Both subscriptions carry buy and sell fields and no mid. Every tick is received. Only finished candles are stored. A stream that drops and comes back gets increasing waits (5, 10, 20, … 300) and never a login. The waits reset once the stream is healthy. Old connections are ignored. Re-login limits: one, then stop. Other errors reconnect with waits. The no-prices warning appears only while the market is open. No secrets appear in the logs. |
 | `test_candle_store.py` | Notes on gap records; older gap files still read. One file per day per size, in UTC. Buy and sell are kept apart, with exact prices. Never overwritten. A different value is warned. **A crash part-way through a write**, and a crash before the rename, leave the old file whole. Data is flushed before the rename. Damaged files are never written over. Compression keeps every candle. Gaps are recorded. |
 | `test_candles_and_checks.py` | Market hours checked against every first and last candle IG sent, through summer, winter and the March clock-change weeks. Every boundary, matching IG's midnight days and short Sunday candle (and the earlier joined layout as an option). New candles are never built over stored ones. 1h, 4h, daily and weekly candles are built from 5-minute candles, buy and sell separately. Late and missing candles. Every store check: gap, **weekend gap**, duplicate, buy below sell, high below low, out of order, wrong file, misaligned, damaged. Checks after every new candle. **Restarts after 5 minutes, after 2 hours, and on Monday morning**, plus an empty store and leftover temp files. UK time on display. |
+| `test_service.py` | The service file: runs as `autobot` from `/opt/autobot`, restarts after a crash with at least 30 seconds between, never restarts after exit 78, at most 5 starts an hour. The service never uses the history door. Start-up records the gap and asks no history, then it streams, and stops cleanly with a logout. Exit 78 after the stream is refused twice. A crash still logs out. A stop request ends a reconnect wait at once. |
 | `test_housekeeping.py` | Logs rotate by size and by age. Old logs are deleted. Limits come from the settings. Log lines are in UK time. Low disk space is warned. |
