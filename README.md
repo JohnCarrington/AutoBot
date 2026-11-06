@@ -4,6 +4,8 @@ An automated trading bot for GBPUSD on an IG **demo** account. It reads live pri
 
 **Current stage:** settings, plus the IG connection (logging in to the IG demo account, choosing the account and handling IG's errors). There are no prices, candles, orders or trading code yet.
 
+**Backup:** the code is backed up to the private GitHub repository `JohnCarrington/AutoBot`; `main` is pushed there at the end of each stage, once all tests pass.
+
 ## Where things are
 
 - `docs/ARCHITECTURE.md`: the parts of the bot and how they connect
