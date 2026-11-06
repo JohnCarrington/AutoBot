@@ -57,7 +57,7 @@ All settings live in one file: `config/settings.toml`. The code that loads and c
 | `candles.four_hour_starts_at` | 4-hour candles start at this time and every 4 hours after it. Must line up with `day_starts_at`. | 00:00 (so 00:00, 04:00, 08:00, 12:00, 16:00, 20:00) |
 | `candles.day_starts_at` | Daily candles start and end at this UK time. Midnight, to match IG's own daily candles. | 00:00 |
 | `candles.week_starts_day` | Weekly candles start on this day at `day_starts_at`. | Sunday |
-| `candles.join_opening_stretch` | `false`: like IG, the first candle of the week starts at Sunday's open, so there is a short Sunday daily candle (21:00 to midnight UK) and a short first 4-hour candle. `true`: that stretch is joined onto the following candle instead. | `false` |
+| `candles.join_opening_stretch` | `false`: like IG, every candle keeps its normal boundary label even when the market opens later. So there is a short Sunday daily candle labelled Sunday 00:00 UK, holding 21:00 to midnight, and a short first 4-hour candle labelled 20:00. `true`: that stretch is joined onto the following candle instead. | `false` |
 | `candles.wait_for_late_candle_seconds` | A 1-hour, 4-hour, daily or weekly candle that is missing some 5-minute candles is built only after waiting this long past its end (unless a later 5-minute candle has already arrived). | 300 seconds |
 | `candles.compress_after_days` | Candle files older than this many days are compressed. Candles are never deleted. | 30 days |
 | `housekeeping.log_folder` | Where log files are written. | `/opt/autobot/logs` |
@@ -118,11 +118,11 @@ The boundaries **match IG's own candles**. This was checked against IG's daily c
 - **Daily candles run from midnight to midnight UK time (00:00 to 00:00),** exactly as IG's do.
   - IG's daily candles started at 00:00 UK time every day, including 00:00 BST on Sunday 25 October, just before the clocks changed.
   - Daily candles built from the bot's own stored 5-minute candles on the same midnight boundaries matched IG's on **all 8 prices for all 11 complete days**. The twelfth, Friday 6 November, was still in progress when IG was asked.
-- **There is a short Sunday daily candle,** 21:00 to midnight UK, because IG has one. (`candles.join_opening_stretch = false`.)
+- **There is a short Sunday daily candle, labelled Sunday 00:00 UK,** because IG has one labelled that way. It holds the candles from the 21:00 open to midnight. (`candles.join_opening_stretch = false`.)
 - **Friday's daily candle ends at the close:** 22:00 UK, or 21:00 UK when 17:00 New York is 21:00 UK.
 - **1-hour candles start on the hour.** UK time and UTC differ by whole hours, so an hour is the same in both.
-- **4-hour candles start at 00:00, 04:00, 08:00, 12:00, 16:00 and 20:00 UK time,** so six fit into each day. The first of the week runs 21:00 to midnight on Sunday.
-- **Weekly candles run from Sunday's open to Friday's close.**
+- **4-hour candles start at 00:00, 04:00, 08:00, 12:00, 16:00 and 20:00 UK time,** so six fit into each day. The first of the week is labelled Sunday 20:00 and holds 21:00 to midnight.
+- **Weekly candles are labelled Sunday 00:00 UK** and hold Sunday's 21:00 open to Friday's close.
 - **Each candle file is named after the UTC date of the candle's start.** In summer, a UK day starts at 23:00 UTC the evening before, so that day's daily candle is in the previous date's file.
 
 **The earlier layout.** Until 6 November 2026 the boundaries were 22:00 to 22:00 UK, with Sunday's first hour joined onto Monday. That layout is still available by setting `day_starts_at = "22:00"`, `four_hour_starts_at = "22:00"` and `join_opening_stretch = true`.

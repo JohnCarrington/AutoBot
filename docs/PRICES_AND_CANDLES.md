@@ -50,7 +50,7 @@ It was planned, shown, approved, and run at 20:00 GMT on 6 November 2026:
 - **IG's allowance:** 9,970 of 10,000 before, **7,091** after, resetting 13 November 03:00 UTC. IG charged 2,879 points; the bot counted 2,893. Nothing was refused and no block marker was written.
 - **Stored:** 2,862 five-minute candles, covering 25 October 21:00 to 6 November 20:00 GMT.
 - **Filled vs live candles:** the 4 live candles (19:20 to 19:35) were **identical on all 8 prices**, so the times line up.
-- **IG's daily candles vs ours:** IG's daily candles run midnight to midnight UK, with a separate short Sunday candle. The bot's boundaries were then 22:00 to 22:00. Its daily boundaries were changed to match IG's (see below). Rebuilt on midnight boundaries, the bot's daily candles match **all 11 of IG's complete days on all 8 prices**, including both Sunday candles. The one difference is the label: IG labels its Sunday candle 00:00, the start of the calendar day, while the bot's starts at the 21:00 open. Both hold the same candles.
+- **IG's daily candles vs ours:** IG's daily candles run midnight to midnight UK, with a separate short Sunday candle. The bot's boundaries were then 22:00 to 22:00. Its daily boundaries were changed to match IG's (see below). Rebuilt on midnight boundaries, the bot's daily candles match **all 11 of IG's complete days on all 8 prices**, including both Sunday candles. At first the one difference was the label on the Sunday candle: IG labelled it 00:00, the start of the calendar day, while the bot's carried the 21:00 open. The bot now labels it the same way as IG, and the stored candles were relabelled (see "Labels" below). All 11 of IG's complete days now match the bot's on start label and all 8 prices.
 - **The weekly close:** IG's candles also showed the Friday close follows New York time (see "Checks on the store").
 - **Store checks on everything afterwards:** 3,178 candles, **0 problems**. 2 gaps, both on Sunday 1 November: 21:20, which IG sent with a price missing, and 21:35, which IG never sent.
 
@@ -98,9 +98,18 @@ If no ticks or candle updates arrive for **120 seconds** (`stream.no_prices_warn
 |---|---|---|
 | 5-minute | every 5 minutes | IG's own candles |
 | 1-hour | on the hour | |
-| 4-hour | 00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UK | first of the week: Sunday 21:00 to midnight |
-| Daily | midnight to midnight UK, **like IG's** | a short Sunday candle, 21:00 to midnight, like IG's; Friday's ends at the close |
-| Weekly | Sunday 21:00 UK to Friday's close (17:00 New York) | |
+| 4-hour | 00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UK | first of the week labelled Sunday 20:00; holds 21:00 to midnight |
+| Daily | midnight to midnight UK, **like IG's** | a short Sunday candle labelled 00:00, like IG's, holding 21:00 to midnight; Friday's ends at the close |
+| Weekly | labelled Sunday 00:00 UK; runs to Friday's close (17:00 New York) | holds Sunday 21:00 to the close |
+
+**Labels.** Like IG, a candle is labelled with its normal boundary start, even when the market opens later. Its candles are always the ones during market hours between its start and its end, so `expected_parts` counts only open time: 36 for the Sunday daily candle.
+
+On 6 November 2026, the five stored candles that carried the 21:00 open were relabelled, with prices and ends unchanged:
+- the Sunday 25 October and 1 November daily candles, to 00:00
+- the matching 4-hour candles, to 20:00
+- the week of 25 October, to Sunday 00:00
+
+A relabelling writes the candle under its new label first, then removes the old one, each with a safe write. It is only done when deliberately approved.
 
 ### Times
 

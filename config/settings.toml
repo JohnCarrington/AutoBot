@@ -109,8 +109,9 @@ four_hour_starts_at = "00:00"
 day_starts_at = "00:00"
 # Weekly candles start on this day at day_starts_at.
 week_starts_day = "Sunday"
-# false: like IG, the first candle of the week starts at Sunday's open (so a
-# short Sunday daily candle). true: that stretch is joined onto the next candle.
+# false: like IG, a candle keeps its normal boundary label even when the market
+# opens later (IG's short Sunday daily candle is labelled 00:00 and holds 21:00
+# to midnight). true: that stretch is joined onto the next candle instead.
 join_opening_stretch = false
 # A 1-hour, 4-hour, daily or weekly candle missing some 5-minute candles is
 # built only after waiting this long past its end for a late one.

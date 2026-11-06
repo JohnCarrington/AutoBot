@@ -179,3 +179,25 @@ def test_an_older_gap_file_without_the_note_column_still_reads_and_keeps_its_row
     assert store.recorded_gaps()[0]["note"] == ""
     store.record_gap("5m", T(2026, 11, 5, 10), T(2026, 11, 5, 10, 5), 1, T(2026, 11, 5, 11), "test")
     assert [r["from_utc"] for r in store.recorded_gaps()] == ["2026-11-04T10:00:00Z", "2026-11-05T10:00:00Z"]
+
+
+def test_relabel_moves_a_candle_to_its_new_start_keeping_every_price(store):
+    old = five(T(2026, 11, 1, 21), tf="1d", minutes=180, bo="13401.7")
+    store.add(old)
+    new = store.relabel("1d", T(2026, 11, 1, 21), T(2026, 11, 1, 0))
+    assert store.get("1d", T(2026, 11, 1, 21)) is None
+    got = store.get("1d", T(2026, 11, 1, 0))
+    assert got == new and got.prices() == old.prices() and got.end == old.end
+    with pytest.raises(KeyError):
+        store.relabel("1d", T(2026, 11, 1, 21), T(2026, 11, 1, 0))
+
+
+def test_relabel_into_another_days_file_and_never_over_a_stored_candle(store):
+    store.add(five(T(2026, 10, 25, 21), tf="1d", minutes=180))
+    store.relabel("1d", T(2026, 10, 25, 21), T(2026, 10, 24, 23))      # Sun 00:00 BST is the 24th in UTC
+    assert [c.start for c in store.read_day("1d", T(2026, 10, 24).date())] == [T(2026, 10, 24, 23)]
+    assert store.read_day("1d", T(2026, 10, 25).date()) == []
+    store.add(five(T(2026, 11, 1, 21), tf="1d", minutes=180))
+    store.add(five(T(2026, 11, 1, 0), tf="1d", minutes=180))
+    with pytest.raises(ValueError):
+        store.relabel("1d", T(2026, 11, 1, 21), T(2026, 11, 1, 0))

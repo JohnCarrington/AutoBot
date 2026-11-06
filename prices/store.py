@@ -127,6 +127,26 @@ class CandleStore:
                 return c
         return None
 
+    def relabel(self, tf: str, old_start: datetime, new_start: datetime) -> Candle:
+        """Give a stored candle a new start label, keeping every price and its
+        end. Only for a deliberate, approved relabelling. The relabelled candle
+        is written first, then the old one is removed, each with a safe write,
+        so a crash in between leaves both (the store check would show it as a
+        duplicate period), never neither."""
+        old = self.get(tf, old_start)
+        if old is None:
+            raise KeyError(f"no stored {tf} candle at {iso(old_start)}")
+        if self.get(tf, new_start) is not None:
+            raise ValueError(f"a {tf} candle is already stored at {iso(new_start)}")
+        from dataclasses import replace
+        new = replace(old, start=new_start)
+        if self.add(new) != "stored":
+            raise RuntimeError("relabelled candle was not stored")
+        day = old_start.astimezone(UTC).date()
+        self._write_day(tf, day, [c for c in self.read_day(tf, day) if c.start != old_start])
+        log.info("Relabelled %s candle %s as %s (prices unchanged).", tf, iso(old_start), iso(new_start))
+        return new
+
     def add(self, candle: Candle) -> str:
         """Store one candle. Returns 'stored', 'same' (already stored with the
         same values: nothing written) or 'different' (a different value for a

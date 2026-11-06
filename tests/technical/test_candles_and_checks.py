@@ -88,7 +88,7 @@ def test_the_weekend_after_fri_30_oct_is_not_a_gap_but_a_missing_hour_before_it_
     fill(store, T(2026, 11, 1, 21), T(2026, 11, 1, 22))
     assert check_store(store, B).gaps == []
     weekly = B.bucket("1w", T(2026, 10, 28, 12))
-    assert weekly == (T(2026, 10, 25, 21), T(2026, 10, 30, 21))
+    assert weekly == (T(2026, 10, 24, 23), T(2026, 10, 30, 21))          # Sun 25 Oct 00:00 BST
     assert B.expected_parts(*weekly) == 1440                   # exactly what IG sent that week
 
 
@@ -113,17 +113,22 @@ def test_candle_boundaries_match_igs_midnight_uk_days():
     assert B.bucket("1h", wed) == (T(2026, 11, 4, 10), T(2026, 11, 4, 11))
     assert B.bucket("4h", wed) == (T(2026, 11, 4, 8), T(2026, 11, 4, 12))
     assert B.bucket("1d", wed) == (T(2026, 11, 4, 0), T(2026, 11, 5, 0))
-    assert B.bucket("1w", wed) == (T(2026, 11, 1, 21), T(2026, 11, 6, 22))
+    assert B.bucket("1w", wed) == (T(2026, 11, 1, 0), T(2026, 11, 6, 22))
 
 
-def test_sundays_opening_is_its_own_short_candle_like_igs():
+def test_sundays_opening_is_its_own_short_candle_labelled_like_igs():
     sun = T(2026, 11, 8, 21, 30)
     assert B.bucket("1h", sun) == (T(2026, 11, 8, 21), T(2026, 11, 8, 22))
-    assert B.bucket("4h", sun) == (T(2026, 11, 8, 21), T(2026, 11, 9, 0))
-    assert B.bucket("1d", sun) == (T(2026, 11, 8, 21), T(2026, 11, 9, 0))      # IG's Sunday daily candle
+    assert B.bucket("4h", sun) == (T(2026, 11, 8, 20), T(2026, 11, 9, 0))
+    assert B.bucket("1d", sun) == (T(2026, 11, 8, 0), T(2026, 11, 9, 0))       # IG's Sunday daily candle: 00:00 label
     assert B.bucket("1d", T(2026, 11, 9, 15)) == (T(2026, 11, 9, 0), T(2026, 11, 10, 0))
-    assert B.bucket("1w", sun) == (T(2026, 11, 8, 21), T(2026, 11, 13, 22))
-    assert B.expected_parts(T(2026, 11, 8, 21), T(2026, 11, 9, 0)) == 36
+    assert B.bucket("1w", sun) == (T(2026, 11, 8, 0), T(2026, 11, 13, 22))
+    assert B.expected_parts(T(2026, 11, 8, 0), T(2026, 11, 9, 0)) == 36        # only 21:00 to midnight is open
+    assert B.expected_parts(T(2026, 11, 8, 20), T(2026, 11, 9, 0)) == 36
+
+
+def test_sunday_label_in_summer_is_midnight_bst():
+    assert B.bucket("1d", T(2026, 7, 12, 20, 30)) == (T(2026, 7, 11, 23), T(2026, 7, 12, 23))
 
 
 def test_fridays_daily_candle_ends_at_the_close():
@@ -199,12 +204,12 @@ def test_daily_and_weekly_candles_cover_the_whole_trading_week(store, warnings):
     days = [c for c in built if c.timeframe == "1d"]
     weeks = [c for c in built if c.timeframe == "1w"]
     assert [(c.start, c.end, c.parts) for c in days] == [
-        (T(2026, 11, 1, 21), T(2026, 11, 2), 36),            # IG's short Sunday candle
+        (T(2026, 11, 1), T(2026, 11, 2), 36),                # IG's short Sunday candle, labelled 00:00
         (T(2026, 11, 2), T(2026, 11, 3), 288), (T(2026, 11, 3), T(2026, 11, 4), 288),
         (T(2026, 11, 4), T(2026, 11, 5), 288), (T(2026, 11, 5), T(2026, 11, 6), 288),
         (T(2026, 11, 6), T(2026, 11, 6, 22), 264)]           # Friday, to the close
     assert all(c.parts == c.expected_parts for c in days)
-    assert [(c.start, c.end, c.parts) for c in weeks] == [(T(2026, 11, 1, 21), T(2026, 11, 6, 22), 1452)]
+    assert [(c.start, c.end, c.parts) for c in weeks] == [(T(2026, 11, 1), T(2026, 11, 6, 22), 1452)]
     assert len([c for c in built if c.timeframe == "4h"]) == 1 + 24 + 6
     assert warnings == []
     assert check_store(store, B).problems == []

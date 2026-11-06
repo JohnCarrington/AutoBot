@@ -13,12 +13,15 @@ Candle boundaries (settings [candles], UK time):
   1h  on the hour (hour_starts_at_minute)
   4h  every 4 hours from four_hour_starts_at (22:00, 02:00, 06:00, ...)
   1d  from day_starts_at to day_starts_at the next day (22:00 to 22:00)
-  1w  from week_starts_day at day_starts_at (Sunday 22:00) for 7 days
+  1w  from week_starts_day at day_starts_at (Sunday 00:00) for 7 days
 
 With candles.join_opening_stretch = false (the setting used, to match IG):
-the first candle of the week starts at the open, and no candle runs past the
-close. So, like IG, there is a short Sunday daily candle (21:00 to midnight UK)
-and a short first 4-hour candle (21:00 to midnight).
+every candle is labelled with its normal boundary start, even when the market
+opens later, and no candle runs past the close. So, like IG, the Sunday daily
+candle is labelled Sunday 00:00 UK and holds the candles from the 21:00 open
+to midnight; the first 4-hour candle is labelled 20:00 and the weekly candle
+Sunday 00:00. A candle's start is its label; the candles in it are always the
+ones during market hours between its start and end.
 
 With candles.join_opening_stretch = true, these rules apply instead, so that
 no candle is cut into a small piece by the weekend:
@@ -154,9 +157,9 @@ class Boundaries:
             return s, e
         o, c = self.hours.session(t)
         if not self.c.join_opening_stretch:
-            # Like IG: the first candle of the week simply starts at the open
-            # (so IG's short Sunday daily candle, 21:00 to midnight UK).
-            return max(s, o), min(e, c)
+            # Like IG: labelled with the normal boundary start (IG's Sunday daily
+            # candle is labelled 00:00 and holds 21:00 to midnight); cut at the close.
+            return s, min(e, c)
         if s < o:
             # t is in the stretch between the weekly open and the first normal
             # boundary: it is joined onto the next candle.
