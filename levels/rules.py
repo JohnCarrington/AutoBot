@@ -1,8 +1,10 @@
 """The rules for every kind of level. Pure functions: candles in, levels out.
 No files, no IG, no clock. The plain-English rules are in docs/LEVELS.md.
 
-Every level uses the BUY price (IG's offer, OFR): buy_high, buy_low and
-buy_close. The sell price is never used here.
+Every level uses the chart price, settings [chart] price: the SELL (bid)
+price, to match the owner's IG chart. `side` is "sell" (or "buy"), and a
+candle's high, low and close for that side are used: sell_high, sell_low,
+sell_close. The two sides are never mixed.
 
 Prices are in IG's points (13354.4 means 1.33544). Pip distances from the
 settings are turned into points with market.points_per_pip.
@@ -52,20 +54,32 @@ def make(price: Decimal, type_: str, source: str, candle_utc: datetime | None) -
     return Level(price, type_, source, candle_utc, important=type_ in IMPORTANT_TYPES)
 
 
+def high(c: Candle, side: str) -> Decimal:
+    return getattr(c, f"{side}_high")
+
+
+def low(c: Candle, side: str) -> Decimal:
+    return getattr(c, f"{side}_low")
+
+
+def close(c: Candle, side: str) -> Decimal:
+    return getattr(c, f"{side}_close")
+
+
 def to_decimals(d: Decimal, decimals: int) -> Decimal:
     return d.quantize(Decimal(1).scaleb(-decimals), rounding=ROUND_HALF_UP)
 
 
 # ---- 1. daily pivots --------------------------------------------------------------
 
-def daily_pivots(day: Candle, decimals: int, source: str) -> list[Level]:
-    """Classic floor pivots from one daily candle's BUY high, low and close:
+def daily_pivots(day: Candle, side: str, decimals: int, source: str) -> list[Level]:
+    """Classic floor pivots from one daily candle's high, low and close (on `side`):
          pivot P = (H + L + C) / 3
          R1 = 2P - L          S1 = 2P - H
          R2 = P + (H - L)     S2 = P - (H - L)
          R3 = H + 2(P - L)    S3 = L - 2(H - P)
     Worked out exactly, then written to `decimals` places (half up)."""
-    h, l, c = day.buy_high, day.buy_low, day.buy_close
+    h, l, c = high(day, side), low(day, side), close(day, side)
     p = (h + l + c) / 3
     values = {
         PIVOT: p,
@@ -78,9 +92,9 @@ def daily_pivots(day: Candle, decimals: int, source: str) -> list[Level]:
 
 # ---- 2. other levels ---------------------------------------------------------------
 
-def previous_day_high_low(day: Candle, source: str) -> list[Level]:
-    return [make(day.buy_high, PREVIOUS_DAY_HIGH, source, day.start),
-            make(day.buy_low, PREVIOUS_DAY_LOW, source, day.start)]
+def previous_day_high_low(day: Candle, side: str, source: str) -> list[Level]:
+    return [make(high(day, side), PREVIOUS_DAY_HIGH, source, day.start),
+            make(low(day, side), PREVIOUS_DAY_LOW, source, day.start)]
 
 
 def round_numbers(reference: Decimal, every_points: Decimal, within_points: Decimal) -> list[Level]:
@@ -98,26 +112,27 @@ def round_numbers(reference: Decimal, every_points: Decimal, within_points: Deci
     return out
 
 
-def session_high_low(candles: Sequence[Candle], high_type: str, low_type: str,
+def session_high_low(candles: Sequence[Candle], side: str, high_type: str, low_type: str,
                      source: str, start: datetime) -> list[Level]:
-    """The highest BUY high and lowest BUY low of a session's candles."""
+    """The highest high and lowest low (on `side`) of a session's candles."""
     if not candles:
         return []
-    return [make(max(c.buy_high for c in candles), high_type, source, start),
-            make(min(c.buy_low for c in candles), low_type, source, start)]
+    return [make(max(high(c, side) for c in candles), high_type, source, start),
+            make(min(low(c, side) for c in candles), low_type, source, start)]
 
 
-def turning_levels(hourly: Sequence[Candle], since: datetime, each_side: int,
+def turning_levels(hourly: Sequence[Candle], side: str, since: datetime, each_side: int,
                    min_move_points: Decimal, within: int, describe) -> list[Level]:
     """Hourly highs and lows where price clearly reversed. `hourly` must be in
     time order; neighbouring candles are neighbours on the chart (the weekend
     is simply skipped, as on IG's chart).
 
-    A candle's BUY high is a turning high when ALL of these hold:
+    All prices are on `side` (the chart price). A candle's high is a turning
+    high when ALL of these hold:
       1. it is higher than the high of each of the `each_side` candles before it;
       2. it is not lower than the high of any of the `each_side` candles after
          it (so of two equal highs side by side, the first one counts);
-      3. within the `within` candles after it, some candle's BUY low is at least
+      3. within the `within` candles after it, some candle's low is at least
          `min_move_points` below it (price clearly moved away).
     A turning low is the same, upside down. The candle must start at or after
     `since` (the lookback), and the candles needed for rules 1 and 2 must exist.
@@ -130,14 +145,15 @@ def turning_levels(hourly: Sequence[Candle], since: datetime, each_side: int,
         before = hourly[i - each_side:i]
         after = hourly[i + 1:i + 1 + each_side]
         move = hourly[i + 1:i + 1 + within]
-        if (all(c.buy_high > b.buy_high for b in before)
-                and all(c.buy_high >= a.buy_high for a in after)
-                and any(m.buy_low <= c.buy_high - min_move_points for m in move)):
-            out.append(make(c.buy_high, TURNING_HIGH, describe(c, "high"), c.start))
-        if (all(c.buy_low < b.buy_low for b in before)
-                and all(c.buy_low <= a.buy_low for a in after)
-                and any(m.buy_high >= c.buy_low + min_move_points for m in move)):
-            out.append(make(c.buy_low, TURNING_LOW, describe(c, "low"), c.start))
+        h, l = high(c, side), low(c, side)
+        if (all(h > high(b, side) for b in before)
+                and all(h >= high(a, side) for a in after)
+                and any(low(m, side) <= h - min_move_points for m in move)):
+            out.append(make(h, TURNING_HIGH, describe(c, "high"), c.start))
+        if (all(l < low(b, side) for b in before)
+                and all(l <= low(a, side) for a in after)
+                and any(high(m, side) >= l + min_move_points for m in move)):
+            out.append(make(l, TURNING_LOW, describe(c, "low"), c.start))
     return out
 
 

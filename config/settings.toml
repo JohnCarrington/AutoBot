@@ -32,8 +32,15 @@ ignore_medium_and_small_news = true
 max_open_trades_per_strategy = 1
 bollinger_bounce_extra_opposite_direction_trades = 1
 
+[chart]
+# The price every level and indicator is worked out from, to match the owner's
+# IG chart, which is set to the sell (bid) price. Daily candles run midnight to
+# midnight UK ([candles] day_starts_at). Trades still open and close at IG's
+# real buy or sell price as normal.
+price = "sell"
+
 [levels]
-# Every level uses the BUY (OFR) price, to match the owner's IG chart.
+# Every level uses the chart price ([chart] price: sell).
 line_up_within_pips = 5
 turning_levels_lookback_weeks = 2
 # Where the current list of levels is written for the rest of the bot to read.

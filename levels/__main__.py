@@ -13,22 +13,22 @@ from datetime import datetime, timezone
 
 from config.settings_loader import load_or_exit
 from levels.current import LevelList, build, write_current
-from levels.rules import PIVOT, R1, R2, R3, S1, S2, S3
+from levels.rules import PIVOT, R1, R2, R3, S1, S2, S3, close, high, low
 from prices.model import parse_iso, plain, uk, uk_short
 from prices.store import CandleStore
 
 
 def show(ll: LevelList) -> list[str]:
-    out = [f"Levels as of {uk(ll.as_of)} (BUY prices, in points; 13450 means 1.3450)",
+    out = [f"Levels as of {uk(ll.as_of)} ({ll.side.upper()} prices, in points; 13450 means 1.3450)",
            f"Day: daily candle starting {uk_short(ll.day_start)}"]
     if ll.previous_day:
         p = ll.previous_day
-        out.append(f"Pivots from the daily candle {uk_short(p.start)}: buy H {plain(p.buy_high)} "
-                   f"L {plain(p.buy_low)} C {plain(p.buy_close)}")
+        out.append(f"Pivots from the daily candle {uk_short(p.start)}: {ll.side} H {plain(high(p, ll.side))} "
+                   f"L {plain(low(p, ll.side))} C {plain(close(p, ll.side))}")
         piv = {lv.type: lv for lv in ll.levels if lv.type in (PIVOT, R1, R2, R3, S1, S2, S3)}
         out.append("  " + "  ".join(f"{t} {plain(piv[t].price)}" for t in (R3, R2, R1, PIVOT, S1, S2, S3)))
     if ll.reference_price is not None:
-        out.append(f"Latest buy close (for round numbers): {plain(ll.reference_price)}")
+        out.append(f"Latest {ll.side} close (for round numbers): {plain(ll.reference_price)}")
     for w in ll.warnings:
         out.append("WARNING: " + w)
     out.append("")

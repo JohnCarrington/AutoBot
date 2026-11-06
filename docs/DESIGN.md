@@ -108,6 +108,8 @@ It becomes clear when the first bounce fails under the EMAs and middle band and 
 
 Timeframes: weekly, daily, 4-hour, 1-hour, 5-minute and tick. The EMA pullback uses its own EMAs (section 3.2).
 
+Every indicator, for the analyser and the strategies, is worked out from the sell (bid) price, with daily candles running midnight to midnight UK, to match Johnny's IG chart, which is set to the sell price. Trades still open and close at IG's real buy or sell price as normal.
+
 ---
 
 ## 3. Strategies
@@ -177,7 +179,7 @@ Functional test: a profitable sell is held through a temporary wobble at S2 (6 N
 
 ## 5. Levels
 
-All levels use the buy (OFR) price, to match Johnny's IG chart.
+All levels use the sell (bid) price, with daily candles running midnight to midnight UK, to match Johnny's IG chart, which is set to the sell price. Trades still open and close at IG's real buy or sell price as normal.
 
 - Daily pivot, R1–R3 and S1–S3 from the previous day's daily candle. Monday's pivots come from the short Sunday daily candle, as IG's chart does.
 - Round numbers ending in 00 and 50.

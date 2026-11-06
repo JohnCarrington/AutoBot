@@ -27,12 +27,13 @@ All settings live in one file: `config/settings.toml`. The code that loads and c
 | `news.ignore_medium_and_small_news` | Medium and small news are ignored; only big news counts. | `true` |
 | `limits.max_open_trades_per_strategy` | How many trades each strategy may have open at once. | 1 |
 | `limits.bollinger_bounce_extra_opposite_direction_trades` | The Bollinger band bounce may also have this many trades open in the opposite direction (so up to 1 buy and 1 sell). | 1 |
+| `chart.price` | The price every level and indicator is worked out from: `sell` (IG's bid), to match Johnny's IG chart, which is set to the sell price. Daily candles run midnight to midnight UK (`candles.day_starts_at`). Trades still open and close at IG's real buy or sell price as normal. Must be `sell` or `buy`. | `sell` |
 | `levels.line_up_within_pips` | Two levels "line up" when they are within this many pips of each other. | 5 pips |
 | `levels.turning_levels_lookback_weeks` | How far back to look for recent turning levels. | 2 weeks |
 | `levels.folder` | Where the current list of levels is written (`current.json`) for the rest of the bot to read. On the server only, not in git. | `/opt/autobot/data/levels` |
 | `levels.level_decimals` | Levels worked out by a formula (the pivots) are written to this many decimal places of a point, rounding halves up. IG shows GBPUSD to 1 decimal place of a point. | 1 |
 | `levels.round_number_every_pips` | Round numbers are every price that is a multiple of this many pips: with 50, every price ending in 00 or 50 (1.3400, 1.3450, ...). | 50 pips |
-| `levels.round_numbers_within_pips` | Only round numbers within this many pips above or below the latest buy close are listed. **Starting value, for the owner to confirm.** | 150 pips |
+| `levels.round_numbers_within_pips` | Only round numbers within this many pips above or below the latest sell close are listed. **Starting value, for the owner to confirm.** | 150 pips |
 | `levels.sessions_time_zone` | The time zone of the four session times below. **These times are in UTC, not UK time** (the exception to the rule at the top of this page), as the owner gave them. Must be `UTC`. | `UTC` |
 | `levels.london_session_from` | Start of the London session, for the London session high and low (UTC). **Starting value from AutoBot 161, for the owner to confirm.** | 07:00 UTC |
 | `levels.london_session_until` | End of the London session (UTC); a candle starting at this time is not in it. **Starting value from AutoBot 161, for the owner to confirm.** | 12:00 UTC |

@@ -57,6 +57,14 @@ def _exactly(expected: str) -> Callable[[Any], str]:
     return check
 
 
+def _one_of(*allowed: str) -> Callable[[Any], str]:
+    def check(v: Any) -> str:
+        if v not in allowed:
+            raise ValueError(f"must be one of {', '.join(repr(x) for x in allowed)}, got {v!r}")
+        return v
+    return check
+
+
 def _yes_no(v: Any) -> bool:
     if not isinstance(v, bool):
         raise ValueError(f"must be true or false, got {v!r}")
@@ -208,6 +216,9 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "limits": {
         "max_open_trades_per_strategy": _whole_number(1, 10),
         "bollinger_bounce_extra_opposite_direction_trades": _whole_number(0, 10),
+    },
+    "chart": {
+        "price": _one_of("sell", "buy"),
     },
     "levels": {
         "line_up_within_pips": _whole_number(0, 100),

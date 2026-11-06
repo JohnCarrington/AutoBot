@@ -31,19 +31,20 @@ def settings(tmp_path, **levels_over):
     lv.update(folder=tmp_path / "levels", **levels_over)
     cs = {k: v for k, v in vars(SETTINGS.candles).items() if not k.startswith("_")}
     cs.update(folder=tmp_path / "candles")
-    return SimpleNamespace(levels=SimpleNamespace(**lv), market=SETTINGS.market,
+    return SimpleNamespace(levels=SimpleNamespace(**lv), market=SETTINGS.market, chart=SETTINGS.chart,
                            market_hours=SETTINGS.market_hours, candles=SimpleNamespace(**cs),
                            housekeeping=SETTINGS.housekeeping)
 
 
-def candle(tf, start, minutes, bh, bl, bc=None, bo=None, spread=D("1.5")):
-    """A made-up candle. Buy prices as given; sell prices are the buy prices
-    less a spread, so a test can tell if the sell price was used by mistake."""
-    bh, bl = D(str(bh)), D(str(bl))
-    bc = D(str(bc)) if bc is not None else (bh + bl) / 2
-    bo = D(str(bo)) if bo is not None else bc
-    return Candle(tf, start, start + timedelta(minutes=minutes), bo, bh, bl, bc,
-                  bo - spread, bh - spread, bl - spread, bc - spread)
+def candle(tf, start, minutes, h, l, c=None, o=None, spread=D("1.5")):
+    """A made-up candle. The SELL prices (the chart price) are as given; the buy
+    prices are the sell prices plus a spread, so a test can tell if the buy
+    price was used by mistake."""
+    h, l = D(str(h)), D(str(l))
+    c = D(str(c)) if c is not None else (h + l) / 2
+    o = D(str(o)) if o is not None else c
+    return Candle(tf, start, start + timedelta(minutes=minutes), o + spread, h + spread, l + spread, c + spread,
+                  o, h, l, c)
 
 
 def hourly(start, pairs):
@@ -58,8 +59,8 @@ def describe(c, side):
 # ---- 1. daily pivots -------------------------------------------------------------------
 
 def test_pivots_use_high_low_close_over_3_and_the_classic_formulas():
-    day = candle("1d", T(2026, 11, 5), 1440, bh=13501.6, bl=13446.8, bc=13456.7)
-    p = {lv.type: lv.price for lv in daily_pivots(day, 1, "x")}
+    day = candle("1d", T(2026, 11, 5), 1440, h=13501.6, l=13446.8, c=13456.7)
+    p = {lv.type: lv.price for lv in daily_pivots(day, "sell", 1, "x")}
     P = (D("13501.6") + D("13446.8") + D("13456.7")) / 3          # 13468.3666...
     H, L = D("13501.6"), D("13446.8")
     exact = {PIVOT: P, R1: 2 * P - L, S1: 2 * P - H, R2: P + (H - L), S2: P - (H - L),
@@ -70,16 +71,25 @@ def test_pivots_use_high_low_close_over_3_and_the_classic_formulas():
                  S2: D("13413.6"), R3: D("13544.7"), S3: D("13380.3")}
 
 
-def test_pivots_use_the_buy_price_not_the_sell_price():
-    day = candle("1d", T(2026, 11, 5), 1440, bh=100.0, bl=70.0, bc=90.0, spread=D(10))
-    p = {lv.type: lv.price for lv in daily_pivots(day, 1, "x")}
-    assert p[PIVOT] == D("86.7")            # (100 + 70 + 90) / 3, buy prices
-    assert day.sell_high == D("90.0")       # the sell side would have given 76.7
+def test_the_chart_price_is_the_sell_price():
+    assert SETTINGS.chart.price == "sell"
+
+
+def test_pivots_use_the_sell_price_not_the_buy_price(tmp_path):
+    day = candle("1d", T(2026, 11, 5), 1440, h=100.0, l=70.0, c=90.0, spread=D(10))
+    p = {lv.type: lv.price for lv in daily_pivots(day, "sell", 1, "x")}
+    assert p[PIVOT] == D("86.7")            # (100 + 70 + 90) / 3, sell prices
+    assert day.buy_high == D("110.0")       # the buy side would have given 96.7
+    # Through the settings: the chart price (sell) is used, never mixed with buy.
+    ll = build(settings(tmp_path), _store_with_days(tmp_path, [
+        candle("1d", T(2026, 11, 5), 1440, h=13501.6, l=13446.8, c=13456.7, spread=D(10))]), T(2026, 11, 6, 9))
+    assert ll.side == "sell" and ll.of_type(PIVOT)[0].price == D("13468.4")
+    assert "(sell H 13501.6 L 13446.8 C 13456.7)" in ll.of_type(PIVOT)[0].source
 
 
 def test_pivot_decimals_come_from_the_settings():
-    day = candle("1d", T(2026, 11, 5), 1440, bh=13501.6, bl=13446.8, bc=13456.7)
-    assert {lv.type: lv.price for lv in daily_pivots(day, 3, "x")}[PIVOT] == D("13468.367")
+    day = candle("1d", T(2026, 11, 5), 1440, h=13501.6, l=13446.8, c=13456.7)
+    assert {lv.type: lv.price for lv in daily_pivots(day, "sell", 3, "x")}[PIVOT] == D("13468.367")
 
 
 def _store_with_days(tmp_path, days):
@@ -90,8 +100,8 @@ def _store_with_days(tmp_path, days):
 
 
 def test_friday_pivots_come_from_thursdays_daily_candle(tmp_path):
-    thu = candle("1d", T(2026, 11, 5), 1440, bh=13501.6, bl=13446.8, bc=13456.7)
-    wed = candle("1d", T(2026, 11, 4), 1440, bh=13600, bl=13400, bc=13500)
+    thu = candle("1d", T(2026, 11, 5), 1440, h=13501.6, l=13446.8, c=13456.7)
+    wed = candle("1d", T(2026, 11, 4), 1440, h=13600, l=13400, c=13500)
     store = _store_with_days(tmp_path, [wed, thu])
     ll = build(settings(tmp_path), store, T(2026, 11, 6, 9))
     assert ll.previous_day.start == T(2026, 11, 5)
@@ -101,8 +111,8 @@ def test_friday_pivots_come_from_thursdays_daily_candle(tmp_path):
 
 def test_monday_pivots_come_from_the_short_sunday_candle_like_igs_chart(tmp_path):
     # Sunday 1 Nov: IG's short daily candle, labelled 00:00, holding 21:00 to midnight.
-    fri = candle("1d", T(2026, 10, 30), 21 * 60, bh=13434.7, bl=13374.8, bc=13394.3)
-    sun = candle("1d", T(2026, 11, 1), 1440, bh=13401.7, bl=13384.2, bc=13386.1)
+    fri = candle("1d", T(2026, 10, 30), 21 * 60, h=13434.7, l=13374.8, c=13394.3)
+    sun = candle("1d", T(2026, 11, 1), 1440, h=13401.7, l=13384.2, c=13386.1)
     store = _store_with_days(tmp_path, [fri, sun])
     ll = build(settings(tmp_path), store, T(2026, 11, 2, 8))
     assert ll.previous_day.start == T(2026, 11, 1)                       # Sunday, not Friday
@@ -119,7 +129,7 @@ def test_sundays_levels_come_from_friday_and_the_weekend_is_skipped(tmp_path):
 
 
 def test_no_pivots_if_the_previous_days_candle_is_not_stored_yet(tmp_path):
-    wed = candle("1d", T(2026, 11, 4), 1440, bh=13600, bl=13400, bc=13500)
+    wed = candle("1d", T(2026, 11, 4), 1440, h=13600, l=13400, c=13500)
     store = _store_with_days(tmp_path, [wed])
     ll = build(settings(tmp_path), store, T(2026, 11, 6, 0, 5))     # Thursday's candle missing
     assert not ll.of_type(PIVOT) and not ll.of_type("previous_day_low")
@@ -127,7 +137,7 @@ def test_no_pivots_if_the_previous_days_candle_is_not_stored_yet(tmp_path):
 
 
 def test_a_previous_day_missing_some_5_minute_candles_is_used_with_a_warning(tmp_path):
-    thu = candle("1d", T(2026, 11, 5), 1440, bh=13501.6, bl=13446.8, bc=13456.7)
+    thu = candle("1d", T(2026, 11, 5), 1440, h=13501.6, l=13446.8, c=13456.7)
     thu = dataclasses.replace(thu, parts=280, expected_parts=288)
     store = _store_with_days(tmp_path, [thu])
     ll = build(settings(tmp_path), store, T(2026, 11, 6, 9))
@@ -145,16 +155,16 @@ def test_round_numbers_end_in_00_and_50_within_the_set_distance_both_ends_includ
     assert all(lv.type == ROUND_NUMBER and lv.important for lv in round_numbers(D(13450), D(50), D(50)))
 
 
-def test_round_numbers_are_around_the_latest_buy_close(tmp_path):
+def test_round_numbers_are_around_the_latest_sell_close(tmp_path):
     store = CandleStore(tmp_path / "candles", 30)
-    store.add(candle("5m", T(2026, 11, 6, 9), 5, 13462, 13455, bc=13460.0, spread=D(30)))
+    store.add(candle("5m", T(2026, 11, 6, 9), 5, 13462, 13455, c=13460.0, spread=D(30)))
     ll = build(settings(tmp_path, round_numbers_within_pips=60), store, T(2026, 11, 6, 9, 5))
     assert ll.reference_price == D("13460.0")
     assert [lv.price for lv in ll.of_type(ROUND_NUMBER)] == [D(13400), D(13450), D(13500)]
 
 
-def test_previous_day_high_and_low_use_the_buy_price(tmp_path):
-    thu = candle("1d", T(2026, 11, 5), 1440, bh=13501.6, bl=13446.8, bc=13456.7)
+def test_previous_day_high_and_low_use_the_sell_price(tmp_path):
+    thu = candle("1d", T(2026, 11, 5), 1440, h=13501.6, l=13446.8, c=13456.7)
     ll = build(settings(tmp_path), _store_with_days(tmp_path, [thu]), T(2026, 11, 6, 9))
     assert [lv.price for lv in ll.of_type("previous_day_high")] == [D("13501.6")]
     assert [lv.price for lv in ll.of_type("previous_day_low")] == [D("13446.8")]
@@ -213,7 +223,7 @@ S = T(2026, 11, 2, 0)
 def test_a_clear_hourly_high_and_low_are_turning_levels():
     hs = hourly(S, [(110, 100), (112, 102), (115, 105), (140, 120), (125, 112), (118, 104), (116, 103),
                     (114, 100), (120, 101), (130, 115)])
-    got = turning_levels(hs, S, 3, D(20), 6, describe)
+    got = turning_levels(hs, "sell", S, 3, D(20), 6, describe)
     assert [(lv.type, lv.price) for lv in got] == [("turning_high", D(140))]
     assert got[0].important and got[0].candle_utc == S + timedelta(hours=3)
 
@@ -221,7 +231,7 @@ def test_a_clear_hourly_high_and_low_are_turning_levels():
 def test_a_turning_low_needs_lower_than_its_neighbours_and_a_clear_bounce():
     lows = hourly(S, [(130, 120), (128, 118), (126, 116), (110, 90), (115, 100), (120, 104), (125, 108),
                       (130, 112)])
-    got = turning_levels(lows, S, 3, D(20), 6, describe)
+    got = turning_levels(lows, "sell", S, 3, D(20), 6, describe)
     assert [(lv.type, lv.price) for lv in got] == [("turning_low", D(90))]
 
 
@@ -229,44 +239,44 @@ def test_no_turning_level_without_a_big_enough_move_within_the_set_candles():
     hs = hourly(S, [(110, 100), (112, 102), (115, 105), (140, 125), (139, 125), (138, 124), (137, 123),
                     (136, 121), (135, 121), (134, 121), (130, 110)])
     # From 140, the low must reach 120 or below within 6 candles: it only reaches 121.
-    assert turning_levels(hs, S, 3, D(20), 6, describe) == []
+    assert turning_levels(hs, "sell", S, 3, D(20), 6, describe) == []
     # The 110 low comes 7 candles later: allowed only if the window is 7.
-    assert [lv.price for lv in turning_levels(hs, S, 3, D(20), 7, describe)] == [D(140)]
+    assert [lv.price for lv in turning_levels(hs, "sell", S, 3, D(20), 7, describe)] == [D(140)]
     # A smaller move setting lets it count.
-    assert [lv.price for lv in turning_levels(hs, S, 3, D(19), 6, describe)] == [D(140)]
+    assert [lv.price for lv in turning_levels(hs, "sell", S, 3, D(19), 6, describe)] == [D(140)]
 
 
 def test_the_high_must_beat_every_candle_on_each_side():
     hs = hourly(S, [(110, 100), (141, 102), (115, 105), (140, 110), (125, 112), (118, 104), (116, 103),
                     (114, 100)])
-    assert all(lv.price != 140 for lv in turning_levels(hs, S, 3, D(20), 6, describe))   # 141 before it
+    assert all(lv.price != 140 for lv in turning_levels(hs, "sell", S, 3, D(20), 6, describe))   # 141 before it
     hs2 = hourly(S, [(110, 100), (112, 102), (115, 105), (140, 110), (125, 112), (141, 104), (116, 103),
                      (114, 100), (113, 90), (112, 95)])
-    assert all(lv.price != 140 for lv in turning_levels(hs2, S, 3, D(20), 6, describe))  # 141 after it
+    assert all(lv.price != 140 for lv in turning_levels(hs2, "sell", S, 3, D(20), 6, describe))  # 141 after it
 
 
 def test_of_two_equal_highs_side_by_side_the_first_counts_once():
     hs = hourly(S, [(110, 100), (112, 102), (115, 105), (140, 120), (140, 118), (118, 104), (116, 103),
                     (114, 100), (113, 99)])
-    got = [lv for lv in turning_levels(hs, S, 3, D(20), 6, describe) if lv.type == "turning_high"]
+    got = [lv for lv in turning_levels(hs, "sell", S, 3, D(20), 6, describe) if lv.type == "turning_high"]
     assert [(lv.price, lv.candle_utc) for lv in got] == [(D(140), S + timedelta(hours=3))]
 
 
 def test_the_number_of_candles_each_side_is_a_setting():
     hs = hourly(S, [(110, 100), (139, 102), (115, 105), (140, 110), (125, 112), (118, 104), (116, 103),
                     (114, 100), (113, 98)])
-    assert [lv.price for lv in turning_levels(hs, S, 1, D(20), 6, describe)
+    assert [lv.price for lv in turning_levels(hs, "sell", S, 1, D(20), 6, describe)
             if lv.type == "turning_high"] == [D(139), D(140)]
-    assert [lv.price for lv in turning_levels(hs, S, 2, D(20), 6, describe)
+    assert [lv.price for lv in turning_levels(hs, "sell", S, 2, D(20), 6, describe)
             if lv.type == "turning_high"] == [D(140)]
 
 
 def test_a_turning_level_needs_the_candles_after_it_to_exist():
     hs = hourly(S, [(110, 100), (112, 102), (115, 105), (140, 110), (100, 90), (99, 89)])
-    assert turning_levels(hs, S, 3, D(20), 6, describe) == []          # only 2 candles after it
+    assert turning_levels(hs, "sell", S, 3, D(20), 6, describe) == []          # only 2 candles after it
 
 
-def test_turning_levels_older_than_the_lookback_are_left_out_and_buy_prices_are_used(tmp_path):
+def test_turning_levels_older_than_the_lookback_are_left_out_and_sell_prices_are_used(tmp_path):
     store = CandleStore(tmp_path / "candles", 30)
     pattern = [(110, 100), (112, 102), (115, 105), (140, 120), (125, 112), (118, 104), (116, 103), (114, 100)]
     for start in (T(2026, 10, 19), T(2026, 11, 2)):                 # 18 days and 4 days before
@@ -323,8 +333,8 @@ def test_the_grouping_distance_is_the_setting(tmp_path):
 
 def test_the_levels_that_matter_most_are_marked():
     assert IMPORTANT_TYPES == {"S2", "R2", "pivot", "round_number", "turning_high", "turning_low"}
-    day = candle("1d", T(2026, 11, 5), 1440, bh=13501.6, bl=13446.8, bc=13456.7)
-    marks = {lv.type: lv.important for lv in daily_pivots(day, 1, "x")}
+    day = candle("1d", T(2026, 11, 5), 1440, h=13501.6, l=13446.8, c=13456.7)
+    marks = {lv.type: lv.important for lv in daily_pivots(day, "sell", 1, "x")}
     assert marks == {PIVOT: True, R1: False, R2: True, R3: False, S1: False, S2: True, S3: False}
     _, g = group_levels([L(13300, "R1"), L(13302, "turning_low"), L(13400, "S1")], D(5))
     assert [x["important"] for x in g] == [True, False]
@@ -334,7 +344,7 @@ def test_the_levels_that_matter_most_are_marked():
 
 def _full_store(tmp_path):
     store = CandleStore(tmp_path / "candles", 30)
-    store.add(candle("1d", T(2026, 11, 5), 1440, bh=13501.6, bl=13446.8, bc=13456.7))
+    store.add(candle("1d", T(2026, 11, 5), 1440, h=13501.6, l=13446.8, c=13456.7))
     _day_of_5m(store, T(2026, 11, 6), {(7, 0): (13460, 13448), (7, 5): (13462, 13451)})
     return store
 
@@ -345,7 +355,7 @@ def test_the_current_list_has_price_type_source_and_group_for_every_level(tmp_pa
     path = write_current(s.levels.folder, ll, T(2026, 11, 6, 7, 10))
     assert path == tmp_path / "levels" / "current.json"
     data = read_current(s.levels.folder)
-    assert data["price_used"] == "buy" and data["as_of_utc"] == "2026-11-06T07:10:00Z"
+    assert data["price_used"] == "sell" and data["as_of_utc"] == "2026-11-06T07:10:00Z"
     assert data["previous_day_candle_utc"] == "2026-11-05T00:00:00Z"
     for lv in data["levels"]:
         assert set(lv) == {"price", "type", "source", "candle_utc", "important", "group"}

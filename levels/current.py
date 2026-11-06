@@ -2,7 +2,8 @@
 file for the rest of the bot to read, and updated each time the price service
 stores a new 5-minute candle.
 
-Reads only the candle store. Never contacts IG. Every level uses the BUY price.
+Reads only the candle store. Never contacts IG. Every level uses the chart
+price (settings [chart] price: the SELL (bid) price, to match the owner's chart).
 
 The file: <levels.folder>/current.json (written with a safe write: a reader
 never sees a half-written file). Read it with read_current().
@@ -38,10 +39,11 @@ class LevelList:
     as_of: datetime
     day_start: datetime                  # start of today's daily candle (UTC)
     previous_day: Candle | None
-    reference_price: Decimal | None      # the latest BUY close, for round numbers
+    reference_price: Decimal | None      # the latest close (chart price), for round numbers
     levels: list[Level]
     groups: list[dict]
     warnings: list[str] = field(default_factory=list)
+    side: str = "sell"                    # the price used: settings [chart] price
 
     def of_type(self, type_: str) -> list[Level]:
         return [lv for lv in self.levels if lv.type == type_]
@@ -69,6 +71,7 @@ def previous_trading_day(b: Boundaries, day_start: datetime) -> tuple[datetime, 
 def build(settings: Any, store: CandleStore, as_of: datetime) -> LevelList:
     """Every level as it stood at `as_of`, using only candles that had finished by then."""
     lv_s, ppp = settings.levels, Decimal(settings.market.points_per_pip)
+    side = settings.chart.price
     hours = MarketHours(settings.market_hours)
     b = Boundaries(settings.candles, hours)
     as_of = as_of.astimezone(UTC)
@@ -87,17 +90,17 @@ def build(settings: Any, store: CandleStore, as_of: datetime) -> LevelList:
             warnings.append(f"The previous day's daily candle ({_uk_day(period[0])}) is not stored yet: "
                             "no pivots and no previous day high or low.")
     if prev is not None:
-        src = f"daily candle {_uk_day(prev.start)} (buy H {plain(prev.buy_high)} L {plain(prev.buy_low)} " \
-              f"C {plain(prev.buy_close)})"
+        src = f"daily candle {_uk_day(prev.start)} ({side} H {plain(rules.high(prev, side))} " \
+              f"L {plain(rules.low(prev, side))} C {plain(rules.close(prev, side))})"
         if prev.parts != prev.expected_parts:
             warnings.append(f"The previous day's daily candle ({_uk_day(prev.start)}) is missing "
                             f"{prev.expected_parts - prev.parts} five-minute candle(s); pivots use it as stored.")
-        levels += rules.daily_pivots(prev, lv_s.level_decimals, src)
-        levels += rules.previous_day_high_low(prev, f"daily candle {_uk_day(prev.start)}")
+        levels += rules.daily_pivots(prev, side, lv_s.level_decimals, src)
+        levels += rules.previous_day_high_low(prev, side, f"daily candle {_uk_day(prev.start)} ({side})")
 
-    # ---- round numbers, around the latest BUY close --------------------------------
+    # ---- round numbers, around the latest close (chart price) ----------------------
     recent = [c for c in store.read_range("5m", as_of - timedelta(days=MAX_DAYS_BACK), as_of) if c.end <= as_of]
-    reference = recent[-1].buy_close if recent else None
+    reference = rules.close(recent[-1], side) if recent else None
     if reference is None:
         warnings.append("No 5-minute candle in the store before this time: no round numbers.")
     else:
@@ -109,10 +112,10 @@ def build(settings: Any, store: CandleStore, as_of: datetime) -> LevelList:
     for key, name, high_t, low_t in SESSIONS:
         frm, until = getattr(lv_s, f"{key}_session_from"), getattr(lv_s, f"{key}_session_until")
         # today's session (so far, if it is still running)
-        levels += _session(recent, today, frm, until, as_of, name, high_t, low_t, "today")
+        levels += _session(recent, side, today, frm, until, as_of, name, high_t, low_t, "today")
         # the previous day that had this session
         for back in range(1, MAX_DAYS_BACK):
-            found = _session(recent, today - timedelta(days=back), frm, until, as_of, name, high_t, low_t,
+            found = _session(recent, side, today - timedelta(days=back), frm, until, as_of, name, high_t, low_t,
                              "previous")
             if found:
                 levels += found
@@ -123,16 +126,16 @@ def build(settings: Any, store: CandleStore, as_of: datetime) -> LevelList:
     margin = timedelta(days=MAX_DAYS_BACK)   # candles before `since`, needed as neighbours
     hourly = [c for c in store.read_range("1h", since - margin, as_of) if c.end <= as_of]
     levels += rules.turning_levels(
-        hourly, since, lv_s.turning_candles_each_side, Decimal(lv_s.turning_min_move_pips) * ppp,
+        hourly, side, since, lv_s.turning_candles_each_side, Decimal(lv_s.turning_min_move_pips) * ppp,
         lv_s.turning_move_within_candles,
-        lambda c, side: f"hourly candle {uk_short(c.start)} {side} (buy)")
+        lambda c, which: f"hourly candle {uk_short(c.start)} {which} ({side})")
 
     # ---- 3. levels that line up -----------------------------------------------------
     grouped, groups = rules.group_levels(levels, Decimal(lv_s.line_up_within_pips) * ppp)
-    return LevelList(as_of, day_start, prev, reference, grouped, groups, warnings)
+    return LevelList(as_of, day_start, prev, reference, grouped, groups, warnings, side)
 
 
-def _session(candles: list[Candle], day: date, frm: time, until: time, as_of: datetime,
+def _session(candles: list[Candle], side: str, day: date, frm: time, until: time, as_of: datetime,
              name: str, high_t: str, low_t: str, which: str) -> list[Level]:
     start = datetime.combine(day, frm, tzinfo=UTC)
     end = datetime.combine(day, until, tzinfo=UTC)
@@ -144,7 +147,7 @@ def _session(candles: list[Candle], day: date, frm: time, until: time, as_of: da
     so_far = "" if as_of >= end else f", so far (to {as_of.strftime('%H:%M')} UTC)"
     src = (f"{name} session {which} {start.strftime('%a %d %b')} "
            f"{frm.strftime('%H:%M')}-{until.strftime('%H:%M')} UTC{so_far}")
-    return rules.session_high_low(inside, high_t, low_t, src, start)
+    return rules.session_high_low(inside, side, high_t, low_t, src, start)
 
 
 # ---- 4. the file ---------------------------------------------------------------------
@@ -157,7 +160,7 @@ def to_json(ll: LevelList, written: datetime) -> dict:
     return {
         "written_utc": iso(written),
         "as_of_utc": iso(ll.as_of),
-        "price_used": "buy",
+        "price_used": ll.side,
         "day_start_utc": iso(ll.day_start),
         "previous_day_candle_utc": iso(ll.previous_day.start) if ll.previous_day else None,
         "reference_price": plain(ll.reference_price) if ll.reference_price is not None else None,

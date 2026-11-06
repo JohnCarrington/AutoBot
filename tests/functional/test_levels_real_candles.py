@@ -4,7 +4,8 @@ results do not change. Reads the store only; never contacts IG.
 
 Each test works out the levels as they stood at a fixed time, so it gives the
 same answer whenever it runs. "About" a price means within 2 pips of it.
-Prices are in IG's points (13450 means 1.3450). Every level uses the BUY price.
+Prices are in IG's points (13450 means 1.3450). Every level uses the chart
+price: the SELL (bid) price, midnight to midnight UK, as on the owner's IG chart.
 """
 
 from datetime import datetime, timezone
@@ -39,14 +40,18 @@ def test_a_friday_6_november_pivots_from_thursday_5_novembers_daily_candle(store
     ll = build(SETTINGS, store, datetime(2026, 11, 6, 0, 5, tzinfo=UTC))
     thu = ll.previous_day
     assert thu.start == datetime(2026, 11, 5, 0, 0, tzinfo=UTC)          # Thu 05 Nov 00:00 UK
-    assert (thu.buy_high, thu.buy_low, thu.buy_close) == (D("13501.6"), D("13446.8"), D("13456.7"))
+    assert ll.side == "sell"
+    assert (thu.sell_high, thu.sell_low, thu.sell_close) == (D("13500.4"), D("13435.7"), D("13455.2"))
     piv = {lv.type: lv.price for lv in ll.levels if lv.type in (PIVOT, R1, R2, R3, S1, S2, S3)}
     print(f"\nPivots for Fri 06 Nov from the daily candle {uk_short(thu.start)} "
-          f"(buy H {plain(thu.buy_high)} L {plain(thu.buy_low)} C {plain(thu.buy_close)}):")
+          f"(sell H {plain(thu.sell_high)} L {plain(thu.sell_low)} C {plain(thu.sell_close)}):")
     for t in (R3, R2, R1, PIVOT, S1, S2, S3):
         print(f"  {t:<6} {plain(piv[t])}   (1.{plain(piv[t]).replace('.', '')[1:]})")
-    assert piv == {R3: D("13544.7"), R2: D("13523.2"), R1: D("13489.9"), PIVOT: D("13468.4"),
-                   S1: D("13435.1"), S2: D("13413.6"), S3: D("13380.3")}
+    # The owner's IG chart shows P 13463.4 and S2 13398.3 for this day. The stored
+    # candles (which match IG's own daily candle on all 8 prices) give 13463.8 and
+    # 13399.1: a difference not yet explained (docs/LEVELS.md).
+    assert piv == {R3: D("13556.5"), R2: D("13528.5"), R1: D("13491.8"), PIVOT: D("13463.8"),
+                   S1: D("13427.1"), S2: D("13399.1"), S3: D("13362.4")}
 
 
 def test_b_the_hourly_low_at_about_1_3380_from_30_october_is_a_turning_level(store):
@@ -66,19 +71,18 @@ def test_c_on_thursday_5_november_the_fall_stopped_at_1_3450_next_to_an_earlier_
     at = datetime(2026, 11, 5, 12, 0, tzinfo=UTC)
     ll = build(SETTINGS, store, at)
     fall = store.read_range("5m", datetime(2026, 11, 5, 7, 0, tzinfo=UTC), at)
-    stop = min(fall, key=lambda c: c.buy_low)               # where the fall from 07:00 stopped
+    stop = min(fall, key=lambda c: c.sell_low)              # where the fall from 07:00 stopped
     r = [lv for lv in ll.of_type(ROUND_NUMBER) if lv.price == 13450]
     assert r, "13450 is not a round number level on Thursday"
     group = ll.group_of(r[0])
     earlier = [m for m in group["members"] if m.type in ("turning_high", "turning_low")
                and m.candle_utc < ll.day_start and D(13446) <= m.price <= D(13450)]
     detail = "; ".join(f"{m.type} {plain(m.price)}" for m in group["members"])
-    print(f"\nThe fall from 07:00 stopped at {uk_short(stop.start)}: buy low {plain(stop.buy_low)} "
-          f"(sell low {plain(stop.sell_low)})")
+    print(f"\nThe fall from 07:00 stopped at {uk_short(stop.start)}: sell low {plain(stop.sell_low)}")
     print(f"Thursday's group holding 13450 (G{group['group']}), {plain(group['low'])}-{plain(group['high'])}: {detail}")
     for m in earlier:
         print(f"  earlier level: {m.type} {plain(m.price)}  [{m.source}]")
-    assert D(13446) <= stop.buy_low <= D(13450)                     # stopped at about 1.3446 to 1.3450
+    assert D(13446) <= stop.sell_low <= D(13450)                    # stopped at about 1.3446 to 1.3450
     assert earlier, "no earlier level between 13446 and 13450 in the group holding 13450"
-    assert group["low"] <= stop.buy_low <= group["high"]           # the stop is in that same group
+    assert group["low"] <= stop.sell_low <= group["high"]          # the stop is in that same group
     assert group["important"] and group["lined_up"]

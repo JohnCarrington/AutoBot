@@ -42,6 +42,7 @@ EXPECTED = {
         "max_open_trades_per_strategy": 1,
         "bollinger_bounce_extra_opposite_direction_trades": 1,
     },
+    "chart": {"price": "sell"},
     "levels": {
         "line_up_within_pips": 5,
         "turning_levels_lookback_weeks": 2,
@@ -243,6 +244,7 @@ INVALID = [
     ("levels", "line_up_within_pips", "5", "must be a whole number"),
     ("levels", "turning_levels_lookback_weeks", 0, "must be between"),
     ("levels", "folder", "data/levels", "must be a full folder path"),
+    ("chart", "price", "mid", "must be one of 'sell', 'buy'"),
     ("levels", "sessions_time_zone", "Europe/London", "must be 'UTC'"),
     ("levels", "london_session_from", "7am", 'UTC time written "HH:MM"'),
     ("levels", "turning_candles_each_side", 0, "must be between"),

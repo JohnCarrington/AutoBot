@@ -73,7 +73,8 @@ def _settings(tmp_path):
         d = {k: v for k, v in vars(section).items() if not k.startswith("_")}
         d.update(over)
         return SimpleNamespace(**d)
-    return SimpleNamespace(market=SETTINGS.market, market_hours=SETTINGS.market_hours, stream=SETTINGS.stream,
+    return SimpleNamespace(market=SETTINGS.market, chart=SETTINGS.chart, market_hours=SETTINGS.market_hours,
+                           stream=SETTINGS.stream,
                            candles=copy(SETTINGS.candles, folder=tmp_path / "candles"),
                            housekeeping=copy(SETTINGS.housekeeping), ig=SETTINGS.ig,
                            levels=copy(SETTINGS.levels, folder=tmp_path / "levels"))
