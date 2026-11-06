@@ -29,7 +29,7 @@ The `ig/` part is the only part of the bot that talks to IG's servers. It logs i
 
 1. `IG_ACCOUNT_ID` must be set in `.env`. If it is not set, the bot stops before calling IG.
 2. After logging in, the bot fetches IG's list of accounts (`GET /accounts`). If `IG_ACCOUNT_ID` is **not in that list**, the bot **stops**. It never falls back to a different account.
-3. The bot switches to `IG_ACCOUNT_ID` with `PUT /session`, sending **`defaultAccount: false`**. This makes the account active for this session only, and **does not change IG's default account**, because other bots share this IG login.
+3. The bot switches to `IG_ACCOUNT_ID` with `PUT /session`, sending **`defaultAccount: false`**. This makes the account active for this session only, and **does not change IG's default account**, because changing it would change which account every future login lands on.
 4. A **412** reply, or the error `accountId-must-be-different`, means the account is already the active one. **That is fine**, and the bot carries on.
 5. **Any other failure to switch** (any other error, or no reply): the bot **stops**.
 6. After any re-login, IG's active account is back to the default, so the bot switches to `IG_ACCOUNT_ID` again in the same way.

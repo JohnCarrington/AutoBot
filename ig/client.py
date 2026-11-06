@@ -338,8 +338,8 @@ class IGClient:
 
     def _switch(self, *, allow_relogin: bool) -> str:
         wanted = self._creds.account_id
-        # defaultAccount false: other bots share this IG login, so IG's default
-        # account must never be changed.
+        # defaultAccount false: IG's default account must never be changed, because
+        # that would change which account every future login lands on.
         body = {"accountId": wanted, "defaultAccount": False}
         try:
             r = self._call("PUT", "/session", "1", body, what="switching account",

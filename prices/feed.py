@@ -51,8 +51,12 @@ class StartReport:
 class PriceFeed:
     def __init__(self, settings: Any, store: CandleStore, *,
                  now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
-                 disk_check: Callable[[], Any] = lambda: None):
+                 disk_check: Callable[[], Any] = lambda: None,
+                 after_new_candle: Callable[[datetime], None] = lambda now: None):
         self.settings = settings
+        # Called after start-up and after each new 5-minute candle is stored
+        # (and any bigger candles built): the levels part updates its list.
+        self.after_new_candle = after_new_candle
         self.store = store
         self.hours = MarketHours(settings.market_hours)
         self.b = Boundaries(settings.candles, self.hours)
@@ -126,6 +130,7 @@ class PriceFeed:
         self.disk_check()
         for line in lines:
             log.info(line)
+        self.after_new_candle(now)
         return StartReport(newest, age, gaps_since, check, built, lines)
 
     # ---- from the stream ---------------------------------------------------------
@@ -213,6 +218,7 @@ class PriceFeed:
         self.built.extend(built)
         self._compress(now)
         self.disk_check()
+        self.after_new_candle(now)
         return result
 
     # ---- checks ---------------------------------------------------------------

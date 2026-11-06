@@ -42,7 +42,22 @@ EXPECTED = {
         "max_open_trades_per_strategy": 1,
         "bollinger_bounce_extra_opposite_direction_trades": 1,
     },
-    "levels": {"line_up_within_pips": 5, "turning_levels_lookback_weeks": 2},
+    "levels": {
+        "line_up_within_pips": 5,
+        "turning_levels_lookback_weeks": 2,
+        "folder": Path("/opt/autobot/data/levels"),
+        "level_decimals": 1,
+        "round_number_every_pips": 50,
+        "round_numbers_within_pips": 150,
+        "sessions_time_zone": "UTC",
+        "london_session_from": time(7, 0),
+        "london_session_until": time(12, 0),
+        "new_york_session_from": time(12, 0),
+        "new_york_session_until": time(21, 0),
+        "turning_candles_each_side": 3,
+        "turning_min_move_pips": 20,
+        "turning_move_within_candles": 6,
+    },
     "reversal_watch": {
         "times": (time(10), time(11), time(13), time(14), time(16), time(17)),
         "minutes_before": 20,
@@ -60,7 +75,7 @@ EXPECTED = {
     },
     "possible_reversal": {"min_trend_move_pips": 30},
     "range_trade": {"close_percent_at_opposite_band": 50},
-    "market": {"epic": "CS.D.GBPUSD.TODAY.IP"},
+    "market": {"epic": "CS.D.GBPUSD.TODAY.IP", "points_per_pip": 1},
     "market_hours": {
         "opens_day": 6,              # Sunday (Monday is 0)
         "opens_at": time(21, 0),
@@ -227,6 +242,13 @@ INVALID = [
     ("limits", "max_open_trades_per_strategy", 0, "must be between"),
     ("levels", "line_up_within_pips", "5", "must be a whole number"),
     ("levels", "turning_levels_lookback_weeks", 0, "must be between"),
+    ("levels", "folder", "data/levels", "must be a full folder path"),
+    ("levels", "sessions_time_zone", "Europe/London", "must be 'UTC'"),
+    ("levels", "london_session_from", "7am", 'UTC time written "HH:MM"'),
+    ("levels", "turning_candles_each_side", 0, "must be between"),
+    ("levels", "turning_min_move_pips", 0, "must be between"),
+    ("levels", "round_number_every_pips", 0, "must be between"),
+    ("market", "points_per_pip", 0, "must be between"),
     ("reversal_watch", "times", ["11:00", "10:00"], "in order with no repeats"),
     ("reversal_watch", "times", [], "non-empty list"),
     ("reversal_watch", "minutes_before", 500, "must be between"),
@@ -319,6 +341,8 @@ def test_close_time_not_before_last_new_trade(tmp_path):
     ("candles", "day_starts_at", "00:05", "must start on an hour boundary"),
     ("market_hours", "closes_day", "Sunday", "must be different days"),
     ("history", "weekly_budget_points", 400, "must not be bigger than weekly_budget_points"),
+    ("levels", "london_session_until", "07:00", "london_session_from must be earlier than london_session_until"),
+    ("levels", "new_york_session_from", "21:30", "new_york_session_from must be earlier than new_york_session_until"),
 ])
 def test_candle_and_stream_settings_must_fit_together(tmp_path, section, key, value, message):
     data = _raw()

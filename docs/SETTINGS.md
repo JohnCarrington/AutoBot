@@ -3,6 +3,7 @@
 All settings live in one file: `config/settings.toml`. The code that loads and checks them is `config/settings_loader.py`.
 
 - All times are **UK time** (Europe/London: GMT in winter, BST in summer), written `"HH:MM"`. (Candles and prices are *stored* in UTC; every time in this file, and every time shown to a person, is UK time.)
+- **One exception:** the four session times under `[levels]` are in **UTC**, as the owner gave them (`levels.sessions_time_zone`).
 - If any setting is missing, unknown, or has an invalid value, the bot **refuses to start** and says exactly which setting is wrong.
 - To check the settings file: `.venv/bin/python -m config`
 - Every setting in the file must have a row here. A test fails if one is missing.
@@ -28,6 +29,18 @@ All settings live in one file: `config/settings.toml`. The code that loads and c
 | `limits.bollinger_bounce_extra_opposite_direction_trades` | The Bollinger band bounce may also have this many trades open in the opposite direction (so up to 1 buy and 1 sell). | 1 |
 | `levels.line_up_within_pips` | Two levels "line up" when they are within this many pips of each other. | 5 pips |
 | `levels.turning_levels_lookback_weeks` | How far back to look for recent turning levels. | 2 weeks |
+| `levels.folder` | Where the current list of levels is written (`current.json`) for the rest of the bot to read. On the server only, not in git. | `/opt/autobot/data/levels` |
+| `levels.level_decimals` | Levels worked out by a formula (the pivots) are written to this many decimal places of a point, rounding halves up. IG shows GBPUSD to 1 decimal place of a point. | 1 |
+| `levels.round_number_every_pips` | Round numbers are every price that is a multiple of this many pips: with 50, every price ending in 00 or 50 (1.3400, 1.3450, ...). | 50 pips |
+| `levels.round_numbers_within_pips` | Only round numbers within this many pips above or below the latest buy close are listed. **Starting value, for the owner to confirm.** | 150 pips |
+| `levels.sessions_time_zone` | The time zone of the four session times below. **These times are in UTC, not UK time** (the exception to the rule at the top of this page), as the owner gave them. Must be `UTC`. | `UTC` |
+| `levels.london_session_from` | Start of the London session, for the London session high and low (UTC). **Starting value from AutoBot 161, for the owner to confirm.** | 07:00 UTC |
+| `levels.london_session_until` | End of the London session (UTC); a candle starting at this time is not in it. **Starting value from AutoBot 161, for the owner to confirm.** | 12:00 UTC |
+| `levels.new_york_session_from` | Start of the New York session, for the New York session high and low (UTC). **Starting value from AutoBot 161, for the owner to confirm.** | 12:00 UTC |
+| `levels.new_york_session_until` | End of the New York session (UTC); a candle starting at this time is not in it. **Starting value from AutoBot 161, for the owner to confirm.** | 21:00 UTC |
+| `levels.turning_candles_each_side` | Turning levels, rule 1 and 2 (`docs/LEVELS.md`): an hourly high must be higher than this many hourly candles before it and not lower than this many after it (a low: the same, upside down). **Starting value, for the owner to confirm.** | 3 candles |
+| `levels.turning_min_move_pips` | Turning levels, rule 3: after the high (low), price must move at least this many pips down (up) from it ... **Starting value, for the owner to confirm.** | 20 pips |
+| `levels.turning_move_within_candles` | Turning levels, rule 3: ... within this many hourly candles after it. **Starting value, for the owner to confirm.** | 6 candles |
 | `reversal_watch.times` | Times of day when a reversal is watched for. | 10:00, 11:00, 13:00, 14:00, 16:00, 17:00 |
 | `reversal_watch.minutes_before` | The watch starts this many minutes before each time. | 20 minutes |
 | `reversal_watch.minutes_after` | The watch ends this many minutes after each time. | 20 minutes |
@@ -43,6 +56,7 @@ All settings live in one file: `config/settings.toml`. The code that loads and c
 | `ig.slowed_down_waits_seconds` | When IG slows the bot down, how long to wait before each try again, in order. If IG is still slowing it down after the last wait, the bot stops. | 60, 90, 120, 180 seconds |
 | `ig.request_timeout_seconds` | How long to wait for IG to reply to one call before giving up on it. | 30 seconds |
 | `market.epic` | IG's name for the one market the bot streams: GBPUSD on the spread bet account. Found with one IG market search (`GET /markets?searchTerm=GBPUSD`) on 6 November 2026: "GBP/USD", expiry DFB (daily funded bet), status TRADEABLE. | `CS.D.GBPUSD.TODAY.IP` |
+| `market.points_per_pip` | How many of IG's price points make one pip. IG sends GBPUSD spread bet prices in points (`13354.4` means 1.33544), so one pip (0.0001) is 1 point. Used to turn pip distances in the settings into prices. | 1 |
 | `market_hours.opens_day` | The day IG's GBPUSD market opens each week. | Sunday |
 | `market_hours.opens_at` | The time it opens, in `opens_time_zone`. From IG's page and IG's own candles (see below). | 21:00 |
 | `market_hours.opens_time_zone` | The time zone of `opens_at`. IG's open follows UK time all year (see below). | `Europe/London` (UK time) |

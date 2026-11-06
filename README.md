@@ -2,13 +2,19 @@
 
 An automated trading bot for GBPUSD on an IG **demo** account. It reads live prices, works out the market state, lets only the right strategies look for trades, checks every trade idea against safety rules, and sends orders to IG with a stop loss and take profit. Every trade is recorded, shown on a dashboard and reported by Telegram.
 
-**Current stage:** Stage 4b. The bot has its settings, the IG connection (logging in to the IG demo account, choosing the account and handling IG's errors), the live GBPUSD price stream and the candle store, and now the guarded history door. Only `ig/history.py` may ask IG for historical prices, under a weekly budget, IG allowance floor, size limit and block marker. The store holds two weeks of 5-minute candles from the one-off history fill, plus 1-hour, 4-hour, daily and weekly candles built from them on IG's boundaries. There are no orders or trading code yet.
+**Current stage:** Stage 5, levels. The bot has its settings, the IG connection (logging in to the IG demo account, choosing the account and handling IG's errors), the live GBPUSD price stream and the candle store, and the guarded history door. Only `ig/history.py` may ask IG for historical prices, under a weekly budget, IG allowance floor, size limit and block marker. The store holds two weeks of 5-minute candles from the one-off history fill, plus 1-hour, 4-hour, daily and weekly candles built from them on IG's boundaries. Stage 5 adds the levels: daily pivots, round numbers, the previous day's high and low, session highs and lows and hourly turning levels, all on the buy price, grouped where they line up, in one current list updated after every new 5-minute candle. There are no orders or trading code yet.
+
+**The agreed design** is `docs/DESIGN.md`. Where any other document disagrees with it, it wins.
 
 **Backup:** the code is backed up to the private GitHub repository `JohnCarrington/AutoBot`; `main` is pushed there at the end of each stage, once all tests pass.
 
 ## Where things are
 
+- `docs/DESIGN.md`: the agreed design (the master copy)
 - `docs/ARCHITECTURE.md`: the parts of the bot and how they connect
+- `docs/LEVELS.md`: every levels rule, the current list and its file
+- `levels/`: pivots, round numbers, highs and lows, turning levels, and which levels line up
+- `/opt/autobot/data/levels/current.json`: the current list of levels (on the server only, not in git)
 - `docs/SETTINGS.md`: every setting, what it does, and its value
 - `docs/IG_CONNECTION.md`: how the bot logs in to IG, chooses its account and handles IG's errors
 - `deploy/autobot-prices.service`: the systemd service for the price stream
@@ -73,6 +79,14 @@ This is a timed run, by hand (stop the service first). It logs in to IG, checks 
 The one-off history fill (`.venv/bin/python -m prices.history_fill plan` / `go`) ran once on 6 November 2026 and will not run again.
 
 The GBPUSD epic (`CS.D.GBPUSD.TODAY.IP`) was found once with `.venv/bin/python -m ig.find_market` (one market search) and is kept in the settings file.
+
+## Showing the levels
+
+```
+.venv/bin/python -m levels
+```
+
+Works out the levels now from the candle store, prints them by group, and writes the current list. Contacts nobody. `--at 2026-11-06T00:00:00Z` shows the levels as they stood at that UTC time, without writing anything. See `docs/LEVELS.md`.
 
 ## Exit codes
 

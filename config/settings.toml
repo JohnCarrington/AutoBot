@@ -1,6 +1,7 @@
 # AutoBot settings. Every number the bot uses lives here.
 # Every setting must be described in docs/SETTINGS.md (a test checks this).
 # Times are UK time (Europe/London: GMT in winter, BST in summer), written "HH:MM".
+# One exception: the session times under [levels] are UTC (levels.sessions_time_zone).
 
 [account]
 pair = "GBPUSD"
@@ -32,8 +33,31 @@ max_open_trades_per_strategy = 1
 bollinger_bounce_extra_opposite_direction_trades = 1
 
 [levels]
+# Every level uses the BUY (OFR) price, to match the owner's IG chart.
 line_up_within_pips = 5
 turning_levels_lookback_weeks = 2
+# Where the current list of levels is written for the rest of the bot to read.
+folder = "/opt/autobot/data/levels"
+# Levels are written to this many decimal places of a point (IG shows 1).
+level_decimals = 1
+# Round numbers: every price ending in 00 and 50 pips ...
+round_number_every_pips = 50
+# ... within this many pips above or below the latest price. STARTING VALUE.
+round_numbers_within_pips = 150
+# Session highs and lows. These times are in UTC (not UK time), as given by
+# the owner. STARTING VALUES, from AutoBot 161, for the owner to confirm.
+sessions_time_zone = "UTC"
+london_session_from = "07:00"
+london_session_until = "12:00"
+new_york_session_from = "12:00"
+new_york_session_until = "21:00"
+# Turning levels on the hourly chart (rule in docs/LEVELS.md). STARTING VALUES.
+# A high (low) must be above (below) this many hourly candles on each side ...
+turning_candles_each_side = 3
+# ... and price must then move at least this many pips away from it ...
+turning_min_move_pips = 20
+# ... within this many hourly candles after it.
+turning_move_within_candles = 6
 
 [reversal_watch]
 times = ["10:00", "11:00", "13:00", "14:00", "16:00", "17:00"]
@@ -67,6 +91,9 @@ request_timeout_seconds = 30
 # IG epic for GBPUSD on the spread bet account. Found with one market search
 # (GET /markets?searchTerm=GBPUSD) on 6 November 2026: "GBP/USD", expiry DFB.
 epic = "CS.D.GBPUSD.TODAY.IP"
+# IG sends GBPUSD spread bet prices in points: 13354.4 means 1.33544, so one
+# pip (0.0001) is 1 point.
+points_per_pip = 1
 
 [market_hours]
 # IG's trading hours for GBPUSD. Set from two sources (docs/SETTINGS.md):

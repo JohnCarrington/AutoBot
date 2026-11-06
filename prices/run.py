@@ -25,6 +25,7 @@ from ig.errors import IGLoginFailure, stop_bot
 from ig.secrets import ENV_PATH, load_credentials
 from ig.stream import LightstreamerTransport, PriceStream
 from prices.checks import check_store
+from levels.current import LevelsUpdater
 from prices.feed import PriceFeed
 from prices.model import plain, uk, uk_short
 from prices.store import CandleStore
@@ -39,7 +40,8 @@ def main(argv: list[str] | None = None) -> int:
     setup_logging(settings.housekeeping, "prices")
     store = CandleStore(settings.candles.folder, settings.candles.compress_after_days)
     feed = PriceFeed(settings, store, disk_check=lambda: check_free_space(
-        settings.candles.folder, settings.housekeeping.min_free_disk_mb, feed.warn))
+        settings.candles.folder, settings.housekeeping.min_free_disk_mb, feed.warn),
+        after_new_candle=LevelsUpdater(settings, store))
 
     def say(text: str = "") -> None:
         print(text, flush=True)

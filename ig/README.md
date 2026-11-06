@@ -4,7 +4,7 @@
 
 **What it must never do:**
 - Never print, log or save a password, API key, session token or full account number. Account numbers are shown as their last 4 characters only.
-- Never change IG's default account (other bots share this login).
+- Never change IG's default account (it would change which account every future login lands on).
 - Never log in in a loop, or have more than one login going at a time.
 - Never carry on with an account other than `IG_ACCOUNT_ID`.
 - Never place, change or close a trade by itself.

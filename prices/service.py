@@ -36,6 +36,7 @@ from ig.client import IGClient
 from ig.errors import IGLoginFailure, stop_bot
 from ig.secrets import ENV_PATH, load_credentials
 from ig.stream import LightstreamerTransport, PriceStream
+from levels.current import LevelsUpdater
 from prices.feed import PriceFeed
 from prices.model import uk
 from prices.store import CandleStore
@@ -53,7 +54,8 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
     stop = stop or threading.Event()
     store = CandleStore(settings.candles.folder, settings.candles.compress_after_days)
     feed = PriceFeed(settings, store, now=now, disk_check=lambda: check_free_space(
-        settings.candles.folder, settings.housekeeping.min_free_disk_mb, feed.warn))
+        settings.candles.folder, settings.housekeeping.min_free_disk_mb, feed.warn),
+        after_new_candle=LevelsUpdater(settings, store))
     stream: PriceStream | None = None
 
     def on_signal(signum, frame):

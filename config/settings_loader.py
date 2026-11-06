@@ -81,6 +81,14 @@ def _clock_time(v: Any) -> time:
     return time(int(hours), int(minutes))
 
 
+def _utc_time(v: Any) -> time:
+    """A time of day in UTC, written "HH:MM" (used where a setting says so)."""
+    if not isinstance(v, str) or not _TIME_RE.match(v):
+        raise ValueError(f'must be a UTC time written "HH:MM", got {v!r}')
+    hours, minutes = v.split(":")
+    return time(int(hours), int(minutes))
+
+
 def _clock_times(v: Any) -> tuple[time, ...]:
     if not isinstance(v, list) or not v:
         raise ValueError(f"must be a non-empty list of times, got {v!r}")
@@ -204,6 +212,18 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "levels": {
         "line_up_within_pips": _whole_number(0, 100),
         "turning_levels_lookback_weeks": _whole_number(1, 52),
+        "folder": _absolute_folder,
+        "level_decimals": _whole_number(0, 4),
+        "round_number_every_pips": _whole_number(1, 1000),
+        "round_numbers_within_pips": _whole_number(0, 2000),
+        "sessions_time_zone": _exactly("UTC"),
+        "london_session_from": _utc_time,
+        "london_session_until": _utc_time,
+        "new_york_session_from": _utc_time,
+        "new_york_session_until": _utc_time,
+        "turning_candles_each_side": _whole_number(1, 24),
+        "turning_min_move_pips": _whole_number(1, 1000),
+        "turning_move_within_candles": _whole_number(1, 200),
     },
     "reversal_watch": {
         "times": _clock_times,
@@ -230,6 +250,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     },
     "market": {
         "epic": _epic,
+        "points_per_pip": _whole_number(1, 10000),
     },
     "market_hours": {
         "opens_day": _weekday,
@@ -323,6 +344,15 @@ def _check_together(v: dict[str, dict[str, Any]]) -> None:
         )
 
 
+def _check_levels_together(v: dict[str, dict[str, Any]]) -> None:
+    lv = v["levels"]
+    for name in ("london", "new_york"):
+        if lv[f"{name}_session_from"] >= lv[f"{name}_session_until"]:
+            raise SettingsError(
+                f"Setting [levels] {name}_session_from must be earlier than {name}_session_until."
+            )
+
+
 def _check_candles_together(v: dict[str, dict[str, Any]]) -> None:
     c, mh = v["candles"], v["market_hours"]
     w = v["stream"]["reconnect_waits_seconds"]
@@ -392,6 +422,7 @@ def load_settings(path: str | Path | None = None) -> Settings:
 
     _check_together(checked)
     _check_candles_together(checked)
+    _check_levels_together(checked)
     return Settings(checked)
 
 

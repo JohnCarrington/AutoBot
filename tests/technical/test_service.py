@@ -75,7 +75,8 @@ def _settings(tmp_path):
         return SimpleNamespace(**d)
     return SimpleNamespace(market=SETTINGS.market, market_hours=SETTINGS.market_hours, stream=SETTINGS.stream,
                            candles=copy(SETTINGS.candles, folder=tmp_path / "candles"),
-                           housekeeping=copy(SETTINGS.housekeeping), ig=SETTINGS.ig)
+                           housekeeping=copy(SETTINGS.housekeeping), ig=SETTINGS.ig,
+                           levels=copy(SETTINGS.levels, folder=tmp_path / "levels"))
 
 
 class Clock:
