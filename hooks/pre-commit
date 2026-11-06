@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Runs every test before each commit. The commit is blocked if any test fails.
+cd "$(git rev-parse --show-toplevel)" || exit 1
+echo "pre-commit: running all tests..."
+if ! ./run_tests.sh -q; then
+  echo "pre-commit: TESTS FAILED - commit blocked." >&2
+  exit 1
+fi
+echo "pre-commit: all tests passed."

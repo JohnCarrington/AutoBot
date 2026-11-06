@@ -1,0 +1,59 @@
+# AutoBot settings. Every number the bot uses lives here.
+# Every setting must be described in docs/SETTINGS.md (a test checks this).
+# Times are UK time (Europe/London: GMT in winter, BST in summer), written "HH:MM".
+
+[account]
+pair = "GBPUSD"
+account_type = "demo"
+
+[prices]
+candle_timeframes = ["tick", "5m", "1h", "4h", "1d", "1w"]
+
+[trade]
+size_gbp_per_pip = 10
+stop_loss_pips = 6
+take_profit_pips = 100
+
+[hours]
+timezone = "Europe/London"
+new_trades_from = "06:00"
+new_trades_until = "20:30"
+close_all_trades_at = "20:30"
+hold_overnight = false
+
+[news]
+big_news_no_new_trades_before_minutes = 15
+big_news_no_new_trades_after_minutes = 30
+big_news_close_trades_before_minutes = 15
+ignore_medium_and_small_news = true
+
+[limits]
+max_open_trades_per_strategy = 1
+bollinger_bounce_extra_opposite_direction_trades = 1
+
+[levels]
+line_up_within_pips = 5
+turning_levels_lookback_weeks = 2
+
+[reversal_watch]
+times = ["10:00", "11:00", "13:00", "14:00", "16:00", "17:00"]
+minutes_before = 20
+minutes_after = 20
+
+[bounce]
+reversal_candle_within_candles_of_pierce = 3
+confirmation_candle_within_candles_of_reversal = 3
+
+[slow_grind]
+min_pause_candles = 3
+
+[ema_pullback]
+setup_expires_after_minutes = 20
+entry_beyond_pips = 3
+entry_lookback_candles = 5
+
+[possible_reversal]
+min_trend_move_pips = 30
+
+[range_trade]
+close_percent_at_opposite_band = 50
