@@ -290,3 +290,11 @@ def test_bot_process_starts_with_good_settings():
     )
     assert r.returncode == 0, r.stderr
     assert "Settings OK." in r.stdout
+    # Times print as HH:MM and lists print plainly, as written in settings.toml.
+    assert "  [hours] new_trades_from = 06:00\n" in r.stdout
+    assert "  [hours] new_trades_until = 20:30\n" in r.stdout
+    assert "  [hours] close_all_trades_at = 20:30\n" in r.stdout
+    assert ("  [reversal_watch] times = 10:00, 11:00, 13:00, 14:00, 16:00, 17:00\n"
+            in r.stdout)
+    assert "  [prices] candle_timeframes = tick, 5m, 1h, 4h, 1d, 1w\n" in r.stdout
+    assert "datetime" not in r.stdout
