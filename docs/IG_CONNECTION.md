@@ -81,6 +81,19 @@ This is the only command that contacts the real IG. It makes exactly these four 
 
 It shows **whether** the streaming address was received, never the address itself. It prints every IG call it made, with IG's status code. If anything fails after logging in, it still logs out, then stops with exit code 78.
 
+### Result
+
+The real check **passed on 6 November 2026** (exit code 0), after the other bots on the IG login had been stopped. It made four IG calls:
+
+| Call | IG's reply | Meaning |
+|---|---|---|
+| `POST /session` | HTTP 200 | Logged in (version 2); streaming address received |
+| `GET /accounts` | HTTP 200 | 2 accounts listed; `IG_ACCOUNT_ID` (`****G4CJ`) was in the list |
+| `PUT /session` | HTTP 412 | Account already active, which is fine; IG's default account not changed |
+| `DELETE /session` | HTTP 204 | Logged out |
+
+(The first run, before the other bots were stopped, was refused by IG with `exceeded-api-key-allowance`.)
+
 ## Tests
 
 `tests/technical/test_ig_connection.py` checks every rule above against a **pretend IG** (`tests/technical/fake_ig.py`) that plays back scripted replies. While the tests run, every network connection is blocked (`tests/conftest.py`), so the tests can never reach the real IG.
