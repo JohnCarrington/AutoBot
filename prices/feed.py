@@ -121,7 +121,10 @@ class PriceFeed:
             tick = Tick(utc_ms(fields["UTM"]), buy=price(fields.get("OFR")), sell=price(fields.get("BID")))
         except (ValueError, TypeError, KeyError) as e:
             self.bad_ticks += 1
-            log.info("Tick with a missing or unreadable value skipped (%s).", e)
+            # Show exactly what IG sent (prices and time are not secret), so the
+            # reason can be found. Nothing is guessed.
+            log.info("Tick with a missing or unreadable value skipped (%s). IG sent: BID=%r OFR=%r UTM=%r",
+                     e, fields.get("BID"), fields.get("OFR"), fields.get("UTM"))
             return
         self.ticks += 1
         if self.first_tick is None:

@@ -21,44 +21,24 @@ import csv
 import gzip
 import io
 import logging
-import os
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Callable, Iterable
 
+from housekeeping.files import TMP_MARK, safe_write
+from housekeeping.files import fsync_dir as _fsync_dir
 from prices.model import (PRICE_FIELDS, TIMEFRAMES, UTC, Candle, iso, parse_iso,
                           plain, price, uk_short)
 
 log = logging.getLogger("autobot.prices.store")
 
 COLUMNS = ("start_utc", "end_utc") + PRICE_FIELDS + ("parts", "expected_parts")
-GAP_COLUMNS = ("timeframe", "from_utc", "to_utc", "missing_candles", "found_utc", "how_found")
-TMP_MARK = ".tmp-"
+GAP_COLUMNS = ("timeframe", "from_utc", "to_utc", "missing_candles", "found_utc", "how_found", "note")
+GAP_REQUIRED = GAP_COLUMNS[:6]   # "note" was added later; older files without it still read
 
 
 class DamagedFile(Exception):
     """A store file cannot be read. It is left exactly as it is."""
-
-
-def _fsync_dir(folder: Path) -> None:
-    fd = os.open(folder, os.O_RDONLY)
-    try:
-        os.fsync(fd)
-    finally:
-        os.close(fd)
-
-
-def safe_write(path: Path, data: bytes) -> None:
-    """Replace `path` with `data` so that a crash at any moment leaves either
-    the old file or the new one, complete."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name(f"{path.name}{TMP_MARK}{os.getpid()}")
-    with open(tmp, "wb") as f:
-        f.write(data)
-        f.flush()
-        os.fsync(f.fileno())
-    os.replace(tmp, path)
-    _fsync_dir(path.parent)
 
 
 def _to_csv(candles: Iterable[Candle]) -> bytes:
@@ -234,17 +214,34 @@ class CandleStore:
         if not p.exists():
             return []
         rows = list(csv.DictReader(io.StringIO(p.read_text())))
-        return [r for r in rows if set(GAP_COLUMNS) <= set(r)]
+        out = [r for r in rows if set(GAP_REQUIRED) <= set(r)]
+        for r in out:
+            r["note"] = r.get("note") or ""
+        return out
+
+    def _write_gaps(self, rows: list[dict]) -> None:
+        buf = io.StringIO()
+        w = csv.DictWriter(buf, fieldnames=GAP_COLUMNS, lineterminator="\n")
+        w.writeheader()
+        w.writerows({k: r.get(k, "") for k in GAP_COLUMNS} for r in rows)
+        safe_write(self._gaps_path(), buf.getvalue().encode())
+
+    def note_gap(self, tf: str, start: datetime, end: datetime, note: str) -> None:
+        """Add a note to a recorded gap. The record itself is kept unchanged;
+        gap records are never removed."""
+        rows = self.recorded_gaps()
+        hits = [r for r in rows if (r["timeframe"], r["from_utc"], r["to_utc"]) == (tf, iso(start), iso(end))]
+        if not hits:
+            raise KeyError(f"no recorded {tf} gap from {iso(start)} to {iso(end)}")
+        for r in hits:
+            r["note"] = (r["note"] + " | " if r["note"] else "") + note
+        self._write_gaps(rows)
 
     def record_gap(self, tf: str, start: datetime, end: datetime, missing: int,
                    found: datetime, how: str) -> None:
         rows = self.recorded_gaps()
         rows.append({"timeframe": tf, "from_utc": iso(start), "to_utc": iso(end),
-                     "missing_candles": str(missing), "found_utc": iso(found), "how_found": how})
-        buf = io.StringIO()
-        w = csv.DictWriter(buf, fieldnames=GAP_COLUMNS, lineterminator="\n")
-        w.writeheader()
-        w.writerows({k: r[k] for k in GAP_COLUMNS} for r in rows)
-        safe_write(self._gaps_path(), buf.getvalue().encode())
+                     "missing_candles": str(missing), "found_utc": iso(found), "how_found": how, "note": ""})
+        self._write_gaps(rows)
         log.info("Gap recorded: %s %s to %s (%d candle(s)), found %s.",
                  tf, uk_short(start), uk_short(end), missing, how)

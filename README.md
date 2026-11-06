@@ -2,7 +2,7 @@
 
 An automated trading bot for GBPUSD on an IG **demo** account. It reads live prices, works out the market state, lets only the right strategies look for trades, checks every trade idea against safety rules, and sends orders to IG with a stop loss and take profit. Every trade is recorded, shown on a dashboard and reported by Telegram.
 
-**Current stage:** Stage 4a. The bot has its settings, the IG connection (logging in to the IG demo account, choosing the account and handling IG's errors), and now the live GBPUSD price stream and the candle store (5-minute candles from IG; 1-hour, 4-hour, daily and weekly candles built from them; checks on the store). There are no orders or trading code yet. **The bot never asks IG for historical prices.**
+**Current stage:** Stage 4b. The bot has its settings, the IG connection (logging in to the IG demo account, choosing the account and handling IG's errors), the live GBPUSD price stream and the candle store, and now the guarded history door. Only `ig/history.py` may ask IG for historical prices, under a weekly budget, IG allowance floor, size limit and block marker. The store holds two weeks of 5-minute candles from the one-off history fill, plus 1-hour, 4-hour, daily and weekly candles built from them on IG's boundaries. There are no orders or trading code yet.
 
 **Backup:** the code is backed up to the private GitHub repository `JohnCarrington/AutoBot`; `main` is pushed there at the end of each stage, once all tests pass.
 
@@ -11,7 +11,8 @@ An automated trading bot for GBPUSD on an IG **demo** account. It reads live pri
 - `docs/ARCHITECTURE.md`: the parts of the bot and how they connect
 - `docs/SETTINGS.md`: every setting, what it does, and its value
 - `docs/IG_CONNECTION.md`: how the bot logs in to IG, chooses its account and handles IG's errors
-- `docs/PRICES_AND_CANDLES.md`: the live price stream, the candles, the candle store and its checks
+- `docs/PRICES_AND_CANDLES.md`: the live price stream, the candles, the candle store and its checks, the history door and the one-off fill
+- `/opt/autobot/data/history/`: the history door's records (points ledger, IG's allowance, daily record, block marker)
 - `prices/`: candles, the candle store and its checks
 - `housekeeping/`: log rotation and the disk space warning
 - `/opt/autobot/data/candles/`: the candle store (on the server only, not in git)
@@ -63,6 +64,8 @@ This is the only command that contacts the real IG. It logs in to the IG demo ac
 ```
 
 This logs in to IG, checks the candle store and reports its newest candle, streams live GBPUSD prices for the given number of minutes (storing IG's finished 5-minute candles and building the bigger ones), then logs out. It reports the ticks received, the candles stored, the store checks, and a count of every IG call made. See `docs/PRICES_AND_CANDLES.md`.
+
+The one-off history fill (`.venv/bin/python -m prices.history_fill plan` / `go`) ran once on 6 November 2026 and will not run again.
 
 The GBPUSD epic (`CS.D.GBPUSD.TODAY.IP`) was found once with `.venv/bin/python -m ig.find_market` (one market search) and is kept in the settings file.
 

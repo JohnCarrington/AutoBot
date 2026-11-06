@@ -2,14 +2,59 @@
 
 How AutoBot receives live GBPUSD prices from IG and keeps them as candles. Every rule below is checked by a test (listed at the end).
 
-## The one absolute rule: no historical prices
+## Historical prices: one guarded door
 
-**The bot never asks IG for historical prices, for any reason.**
+**Only one part of the code may ask IG for historical prices: the history door, `ig/history.py`.** Nothing else can.
 
-- IG's historical prices are the REST calls under `/prices` (`GET /prices/{epic}` and its variants). The IG part (`ig/client.py`) refuses any call to a `/prices` address before anything is sent, so even a mistake in the code cannot make one.
-- A test reads every Python file in the project and fails if any of them contains an IG prices address, a "fetch historical prices" style function, or the `trading_ig` library.
-- The price stream gives live prices only. Ticks are asked for **without** a snapshot, so IG does not send recent ticks on connecting.
-- Gaps are recorded, never filled.
+- IG's historical prices are the REST calls under `/prices` (`GET /prices/{epic}` and its variants). The IG part (`ig/client.py`) refuses any `/prices` call before anything is sent, unless the history door has opened it for one request that passed every check below.
+- A test reads every Python file in the project, tests included, and fails if any file other than `ig/history.py` contains an IG prices address, a "fetch historical prices" style function, the `trading_ig` library, or opens the history door.
+- The live price stream never asks for history. Ticks are asked for **without** a snapshot, so IG does not send recent ticks on connecting.
+
+### The checks, in this order
+
+Every history request must pass all four. If one fails, the request is refused: nothing is sent, a warning is logged, and the refusal goes into the daily record.
+
+1. **No block marker is in place** (see below).
+2. **The bot's own weekly budget has room for it.** Points counted in the last 7 days, plus this request, must be no more than `history.weekly_budget_points` (4,000; IG allows 10,000 a week). One point is one candle.
+3. **IG's remaining allowance stays above the safety floor.** IG's last reported remaining allowance, less this request, must stay at or above `history.min_ig_allowance_remaining` (2,000). Before IG has ever reported a figure there is nothing to check against, so the first request is allowed and its reply gives the figure.
+4. **The request is no bigger than the maximum,** `history.max_points_per_request` (500).
+
+### Counting and records
+
+All of these live in `/opt/autobot/data/history/` (`history.folder`) and are written with safe writes.
+
+- **Points are counted BEFORE each request is sent**, and saved to disk straight away in `ledger.json`. A crash or restart can never lose the count. A request that never got a reply stays counted. If IG charges more than was counted, IG's figure is used.
+- **After every reply, IG's own figures are saved** in `ig_allowance.json`: remaining allowance, total allowance, and when it resets.
+- **A daily record**, `daily_record.csv`, has one line per UTC day: requests sent, points counted, refusals by the bot and by IG, and IG's figures. It is rewritten after every request and every refusal.
+
+### The block marker
+
+- If IG ever refuses a history request because the allowance is used up, the bot writes `BLOCKED.json`. Its expiry is IG's reset time if given, and never less than `history.min_block_hours` (24 hours).
+- **While the marker is in place, no history request is sent, even after a restart.** A marker that cannot be read counts as in place.
+- This refusal is not a login problem. It never stops the bot or causes a retry.
+
+### Filling gaps
+
+- **Only gaps the store has recorded** (in `gaps.csv`) are filled. Only 5-minute candles, and only during market hours: **never the weekend**.
+- **Only the missing candles are asked for.** Each request covers one unbroken run of missing 5-minute candles and is no bigger than the maximum size.
+- **What comes back only fills missing candles.** A stored candle is never overwritten. Anything IG sends that was not asked for is ignored and reported. If IG's times do not line up with the request, the fill stops.
+- **IG's own UTC times are used** (`snapshotTimeUTC`). The buy price is IG's ask, the sell price IG's bid. A candle with a missing price is not used.
+
+### The one-off two-week fill (6 November 2026)
+
+Commands: `.venv/bin/python -m prices.history_fill plan` shows the plan and contacts nobody. `... go` runs it. The fill is recorded as started before its first request and as done at the end (`one_off_fill_done.json`), so it can never run again by itself.
+
+It was planned, shown, approved, and run at 20:00 GMT on 6 November 2026:
+
+- **Requests:** 9 in all. 1 for IG's daily candles (13 points counted, 12 charged). 1 for the 4 live Stage 4a candles, to compare only, never stored. 7 to fill (the largest 500).
+- **IG's allowance:** 9,970 of 10,000 before, **7,091** after, resetting 13 November 03:00 UTC. IG charged 2,879 points; the bot counted 2,893. Nothing was refused and no block marker was written.
+- **Stored:** 2,862 five-minute candles, covering 25 October 21:00 to 6 November 20:00 GMT.
+- **Filled vs live candles:** the 4 live candles (19:20 to 19:35) were **identical on all 8 prices**, so the times line up.
+- **IG's daily candles vs ours:** IG's daily candles run midnight to midnight UK, with a separate short Sunday candle. The bot's boundaries were then 22:00 to 22:00. Its daily boundaries were changed to match IG's (see below). Rebuilt on midnight boundaries, the bot's daily candles match **all 11 of IG's complete days on all 8 prices**, including both Sunday candles. The one difference is the label: IG labels its Sunday candle 00:00, the start of the calendar day, while the bot's starts at the 21:00 open. Both hold the same candles.
+- **The weekly close:** IG's candles also showed the Friday close follows New York time (see "Checks on the store").
+- **Store checks on everything afterwards:** 3,178 candles, **0 problems**. 2 gaps, both on Sunday 1 November: 21:20, which IG sent with a price missing, and 21:35, which IG never sent.
+
+**Archive.** The 1-hour, 4-hour, daily and weekly candles first built under the earlier 22:00 layout were moved, not deleted, to `/opt/autobot/data/candles/archive_22h_layout/`. They were then rebuilt from the stored 5-minute candles on IG's boundaries, with no IG calls. The bot does not read the archive.
 
 ## Which market
 
@@ -53,9 +98,9 @@ If no ticks or candle updates arrive for **120 seconds** (`stream.no_prices_warn
 |---|---|---|
 | 5-minute | every 5 minutes | IG's own candles |
 | 1-hour | on the hour | |
-| 4-hour | 22:00, 02:00, 06:00, 10:00, 14:00, 18:00 UK | first of the week: Sunday 21:00 to Monday 02:00 |
-| Daily | 22:00 to 22:00 UK | Monday's runs from Sunday 21:00 to Monday 22:00 |
-| Weekly | Sunday 21:00 to Friday 22:00 UK | |
+| 4-hour | 00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UK | first of the week: Sunday 21:00 to midnight |
+| Daily | midnight to midnight UK, **like IG's** | a short Sunday candle, 21:00 to midnight, like IG's; Friday's ends at the close |
+| Weekly | Sunday 21:00 UK to Friday's close (17:00 New York) | |
 
 ### Times
 
@@ -84,7 +129,9 @@ The store is checked **when the bot starts** (every stored candle of every size)
 - **Anything out of time order**: candles not in order in their file, a candle in the wrong day's file, a candle that ends before it starts, or one that does not start on its boundary.
 - **A file that cannot be read.**
 
-**The weekend is not a gap.** IG's GBPUSD market is open from **Sunday 21:00 to Friday 21:59 UK time**, with no daily break. That is stated on IG's own page (source quoted in `docs/SETTINGS.md`) and set in the settings file under `[market_hours]`. No candles are expected between Friday 22:00 and Sunday 21:00, so a missing candle is a gap only if it falls inside market hours.
+**The weekend is not a gap.** IG's GBPUSD market opens on **Sunday at 21:00 UK time** and closes on **Friday at 17:00 New York time**, with no daily break. In UK time the close is 22:00 most of the year, and 21:00 in the weeks when US clocks are on summer time and the UK's are not. This rule comes from IG's published hours together with IG's own candles from the history fill. Both sources, and the three rules tested against them, are in `docs/SETTINGS.md`. It is set under `[market_hours]`. No candles are expected between the close and the open, so a missing candle is a gap only if it falls inside market hours.
+
+**Notes on gap records.** `gaps.csv` has a `note` column. A note can be added to a recorded gap, but gap records are never removed. The Friday 30 October 21:00 to 22:00 records carry a note saying the hour was a closed hour found under the old market-hours rule, not a real gap.
 
 ## Restarts
 
@@ -111,12 +158,13 @@ When IG's candles start arriving again, the gap already recorded is not warned a
 
 - `.venv/bin/python -m prices.run --minutes 20` runs the live price stream for 20 minutes, then logs out and reports: ticks received, the 5-minute candles stored, the store checks, and a count of every IG call (including historical price calls, which must be 0).
 - `.venv/bin/python -m ig.find_market` is the one market search. It has been run once already and should not be needed again.
+- `.venv/bin/python -m prices.history_fill plan` shows the one-off history fill plan (no IG contact). `... go` ran it once, on 6 November 2026, and it will not run again.
 
 ## The live run (6 November 2026)
 
 `.venv/bin/python -m prices.run --minutes 20` ran from 19:20:39 to 19:40:40 GMT and exited normally (exit code 0).
 
-- **Ticks:** 526 arrived. 518 had both a buy and a sell price. 8 had one price missing, and were counted and skipped (never guessed).
+- **Ticks:** 526 arrived. 518 had both a buy and a sell price. 8 had one price missing, and were counted and skipped (never guessed). The cause is not yet known: the log did not record what IG sent. A skipped tick now logs exactly what IG sent (`BID=… OFR=… UTM=…`). If the next live run shows IG sends only the price that changed, the last known price will be carried forward; until then, nothing is guessed.
 - **5-minute candles stored:** 4 (19:20, 19:25, 19:30, 19:35). Each was stored at the exact moment IG marked it finished. The candle in progress at the end (19:40) was not stored. 328 unfinished candle updates were received and none was stored.
 - **Store checks:** start-up (empty store), after each of the 4 candles, and at the end: 0 problems, 0 gaps, 0 warnings.
 - **IG calls:** 7 in total: `POST /session`, `GET /accounts`, `PUT /session` (412: already active), `DELETE /session`, 1 stream connection and 2 subscriptions. No drops, no re-logins. **Historical price calls: 0.**
@@ -127,9 +175,11 @@ None of these tests contact IG. They use a pretend price stream (`tests/technica
 
 | File | What it checks |
 |---|---|
-| `test_no_historical_prices.py` | No code can ask IG for historical prices. The IG part refuses any `/prices` address. The stream asks for no old ticks. |
+| `test_no_historical_prices.py` | No code other than the history door can ask IG for historical prices, or open the door. The IG part refuses any `/prices` address outside the door. The stream asks for no old ticks. |
+| `test_history_door.py` | The four checks, in order. **A budget that would be exceeded**, the IG floor, and **a request over the maximum size** are refused with nothing sent. **A crash just after counting** keeps the count, and it still limits the budget after a restart. A request with no reply stays counted. IG's figures are saved. **The daily record is actually written.** **A refusal writes the block marker**, with IG's reset time or the minimum. **A restart while the marker is in place** sends nothing. Expiry. An unreadable marker blocks. No exit 78. |
+| `test_history_fill.py` | IG rows: UTC times, ask = buy, bid = sell, missing prices not used. Only recorded gaps are filled, never the weekend, only missing candles, never too big. Replies never overwrite. The plan's order and sizes. The one-off fill records the gaps, fills them, is recorded as done, and can never run again. It stops if IG's times do not line up. |
 | `test_find_market.py` | The market search makes exactly one market call. The epic is in the settings file. |
 | `test_price_stream.py` | The streaming address and account are used. Both subscriptions carry buy and sell fields and no mid. Every tick is received. Only finished candles are stored. A stream that drops and comes back gets increasing waits (5, 10, 20, … 300) and never a login. The waits reset once the stream is healthy. Old connections are ignored. Re-login limits: one, then stop. Other errors reconnect with waits. The no-prices warning appears only while the market is open. No secrets appear in the logs. |
-| `test_candle_store.py` | One file per day per size, in UTC. Buy and sell are kept apart, with exact prices. Never overwritten. A different value is warned. **A crash part-way through a write**, and a crash before the rename, leave the old file whole. Data is flushed before the rename. Damaged files are never written over. Compression keeps every candle. Gaps are recorded. |
-| `test_candles_and_checks.py` | Market hours in summer and winter. Every boundary, including the joined Sunday hour. 1h, 4h, daily and weekly candles are built from 5-minute candles, buy and sell separately. Late and missing candles. Every store check: gap, **weekend gap**, duplicate, buy below sell, high below low, out of order, wrong file, misaligned, damaged. Checks after every new candle. **Restarts after 5 minutes, after 2 hours, and on Monday morning**, plus an empty store and leftover temp files. UK time on display. |
+| `test_candle_store.py` | Notes on gap records; older gap files still read. One file per day per size, in UTC. Buy and sell are kept apart, with exact prices. Never overwritten. A different value is warned. **A crash part-way through a write**, and a crash before the rename, leave the old file whole. Data is flushed before the rename. Damaged files are never written over. Compression keeps every candle. Gaps are recorded. |
+| `test_candles_and_checks.py` | Market hours checked against every first and last candle IG sent, through summer, winter and the March clock-change weeks. Every boundary, matching IG's midnight days and short Sunday candle (and the earlier joined layout as an option). New candles are never built over stored ones. 1h, 4h, daily and weekly candles are built from 5-minute candles, buy and sell separately. Late and missing candles. Every store check: gap, **weekend gap**, duplicate, buy below sell, high below low, out of order, wrong file, misaligned, damaged. Checks after every new candle. **Restarts after 5 minutes, after 2 hours, and on Monday morning**, plus an empty store and leftover temp files. UK time on display. |
 | `test_housekeeping.py` | Logs rotate by size and by age. Old logs are deleted. Limits come from the settings. Log lines are in UK time. Low disk space is warned. |

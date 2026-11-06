@@ -69,15 +69,24 @@ request_timeout_seconds = 30
 epic = "CS.D.GBPUSD.TODAY.IP"
 
 [market_hours]
-# IG's trading hours for GBPUSD, UK time. Source: IG Help Centre, "Forex
-# spread betting product details", note 1: "Normal dealing hours for all pairs
-# are from 21.00 (London time) on Sunday until 21.59 (London time) on Friday".
-# https://www.ig.com/uk/help-and-support/spread-betting-and-cfds-5064504a/products-markets-and-trading-hours-008e7240/forex-spread-betting-product-details-3134d533
-# 21:59 is written 22:00 here: the last 5-minute candle runs 21:55 to 22:00.
+# IG's trading hours for GBPUSD. Set from two sources (docs/SETTINGS.md):
+# 1. IG Help Centre, "Forex spread betting product details", note 1: "Normal
+#    dealing hours for all pairs are from 21.00 (London time) on Sunday until
+#    21.59 (London time) on Friday" (written in summer time), with the warning
+#    that clock changes "may cause the times shown to be imprecise".
+# 2. IG's own 5-minute candles from the one-off fill (25 Oct - 6 Nov 2026):
+#    opened Sun 25 Oct 21:00 GMT (17:00 New York) and Sun 1 Nov 21:00 GMT
+#    (16:00 New York), so the OPEN follows UK time; closed Fri 30 Oct at
+#    21:00 GMT = 17:00 New York (US still on summer time), so the CLOSE
+#    follows New York time.
+# So: opens Sunday 21:00 UK time; closes Friday 17:00 New York time (22:00 UK
+# most of the year, 21:00 UK when US clocks are on summer time and UK's are not).
 opens_day = "Sunday"
 opens_at = "21:00"
+opens_time_zone = "Europe/London"
 closes_day = "Friday"
-closes_at = "22:00"
+closes_at = "17:00"
+closes_time_zone = "America/New_York"
 
 [stream]
 # Waits before each reconnect after the price stream drops, in order. After
@@ -94,11 +103,15 @@ folder = "/opt/autobot/data/candles"
 # 1-hour candles start at this minute past each hour.
 hour_starts_at_minute = 0
 # 4-hour candles start at this time and every 4 hours after it.
-four_hour_starts_at = "22:00"
-# Daily candles start (and end) at this UK time.
-day_starts_at = "22:00"
+four_hour_starts_at = "00:00"
+# Daily candles start (and end) at this UK time. Midnight, to match IG's own
+# daily candles (checked against IG's daily candles from the one-off fill).
+day_starts_at = "00:00"
 # Weekly candles start on this day at day_starts_at.
 week_starts_day = "Sunday"
+# false: like IG, the first candle of the week starts at Sunday's open (so a
+# short Sunday daily candle). true: that stretch is joined onto the next candle.
+join_opening_stretch = false
 # A 1-hour, 4-hour, daily or weekly candle missing some 5-minute candles is
 # built only after waiting this long past its end for a late one.
 wait_for_late_candle_seconds = 300
@@ -112,3 +125,17 @@ log_new_file_every_hours = 24
 log_keep_files = 20
 log_max_age_days = 30
 min_free_disk_mb = 2048
+
+[history]
+# The ONLY door to IG's historical prices is ig/history.py. These are its limits.
+folder = "/opt/autobot/data/history"
+# The bot's own budget: points it may use in any 7 days (IG allows 10,000 a week).
+weekly_budget_points = 4000
+# Refuse a request if IG's last reported remaining allowance, less the request,
+# would fall below this.
+min_ig_allowance_remaining = 2000
+# The biggest request allowed, in points (one point = one candle).
+max_points_per_request = 500
+# After IG refuses a request because of the allowance, block every history
+# request for at least this long (longer if IG's reset time is later).
+min_block_hours = 24

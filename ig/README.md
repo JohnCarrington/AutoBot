@@ -8,7 +8,7 @@
 - Never log in in a loop, or have more than one login going at a time.
 - Never carry on with an account other than `IG_ACCOUNT_ID`.
 - Never place, change or close a trade by itself.
-- **Never ask IG for historical prices.** Any `/prices` call is refused before it is sent.
+- **Never ask IG for historical prices except through the history door** (`history.py`), which checks the block marker, the weekly budget, IG's allowance floor and the maximum size, and counts the points before sending. Any other `/prices` call is refused before it is sent.
 - Never reconnect the price stream in a fast loop, and never log in again because the stream dropped.
 
 Rules in full: `docs/IG_CONNECTION.md`. One real check: `.venv/bin/python -m ig.check`.

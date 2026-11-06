@@ -6,6 +6,7 @@ import sys
 import tomllib
 from datetime import time
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import pytest
 
@@ -63,8 +64,10 @@ EXPECTED = {
     "market_hours": {
         "opens_day": 6,              # Sunday (Monday is 0)
         "opens_at": time(21, 0),
+        "opens_time_zone": ZoneInfo("Europe/London"),
         "closes_day": 4,             # Friday
-        "closes_at": time(22, 0),
+        "closes_at": time(17, 0),
+        "closes_time_zone": ZoneInfo("America/New_York"),
     },
     "stream": {
         "reconnect_waits_seconds": (5, 10, 20, 40, 80, 160, 300),
@@ -74,9 +77,10 @@ EXPECTED = {
     "candles": {
         "folder": Path("/opt/autobot/data/candles"),
         "hour_starts_at_minute": 0,
-        "four_hour_starts_at": time(22, 0),
-        "day_starts_at": time(22, 0),
+        "four_hour_starts_at": time(0, 0),
+        "day_starts_at": time(0, 0),
         "week_starts_day": 6,        # Sunday
+        "join_opening_stretch": False,
         "wait_for_late_candle_seconds": 300,
         "compress_after_days": 30,
     },
@@ -87,6 +91,13 @@ EXPECTED = {
         "log_keep_files": 20,
         "log_max_age_days": 30,
         "min_free_disk_mb": 2048,
+    },
+    "history": {
+        "folder": Path("/opt/autobot/data/history"),
+        "weekly_budget_points": 4000,
+        "min_ig_allowance_remaining": 2000,
+        "max_points_per_request": 500,
+        "min_block_hours": 24,
     },
     "ig": {
         "demo_base_url": "https://demo-api.ig.com/gateway/deal",
@@ -230,6 +241,8 @@ INVALID = [
     ("market", "epic", "GBPUSD", "must be an IG epic"),
     ("market_hours", "opens_day", "Sun", "must be a day name"),
     ("market_hours", "closes_at", "21:59", "5-minute mark"),
+    ("market_hours", "closes_time_zone", "UTC", "must be 'Europe/London' or 'America/New_York'"),
+    ("market_hours", "opens_time_zone", "Asia/Tokyo", "must be 'Europe/London' or 'America/New_York'"),
     ("stream", "reconnect_waits_seconds", [], "non-empty list"),
     ("stream", "no_prices_warning_seconds", 0, "must be between"),
     ("candles", "folder", "data/candles", "full folder path"),
@@ -240,6 +253,10 @@ INVALID = [
     ("housekeeping", "log_max_file_mb", 0, "must be between"),
     ("housekeeping", "log_keep_files", 0, "must be between"),
     ("housekeeping", "min_free_disk_mb", 0, "must be between"),
+    ("history", "weekly_budget_points", 9000, "must be between"),
+    ("history", "max_points_per_request", 0, "must be between"),
+    ("history", "min_block_hours", 0, "must be between"),
+    ("history", "folder", "history", "full folder path"),
 ]
 
 
@@ -297,9 +314,10 @@ def test_close_time_not_before_last_new_trade(tmp_path):
 
 @pytest.mark.parametrize("section,key,value,message", [
     ("stream", "reconnect_waits_seconds", [60, 5], "must go up"),
-    ("candles", "four_hour_starts_at", "21:00", "must line up with day_starts_at"),
-    ("candles", "day_starts_at", "22:05", "must start on an hour boundary"),
+    ("candles", "four_hour_starts_at", "01:00", "must line up with day_starts_at"),
+    ("candles", "day_starts_at", "00:05", "must start on an hour boundary"),
     ("market_hours", "closes_day", "Sunday", "must be different days"),
+    ("history", "weekly_budget_points", 400, "must not be bigger than weekly_budget_points"),
 ])
 def test_candle_and_stream_settings_must_fit_together(tmp_path, section, key, value, message):
     data = _raw()

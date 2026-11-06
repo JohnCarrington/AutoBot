@@ -38,10 +38,58 @@ def store(tmp_path, warnings):
 
 # ---- market hours ---------------------------------------------------------------
 
-def test_market_hours_come_from_igs_published_hours_in_the_settings_file():
+def test_market_hours_in_the_settings_file():
     mh = SETTINGS.market_hours
-    assert (str(mh.opens_day), mh.opens_at.strftime("%H:%M")) == ("Sunday", "21:00")
-    assert (str(mh.closes_day), mh.closes_at.strftime("%H:%M")) == ("Friday", "22:00")
+    assert (str(mh.opens_day), mh.opens_at.strftime("%H:%M"), str(mh.opens_time_zone)) == \
+        ("Sunday", "21:00", "Europe/London")
+    assert (str(mh.closes_day), mh.closes_at.strftime("%H:%M"), str(mh.closes_time_zone)) == \
+        ("Friday", "17:00", "America/New_York")
+
+
+# What IG's own 5-minute candles showed (the one-off fill, 25 Oct - 6 Nov 2026):
+# first and last candle of each trading week. The rule must agree with every one.
+IG_EVIDENCE = [
+    ("Sun 25 Oct: last minute before IG's first candle", T(2026, 10, 25, 20, 55), False),
+    ("Sun 25 Oct: IG's first candle, 21:00 GMT = 17:00 New York", T(2026, 10, 25, 21, 0), True),
+    ("Fri 30 Oct: IG's last candle, 20:55 GMT", T(2026, 10, 30, 20, 55), True),
+    ("Fri 30 Oct: no IG candle at 21:00 GMT = 17:00 New York", T(2026, 10, 30, 21, 0), False),
+    ("Fri 30 Oct: no IG candle at 21:55 GMT", T(2026, 10, 30, 21, 55), False),
+    ("Sun 1 Nov: before IG's first candle", T(2026, 11, 1, 20, 55), False),
+    ("Sun 1 Nov: IG's first candle, 21:00 GMT = 16:00 New York", T(2026, 11, 1, 21, 0), True),
+    ("Every weeknight 21:00-22:55 UK: IG candles present", T(2026, 10, 27, 22, 0), True),
+]
+
+
+@pytest.mark.parametrize("what, t, is_open", IG_EVIDENCE, ids=[e[0] for e in IG_EVIDENCE])
+def test_market_hours_agree_with_what_igs_candles_showed(what, t, is_open):
+    assert HOURS.is_open(t) is is_open, what
+
+
+@pytest.mark.parametrize("what, t, is_open", [
+    # IG's page (summer): "21.00 (London time) on Sunday until 21.59 (London time) on Friday"
+    ("summer Sunday 21:00 BST opens", T(2026, 7, 12, 20, 0), True),
+    ("summer Sunday 20:55 BST still closed", T(2026, 7, 12, 19, 55), False),
+    ("summer Friday 21:55 BST last candle", T(2026, 7, 10, 20, 55), True),
+    ("summer Friday 22:00 BST = 17:00 New York closed", T(2026, 7, 10, 21, 0), False),
+    # Winter, both on standard time: close 22:00 GMT = 17:00 New York (expected tonight, 6 Nov)
+    ("winter Friday 21:55 GMT last candle", T(2026, 11, 6, 21, 55), True),
+    ("winter Friday 22:00 GMT closed", T(2026, 11, 6, 22, 0), False),
+    # March 2027: US summer time from 14 Mar, UK from 28 Mar -> close 21:00 GMT, open 21:00 GMT
+    ("March gap week Friday 21:00 GMT = 17:00 New York closed", T(2027, 3, 19, 21, 0), False),
+    ("March gap week Friday 20:55 GMT open", T(2027, 3, 19, 20, 55), True),
+    ("March gap week Sunday 21:00 GMT opens", T(2027, 3, 21, 21, 0), True),
+])
+def test_market_hours_through_the_year(what, t, is_open):
+    assert HOURS.is_open(t) is is_open, what
+
+
+def test_the_weekend_after_fri_30_oct_is_not_a_gap_but_a_missing_hour_before_it_would_be(store):
+    fill(store, T(2026, 10, 30, 19), T(2026, 10, 30, 21))     # IG's last candle 20:55 GMT
+    fill(store, T(2026, 11, 1, 21), T(2026, 11, 1, 22))
+    assert check_store(store, B).gaps == []
+    weekly = B.bucket("1w", T(2026, 10, 28, 12))
+    assert weekly == (T(2026, 10, 25, 21), T(2026, 10, 30, 21))
+    assert B.expected_parts(*weekly) == 1440                   # exactly what IG sent that week
 
 
 @pytest.mark.parametrize("t, is_open", [
@@ -50,7 +98,7 @@ def test_market_hours_come_from_igs_published_hours_in_the_settings_file():
     (T(2026, 11, 7, 12, 0), False),    # Saturday
     (T(2026, 11, 8, 20, 55), False),   # Sunday before the open
     (T(2026, 11, 8, 21, 0), True),     # Sunday open
-    (T(2026, 7, 10, 20, 55), True),    # summer Friday 21:55 BST
+    (T(2026, 7, 10, 20, 55), True),    # summer Friday 21:55 BST (= 16:55 New York)
     (T(2026, 7, 10, 21, 0), False),    # summer Friday 22:00 BST
     (T(2026, 7, 12, 20, 0), True),     # summer Sunday 21:00 BST
 ])
@@ -60,36 +108,55 @@ def test_market_hours_are_uk_time_in_summer_and_winter(t, is_open):
 
 # ---- boundaries -------------------------------------------------------------------
 
-def test_candle_boundaries():
+def test_candle_boundaries_match_igs_midnight_uk_days():
     wed = T(2026, 11, 4, 10, 37)
     assert B.bucket("1h", wed) == (T(2026, 11, 4, 10), T(2026, 11, 4, 11))
-    assert B.bucket("4h", wed) == (T(2026, 11, 4, 10), T(2026, 11, 4, 14))
-    assert B.bucket("1d", wed) == (T(2026, 11, 3, 22), T(2026, 11, 4, 22))
+    assert B.bucket("4h", wed) == (T(2026, 11, 4, 8), T(2026, 11, 4, 12))
+    assert B.bucket("1d", wed) == (T(2026, 11, 4, 0), T(2026, 11, 5, 0))
     assert B.bucket("1w", wed) == (T(2026, 11, 1, 21), T(2026, 11, 6, 22))
 
 
-def test_sundays_opening_hour_is_joined_onto_monday_not_a_tiny_candle():
+def test_sundays_opening_is_its_own_short_candle_like_igs():
     sun = T(2026, 11, 8, 21, 30)
     assert B.bucket("1h", sun) == (T(2026, 11, 8, 21), T(2026, 11, 8, 22))
-    assert B.bucket("4h", sun) == (T(2026, 11, 8, 21), T(2026, 11, 9, 2))
-    assert B.bucket("4h", T(2026, 11, 9, 1, 0)) == (T(2026, 11, 8, 21), T(2026, 11, 9, 2))
-    assert B.bucket("1d", sun) == (T(2026, 11, 8, 21), T(2026, 11, 9, 22))
-    assert B.bucket("1d", T(2026, 11, 9, 15)) == (T(2026, 11, 8, 21), T(2026, 11, 9, 22))
+    assert B.bucket("4h", sun) == (T(2026, 11, 8, 21), T(2026, 11, 9, 0))
+    assert B.bucket("1d", sun) == (T(2026, 11, 8, 21), T(2026, 11, 9, 0))      # IG's Sunday daily candle
+    assert B.bucket("1d", T(2026, 11, 9, 15)) == (T(2026, 11, 9, 0), T(2026, 11, 10, 0))
     assert B.bucket("1w", sun) == (T(2026, 11, 8, 21), T(2026, 11, 13, 22))
+    assert B.expected_parts(T(2026, 11, 8, 21), T(2026, 11, 9, 0)) == 36
+
+
+def test_fridays_daily_candle_ends_at_the_close():
+    assert B.bucket("1d", T(2026, 11, 6, 12)) == (T(2026, 11, 6, 0), T(2026, 11, 6, 22))
+    assert B.bucket("1d", T(2026, 10, 30, 12)) == (T(2026, 10, 30, 0), T(2026, 10, 30, 21))   # 17:00 New York
 
 
 def test_boundaries_follow_uk_time_in_summer():
     wed = T(2026, 7, 8, 10, 0)   # 11:00 BST
-    assert B.bucket("1d", wed) == (T(2026, 7, 7, 21), T(2026, 7, 8, 21))   # 22:00 BST to 22:00 BST
-    assert B.bucket("4h", wed) == (T(2026, 7, 8, 9), T(2026, 7, 8, 13))    # 10:00 to 14:00 BST
+    assert B.bucket("1d", wed) == (T(2026, 7, 7, 23), T(2026, 7, 8, 23))   # midnight BST to midnight BST
+    assert B.bucket("4h", wed) == (T(2026, 7, 8, 7), T(2026, 7, 8, 11))    # 08:00 to 12:00 BST
 
 
 def test_boundaries_are_settings():
     c = SETTINGS.candles
     assert c.hour_starts_at_minute == 0
-    assert c.four_hour_starts_at.strftime("%H:%M") == "22:00"
-    assert c.day_starts_at.strftime("%H:%M") == "22:00"
+    assert c.four_hour_starts_at.strftime("%H:%M") == "00:00"
+    assert c.day_starts_at.strftime("%H:%M") == "00:00"
     assert str(c.week_starts_day) == "Sunday"
+    assert c.join_opening_stretch is False
+
+
+def test_the_other_layout_still_works_when_set_22_00_days_with_sunday_joined_to_monday():
+    from types import SimpleNamespace
+    from datetime import time
+    c = SimpleNamespace(hour_starts_at_minute=0, four_hour_starts_at=time(22), day_starts_at=time(22),
+                        week_starts_day=SETTINGS.candles.week_starts_day, join_opening_stretch=True)
+    b = Boundaries(c, HOURS)
+    sun = T(2026, 11, 8, 21, 30)
+    assert b.bucket("4h", sun) == (T(2026, 11, 8, 21), T(2026, 11, 9, 2))
+    assert b.bucket("1d", sun) == (T(2026, 11, 8, 21), T(2026, 11, 9, 22))
+    assert b.bucket("1d", T(2026, 11, 9, 15)) == (T(2026, 11, 8, 21), T(2026, 11, 9, 22))
+    assert b.bucket("1w", sun) == (T(2026, 11, 8, 21), T(2026, 11, 13, 22))
 
 
 # ---- building bigger candles --------------------------------------------------------
@@ -131,15 +198,26 @@ def test_daily_and_weekly_candles_cover_the_whole_trading_week(store, warnings):
     built = build_due(store, B, T(2026, 11, 6, 22, 0, 10), 300, warnings.append)
     days = [c for c in built if c.timeframe == "1d"]
     weeks = [c for c in built if c.timeframe == "1w"]
-    assert [(c.start, c.end) for c in days] == [
-        (T(2026, 11, 1, 21), T(2026, 11, 2, 22)), (T(2026, 11, 2, 22), T(2026, 11, 3, 22)),
-        (T(2026, 11, 3, 22), T(2026, 11, 4, 22)), (T(2026, 11, 4, 22), T(2026, 11, 5, 22)),
-        (T(2026, 11, 5, 22), T(2026, 11, 6, 22))]
-    assert days[0].parts == days[0].expected_parts == 300
+    assert [(c.start, c.end, c.parts) for c in days] == [
+        (T(2026, 11, 1, 21), T(2026, 11, 2), 36),            # IG's short Sunday candle
+        (T(2026, 11, 2), T(2026, 11, 3), 288), (T(2026, 11, 3), T(2026, 11, 4), 288),
+        (T(2026, 11, 4), T(2026, 11, 5), 288), (T(2026, 11, 5), T(2026, 11, 6), 288),
+        (T(2026, 11, 6), T(2026, 11, 6, 22), 264)]           # Friday, to the close
+    assert all(c.parts == c.expected_parts for c in days)
     assert [(c.start, c.end, c.parts) for c in weeks] == [(T(2026, 11, 1, 21), T(2026, 11, 6, 22), 1452)]
-    assert len([c for c in built if c.timeframe == "4h"]) == 30
+    assert len([c for c in built if c.timeframe == "4h"]) == 1 + 24 + 6
     assert warnings == []
     assert check_store(store, B).problems == []
+
+
+def test_new_candles_are_never_built_over_ones_already_stored(store, warnings):
+    """Candles built before a boundary change are kept; nothing new overlaps them."""
+    fill(store, T(2026, 11, 2, 0), T(2026, 11, 3, 12))
+    old = five(T(2026, 11, 1, 22), tf="1d", minutes=24 * 60)   # an old-style 22:00 to 22:00 daily candle
+    store.add(old)
+    built = build_due(store, B, T(2026, 11, 3, 12), 300, warnings.append)
+    assert [c.start for c in built if c.timeframe == "1d"] == []   # 2 Nov 00:00 would overlap: not built
+    assert store.get("1d", T(2026, 11, 2)) is None and store.get("1d", T(2026, 11, 1, 22)) == old
 
 
 # ---- the store checks ----------------------------------------------------------------

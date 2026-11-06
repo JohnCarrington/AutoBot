@@ -53,8 +53,14 @@ def build_due(store: CandleStore, b: Boundaries, now: datetime, wait_seconds: in
                 buckets[(s, e)] = store.read_range("5m", s, e)
         latest_five = max((c.start for c in fives), default=None)
         for (s, e), parts in sorted(buckets.items()):
-            parts = sorted((p for p in parts if s <= p.start < e), key=lambda c: c.start)
-            if not parts or e > now:
+            if e > now:
+                continue
+            if newest is not None and s < newest.end and store.get(tf, s) is None:
+                # It would overlap a candle already stored (for example one built
+                # before the boundaries were changed). Stored candles are kept.
+                continue
+            parts = store.read_range("5m", s, e)  # every stored 5-minute candle in it
+            if not parts:
                 continue
             expected = b.expected_parts(s, e)
             moved_on = latest_five is not None and latest_five >= e

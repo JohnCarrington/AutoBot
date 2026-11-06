@@ -10,6 +10,7 @@ from __future__ import annotations
 import logging
 import threading
 import time
+from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import Any, Callable
 
@@ -17,6 +18,7 @@ import requests
 
 from ig.errors import (
     ALREADY_ACTIVE,
+    HISTORY_ALLOWANCE_EXCEEDED,
     CLIENT_TOKEN_INVALID,
     SESSION_EXPIRED,
     SLOWED_DOWN,
@@ -31,7 +33,8 @@ log = logging.getLogger("autobot.ig")
 
 
 class HistoricalPricesForbidden(RuntimeError):
-    """The bot never asks IG for historical prices. Any attempt is a bug."""
+    """Historical prices may only be asked for through the history door
+    (ig/history.py). Any other attempt is refused before anything is sent."""
 
 
 def is_historical_prices_path(path: str) -> bool:
@@ -135,6 +138,9 @@ class IGClient:
         self._login_lock = threading.Lock()
         self._session_number = 0  # goes up by one at every successful login
         self.calls: list[CallRecord] = []
+        # Open only while ig/history.py sends one request that passed its checks.
+        self._history_door = threading.local()
+        self._history_door.is_open = False
 
     # ---- state ----------------------------------------------------------
 
@@ -165,10 +171,11 @@ class IGClient:
     def _send(self, method: str, path: str, version: str, body: Any = None,
               with_session: bool = True) -> Any:
         """One HTTP request. Raises IGRequestError on a network problem."""
-        if is_historical_prices_path(path):
+        if is_historical_prices_path(path) and not (getattr(self._history_door, "is_open", False) and method == "GET"):
             # Refused before anything is sent, and not recorded as a call.
             raise HistoricalPricesForbidden(
-                f"Refused {method} {path.split('?', 1)[0]}: the bot never asks IG for historical prices.")
+                f"Refused {method} {path.split('?', 1)[0]}: historical prices may only be asked for "
+                "through the history door (ig/history.py).")
         try:
             response = self._http.request(
                 method, self.base_url + path,
@@ -293,6 +300,8 @@ class IGClient:
                 tries.may_relogin(short, r.status_code)
                 self._relogin(seen)
                 continue
+            if short in HISTORY_ALLOWANCE_EXCEEDED:
+                return r  # not a login problem: the history door handles it (block marker)
             if r.status_code in (401, 403):
                 raise IGLoginFailure(short or f"http-{r.status_code}",
                                      f"IG refused {what} (HTTP {r.status_code}). No retry.")
@@ -364,6 +373,16 @@ class IGClient:
         if not 200 <= r.status_code < 300:
             raise IGRequestError(what, r.status_code, error_code_of(r))
         return r
+
+    @contextmanager
+    def _open_history_door(self):
+        """Used ONLY by ig/history.py, around one request that has passed every
+        check there. A test fails if any other code uses it."""
+        self._history_door.is_open = True
+        try:
+            yield
+        finally:
+            self._history_door.is_open = False
 
     # ---- for the price stream (ig/stream.py) ---------------------------------
 

@@ -44,17 +44,20 @@ All settings live in one file: `config/settings.toml`. The code that loads and c
 | `ig.request_timeout_seconds` | How long to wait for IG to reply to one call before giving up on it. | 30 seconds |
 | `market.epic` | IG's name for the one market the bot streams: GBPUSD on the spread bet account. Found with one IG market search (`GET /markets?searchTerm=GBPUSD`) on 6 November 2026: "GBP/USD", expiry DFB (daily funded bet), status TRADEABLE. | `CS.D.GBPUSD.TODAY.IP` |
 | `market_hours.opens_day` | The day IG's GBPUSD market opens each week. | Sunday |
-| `market_hours.opens_at` | The time it opens (UK time). From IG's own page (see below). | 21:00 |
+| `market_hours.opens_at` | The time it opens, in `opens_time_zone`. From IG's page and IG's own candles (see below). | 21:00 |
+| `market_hours.opens_time_zone` | The time zone of `opens_at`. IG's open follows UK time all year (see below). | `Europe/London` (UK time) |
 | `market_hours.closes_day` | The day IG's GBPUSD market closes each week. | Friday |
-| `market_hours.closes_at` | The time it closes (UK time). IG says "until 21.59"; written 22:00 because the last 5-minute candle runs 21:55 to 22:00. | 22:00 |
+| `market_hours.closes_at` | The time it closes, in `closes_time_zone`: the last 5-minute candle ends then. | 17:00 |
+| `market_hours.closes_time_zone` | The time zone of `closes_at`. IG's close follows New York time (see below): 22:00 UK time most of the year, 21:00 UK time in the weeks when US clocks are on summer time and the UK's are not. This is the one setting that is not in UK time. | `America/New_York` |
 | `stream.reconnect_waits_seconds` | After the price stream drops, how long to wait before each reconnect, in order. After the last one, every further wait is the last value. Must go up. | 5, 10, 20, 40, 80, 160, 300 seconds |
 | `stream.no_prices_warning_seconds` | Write a warning if no prices arrive for this long while the market is open. | 120 seconds |
 | `stream.healthy_after_minutes` | Once the stream has stayed connected this long, the reconnect waits start again from the first one, and one more controlled re-login is allowed. | 60 minutes |
 | `candles.folder` | Where the candle store is kept. | `/opt/autobot/data/candles` |
 | `candles.hour_starts_at_minute` | 1-hour candles start at this many minutes past each hour. | 0 (on the hour) |
-| `candles.four_hour_starts_at` | 4-hour candles start at this time and every 4 hours after it. Must line up with `day_starts_at`. | 22:00 (so 22:00, 02:00, 06:00, 10:00, 14:00, 18:00) |
-| `candles.day_starts_at` | Daily candles start and end at this time. | 22:00 |
+| `candles.four_hour_starts_at` | 4-hour candles start at this time and every 4 hours after it. Must line up with `day_starts_at`. | 00:00 (so 00:00, 04:00, 08:00, 12:00, 16:00, 20:00) |
+| `candles.day_starts_at` | Daily candles start and end at this UK time. Midnight, to match IG's own daily candles. | 00:00 |
 | `candles.week_starts_day` | Weekly candles start on this day at `day_starts_at`. | Sunday |
+| `candles.join_opening_stretch` | `false`: like IG, the first candle of the week starts at Sunday's open, so there is a short Sunday daily candle (21:00 to midnight UK) and a short first 4-hour candle. `true`: that stretch is joined onto the following candle instead. | `false` |
 | `candles.wait_for_late_candle_seconds` | A 1-hour, 4-hour, daily or weekly candle that is missing some 5-minute candles is built only after waiting this long past its end (unless a later 5-minute candle has already arrived). | 300 seconds |
 | `candles.compress_after_days` | Candle files older than this many days are compressed. Candles are never deleted. | 30 days |
 | `housekeeping.log_folder` | Where log files are written. | `/opt/autobot/logs` |
@@ -63,29 +66,65 @@ All settings live in one file: `config/settings.toml`. The code that loads and c
 | `housekeeping.log_keep_files` | How many old log files are kept for each log. Older ones are deleted. | 20 |
 | `housekeeping.log_max_age_days` | Old log files older than this are deleted. | 30 days |
 | `housekeeping.min_free_disk_mb` | Write a warning if free disk space falls below this. | 2048 MB |
+| `history.folder` | Where the history door keeps its records: the points ledger, IG's last figures, the daily record and the block marker. | `/opt/autobot/data/history` |
+| `history.weekly_budget_points` | The bot's own budget for IG historical prices: the most points it may use in any 7 days (one point per candle). IG's own allowance is 10,000 a week; this is kept well below it, and may not be set above 5,000. | 4000 points |
+| `history.min_ig_allowance_remaining` | Safety floor: a history request is refused if IG's last reported remaining allowance, less the request, would fall below this. | 2000 points |
+| `history.max_points_per_request` | The biggest history request allowed. | 500 points |
+| `history.min_block_hours` | After IG refuses a history request because the allowance is used up, nothing more is asked for at least this long (longer if IG's reset time is later). | 24 hours |
 
 ## Where the market hours come from
 
-IG Help Centre, **"Forex spread betting product details"**, note 1 (page dated 8 September 2026, read on 6 November 2026):
+The rule is: **IG's GBPUSD market opens on Sunday at 21:00 UK time and closes on Friday at 17:00 New York time**, with no daily break. In UK time the close is 22:00 most of the year, but 21:00 in the few weeks each year when US clocks are on summer time and the UK's are not (from the second Sunday of March to the last Sunday of March, and from the last Sunday of October to the first Sunday of November).
+
+It comes from two sources.
+
+**1. IG's published hours.** IG Help Centre, **"Forex spread betting product details"**, note 1 (page dated 8 September 2026, read on 6 November 2026):
 
 > "Normal dealing hours for all pairs are from 21.00 (London time) on Sunday until 21.59 (London time) on Friday, with the exception of emerging-market pairs, which operate on different schedules."
 >
-> "All dealing times listed are London times."
+> "All dealing times listed are London times." … "Please note that Daylight Savings Time in the UK or the country of origin may cause the times shown to be imprecise."
 
 https://www.ig.com/uk/help-and-support/spread-betting-and-cfds-5064504a/products-markets-and-trading-hours-008e7240/forex-spread-betting-product-details-3134d533
 
-The same page lists no daily break for GBP/USD. IG's own market details call could have given the hours, but this stage allows only the one market search call, so the hours come from IG's published page instead.
+**2. IG's own 5-minute candles** from the one-off history fill (25 October to 6 November 2026), looking at IG's first and last candle each week:
 
-Two things to know:
+| What IG's candles showed | UK time | New York time |
+|---|---|---|
+| First candle, Sunday 25 October | 21:00 GMT | 17:00 EDT |
+| Last candle ended, Friday 30 October | 21:00 GMT | 17:00 EDT |
+| First candle, Sunday 1 November | 21:00 GMT | 16:00 EST |
+| Every weeknight, 21:00 to 22:55 UK time | all 24 candles present | (no daily break) |
 
-- **Clock changes.** The same page says: "Daylight Savings Time in the UK or the country of origin may cause the times shown to be imprecise." For a few weeks each year (March, and late October to early November) the UK and US clocks change on different dates, and the real open or close may move by an hour. If that happens, the store checks will show it as a gap (or a candle outside market hours). The times here can then be corrected.
-- **Holidays.** IG does not open on Christmas Day or New Year's Day, and hours can be shorter around UK and US holidays. Those days are not in the settings, so they will show up as gaps in the store checks. They are warnings only; nothing is filled.
+The week of 25 October is one of the weeks when US clocks were still on summer time but the UK's were not.
+
+- **The open follows UK time.** It was 21:00 UK on both Sundays, although New York time was 17:00 one week and 16:00 the next.
+- **The close follows New York time.** On Friday 30 October IG's last candle ended at 21:00 GMT (17:00 New York), not at 22:00 as IG's page says. IG's page was written in summer, when 17:00 New York is 22:00 UK time ("until 21.59"), so the page and the candles agree.
+- **These three rules were tested against the evidence:**
+
+| Rule | 25 Oct open | 30 Oct close | 1 Nov open |
+|---|---|---|---|
+| IG's page as written (21:00 UK / 22:00 UK) | fits | **wrong** | fits |
+| Both in New York time (16:00 / 17:00 New York) | **wrong** | fits | fits |
+| **21:00 UK / 17:00 New York (used)** | fits | fits | fits |
+
+**Not yet seen:** a Friday close in normal winter time. The rule says 22:00 GMT, the first being 6 November 2026. The data from the fill ends at 20:00 that day, because that is when the fill ran. The reopen on Sunday 8 November at 21:00 GMT will be checked live.
+
+**Holidays.** IG does not open on Christmas Day or New Year's Day, and hours can be shorter around UK and US holidays. Those days are not in the settings, so they will show up as gaps in the store checks. They are warnings only; nothing is filled automatically.
 
 ## How the candle boundaries were chosen
 
-- **1-hour candles start on the hour.** UK time and UTC differ by whole hours, so an hour is the same in both. This is the usual choice and matches IG's charts.
-- **Daily candles run from 22:00 to 22:00 UK time.** The forex day is normally taken to end at 5pm New York time, which is 22:00 UK time for most of the year. It is also exactly when IG's market closes on Friday. So the last daily candle of the week ends at the close, and each week has five daily candles, Monday to Friday. (Midnight would have given a small sixth candle on Sunday night and cut the evening session in two.)
-- **The first hour of the week is joined onto Monday.** IG opens at 21:00 on Sunday, an hour before the 22:00 boundary. Rather than make a one-hour "Sunday" daily candle, that hour is joined onto Monday's daily candle, which therefore runs from Sunday 21:00 to Monday 22:00. In the same way, the first 4-hour candle of the week runs from Sunday 21:00 to Monday 02:00, and the weekly candle starts at Sunday 21:00.
-- **4-hour candles start at 22:00, 02:00, 06:00, 10:00, 14:00 and 18:00 UK time,** so that exactly six of them fit into each day.
-- **Weekly candles run from Sunday's open to Friday's close.** No candle ever runs past Friday's close.
-- **Each candle file is named after the UTC date of the candle's start.** For example, Tuesday's daily candle starts at 22:00 on Monday, so it is in Monday's file.
+The boundaries **match IG's own candles**. This was checked against IG's daily candles from the one-off history fill (25 October to 6 November 2026).
+
+- **Daily candles run from midnight to midnight UK time (00:00 to 00:00),** exactly as IG's do.
+  - IG's daily candles started at 00:00 UK time every day, including 00:00 BST on Sunday 25 October, just before the clocks changed.
+  - Daily candles built from the bot's own stored 5-minute candles on the same midnight boundaries matched IG's on **all 8 prices for all 11 complete days**. The twelfth, Friday 6 November, was still in progress when IG was asked.
+- **There is a short Sunday daily candle,** 21:00 to midnight UK, because IG has one. (`candles.join_opening_stretch = false`.)
+- **Friday's daily candle ends at the close:** 22:00 UK, or 21:00 UK when 17:00 New York is 21:00 UK.
+- **1-hour candles start on the hour.** UK time and UTC differ by whole hours, so an hour is the same in both.
+- **4-hour candles start at 00:00, 04:00, 08:00, 12:00, 16:00 and 20:00 UK time,** so six fit into each day. The first of the week runs 21:00 to midnight on Sunday.
+- **Weekly candles run from Sunday's open to Friday's close.**
+- **Each candle file is named after the UTC date of the candle's start.** In summer, a UK day starts at 23:00 UTC the evening before, so that day's daily candle is in the previous date's file.
+
+**The earlier layout.** Until 6 November 2026 the boundaries were 22:00 to 22:00 UK, with Sunday's first hour joined onto Monday. That layout is still available by setting `day_starts_at = "22:00"`, `four_hour_starts_at = "22:00"` and `join_opening_stretch = true`.
+
+The 1-hour, 4-hour, daily and weekly candles first built under that layout were **moved, not deleted**, to `/opt/autobot/data/candles/archive_22h_layout/` on 6 November 2026. They were then rebuilt from the stored 5-minute candles on IG's boundaries. A new bigger candle is never built over one already stored.

@@ -41,6 +41,14 @@ STOP_AT_ONCE = frozenset({
     "invalid-details",
 })
 
+# IG refused a historical prices request because the weekly historical data
+# allowance is used up. Not a login problem: it goes back to the history door
+# (ig/history.py), which writes the block marker. Never a reason to stop or retry.
+HISTORY_ALLOWANCE_EXCEEDED = frozenset({
+    "exceeded-account-historical-data-allowance",
+    "exceeded-historical-data-allowance",
+})
+
 # Reply to a switch when the account is already the active one. Not an error.
 ALREADY_ACTIVE = "accountid-must-be-different"
 

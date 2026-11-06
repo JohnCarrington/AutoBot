@@ -155,6 +155,12 @@ def _epic(v: Any) -> str:
     return v
 
 
+def _market_time_zone(v: Any) -> ZoneInfo:
+    if v not in ("Europe/London", "America/New_York"):
+        raise ValueError(f"must be 'Europe/London' or 'America/New_York', got {v!r}")
+    return ZoneInfo(v)
+
+
 def _absolute_folder(v: Any) -> Path:
     if not isinstance(v, str) or not v.startswith("/"):
         raise ValueError(f"must be a full folder path starting with '/', got {v!r}")
@@ -228,8 +234,10 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "market_hours": {
         "opens_day": _weekday,
         "opens_at": _clock_time_on_5_minutes,
+        "opens_time_zone": _market_time_zone,
         "closes_day": _weekday,
         "closes_at": _clock_time_on_5_minutes,
+        "closes_time_zone": _market_time_zone,
     },
     "stream": {
         "reconnect_waits_seconds": _whole_numbers(1, 600),
@@ -242,6 +250,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "four_hour_starts_at": _clock_time_on_5_minutes,
         "day_starts_at": _clock_time_on_5_minutes,
         "week_starts_day": _weekday,
+        "join_opening_stretch": _yes_no,
         "wait_for_late_candle_seconds": _whole_number(0, 3600),
         "compress_after_days": _whole_number(8, 3650),
     },
@@ -252,6 +261,14 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "log_keep_files": _whole_number(1, 1000),
         "log_max_age_days": _whole_number(1, 3650),
         "min_free_disk_mb": _whole_number(100, 1_000_000),
+    },
+    "history": {
+        "folder": _absolute_folder,
+        # "well below IG's 10,000"
+        "weekly_budget_points": _whole_number(1, 5000),
+        "min_ig_allowance_remaining": _whole_number(0, 10000),
+        "max_points_per_request": _whole_number(1, 1000),
+        "min_block_hours": _whole_number(1, 24 * 14),
     },
     "ig": {
         # Demo only: the bot refuses to start with any other address.
@@ -318,6 +335,9 @@ def _check_candles_together(v: dict[str, dict[str, Any]]) -> None:
     if four.minute != day.minute or (four.hour - day.hour) % 4:
         raise SettingsError("Setting [candles] four_hour_starts_at must line up with day_starts_at, "
                             "so that 4-hour candles fit exactly into each day.")
+    h = v["history"]
+    if h["max_points_per_request"] > h["weekly_budget_points"]:
+        raise SettingsError("Setting [history] max_points_per_request must not be bigger than weekly_budget_points.")
     if mh["opens_day"] == mh["closes_day"]:
         raise SettingsError("Settings [market_hours] opens_day and closes_day must be different days.")
 

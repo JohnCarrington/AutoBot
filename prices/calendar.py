@@ -1,7 +1,10 @@
 """When the market is open, and where candle boundaries go.
 
-Market hours (settings [market_hours], UK time): the market opens once a week
-(Sunday 21:00) and closes once a week (Friday 22:00), with no break in between.
+Market hours (settings [market_hours]): the market opens once a week (Sunday
+21:00 UK time) and closes once a week (Friday 17:00 New York time, which is
+22:00 UK most of the year and 21:00 UK when US clocks are on summer time and
+the UK's are not), with no break in between. Each time has its own time zone
+setting; the evidence is in docs/SETTINGS.md.
 The time between the close and the next open is the weekend: no candles are
 expected then, so it is never a gap.
 
@@ -12,8 +15,13 @@ Candle boundaries (settings [candles], UK time):
   1d  from day_starts_at to day_starts_at the next day (22:00 to 22:00)
   1w  from week_starts_day at day_starts_at (Sunday 22:00) for 7 days
 
-Two rules join these to the market hours, so that no candle is cut into a
-small piece by the weekend:
+With candles.join_opening_stretch = false (the setting used, to match IG):
+the first candle of the week starts at the open, and no candle runs past the
+close. So, like IG, there is a short Sunday daily candle (21:00 to midnight UK)
+and a short first 4-hour candle (21:00 to midnight).
+
+With candles.join_opening_stretch = true, these rules apply instead, so that
+no candle is cut into a small piece by the weekend:
   * The stretch from the weekly open to the first normal boundary after it is
     joined onto the candle that follows. (With the market opening at Sunday
     21:00, Monday's daily candle runs from Sunday 21:00 to Monday 22:00, and
@@ -29,10 +37,10 @@ from typing import Any, Iterator
 from prices.model import FIVE_MIN, UK, UTC
 
 
-def _local(day: datetime, at: time) -> datetime:
-    """UK wall-clock time `at` on the UK date of `day`, as a UTC time."""
+def _local(day: datetime, at: time, zone=UK) -> datetime:
+    """Wall-clock time `at` (in `zone`) on the UK date of `day`, as a UTC time."""
     d = day.astimezone(UK).date()
-    return datetime(d.year, d.month, d.day, at.hour, at.minute, tzinfo=UK).astimezone(UTC)
+    return datetime(d.year, d.month, d.day, at.hour, at.minute, tzinfo=zone).astimezone(UTC)
 
 
 def _days_back_to(t: datetime, weekday: int) -> int:
@@ -41,19 +49,19 @@ def _days_back_to(t: datetime, weekday: int) -> int:
 
 class MarketHours:
     def __init__(self, s: Any):
-        self.opens_day, self.opens_at = int(s.opens_day), s.opens_at
-        self.closes_day, self.closes_at = int(s.closes_day), s.closes_at
+        self.opens_day, self.opens_at, self.opens_zone = int(s.opens_day), s.opens_at, s.opens_time_zone
+        self.closes_day, self.closes_at, self.closes_zone = int(s.closes_day), s.closes_at, s.closes_time_zone
 
     def _open_on_or_before(self, t: datetime) -> datetime:
         back = _days_back_to(t, self.opens_day)
-        o = _local(t.astimezone(UK) - timedelta(days=back), self.opens_at)
+        o = _local(t.astimezone(UK) - timedelta(days=back), self.opens_at, self.opens_zone)
         if o > t:
-            o = _local(t.astimezone(UK) - timedelta(days=back + 7), self.opens_at)
+            o = _local(t.astimezone(UK) - timedelta(days=back + 7), self.opens_at, self.opens_zone)
         return o
 
     def _close_after(self, opened: datetime) -> datetime:
         ahead = (self.closes_day - self.opens_day) % 7
-        return _local(opened.astimezone(UK) + timedelta(days=ahead), self.closes_at)
+        return _local(opened.astimezone(UK) + timedelta(days=ahead), self.closes_at, self.closes_zone)
 
     def session(self, t: datetime) -> tuple[datetime, datetime]:
         """The trading week that `t` falls in or most recently ended: (open, close)."""
@@ -69,7 +77,7 @@ class MarketHours:
         if self.is_open(t):
             return t
         o = self._open_on_or_before(t)
-        nxt = _local(o.astimezone(UK) + timedelta(days=7), self.opens_at)
+        nxt = _local(o.astimezone(UK) + timedelta(days=7), self.opens_at, self.opens_zone)
         return nxt
 
     def open_slots(self, start: datetime, end: datetime) -> Iterator[datetime]:
@@ -145,6 +153,10 @@ class Boundaries:
         if tf == "5m" or not self.hours.is_open(t):
             return s, e
         o, c = self.hours.session(t)
+        if not self.c.join_opening_stretch:
+            # Like IG: the first candle of the week simply starts at the open
+            # (so IG's short Sunday daily candle, 21:00 to midnight UK).
+            return max(s, o), min(e, c)
         if s < o:
             # t is in the stretch between the weekly open and the first normal
             # boundary: it is joined onto the next candle.

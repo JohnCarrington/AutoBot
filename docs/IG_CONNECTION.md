@@ -1,6 +1,6 @@
 # The IG connection
 
-The `ig/` part is the only part of the bot that talks to IG's servers. It logs in, chooses the bot's account and handles IG's errors. It also runs the live price stream (see `docs/PRICES_AND_CANDLES.md`). It does not place orders; the order sender will use it for that later. **It never asks IG for historical prices**: any call to a `/prices` address is refused before it is sent.
+The `ig/` part is the only part of the bot that talks to IG's servers. It logs in, chooses the bot's account and handles IG's errors. It also runs the live price stream (see `docs/PRICES_AND_CANDLES.md`). It does not place orders; the order sender will use it for that later. Only its history door (`ig/history.py`) may ask IG for historical prices. Any other call to a `/prices` address is refused before it is sent. If IG refuses a history request because the allowance is used up (`exceeded-account-historical-data-allowance`), that is **not** a login problem: it never stops the bot (no exit 78) and is never retried. The door writes a block marker instead. See `docs/PRICES_AND_CANDLES.md`.
 
 - Code: `ig/client.py` (talking to IG), `ig/errors.py` (the error rules and the exit code), `ig/secrets.py` (reading `.env`), `ig/check.py` (the one real check).
 - It talks to IG's REST API directly with the `requests` library (version pinned in `requirements.txt`). It does not use the `trading_ig` library.

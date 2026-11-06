@@ -7,6 +7,7 @@ from decimal import Decimal
 
 import pytest
 
+from housekeeping import files as files_mod
 from prices import store as store_mod
 from prices.store import COLUMNS, CandleStore, DamagedFile
 from tests.technical.fake_stream import T, five
@@ -105,7 +106,7 @@ def test_crash_between_writing_and_renaming_leaves_the_old_file_whole(store, tmp
 
     def no_rename(*a):
         raise OSError("power cut before rename")
-    monkeypatch.setattr(store_mod.os, "replace", no_rename)
+    monkeypatch.setattr(files_mod.os, "replace", no_rename)
     with pytest.raises(OSError):
         store.add(five(T(2026, 11, 4, 10, 5)))
     monkeypatch.undo()
@@ -115,8 +116,8 @@ def test_crash_between_writing_and_renaming_leaves_the_old_file_whole(store, tmp
 def test_writes_are_flushed_to_disk_before_the_rename(store, monkeypatch):
     order = []
     real_fsync, real_replace = os.fsync, os.replace
-    monkeypatch.setattr(store_mod.os, "fsync", lambda fd: (order.append("fsync"), real_fsync(fd)))
-    monkeypatch.setattr(store_mod.os, "replace", lambda a, b: (order.append("rename"), real_replace(a, b)))
+    monkeypatch.setattr(files_mod.os, "fsync", lambda fd: (order.append("fsync"), real_fsync(fd)))
+    monkeypatch.setattr(files_mod.os, "replace", lambda a, b: (order.append("rename"), real_replace(a, b)))
     store.add(five(T(2026, 11, 4, 10, 0)))
     assert order == ["fsync", "rename", "fsync"]   # file data, rename, then the folder
 
@@ -158,3 +159,23 @@ def test_gaps_are_recorded_safely(store):
     rows = store.recorded_gaps()
     assert [r["missing_candles"] for r in rows] == ["24", "1"]
     assert rows[0]["from_utc"] == "2026-11-04T10:00:00Z"
+
+
+def test_a_note_can_be_added_to_a_gap_record_which_is_kept(store):
+    store.record_gap("1h", T(2026, 10, 30, 21), T(2026, 10, 30, 22), 1, T(2026, 11, 6, 20), "store check")
+    store.note_gap("1h", T(2026, 10, 30, 21), T(2026, 10, 30, 22), "closed hour, not a real gap")
+    (r,) = store.recorded_gaps()
+    assert r["how_found"] == "store check" and r["missing_candles"] == "1"
+    assert r["note"] == "closed hour, not a real gap"
+    with pytest.raises(KeyError):
+        store.note_gap("1h", T(2026, 10, 30, 20), T(2026, 10, 30, 21), "no such gap")
+
+
+def test_an_older_gap_file_without_the_note_column_still_reads_and_keeps_its_rows(store, tmp_path):
+    old = ("timeframe,from_utc,to_utc,missing_candles,found_utc,how_found\n"
+           "5m,2026-11-04T10:00:00Z,2026-11-04T10:05:00Z,1,2026-11-04T11:00:00Z,test\n")
+    (tmp_path / "candles").mkdir()
+    (tmp_path / "candles" / "gaps.csv").write_text(old)
+    assert store.recorded_gaps()[0]["note"] == ""
+    store.record_gap("5m", T(2026, 11, 5, 10), T(2026, 11, 5, 10, 5), 1, T(2026, 11, 5, 11), "test")
+    assert [r["from_utc"] for r in store.recorded_gaps()] == ["2026-11-04T10:00:00Z", "2026-11-05T10:00:00Z"]
