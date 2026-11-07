@@ -121,7 +121,6 @@ The analyser decides which are allowed. Each strategy then has its own entry rul
 
 Price moves in a staircase: it pauses rather than bouncing back to the middle of the band.
 
-1. A pause starts with two candles going in opposite directions, such as a red candle then a green one. No size test.
 2. It counts as a pause once at least 3 candles in a row have failed to make a new low while staying below the 21 EMA.
 3. The sell opens as soon as the live price breaks below the lowest point of the pause.
 4. If a candle closes above the 21 EMA, the setup is cancelled. No time limit: a long pause becomes consolidation in the analyser.

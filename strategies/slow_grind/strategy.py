@@ -1,8 +1,8 @@
 """Slow grind (design 3.1), written for a sell; a buy is the mirror image.
-Sell (bid) price, 5-minute candles. Only the rules written in 3.1:
+Sell (bid) price, 5-minute candles. Only the rules written in 3.1 (rule 1, the
+two-candle start, was removed by the owner on 7 November 2026; the others keep
+their numbers):
 
-  1. A pause starts with two candles going in opposite directions (red then
-     green, or green then red). No size test.
   2. It counts as a pause once at least slow_grind.min_pause_candles (3)
      candles in a row have failed to make a new low while staying below the
      slow_grind.ema_periods (21) EMA.
@@ -10,19 +10,22 @@ Sell (bid) price, 5-minute candles. Only the rules written in 3.1:
   4. A candle closing above the 21 EMA cancels the setup. No time limit.
 
 Choices section 3.1 does not make (the simplest, adding no rule; listed for the owner):
-  * a candle is red when it closes below its open, green when above; a candle
-    closing at its open is neither, so it cannot start a pause;
-  * every pair of opposite candles starts its own pause (several may run at once);
-  * the pause's lowest point is the lowest low of all its candles so far,
-    starting with the two that started it;
-  * the candles "in a row" are those after the two that started it; "staying
-    below the 21 EMA" is judged on the close; a candle that makes a new low
-    before the pause counts starts the row again from nothing (and its low
-    becomes the pause's lowest point), and so does a close exactly on the EMA;
-  * rule 4 applies to the candles after the two that started it;
-  * with stored candles the break is found from a candle's low; a candle that
-    opened below the low enters at its open.
-Ideas only.
+  * "a new low" is a low below the last low made: the low of the candle that
+    made it (the reference). The first candle watched is the first reference;
+  * a candle that goes below the reference before the pause counts makes a new
+    low: it becomes the reference and the row starts again from nothing;
+  * "staying below the 21 EMA" is judged on the close; a candle closing exactly
+    on the EMA neither counts nor cancels, and the row starts again;
+  * "the lowest point of the pause" is the lowest low of the candles in the row
+    (the candles that failed to make a new low), not the reference;
+  * once the pause counts, a candle going below its lowest point opens the
+    sell (at that point, or at the candle's open if it opened below it); the
+    candle that did so becomes the next reference;
+  * after a cancel (rule 4) nothing carries over: the next candle is the next
+    reference;
+  * so in each direction there is one row at a time, by the meaning of
+    "in a row", not by a limit.
+With stored candles the break is found from a candle's low. Ideas only.
 """
 
 from __future__ import annotations
@@ -36,12 +39,10 @@ from strategies.common import BUY, SELL, SLOW_GRIND, Candidate
 
 
 @dataclass
-class _Pause:
+class _Watch:
     direction: str
-    edge: Decimal                         # the pause's lowest point (sell) / highest (buy)
-    started: Candle                       # the second of the two candles that started it
-    row: int = 0                          # candles in a row without a new low, closing below the EMA
-    steps: list = field(default_factory=list)
+    ref: Candle | None = None                 # the candle that made the last low (sell) / high (buy)
+    row: list = field(default_factory=list)   # candles in a row without a new low, closing below the EMA
 
 
 class SlowGrind:
@@ -49,8 +50,7 @@ class SlowGrind:
         self.s = settings
         self.side = settings.chart.price
         self.need = settings.slow_grind.min_pause_candles
-        self.prev: Candle | None = None
-        self.pauses: list[_Pause] = []
+        self.watch = {SELL: _Watch(SELL), BUY: _Watch(BUY)}
         self.notes: list[tuple] = []              # (time, direction, what happened), for checking
 
     def _o(self, c): return getattr(c, f"{self.side}_open")
@@ -61,57 +61,53 @@ class SlowGrind:
     def on_candle(self, c: Candle, ema: Decimal | None) -> list[Candidate]:
         out: list[Candidate] = []
         if ema is not None:
-            for p in list(self.pauses):
-                cand = self._step(p, c, ema)
+            for d in (SELL, BUY):
+                cand = self._step(self.watch[d], c, ema)
                 if cand is not None:
                     out.append(cand)
-            self._start(c, ema)
-        self.prev = c
         return out
 
-    def _step(self, p: _Pause, c: Candle, ema: Decimal) -> Candidate | None:
-        sell = p.direction == SELL
+    def _step(self, w: _Watch, c: Candle, ema: Decimal) -> Candidate | None:
+        sell = w.direction == SELL
         low, word = ("low", "below") if sell else ("high", "above")
-        q = lambda x: plain(x.quantize(Decimal("0.1")))  # noqa: E731
-        broke = self._l(c) < p.edge if sell else self._h(c) > p.edge
-        if broke and p.row >= self.need:                                    # 3.
-            opened_past = self._o(c) < p.edge if sell else self._o(c) > p.edge
-            price = self._o(c) if opened_past else p.edge
-            self.pauses.remove(p)
-            self.notes.append((c.start, p.direction, f"broke {word} the pause's {low} {plain(p.edge)}: entry {plain(price)}"))
-            return Candidate(SLOW_GRIND, p.direction, c.start, price, p.steps + [
-                f"{uk_short(c.start)}: price broke {word} the pause's {low} {plain(p.edge)}"
-                + (f" (the candle opened past it, at {plain(price)})" if opened_past else " (during this candle)")])
-        if (self._c(c) > ema) if sell else (self._c(c) < ema):              # 4.
-            self.pauses.remove(p)
-            self.notes.append((c.start, p.direction, f"pause from {uk_short(p.started.start)[-9:]}: closed {q(self._c(c))} "
-                                                     f"{'above' if sell else 'below'} the {self.s.slow_grind.ema_periods} EMA {q(ema)}: cancelled"))
+        x = self._l if sell else self._h                       # the extreme that matters
+        past = (lambda a, b: a < b) if sell else (lambda a, b: a > b)
+        q = lambda v: plain(v.quantize(Decimal("0.1")))  # noqa: E731
+        if w.ref is None:
+            w.ref, w.row = c, []
             return None
-        if broke:                                                           # 2. a new low: the row starts again
-            p.edge = self._l(c) if sell else self._h(c)
-            p.row = 0
+        if len(w.row) >= self.need:                            # 3. a pause: does price break its lowest point?
+            edge = min(self._l(r) for r in w.row) if sell else max(self._h(r) for r in w.row)
+            if past(x(c), edge):
+                opened = past(self._o(c), edge)
+                price = self._o(c) if opened else edge
+                steps = [f"{uk_short(w.ref.start)}: the last {low} made: {plain(x(w.ref))}",
+                         f"{uk_short(w.row[0].start)} to {uk_short(w.row[-1].start)[-9:]}: a pause: {len(w.row)} "
+                         f"candles in a row without a new {low}, closing {word} the {self.s.slow_grind.ema_periods} EMA; "
+                         f"its lowest point {plain(edge)}" if sell else
+                         f"{uk_short(w.row[0].start)} to {uk_short(w.row[-1].start)[-9:]}: a pause: {len(w.row)} "
+                         f"candles in a row without a new {low}, closing {word} the {self.s.slow_grind.ema_periods} EMA; "
+                         f"its highest point {plain(edge)}",
+                         f"{uk_short(c.start)}: price broke {word} it"
+                         + (f" (the candle opened past it, at {plain(price)})" if opened else " (during this candle)")]
+                self.notes.append((c.start, w.direction, f"broke {word} the pause's {plain(edge)}: entry {plain(price)}"))
+                w.ref, w.row = c, []
+                return Candidate(SLOW_GRIND, w.direction, c.start, price, steps)
+        if past(x(c), x(w.ref)):                               # a new low: the next reference, the row starts again
+            w.ref, w.row = c, []
             return None
-        p.row = p.row + 1 if ((self._c(c) < ema) if sell else (self._c(c) > ema)) else 0
-        if p.row == self.need:
-            p.steps.append(f"{uk_short(c.start)}: a pause: {p.row} candles in a row without a new {low} "
-                           f"{word} {plain(p.edge)}, closing {word} the {self.s.slow_grind.ema_periods} EMA")
-            self.notes.append((c.start, p.direction, f"pause from {uk_short(p.started.start)[-9:]} counts; waiting "
-                                                     f"for a break of {plain(p.edge)}"))
+        if (self._c(c) > ema) if sell else (self._c(c) < ema):  # 4.
+            if w.row:
+                self.notes.append((c.start, w.direction, f"closed {q(self._c(c))} {'above' if sell else 'below'} the "
+                                                         f"{self.s.slow_grind.ema_periods} EMA {q(ema)} after "
+                                                         f"{len(w.row)} candle(s): cancelled"))
+            w.ref, w.row = None, []
+            return None
+        if (self._c(c) < ema) if sell else (self._c(c) > ema):  # 2.
+            w.row.append(c)
+            if len(w.row) == self.need:
+                self.notes.append((c.start, w.direction, f"a pause ({self.need} candles from "
+                                                         f"{uk_short(w.row[0].start)[-9:]}); {low} {plain(x(w.ref))} not broken"))
+        else:
+            w.row = []                                          # closed exactly on the EMA
         return None
-
-    def _start(self, c: Candle, ema: Decimal) -> None:                     # 1.
-        first = self.prev
-        if first is None:
-            return
-        red = lambda x: self._c(x) < self._o(x)  # noqa: E731
-        green = lambda x: self._c(x) > self._o(x)  # noqa: E731
-        if not ((red(first) and green(c)) or (green(first) and red(c))):
-            return
-        colours = "red then green" if red(first) else "green then red"
-        for d in (SELL, BUY):
-            edge = min(self._l(first), self._l(c)) if d == SELL else max(self._h(first), self._h(c))
-            low = "low" if d == SELL else "high"
-            self.pauses.append(_Pause(d, edge, c, 0, [
-                f"{uk_short(first.start)}-{uk_short(c.start)[-9:]}: a pause starts: {colours}; the pause's {low} "
-                f"{plain(edge)} (21 EMA {plain(ema.quantize(Decimal('0.1')))})"]))
-            self.notes.append((c.start, d, f"a pause starts ({colours}), {low} {plain(edge)}"))

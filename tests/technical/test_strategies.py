@@ -143,9 +143,9 @@ def test_every_reason_for_blocking_is_given(S):
     assert i.blocked_by.count(";") == 2 and "consolidation" in i.blocked_by
 
 
-# ---- 3.1 slow grind -------------------------------------------------------------------------
+# ---- 3.1 slow grind (rules 2-4; rule 1 removed by the owner) ---------------------------------
 
-EMA21 = D(120)          # above every made-up price: a sell pause stays below it
+EMA21 = D(120)          # above every made-up price: closes stay below it
 
 
 def grind(s, candles, ema=EMA21):
@@ -153,100 +153,75 @@ def grind(s, candles, ema=EMA21):
     return [(c, x) for c in candles for x in g.on_candle(c, ema)]
 
 
-PAUSE = [C(0, 105, 106, 100, 101),        # red
-         C(1, 101, 103, 100.5, 102),      # green: a pause starts; its low 100
-         C(2, 102, 103, 101, 101.5),      # 1 in a row: no new low, closes below the EMA
-         C(3, 101.5, 102.5, 100.2, 102),  # 2
-         C(4, 102, 102.5, 100.5, 101)]    # 3: a pause
-BREAK = C(5, 101, 101, 99, 99.5)
+PAUSE = [C(0, 105, 106, 100, 101),         # the first candle watched: the reference, low 100
+         C(1, 101, 103, 100.5, 102),       # 1 in a row: no new low, closes below the EMA
+         C(2, 102, 103, 101, 101.5),       # 2
+         C(3, 101.5, 102.5, 100.2, 102)]   # 3: a pause; its lowest point 100.2
+BREAK = C(4, 102, 102, 100.1, 100.5)       # goes below 100.2 (not below the reference 100)
 
 
-def test_slow_grind_sell_opens_when_price_breaks_the_pause_low(S):
+def test_slow_grind_sell_opens_below_the_lowest_point_of_the_pause(S):
     (c, x), = grind(S, PAUSE + [BREAK])
-    assert (x.strategy, x.direction, x.entry_price, x.time) == (SLOW_GRIND, SELL, D(100), BREAK.start)
-    assert "a pause starts: red then green" in x.steps[0] and "a pause: 3 candles" in x.steps[1]
-    assert "broke below" in x.steps[2]
+    assert (x.strategy, x.direction, x.entry_price, x.time) == (SLOW_GRIND, SELL, D("100.2"), BREAK.start)
+    assert "the last low made: 100" in x.steps[0] and "a pause: 3 candles in a row" in x.steps[1]
+    assert "its lowest point 100.2" in x.steps[1] and "broke below" in x.steps[2]
 
 
-def test_slow_grind_a_candle_opening_below_the_low_enters_at_its_open(S):
-    (_, x), = grind(S, PAUSE + [C(5, 99, 99.5, 98, 98.5)])
+def test_slow_grind_a_candle_opening_below_it_enters_at_its_open(S):
+    (_, x), = grind(S, PAUSE + [C(4, 99, 99.5, 98, 98.5)])
     assert x.entry_price == D(99)
 
 
-def test_slow_grind_needs_three_candles_in_a_row_after_the_start(S):
-    assert grind(S, PAUSE[:4] + [C(4, 102, 102, 99, 99.5)]) == []
+def test_slow_grind_needs_three_candles_in_a_row(S):
+    assert grind(S, PAUSE[:3] + [C(3, 101.5, 102, 99, 99.5)]) == []        # a new low after 2: no pause
 
 
 def test_slow_grind_the_pause_length_is_a_setting(S):
     s = changed(S, "slow_grind", min_pause_candles=4)
-    assert grind(s, PAUSE + [BREAK]) == []
-    assert [x.entry_price for _, x in grind(s, PAUSE + [C(5, 101, 102, 100.5, 101.5), C(6, 101.5, 101.5, 99, 99.5)])] == [D(100)]
+    assert grind(s, PAUSE + [C(4, 102, 102, 100.3, 101)]) == []
+    assert [x.entry_price for _, x in grind(s, PAUSE + [C(4, 102, 102, 100.3, 101), BREAK])] == [D("100.2")]
 
 
-def test_slow_grind_a_close_above_the_21_ema_cancels(S):
+def test_slow_grind_no_colour_or_size_test(S):
+    greens = [C(0, 99, 106, 100, 101), C(1, "100.3", "100.7", "100.2", "100.6"),    # every candle green, tiny
+              C(2, "100.4", "100.8", "100.3", "100.7"), C(3, "100.5", "100.9", "100.4", "100.8"),
+              C(4, "100.5", "100.5", "99.9", "100")]
+    assert [x.entry_price for _, x in grind(S, greens)] == [D("100.2")]
+
+
+def test_slow_grind_a_close_above_the_21_ema_cancels_and_the_next_candle_is_the_reference(S):
     g, out = SlowGrind(S), []
-    for c, e in zip(PAUSE + [BREAK], [EMA21] * 4 + [D("100.8"), EMA21]):   # candle 4 closes 101, above 100.8
+    for c, e in zip(PAUSE + [BREAK], [EMA21] * 3 + [D(101), EMA21]):       # candle 3 closes 102, above 101
         out += g.on_candle(c, e)
-    assert out == []
+    assert out == [] and g.watch[SELL].ref is BREAK and g.watch[SELL].row == []
 
 
-def test_slow_grind_a_new_low_before_the_pause_counts_starts_the_row_again(S):
-    candles = PAUSE[:3] + [C(3, 101.5, 102, 99.5, 101),     # a new low 99.5: the row starts again
-                           C(4, 101, 102, 100, 101.5), C(5, 101.5, 102, 100.5, 101), C(6, 101, 101.8, 100.2, 101.2),
-                           C(7, 101.2, 101.2, 99, 99.3)]
-    # two pauses (started at candles 1 and 2) both start their row again at the new low 99.5 and
-    # both break on candle 7: with no limit per direction, two ideas at the same price
-    assert [x.entry_price for _, x in grind(S, candles)] == [D("99.5"), D("99.5")]
+def test_slow_grind_a_new_low_before_the_pause_counts_is_the_next_reference(S):
+    candles = PAUSE[:2] + [C(2, 102, 102.5, 99.5, 101),     # a new low 99.5: the row starts again from here
+                           C(3, 101, 102, 100, 101.5), C(4, 101.5, 102, 100.5, 101), C(5, 101, 101.8, 99.8, 101.2),
+                           C(6, 101.2, 101.2, 99.6, 99.7)]
+    assert [x.entry_price for _, x in grind(S, candles)] == [D("99.8")]
 
 
 def test_slow_grind_a_close_exactly_on_the_ema_starts_the_row_again(S):
     g, out = SlowGrind(S), []
-    for c, e in zip(PAUSE + [BREAK], [EMA21] * 3 + [D(102), EMA21, EMA21]):   # candle 3 closes exactly on it
+    for c, e in zip(PAUSE + [BREAK], [EMA21, EMA21, D("101.5"), EMA21, EMA21]):   # candle 2 closes on it
         out += g.on_candle(c, e)
     assert out == []
 
 
-def test_slow_grind_green_then_red_also_starts_a_pause(S):
-    candles = [C(0, 101, 103, 100, 102.5), C(1, 102.5, 103, 100.5, 101)] + PAUSE[2:] + [BREAK]
-    xs = [x for _, x in grind(S, candles)]
-    assert [x.entry_price for x in xs] == [D(100)] and "green then red" in xs[0].steps[0]
+def test_slow_grind_one_row_at_a_time_so_one_idea(S):
+    assert len(grind(S, PAUSE + [BREAK])) == 1
 
 
-def test_slow_grind_no_extra_start_conditions(S):
-    # the second candle makes a new low: the pause still starts, with the lower low
-    candles = [C(0, 105, 106, 100, 101), C(1, 99.5, 101, 99, 100.5), C(2, 100.5, 101, 99.5, 100),
-               C(3, 100, 100.8, 99.2, 100.5), C(4, 100.5, 101, 99.3, 100.2), C(5, 100.2, 100.2, 98, 98.5)]
-    assert D(99) in [x.entry_price for _, x in grind(S, candles)]
-    # the two start candles may close above the EMA: rule 4 applies to the candles after them
-    g = SlowGrind(S)
-    g.on_candle(C(0, 105, 106, 100, 101), D("100.5"))
-    g.on_candle(C(1, 101, 103, 100.5, 102), D("100.5"))
-    assert any(p.direction == SELL for p in g.pauses)
-
-
-def test_slow_grind_several_pauses_run_at_once(S):
-    g = SlowGrind(S)
-    for c in PAUSE:
-        g.on_candle(c, EMA21)
-    assert len([p for p in g.pauses if p.direction == SELL]) >= 3      # one for each pair of opposite candles
-
-
-def test_slow_grind_a_candle_closing_at_its_open_cannot_start_a_pause(S):
-    g = SlowGrind(S)
-    g.on_candle(C(0, 105, 106, 100, 101), EMA21)
-    g.on_candle(C(1, 101, 103, 100.5, 101), EMA21)                    # neither red nor green
-    assert g.pauses == []
+def test_slow_grind_the_breaking_candle_is_the_next_reference(S):
+    after = [C(5 + k, 100.5, 101, 100.2, 100.6) for k in range(3)] + [C(8, 100.6, 100.6, 100, 100.1)]
+    assert [x.entry_price for _, x in grind(S, PAUSE + [BREAK] + after)] == [D("100.2"), D("100.2")]
 
 
 def test_slow_grind_no_time_limit(S):
-    waiting = [C(5 + k, 101, 102, 100.5, 101.5 if k % 2 == 0 else 100.8) for k in range(30)]
-    assert D(100) in [x.entry_price for _, x in grind(S, PAUSE + waiting + [C(35, 101, 101, 99, 99.5)])]
-
-
-def test_slow_grind_no_size_test(S):
-    tiny = [C(0, 100.2, 100.3, 100, 100.1), C(1, 100.1, 100.2, 100.05, 100.15), C(2, 100.15, 100.2, 100.1, 100.12),
-            C(3, 100.12, 100.2, 100.1, 100.15), C(4, 100.15, 100.2, 100.1, 100.12), C(5, 100.12, 100.12, 99.9, 99.95)]
-    assert D(100) in [x.entry_price for _, x in grind(S, tiny)]
+    waiting = [C(4 + k, 101, 102, 100.3, 101.5) for k in range(30)]
+    assert [x.entry_price for _, x in grind(S, PAUSE + waiting + [C(34, 101, 101, 99, 99.5)])] == [D("100.2")]
 
 
 def test_slow_grind_buy_is_the_mirror_image(S):
@@ -254,7 +229,7 @@ def test_slow_grind_buy_is_the_mirror_image(S):
     mirrored = [C(i, m(c.sell_open), m(c.sell_low), m(c.sell_high), m(c.sell_close))
                 for i, c in enumerate(PAUSE + [BREAK])]
     (_, x), = grind(S, mirrored, ema=D(80))
-    assert (x.direction, x.entry_price) == (BUY, D(100))
+    assert (x.direction, x.entry_price) == (BUY, D("99.8"))
 
 
 # ---- 3.2 EMA pullback -----------------------------------------------------------------------
@@ -483,7 +458,7 @@ def test_range_trade_cancelled_above_the_rejection_high_has_no_idea(S):
 # ---- the replay: the checks at entry only ----------------------------------------------------
 
 def fake_replay(monkeypatch, S, states):
-    """A slow grind sell: the pause starts at candle 1, counts at 4, price breaks it on candle 5.
+    """A slow grind sell: the pause counts at candle 3 and price breaks it on candle 4.
     `states`: {candle number: (state, direction) from that candle on}."""
     candles = PAUSE + [BREAK]
     hist = [(SimpleNamespace(candle=c, upper=None, middle=None, lower=None), None, None, [], None, None)
@@ -505,12 +480,12 @@ def fake_replay(monkeypatch, S, states):
 def test_replay_checks_at_entry_with_the_state_after_the_last_finished_candle(monkeypatch, S):
     (i,) = fake_replay(monkeypatch, S, {0: (TREND, DOWN)})
     assert i.allowed and (i.state, i.state_direction) == (TREND, DOWN) and i.steps[-1].startswith("allowed at entry")
-    (j,) = fake_replay(monkeypatch, S, {0: (TREND, DOWN), 4: (CONSOLIDATION, NONE)})
+    (j,) = fake_replay(monkeypatch, S, {0: (TREND, DOWN), 3: (CONSOLIDATION, NONE)})
     assert not j.allowed and "consolidation" in j.blocked_by
-    (k,) = fake_replay(monkeypatch, S, {0: (TREND, DOWN), 5: (CONSOLIDATION, NONE)})
+    (k,) = fake_replay(monkeypatch, S, {0: (TREND, DOWN), 4: (CONSOLIDATION, NONE)})
     assert k.allowed                                    # decided on the entry candle itself: too late to matter
 
 
 def test_replay_does_not_check_when_a_setup_starts(monkeypatch, S):
-    (i,) = fake_replay(monkeypatch, S, {4: (TREND, DOWN)})   # consolidation when the pause started
+    (i,) = fake_replay(monkeypatch, S, {3: (TREND, DOWN)})   # consolidation while the pause formed
     assert i.allowed
