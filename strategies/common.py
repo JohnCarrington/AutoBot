@@ -11,7 +11,9 @@ only, owner 7 November 2026):
      Bollinger bounce; consolidation -> none;
   3. the direction rule allows that direction (section 2.3): a buy needs buy
      side (price above the daily pivot and the 5-minute 100 EMA), a sell needs
-     sell side.
+     sell side. It does not apply to the range trade, nor to the Bollinger
+     bounce when the analyser says possible reversal (owner, 7 November 2026);
+     the rule's answer is still recorded.
 "The current state" is the analyser's state after the last finished 5-minute
 candle, and the direction rule uses the entry price. A candidate that fails a
 check is kept as BLOCKED with the reason, never as an idea.
@@ -99,7 +101,8 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
         if direction != want:
             reasons.append(f"the {state.state} is {state.direction}: {strategy} only in the trend's direction")
     need = BUY_SIDE if direction == BUY else SELL_SIDE
-    if rule.side != need:
+    exempt = strategy == RANGE_TRADE or (strategy == BOLLINGER_BOUNCE and state.state == POSSIBLE_REVERSAL)
+    if rule.side != need and not exempt:
         reasons.append(f"the direction rule says {rule.side} ({rule.reason})")
     return reasons, rule
 
@@ -113,6 +116,9 @@ def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | N
     if reasons:
         idea.allowed, idea.blocked_by = False, "; ".join(reasons)
     else:
+        exempt = c.strategy == RANGE_TRADE or (c.strategy == BOLLINGER_BOUNCE and state.state == POSSIBLE_REVERSAL)
         idea.steps.append(f"allowed at entry: {c.strategy} in a {state.state} {state.direction}; direction rule "
-                          f"{rule.side} ({rule.reason.replace('the price', 'the entry price')})")
+                          f"{rule.side} ({rule.reason.replace('the price', 'the entry price')})"
+                          + (f"; the direction rule does not apply to {c.strategy}"
+                             + (" in a possible reversal" if c.strategy == BOLLINGER_BOUNCE else "") if exempt else ""))
     return idea

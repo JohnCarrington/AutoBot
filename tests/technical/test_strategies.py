@@ -122,19 +122,44 @@ def test_range_trade_both_ways_when_ranging(S):
     (100, None, 110, False, False, "no clear direction"),    # no pivot
     (100, 110, None, False, False, "no clear direction"),    # no 100 EMA
 ])
-def test_the_direction_rule_uses_the_entry_price(S, price, pivot, ema100, buy_ok, sell_ok, said):
+@pytest.mark.parametrize("name", [SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE])
+def test_the_direction_rule_uses_the_entry_price(S, name, price, pivot, ema100, buy_ok, sell_ok, said):
     piv = D(pivot) if pivot is not None else None
     e = D(ema100) if ema100 is not None else None
-    b = check(S, "GBPUSD", cand(RANGE_TRADE, BUY, price), state(RANGING), piv, e)
-    s = check(S, "GBPUSD", cand(RANGE_TRADE, SELL, price), state(RANGING), piv, e)
+    b = check(S, "GBPUSD", cand(name, BUY, price), state(TREND, UP), piv, e)
+    s = check(S, "GBPUSD", cand(name, SELL, price), state(TREND, DOWN), piv, e)
     assert (b.allowed, s.allowed, b.direction_rule) == (buy_ok, sell_ok, said)
     if not buy_ok:
         assert "the direction rule says" in b.blocked_by
 
 
-def test_the_direction_rule_applies_to_bounces_in_a_possible_reversal_too(S):
-    i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, BUY, 100), state(POSSIBLE_REVERSAL, UP), PIVOT, EMA100)
-    assert not i.allowed and "sell side" in i.blocked_by
+@pytest.mark.parametrize("price", [100, 105, 120])
+def test_the_direction_rule_does_not_apply_to_the_range_trade(S, price):
+    for d in (BUY, SELL):
+        i = check(S, "GBPUSD", cand(RANGE_TRADE, d, price), state(RANGING), PIVOT, EMA100)
+        assert i.allowed and "does not apply to range trade" in i.steps[-1]
+    assert check(S, "GBPUSD", cand(RANGE_TRADE, BUY, 100), state(RANGING), PIVOT, EMA100).direction_rule == "sell side"
+
+
+@pytest.mark.parametrize("price", [100, 105, 120])
+def test_the_direction_rule_does_not_apply_to_a_bounce_in_a_possible_reversal(S, price):
+    for d in (BUY, SELL):
+        i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, d, price), state(POSSIBLE_REVERSAL, UP), PIVOT, EMA100)
+        assert i.allowed and "does not apply to Bollinger bounce in a possible reversal" in i.steps[-1]
+
+
+@pytest.mark.parametrize("st", [EMERGING, TREND])
+def test_the_direction_rule_still_applies_to_a_bounce_in_a_trend(S, st):
+    i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, BUY, 100), state(st, UP), PIVOT, EMA100)
+    assert not i.allowed and "the direction rule says sell side" in i.blocked_by
+
+
+def test_the_exceptions_do_not_lift_the_other_checks(S):
+    s = changed(S, "switches", range_trade=False)
+    assert "STRATEGY_RANGE_TRADE is off" in check(s, "GBPUSD", cand(RANGE_TRADE, BUY, 100), state(RANGING),
+                                                  PIVOT, EMA100).blocked_by
+    i = check(S, "GBPUSD", cand(RANGE_TRADE, BUY, 100), state(TREND, UP), PIVOT, EMA100)
+    assert not i.allowed and "does not allow range trade" in i.blocked_by and "direction rule" not in i.blocked_by
 
 
 def test_every_reason_for_blocking_is_given(S):

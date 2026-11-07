@@ -49,12 +49,12 @@ Every result gives: the market state, the direction (up, down or none), the type
 - **Possible reversal:** after a trend has been running and price has moved at least 30 pips since it started, a strong reversal candle appears, recognised by the shared rejection part with no extra size rule.
 - **Consolidation** (this includes a trend running out of steam): narrow Bollinger bands, price between them touching neither band, small candles with green and red roughly the same size, no direction. Unlike ranging, price stays in the middle. No trading. When price breaks out, the analyser moves to emerging trend.
 
-### 2.3 Direction rule (applies to every strategy)
+### 2.3 Direction rule (applies to every strategy except the range trade, and except the Bollinger bounce in a possible reversal)
 
 - **Buy side:** price above the daily pivot and above the 5-minute 100 EMA.
 - **Sell side:** price below the daily pivot and below the 5-minute 100 EMA.
 - If they disagree, there is no clear direction.
-- This applies to every strategy, including bounces in a possible reversal.
+- This applies to every strategy except the range trade, and except the Bollinger bounce when the analyser says possible reversal (owner, 7 November 2026).
 
 Functional test: on 6 November 2026 at 13:00 the signs of a reversal up appeared, but price was below the pivot and the 100 EMA, and carried on down through S2 to S3. Expected answer: no buy at 13:00, and the sell side stays allowed all the way down to S3.
 
