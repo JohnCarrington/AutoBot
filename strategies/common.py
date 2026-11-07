@@ -85,6 +85,58 @@ class Idea:
         return head + ("" if self.allowed else f"  BLOCKED: {self.blocked_by}")
 
 
+# ---- hours, news and the forced close per strategy (design sections 4 and 6), for the safety
+# part and the trade manager. The EMA pullback has its own rules (owner, 7 November 2026).
+
+def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: list | None = None) -> list[str]:
+    """Every reason a new trade of this strategy may not open at t (empty: hours and news allow it).
+    EMA pullback: any time the market is open, big-news windows included. Every other strategy:
+    UK time from NEW_TRADES_FROM to NEW_TRADES_UNTIL, and not in a big-news no-new-trades window."""
+    from zoneinfo import ZoneInfo
+    from news.calendar import no_new_trades
+    from prices.calendar import MarketHours
+    reasons = []
+    if not MarketHours(settings.market_hours).is_open(t):
+        reasons.append("the market is closed")
+    if strategy == EMA_PULLBACK:
+        return reasons
+    tz = settings.hours.timezone
+    lt = t.astimezone(ZoneInfo(tz) if isinstance(tz, str) else tz).time()
+    sw = settings.switches
+    if not (sw.new_trades_from <= lt < sw.new_trades_until):
+        reasons.append(f"outside the trading hours {sw.new_trades_from:%H:%M} to {sw.new_trades_until:%H:%M} UK")
+    windows = no_new_trades(settings, pair, t, calendar)
+    if windows:
+        reasons.append("in a big-news window: " + ", ".join(sorted({w.event for w in windows})))
+    return reasons
+
+
+def forced_close_at(settings: Any, strategy: str, opened: datetime) -> datetime:
+    """When a trade opened at `opened` is closed by the clock: hours.close_all_trades_at (20:30) UK,
+    the first one after it opened; for the EMA pullback, the first FRIDAY 20:30 UK after it opened."""
+    from datetime import datetime as dt, timedelta, timezone
+    from zoneinfo import ZoneInfo
+    tz = settings.hours.timezone
+    uk = ZoneInfo(tz) if isinstance(tz, str) else tz
+    lt = opened.astimezone(uk)
+    for k in range(0, 8):
+        day = lt.date() + timedelta(days=k)
+        cut = dt.combine(day, settings.hours.close_all_trades_at, tzinfo=uk)
+        if cut > lt and (strategy != EMA_PULLBACK or day.weekday() == 4):
+            return cut.astimezone(timezone.utc)
+    raise AssertionError("no close found within a week")
+
+
+def closed_before_big_news(strategy: str) -> bool:
+    """Open trades are closed 15 minutes before big news, except the EMA pullback's."""
+    return strategy != EMA_PULLBACK
+
+
+def closed_on_level_rejection(strategy: str) -> bool:
+    """Section 4's close on a confirmed rejection at a level, for every strategy except the EMA pullback."""
+    return strategy != EMA_PULLBACK
+
+
 def stop_loss_pips(settings: Any, strategy: str) -> int:
     """Design section 4: the EMA pullback's own stop (STOP_LOSS_PIPS_EMA_PULLBACK); every other
     strategy uses STOP_LOSS_PIPS."""

@@ -536,3 +536,67 @@ def test_replay_checks_at_entry_with_the_state_after_the_last_finished_candle(mo
 def test_replay_does_not_check_when_a_setup_starts(monkeypatch, S):
     (i,) = fake_replay(monkeypatch, S, {3: (TREND, DOWN)})   # consolidation while the pause formed
     assert i.allowed
+
+
+# ---- hours, news and the forced close per strategy (design sections 4 and 6) ----------------
+
+from datetime import datetime, timezone  # noqa: E402
+
+from strategies.common import closed_before_big_news, closed_on_level_rejection, forced_close_at, may_open  # noqa: E402
+
+U = lambda *a: datetime(*a, tzinfo=timezone.utc)  # noqa: E731
+BOE_CAL = [{"time_utc": "2026-11-05T12:00:00Z", "country": "GB", "event": "BoE Interest Rate Decision",
+            "estimate": 4.0, "prev": 4.0, "actual": None, "impact": "high", "unit": "%"}]
+OTHERS = (SLOW_GRIND, BOLLINGER_BOUNCE, RANGE_TRADE)
+
+
+@pytest.mark.parametrize("t", [U(2026, 11, 3, 3, 0), U(2026, 11, 3, 23, 0), U(2026, 11, 1, 21, 5), U(2026, 11, 6, 21, 30)])
+def test_the_ema_pullback_may_open_at_any_time_the_market_is_open(S, t):
+    assert may_open(S, "GBPUSD", EMA_PULLBACK, t, []) == []
+    for name in OTHERS:
+        assert "outside the trading hours 06:00 to 20:30 UK" in may_open(S, "GBPUSD", name, t, [])
+
+
+@pytest.mark.parametrize("t", [U(2026, 11, 7, 12, 0), U(2026, 11, 1, 20, 0), U(2026, 11, 6, 22, 0)])
+def test_nothing_opens_while_the_market_is_closed(S, t):
+    for name in (EMA_PULLBACK,) + OTHERS:
+        assert "the market is closed" in may_open(S, "GBPUSD", name, t, [])
+
+
+def test_the_other_strategies_open_from_06_00_until_20_30_uk_only(S):
+    for name in OTHERS:
+        assert may_open(S, "GBPUSD", name, U(2026, 11, 3, 6, 0), []) == []          # GMT: 06:00 UK
+        assert may_open(S, "GBPUSD", name, U(2026, 11, 3, 20, 25), []) == []
+        assert may_open(S, "GBPUSD", name, U(2026, 11, 3, 20, 30), []) != []
+        assert may_open(S, "GBPUSD", name, U(2026, 11, 3, 5, 55), []) != []
+        assert may_open(S, "GBPUSD", name, U(2026, 10, 21, 5, 0), []) == []          # BST: 06:00 UK
+
+
+def test_the_big_news_window_stops_every_strategy_but_the_ema_pullback(S):
+    t = U(2026, 11, 5, 11, 50)                      # BoE at 12:00: no new trades 11:45 to 12:30
+    assert may_open(S, "GBPUSD", EMA_PULLBACK, t, BOE_CAL) == []
+    for name in OTHERS:
+        assert any("big-news window" in r for r in may_open(S, "GBPUSD", name, t, BOE_CAL))
+    assert closed_before_big_news(EMA_PULLBACK) is False
+    assert all(closed_before_big_news(n) for n in OTHERS)
+
+
+def test_the_other_strategies_are_closed_at_20_30_uk_every_day(S):
+    for name in OTHERS:
+        assert forced_close_at(S, name, U(2026, 11, 3, 10, 0)) == U(2026, 11, 3, 20, 30)
+        assert forced_close_at(S, name, U(2026, 10, 21, 10, 0)) == U(2026, 10, 21, 19, 30)   # BST
+        assert forced_close_at(S, name, U(2026, 11, 3, 21, 0)) == U(2026, 11, 4, 20, 30)
+
+
+def test_the_ema_pullback_is_held_overnight_and_closed_only_on_friday_at_20_30_uk(S):
+    assert forced_close_at(S, EMA_PULLBACK, U(2026, 11, 2, 7, 20)) == U(2026, 11, 6, 20, 30)   # Monday -> Friday
+    assert forced_close_at(S, EMA_PULLBACK, U(2026, 11, 3, 23, 0)) == U(2026, 11, 6, 20, 30)
+    assert forced_close_at(S, EMA_PULLBACK, U(2026, 11, 6, 13, 30)) == U(2026, 11, 6, 20, 30)  # Friday
+    assert forced_close_at(S, EMA_PULLBACK, U(2026, 10, 23, 10, 0)) == U(2026, 10, 23, 19, 30)  # BST Friday
+    # opened on Friday after 20:30 it is not open at 20:30 that Friday: the next Friday's 20:30
+    assert forced_close_at(S, EMA_PULLBACK, U(2026, 11, 6, 20, 45)) == U(2026, 11, 13, 20, 30)
+
+
+def test_the_ema_pullback_is_not_closed_on_a_rejection_at_a_level(S):
+    assert closed_on_level_rejection(EMA_PULLBACK) is False
+    assert all(closed_on_level_rejection(n) for n in OTHERS)
