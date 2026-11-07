@@ -9,8 +9,8 @@
   STRATEGY_EMA_PULLBACK       on or off
   STRATEGY_BOLLINGER_BOUNCE   on or off
   STRATEGY_RANGE_TRADE        on or off
-  STRATEGY_BREAKOUT           on or off (on only once breakout.stop_loss_pips and
-                              breakout.take_profit_pips are chosen)
+  STRATEGY_BREAKOUT           on or off (never on while breakout.stop_loss_pips or
+                              breakout.take_profit_pips is 0)
   STOP_LOSS_PIPS              the stop loss sent with every trade, in pips (whole, 1 to 100),
                               for every strategy except the EMA pullback
   STOP_LOSS_PIPS_EMA_PULLBACK the EMA pullback's stop loss, in pips (whole, 1 to 100)

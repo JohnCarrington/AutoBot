@@ -95,7 +95,7 @@ EXPECTED = {
         "hourly_history_candles": 600,
     },
     "possible_reversal": {"min_trend_move_pips": 30},
-    "breakout": {"trigger_within_candles": 3, "stop_loss_pips": 0, "take_profit_pips": 0},
+    "breakout": {"trigger_within_candles": 3, "stop_loss_pips": 6, "take_profit_pips": 50},
     "range_trade": {"close_percent_at_opposite_band": 50, "rejection_candle_within_candles": 1,
                     "trigger_within_candles": 1},
     "indicators": {"bollinger_periods": 20, "bollinger_std_devs": 2, "ema_periods": (7, 13, 21, 100, 200),
@@ -441,16 +441,17 @@ def test_the_breakout_switch_is_required_and_cannot_be_on_before_its_stop_and_ta
     values = {k: v for k, v in SWITCHES_OK.items() if k != "STRATEGY_BREAKOUT"}
     with pytest.raises(SettingsError, match="Missing switch STRATEGY_BREAKOUT"):
         load_settings(switches_from=_env(tmp_path, values))
-    with pytest.raises(SettingsError, match="STRATEGY_BREAKOUT .* is on, but breakout.stop_loss_pips and "
-                                            "breakout.take_profit_pips are not both chosen"):
-        load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "STRATEGY_BREAKOUT": "on"}))
-    data = _raw()
-    data["breakout"]["stop_loss_pips"] = 12
-    with pytest.raises(SettingsError, match="not both chosen"):
-        load_settings(_write(tmp_path, data), switches_from=_env(tmp_path, {**SWITCHES_OK, "STRATEGY_BREAKOUT": "on"}))
-    data["breakout"]["take_profit_pips"] = 30
-    st = load_settings(_write(tmp_path, data), switches_from=_env(tmp_path, {**SWITCHES_OK, "STRATEGY_BREAKOUT": "on"}))
-    assert st.switches.breakout is True and (st.breakout.stop_loss_pips, st.breakout.take_profit_pips) == (12, 30)
+    on = _env(tmp_path, {**SWITCHES_OK, "STRATEGY_BREAKOUT": "on"})
+    st = load_settings(switches_from=on)                       # the owner's values: 6 and 50
+    assert st.switches.breakout is True and (st.breakout.stop_loss_pips, st.breakout.take_profit_pips) == (6, 50)
+    for key in ("stop_loss_pips", "take_profit_pips"):
+        data = _raw()
+        data["breakout"][key] = 0                              # 0: not chosen
+        on = _env(tmp_path, {**SWITCHES_OK, "STRATEGY_BREAKOUT": "on"})   # (_env rewrites the same file)
+        with pytest.raises(SettingsError, match="STRATEGY_BREAKOUT .* is on, but breakout.stop_loss_pips and "
+                                                "breakout.take_profit_pips are not both chosen"):
+            load_settings(_write(tmp_path, data), switches_from=on)
+        load_settings(_write(tmp_path, data), switches_from=_env(tmp_path, SWITCHES_OK))   # off: fine
 
 
 def test_the_ema_pullback_stop_loss_switch_is_required(tmp_path):

@@ -49,12 +49,12 @@ Every result gives: the market state, the direction (up, down or none), the type
 - **Possible reversal:** after a trend has been running and price has moved at least 30 pips since it started, a strong reversal candle appears, recognised by the shared rejection part with no extra size rule.
 - **Consolidation** (this includes a trend running out of steam): narrow Bollinger bands, price between them touching neither band, small candles with green and red roughly the same size, no direction. Unlike ranging, price stays in the middle. No trading. When price breaks out, the analyser moves to emerging trend.
 
-### 2.3 Direction rule (applies to every strategy except the range trade and the Bollinger band bounce)
+### 2.3 Direction rule (applies to every strategy except the range trade, the Bollinger band bounce and the breakout)
 
 - **Buy side:** price above the daily pivot and above the 5-minute 100 EMA.
 - **Sell side:** price below the daily pivot and below the 5-minute 100 EMA.
 - If they disagree, there is no clear direction.
-- This applies to every strategy except the range trade and the Bollinger band bounce, which it does not apply to in any state (owner, 7 November 2026).
+- This applies to every strategy except the range trade, the Bollinger band bounce and the breakout, which it does not apply to in any state (owner, 7 November 2026). The breakout has its own direction filter instead: the day's move so far (section 3.5).
 
 Functional test: on 6 November 2026 at 13:00 the signs of a reversal up appeared, but price was below the pivot and the 100 EMA, and carried on down through S2 to S3. Expected answer: no buy at 13:00, and the sell side stays allowed all the way down to S3.
 
@@ -163,11 +163,12 @@ Spread spikes are ignored in the same way as for the bounce (3.3).
 
 ### 3.5 Breakout (owner, 7 November 2026)
 
-1. It looks for a trade only at the moment the analyser moves from consolidation to an emerging trend because a 5-minute candle closed outside the Bollinger band (section 2.5): the breakout candle.
+1. It looks for a trade only at the moment the analyser moves into an emerging trend because price broke out of a range (two closes beyond the same band, section 2.5) or because a 5-minute candle closed outside the Bollinger band out of a consolidation: that candle is the breakout candle.
 2. A buy (breakout up) opens as soon as price breaks above the breakout candle's high; a sell (breakout down) as soon as price breaks below its low.
 3. If price does not break it within 3 candles after the breakout candle (`breakout.trigger_within_candles`), the setup expires.
-4. Its stop loss and take profit are settings (`breakout.stop_loss_pips`, `breakout.take_profit_pips`), not yet chosen; it stays switched off (`STRATEGY_BREAKOUT=off`) until the owner chooses them, and the bot will not start with it switched on while either is still 0.
-5. Hours, news and the Friday rules as for the EMA pullback (section 6).
+4. It only takes a breakout in the direction of the day's move so far: a buy only when the entry price is above that day's 00:00 UK open, a sell only when it is below (the open of the 5-minute candle starting at 00:00 UK, sell price). The direction rule (2.3) does not apply to it.
+5. Stop loss 6 pips (`breakout.stop_loss_pips`), take profit 50 pips (`breakout.take_profit_pips`). No close on a rejection at a level.
+6. New trades only from 06:00 to 20:30 UK; it may open during a big-news window, may be held overnight and through news, and any breakout trade still open at 20:30 UK on Friday is closed (sections 4 and 6). One breakout trade open at a time.
 
 ---
 
@@ -177,7 +178,7 @@ One shared trade manager for every trade.
 
 - **Stop loss:** a fixed 6 pips for every strategy except the EMA pullback, sent to IG. A switch in `.env` (`STOP_LOSS_PIPS`). The EMA pullback's stop is 12 pips (owner, 7 November 2026), its own switch in `.env` (`STOP_LOSS_PIPS_EMA_PULLBACK`).
 - **Take profit:** a fixed 100 pips sent to IG as a safety net, for every strategy except the EMA pullback. A switch in `.env` (`TAKE_PROFIT_PIPS`). The EMA pullback's take profit is 30 pips (owner, 7 November 2026; `ema_pullback.take_profit_pips` in `config/settings.toml`), except that an EMA pullback trade opened on a day with big news for the pair gets the 100 pips of `TAKE_PROFIT_PIPS`. Both are the bot's own rule, not an IG requirement.
-- **Breakout exits** (owner, 7 November 2026): a breakout trade runs until its stop or take profit (settings, not yet chosen), or 20:30 UK on Friday, when any breakout trade still open is closed. It is not closed at 20:30 on other days (it may be held overnight) and not closed before big news. The close on a rejection at a level applies to it as to every strategy except the EMA pullback.
+- **Breakout exits** (owner, 7 November 2026): a breakout trade runs until its 6-pip stop or 50-pip take profit at IG (`breakout.stop_loss_pips`, `breakout.take_profit_pips`), or 20:30 UK on Friday, when any breakout trade still open is closed. It is not closed at 20:30 on other days (it may be held overnight), not closed before big news, and the close on a rejection at a level does not apply to it.
 - **Holding:** there is no profit lock, and no close when the analyser's state changes (owner, 7 November 2026): a trade (except the EMA pullback, below) runs until one of the exits in this section closes it: the 6-pip stop or the 100-pip take profit at IG, the 20:30 close, the close 15 minutes before big news, the range trade's half close at the opposite band, or the close on a confirmed rejection at a level against the trade.
 - **EMA pullback exits** (owner, 7 November 2026): an EMA pullback trade runs until its 12-pip stop or its take profit at IG (30 pips; 100 pips, `TAKE_PROFIT_PIPS`, for a trade opened on a UK calendar day with a big release for the pair, owner's decision of 7 November 2026), or 20:30 UK on Friday, when any EMA pullback trade still open is closed. It is not closed at 20:30 on other days (it may be held overnight), not closed before big news, and the close on a rejection at a level does not apply to it. It may open at any time the market is open except after 20:30 UK on Friday, and during a big-news window (section 6).
 - **At a level:** the trade stays open while price is only wobbling. If price is rejected at the level against the trade, the trade closes at the same moment a bounce the other way would open: when the live price breaks past the confirmation candle. This never depends on a trade the other way being allowed.
@@ -217,7 +218,7 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 - Total risk across all open trades and available funds are also checked.
 - Trading hours (UK clock time): new trades from 06:00 to 20:30 (switches in `.env`, section 13). Any trade open at 20:30 is closed. Nothing held overnight. A trade opened just before 20:30 is simply closed at 20:30.
 - **EMA pullback hours** (owner, 7 November 2026): the EMA pullback may open at any time the market is open, not only 06:00 to 20:30, except after 20:30 UK on Friday: no new EMA pullback trade opens then, so none is ever held over the weekend. It may be held overnight: it is not closed at 20:30, except on Friday, when any EMA pullback trade still open at 20:30 UK is closed. All other strategies keep the hours above.
-- **Breakout hours** (owner, 7 November 2026): the same as the EMA pullback: it may open at any time the market is open except after 20:30 UK on Friday, may be held overnight, and any breakout trade still open at 20:30 UK on Friday is closed.
+- **Breakout hours** (owner, 7 November 2026): new breakout trades only from 06:00 to 20:30 UK, like the other strategies; it may open during a big-news window, may be held overnight, and any breakout trade still open at 20:30 UK on Friday is closed. One breakout trade open at a time (it counts towards "most at once: 5").
 - **Per pair and in total (to be built with the safety rules):** every limit above will apply to each pair on its own, plus a total across all pairs switched on (for example the most trades open at once, and the total risk, across all pairs). Nothing is built for this yet.
 - Big news: no new trades from 15 minutes before to 30 minutes after. Open trades closed 15 minutes before. This does not apply to the EMA pullback or the breakout (owner, 7 November 2026): they may open during the window, and their open trades are not closed before big news. Medium and small news ignored. Which releases count as big comes from AutoBot's own small, medium and big table (built: the owner's table from AutoBot 161, copied as data into `config/news_table.toml`, plus a GBP "Interest Rate" row for the Bank of England decision; `docs/NEWS.md`). News times and figures from Finnhub (built: `news/`, fetched a few times a day by the price service). If the news data is missing or out of date, alert Johnny rather than block trading indefinitely (built: a Telegram problem alert; trading is not blocked by it).
 

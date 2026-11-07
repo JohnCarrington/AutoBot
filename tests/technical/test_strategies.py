@@ -689,19 +689,29 @@ def test_the_other_strategies_keep_100_pips_on_any_day(S):
 
 # ---- 3.5 breakout ---------------------------------------------------------------------------
 
-from strategies.breakout.strategy import BREAKOUT_REASON, Breakout  # noqa: E402
+from datetime import datetime as _dt  # noqa: E402
+from strategies.breakout.strategy import BREAKOUT_REASONS, Breakout  # noqa: E402
 from strategies.common import BREAKOUT  # noqa: E402
 
+MIDNIGHT = _dt(2026, 11, 4, 0, 0, tzinfo=timezone.utc)      # 00:00 UK (GMT): the day's open candle
 
-def bchange(direction=UP, prev=CONSOLIDATION, reason=BREAKOUT_REASON + ": close 107 above the upper band 106"):
+
+def bchange(direction=UP, prev=CONSOLIDATION, reason=None):
+    reason = reason if reason is not None else BREAKOUT_REASONS[prev] + ": close beyond the band"
     return SimpleNamespace(previous_state=prev, state=EMERGING, direction=direction, reason=reason)
 
 
-CONS = [C(i, 100, 103, 98, 101) for i in range(5)]          # the consolidation: low 98, high 103
-UPC = C(5, 101, 106, 100.5, 105.5)                          # the breakout candle: high 106, low 100.5
+def B(i, o, h, l, c):
+    return C(i, o, h, l, c, start=MIDNIGHT)
 
 
-def run_breakout(s, candles, at=5, change=None, since=START):
+OPEN = B(0, 100, 100.5, 99.5, 100)                           # the 00:00 UK candle: the day opens at 100
+CONS = [OPEN] + [B(i, 100, 103, 98, 101) for i in range(1, 5)]  # the consolidation: low 98, high 103
+UPC = B(5, 101, 106, 100.5, 105.5)                          # the breakout candle: high 106, low 100.5
+DOWNC = B(5, 100, 100.5, 96, 96.5)                          # low 96
+
+
+def run_breakout(s, candles, at=5, change=None, since=MIDNIGHT):
     b, out = Breakout(s), []
     for k, c in enumerate(candles):
         out += b.on_candle(c, (change or bchange()) if k == at else None, since if k == at else None)
@@ -709,79 +719,103 @@ def run_breakout(s, candles, at=5, change=None, since=START):
 
 
 def test_breakout_buy_opens_above_the_breakout_candle_high(S):
-    (x,), _ = run_breakout(S, CONS + [UPC, C(6, 105.5, 107, 105, 106.5)])
-    assert (x.strategy, x.direction, x.entry_price, x.time) == (BREAKOUT, BUY, D(106), C(6, 0, 0, 0, 0).start)
+    (x,), _ = run_breakout(S, CONS + [UPC, B(6, 105.5, 107, 105, 106.5)])
+    assert (x.strategy, x.direction, x.entry_price, x.time) == (BREAKOUT, BUY, D(106), B(6, 0, 0, 0, 0).start)
     assert "moved from consolidation to an emerging trend up" in x.steps[0]
-    assert (x.context["consolidation_low"], x.context["consolidation_high"]) == (D(98), D(103))   # not the breakout candle
+    assert "above the day's 00:00 UK open 100" in x.steps[-1]
+    assert (x.context["broke_out_of"], x.context["base_low"], x.context["base_high"]) == ("consolidation", D("98"), D("103"))
 
 
 def test_breakout_sell_opens_below_the_breakout_candle_low(S):
-    down = C(5, 100, 100.5, 96, 96.5)
-    (x,), _ = run_breakout(S, CONS + [down, C(6, 96.5, 97, 95, 95.5)], change=bchange(DOWN))
+    (x,), _ = run_breakout(S, CONS + [DOWNC, B(6, 96.5, 97, 95, 95.5)], change=bchange(DOWN))
     assert (x.direction, x.entry_price) == (SELL, D(96))
 
 
+def test_breakout_out_of_a_range_too(S):
+    (x,), _ = run_breakout(S, CONS + [UPC, B(6, 105.5, 107, 105, 106.5)], change=bchange(prev=RANGING))
+    assert x.context["broke_out_of"] == "range" and "moved from ranging" in x.steps[0]
+
+
+def test_breakout_only_with_the_days_move_so_far(S):
+    high_open = [B(0, 110, 110.5, 109.5, 110)] + CONS[1:]   # the day opened at 110
+    out, b = run_breakout(S, high_open + [UPC, B(6, 105.5, 107, 105, 106.5)])
+    assert out == [] and any("not above the day's open 110" in t for _, _, t in b.notes)    # a buy below the open
+    (x,), _ = run_breakout(S, high_open + [DOWNC, B(6, 96.5, 97, 95, 95.5)], change=bchange(DOWN))
+    assert x.direction == SELL                                              # a sell below the open: fine
+    low_open = [B(0, 90, 90.5, 89.5, 90)] + CONS[1:]
+    assert run_breakout(S, low_open + [DOWNC, B(6, 96.5, 97, 95, 95.5)], change=bchange(DOWN))[0] == []
+    flat = [B(0, 106, 106.5, 105.5, 106)] + CONS[1:]        # entry exactly at the open: neither above nor below
+    assert run_breakout(S, flat + [UPC, B(6, 105.5, 107, 105, 106.5)])[0] == []
+
+
+def test_breakout_needs_the_days_00_00_uk_candle(S):
+    later = [C(i, 100, 103, 98, 101) for i in range(5)]      # 09:00 onwards: no 00:00 candle seen
+    out, b = run_breakout(S, later + [C(5, 101, 106, 100.5, 105.5), C(6, 105.5, 107, 105, 106.5)], since=START)
+    assert out == [] and any("00:00 UK open was not seen" in t for _, _, t in b.notes)
+
+
 def test_breakout_a_candle_opening_past_the_price_enters_at_its_open(S):
-    (x,), _ = run_breakout(S, CONS + [UPC, C(6, 107, 108, 106.5, 107.5)])
+    (x,), _ = run_breakout(S, CONS + [UPC, B(6, 107, 108, 106.5, 107.5)])
     assert x.entry_price == D(107)
 
 
 def test_breakout_expires_after_3_candles(S):
-    wait = [C(6 + k, 105, 105.8, 104, 105) for k in range(3)]
-    assert run_breakout(S, CONS + [UPC] + wait[:2] + [C(8, 105, 107, 104, 106)])[0] != []     # the 3rd: in time
-    out, b = run_breakout(S, CONS + [UPC] + wait + [C(9, 105, 107, 104, 106)])
+    wait = [B(6 + k, 105, 105.8, 104, 105) for k in range(3)]
+    assert run_breakout(S, CONS + [UPC] + wait[:2] + [B(8, 105, 107, 104, 106)])[0] != []     # the 3rd: in time
+    out, b = run_breakout(S, CONS + [UPC] + wait + [B(9, 105, 107, 104, 106)])
     assert out == [] and any("expired" in t for _, _, t in b.notes)
 
 
 def test_breakout_the_expiry_is_a_setting(S):
     s = changed(S, "breakout", trigger_within_candles=1)
-    assert run_breakout(s, CONS + [UPC, C(6, 105, 105.8, 104, 105), C(7, 105, 107, 104, 106)])[0] == []
+    s.hours = S.hours
+    assert run_breakout(s, CONS + [UPC, B(6, 105, 105.8, 104, 105), B(7, 105, 107, 104, 106)])[0] == []
 
 
 @pytest.mark.parametrize("change", [
-    bchange(prev=RANGING),                                                       # not from consolidation
-    bchange(reason="rejected at a level: closed 13415.6 above the reversal high"),   # not a band breakout
-    SimpleNamespace(previous_state=CONSOLIDATION, state=RANGING, direction=NONE, reason=BREAKOUT_REASON),
+    bchange(prev=TREND, reason="broke out of the consolidation"),                    # not from consolidation or ranging
+    bchange(reason="rejected at a level: closed 13415.6 above the reversal high"),   # not a breakout
+    bchange(prev=RANGING, reason=BREAKOUT_REASONS[CONSOLIDATION]),                    # the reason must match the state left
+    SimpleNamespace(previous_state=CONSOLIDATION, state=RANGING, direction=NONE, reason=BREAKOUT_REASONS[CONSOLIDATION]),
 ])
-def test_breakout_only_from_consolidation_to_emerging_by_a_close_outside_the_band(S, change):
-    assert run_breakout(S, CONS + [UPC, C(6, 105.5, 107, 105, 106.5)], change=change)[0] == []
+def test_breakout_only_on_the_analysers_breakout_into_an_emerging_trend(S, change):
+    assert run_breakout(S, CONS + [UPC, B(6, 105.5, 107, 105, 106.5)], change=change)[0] == []
 
 
-def test_breakout_states_hours_news_and_friday_as_the_ema_pullback(S):
-    from strategies.common import closed_before_big_news, counts_towards_most_at_once
+def test_breakout_states_and_no_direction_rule(S):
     on = changed(S, "switches", breakout=True)
-    assert check(on, "GBPUSD", cand(BREAKOUT, BUY, 120), state(EMERGING, UP), PIVOT, EMA100).allowed
+    for price in (100, 120):                               # sell side and buy side: the rule does not apply
+        i = check(on, "GBPUSD", cand(BREAKOUT, BUY, price), state(EMERGING, UP), PIVOT, EMA100)
+        assert i.allowed and "the direction rule does not apply to breakout" in i.steps[-1]
     assert check(on, "GBPUSD", cand(BREAKOUT, BUY, 120), state(TREND, UP), PIVOT, EMA100).allowed
     assert "only in the trend's direction" in check(on, "GBPUSD", cand(BREAKOUT, SELL, 100), state(EMERGING, UP), PIVOT, EMA100).blocked_by
-    i = check(on, "GBPUSD", cand(BREAKOUT, BUY, 100), state(EMERGING, UP), PIVOT, EMA100)
-    assert not i.allowed and "direction rule says sell side" in i.blocked_by
-    assert "STRATEGY_BREAKOUT is off" in check(S, "GBPUSD", cand(BREAKOUT, BUY, 120), state(EMERGING, UP), PIVOT, EMA100).blocked_by
     for st in (RANGING, CONSOLIDATION, POSSIBLE_REVERSAL):
         assert "does not allow breakout" in check(on, "GBPUSD", cand(BREAKOUT, BUY, 120), state(st, UP), PIVOT, EMA100).blocked_by
-    assert may_open(S, "GBPUSD", BREAKOUT, U(2026, 11, 3, 3, 0), []) == []
-    assert may_open(S, "GBPUSD", BREAKOUT, U(2026, 11, 5, 11, 50), BOE_CAL) == []
-    assert any("after 20:30 UK on Friday" in r for r in may_open(S, "GBPUSD", BREAKOUT, U(2026, 11, 6, 20, 45), []))
-    assert forced_close_at(S, BREAKOUT, U(2026, 11, 3, 10, 0)) == U(2026, 11, 6, 20, 30)
-    assert closed_before_big_news(BREAKOUT) is False and closed_on_level_rejection(BREAKOUT) is True
+    assert "STRATEGY_BREAKOUT is off" in check(S, "GBPUSD", cand(BREAKOUT, BUY, 120), state(EMERGING, UP), PIVOT, EMA100).blocked_by
+
+
+def test_breakout_hours_news_friday_and_exits(S):
+    from strategies.common import closed_before_big_news, counts_towards_most_at_once, stop_loss_pips, take_profit_pips
+    assert may_open(S, "GBPUSD", BREAKOUT, U(2026, 11, 3, 6, 0), []) == []
+    assert "outside the trading hours 06:00 to 20:30 UK" in may_open(S, "GBPUSD", BREAKOUT, U(2026, 11, 3, 5, 55), [])
+    assert "outside the trading hours 06:00 to 20:30 UK" in may_open(S, "GBPUSD", BREAKOUT, U(2026, 11, 3, 20, 30), [])
+    assert "outside the trading hours 06:00 to 20:30 UK" in may_open(S, "GBPUSD", BREAKOUT, U(2026, 11, 3, 22, 0), [])
+    assert may_open(S, "GBPUSD", BREAKOUT, U(2026, 11, 5, 11, 50), BOE_CAL) == []          # big news: may open
+    assert forced_close_at(S, BREAKOUT, U(2026, 11, 3, 10, 0)) == U(2026, 11, 6, 20, 30)   # held to Friday 20:30
+    assert closed_before_big_news(BREAKOUT) is False
+    assert closed_on_level_rejection(BREAKOUT) is False                                       # no level close
     assert counts_towards_most_at_once(BREAKOUT) is True
-
-
-def test_breakout_stop_and_take_profit_are_its_settings_not_yet_chosen(S):
-    from strategies.common import stop_loss_pips, take_profit_pips
-    assert (stop_loss_pips(S, BREAKOUT), take_profit_pips(S, BREAKOUT)) == (0, 0)
-    s = changed(S, "breakout", stop_loss_pips=15, take_profit_pips=50)
-    s.switches = S.switches
-    assert (stop_loss_pips(s, BREAKOUT), take_profit_pips(s, BREAKOUT)) == (15, 50)
+    assert (stop_loss_pips(S, BREAKOUT), take_profit_pips(S, BREAKOUT, U(2026, 11, 5, 9, 0), "GBPUSD", BOE_CAL)) == (6, 50)
 
 
 def test_the_replay_gives_the_breakout_the_analysers_breakout(monkeypatch, S):
-    candles = CONS + [UPC, C(6, 105.5, 107, 105, 106.5)]
+    candles = CONS + [UPC, B(6, 105.5, 107, 105, 106.5)]
     hist = [(SimpleNamespace(candle=c, upper=None, middle=None, lower=None), None, None, [], None, None) for c in candles]
     changes = [SimpleNamespace(time=candles[0].start, state=CONSOLIDATION, direction=NONE, trend_type=None,
                                previous_state=TREND, reason="ran out of steam"),
                SimpleNamespace(time=candles[5].start, state=EMERGING, direction=UP, trend_type=None,
-                               previous_state=CONSOLIDATION, reason=BREAKOUT_REASON + ": close above the band")]
-    tracker = SimpleNamespace(history=hist, week_open=START, watcher=None, replay=lambda end: None, changes=changes)
+                               previous_state=CONSOLIDATION, reason=BREAKOUT_REASONS[CONSOLIDATION] + ": close above the band")]
+    tracker = SimpleNamespace(history=hist, week_open=MIDNIGHT, watcher=None, replay=lambda end: None, changes=changes)
     level = SimpleNamespace(type="pivot", price=D(90))
     monkeypatch.setattr(replay_mod, "StateTracker", lambda s, store: tracker)
     monkeypatch.setattr(replay_mod, "MemoStore", lambda store: store)
@@ -789,8 +823,7 @@ def test_the_replay_gives_the_breakout_the_analysers_breakout(monkeypatch, S):
     monkeypatch.setattr(replay_mod, "last_candles", lambda *a: [])
     monkeypatch.setattr(replay_mod, "ema", lambda candles, side, periods: {c.start: D(80) for c in candles})
     monkeypatch.setattr(replay_mod, "build", lambda s, store, t: SimpleNamespace(levels=[level]))
-    (i,) = [x for x in replay_mod.run(S, None, START, START + timedelta(hours=1)).ideas if x.strategy == BREAKOUT]
+    (i,) = [x for x in replay_mod.run(S, None, MIDNIGHT, MIDNIGHT + timedelta(hours=1)).ideas if x.strategy == BREAKOUT]
     assert (i.direction, i.entry_price, i.state) == (BUY, D(106), EMERGING)
-    assert not i.allowed and i.blocked_by == "its switch STRATEGY_BREAKOUT is off"
-    assert i.steps[0].endswith("close above the band")
-    assert (i.context["consolidation_low"], i.context["consolidation_high"]) == (D(98), D(103))   # kept on the idea
+    assert not i.allowed and i.blocked_by == "its switch STRATEGY_BREAKOUT is off"      # the pretend switches: off
+    assert (i.context["base_low"], i.context["base_high"], i.context["day_open"]) == (D(98), D(103), D(100))

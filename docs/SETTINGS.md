@@ -78,8 +78,8 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `range_trade.rejection_candle_within_candles` | Range trade (and the shared rejection part's range version): the red rejection candle must come within this many candles after the candle that pierced the band. 1 means the very next candle, as the design says. | 1 candle |
 | `range_trade.trigger_within_candles` | Range trade: the live price must go below the rejection candle's low within this many candles after the rejection candle. 1 means during the candle after it, as the design says; otherwise the setup expires. | 1 candle |
 | `breakout.trigger_within_candles` | Breakout (design 3.5): the breakout candle's high (buy) or low (sell) must be broken within this many candles after it, or the setup expires. **Owner's value, 7 November 2026.** | 3 candles |
-| `breakout.stop_loss_pips` | The breakout's stop loss, in pips. **Not yet chosen: 0.** `STRATEGY_BREAKOUT` cannot be switched on while it is 0. | 0 (not chosen) |
-| `breakout.take_profit_pips` | The breakout's take profit, in pips. **Not yet chosen: 0.** `STRATEGY_BREAKOUT` cannot be switched on while it is 0. | 0 (not chosen) |
+| `breakout.stop_loss_pips` | The breakout's stop loss, in pips. **Owner's value, 7 November 2026.** 0 means not chosen: `STRATEGY_BREAKOUT` cannot be switched on while it is 0. | 6 pips |
+| `breakout.take_profit_pips` | The breakout's take profit, in pips. **Owner's value, 7 November 2026.** 0 means not chosen: `STRATEGY_BREAKOUT` cannot be switched on while it is 0. | 50 pips |
 | `indicators.bollinger_periods` | Bollinger bands: the middle band is the average of this many closes (chart price), as on Johnny's IG chart. | 20 candles |
 | `indicators.bollinger_std_devs` | Bollinger bands: the upper and lower bands are this many standard deviations above and below the middle band. | 2 |
 | `indicators.ema_periods` | The EMAs worked out on each indicator timeframe, on the chart price, as on Johnny's IG chart: 7, 13 and 21 (trend: slope and fanning), 100 and 200. Each starts as the simple average of its first closes, then each value = previous + (close - previous) x 2 / (periods + 1). | 7, 13, 21, 100, 200 |
@@ -358,7 +358,7 @@ These live in `.env` (not in `config/settings.toml`), next to the IG secrets, so
 | `STRATEGY_EMA_PULLBACK` | The EMA pullback strategy, `on` or `off`. | on |
 | `STRATEGY_BOLLINGER_BOUNCE` | The Bollinger band bounce strategy, `on` or `off`. | on |
 | `STRATEGY_RANGE_TRADE` | The range trade strategy, `on` or `off`. | on |
-| `STRATEGY_BREAKOUT` | The breakout strategy (design 3.5), `on` or `off`. It must stay off until `breakout.stop_loss_pips` and `breakout.take_profit_pips` are chosen: the bot refuses to start with it on while either is 0. | off |
+| `STRATEGY_BREAKOUT` | The breakout strategy (design 3.5), `on` or `off`. The bot refuses to start with it on while `breakout.stop_loss_pips` or `breakout.take_profit_pips` is 0. Switched on by the owner, 7 November 2026. | on |
 | `STOP_LOSS_PIPS` | The stop loss sent with every trade, for every strategy except the EMA pullback (which has `STOP_LOSS_PIPS_EMA_PULLBACK`), in pips: a whole number from 1 to 100. Turned into IG's points per pair (`pairs.PAIR.pip_size` x `pairs.PAIR.price_scale`). Moved from `trade.stop_loss_pips` in `config/settings.toml` on 7 November 2026. | 6 |
 | `STOP_LOSS_PIPS_EMA_PULLBACK` | The EMA pullback's stop loss, sent with each of its trades, in pips: a whole number from 1 to 100. Turned into IG's points per pair like `STOP_LOSS_PIPS`. **Owner's value, 7 November 2026.** | 12 |
 | `TAKE_PROFIT_PIPS` | The take profit sent to IG with every trade, in pips: a whole number from 1 to 1000. The bot may close earlier itself; this is the backstop. Moved from `trade.take_profit_pips` on 7 November 2026. | 100 |
