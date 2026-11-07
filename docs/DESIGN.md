@@ -269,4 +269,5 @@ Remaining, in three rounds:
 ## 12. Known example days for functional tests
 
 - **5 November 2026:** fall from 07:00 stopping at 1.3446 to 1.3450 (round number plus earlier level), sharp reversal up at 12:00. Pivot rejection just before midnight starting the downtrend into 6 November.
+- **5 November 2026, Bank of England:** the 12:00 Bank of England rate decision was big news, so the bot must open no new trades between 11:45 and 12:30 (15 minutes before to 30 minutes after, as in section 6's news rules and settings `news.big_news_no_new_trades_before_minutes` and `news.big_news_no_new_trades_after_minutes`).
 - **6 November 2026:** slow grind down from midnight; consolidation at S1 about 06:00 to 06:45; strong push down 06:45 to 07:30; wobble at S2 07:30 to 08:30; reversal about 10:15; flat at S2 11:30 to 12:45; no buy at 13:00 (direction rule); 13:30 news drives the day down to S3.

@@ -77,7 +77,11 @@ EXPECTED = {
     "possible_reversal": {"min_trend_move_pips": 30},
     "range_trade": {"close_percent_at_opposite_band": 50, "rejection_candle_within_candles": 1,
                     "trigger_within_candles": 1},
-    "indicators": {"bollinger_periods": 20, "bollinger_std_devs": 2},
+    "indicators": {"bollinger_periods": 20, "bollinger_std_devs": 2, "ema_periods": (7, 13, 21, 100, 200),
+                   "macd_fast_periods": 35, "macd_slow_periods": 45, "macd_signal_periods": 30,
+                   "rsi_periods": 3, "rsi_upper_line": 70, "rsi_lower_line": 30, "timeframes": ("5m", "1h"),
+                   "history_candles": 2000, "warm_up_seed_weight_percent": 2},
+    "analyser": {"direction_ema_timeframe": "5m", "direction_ema_periods": 100, "out_of_date_after_minutes": 10},
     "rejection": {"candle_timeframe": "5m", "near_level_within_pips": 3, "max_spread_pips": 3},
     "market": {"epic": "CS.D.GBPUSD.TODAY.IP", "points_per_pip": 1},
     "market_hours": {
@@ -265,6 +269,12 @@ INVALID = [
     ("range_trade", "trigger_within_candles", 0, "must be between"),
     ("indicators", "bollinger_periods", 1, "must be between"),
     ("indicators", "bollinger_std_devs", 2.5, "must be a whole number"),
+    ("indicators", "ema_periods", [], "non-empty list"),
+    ("indicators", "rsi_upper_line", 40, "must be between"),
+    ("indicators", "timeframes", ["5m", "2h"], "not a known candle size"),
+    ("indicators", "warm_up_seed_weight_percent", 0, "must be between"),
+    ("analyser", "direction_ema_timeframe", "1d", "must be one of"),
+    ("analyser", "out_of_date_after_minutes", 0, "must be between"),
     ("rejection", "candle_timeframe", "1m", "must be one of"),
     ("rejection", "near_level_within_pips", -1, "must be between"),
     ("rejection", "max_spread_pips", 0, "must be between"),
@@ -354,6 +364,12 @@ def test_close_time_not_before_last_new_trade(tmp_path):
     ("history", "weekly_budget_points", 400, "must not be bigger than weekly_budget_points"),
     ("levels", "london_session_until", "07:00", "london_session_from must be earlier than london_session_until"),
     ("levels", "new_york_session_from", "21:30", "new_york_session_from must be earlier than new_york_session_until"),
+    ("indicators", "ema_periods", [13, 7, 21, 100, 200], "ema_periods must go up"),
+    ("indicators", "timeframes", ["tick", "5m", "1h"], "cannot include 'tick'"),
+    ("indicators", "macd_fast_periods", 45, "macd_fast_periods must be smaller"),
+    ("indicators", "history_candles", 150, "history_candles must be at least 200"),
+    ("analyser", "direction_ema_timeframe", "4h", "must be one of \\[indicators\\] timeframes"),
+    ("analyser", "direction_ema_periods", 50, "must be one of \\[indicators\\] ema_periods"),
 ])
 def test_candle_and_stream_settings_must_fit_together(tmp_path, section, key, value, message):
     data = _raw()

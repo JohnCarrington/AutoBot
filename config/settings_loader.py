@@ -264,6 +264,21 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "indicators": {
         "bollinger_periods": _whole_number(2, 200),
         "bollinger_std_devs": _whole_number(1, 5),
+        "ema_periods": _whole_numbers(2, 500),
+        "macd_fast_periods": _whole_number(2, 500),
+        "macd_slow_periods": _whole_number(2, 500),
+        "macd_signal_periods": _whole_number(2, 500),
+        "rsi_periods": _whole_number(2, 100),
+        "rsi_upper_line": _whole_number(51, 100),
+        "rsi_lower_line": _whole_number(0, 49),
+        "timeframes": _timeframes,
+        "history_candles": _whole_number(100, 20000),
+        "warm_up_seed_weight_percent": _whole_number(1, 50),
+    },
+    "analyser": {
+        "direction_ema_timeframe": _one_of("5m", "1h", "4h"),
+        "direction_ema_periods": _whole_number(2, 500),
+        "out_of_date_after_minutes": _whole_number(1, 1440),
     },
     "rejection": {
         "candle_timeframe": _one_of("5m", "1h", "4h"),
@@ -375,6 +390,26 @@ def _check_levels_together(v: dict[str, dict[str, Any]]) -> None:
             )
 
 
+def _check_indicators_together(v: dict[str, dict[str, Any]]) -> None:
+    ind, an = v["indicators"], v["analyser"]
+    e = ind["ema_periods"]
+    if list(e) != sorted(set(e)):
+        raise SettingsError("Setting [indicators] ema_periods must go up with no repeats.")
+    if "tick" in ind["timeframes"]:
+        raise SettingsError("Setting [indicators] timeframes cannot include 'tick': indicators need candles.")
+    if ind["macd_fast_periods"] >= ind["macd_slow_periods"]:
+        raise SettingsError("Setting [indicators] macd_fast_periods must be smaller than macd_slow_periods.")
+    longest = max(max(e), ind["macd_slow_periods"] + ind["macd_signal_periods"], ind["bollinger_periods"],
+                  ind["rsi_periods"] + 1)
+    if ind["history_candles"] < longest:
+        raise SettingsError(f"Setting [indicators] history_candles must be at least {longest} "
+                            "(the longest indicator).")
+    if an["direction_ema_timeframe"] not in ind["timeframes"]:
+        raise SettingsError("Setting [analyser] direction_ema_timeframe must be one of [indicators] timeframes.")
+    if an["direction_ema_periods"] not in e:
+        raise SettingsError("Setting [analyser] direction_ema_periods must be one of [indicators] ema_periods.")
+
+
 def _check_candles_together(v: dict[str, dict[str, Any]]) -> None:
     c, mh = v["candles"], v["market_hours"]
     w = v["stream"]["reconnect_waits_seconds"]
@@ -445,6 +480,7 @@ def load_settings(path: str | Path | None = None) -> Settings:
     _check_together(checked)
     _check_candles_together(checked)
     _check_levels_together(checked)
+    _check_indicators_together(checked)
     return Settings(checked)
 
 

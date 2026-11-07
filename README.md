@@ -2,7 +2,7 @@
 
 An automated trading bot for GBPUSD on an IG **demo** account. It reads live prices, works out the market state, lets only the right strategies look for trades, checks every trade idea against safety rules, and sends orders to IG with a stop loss and take profit. Every trade is recorded, shown on a dashboard and reported by Telegram.
 
-**Current stage:** Stage 6, the shared rejection part. The bot has its settings, the IG connection, the live GBPUSD price stream and candle store (running all the time as a service), the guarded history door, the levels (Stage 5) and now the rejection part: one shared check, used later by the analyser, the strategies and the trade manager, that reports each step of a rejection at a level or the Bollinger band as a timestamped event. Everything uses the sell (bid) price, as on Johnny's IG chart. There are no orders or trading code yet.
+**Current stage:** Stage 7, part 1: the analyser's indicators and the direction rule. The bot has its settings, the IG connection, the live GBPUSD price stream and candle store (running all the time as a service), the guarded history door, the levels (Stage 5), the shared rejection part (Stage 6), and now the analyser's indicators (EMAs, Bollinger bands, MACD, RSI on 5-minute and hourly candles), the direction rule and the data check (ready, warming up or out of date). Everything uses the sell (bid) price, as on Johnny's IG chart. There are no orders or trading code yet.
 
 **The agreed design** is `docs/DESIGN.md`. Where any other document disagrees with it, it wins.
 
@@ -14,6 +14,7 @@ An automated trading bot for GBPUSD on an IG **demo** account. It reads live pri
 - `docs/ARCHITECTURE.md`: the parts of the bot and how they connect
 - `docs/LEVELS.md`: every levels rule, the current list and its file
 - `docs/REJECTION.md`: every rejection rule, the spread-spike rule, and the checks on 5 November
+- `docs/ANALYSER.md`: the analyser's indicators, the direction rule, and when its data is ready, warming up or out of date
 - `rejection/`: the shared rejection part
 - `levels/`: pivots, round numbers, highs and lows, turning levels, and which levels line up
 - `/opt/autobot/data/levels/current.json`: the current list of levels (on the server only, not in git)
@@ -97,6 +98,14 @@ Works out the levels now from the candle store, prints them by group, and writes
 ```
 
 Lists every rejection event (pierce, reversal, confirmation, trigger, cancelled, expired, ignored) between two UTC times from the stored candles, then every setup. Contacts nobody. See `docs/REJECTION.md`.
+
+## Showing the analyser
+
+```
+.venv/bin/python -m analyser 2026-11-06T13:00:00Z
+```
+
+Shows the direction (buy side, sell side or no clear direction) and why, whether the data is ready, warming up or out of date, and every indicator on the 5-minute and hourly candles at that UTC time, from the stored candles. Contacts nobody. See `docs/ANALYSER.md`.
 
 ## Exit codes
 

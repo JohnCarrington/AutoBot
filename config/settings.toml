@@ -99,6 +99,38 @@ trigger_within_candles = 1
 # on the chart price ([chart] price).
 bollinger_periods = 20
 bollinger_std_devs = 2
+# EMAs, as on the owner's IG chart: 7, 13 and 21 (trend: slope and fanning) and
+# 100 and 200, on the chart price. Each starts from the simple average of its
+# first candles, then the usual EMA (weight 2 / (periods + 1)).
+ema_periods = [7, 13, 21, 100, 200]
+# MACD, as on the owner's IG chart: 35, 45, 30. MACD line = fast EMA - slow EMA;
+# signal line = EMA of the MACD line; histogram = MACD line - signal line.
+macd_fast_periods = 35
+macd_slow_periods = 45
+macd_signal_periods = 30
+# RSI, as on the owner's IG chart: 3 periods, with lines at 70 and 30
+# (Wilder's smoothing, the usual RSI).
+rsi_periods = 3
+rsi_upper_line = 70
+rsi_lower_line = 30
+# The candle sizes the indicators are worked out on (design section 2.8).
+timeframes = ["5m", "1h"]
+# How many stored candles, up to the time asked about, are read to work them out.
+history_candles = 2000
+# An EMA, MACD or RSI starts from a guess (a simple average). It counts as READY
+# once that guess makes up no more than this percent of its value; until then
+# it is "warming up". STARTING VALUE (docs/ANALYSER.md).
+warm_up_seed_weight_percent = 2
+
+[analyser]
+# Direction rule (design section 2.3): buy side when price is above the daily
+# pivot and above this EMA; sell side when below both; otherwise no clear direction.
+direction_ema_timeframe = "5m"
+direction_ema_periods = 100
+# While the market is open, the data is OUT OF DATE when the newest stored
+# candle of an indicator timeframe is more than this many minutes behind the
+# newest one that should have finished. STARTING VALUE.
+out_of_date_after_minutes = 10
 
 [rejection]
 # The candle size the shared rejection part watches.
