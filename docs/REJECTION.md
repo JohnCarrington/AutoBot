@@ -61,9 +61,11 @@ There is **one** rejection part (`rejection/`), shared by the analyser, the stra
 
 ## The strategies' own watcher
 
-The analyser uses the watcher as described above: one setup per version and direction, and every setup starts. The strategies (`strategies/replay.py`) run a second watcher with two options (`RejectionWatcher(settings, several=..., may_start=...)`):
-- **several = {bounce}:** more than one bounce setup may run in the same direction (owner, 7 November 2026). A new one still does not start while one of the same direction is waiting for its reversal candle: a fresh pierce restarts that one's count instead.
-- **may_start:** the strategy checks (switch, state, direction rule) are asked before a setup starts; a refused setup is not started and is kept in `not_started` with the reason.
+The analyser uses the watcher as described above. The strategies (`strategies/replay.py`) run a second watcher with `design_only=True`, which has only the rules written in design 3.3 and 3.4 (owner, 7 November 2026):
+- every pierce starts its own setup: no limit of one setup per version and direction;
+- a pierce while a setup waits for its reversal candle does not start that setup's count again (it starts a new setup);
+- a level is reached when the candle's high-low range touches it or comes within `rejection.near_level_within_pips` of it, whichever side the candle opened on.
+Everything else (the band pierce, the 3-candle limits, the confirmation close, the trigger, the cancel, the spread-spike rule, the size record) is the same.
 
 ## The reversal watch windows
 

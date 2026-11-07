@@ -1,10 +1,27 @@
-"""Bollinger band bounce (design 3.3). The shared rejection part (rejection/)
-already follows every step of 3.3 exactly: the pierce of a level (within
-rejection.near_level_within_pips) or of the band (a real pierce), the first
-red reversal candle within 3 candles, the confirmation close within 3 candles,
-the trigger below the confirmation candle's low, the cancel above the reversal
-candle's high, the spread-spike rule, and the reversal/piercing size record.
-So this strategy takes the rejection part's TRIGGERS for its bounce version.
+"""Bollinger band bounce (design 3.3). Its ideas are the triggers of the
+strategies' own rejection watcher (rejection/watch.py, design_only=True), which
+has only the rules written in 3.3:
+  1. a pierce of a level (a candle that comes within rejection.near_level_within_pips,
+     3, of it counts the same) or of the Bollinger band (a real pierce);
+  2. the reversal candle is the first red candle after the pierce, no size
+     rule; none within 3 candles: expired;
+  3. a later confirmation candle closes below the reversal candle's low within
+     3 candles of it, or expired; a wick does not count;
+  4. the sell opens as soon as price goes below the confirmation candle's low;
+  5. price above the reversal candle's high at any point cancels it.
+  The reversal/piercing size is recorded, never a filter; spread spikes
+  (over rejection.max_spread_pips) cannot start or cancel a setup.
+Choices section 3.3 does not make (the simplest, adding no rule; listed for the owner):
+  * a candle reaches a level when its high-low range touches the level or comes
+    within 3 pips of it (for a sell: high at least level - 3 pips and low at or
+    below the level);
+  * every pierce starts its own setup (several may run at once); a pierce while
+    a setup waits for its reversal candle starts a new setup, the waiting one
+    goes on counting;
+  * with stored candles, a candle that goes both past the trigger price and past
+    the cancel price counts as a trigger only if it opened past the trigger
+    price, otherwise as a cancel (the order inside a candle is unknown).
+The watch-window "counts" mark (design section 4) is recorded, never used.
 Ideas only.
 """
 

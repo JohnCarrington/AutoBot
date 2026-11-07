@@ -1,10 +1,9 @@
 """What every strategy shares: a candidate (a strategy's entry price was
 reached), the idea it becomes, and the checks that must all allow it.
 
-A setup only STARTS, and only becomes an IDEA when its entry price is
-reached, if at each of those moments all of these allow it (design sections
-2.2 and 2.3; owner, 7 November 2026: checked when a setup starts and again at
-entry; a setup that would start when the strategy is not allowed is not started):
+A strategy's setup becomes an IDEA only if, at the moment its entry price is
+reached, all of these allow it (design sections 2.2 and 2.3; checked at entry
+only, owner 7 November 2026):
   1. its switch in .env is on (STRATEGY_SLOW_GRIND, ...);
   2. the analyser's current state allows the strategy (section 2.2): ranging ->
      range trade; emerging trend and trend -> slow grind, EMA pullback,
@@ -14,12 +13,8 @@ entry; a setup that would start when the strategy is not allowed is not started)
      side (price above the daily pivot and the 5-minute 100 EMA), a sell needs
      sell side.
 "The current state" is the analyser's state after the last finished 5-minute
-candle. A setup that starts at a candle's close (a slow grind pause, a pierce)
-is checked with the state after that candle and that candle's close; one that
-starts while a candle forms (the EMA pullback's touch) with the state after the
-candle before and the touch price (the 8 EMA). At entry: the state after the
-candle before and the entry price. A candidate that
-fails a check is kept as BLOCKED with the reason, never as an idea.
+candle, and the direction rule uses the entry price. A candidate that fails a
+check is kept as BLOCKED with the reason, never as an idea.
 
 Ideas only: nothing here places, changes or closes a trade, or contacts IG.
 """
@@ -109,14 +104,9 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
     return reasons, rule
 
 
-def start_note(strategy: str, direction: str, state: Any, rule: Any) -> str:
-    return (f"setup start allowed: {strategy} {direction} in a {state.state} {state.direction}; direction rule "
-            f"{rule.side} ({rule.reason})")
-
-
 def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | None,
           ema100: Decimal | None) -> Idea:
-    """At entry: turn a candidate into an idea, or a blocked one with every reason."""
+    """Turn a candidate into an idea, or a blocked one with every reason."""
     reasons, rule = allowed(settings, c.strategy, c.direction, c.entry_price, state, pivot, ema100)
     idea = Idea(pair, c.strategy, c.direction, c.time, c.entry_price, state.state, state.direction,
                 state.trend_type, rule.side, list(c.steps))

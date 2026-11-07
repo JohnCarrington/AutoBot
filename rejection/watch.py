@@ -42,7 +42,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta, timezone
 from decimal import Decimal
-from typing import Any, Callable, Iterable
+from typing import Any, Iterable
 
 from levels.rules import to_decimals
 from prices.indicators import Band
@@ -124,23 +124,19 @@ class RejectionWatcher:
     """Feed it each finished candle in order with on_candle(), and, when live,
     each price with on_price(). It returns the new events each time."""
 
-    def __init__(self, settings: Any, several: frozenset = frozenset(),
-                 may_start: Callable[[str, str, Candle], tuple[bool, str]] | None = None):
-        """several: the versions (bounce, range) that may have more than one setup
-        running in the same direction (the strategies' own watcher: bounce). A new
-        setup still does not start while one of that version and direction is
-        waiting for its reversal candle: that one starts its count again instead.
-        may_start(version, direction, candle): asked before a setup starts; a setup
-        it refuses is not started (kept in not_started with the reason). The
-        analyser's watcher uses neither: one setup per version and direction, and
-        every setup starts (the rejection part never filters)."""
+    def __init__(self, settings: Any, design_only: bool = False):
+        """design_only=True: the strategies' own watcher, with only the rules written
+        in design 3.3 and 3.4 (owner, 7 November 2026): every pierce starts its own
+        setup (no limit per version and direction), a pierce while a setup waits for
+        its reversal candle does not start that setup's count again, and a level is
+        reached when the candle touches it or comes within near_level_within_pips
+        of it (no rule about the side the candle opened on). The analyser's watcher
+        (False) keeps the rules described in docs/REJECTION.md."""
         self.s = settings
         self.side = settings.chart.price
-        self.several = frozenset(several)
-        self.may_start = may_start
+        self.design_only = design_only
         self.events: list[Event] = []
         self.setups: list[Setup] = []
-        self.not_started: list[tuple[str, str, datetime, str]] = []   # (version, direction, candle start, why)
         self._active: dict[int, Setup] = {}
 
     # -- helpers on the chart price
@@ -187,18 +183,13 @@ class RejectionWatcher:
             self._advance(st, c, band, levels)
         for version in (BOUNCE, RANGE):
             for direction in (SELL, BUY):
-                same = [st for st in self._active.values() if st.version == version and st.direction == direction]
-                if same and (version not in self.several or any(st.stage == "reversal" for st in same)):
+                if not self.design_only and any(st.version == version and st.direction == direction
+                                                for st in self._active.values()):
                     continue
                 pierced = self._pierced(version, direction, c, band, levels)
                 if pierced and self.spike(c):
                     self._ignored(0, version, direction, c, "a new pierce")
                 elif pierced:
-                    if self.may_start is not None:
-                        ok, why = self.may_start(version, direction, c)
-                        if not ok:
-                            self.not_started.append((version, direction, c.start, why))
-                            continue
                     self._start(version, direction, c, pierced, levels)
         return self.events[before:]
 
@@ -214,11 +205,12 @@ class RejectionWatcher:
             for lv in levels.levels:
                 # A level counts when the candle comes up to it from at or below it (sell) and
                 # either goes through it or gets within `near` of it; a buy is the mirror image.
-                if direction == SELL and self._o(c) <= lv.price and self._h(c) >= lv.price - near:
+                from_side = self.design_only or (self._o(c) <= lv.price if direction == SELL else self._o(c) >= lv.price)
+                if direction == SELL and from_side and self._h(c) >= lv.price - near and self._l(c) <= lv.price:
                     gap = lv.price - self._h(c)
                     out.append({"what": lv.type, "price": lv.price, "level": lv,
                                 "how": _how(gap)})
-                if direction == BUY and self._o(c) >= lv.price and self._l(c) <= lv.price + near:
+                if direction == BUY and from_side and self._l(c) <= lv.price + near and self._h(c) >= lv.price:
                     gap = self._l(c) - lv.price
                     out.append({"what": lv.type, "price": lv.price, "level": lv,
                                 "how": _how(gap)})
@@ -281,7 +273,7 @@ class RejectionWatcher:
                            f"C {plain(self._c(c))}; size against the piercing candle: body "
                            f"{_ratio(st.size['body_ratio'])}, high-low {_ratio(st.size['range_ratio'])}")
                 return
-            again = self._pierced(st.version, st.direction, c, band, levels)
+            again = [] if self.design_only else self._pierced(st.version, st.direction, c, band, levels)
             if st.version == BOUNCE and again and self.spike(c):
                 self._ignored(st.id, st.version, st.direction, c, "a pierce again")
                 again = []

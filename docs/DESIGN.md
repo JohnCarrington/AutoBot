@@ -131,7 +131,7 @@ Price moves in a staircase: it pauses rather than bouncing back to the middle of
 0. The trend must be established on the hourly chart: hourly 8, 13 and 20 EMAs in order and all rising, with the slope and gap minimums from 161's service as settings.
 1. While a 5-minute candle is forming, the live price drops to the 5-minute 8 EMA. Price may cross the 8 and even the 13 EMA.
 2. If a 5-minute candle closes below the 21 EMA, the setup is cancelled.
-3. The entry price is 3 pips above the highest high of the five finished 5-minute candles before the pullback.
+3. The entry price is 3 pips above the highest high (for a buy; 3 pips below the lowest low for a sell) of the five completed 5-minute candles immediately before the touch candle (AutoBot 161's rule).
 4. The trade opens as soon as the live price reaches the entry price.
 5. If it has not opened within 20 minutes, the setup expires.
 
@@ -168,7 +168,7 @@ One shared trade manager for every trade.
 
 - **Stop loss:** a fixed 6 pips for every strategy, sent to IG. A switch in `.env` (`STOP_LOSS_PIPS`).
 - **Take profit:** a fixed 100 pips sent to IG as a safety net. A switch in `.env` (`TAKE_PROFIT_PIPS`). Both are the bot's own rule, not an IG requirement.
-- **Locking in profit:** once a trade is 15 pips in profit, the bot locks in 10 pips with its own software exit: if price comes back to 10 pips in profit, the bot closes the trade. The 6-pip stop at IG stays as the backstop. Both numbers are settings.
+- **Holding:** a trade runs until the analyser's state becomes consolidation, and is then closed (owner, 7 November 2026). There is no profit lock. The 6-pip stop and the 100-pip take profit at IG, the 20:30 close, the big-news close and the other exits in this section stay.
 - **At a level:** the trade stays open while price is only wobbling. If price is rejected at the level against the trade, the trade closes at the same moment a bounce the other way would open: when the live price breaks past the confirmation candle. This never depends on a trade the other way being allowed.
 - **Distance travelled** does not force a close on its own.
 - **Reversal watch times:** 10:00, 11:00, 13:00, 14:00, 16:00 and 17:00 UK, from 20 minutes before to 20 minutes after. In those windows a rejection at any level counts; outside them, only at levels where several line up.

@@ -1,33 +1,33 @@
 """EMA pullback (design 3.2), written for a buy; a sell is the mirror image.
-Sell (bid) price for every indicator. Ideas only.
+Sell (bid) price for every indicator. Only the rules written in 3.2:
 
-  0. The trend must be established on the hourly chart: on the last finished
-     hourly candle, the hourly 8, 13 and 20 EMAs in order (8 > 13 > 20) and all
-     rising since the hourly candle before; each one's slope over the last
-     ema_pullback.hourly_slope_candles (3) hourly candles at least
-     hourly_min_slope_pips_per_hour (0.16 pips an hour); the 8 and 13 at least
-     hourly_min_gap_fast_mid_pips (0.25) apart and the 13 and 20 at least
-     hourly_min_gap_mid_slow_pips (0.20) apart. (AutoBot 161's service.)
+  0. The trend must be established on the hourly chart: hourly 8, 13 and 20
+     EMAs in order and all rising, with the slope and gap minimums from AutoBot
+     161's service (ema_pullback.hourly_*: each EMA rising since the hourly
+     candle before; slope over the last 3 hourly candles at least 0.16 pips an
+     hour; gaps at least 0.25 and 0.20 pips).
   1. While a 5-minute candle is forming, the live price drops to the 5-minute
-     8 EMA (it may cross the 8 and even the 13 EMA). The live 8 EMA moves with
-     the price, and price is at or below it exactly when price is at or below
-     the 8 EMA of the last finished candle; so with stored candles: a candle
-     whose low reaches the last finished candle's 8 EMA.
-  2. A 5-minute candle closing below the 21 EMA cancels the setup (the touch
-     candle included).
+     8 EMA. Price may cross the 8 and even the 13 EMA.
+  2. If a 5-minute candle closes below the 21 EMA, the setup is cancelled.
   3. The entry price is entry_beyond_pips (3) above the highest high of the
-     entry_lookback_candles (5) finished 5-minute candles before the FIRST
-     candle that reached the 8 EMA (owner, 7 November 2026): the first of the
-     unbroken run of candles, each reaching the 8 EMA, that ends with the touch.
-  4. The buy idea comes as soon as price reaches the entry price.
-  5. Not reached within setup_expires_after_minutes (20) of the touch: expired.
-With stored candles the entry is looked for from the candle after the touch
-(inside the touch candle the order is unknown, and the entry is above the last
-five highs), in candles starting less than 20 minutes after the touch candle
-started; a candle that opened past the entry fills at its open.
-One setup at a time in each direction. The checks (switch, state, direction
-rule) are asked at the touch (may_start, at the touch price: the 8 EMA); a touch
-they refuse starts no setup.
+     entry_lookback_candles (5) completed 5-minute candles immediately before
+     the touch candle (AutoBot 161's rule; owner, 7 November 2026).
+  4. The trade opens as soon as the live price reaches the entry price.
+  5. If it has not opened within setup_expires_after_minutes (20), it expires.
+
+Choices section 3.2 does not make (the simplest, adding no rule; listed for the owner):
+  * the live 8 EMA moves with the price, and price is at or below it exactly
+    when it is at or below the last finished candle's 8 EMA; so a candle whose
+    low reaches that value is a touch candle;
+  * every touch candle starts its own setup (several may run at once);
+  * rule 0 is checked at the touch (the step before step 1), from the last
+    finished hourly candle;
+  * rule 2 applies from the touch candle on (its own close included);
+  * with stored candles the entry is looked for from the candle after the touch
+    (inside the touch candle the order of prices is unknown), in candles
+    starting less than 20 minutes after the touch candle started; a candle that
+    opened past the entry enters at its open.
+Ideas only.
 """
 
 from __future__ import annotations
@@ -35,7 +35,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from decimal import Decimal
-from typing import Any, Callable, Sequence
+from typing import Any, Sequence
 
 from prices.indicators import ema
 from prices.model import Candle, plain, uk_short
@@ -103,16 +103,14 @@ class _Setup:
 
 
 class EmaPullback:
-    def __init__(self, settings: Any, hourly: HourlyTrendReader, may_start: Callable | None = None):
+    def __init__(self, settings: Any, hourly: HourlyTrendReader):
         self.s, self.e = settings, settings.ema_pullback
         self.side = settings.chart.price
         self.ppp = Decimal(settings.market.points_per_pip)
         self.hourly = hourly
         self.done: list[Candle] = []                    # finished 5-minute candles so far
         self.prev_fast: Decimal | None = None
-        self.setup: dict[str, _Setup | None] = {SELL: None, BUY: None}
-        self.may_start = may_start
-        self.run_start: dict[str, int | None] = {SELL: None, BUY: None}   # index in done of the run's first candle
+        self.setups: list[_Setup] = []
         self.notes: list[tuple] = []              # (time, direction, what happened), for checking
 
     def _o(self, c): return getattr(c, f"{self.side}_open")
@@ -124,81 +122,57 @@ class EmaPullback:
         out: list[Candidate] = []
         q = lambda x: plain(x.quantize(Decimal("0.1")))  # noqa: E731
         expire = timedelta(minutes=self.e.setup_expires_after_minutes)
-        for d in (BUY, SELL):
-            st = self.setup[d]
-            if st is None or slow is None:
+        for st in list(self.setups):
+            d, buy = st.direction, st.direction == BUY
+            tag = f"setup from {uk_short(st.touch.start)[-9:]}"
+            if c.start >= st.touch.start + expire:                          # 5.
+                self.setups.remove(st)
+                self.notes.append((c.start, d, f"{tag}: expired, {plain(st.entry)} not reached within "
+                                               f"{self.e.setup_expires_after_minutes} minutes"))
                 continue
-            buy = d == BUY
-            if c.start >= st.touch.start + expire:
-                self.setup[d] = None                    # 5. expired
-                self.notes.append((c.start, d, f"expired: {plain(st.entry)} not reached within "
-                                               f"{self.e.setup_expires_after_minutes} minutes of the touch at "
-                                               f"{uk_short(st.touch.start)[-9:]}"))
-                continue
-            reached = self._h(c) >= st.entry if buy else self._l(c) <= st.entry
-            if reached:
+            if self._h(c) >= st.entry if buy else self._l(c) <= st.entry:   # 4.
                 opened = self._o(c) >= st.entry if buy else self._o(c) <= st.entry
                 price = self._o(c) if opened else st.entry
-                self.setup[d] = None
-                self.notes.append((c.start, d, f"reached the entry {plain(st.entry)}: entry {plain(price)}"))
+                self.setups.remove(st)
+                self.notes.append((c.start, d, f"{tag}: reached the entry {plain(st.entry)}: entry {plain(price)}"))
                 out.append(Candidate(EMA_PULLBACK, d, c.start, price, st.steps + [
                     f"{uk_short(c.start)}: price reached the entry {plain(st.entry)}"
                     + (f" (the candle opened past it, at {plain(price)})" if opened else " (during this candle)")]))
                 continue
-            if (self._c(c) < slow) if buy else (self._c(c) > slow):
-                self.setup[d] = None                    # 2. closed beyond the 21 EMA
-                self.notes.append((c.start, d, f"closed {q(self._c(c))} {'below' if buy else 'above'} the "
+            if slow is not None and ((self._c(c) < slow) if buy else (self._c(c) > slow)):   # 2.
+                self.setups.remove(st)
+                self.notes.append((c.start, d, f"{tag}: closed {q(self._c(c))} {'below' if buy else 'above'} the "
                                                f"{self.e.slow_ema_periods} EMA {q(slow)}: cancelled"))
-        # the run of candles reaching the 8 EMA (rule 3 counts back from its first candle)
-        now = len(self.done)
-        for d in (BUY, SELL):
-            reached = self.prev_fast is not None and (
-                self._l(c) <= self.prev_fast if d == BUY else self._h(c) >= self.prev_fast)
-            if not reached:
-                self.run_start[d] = None
-            elif self.run_start[d] is None:
-                self.run_start[d] = now
-        # 1. a new touch (only with no setup running in that direction)
-        if self.prev_fast is not None and slow is not None:
+        # 1. a touch candle (0. with the hourly trend)
+        if self.prev_fast is not None and slow is not None and len(self.done) >= self.e.entry_lookback_candles:
             trend = self.hourly.at(c.start)
             for d in (BUY, SELL):
-                if self.setup[d] is not None or self.run_start[d] is None:
-                    continue
                 buy = d == BUY
-                first = self.run_start[d]
+                if not (self._l(c) <= self.prev_fast if buy else self._h(c) >= self.prev_fast):
+                    continue
                 if trend.direction != d or not trend.qualified:
                     if trend.direction == d:
-                        self.notes.append((c.start, d, f"touched the 8 EMA {q(self.prev_fast)} but the hourly "
-                                                       f"trend is not qualified ({trend.why})"))
+                        self.notes.append((c.start, d, f"touched the 8 EMA {q(self.prev_fast)}; the hourly trend "
+                                                       f"is not qualified ({trend.why})"))
                     continue
                 if (self._c(c) < slow) if buy else (self._c(c) > slow):
-                    self.notes.append((c.start, d, f"touched the 8 EMA {q(self.prev_fast)} but closed {q(self._c(c))} "
-                                                   f"{'below' if buy else 'above'} the {self.e.slow_ema_periods} EMA "
-                                                   f"{q(slow)}: no setup"))
-                    continue                            # the touch candle closed beyond the 21 EMA: cancelled at once
-                if first < self.e.entry_lookback_candles:
+                    self.notes.append((c.start, d, f"touched the 8 EMA {q(self.prev_fast)}; the touch candle closed "
+                                                   f"{q(self._c(c))} {'below' if buy else 'above'} the "
+                                                   f"{self.e.slow_ema_periods} EMA {q(slow)}: cancelled"))
                     continue
-                note = ""
-                if self.may_start is not None:
-                    ok, note = self.may_start(EMA_PULLBACK, d, c, self.prev_fast, True)
-                    if not ok:
-                        self.notes.append((c.start, d, f"touched the 8 EMA {q(self.prev_fast)}; setup not started: {note}"))
-                        continue
-                before = self.done[first - self.e.entry_lookback_candles:first]
+                before = self.done[-self.e.entry_lookback_candles:]
                 beyond = Decimal(self.e.entry_beyond_pips) * self.ppp
                 entry = (max(self._h(x) for x in before) + beyond) if buy else (min(self._l(x) for x in before) - beyond)
-                self.setup[d] = _Setup(d, c, entry, [
+                self.setups.append(_Setup(d, c, entry, [
                     f"step 0, {trend.why}",
                     f"{uk_short(c.start)}: price {'dropped' if buy else 'rose'} to the 5-minute "
                     f"{self.e.fast_ema_periods} EMA {q(self.prev_fast)} ({'low' if buy else 'high'} "
                     f"{plain(self._l(c) if buy else self._h(c))}); closed {q(self._c(c))}, "
-                    f"{'above' if buy else 'below'} the {self.e.slow_ema_periods} EMA {q(slow)}"
-                    + (f" (the first candle to reach the 8 EMA was {uk_short(self.done[first].start)[-9:]})"
-                       if first < now else ""),
+                    f"{'above' if buy else 'below'} the {self.e.slow_ema_periods} EMA {q(slow)}",
                     f"entry {plain(entry)}: {self.e.entry_beyond_pips} pips {'above the highest high' if buy else 'below the lowest low'} "
-                    f"of the {self.e.entry_lookback_candles} candles before the first candle to reach the 8 EMA "
+                    f"of the {self.e.entry_lookback_candles} candles before the touch candle "
                     f"({uk_short(before[0].start)[-9:]} to {uk_short(before[-1].start)[-9:]}); expires "
-                    f"{self.e.setup_expires_after_minutes} minutes after the touch"] + ([note] if note else []))
+                    f"{self.e.setup_expires_after_minutes} minutes after the touch"]))
                 self.notes.append((c.start, d, f"setup: touched the 8 EMA {q(self.prev_fast)}, entry {plain(entry)}"))
         self.done.append(c)
         self.prev_fast = fast
