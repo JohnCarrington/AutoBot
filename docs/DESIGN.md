@@ -167,7 +167,7 @@ One shared trade manager for every trade.
 
 - **Stop loss:** a fixed 6 pips for every strategy, sent to IG. A switch in `.env` (`STOP_LOSS_PIPS`).
 - **Take profit:** a fixed 100 pips sent to IG as a safety net. A switch in `.env` (`TAKE_PROFIT_PIPS`). Both are the bot's own rule, not an IG requirement.
-- **Holding:** a trade runs until the analyser's state becomes consolidation, and is then closed (owner, 7 November 2026). There is no profit lock. The 6-pip stop and the 100-pip take profit at IG, the 20:30 close, the big-news close and the other exits in this section stay.
+- **Holding:** there is no profit lock, and no close when the analyser's state changes (owner, 7 November 2026): a trade runs until one of the exits in this section closes it: the 6-pip stop or the 100-pip take profit at IG, the 20:30 close, the close 15 minutes before big news, the range trade's half close at the opposite band, or the close on a confirmed rejection at a level against the trade.
 - **At a level:** the trade stays open while price is only wobbling. If price is rejected at the level against the trade, the trade closes at the same moment a bounce the other way would open: when the live price breaks past the confirmation candle. This never depends on a trade the other way being allowed.
 - **Distance travelled** does not force a close on its own.
 - **Reversal watch times:** 10:00, 11:00, 13:00, 14:00, 16:00 and 17:00 UK, from 20 minutes before to 20 minutes after. In those windows a rejection at any level counts; outside them, only at levels where several line up.
