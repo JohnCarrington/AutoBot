@@ -11,8 +11,10 @@ States and the strategies they allow (section 2.2):
 How it moves (sections 2.5 to 2.7). Changes caused by something price DID on
 this candle happen at once (they are proof in the price itself):
   * a level rejection: the shared rejection part confirms a bounce rejection at
-    an important level (pivot, R2, S2, round number, turning level): from
-    consolidation or ranging -> emerging trend in the rejection's direction;
+    a STRONG level (market_states.strong_level_types: pivot, R1-R3, S1-S3,
+    round numbers, the previous day's high or low; or a turning level that lines
+    up with one of those): from consolidation or ranging -> emerging trend in
+    the rejection's direction;
   * a breakout: from consolidation, a close beyond a Bollinger band; from
     ranging, closes beyond the same band for persistence_candles in a row ->
     emerging trend that way;
@@ -20,8 +22,8 @@ this candle happen at once (they are proof in the price itself):
     trend, a bounce failed at or below the 21 EMA and middle band, then price
     makes a new extreme on the outer band, with the 7/13/21 EMAs stacked, price
     beyond them and beyond the 100 EMA, and the outer band sloping -> trend;
-  * in an emerging trend, a confirmed rejection at an important level the
-    other way replaces it with an emerging trend that way (owner's rule);
+  * in an emerging trend, a confirmed rejection at a strong level the other way
+    replaces it with an emerging trend that way (owner's rule);
   * a possible reversal needs BOTH a move of at least
     possible_reversal.min_trend_move_pips since the trend started AND a
     confirmed rejection at a level against it (the shared rejection part's
@@ -50,7 +52,6 @@ from decimal import Decimal
 from typing import Any, Callable
 
 from analyser.features import Features
-from levels.rules import IMPORTANT_TYPES
 from prices.model import plain, uk_short
 from rejection.watch import BOUNCE, CANCELLED, CONFIRMATION, EXPIRED, SELL, TRIGGER, in_watch_window
 
@@ -264,7 +265,7 @@ class StateMachine:
                 if e.kind != kind:
                     continue
                 stp = setup_of(e.setup)
-                if any(p["what"] in IMPORTANT_TYPES for p in stp.pierced):
+                if self.strong_levels(stp):        # only a strong level may start or replace an emerging trend
                     yield e, stp
 
         # ---- possible reversal -----------------------------------------------------------
@@ -396,11 +397,27 @@ class StateMachine:
         return [f"{p['what']} {plain(p['price'])}" for p in setup.pierced
                 if p["what"] not in ("upper Bollinger band", "lower Bollinger band")]
 
+    def strong_levels(self, setup: Any) -> list[dict]:
+        """The pierced levels that may START or REPLACE an emerging trend (owner's rule, 7 November
+        2026): a type in market_states.strong_level_types (pivot, R1-R3, S1-S3, round numbers 00
+        and 50, the previous day's high or low), or a turning level whose lined-up group holds one
+        of those. A turning level on its own does not; it still counts everywhere else."""
+        strong = set(self.m.strong_level_types)
+        out = [p for p in setup.pierced if p["what"] in strong]
+        for p in setup.pierced:
+            if p["what"] in ("turning_high", "turning_low"):
+                name = f"{p['what']} {plain(p['price'])}"
+                for g in getattr(setup, "lined_up", []):
+                    if name in g["levels"] and any(m.split(" ")[0] in strong for m in g["levels"]):
+                        out.append(p)
+                        break
+        return out
+
     def _rejected_level(self, setup: Any, d: str) -> tuple[str, Decimal]:
-        """The important level a rejection was at: the one nearest the piercing candle's edge."""
+        """The strong level a rejection was at: the one nearest the piercing candle's edge."""
         side = self.s.chart.price
         edge = getattr(setup.pierce, f"{side}_high" if d == DOWN else f"{side}_low")
-        cands = [p for p in setup.pierced if p["what"] in IMPORTANT_TYPES] or \
+        cands = self.strong_levels(setup) or \
                 [p for p in setup.pierced if p["what"] not in ("upper Bollinger band", "lower Bollinger band")]
         best = min(cands, key=lambda p: abs(p["price"] - edge))
         return best["what"], best["price"]

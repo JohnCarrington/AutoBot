@@ -201,6 +201,10 @@ spike_average_candles = 20
 indicator_warm_up_candles = 2000
 # Where every state change is recorded (one file per pair).
 folder = "/opt/autobot/data/analyser"
+# The levels a rejection must be at to START or REPLACE an emerging trend
+# (owner's rule, 7 November 2026). A turning level counts only when it lines up
+# with one of these. Round numbers are every 00 and 50.
+strong_level_types = ["pivot", "R1", "R2", "R3", "S1", "S2", "S3", "round_number", "previous_day_high", "previous_day_low"]
 
 [rejection]
 # The candle size the shared rejection part watches.

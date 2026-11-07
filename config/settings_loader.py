@@ -71,6 +71,20 @@ def _decimal_number(minimum: str, maximum: str) -> Callable[[Any], "Decimal"]:
     return check
 
 
+_LEVEL_TYPES = ("pivot", "R1", "R2", "R3", "S1", "S2", "S3", "round_number", "previous_day_high",
+                "previous_day_low", "london_session_high", "london_session_low", "new_york_session_high",
+                "new_york_session_low", "turning_high", "turning_low")
+
+
+def _level_types(v: Any) -> tuple[str, ...]:
+    if not isinstance(v, list) or not v:
+        raise ValueError(f"must be a non-empty list of level types, got {v!r}")
+    for t in v:
+        if t not in _LEVEL_TYPES:
+            raise ValueError(f"{t!r} is not a level type; allowed: {', '.join(_LEVEL_TYPES)}")
+    return tuple(v)
+
+
 def _exactly(expected: str) -> Callable[[Any], str]:
     def check(v: Any) -> str:
         if v != expected:
@@ -329,6 +343,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "spike_average_candles": _whole_number(2, 200),
         "indicator_warm_up_candles": _whole_number(100, 20000),
         "folder": _absolute_folder,
+        "strong_level_types": _level_types,
     },
     "rejection": {
         "candle_timeframe": _one_of("5m", "1h", "4h"),

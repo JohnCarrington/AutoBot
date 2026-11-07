@@ -133,6 +133,8 @@ EXPECTED = {
         "push_ema_fan_pips": 6, "push_riding_band_closes": 3, "spike_range_multiple": 3,
         "spike_average_candles": 20, "indicator_warm_up_candles": 2000,
         "folder": Path("/opt/autobot/data/analyser"),
+        "strong_level_types": ("pivot", "R1", "R2", "R3", "S1", "S2", "S3", "round_number",
+                               "previous_day_high", "previous_day_low"),
     },
     "alerts": {
         "telegram_url": "https://api.telegram.org",
@@ -335,6 +337,8 @@ INVALID = [
     ("market_states", "ranging_max_efficiency_ratio", 1.5, "must be between"),
     ("market_states", "persistence_candles", 0, "must be between"),
     ("market_states", "folder", "analyser", "full folder path"),
+    ("market_states", "strong_level_types", ["pivot", "middle_band"], "is not a level type"),
+    ("market_states", "strong_level_types", [], "non-empty list"),
     ("alerts", "telegram_url", "http://api.telegram.org", "must be 'https://api.telegram.org'"),
     ("alerts", "same_problem_every_minutes", 0, "must be between"),
     ("alerts", "daily_ready_at", "6am", 'written "HH:MM"'),

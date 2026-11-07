@@ -516,3 +516,56 @@ def test_a_market_state_problem_never_stops_the_price_service(st):
     StatesUpdater(broken, CandleStore(st.candles.folder, 30), warn=warned.append)(OPEN)
     assert warned and warned[0].startswith("[EURUSD] Market state not updated")
 
+
+# ---- 7 November: only a strong level starts or replaces an emerging trend ------------------------
+
+def turning(price, group_levels, lined_up):
+    """A rejection setup at a turning level, whose lined-up group holds `group_levels`."""
+    pierce = F(0, c=price, h=price, l=price).candle
+    name = f"turning_high {price}"
+    return SimpleNamespace(pierced=[{"what": "turning_high", "price": D(str(price))}], pierce=pierce,
+                           lined_up=[{"group": 1, "lined_up": lined_up, "levels": [name, *group_levels]}])
+
+
+def test_a_turning_level_on_its_own_does_not_start_an_emerging_trend(st):
+    m = machine(st)
+    alone = turning(11660, ["turning_low 11658.0"], True)            # lines up with another turning level only
+    assert run(m, [(0, F(0))], {0: [ev(1, CONFIRMATION, SELL, OPEN)]}, setups(**{"1": alone})) == []
+    assert m.now.state == CONSOLIDATION
+
+
+def test_a_turning_level_lined_up_with_a_strong_level_starts_one(st):
+    m = machine(st)
+    with_pivot = turning(11660, ["pivot 11662.0"], True)
+    (ch,) = run(m, [(0, F(0, c=11655))], {0: [ev(1, CONFIRMATION, SELL, OPEN, "closed below")]},
+                setups(**{"1": with_pivot}))
+    assert (ch.state, ch.direction) == (EMERGING, DOWN)
+    assert any("rejected at the turning_high 11660.0" in e for e in ch.evidence)
+
+
+def test_a_turning_level_on_its_own_does_not_replace_an_emerging_trend_but_a_lined_up_one_does(st):
+    m = level_downtrend(st)                                           # emerging down from the pivot 11660
+    alone = turning(11650, ["london_session_low 11649.0"], True)
+    assert run(m, [(1, F(1, c=11656))], {1: [ev(2, CONFIRMATION, BUY, OPEN)]}, setups(**{"2": alone})) == []
+    assert (m.now.state, m.now.direction) == (EMERGING, DOWN)
+    with_s1 = turning(11650, ["S1 11648.0"], True)
+    (ch,) = run(m, [(2, F(2, c=11656))], {2: [ev(3, CONFIRMATION, BUY, OPEN, "closed above")]},
+                setups(**{"3": with_s1}))
+    assert (ch.state, ch.direction, ch.previous_direction) == (EMERGING, UP, DOWN)
+
+
+@pytest.mark.parametrize("what,price", [("pivot", 11660), ("R2", 11660), ("S3", 11660), ("round_number", 11650),
+                                        ("round_number", 11700), ("previous_day_high", 11660),
+                                        ("previous_day_low", 11660)])
+def test_each_strong_level_type_starts_an_emerging_trend(st, what, price):
+    m = machine(st)
+    (ch,) = run(m, [(0, F(0, c=11640))], {0: [ev(1, CONFIRMATION, SELL, OPEN)]},
+                setups(**{"1": at_level(what, price, price)}))
+    assert ch.state == EMERGING
+
+
+def test_a_session_high_or_low_alone_does_not_start_one(st):
+    m = machine(st)
+    assert run(m, [(0, F(0))], {0: [ev(1, CONFIRMATION, SELL, OPEN)]},
+               setups(**{"1": at_level("london_session_high", 11660, 11660)})) == []
+
