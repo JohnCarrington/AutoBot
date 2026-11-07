@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 
 from config.pairs import choose_pair, take_pair_option
 from config.settings_loader import load_or_exit
-from news.calendar import big_news_windows, status
+from news.calendar import big_news_windows, status, time_directions
 from news.finnhub import FinnhubNotSetUp, fetch, load_key, read_store
 from prices.model import parse_iso, uk_short
 
@@ -48,6 +48,9 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  {uk_short(w.release_utc)}  {w.currency} {w.event}: no new trades {uk_short(w.no_new_trades_from)[-9:]} "
                   f"to {uk_short(w.no_new_trades_until)[-9:]}, open trades closed at {uk_short(w.close_open_trades_at)[-9:]}; "
                   f"expected {w.direction} ({w.direction_reason})")
+        print("Expected direction for each time (section 2.4):")
+        for td in time_directions(settings, p, parse_iso(args[1]), parse_iso(args[2])):
+            print(f"  {uk_short(td.release_utc)}  {td.direction.upper()}: {td.reason}")
         return 0
     print(__doc__)
     return 2

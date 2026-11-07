@@ -61,6 +61,7 @@ Functional test: on 6 November 2026 at 13:00 the signs of a reversal up appeared
 ### 2.4 News direction and trend days
 
 - For each big release, read the forecast and previous figures from Finnhub, work out whether the expected result is good or bad for the pound or the dollar, and use that as the expected direction for the day.
+- **Big releases at the same time** (owner, 7 November 2026): if their expected directions agree, that is the direction for that time. If they disagree, the **headline release decides**: a rate decision over everything else at that time, main payrolls over private payrolls, headline CPI over core CPI (the order is part of the news table, `config/news_table.toml`). If the headline release has no expected direction, there is no expected direction for that time; if several releases share the top place and do not agree, there is none either. Example: on Friday 6 November 2026 at 13:30, main payrolls (forecast above previous: good for the dollar) decide: GBPUSD down.
 - On a trend day, when the trend and the expected news direction agree, expect price to continue through levels rather than reverse. The expected news direction takes precedence: a trade in that direction is kept open through rejections at levels.
 - Example: on 6 November 2026 the 13:30 news produced a big red candle and the day traded down through S1, S2 and S3.
 

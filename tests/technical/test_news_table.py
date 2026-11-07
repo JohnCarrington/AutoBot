@@ -166,3 +166,84 @@ def test_the_windows_use_the_table_and_log_unmatched_releases(st):
     assert "USD|Personal Income MoM" in UnmatchedLog(st).seen()                 # in no row: logged
     assert "USD|Existing Home Sales" not in UnmatchedLog(st).seen()             # placed as small: not logged
     assert "GBP|MPC Meeting Minutes" not in UnmatchedLog(st).seen()             # medium impact: not matched at all
+
+
+# ---- the headline order: big releases at the same time that disagree --------------------------
+
+from datetime import datetime, timezone  # noqa: E402
+
+from news.calendar import DOWN, IN_LINE, NO_DIRECTION, UP, NewsWindow, time_direction  # noqa: E402
+from news.table import headline_rank, load_headline  # noqa: E402
+
+ORDER = load_headline()
+AT = datetime(2026, 11, 6, 13, 30, tzinfo=timezone.utc)
+
+
+def w(event, direction, currency="USD"):
+    return NewsWindow(AT, "US" if currency == "USD" else "GB", currency, event, AT, AT, AT, direction,
+                      f"{event}: {direction}", None, None)
+
+
+def test_the_headline_order_rows_are_valid_and_in_the_owners_order():
+    assert [h.name for h in ORDER] == ["rate decision", "main payrolls", "private payrolls", "headline CPI", "core CPI"]
+    for h in ORDER:
+        assert h.any_of and all(g and all(k == k.lower() for k in g) for g in h.any_of)
+
+
+@pytest.mark.parametrize("event,rank", [
+    ("BoE Interest Rate Decision", 1), ("Interest Rate", 1), ("Fed Interest Rate Decision", 1),
+    ("Non Farm Payrolls", 2), ("Nonfarm Payrolls Private", 3), ("Inflation Rate YoY", 4), ("CPI", 4),
+    ("Core Inflation Rate MoM", 5), ("Unemployment Rate", 6),
+])
+def test_headline_ranks(event, rank):
+    assert headline_rank(ORDER, event)[0] == rank
+
+
+def test_friday_6_november_13_30_main_payrolls_decide_down_over_private_payrolls():
+    td = time_direction([w("Non Farm Payrolls", DOWN), w("Nonfarm Payrolls Private", UP)])
+    assert (td.direction, td.deciding) == (DOWN, ("Non Farm Payrolls",))
+    assert "main payrolls" in td.reason and "Nonfarm Payrolls Private (up)" in td.reason
+
+
+def test_headline_cpi_decides_over_core_cpi():
+    td = time_direction([w("Core Inflation Rate MoM", DOWN), w("Inflation Rate YoY", UP)])
+    assert (td.direction, td.deciding) == (UP, ("Inflation Rate YoY",))
+
+
+def test_a_rate_decision_decides_over_everything_else():
+    td = time_direction([w("Inflation Rate YoY", DOWN, "GBP"), w("BoE Interest Rate Decision", UP, "GBP"),
+                         w("GDP Growth Rate QoQ Prel", DOWN, "GBP")])
+    assert (td.direction, td.deciding) == (UP, ("BoE Interest Rate Decision",))
+
+
+def test_if_the_headline_release_has_no_direction_there_is_none_for_that_time():
+    td = time_direction([w("Fed Interest Rate Decision", NO_DIRECTION), w("Inflation Rate YoY", UP)])
+    assert td.direction == NO_DIRECTION and "has no expected direction" in td.reason
+
+
+def test_releases_that_agree_give_that_direction_and_one_release_gives_its_own():
+    assert time_direction([w("Non Farm Payrolls", DOWN), w("Unemployment Rate", DOWN)]).direction == DOWN
+    assert time_direction([w("Inflation Rate YoY", IN_LINE)]).direction == IN_LINE
+
+
+def test_releases_sharing_the_top_place_must_agree():
+    td = time_direction([w("Inflation Rate MoM", UP), w("Inflation Rate YoY", DOWN), w("Core Inflation Rate MoM", UP)])
+    assert td.direction == NO_DIRECTION and "do not agree" in td.reason
+
+
+def test_a_release_in_no_headline_row_ranks_below_them_all():
+    td = time_direction([w("Unemployment Rate", UP), w("Nonfarm Payrolls Private", DOWN)])
+    assert (td.direction, td.deciding) == (DOWN, ("Nonfarm Payrolls Private",))
+
+
+@pytest.mark.parametrize("text,problem", [
+    ('[[headline]]\nany_of = [["cpi"]]\n', "needs a name"),
+    ('[[headline]]\nname = "x"\nany_of = []\n', "any_of must be a non-empty list"),
+    ('[[headline]]\nname = "x"\nany_of = [["CPI"]]\n', "must be lower case"),
+    ('[[headline]]\nname = "x"\nany_of = [["cpi"]]\nrank = 1\n', "unknown field"),
+])
+def test_a_bad_headline_row_is_named(tmp_path, text, problem):
+    p = tmp_path / "t.toml"
+    p.write_text(text)
+    with pytest.raises(NewsTableError, match=problem):
+        load_headline(p)

@@ -321,6 +321,16 @@ Only **big** releases stop trading (design section 6). Medium and small news is 
 | 82 | middle | industrial_production | medium | any | industrial production |  |
 | | default | default_small | small | any | (no row matched) | |
 
+**Headline order** (`[[headline]]` in the same file; owner, 7 November 2026). When two or more big releases come out at the same time and their expected directions disagree, the first row below that one of them matches decides (design section 2.4). If it has no expected direction, there is none for that time; releases sharing the top row must agree. A release in no row ranks below them all.
+
+| Rank | Name | Matches names containing any of | But not |
+|---|---|---|---|
+| 1 | rate decision | rate decision; interest rate; federal funds rate; fed funds rate; bank rate; main refinancing; deposit facility | |
+| 2 | main payrolls | non farm payroll; non-farm payroll; nonfarm payroll; nfp | private |
+| 3 | private payrolls | payroll + private | |
+| 4 | headline CPI | cpi; inflation rate | core |
+| 5 | core CPI | core + cpi; core + inflation | |
+
 ## Switches in .env
 
 These live in `.env` (not in `config/settings.toml`), next to the IG secrets, so they can be changed without touching the settings file. They are checked every time a program starts: a missing or invalid switch stops it with a message naming the switch (never showing a secret). `.env.example` lists them with their current values. Tests never read the real `.env`.

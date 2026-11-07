@@ -81,7 +81,7 @@ def load_table(path: str | Path = TABLE_PATH) -> list[Row]:
         raise NewsTableError(f"The news table {path} does not exist.") from None
     except tomllib.TOMLDecodeError as e:
         raise NewsTableError(f"The news table {path} is not valid TOML: {e}") from None
-    unknown = set(raw) - {s for s, _ in SECTIONS}
+    unknown = set(raw) - {s for s, _ in SECTIONS} - {"headline"}
     if unknown:
         raise NewsTableError(f"Unknown section(s) in the news table: {', '.join(sorted(unknown))}.")
     rows: list[Row] = []
@@ -118,6 +118,46 @@ def load_table(path: str | Path = TABLE_PATH) -> list[Row]:
     if not rows:
         raise NewsTableError("The news table has no rows.")
     return rows
+
+
+@dataclass(frozen=True)
+class HeadlineRow:
+    rank: int                           # 1 = the top
+    name: str
+    any_of: tuple[tuple[str, ...], ...]
+    none_of: tuple[str, ...]
+
+    def matches(self, event: str) -> bool:
+        low = event.lower()
+        return any(all(k in low for k in g) for g in self.any_of) and not any(k in low for k in self.none_of)
+
+
+def load_headline(path: str | Path = TABLE_PATH) -> list[HeadlineRow]:
+    """The [[headline]] order: which release decides when big releases at the same time disagree."""
+    raw = tomllib.loads(Path(path).read_text())
+    out = []
+    for i, r in enumerate(raw.get("headline", []), 1):
+        where = f"[[headline]] row {i} ({r.get('name', '?')})"
+        extra = set(r) - {"name", "any_of", "none_of"}
+        if extra:
+            raise NewsTableError(f"{where}: unknown field(s) {', '.join(sorted(extra))}.")
+        if not isinstance(r.get("name"), str) or not r["name"].strip():
+            raise NewsTableError(f"{where}: needs a name.")
+        groups = r.get("any_of")
+        if not isinstance(groups, list) or not groups:
+            raise NewsTableError(f"{where}: any_of must be a non-empty list of keyword groups.")
+        none_of = r.get("none_of", [])
+        out.append(HeadlineRow(i, r["name"], tuple(_group(g, f"{where} any_of") for g in groups),
+                               _group(none_of, f"{where} none_of") if none_of else ()))
+    return out
+
+
+def headline_rank(order: list[HeadlineRow], event: str) -> tuple[int, str]:
+    """(rank, row name) of a release: 1 is the top; a release in no row ranks below them all."""
+    for h in order:
+        if h.matches(event):
+            return h.rank, h.name
+    return len(order) + 1, "not in the headline order"
 
 
 def classify(rows: list[Row], settings: Any, currency: str | None, name: str, impact: Any,

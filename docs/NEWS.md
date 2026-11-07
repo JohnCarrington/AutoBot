@@ -25,6 +25,12 @@ For each **big** release in either currency of a switched-on pair (GBPUSD: GBP a
 
 For each big release: the forecast (Finnhub's `estimate`) against the previous figure. A higher figure is good for the currency, except for names containing one in `news.lower_is_better` (unemployment, jobless claims, claimant count). Good for the pair's first currency (GBP in GBPUSD) means **up**; good for its second (USD) means **down**. The same figures mean **in line**; no figures (speeches, minutes, press conferences) mean **no direction**.
 
+## Big releases at the same time
+
+If two or more big releases come out at the same time and their expected directions agree, that is the direction for that time. If they disagree, the **headline release decides**, from the news table's `[[headline]]` order (top first): **rate decision**, **main payrolls**, **private payrolls**, **headline CPI**, **core CPI**; a release in none of these ranks below them all. So a rate decision decides over everything else at that time, main payrolls over private payrolls, and headline CPI over core CPI. If the headline release has no expected direction, there is no expected direction for that time; if several releases share the top place (for example CPI MoM and YoY) and do not agree, there is none either.
+
+Example: Friday 6 November 2026, 13:30: Non Farm Payrolls (forecast 65 above previous 60: good for USD, so GBPUSD down) and Unemployment Rate (4.2, in line) disagree; main payrolls decide: **down**. `python -m news windows <from> <to>` shows the direction for each time.
+
 ## If the calendar is missing or out of date
 
 If the last good fetch is more than 24 hours old (`news.out_of_date_hours`), or there has never been one, or `FINNHUB_API_KEY` is not set, the price service sends a **Telegram problem alert**, at most every 6 hours while it lasts (`news.alert_every_hours`). **Trading is not blocked by this** (design section 6): the windows use the last calendar on disk.

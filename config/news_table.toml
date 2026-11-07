@@ -402,3 +402,37 @@ all_of = ["industrial production"]
 
 
 # Anything else: SMALL (161's default_small).
+
+# ---- HEADLINE ORDER (owner, 7 November 2026) -------------------------------------
+# When two or more BIG releases come out at the same time and their expected
+# directions disagree, the headline release decides: the first row below that
+# any of them matches (a rate decision over everything else at that time; main
+# payrolls over private payrolls; headline CPI over core CPI). If the headline
+# release has no expected direction, there is none for that time. If several
+# releases share the top row (for example CPI MoM and YoY), they must agree, or
+# there is no expected direction for that time. A release matching no row ranks
+# below them all. Each row: "any_of" keyword groups (a group matches when all its
+# texts are in the lower-cased name), and texts that must NOT be in it ("none_of").
+
+[[headline]]
+name = "rate decision"
+any_of = [["rate decision"], ["interest rate"], ["federal funds rate"], ["fed funds rate"], ["bank rate"], ["main refinancing"], ["deposit facility"]]
+
+[[headline]]
+name = "main payrolls"
+any_of = [["non farm payroll"], ["non-farm payroll"], ["nonfarm payroll"], ["nfp"]]
+none_of = ["private"]
+
+[[headline]]
+name = "private payrolls"
+any_of = [["payroll", "private"]]
+
+[[headline]]
+name = "headline CPI"
+any_of = [["cpi"], ["inflation rate"]]
+none_of = ["core"]
+
+[[headline]]
+name = "core CPI"
+any_of = [["core", "cpi"], ["core", "inflation"]]
+

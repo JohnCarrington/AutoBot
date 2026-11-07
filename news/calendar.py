@@ -9,6 +9,9 @@ disk (news/finnhub.py). Contacts nobody.
     before to news.big_news_no_new_trades_after_minutes after; open trades
     closed news.big_news_close_trades_before_minutes before. MEDIUM and SMALL
     releases are ignored (news.ignore_medium_and_small_news).
+  * expected direction for a TIME with big releases (section 2.4): if they all
+    agree, that direction; if they disagree, the headline release decides (the
+    news table's [[headline]] order); if it has no direction, there is none.
   * expected direction of a BIG release (section 2.4): the forecast (estimate)
     against the previous figure. Higher is good for the currency, except for the
     names in news.lower_is_better. Good for the pair's first currency (GBP in
@@ -31,7 +34,8 @@ from pathlib import Path
 from news.finnhub import read_store
 
 UTC = timezone.utc
-from news.table import BIG, MEDIUM, SMALL, UnmatchedLog, classify, load_table  # noqa: E402
+from news.table import (BIG, MEDIUM, SMALL, UnmatchedLog, classify, headline_rank,  # noqa: E402
+                        load_headline, load_table)
 
 _TABLE: dict = {}
 
@@ -159,6 +163,60 @@ def expected_directions(settings: Any, pair: str, day_start: datetime, day_end: 
     """Section 2.4: each BIG release of the day with its expected direction."""
     return [w for w in big_news_windows(settings, pair, day_start, day_end, calendar)
             if day_start <= w.release_utc < day_end]
+
+
+@dataclass(frozen=True)
+class TimeDirection:
+    """The expected direction for one release time (design section 2.4)."""
+    release_utc: datetime
+    direction: str
+    reason: str
+    deciding: tuple[str, ...]          # the release(s) that decided
+    releases: tuple[NewsWindow, ...]   # every big release at that time
+
+
+def time_direction(windows: list[NewsWindow], path=None) -> TimeDirection:
+    """The big releases at ONE time: if their expected directions all agree, that direction;
+    if they disagree, the headline release decides (the news table's [[headline]] order: a rate
+    decision over everything else, main payrolls over private payrolls, headline CPI over core
+    CPI). If the headline release has no expected direction, there is none for that time; if
+    several releases share the top place and do not agree, there is none either."""
+    from news.table import TABLE_PATH
+    t = windows[0].release_utc
+    dirs = {w.direction for w in windows}
+    if len(dirs) == 1:
+        d = windows[0].direction
+        why = (windows[0].direction_reason if len(windows) == 1
+               else f"all {len(windows)} big releases agree: {d}")
+        return TimeDirection(t, d, why, tuple(w.event for w in windows), tuple(windows))
+    order = load_headline(path or TABLE_PATH)
+    ranked = [(headline_rank(order, w.event), w) for w in windows]
+    top = min(r for (r, _), _ in ranked)
+    lead = [w for (r, _), w in ranked if r == top]
+    lead_name = next(n for (r, n), _ in ranked if r == top)
+    others = [w for (r, _), w in ranked if r != top]
+    names = ", ".join(w.event for w in lead)
+    rest = ", ".join(f"{w.event} ({w.direction})" for w in others) or "none"
+    lead_dirs = {w.direction for w in lead}
+    if len(lead_dirs) > 1:
+        return TimeDirection(t, NO_DIRECTION, f"the headline releases ({lead_name}: " + ", ".join(
+            f"{w.event} {w.direction}" for w in lead) + ") do not agree", tuple(w.event for w in lead), tuple(windows))
+    d = lead[0].direction
+    if d == NO_DIRECTION:
+        return TimeDirection(t, NO_DIRECTION, f"the headline release ({lead_name}: {names}) has no expected "
+                             f"direction; the others ({rest}) do not decide", tuple(w.event for w in lead), tuple(windows))
+    return TimeDirection(t, d, f"the big releases disagree; the headline release decides ({lead_name}: {names}, "
+                         f"{d}) over {rest}", tuple(w.event for w in lead), tuple(windows))
+
+
+def time_directions(settings: Any, pair: str, start: datetime, end: datetime,
+                    calendar: list[dict] | None = None) -> list[TimeDirection]:
+    """Section 2.4: the expected direction for each time with big releases, from start to end."""
+    groups: dict = {}
+    for w in big_news_windows(settings, pair, start, end, calendar):
+        if start <= w.release_utc < end:
+            groups.setdefault(w.release_utc, []).append(w)
+    return [time_direction(ws) for _, ws in sorted(groups.items())]
 
 
 @dataclass(frozen=True)
