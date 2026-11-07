@@ -37,14 +37,14 @@ Every result gives: the market state, the direction (up, down or none), the type
 
 | State | Strategies allowed |
 | --- | --- |
-| Ranging | Range trade, Bollinger band bounce |
-| Emerging trend | Slow grind, EMA pullback, Bollinger band bounce in the trend's direction only |
-| Trend | Slow grind, EMA pullback, Bollinger band bounce in the trend's direction only |
+| Ranging | Range trade |
+| Emerging trend | Slow grind, EMA pullback, in the trend's direction only |
+| Trend | Slow grind, EMA pullback, in the trend's direction only; Bollinger band bounce against the trend's direction only (owner, 7 November 2026) |
 | Possible reversal | Bollinger band bounce |
 | Consolidation | None. Watch and wait for a break |
 
 - **Ranging:** the Bollinger bands are flat and close together, and price bounces between the upper and lower band. The EMAs weave back and forth instead of staying stacked, and the 100 EMA is flat. In numbers (owner, 7 November 2026): close together is a band width of at least 6 and at most 18 pips; flat is the upper band and the lower band each moving less than 0.2 pips a candle, measured over 6 candles; price bounces between the bands when both bands have been reached within 24 candles.
-- **Emerging trend:** a direction is starting to form. Its main job is to stop bounces against the new direction early. Bounces with the new direction are still allowed.
+- **Emerging trend:** a direction is starting to form. Its main job is to stop bounces against the new direction early. The Bollinger band bounce does not trade in an emerging trend (owner, 7 November 2026).
 - **Trend:** an established direction, either a slow grind or a strong push. Both are recognised from price action.
 - **Possible reversal:** after a trend has been running and price has moved at least 30 pips since it started, a strong reversal candle appears, recognised by the shared rejection part with no extra size rule.
 - **Consolidation** (this includes a trend running out of steam): narrow Bollinger bands, price between them touching neither band, small candles with green and red roughly the same size, no direction. Unlike ranging, price stays in the middle. No trading. When price breaks out, the analyser moves to emerging trend.

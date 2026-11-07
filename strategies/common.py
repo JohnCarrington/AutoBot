@@ -6,9 +6,10 @@ reached, all of these allow it (design sections 2.2 and 2.3; checked at entry
 only, owner 7 November 2026):
   1. its switch in .env is on (STRATEGY_SLOW_GRIND, ...);
   2. the analyser's current state allows the strategy (section 2.2): ranging ->
-     range trade, Bollinger bounce; emerging trend and trend -> slow grind, EMA
-     pullback, Bollinger bounce IN THE TREND'S DIRECTION ONLY; possible reversal ->
-     Bollinger bounce; consolidation -> none;
+     range trade; emerging trend and trend -> slow grind, EMA pullback IN THE
+     TREND'S DIRECTION ONLY; trend -> also Bollinger bounce, AGAINST THE TREND'S
+     DIRECTION ONLY (owner, 7 November 2026); possible reversal -> Bollinger
+     bounce, either way; consolidation -> none;
   3. the direction rule allows that direction (section 2.3): a buy needs buy
      side (price above the daily pivot and the 5-minute 100 EMA), a sell needs
      sell side. It does not apply to the range trade, nor to the Bollinger
@@ -36,11 +37,12 @@ SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE = (
 SWITCH = {SLOW_GRIND: "slow_grind", EMA_PULLBACK: "ema_pullback", BOLLINGER_BOUNCE: "bollinger_bounce",
           RANGE_TRADE: "range_trade"}
 BUY, SELL = "buy", "sell"
-# Section 2.2: which states allow which strategy, and whether only in the trend's direction.
+# Section 2.2: which states allow which strategy: "any" direction, only in the trend's direction
+# ("trend"), or only against it ("against").
 ALLOWED_IN = {
     SLOW_GRIND: {EMERGING: "trend", TREND: "trend"},
     EMA_PULLBACK: {EMERGING: "trend", TREND: "trend"},
-    BOLLINGER_BOUNCE: {RANGING: "any", EMERGING: "trend", TREND: "trend", POSSIBLE_REVERSAL: "any"},
+    BOLLINGER_BOUNCE: {TREND: "against", POSSIBLE_REVERSAL: "any"},
     RANGE_TRADE: {RANGING: "any"},
 }
 
@@ -193,10 +195,13 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
     ok_in = ALLOWED_IN[strategy]
     if state.state not in ok_in:
         reasons.append(f"the analyser's state is {state.state}, which does not allow {strategy}")
-    elif ok_in[state.state] == "trend":
+    elif ok_in[state.state] in ("trend", "against"):
         want = SELL if state.direction == DOWN else BUY if state.direction == UP else None
+        if ok_in[state.state] == "against":
+            want = {SELL: BUY, BUY: SELL}.get(want)
         if direction != want:
-            reasons.append(f"the {state.state} is {state.direction}: {strategy} only in the trend's direction")
+            how = "in" if ok_in[state.state] == "trend" else "against"
+            reasons.append(f"the {state.state} is {state.direction}: {strategy} only {how} the trend's direction")
     need = BUY_SIDE if direction == BUY else SELL_SIDE
     exempt = strategy == RANGE_TRADE or (strategy == BOLLINGER_BOUNCE and state.state == POSSIBLE_REVERSAL)
     if rule.side != need and not exempt:
