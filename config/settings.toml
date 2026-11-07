@@ -242,3 +242,27 @@ max_points_per_request = 500
 # After IG refuses a request because of the allowance, block every history
 # request for at least this long (longer if IG's reset time is later).
 min_block_hours = 24
+
+[alerts]
+# Telegram alerts (alerts/). The bot token and chat ID are secrets in .env
+# (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID): never printed, logged or committed.
+telegram_url = "https://api.telegram.org"
+request_timeout_seconds = 15
+# The same problem never sends more than one message in this many minutes
+# (the ones held back are counted in the next message). Kept across restarts.
+same_problem_every_minutes = 10
+# Where the alerts part keeps what it has sent (for the limit and the ready messages).
+folder = "/opt/autobot/data/alerts"
+# Daily "ready" message, Monday to Friday, UK time ...
+daily_ready_at = "06:00"
+# ... sent at the first check at or after that time, but not if the price
+# service only starts more than this many minutes later.
+daily_ready_late_by_minutes = 60
+# Sunday "ready" message: sent when every pair switched on has its first
+# 5-minute candle of the week, if that is within this many minutes of the reopen;
+# if a pair has none by then, a problem alert is sent instead.
+sunday_ready_within_minutes = 30
+# A pair's candles count as arriving if its newest 5-minute candle finished
+# no more than this many minutes ago.
+candles_arriving_within_minutes = 10
+

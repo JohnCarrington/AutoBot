@@ -62,7 +62,8 @@ class PriceFeed:
     def __init__(self, settings: Any, store: CandleStore, *,
                  now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
                  disk_check: Callable[[], Any] = lambda: None,
-                 after_new_candle: Callable[[datetime], None] = lambda now: None):
+                 after_new_candle: Callable[[datetime], None] = lambda now: None,
+                 on_store_problem: Callable[[str], None] = lambda message: None):
         check_same_pair(settings, store)
         self.settings = settings
         self.pair = settings.market.pair
@@ -70,6 +71,9 @@ class PriceFeed:
         # Called after start-up and after each new 5-minute candle is stored
         # (and any bigger candles built): the levels part updates its list.
         self.after_new_candle = after_new_candle
+        # Called with each candle store problem (a check problem or a gap not recorded
+        # before): the alerts part sends it to the owner.
+        self.on_store_problem = on_store_problem
         self.store = store
         self.hours = MarketHours(settings.market_hours)
         self.b = Boundaries(settings.candles, self.hours)
@@ -131,6 +135,8 @@ class PriceFeed:
                 self.warn(f"{g.describe()}, since the last stored candle (the bot was not running). "
                           "Recorded; not filled.")
                 self.store.record_gap("5m", g.start, g.end, g.missing, now, "since the last candle, at start-up")
+                self.on_store_problem(f"{self.pair}: {g.describe()}, since the last stored candle (the bot was "
+                                      "not running); recorded, not filled")
             if not gaps_since:
                 lines.append("No gap since the last stored candle.")
             else:
@@ -243,6 +249,7 @@ class PriceFeed:
         self.check_results.append(result)
         for p in result.problems:
             self.warn(p)
+            self.on_store_problem(f"{self.pair}: {p}")
         now = self.now()
         for g in result.gaps:
             if g.known:
@@ -250,6 +257,7 @@ class PriceFeed:
             else:
                 self.warn(g.describe() + ".")
                 self.store.record_gap(g.timeframe, g.start, g.end, g.missing, now, how)
+                self.on_store_problem(f"{self.pair}: {g.describe()} ({how}; recorded)")
 
     def _compress(self, now: datetime) -> None:
         day = now.date()

@@ -328,6 +328,16 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "max_points_per_request": _whole_number(1, 1000),
         "min_block_hours": _whole_number(1, 24 * 14),
     },
+    "alerts": {
+        "telegram_url": _exactly("https://api.telegram.org"),
+        "request_timeout_seconds": _whole_number(1, 120),
+        "same_problem_every_minutes": _whole_number(1, 1440),
+        "folder": _absolute_folder,
+        "daily_ready_at": _clock_time,
+        "daily_ready_late_by_minutes": _whole_number(1, 720),
+        "sunday_ready_within_minutes": _whole_number(5, 720),
+        "candles_arriving_within_minutes": _whole_number(5, 120),
+    },
     "ig": {
         # Demo only: the bot refuses to start with any other address.
         "demo_base_url": _exactly("https://demo-api.ig.com/gateway/deal"),

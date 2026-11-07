@@ -80,14 +80,22 @@ def test_requests_version_is_pinned():
     assert f"requests=={requests.__version__}" in lines
 
 
+TELEGRAM_SENDER = Path("alerts/telegram.py")   # the one other file that may make web requests: to Telegram only
+
+
 def test_ig_is_the_only_part_that_talks_to_ig():
     """No other part of the bot can make web requests or holds IG's address.
-    (config/ may name the address: it checks the settings file's value.)"""
+    (config/ may name the address: it checks the settings file's value.)
+    The one exception for web requests is the Telegram sender, which talks to
+    Telegram only and never holds IG's address."""
     for f in ROOT.rglob("*.py"):
         rel = f.relative_to(ROOT)
         if rel.parts[0] in ("ig", "tests", ".venv"):
             continue
         text = f.read_text()
+        if rel == TELEGRAM_SENDER:
+            assert "ig.com" not in text and "telegram_url" in text, rel
+            continue
         for http_library in ("import requests", "from requests", "urllib", "http.client", "socket",
                              "import lightstreamer", "from lightstreamer"):
             assert http_library not in text, (rel, http_library)

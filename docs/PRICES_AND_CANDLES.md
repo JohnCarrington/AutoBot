@@ -216,6 +216,7 @@ The price stream runs all the time as a systemd service, `autobot-prices`, so th
 - **After an IG login failure (exit code 78) it does NOT restart** (`RestartPreventExitStatus=78`). A person must find out what went wrong, then start it again.
 - **On stop** (`systemctl stop`) it stops the stream, logs out of IG and exits with code 0.
 - **While running** it writes a status line to the log every 60 minutes (`stream.status_log_minutes`).
+- **Telegram** (`docs/ALERTS.md`): it sends the Sunday and daily "ready" messages, and problem alerts for an IG login failure that stops it, the stream going quiet while the market is open, any candle store problem, and a crash.
 - **After start-up and after every new 5-minute candle** it updates the current list of levels (`docs/LEVELS.md`). A problem with the levels is warned about and never stops the service.
 - **Logs** go to the systemd journal and to `/opt/autobot/logs/prices.log`. The log file is rotated by size and age (see Housekeeping). The journal has systemd's own size limits.
 

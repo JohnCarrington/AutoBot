@@ -16,6 +16,9 @@ What it does:
      stored and the bigger ones built, until it is told to stop. Drops are reconnected with increasing waits; IG refusing
      the stream gets one controlled re-login, then exit code 78.
   3. Every stream.status_log_minutes it logs a status line.
+  3a. Telegram (alerts/): the Sunday and daily "ready" messages (alerts/ready.py),
+     and a problem alert for an IG login failure that stops it, the stream going
+     quiet while the market is open, any candle store problem, and a crash.
   4. On SIGTERM or SIGINT (systemctl stop): stops the stream, logs out of IG
      and exits with code 0.
 
@@ -32,6 +35,7 @@ import threading
 from datetime import datetime, timedelta, timezone
 from typing import Any, Callable
 
+from alerts.telegram import Alerts
 from config.settings_loader import load_or_exit
 from housekeeping.disk import check_free_space
 from housekeeping.logs import setup_logging
@@ -50,14 +54,15 @@ UTC = timezone.utc
 
 def serve(settings: Any = None, *, client: Any = None, transport_factory: Callable = LightstreamerTransport,
           stop: threading.Event | None = None, now: Callable[[], datetime] = lambda: datetime.now(UTC),
-          logs: bool = True, signals: bool = True) -> int:
+          logs: bool = True, signals: bool = True, alerts: Any = None) -> int:
     settings = settings or load_or_exit()
     if logs:
         setup_logging(settings.housekeeping, "prices")
+    alerts = alerts if alerts is not None else Alerts.from_env(settings)
     stop = stop or threading.Event()
     feeds: dict[str, PriceFeed] = {}            # epic -> that pair's feed
     for ps in settings.pairs_on():
-        feeds[ps.market.epic] = _feed(ps, now)
+        feeds[ps.market.epic] = _feed(ps, now, lambda m: alerts.problem("store-problem", m))
     any_feed = next(iter(feeds.values()))
     stream: PriceStream | None = None
 
@@ -79,8 +84,17 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
     client = client or IGClient(settings.ig, load_credentials(ENV_PATH))
     every = timedelta(minutes=settings.stream.status_log_minutes)
     next_status = [now() + every]
+    ready = None
+    if hasattr(settings, "alerts"):
+        from alerts.ready import ReadyAlerts, ReadyContext
+        from ig.allowance_status import HistoryStatus
+        door = HistoryStatus(settings.history.folder, now)   # reads the door's files only; never sends
+        ready = ReadyAlerts(settings, alerts, lambda: ReadyContext(
+            settings, client, stream, {f.pair: f for f in feeds.values()}, door), now=now)
 
     def every_second() -> None:
+        if ready is not None and stream is not None:
+            ready.tick()
         if stop.is_set() and stream is not None:
             stream.request_stop()
         if now() >= next_status[0]:
@@ -104,7 +118,8 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
                              on_tick=lambda epic, fields: feeds[epic].on_tick(fields),
                              on_candle=lambda epic, fields: feeds[epic].on_candle(fields),
                              on_new_connection=new_connection,
-                             market_open_since=any_feed.market_open_since, now=now, warn=any_feed.warn)
+                             market_open_since=any_feed.market_open_since, now=now, warn=any_feed.warn,
+                             on_quiet=lambda m: alerts.problem("stream-quiet", m))
         if stop.is_set():
             stream.request_stop()
         stream.start()
@@ -114,9 +129,13 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
             stream.stop()
         client.logout()
         log.error("Stopping: %s", failure)
+        alerts.problem("login-failure", f"IG login failure: {failure}. The price service has STOPPED (exit code "
+                                        "78) and will not restart by itself: check IG, then start it again.")
         stop_bot(failure)
     except Exception:
         log.exception("The price service crashed. Logging out; systemd restarts it after 30 seconds.")
+        alerts.problem("service-crash", "The price service crashed; systemd restarts it after 30 seconds "
+                                        "(at most 5 times an hour). The log has the details.")
         if stream:
             stream.stop()
         client.logout()
@@ -131,12 +150,12 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
     return 0
 
 
-def _feed(ps: Any, now: Callable[[], datetime]) -> PriceFeed:
+def _feed(ps: Any, now: Callable[[], datetime], on_store_problem: Callable[[str], None]) -> PriceFeed:
     """One pair's store, feed and levels (ps: settings.for_pair(...))."""
     store = CandleStore(ps.candles.folder, ps.candles.compress_after_days)
     feed: PriceFeed = PriceFeed(ps, store, now=now, disk_check=lambda: check_free_space(
         ps.candles.folder, ps.housekeeping.min_free_disk_mb, feed.warn),
-        after_new_candle=LevelsUpdater(ps, store))
+        after_new_candle=LevelsUpdater(ps, store), on_store_problem=on_store_problem)
     return feed
 
 

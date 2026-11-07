@@ -120,6 +120,16 @@ EXPECTED = {
         "max_points_per_request": 500,
         "min_block_hours": 24,
     },
+    "alerts": {
+        "telegram_url": "https://api.telegram.org",
+        "request_timeout_seconds": 15,
+        "same_problem_every_minutes": 10,
+        "folder": Path("/opt/autobot/data/alerts"),
+        "daily_ready_at": time(6, 0),
+        "daily_ready_late_by_minutes": 60,
+        "sunday_ready_within_minutes": 30,
+        "candles_arriving_within_minutes": 10,
+    },
     "ig": {
         "demo_base_url": "https://demo-api.ig.com/gateway/deal",
         "slowed_down_waits_seconds": (60, 90, 120, 180),
@@ -307,6 +317,10 @@ INVALID = [
     ("history", "max_points_per_request", 0, "must be between"),
     ("history", "min_block_hours", 0, "must be between"),
     ("history", "folder", "history", "full folder path"),
+    ("alerts", "telegram_url", "http://api.telegram.org", "must be 'https://api.telegram.org'"),
+    ("alerts", "same_problem_every_minutes", 0, "must be between"),
+    ("alerts", "daily_ready_at", "6am", 'written "HH:MM"'),
+    ("alerts", "folder", "alerts", "full folder path"),
 ]
 
 

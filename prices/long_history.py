@@ -356,7 +356,7 @@ def _prove(settings: Any, say: Callable[[str], None]) -> int:
     say(f"PROOF: HOUR candles {uk_short(want[0])} to {uk_short(want[-1])} ({PROOF_CANDLES} points); sent to IG as "
         f"from {ig_time(p.start)} to {ig_time(p.end)} (UK time)")
     client = IGClient(settings.ig, load_credentials(ENV_PATH))
-    door = HistoryDoor(client, settings.history)
+    door = HistoryDoor(client, settings.history, on_block=_block_alert(settings))
     try:
         client.connect()
         reply = door.fetch(settings.market.epic, "HOUR", p.start, p.end, p.points, "proof: request times in UK time")
@@ -440,7 +440,7 @@ def main(argv: list[str] | None = None) -> int:
         say("STOPPED: a request would not pass the door's checks. Nothing sent.")
         return 3
     client = IGClient(settings.ig, load_credentials(ENV_PATH))
-    door = HistoryDoor(client, settings.history)
+    door = HistoryDoor(client, settings.history, on_block=_block_alert(settings))
     if not status:
         _set_status(settings, status="started", started_utc=now.strftime("%Y-%m-%dT%H:%M:%SZ"))
     try:
@@ -464,6 +464,13 @@ def main(argv: list[str] | None = None) -> int:
     say(f"IG's allowance now {fig.get('remaining')} of {fig.get('total')}; bot's 7-day use {door.points_last_7_days()}.")
     say("Nothing has been put in the store. 'store' does that, after the owner has seen this.")
     return 0
+
+
+def _block_alert(settings: Any) -> Callable[[str], None]:
+    """A block marker being written is sent to the owner (alerts/), if Telegram is set up."""
+    from alerts.telegram import Alerts
+    alerts = Alerts.from_env(settings)
+    return lambda message: alerts.problem("history-block", f"{settings.market.pair}: {message}")
 
 
 if __name__ == "__main__":

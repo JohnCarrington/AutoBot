@@ -243,6 +243,11 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 
 **Telegram:** every trade opened, every trade closed, every problem.
 
+- **Built (alerts/):** the Telegram sender, with a limit so the same problem never sends more than one message every 10 minutes (`alerts.same_problem_every_minutes`). The token and chat ID are secrets in `.env`, never printed or logged.
+- **Ready messages:** on Sunday when every pair switched on has its first 5-minute candle of the week, and at 06:00 UK Monday to Friday. They confirm: logged in to IG, price stream connected, candles arriving for each pair, the candle store checks passed, and IG's remaining history allowance. The daily one adds each pair's pivot, S1 to S3, R1 to R3 and the analyser's direction. If any check fails, a problem alert naming each failed check is sent instead.
+- **Problem alerts:** an IG login failure that stops the bot, the price stream going quiet while the market is open, any candle store problem (including a gap), a history block marker being written, and the price service crashing.
+- **Trade alerts (built, not yet connected):** "trade opened" shows the pair, direction, size, strategy, market state, open price, stop loss and take profit; "trade closed" adds the close price, reason, profit or loss and win or loss. They are tested with pretend trades and **will be connected to the order sender when it is built** (`Alerts.trade_opened` and `Alerts.trade_closed`).
+
 ---
 
 ## 10. Engineering rules

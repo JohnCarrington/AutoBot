@@ -129,7 +129,8 @@ class PriceStream:
                  market_open_since: Callable[[datetime], datetime | None] = lambda now: now,
                  now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
                  wait: Callable[[float], None] | None = None,
-                 warn: Callable[[str], None] | None = None):
+                 warn: Callable[[str], None] | None = None,
+                 on_quiet: Callable[[str], None] = lambda message: None):
         self.client = client
         if isinstance(epics, str) or not epics or len(set(epics)) != len(epics):
             raise ValueError("PriceStream needs a list of different epics, one per pair")
@@ -145,6 +146,7 @@ class PriceStream:
         self._stop = threading.Event()
         self._wait = wait or (lambda s: self._stop.wait(s))
         self.warn = warn or (lambda m: log.warning(m))
+        self.on_quiet = on_quiet          # the alerts part: the stream has gone quiet while the market is open
 
         self.events: "queue.Queue[tuple[int, object]]" = queue.Queue()
         self.stats = StreamStats()
@@ -283,9 +285,11 @@ class PriceStream:
             return
         since = max(self.last_price_at, opened)
         if now - since >= self.quiet_after:
-            self.warn(f"NO PRICES from IG for {int((now - since).total_seconds())} seconds while the market "
-                      f"is open (warning after {int(self.quiet_after.total_seconds())} seconds).")
+            message = (f"NO PRICES from IG for {int((now - since).total_seconds())} seconds while the market "
+                       f"is open (warning after {int(self.quiet_after.total_seconds())} seconds).")
+            self.warn(message)
             self.quiet_warned = True
+            self.on_quiet(message)
 
     def pump(self, timeout: float = 0.0) -> int:
         """Handle every waiting event. Waits up to `timeout` for the first."""

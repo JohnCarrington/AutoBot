@@ -470,7 +470,7 @@ def main(argv: list[str] | None = None) -> int:
     import time
 
     client = IGClient(settings.ig, load_credentials(ENV_PATH))
-    door = HistoryDoor(client, settings.history)
+    door = HistoryDoor(client, settings.history, on_block=_block_alert(settings))
     say(f"One-off history fill, started {now.astimezone(UK).strftime('%a %d %b %Y %H:%M:%S %Z')}")
     try:
         client.connect()
@@ -522,7 +522,7 @@ def _gap(args: Any, settings: Any, store: CandleStore, hours: MarketHours, now: 
     from ig.errors import IGLoginFailure, stop_bot
     from ig.secrets import ENV_PATH, load_credentials
     client = IGClient(settings.ig, load_credentials(ENV_PATH))
-    door = HistoryDoor(client, settings.history)
+    door = HistoryDoor(client, settings.history, on_block=_block_alert(settings))
     try:
         client.connect()
         res = run_gap_fill(door, store, settings, start, end, now, say)
@@ -597,6 +597,13 @@ def _calls(client: Any, say: Callable[[str], None]) -> None:
         f"(history requests: {sum(1 for x in client.calls if is_historical_prices_path(x.path))})")
     for k, n in c.items():
         say(f"  {k:<50} {n}")
+
+
+def _block_alert(settings: Any) -> Callable[[str], None]:
+    """A block marker being written is sent to the owner (alerts/), if Telegram is set up."""
+    from alerts.telegram import Alerts
+    alerts = Alerts.from_env(settings)
+    return lambda message: alerts.problem("history-block", f"{settings.market.pair}: {message}")
 
 
 if __name__ == "__main__":

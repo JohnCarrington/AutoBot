@@ -1,5 +1,7 @@
 # alerts
 
-**What it does:** Sends Telegram messages to the owner about trades and warnings.
+**What it does:** Sends Telegram messages to the owner (design section 9). Rules in full: `docs/ALERTS.md`.
 
-**What it must never do:** Never place, change or close a trade. Never include secrets (passwords, keys or tokens) in a message. Never stop the bot from working if Telegram is unavailable.
+Files: `telegram.py` (the sender, its limit on repeats, and `Alerts`, which the rest of the bot uses), `ready.py` (the Sunday and daily "ready" checks and messages), `trades.py` (the trade opened and trade closed messages, for the order sender when it is built), `__main__.py` (`python -m alerts test "..."`: one message by hand).
+
+**What it must never do:** Never place, change or close a trade. Never print, log or send the bot token, the chat ID or any other secret. Never stop the bot from working if Telegram is unavailable. Never contact IG.

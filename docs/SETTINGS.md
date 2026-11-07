@@ -163,6 +163,19 @@ The boundaries **match IG's own candles**. This was checked against IG's daily c
 
 The 1-hour, 4-hour, daily and weekly candles first built under that layout were **moved, not deleted**, to `/opt/autobot/data/candles/archive_22h_layout/` on 6 November 2026. They were then rebuilt from the stored 5-minute candles on IG's boundaries. A new bigger candle is never built over one already stored.
 
+## Alerts (Telegram)
+
+| Setting | What it does | Value |
+|---|---|---|
+| `alerts.telegram_url` | Telegram's address. The bot token and chat ID are secrets in `.env` (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`) and are never printed, logged or committed. | `https://api.telegram.org` |
+| `alerts.request_timeout_seconds` | How long to wait for Telegram before giving up on one message (the bot carries on either way). | 15 seconds |
+| `alerts.same_problem_every_minutes` | The same problem never sends more than one message in this many minutes. Messages held back are counted and mentioned in the next one. Kept across restarts. | 10 minutes |
+| `alerts.folder` | Where the alerts part keeps what it has sent (for the limit above and so a ready message is sent once). On the server only, not in git. | `/opt/autobot/data/alerts` |
+| `alerts.daily_ready_at` | The daily "ready" message, Monday to Friday, UK time. | 06:00 |
+| `alerts.daily_ready_late_by_minutes` | The daily ready message is sent at the first check at or after `daily_ready_at`, but not if the price service only starts more than this many minutes later that day. | 60 minutes |
+| `alerts.sunday_ready_within_minutes` | The Sunday "ready" message is sent when every pair switched on has its first 5-minute candle of the week. If a pair still has none this many minutes after the reopen, a problem alert is sent instead. | 30 minutes |
+| `alerts.candles_arriving_within_minutes` | For the ready checks, a pair's candles count as arriving if its newest 5-minute candle finished no more than this many minutes ago. | 10 minutes |
+
 ## Switches in .env
 
 These live in `.env` (not in `config/settings.toml`), next to the IG secrets, so they can be changed without touching the settings file. They are checked every time a program starts: a missing or invalid switch stops it with a message naming the switch (never showing a secret). `.env.example` lists them with their current values. Tests never read the real `.env`.

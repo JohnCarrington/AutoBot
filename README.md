@@ -14,6 +14,7 @@ An automated trading bot for GBPUSD on an IG **demo** account. It reads live pri
 - `docs/ARCHITECTURE.md`: the parts of the bot and how they connect
 - `docs/LEVELS.md`: every levels rule, the current list and its file
 - `docs/REJECTION.md`: every rejection rule, the spread-spike rule, and the checks on 5 November
+- `docs/ALERTS.md`: the Telegram alerts: ready messages, problem alerts, trade messages, the limit on repeats
 - `docs/PAIRS.md`: how the bot works for any currency pair, what is shared, and how to switch a new pair on
 - `docs/ANALYSER.md`: the analyser's indicators, the direction rule, and when its data is ready, warming up or out of date
 - `rejection/`: the shared rejection part
@@ -107,6 +108,14 @@ Lists every rejection event (pierce, reversal, confirmation, trigger, cancelled,
 ```
 
 Shows the direction (buy side, sell side or no clear direction) and why, whether the data is ready, warming up or out of date, and every indicator on the 5-minute and hourly candles at that UTC time, from the stored candles. Contacts nobody. See `docs/ANALYSER.md`.
+
+## Telegram
+
+```
+.venv/bin/python -m alerts test "AutoBot test message"
+```
+
+Sends one Telegram message and prints whether Telegram accepted it (never the token or chat ID). The price service sends the ready messages and problem alerts by itself. See `docs/ALERTS.md`.
 
 ## Exit codes
 

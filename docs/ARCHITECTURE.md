@@ -17,7 +17,7 @@ AutoBot works for any currency pair (only GBPUSD is switched on, `docs/PAIRS.md`
 | `trade_manager/` | Looks after open trades until they close. |
 | `records/` | Records every trade. |
 | `dashboard/` | Shows trades, the market state and warnings. |
-| `alerts/` | Sends Telegram alerts. |
+| `alerts/` | Sends Telegram alerts, with a limit on repeats: the Sunday and daily "ready" messages (or a problem alert naming each failed check), problem alerts (login failure, stream quiet, candle store problems, history block marker, service crash), and the trade opened and closed messages for the order sender when it is built. Never contacts IG; never stops the bot. See `docs/ALERTS.md`. |
 | `config/` | The settings file (`settings.toml`, including each pair's `[pairs.<PAIR>]`), the switches in `.env` (pairs switched on, trading hours, strategies on or off: `switches.py`), and the code that loads and checks them. `settings.for_pair(name)` gives a part its pair (`pairs.py`). Every part reads its numbers from here. |
 | `deploy/` | The systemd service file: the price stream runs all the time as `autobot-prices`, restarting after a crash but never after a login failure (exit code 78). |
 | `housekeeping/` | Log files rotated by size and age (so they can never fill the disk), and the low disk space warning. |

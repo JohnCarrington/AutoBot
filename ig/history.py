@@ -53,6 +53,7 @@ from zoneinfo import ZoneInfo
 
 from housekeeping.files import safe_write
 from ig.errors import HISTORY_ALLOWANCE_EXCEEDED, IGRequestError, short_code
+from ig.allowance_status import ig_figures as read_ig_figures
 
 log = logging.getLogger("autobot.ig.history")
 
@@ -109,8 +110,10 @@ def ig_time(t: datetime) -> str:
 class HistoryDoor:
     def __init__(self, client: Any, history_settings: Any, *,
                  now: Callable[[], datetime] = lambda: datetime.now(UTC),
-                 warn: Callable[[str], None] | None = None):
+                 warn: Callable[[str], None] | None = None,
+                 on_block: Callable[[str], None] = lambda message: None):
         self.client = client
+        self.on_block = on_block          # the alerts part: a block marker has been written
         self.s = history_settings
         self.folder = Path(history_settings.folder)
         self.now = now
@@ -146,9 +149,7 @@ class HistoryDoor:
         self._write_json(self.ledger_path, {"requests": entries})
 
     def ig_figures(self) -> dict | None:
-        if not self.allowance_path.exists():
-            return None
-        return json.loads(self.allowance_path.read_text())
+        return read_ig_figures(self.folder)
 
     def points_last_7_days(self, now: datetime | None = None) -> int:
         now = now or self.now()
@@ -181,6 +182,7 @@ class HistoryDoor:
         self._write_json(self.marker_path, {"written_utc": _iso(now), "expires_utc": _iso(until),
                                             "ig_resets_utc": _iso(ig_resets) if ig_resets else None,
                                             "reason": reason})
+        self.on_block(f"History block marker written: {reason}. No history requests until {_iso(until)}.")
         return until
 
     # ---- the one way in -----------------------------------------------------------
