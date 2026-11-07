@@ -476,3 +476,15 @@ def test_a_trend_is_not_replaced_by_one_opposite_level_rejection_before_30_pips(
                setups(**{"2": r2})) == []
     assert m.now.state == TREND
 
+
+def test_consolidation_ends_an_emerging_trend_after_2_candles_but_ranging_does_not(st):
+    m = level_downtrend(st)
+    calm = dict(width=10, **CONSOL)
+    assert run(m, [(1, F(1, c=11655, **calm))]) == []
+    (ch,) = run(m, [(2, F(2, c=11655, **calm))])
+    assert ch.state == CONSOLIDATION and ch.reason.startswith("the emerging down trend settled into consolidation")
+    m = level_downtrend(st)
+    ranging = dict(width=10, mid_slope="0.1", efficiency="0.3", crossings=3, both_bands_recently=True,
+                   weave=True, ema100_move=1)
+    assert run(m, [(i, F(i, c=11655, **ranging)) for i in range(1, 5)]) == [] and m.now.state == EMERGING
+

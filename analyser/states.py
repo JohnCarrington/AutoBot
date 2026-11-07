@@ -330,7 +330,11 @@ class StateMachine:
                                     f"the {st} faded: no new {'low' if d == DOWN else 'high'} for "
                                     f"{self.m.evidence_fades_after_candles} candles; {why}", [why])
             if st == EMERGING:
-                return None    # an emerging trend ends only by its cancel rule, the proof, or fading
+                # besides its cancel rule, the proof, a replacing rejection or fading, an emerging trend
+                # ends only in consolidation (owner's rule, 7 November 2026), held for persistence_candles
+                c_ok, c_why = self.consolidation(f)
+                return self._persist(f, (CONSOLIDATION, NONE, f"the emerging {d} trend settled into "
+                                                              f"consolidation: {c_why}") if c_ok else None)
             # a trend's conditions (with persistence): price back past the 100 EMA, or ranging / consolidation
             wrong_side = f.ema100 is not None and ((d == DOWN and f.c > f.ema100) or (d == UP and f.c < f.ema100))
             r_ok, r_why = self.ranging(f)
