@@ -24,7 +24,7 @@ FIVE = timedelta(minutes=5)
 
 @pytest.fixture
 def store(tmp_path):
-    return CandleStore(tmp_path / "candles", 30)
+    return CandleStore(tmp_path / "candles" / "GBPUSD", 30)
 
 
 def row(t, bid=13352.9, ask=13354.4):
@@ -122,7 +122,8 @@ def test_the_plan_daily_first_then_compare_then_fills_none_too_big_no_weekend(st
 def _settings(tmp_path):
     return SimpleNamespace(
         market=SETTINGS.market, market_hours=SETTINGS.market_hours, candles=SETTINGS.candles,
-        history=SimpleNamespace(folder=tmp_path / "history", weekly_budget_points=4000,
+        history=SimpleNamespace(folder=tmp_path / "history", pair_folder=tmp_path / "history" / "GBPUSD",
+                                weekly_budget_points=4000,
                                 min_ig_allowance_remaining=2000, max_points_per_request=500, min_block_hours=24))
 
 
@@ -163,7 +164,7 @@ def test_the_one_off_fill_records_the_gaps_fills_them_and_is_recorded_as_done(tm
     assert [h for h in ig.calls() if h[1].startswith(HIST)][0][1].startswith(
         HIST + f"/{SETTINGS.market.epic}?resolution=DAY")
     assert len(store.recorded_gaps()) == 3   # week 1, week 2 before the live candles, after them
-    done = json.loads((tmp_path / "history" / DONE_FILE).read_text())
+    done = json.loads((tmp_path / "history" / "GBPUSD" / DONE_FILE).read_text())
     assert done["status"] == "done" and done["candles_stored"] == res.stored
     # The live candles were compared, not overwritten.
     assert len(res.compare_rows) == 4 and all(l.prices() == h.prices() for l, h in res.compare_rows)
@@ -189,4 +190,31 @@ def test_the_fill_stops_if_igs_times_do_not_line_up(tmp_path, store):
     with pytest.raises(RuntimeError, match="do not line up"):
         _run(tmp_path, store, now, replies=shifted)
     assert store.newest("5m") is None
-    assert json.loads((tmp_path / "history" / DONE_FILE).read_text())["status"] == "started"
+    assert json.loads((tmp_path / "history" / "GBPUSD" / DONE_FILE).read_text())["status"] == "started"
+
+
+# ---- filling the recorded gaps in one window ----------------------------------------------
+
+def test_a_gap_fill_asks_only_for_the_missing_candles_in_the_window_and_builds_the_hour(tmp_path, store):
+    from prices.history_fill import run_gap_fill
+    for i in range(12):
+        if not 2 <= i <= 4:                                    # 10:10, 10:15, 10:20 missing
+            store.add(five(T(2026, 11, 4, 10) + i * FIVE))
+    store.record_gap("5m", T(2026, 11, 4, 10, 10), T(2026, 11, 4, 10, 25), 3, T(2026, 11, 4, 11), "test")
+    store.add(five(T(2026, 11, 4, 9, 55)))                    # outside: not asked for
+    s = _settings(tmp_path)
+    missing = [T(2026, 11, 4, 10, 10) + i * FIVE for i in range(3)]
+    ig = FakeIG(login_ok(), accounts_ok(), switch_ok(), Reply(200, {"prices": [row(t) for t in missing], "metadata": {
+        "allowance": {"remainingAllowance": 8000, "totalAllowance": 10000, "allowanceExpiry": 86400},
+        "size": 3, "pageData": {"totalPages": 1}}}))
+    client = IGClient(SETTINGS.ig, CREDS, http=ig, sleep=lambda x: None)
+    client.connect()
+    now = T(2026, 11, 7, 9)
+    door = HistoryDoor(client, s.history, now=lambda: now)
+    res = run_gap_fill(door, store, s, T(2026, 11, 4, 10), T(2026, 11, 4, 11), now, print)
+    (sent,) = [x for x in ig.sent if x.path.startswith(HIST)]
+    assert SETTINGS.market.epic in sent.path and (res.requests, res.points, res.stored) == (1, 3, 3)
+    assert all(store.get("5m", t) is not None for t in missing)
+    hour = [c for c in res.built if c.timeframe == "1h" and c.start == T(2026, 11, 4, 10)]
+    assert [(c.parts, c.expected_parts) for c in hour] == [(12, 12)]      # the 10:00 hour, now complete
+    assert door.ledger()[0]["epic"] == SETTINGS.market.epic and door.ledger()[0]["purpose"] == "gap fill"

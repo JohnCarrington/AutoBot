@@ -2,7 +2,7 @@
 
 This is the master copy of the design for the new AutoBot, as agreed with Johnny on 6 November 2026. It lives in the repository at `docs/DESIGN.md`. Where any other document disagrees with this one, this one wins, unless Johnny says otherwise. Any change to the design is made here first, then built.
 
-The bot trades GBPUSD only, on the IG demo spread bet account, at £10 per pip. No code is copied from AutoBot 161. 161 was studied only to learn from it; the audit reports are in the public repository JohnCarrington/autobot_reports.
+The bot is built to work for any currency pair, with only GBPUSD switched on (section 13). It trades on the IG demo spread bet account, at £10 per pip. No code is copied from AutoBot 161. 161 was studied only to learn from it; the audit reports are in the public repository JohnCarrington/autobot_reports.
 
 ---
 
@@ -203,7 +203,8 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 - Size: £10 per pip.
 - Trades open at once: 1 per strategy; the bounce may also have 1 in the opposite direction. Most at once: 5.
 - Total risk across all open trades and available funds are also checked.
-- Trading hours (UK clock time): new trades from 06:00 to 20:30. Any trade open at 20:30 is closed. Nothing held overnight. A trade opened just before 20:30 is simply closed at 20:30.
+- Trading hours (UK clock time): new trades from 06:00 to 20:30 (switches in `.env`, section 13). Any trade open at 20:30 is closed. Nothing held overnight. A trade opened just before 20:30 is simply closed at 20:30.
+- **Per pair and in total (to be built with the safety rules):** every limit above will apply to each pair on its own, plus a total across all pairs switched on (for example the most trades open at once, and the total risk, across all pairs). Nothing is built for this yet.
 - Big news: no new trades from 15 minutes before to 30 minutes after. Open trades closed 15 minutes before. Medium and small news ignored. Which releases count as big comes from AutoBot's own small, medium and big table. News times and figures from Finnhub. If the news data is missing or out of date, alert Johnny rather than block trading indefinitely.
 
 ---
@@ -221,7 +222,7 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 
 ## 8. Candle store and IG's history allowance
 
-- The bot never exceeds IG's history allowance (10,000 points a week for the whole account). It keeps its own smaller weekly budget, counts points before every request, saves the count straight away, and records IG's own figures from every reply.
+- The bot never exceeds IG's history allowance (10,000 points a week for the whole account). The allowance, the bot's weekly budget and the block marker are **shared by all pairs**: every pair's requests go through the same door and count against the same budget. It keeps its own smaller weekly budget, counts points before every request, saves the count straight away, and records IG's own figures from every reply.
 - Only one guarded part of the code may ask IG for history. A refusal writes a block marker that survives restarts.
 - History is only requested for a candle genuinely missing during market hours. It only fills gaps and never overwrites stored candles.
 - The weekend is never missing data. Market hours: open Sunday 21:00 UK, close Friday 17:00 New York time (22:00 UK most of the year, 21:00 in the clock-change weeks).
@@ -229,6 +230,7 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 - Daily candles run midnight to midnight UK, with IG's short Sunday candle, matching IG's chart. Hourly, 4-hour, daily and weekly are built from the bot's own 5-minute candles.
 - Candles are kept, not deleted; older files are compressed. Logs are rotated by size and age. The store is checked automatically for gaps, duplicates and bad prices.
 - The price stream runs all the time as a service. On a restart it records any gap and does not ask IG for history.
+- Each pair has its own candle store (`data/candles/<PAIR>/`), gap records and levels (`data/levels/<PAIR>/`). A newly switched-on pair starts with an empty store and is **never filled from IG's history automatically**: its one-off fill needs Johnny's go-ahead, like GBPUSD's first fill.
 
 ---
 
@@ -245,7 +247,8 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 ## 10. Engineering rules
 
 - Each part has one job and only talks to the others in agreed ways. Changing one part never breaks another.
-- Every number lives in the settings file and is documented in `docs/SETTINGS.md` (a test enforces this).
+- Every number lives in the settings file, or in the switches in `.env`, and is documented in `docs/SETTINGS.md` (a test enforces this for both).
+- Every part works on one pair, given to it, and never assumes GBPUSD. A part given another pair's candle store stops at once.
 - Technical tests check each part works. Functional tests check the analyser and strategies do what Johnny intends, using real past days where he knows from his chart what should have happened.
 - All tests must pass before any commit (pre-commit hook).
 - Documentation always matches the code.
@@ -256,7 +259,7 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 
 ## 11. Build plan
 
-Done: 1 server, 2 project, 3 IG connection, 4 prices and candles (including the price service).
+Done: 1 server, 2 project, 3 IG connection, 4 prices and candles (including the price service), 5 levels, 6 the rejection part, 7 part 1 (the analyser's indicators and direction rule), and any currency pair (section 13).
 
 Remaining, in three rounds:
 
@@ -271,3 +274,16 @@ Remaining, in three rounds:
 - **5 November 2026:** fall from 07:00 stopping at 1.3446 to 1.3450 (round number plus earlier level), sharp reversal up at 12:00. Pivot rejection just before midnight starting the downtrend into 6 November.
 - **5 November 2026, Bank of England:** the 12:00 Bank of England rate decision was big news, so the bot must open no new trades between 11:45 and 12:30 (15 minutes before to 30 minutes after, as in section 6's news rules and settings `news.big_news_no_new_trades_before_minutes` and `news.big_news_no_new_trades_after_minutes`).
 - **6 November 2026:** slow grind down from midnight; consolidation at S1 about 06:00 to 06:45; strong push down 06:45 to 07:30; wobble at S2 07:30 to 08:30; reversal about 10:15; flat at S2 11:30 to 12:45; no buy at 13:00 (direction rule); 13:30 news drives the day down to S3.
+
+---
+
+## 13. Currency pairs and switches
+
+- **Any pair, GBPUSD switched on.** Every part (IG connection, prices and candles, the candle store, levels, rejection, the analyser, the history door) takes the pair as an input and never assumes GBPUSD. A part given another pair's candle store stops at once.
+- **Per-pair settings** (`[pairs.<PAIR>]` in `config/settings.toml`): IG's epic, the pip size (0.0001; 0.01 for JPY pairs) and IG's price scale (GBPUSD: 13354.4 means 1.33544, so 10000). Pip distances in the settings are turned into IG's points per pair.
+- **Per-pair data:** each pair's candles and gap records in `data/candles/<PAIR>/`, its levels in `data/levels/<PAIR>/`, its history-fill records in `data/history/<PAIR>/`.
+- **Shared:** one IG login and one price stream connection for all pairs switched on; one history door, with one weekly budget and IG's one allowance (section 8).
+- **A newly switched-on pair is never filled from IG's history automatically.** Its one-off fill needs Johnny's go-ahead (`python -m prices.history_fill plan|go --pair <PAIR>`), like GBPUSD's first fill.
+- **Limits** will be per pair plus a total across all pairs (section 6). Not built yet.
+- **Switches in `.env`**, checked at start-up and documented in `docs/SETTINGS.md`: the pairs switched on (`PAIRS_ON`, GBPUSD only for now), the trading hours (`NEW_TRADES_FROM` 06:00, `NEW_TRADES_UNTIL` 20:30) and each strategy on or off (`STRATEGY_SLOW_GRIND`, `STRATEGY_EMA_PULLBACK`, `STRATEGY_BOLLINGER_BOUNCE`, `STRATEGY_RANGE_TRADE`). Everything else stays in `config/settings.toml`.
+- More detail: `docs/PAIRS.md`.

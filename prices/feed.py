@@ -29,6 +29,7 @@ from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from typing import Any, Callable
 
+from config.pairs import check_same_pair
 from prices.builder import build_due
 from prices.calendar import Boundaries, MarketHours, floor_5m
 from prices.checks import CheckResult, Gap, check_new_candle, check_store, missing_after
@@ -36,6 +37,15 @@ from prices.model import FIVE_MIN, Candle, Tick, plain, price, uk, uk_short, utc
 from prices.store import CandleStore
 
 log = logging.getLogger("autobot.prices")
+
+
+class _PairLog(logging.LoggerAdapter):
+    def __init__(self, logger: logging.Logger, pair: str):
+        super().__init__(logger, {})
+        self.pair = pair
+
+    def process(self, msg, kwargs):
+        return f"[{self.pair}] {msg}", kwargs
 
 
 @dataclass
@@ -53,7 +63,10 @@ class PriceFeed:
                  now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
                  disk_check: Callable[[], Any] = lambda: None,
                  after_new_candle: Callable[[datetime], None] = lambda now: None):
+        check_same_pair(settings, store)
         self.settings = settings
+        self.pair = settings.market.pair
+        self.log = _PairLog(log, self.pair)       # every log line starts with the pair
         # Called after start-up and after each new 5-minute candle is stored
         # (and any bigger candles built): the levels part updates its list.
         self.after_new_candle = after_new_candle
@@ -83,7 +96,7 @@ class PriceFeed:
 
     def warn(self, message: str) -> None:
         self.warnings.append(message)
-        log.warning(message)
+        self.log.warning(message)
 
     # ---- market hours, for the stream's quiet check ----------------------------
 
@@ -129,7 +142,7 @@ class PriceFeed:
         self.built.extend(built)
         self.disk_check()
         for line in lines:
-            log.info(line)
+            self.log.info(line)
         self.after_new_candle(now)
         return StartReport(newest, age, gaps_since, check, built, lines)
 
@@ -168,7 +181,7 @@ class PriceFeed:
             self.bad_ticks += 1
             # Show exactly what IG sent (prices and time are not secret), so the
             # reason can be found. Nothing is guessed.
-            log.info("Tick skipped (%s). IG sent: BID (sell)=%r OFR (buy)=%r UTM=%r",
+            self.log.info("Tick skipped (%s). IG sent: BID (sell)=%r OFR (buy)=%r UTM=%r",
                      "; ".join(problems), fields.get("BID"), fields.get("OFR"), fields.get("UTM"))
             return
         tick = Tick(time, buy=self._buy, sell=self._sell)
@@ -208,12 +221,12 @@ class PriceFeed:
         if result != "stored":
             return result
         self.stored.append(c)
-        log.info("Stored %s", c.describe())
+        self.log.info("Stored %s", c.describe())
         self._check_new(c)
         now = self.now()
         built = build_due(self.store, self.b, now, self.wait_late, self.warn, also_for=c.start)
         for bc in built:
-            log.info("Built %s (from %d of %d 5-minute candles)", bc.describe(), bc.parts, bc.expected_parts)
+            self.log.info("Built %s (from %d of %d 5-minute candles)", bc.describe(), bc.parts, bc.expected_parts)
             self._check_new(bc)
         self.built.extend(built)
         self._compress(now)
@@ -233,7 +246,7 @@ class PriceFeed:
         now = self.now()
         for g in result.gaps:
             if g.known:
-                log.info("%s (already recorded).", g.describe())
+                self.log.info("%s (already recorded).", g.describe())
             else:
                 self.warn(g.describe() + ".")
                 self.store.record_gap(g.timeframe, g.start, g.end, g.missing, now, how)
@@ -245,7 +258,7 @@ class PriceFeed:
         self._compressed_on = day
         n = self.store.compress_old(now)
         if n:
-            log.info("Compressed %d candle file(s) older than %d days.", n, self.store.compress_after_days)
+            self.log.info("Compressed %d candle file(s) older than %d days.", n, self.store.compress_after_days)
 
     def describe_last_tick(self) -> str:
         t = self.last_tick

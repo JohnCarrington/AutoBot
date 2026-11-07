@@ -1,9 +1,12 @@
-"""Run the live price stream. Run:  .venv/bin/python -m prices.run --minutes 20
+"""Run the live price stream for one pair, for a set time. Run:
+    .venv/bin/python -m prices.run --minutes 20 [--pair GBPUSD]
+(--pair may be left out when only one pair is switched on in .env.)
+Stop the price service first: only one login at a time.
 
 1. Logs in to IG and chooses the bot's account (ig.client, Stage 3 rules).
 2. Start-up: checks the candle store, reports the newest candle and its age,
    records any gap since it (not filled).
-3. Streams GBPUSD ticks and IG's 5-minute candles for the given minutes,
+3. Streams that pair's ticks and IG's 5-minute candles for the given minutes,
    storing finished candles and building bigger ones.
 4. Logs out, checks the store again and prints a report: ticks, the 5-minute
    candles stored, the store checks, and every IG call made.
@@ -17,6 +20,7 @@ import sys
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 
+from config.pairs import choose_pair
 from config.settings_loader import load_or_exit
 from housekeeping.disk import check_free_space
 from housekeeping.logs import setup_logging
@@ -34,9 +38,10 @@ from prices.store import CandleStore
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--minutes", type=float, required=True)
+    ap.add_argument("--pair")
     args = ap.parse_args(argv)
 
-    settings = load_or_exit()
+    settings = choose_pair(load_or_exit(), args.pair)
     setup_logging(settings.housekeeping, "prices")
     store = CandleStore(settings.candles.folder, settings.candles.compress_after_days)
     feed = PriceFeed(settings, store, disk_check=lambda: check_free_space(
@@ -56,8 +61,8 @@ def main(argv: list[str] | None = None) -> int:
     stream = None
     try:
         client.connect()
-        stream = PriceStream(client, settings.market.epic, settings.stream, LightstreamerTransport,
-                             on_tick=feed.on_tick, on_candle=feed.on_candle,
+        stream = PriceStream(client, (settings.market.epic,), settings.stream, LightstreamerTransport,
+                             on_tick=lambda epic, f: feed.on_tick(f), on_candle=lambda epic, f: feed.on_candle(f),
                              on_new_connection=feed.new_connection,
                              market_open_since=feed.market_open_since, warn=feed.warn)
         stream.start()

@@ -42,7 +42,7 @@ All of these live in `/opt/autobot/data/history/` (`history.folder`) and are wri
 
 ### The one-off two-week fill (6 November 2026)
 
-Commands: `.venv/bin/python -m prices.history_fill plan` shows the plan and contacts nobody. `... go` runs it. The fill is recorded as started before its first request and as done at the end (`one_off_fill_done.json`), so it can never run again by itself.
+Commands: `.venv/bin/python -m prices.history_fill plan --pair GBPUSD` shows the plan and contacts nobody. `... go --pair GBPUSD` runs it. The pair is always named, never assumed. The fill is recorded as started before its first request and as done at the end, for that pair only (`data/history/<PAIR>/one_off_fill_done.json`), so it can never run again by itself. A newly switched-on pair is never filled automatically: its own one-off fill needs the owner's go-ahead, and it uses the same shared weekly budget and IG allowance (`docs/PAIRS.md`).
 
 It was planned, shown, approved, and run at 20:00 GMT on 6 November 2026:
 
@@ -54,12 +54,21 @@ It was planned, shown, approved, and run at 20:00 GMT on 6 November 2026:
 - **The weekly close:** IG's candles also showed the Friday close follows New York time (see "Checks on the store").
 - **Store checks on everything afterwards:** 3,178 candles, **0 problems**. 2 gaps, both on Sunday 1 November: 21:20, which IG sent with a price missing, and 21:35, which IG never sent.
 
-**Archive.** The 1-hour, 4-hour, daily and weekly candles first built under the earlier 22:00 layout were moved, not deleted, to `/opt/autobot/data/candles/archive_22h_layout/`. They were then rebuilt from the stored 5-minute candles on IG's boundaries, with no IG calls. The bot does not read the archive.
+**Archive.** The 1-hour, 4-hour, daily and weekly candles first built under the earlier 22:00 layout were moved, not deleted, to `/opt/autobot/data/candles/GBPUSD/archive_22h_layout/` (then `data/candles/archive_22h_layout/`, before each pair had its own folder). They were then rebuilt from the stored 5-minute candles on IG's boundaries, with no IG calls. The bot does not read the archive.
+
+### Gap fill, Friday 6 November 20:00 to 20:30 (done 7 November 2026)
+
+With the owner's go-ahead: `.venv/bin/python -m prices.history_fill gap-go --pair GBPUSD --from 2026-11-06T20:00:00Z --to 2026-11-06T20:40:00Z` (`gap-plan` shows the requests first and contacts nobody). It fills only recorded gaps inside the window, through the history door, never overwriting a stored candle, then builds the bigger candles that are due.
+
+- 1 request, 7 points (20:00 to 20:30; 20:35 had been stored live). IG's allowance 7,091 then 7,084 of 10,000. 7 candles stored.
+- Built: Friday's daily candle (264 of 264), the 4-hour 20:00 candle (24 of 24) and the week from Sun 1 Nov (1,450 of 1,452: the two Sunday 1 November candles IG never sent).
+- The 1-hour 20:00 candle had already been built from the 5 candles then stored (5 of 12). The store never overwrites, so it was kept as it was, and the full rebuild was logged as a "DIFFERENT VALUE" warning in `logs/history.log`. It stays 5 of 12 unless the owner decides otherwise.
+- Store checks after: 0 problems; 2 gaps left, both on Sunday 1 November (IG never sent them).
 
 ## Which market
 
-- GBPUSD on the spread bet account is IG epic **`CS.D.GBPUSD.TODAY.IP`** ("GBP/USD", expiry DFB). It is in the settings file as `market.epic`.
-- It was found with **one** IG market search (`GET /markets?searchTerm=GBPUSD`) on 6 November 2026, using `.venv/bin/python -m ig.find_market`. That command made five IG calls: log in, list accounts (which showed `IG_ACCOUNT_ID` is a SPREADBET account), switch to the account (already active), the one search, and log out. No other market call has been made. The bot itself never searches for markets: it uses the epic in the settings file.
+- GBPUSD on the spread bet account is IG epic **`CS.D.GBPUSD.TODAY.IP`** ("GBP/USD", expiry DFB). It is in the settings file as `pairs.GBPUSD.epic`, with GBPUSD's pip size and price scale. Each pair has its own (`docs/PAIRS.md`).
+- It was found with **one** IG market search (`GET /markets?searchTerm=GBPUSD`) on 6 November 2026, using `.venv/bin/python -m ig.find_market` (now `... ig.find_market GBPUSD`: the pair is always named). That command made five IG calls: log in, list accounts (which showed `IG_ACCOUNT_ID` is a SPREADBET account), switch to the account (already active), the one search, and log out. No other market call has been made. The bot itself never searches for markets: it uses the epic in the settings file.
 
 ## Live prices
 
@@ -124,14 +133,14 @@ A relabelling writes the candle under its new label first, then removes the old 
 
 ## The candle store
 
-- Kept in `/opt/autobot/data/candles/` (`candles.folder`). The folder is not in git.
+- **One store per pair**, kept in `/opt/autobot/data/candles/<PAIR>/` (`candles.folder`/`<PAIR>`), for example `data/candles/GBPUSD/`. The folder is not in git. A part given another pair's store stops at once (`docs/PAIRS.md`).
 - **One file per day per candle size**: `5m/2026-11-06.csv`, `1h/2026-11-06.csv`, `4h/…`, `1d/…`, `1w/…`. Each file is named after the UTC date of its candles' starts.
 - Each line holds: start and end (UTC), the 4 buy prices, the 4 sell prices, and `parts` / `expected_parts` (1 and 1 for a 5-minute candle).
 - **A stored candle is never overwritten.** If the same candle arrives again with the same values, nothing happens. If a **different value** arrives for a stored candle, the stored one is kept and a warning is written showing both: `DIFFERENT VALUE for a stored candle, kept the stored one…`
 - **Writes are safe.** A file is never changed in place. The whole new file is written to a temporary file in the same folder, flushed to disk, and then renamed over the old one in a single step, and the folder is flushed too. A crash or power cut at any moment leaves either the old file or the new one, never a damaged file. Any half-written temporary file is ignored, and removed at the next start-up.
 - A file that cannot be read is reported and is never written over.
 - **Candles are kept, never deleted.** Files more than 30 days old (`candles.compress_after_days`) are compressed to `.csv.gz` with the same safe-write steps. The original is removed only after the compressed copy has been read back and matches. Compressed files are still read normally.
-- Every gap found is also kept in `/opt/autobot/data/candles/gaps.csv`: candle size, from, to, number missing, when it was found and how.
+- Every gap found is also kept in the pair's own `gaps.csv` (`/opt/autobot/data/candles/<PAIR>/gaps.csv`): candle size, from, to, number missing, when it was found and how.
 
 ## Checks on the store
 
@@ -171,16 +180,18 @@ When IG's candles start arriving again, the gap already recorded is not warned a
 
 ## Commands
 
-- `.venv/bin/python -m prices.run --minutes 20` runs the live price stream for 20 minutes, then logs out and reports: ticks received, the 5-minute candles stored, the store checks, and a count of every IG call (including historical price calls, which must be 0).
-- `.venv/bin/python -m ig.find_market` is the one market search. It has been run once already and should not be needed again.
-- `.venv/bin/python -m prices.history_fill plan` shows the one-off history fill plan (no IG contact). `... go` ran it once, on 6 November 2026, and it will not run again.
+- `.venv/bin/python -m prices.run --minutes 20 [--pair GBPUSD]` runs the live price stream for one pair for 20 minutes (stop the service first: one login at a time), then logs out and reports: ticks received, the 5-minute candles stored, the store checks, and a count of every IG call (including historical price calls, which must be 0).
+- `.venv/bin/python -m ig.find_market <PAIR>` is the one market search for a pair. It has been run once for GBPUSD and is only needed again for a new pair.
+- `.venv/bin/python -m prices.history_fill plan --pair <PAIR>` shows a pair's one-off history fill plan (no IG contact). `... go --pair GBPUSD` ran once, on 6 November 2026, and will not run again for GBPUSD.
+- `.venv/bin/python -m prices.move_to_pairs plan|go`: the one-off move of the existing GBPUSD data into the per-pair folders (`docs/PAIRS.md`).
 
 ## Running the price stream as a service
 
 The price stream runs all the time as a systemd service, `autobot-prices`, so the candle store keeps growing.
 
 - **Service file:** `deploy/autobot-prices.service` in the repository, installed as `/etc/systemd/system/autobot-prices.service`. It runs `/opt/autobot/.venv/bin/python -m prices.service` as the `autobot` user, from `/opt/autobot`, and starts on boot once the network is up.
-- **On start** it does exactly what the live run does: it checks the store, reports the newest candle and its age, and **records any gap** since that candle. **It never asks IG for history**: the service does not use the history door at all, and a test checks that. Then it logs in and streams.
+- **Every pair switched on** (`PAIRS_ON` in `.env`) is streamed, with **one IG login and one stream connection**; each update goes to its own pair's store. A newly switched-on pair starts with an empty store and is never filled from history.
+- **On start** it does exactly what the live run does, for each pair: it checks the store, reports the newest candle and its age, and **records any gap** since that candle. **It never asks IG for history**: the service does not use the history door at all, and a test checks that. Then it logs in and streams.
 - **After a crash** (any exit other than 0 or 78) systemd restarts it **after 30 seconds** (`RestartSec=30`). It never starts more than **5 times in an hour** (`StartLimitBurst=5`, `StartLimitIntervalSec=3600`), so a crash loop can never become a login loop. After that, systemd gives up and a person must look.
 - **After an IG login failure (exit code 78) it does NOT restart** (`RestartPreventExitStatus=78`). A person must find out what went wrong, then start it again.
 - **On stop** (`systemctl stop`) it stops the stream, logs out of IG and exits with code 0.
@@ -209,7 +220,7 @@ After changing the service file in the repository, copy it again and run `sudo s
 | Is it running? | `systemctl status autobot-prices` |
 | Its log for the last 10 minutes | `journalctl -u autobot-prices --since "10 min ago"` |
 | Follow its log live | `journalctl -u autobot-prices -f` |
-| The newest candles in the store, and their age | `cd /opt/autobot && .venv/bin/python -m prices.status` (contacts nobody) |
+| The newest candles in each switched-on pair's store, and their age | `cd /opt/autobot && .venv/bin/python -m prices.status` (contacts nobody) |
 | Stop it starting on boot | `sudo systemctl disable autobot-prices` |
 | After exit code 78, once the IG problem is fixed | `sudo systemctl reset-failed autobot-prices` then `sudo systemctl start autobot-prices` |
 | After 5 crashes in an hour, once the cause is fixed | `sudo systemctl reset-failed autobot-prices` then `sudo systemctl start autobot-prices` |
@@ -240,5 +251,6 @@ None of these tests contact IG. They use a pretend price stream (`tests/technica
 | `test_price_stream.py` | The streaming address and account are used. Both subscriptions carry buy and sell fields and no mid. Every tick is received. BID is the sell price and OFR the buy price. A blank BID or OFR carries forward the last value from the same connection, only once both have been received on it; every reconnect and re-login starts fresh, and a late tick from an old connection cannot seed a new one; an unreadable price is never used. Only finished candles are stored. A stream that drops and comes back gets increasing waits (5, 10, 20, … 300) and never a login. The waits reset once the stream is healthy. Old connections are ignored. Re-login limits: one, then stop. Other errors reconnect with waits. The no-prices warning appears only while the market is open. No secrets appear in the logs. |
 | `test_candle_store.py` | Notes on gap records; older gap files still read. One file per day per size, in UTC. Buy and sell are kept apart, with exact prices. Never overwritten. A different value is warned. **A crash part-way through a write**, and a crash before the rename, leave the old file whole. Data is flushed before the rename. Damaged files are never written over. Compression keeps every candle. Gaps are recorded. |
 | `test_candles_and_checks.py` | Market hours checked against every first and last candle IG sent, through summer, winter and the March clock-change weeks. Every boundary, matching IG's midnight days and short Sunday candle (and the earlier joined layout as an option). New candles are never built over stored ones. 1h, 4h, daily and weekly candles are built from 5-minute candles, buy and sell separately. Late and missing candles. Every store check: gap, **weekend gap**, duplicate, buy below sell, high below low, out of order, wrong file, misaligned, damaged. Checks after every new candle. **Restarts after 5 minutes, after 2 hours, and on Monday morning**, plus an empty store and leftover temp files. UK time on display. |
+| `test_pairs.py` | Every part with two pretend pairs switched on (EURUSD, and EURJPY at 10 points a pip): each pair's own epic, pip size and folders; one stream connection for both, each update going to its own pair's store; the service with one login, no history, the gap recorded only for its pair, a newly switched-on pair left empty; pip distances (round numbers, spread limit) per pair; the analyser per pair; one shared history budget with each request's epic recorded; a pair's one-off fill is its own and never starts by itself; every part refuses another pair's store; the one-off move of the GBPUSD data loses nothing and refuses while the service runs. |
 | `test_service.py` | The service file: runs as `autobot` from `/opt/autobot`, restarts after a crash with at least 30 seconds between, never restarts after exit 78, at most 5 starts an hour. The service never uses the history door. Start-up records the gap and asks no history, then it streams, and stops cleanly with a logout. Exit 78 after the stream is refused twice. A crash still logs out. A stop request ends a reconnect wait at once. |
 | `test_housekeeping.py` | Logs rotate by size and by age. Old logs are deleted. Limits come from the settings. Log lines are in UK time. Low disk space is warned. |

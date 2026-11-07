@@ -1,4 +1,5 @@
-"""Loads and checks config/settings.toml.
+"""Loads and checks config/settings.toml, and (for the programs) the switches
+in .env (config/switches.py).
 
 Every setting must be present, of the right kind and within sensible limits.
 Anything missing, unknown or invalid raises SettingsError with a clear message,
@@ -16,6 +17,10 @@ from datetime import time
 from pathlib import Path
 from typing import Any, Callable
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+
+from config.env_file import env_path
+from config.pairs import PAIR_NAME, Pair, PairSettings, pip_size
+from config.switches import SWITCHES_SECTION, read_switches
 
 DEFAULT_PATH = Path(__file__).resolve().parent / "settings.toml"
 PATH_ENV_VAR = "AUTOBOT_SETTINGS"
@@ -189,7 +194,6 @@ def _absolute_folder(v: Any) -> Path:
 
 SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "account": {
-        "pair": _exactly("GBPUSD"),
         "account_type": _exactly("demo"),
     },
     "prices": {
@@ -202,8 +206,6 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     },
     "hours": {
         "timezone": _timezone,
-        "new_trades_from": _clock_time,
-        "new_trades_until": _clock_time,
         "close_all_trades_at": _clock_time,
         "hold_overnight": _must_be(False),
     },
@@ -285,10 +287,6 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "near_level_within_pips": _whole_number(0, 50),
         "max_spread_pips": _whole_number(1, 100),
     },
-    "market": {
-        "epic": _epic,
-        "points_per_pip": _whole_number(1, 10000),
-    },
     "market_hours": {
         "opens_day": _weekday,
         "opens_at": _clock_time_on_5_minutes,
@@ -339,12 +337,27 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
 
 
 class Settings:
-    """Checked settings. Read them as settings.section.name, e.g. settings.trade.stop_loss_pips."""
+    """Checked settings. Read them as settings.section.name, e.g. settings.trade.stop_loss_pips.
+    settings.pairs: every [pairs.<PAIR>]; settings.for_pair(name): the settings for one
+    pair (config/pairs.py). settings.switches: the .env switches, when loaded."""
 
-    def __init__(self, values: dict[str, dict[str, Any]]):
+    def __init__(self, values: dict[str, dict[str, Any]], pairs: dict[str, Pair] | None = None,
+                 switches: dict[str, Any] | None = None):
         self._values = values
         for section, items in values.items():
             setattr(self, section, _Section(section, items))
+        self.pairs = dict(pairs or {})
+        if switches is not None:
+            self.switches = _Section(SWITCHES_SECTION, switches)
+
+    def for_pair(self, name: str) -> PairSettings:
+        if name not in self.pairs:
+            raise SettingsError(f"There is no [pairs.{name}] section in the settings.")
+        return PairSettings(self, self.pairs[name])
+
+    def pairs_on(self) -> list[PairSettings]:
+        """The settings for each pair switched on in .env."""
+        return [self.for_pair(p) for p in self.switches.pairs_on]
 
     def __setattr__(self, name: str, value: Any) -> None:
         if hasattr(self, name):
@@ -352,7 +365,13 @@ class Settings:
         super().__setattr__(name, value)
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
-        return {s: dict(items) for s, items in self._values.items()}
+        out = {s: dict(items) for s, items in self._values.items()}
+        for name, p in self.pairs.items():
+            out[f"pairs.{name}"] = {"epic": p.epic, "pip_size": p.pip_size, "price_scale": p.price_scale,
+                                    "points_per_pip": p.points_per_pip}
+        if hasattr(self, "switches"):
+            out[".env switches"] = {k: v for k, v in vars(self.switches).items() if not k.startswith("_")}
+        return out
 
 
 class _Section:
@@ -368,17 +387,66 @@ class _Section:
         return f"<settings [{self._name}]>"
 
 
+# Each pair: [pairs.<PAIR>] (config/pairs.py)
+PAIR_SCHEMA: dict[str, Callable[[Any], Any]] = {
+    "epic": _epic,
+    "pip_size": pip_size,
+    "price_scale": _whole_number(1, 1_000_000),
+}
+
+
+def _check_pairs(raw: Any, problems: list[str]) -> dict[str, Pair]:
+    pairs: dict[str, Pair] = {}
+    if raw is None:
+        problems.append("Missing section [pairs] (at least one [pairs.<PAIR>]).")
+        return pairs
+    if not isinstance(raw, dict) or not raw:
+        problems.append("[pairs] must hold at least one [pairs.<PAIR>] section.")
+        return pairs
+    for name, given in raw.items():
+        if not PAIR_NAME.match(name):
+            problems.append(f"[pairs.{name}]: the pair name must be 6 capital letters, like GBPUSD.")
+            continue
+        if not isinstance(given, dict):
+            problems.append(f"[pairs.{name}] must be a section.")
+            continue
+        for key in given:
+            if key not in PAIR_SCHEMA:
+                problems.append(f"Unknown setting [pairs.{name}] {key}.")
+        got: dict[str, Any] = {}
+        for key, check in PAIR_SCHEMA.items():
+            if key not in given:
+                problems.append(f"Missing setting [pairs.{name}] {key}.")
+                continue
+            try:
+                got[key] = check(given[key])
+            except ValueError as e:
+                problems.append(f"Invalid setting [pairs.{name}] {key}: {e}.")
+        if len(got) == len(PAIR_SCHEMA):
+            pair = Pair(name, got["epic"], got["pip_size"], got["price_scale"])
+            if pair.points_per_pip <= 0:
+                problems.append(f"[pairs.{name}]: pip_size x price_scale must be above 0.")
+            pairs[name] = pair
+    epics = [p.epic for p in pairs.values()]
+    if len(set(epics)) != len(epics):
+        problems.append("Two [pairs.*] sections have the same epic.")
+    return pairs
+
+
+def _check_switches(sw: dict[str, Any], v: dict[str, dict[str, Any]], pairs: dict[str, Pair], where: Path) -> None:
+    unknown = [p for p in sw["pairs_on"] if p not in pairs]
+    if unknown:
+        raise SettingsError(f"Switch PAIRS_ON in {where} names {', '.join(unknown)}, which has no "
+                            "[pairs.<PAIR>] section in settings.toml.")
+    if sw["new_trades_from"] >= sw["new_trades_until"]:
+        raise SettingsError(f"Switch NEW_TRADES_FROM in {where} must be earlier than NEW_TRADES_UNTIL.")
+    if v["hours"]["close_all_trades_at"] < sw["new_trades_until"]:
+        raise SettingsError(f"Setting [hours] close_all_trades_at must not be earlier than the switch "
+                            f"NEW_TRADES_UNTIL in {where}.")
+
+
 def _check_together(v: dict[str, dict[str, Any]]) -> None:
-    """Checks that involve more than one setting."""
-    h = v["hours"]
-    if h["new_trades_from"] >= h["new_trades_until"]:
-        raise SettingsError(
-            "Setting [hours] new_trades_from must be earlier than new_trades_until."
-        )
-    if h["close_all_trades_at"] < h["new_trades_until"]:
-        raise SettingsError(
-            "Setting [hours] close_all_trades_at must not be earlier than new_trades_until."
-        )
+    """Checks that involve more than one setting (the hours checks are with the switches)."""
 
 
 def _check_levels_together(v: dict[str, dict[str, Any]]) -> None:
@@ -430,8 +498,9 @@ def _check_candles_together(v: dict[str, dict[str, Any]]) -> None:
         raise SettingsError("Settings [market_hours] opens_day and closes_day must be different days.")
 
 
-def load_settings(path: str | Path | None = None) -> Settings:
-    """Load and check the settings file. Raises SettingsError if anything is wrong."""
+def load_settings(path: str | Path | None = None, *, switches_from: str | Path | None = None) -> Settings:
+    """Load and check the settings file. Raises SettingsError if anything is wrong.
+    switches_from: also read and check the switches in this .env file."""
     if path is None:
         path = os.environ.get(PATH_ENV_VAR) or DEFAULT_PATH
     path = Path(path)
@@ -447,8 +516,9 @@ def load_settings(path: str | Path | None = None) -> Settings:
     problems: list[str] = []
     checked: dict[str, dict[str, Any]] = {}
 
+    pairs = _check_pairs(raw.get("pairs"), problems)
     for section in raw:
-        if section not in SCHEMA:
+        if section != "pairs" and section not in SCHEMA:
             problems.append(f"Unknown section [{section}].")
     for section, fields in SCHEMA.items():
         given = raw.get(section)
@@ -481,12 +551,19 @@ def load_settings(path: str | Path | None = None) -> Settings:
     _check_candles_together(checked)
     _check_levels_together(checked)
     _check_indicators_together(checked)
-    return Settings(checked)
+    switches = None
+    if switches_from is not None:
+        switches, sw_problems = read_switches(Path(switches_from))
+        if sw_problems:
+            raise SettingsError(f"The switches have {len(sw_problems)} problem(s):\n  - " + "\n  - ".join(sw_problems))
+        _check_switches(switches, checked, pairs, Path(switches_from))
+    return Settings(checked, pairs, switches)
 
 
 def load_or_exit(path: str | Path | None = None) -> Settings:
-    """Load settings, or stop the program with a clear message (exit code 1)."""
+    """Load the settings AND the .env switches, or stop the program with a clear
+    message (exit code 1). This is what every program uses at start-up."""
     try:
-        return load_settings(path)
+        return load_settings(path, switches_from=env_path())
     except SettingsError as e:
         raise SystemExit(f"AutoBot cannot start: {e}") from None

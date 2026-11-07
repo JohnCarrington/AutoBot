@@ -1,7 +1,8 @@
 """Show the analyser's indicators, direction and data status at one or more
 UTC times, from the stored candles. Contacts nobody.
 
-  .venv/bin/python -m analyser 2026-11-06T13:00:00Z [more times ...]
+  .venv/bin/python -m analyser 2026-11-06T13:00:00Z [more times ...] [--pair GBPUSD]
+(--pair may be left out when only one pair is switched on in .env.)
 """
 
 from __future__ import annotations
@@ -10,6 +11,7 @@ import sys
 from decimal import Decimal
 
 from analyser.report import AnalyserReport, analyse
+from config.pairs import choose_pair, take_pair_option
 from config.settings_loader import load_or_exit
 from prices.model import parse_iso, uk_short
 from prices.store import CandleStore
@@ -40,11 +42,11 @@ def show(r: AnalyserReport) -> list[str]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    args = sys.argv[1:] if argv is None else argv
+    pair, args = take_pair_option(sys.argv[1:] if argv is None else argv)
     if not args:
         print(__doc__)
         return 2
-    settings = load_or_exit()
+    settings = choose_pair(load_or_exit(), pair)
     store = CandleStore(settings.candles.folder, settings.candles.compress_after_days)
     for a in args:
         print("\n".join(show(analyse(settings, store, parse_iso(a)))))

@@ -30,7 +30,7 @@ def settings(tmp_path, **levels_over):
     lv = {k: v for k, v in vars(SETTINGS.levels).items() if not k.startswith("_")}
     lv.update(folder=tmp_path / "levels", **levels_over)
     cs = {k: v for k, v in vars(SETTINGS.candles).items() if not k.startswith("_")}
-    cs.update(folder=tmp_path / "candles")
+    cs.update(folder=tmp_path / "candles" / "GBPUSD")
     return SimpleNamespace(levels=SimpleNamespace(**lv), market=SETTINGS.market, chart=SETTINGS.chart,
                            market_hours=SETTINGS.market_hours, candles=SimpleNamespace(**cs),
                            housekeeping=SETTINGS.housekeeping)
@@ -93,7 +93,7 @@ def test_pivot_decimals_come_from_the_settings():
 
 
 def _store_with_days(tmp_path, days):
-    store = CandleStore(tmp_path / "candles", 30)
+    store = CandleStore(tmp_path / "candles" / "GBPUSD", 30)
     for c in days:
         store.add(c)
     return store
@@ -156,7 +156,7 @@ def test_round_numbers_end_in_00_and_50_within_the_set_distance_both_ends_includ
 
 
 def test_round_numbers_are_around_the_latest_sell_close(tmp_path):
-    store = CandleStore(tmp_path / "candles", 30)
+    store = CandleStore(tmp_path / "candles" / "GBPUSD", 30)
     store.add(candle("5m", T(2026, 11, 6, 9), 5, 13462, 13455, c=13460.0, spread=D(30)))
     ll = build(settings(tmp_path, round_numbers_within_pips=60), store, T(2026, 11, 6, 9, 5))
     assert ll.reference_price == D("13460.0")
@@ -177,7 +177,7 @@ def _day_of_5m(store, day, highs_lows):
 
 
 def test_london_and_new_york_session_highs_and_lows_use_utc_times_from_the_settings(tmp_path):
-    store = CandleStore(tmp_path / "candles", 30)
+    store = CandleStore(tmp_path / "candles" / "GBPUSD", 30)
     _day_of_5m(store, T(2026, 11, 5), {
         (6, 55): (13600, 13300),            # before London (07:00 UTC): not used
         (7, 0): (13480, 13470), (9, 30): (13490, 13460), (11, 55): (13485, 13465),
@@ -196,7 +196,7 @@ def test_london_and_new_york_session_highs_and_lows_use_utc_times_from_the_setti
 
 
 def test_a_running_session_counts_only_finished_candles_and_says_so_far(tmp_path):
-    store = CandleStore(tmp_path / "candles", 30)
+    store = CandleStore(tmp_path / "candles" / "GBPUSD", 30)
     _day_of_5m(store, T(2026, 11, 5), {(7, 0): (13480, 13470), (7, 5): (13495, 13465), (7, 10): (13999, 13001)})
     ll = build(settings(tmp_path), store, T(2026, 11, 5, 7, 12))        # 07:10 candle not finished
     hi = ll.of_type("london_session_high")[0]
@@ -205,7 +205,7 @@ def test_a_running_session_counts_only_finished_candles_and_says_so_far(tmp_path
 
 
 def test_the_previous_days_sessions_are_levels_too(tmp_path):
-    store = CandleStore(tmp_path / "candles", 30)
+    store = CandleStore(tmp_path / "candles" / "GBPUSD", 30)
     _day_of_5m(store, T(2026, 11, 4), {(8, 0): (13420, 13410), (15, 0): (13440, 13400)})
     _day_of_5m(store, T(2026, 11, 5), {(8, 0): (13480, 13470)})
     ll = build(settings(tmp_path), store, T(2026, 11, 5, 9))
@@ -277,7 +277,7 @@ def test_a_turning_level_needs_the_candles_after_it_to_exist():
 
 
 def test_turning_levels_older_than_the_lookback_are_left_out_and_sell_prices_are_used(tmp_path):
-    store = CandleStore(tmp_path / "candles", 30)
+    store = CandleStore(tmp_path / "candles" / "GBPUSD", 30)
     pattern = [(110, 100), (112, 102), (115, 105), (140, 120), (125, 112), (118, 104), (116, 103), (114, 100)]
     for start in (T(2026, 10, 19), T(2026, 11, 2)):                 # 18 days and 4 days before
         for c in hourly(start, pattern):
@@ -343,7 +343,7 @@ def test_the_levels_that_matter_most_are_marked():
 # ---- 4. output: one current list, updated when a candle is stored ------------------------------
 
 def _full_store(tmp_path):
-    store = CandleStore(tmp_path / "candles", 30)
+    store = CandleStore(tmp_path / "candles" / "GBPUSD", 30)
     store.add(candle("1d", T(2026, 11, 5), 1440, h=13501.6, l=13446.8, c=13456.7))
     _day_of_5m(store, T(2026, 11, 6), {(7, 0): (13460, 13448), (7, 5): (13462, 13451)})
     return store
@@ -405,7 +405,7 @@ def test_a_levels_problem_never_stops_the_price_service(tmp_path, caplog):
 
 def test_a_levels_warning_is_written_once_not_every_5_minutes(tmp_path):
     s = settings(tmp_path)
-    store = CandleStore(tmp_path / "candles", 30)
+    store = CandleStore(tmp_path / "candles" / "GBPUSD", 30)
     _day_of_5m(store, T(2026, 11, 6), {(7, 0): (13460, 13448)})       # no daily candle stored
     warnings = []
     updater = LevelsUpdater(s, store, warn=warnings.append)
@@ -430,5 +430,5 @@ def test_the_levels_part_never_contacts_ig():
 
 
 def test_the_live_run_and_the_service_update_the_levels():
-    for f in ("prices/run.py", "prices/service.py"):
-        assert "after_new_candle=LevelsUpdater(settings, store)" in (ROOT / f).read_text(), f
+    assert "after_new_candle=LevelsUpdater(settings, store)" in (ROOT / "prices/run.py").read_text()
+    assert "after_new_candle=LevelsUpdater(ps, store)" in (ROOT / "prices/service.py").read_text()   # each pair's own

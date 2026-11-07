@@ -19,6 +19,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any, Callable
 
+from config.pairs import check_same_pair
 from housekeeping.files import safe_write
 from levels import rules
 from levels.rules import Level
@@ -70,6 +71,7 @@ def previous_trading_day(b: Boundaries, day_start: datetime) -> tuple[datetime, 
 
 def build(settings: Any, store: CandleStore, as_of: datetime) -> LevelList:
     """Every level as it stood at `as_of`, using only candles that had finished by then."""
+    check_same_pair(settings, store)
     lv_s, ppp = settings.levels, Decimal(settings.market.points_per_pip)
     side = settings.chart.price
     hours = MarketHours(settings.market_hours)
@@ -193,6 +195,7 @@ class LevelsUpdater:
     written as a warning and the old file is left as it was."""
 
     def __init__(self, settings: Any, store: CandleStore, warn: Callable[[str], None] | None = None):
+        check_same_pair(settings, store)
         self.settings, self.store = settings, store
         self.warn = warn or (lambda m: log.warning(m))
         self.updates = 0

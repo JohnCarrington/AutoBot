@@ -82,7 +82,7 @@ There is **one** rejection part (`rejection/`), shared by the analyser, the stra
 
 ## Commands (contact nobody)
 
-- `.venv/bin/python -m rejection 2026-11-05T21:00:00Z 2026-11-06T00:30:00Z` lists every event between two UTC times from the stored candles, then a summary of every setup.
+- `.venv/bin/python -m rejection 2026-11-05T21:00:00Z 2026-11-06T00:30:00Z [--pair GBPUSD]` lists every event between two UTC times from the stored candles, then a summary of every setup.
 - The live price service does not run the rejection part yet; the analyser and strategies will.
 
 ## Checked against real days (5 November 2026, sell prices)

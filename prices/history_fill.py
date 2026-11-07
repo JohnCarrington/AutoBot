@@ -5,7 +5,12 @@ checks the block marker, the bot's weekly budget, IG's allowance floor and the
 maximum size, counting points before anything is sent.
 
 Rules for filling (docs/PRICES_AND_CANDLES.md):
-  * Only gaps the store has RECORDED (data/candles/gaps.csv), 5-minute
+  * One pair at a time, named on the command line. A pair is NEVER filled
+    automatically, including a pair newly switched on: each pair's one-off
+    fill needs the owner's go-ahead, and is then recorded as done for that
+    pair only (<history folder>/<PAIR>/one_off_fill_done.json). The weekly
+    budget and IG's allowance are shared by all pairs (the history door).
+  * Only gaps the store has RECORDED (<candles folder>/<PAIR>/gaps.csv), 5-minute
     candles, during market hours. Never the weekend.
   * Ask only for the missing candles: each request covers one unbroken run of
     missing 5-minute candles, no bigger than history.max_points_per_request.
@@ -14,8 +19,14 @@ Rules for filling (docs/PRICES_AND_CANDLES.md):
   * IG's own UTC times (snapshotTimeUTC) are used. Buy = IG's ask, sell = IG's bid.
 
 Commands:
-  .venv/bin/python -m prices.history_fill plan   shows the one-off plan; contacts nobody
-  .venv/bin/python -m prices.history_fill go     runs it (once ever: then it is recorded as done)
+  .venv/bin/python -m prices.history_fill gap-plan --pair GBPUSD --from <UTC> --to <UTC>
+        shows the requests to fill the RECORDED gaps inside that window; contacts nobody
+  .venv/bin/python -m prices.history_fill gap-go --pair GBPUSD --from <UTC> --to <UTC>
+        fills them (only with the owner's go-ahead), then builds the bigger candles
+        that are due and checks the store
+  .venv/bin/python -m prices.history_fill plan --pair GBPUSD   shows the plan; contacts nobody
+  .venv/bin/python -m prices.history_fill go --pair GBPUSD     runs it (once ever per pair: then
+                                                                it is recorded as done for that pair)
 """
 
 from __future__ import annotations
@@ -30,6 +41,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable
 
+from config.pairs import check_same_pair
 from housekeeping.files import safe_write
 from prices.builder import build_due
 from prices.calendar import Boundaries, MarketHours, floor_5m
@@ -173,7 +185,7 @@ def plan_one_off(store: CandleStore, hours: MarketHours, max_points: int, now: d
 def show_plan(plan: list[Planned], door: Any, settings: Any, period: tuple[datetime, datetime],
               say: Callable[[str], None]) -> None:
     total = sum(p.points for p in plan)
-    say(f"ONE-OFF FILL PLAN for {settings.market.epic}")
+    say(f"ONE-OFF FILL PLAN for {settings.market.pair} ({settings.market.epic})")
     say(f"  Period: {uk_short(period[0])} to {uk_short(period[1])} (UK time)")
     say(f"  {'#':>2}  {'what':<9} {'resolution':<9} {'from (UK)':<20} {'to (UK)':<20} {'points':>6}")
     for i, p in enumerate(plan, 1):
@@ -211,10 +223,12 @@ class FillResult:
 
 def run_one_off(door: Any, store: CandleStore, settings: Any, now: datetime,
                 say: Callable[[str], None], pause: Callable[[float], None] = lambda s: None) -> FillResult:
-    hfolder = Path(settings.history.folder)
+    check_same_pair(settings, store)
+    hfolder = Path(settings.history.pair_folder)        # this pair's own fill records
     done = hfolder / DONE_FILE
     if done.exists():
-        raise RuntimeError(f"The one-off fill has already been run ({done}). It never runs again by itself.")
+        raise RuntimeError(f"The one-off fill for {settings.market.pair} has already been run ({done}). "
+                           "It never runs again by itself.")
     hours = MarketHours(settings.market_hours)
     b = Boundaries(settings.candles, hours)
     period = fill_period(hours, now)
@@ -285,6 +299,46 @@ def _save_ig_daily(path: Path, daily: list[Candle]) -> None:
     for c in daily:
         w.writerow([c.start.strftime("%Y-%m-%dT%H:%M:%SZ"), *(plain(x) for x in c.prices())])
     safe_write(path, buf.getvalue().encode())
+
+
+# ---- filling the recorded gaps in one window (with the owner's go-ahead) ----------------
+
+@dataclass
+class GapFillResult:
+    requests: int = 0
+    points: int = 0
+    stored: int = 0
+    built: list = field(default_factory=list)
+    notes: list = field(default_factory=list)
+
+
+def run_gap_fill(door: Any, store: CandleStore, settings: Any, start: datetime, end: datetime, now: datetime,
+                 say: Callable[[str], None]) -> GapFillResult:
+    """Fill the 5-minute candles still missing inside RECORDED gaps between
+    start and end, through the history door, then build the bigger candles
+    that are now due. Never overwrites a stored candle."""
+    check_same_pair(settings, store)
+    hours = MarketHours(settings.market_hours)
+    b = Boundaries(settings.candles, hours)
+    res = GapFillResult()
+    for p in requests_for_recorded_gaps(store, hours, settings.history.max_points_per_request, within=(start, end)):
+        reply = door.fetch(settings.market.epic, "MINUTE_5", p.start, p.end, p.points, "gap fill")
+        got, problems = candles_from_ig(reply.rows, "5m", FIVE_MIN)
+        res.notes += problems
+        outside = [c.start for c in got if not p.start <= c.start <= p.end]
+        if outside:
+            raise RuntimeError(f"IG sent candles outside the requested times ({uk_short(min(outside))} ...): "
+                               "the times do not line up. Stopping the fill.")
+        r = apply_fill(store, p, got)
+        res.requests += 1
+        res.points += reply.points_counted
+        res.stored += r["stored"]
+        say(f"  fill {uk_short(p.start)} to {uk_short(p.end)}: asked {p.points}, received {len(got)}, "
+            f"stored {r['stored']}, already stored {r['already_stored']}, not asked for {r['not_asked_for']}; "
+            f"IG allowance now {reply.remaining} of {reply.total}")
+        res.built += build_due(store, b, now, settings.candles.wait_for_late_candle_seconds,
+                               lambda m: res.notes.append(m), also_for=p.start)
+    return res
 
 
 # ---- the checks after the fill ----------------------------------------------------------
@@ -365,20 +419,26 @@ def main(argv: list[str] | None = None) -> int:
     from ig.history import HistoryDoor
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("action", choices=["plan", "go"])
+    ap.add_argument("action", choices=["plan", "go", "gap-plan", "gap-go"])
+    ap.add_argument("--from", dest="start", help="gap-plan / gap-go: from this UTC time")
+    ap.add_argument("--to", dest="end", help="gap-plan / gap-go: up to this UTC time")
+    ap.add_argument("--pair", required=True, help="the pair to fill, e.g. GBPUSD (always named: never assumed)")
     args = ap.parse_args(argv)
-    settings = load_or_exit()
+    settings = load_or_exit().for_pair(args.pair.upper())
     setup_logging(settings.housekeeping, "history", console=False)
     store = CandleStore(settings.candles.folder, settings.candles.compress_after_days)
     hours = MarketHours(settings.market_hours)
     now = datetime.now(UTC)
     say = lambda t="": print(t, flush=True)  # noqa: E731
 
+    if args.action.startswith("gap-"):
+        return _gap(args, settings, store, hours, now, say)
+
     if args.action == "plan":
         # Contacts nobody: no login, no IG call.
         door = HistoryDoor(None, settings.history)
-        if (Path(settings.history.folder) / DONE_FILE).exists():
-            say("The one-off fill has already been run; it will not run again.")
+        if (Path(settings.history.pair_folder) / DONE_FILE).exists():
+            say(f"The one-off fill for {settings.market.pair} has already been run; it will not run again.")
             return 0
         plan = plan_one_off(store, hours, settings.history.max_points_per_request, now)
         show_plan(plan, door, settings, fill_period(hours, now), say)
@@ -411,6 +471,70 @@ def main(argv: list[str] | None = None) -> int:
     ok = report_after(res, store, settings, say)
     _calls(client, say)
     return 0 if ok else 3
+
+
+def _gap(args: Any, settings: Any, store: CandleStore, hours: MarketHours, now: datetime,
+         say: Callable[[str], None]) -> int:
+    from ig.history import HistoryDoor
+    from prices.model import parse_iso
+    if not (args.start and args.end):
+        say("gap-plan and gap-go need --from and --to (UTC times).")
+        return 2
+    start, end = parse_iso(args.start), parse_iso(args.end)
+    reqs = requests_for_recorded_gaps(store, hours, settings.history.max_points_per_request, within=(start, end))
+    door = HistoryDoor(None, settings.history)
+    say(f"GAP FILL for {settings.market.pair} ({settings.market.epic}), recorded gaps from {uk_short(start)} "
+        f"to {uk_short(end)}:")
+    for p in reqs:
+        say(f"  {uk_short(p.start)} to {uk_short(p.end)}: {p.points} candle(s) "
+            f"({', '.join(t.strftime('%H:%M') for t in p.slots)})")
+    total = sum(p.points for p in reqs)
+    fig = door.ig_figures() or {}
+    say(f"  Requests: {len(reqs)}, points: {total}. Bot's weekly budget {settings.history.weekly_budget_points}, "
+        f"used in the last 7 days {door.points_last_7_days()}. IG remaining (last reported) {fig.get('remaining')} "
+        f"of {fig.get('total')}. Block marker: {door.block_in_place() or 'none'}.")
+    if args.action == "gap-plan" or not reqs:
+        return 0
+    say("")
+    say("BEFORE:")
+    _counts(store, settings, say)
+    from ig.client import IGClient
+    from ig.errors import IGLoginFailure, stop_bot
+    from ig.secrets import ENV_PATH, load_credentials
+    client = IGClient(settings.ig, load_credentials(ENV_PATH))
+    door = HistoryDoor(client, settings.history)
+    try:
+        client.connect()
+        res = run_gap_fill(door, store, settings, start, end, now, say)
+    except IGLoginFailure as f:
+        client.logout()
+        stop_bot(f)
+    except Exception as e:
+        client.logout()
+        say(f"FILL STOPPED: {type(e).__name__}: {e}")
+        _calls(client, say)
+        return 2
+    client.logout()
+    say(f"Stored {res.stored} five-minute candle(s) from {res.requests} request(s), {res.points} point(s) counted.")
+    for c in res.built:
+        say(f"  built {c.describe()} ({c.parts} of {c.expected_parts})")
+    for n in res.notes:
+        say(f"  note: {n}")
+    say("")
+    say("AFTER:")
+    _counts(store, settings, say)
+    _calls(client, say)
+    return 0
+
+
+def _counts(store: CandleStore, settings: Any, say: Callable[[str], None]) -> None:
+    chk = check_store(store, Boundaries(settings.candles, MarketHours(settings.market_hours)))
+    say("  candles: " + ", ".join(f"{k} {v}" for k, v in chk.candles.items()) + f" (total {sum(chk.candles.values())})")
+    say(f"  store checks: {len(chk.problems)} problem(s); {len(chk.gaps)} gap(s), {len(chk.new_gaps)} not recorded")
+    for p in chk.problems:
+        say("    " + p)
+    for g in chk.gaps:
+        say("    " + g.describe())
 
 
 def _calls(client: Any, say: Callable[[str], None]) -> None:

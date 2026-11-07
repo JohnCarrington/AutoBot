@@ -23,12 +23,10 @@ ROOT = Path(__file__).resolve().parents[2]
 # The values the owner asked for. If a value in settings.toml changes, this
 # table must be changed on purpose too.
 EXPECTED = {
-    "account": {"pair": "GBPUSD", "account_type": "demo"},
+    "account": {"account_type": "demo"},
     "prices": {"candle_timeframes": ("tick", "5m", "1h", "4h", "1d", "1w")},
     "trade": {"size_gbp_per_pip": 10, "stop_loss_pips": 6, "take_profit_pips": 100},
     "hours": {
-        "new_trades_from": time(6, 0),
-        "new_trades_until": time(20, 30),
         "close_all_trades_at": time(20, 30),
         "hold_overnight": False,
     },
@@ -83,7 +81,6 @@ EXPECTED = {
                    "history_candles": 2000, "warm_up_seed_weight_percent": 2},
     "analyser": {"direction_ema_timeframe": "5m", "direction_ema_periods": 100, "out_of_date_after_minutes": 10},
     "rejection": {"candle_timeframe": "5m", "near_level_within_pips": 3, "max_spread_pips": 3},
-    "market": {"epic": "CS.D.GBPUSD.TODAY.IP", "points_per_pip": 1},
     "market_hours": {
         "opens_day": 6,              # Sunday (Monday is 0)
         "opens_at": time(21, 0),
@@ -164,8 +161,18 @@ def test_every_setting_in_the_file_is_tested():
     with DEFAULT_PATH.open("rb") as f:
         raw = tomllib.load(f)
     in_file = {(s, k) for s, items in raw.items() for k in items}
-    tested = {(s, k) for s, k, _ in ALL_VALUES} | {("hours", "timezone")}
+    tested = {(s, k) for s, k, _ in ALL_VALUES} | {("hours", "timezone"), ("pairs", "GBPUSD")}
     assert in_file == tested
+    assert set(raw["pairs"]) == {"GBPUSD"} and set(raw["pairs"]["GBPUSD"]) == {"epic", "pip_size", "price_scale"}
+
+
+def test_gbpusd_is_the_one_pair_in_the_settings(settings):
+    from decimal import Decimal
+    assert list(settings.pairs) == ["GBPUSD"]
+    g = settings.for_pair("GBPUSD")
+    assert (g.market.pair, g.market.epic) == ("GBPUSD", "CS.D.GBPUSD.TODAY.IP")
+    assert (g.market.pip_size, g.market.price_scale, g.market.points_per_pip) == (Decimal("0.0001"), 10000, 1)
+    assert g.pair.real_price(Decimal("13354.4")) == Decimal("1.33544")
 
 
 def test_settings_cannot_be_changed_while_running(settings):
@@ -198,7 +205,11 @@ def _to_toml(data):
     for section, items in data.items():
         if isinstance(items, dict):
             lines.append(f"[{section}]")
-            lines += [f"{k} = {val(v)}" for k, v in items.items()]
+            lines += [f"{k} = {val(v)}" for k, v in items.items() if not isinstance(v, dict)]
+            for name, sub in items.items():
+                if isinstance(sub, dict):
+                    lines.append(f"[{section}.{name}]")
+                    lines += [f"{k} = {val(v)}" for k, v in sub.items()]
     return "\n".join(lines) + "\n"
 
 
@@ -232,7 +243,6 @@ def test_missing_section_is_named(tmp_path, section):
 
 
 INVALID = [
-    ("account", "pair", "EURUSD", "must be 'GBPUSD'"),
     ("account", "account_type", "live", "must be 'demo'"),
     ("prices", "candle_timeframes", ["5m", "2h"], "not a known candle size"),
     ("trade", "size_gbp_per_pip", "ten", "must be a whole number"),
@@ -241,8 +251,6 @@ INVALID = [
     ("trade", "stop_loss_pips", 6.5, "must be a whole number"),
     ("trade", "take_profit_pips", True, "must be a whole number"),
     ("hours", "timezone", "UTC", "must be 'Europe/London'"),
-    ("hours", "new_trades_from", "6am", 'written "HH:MM"'),
-    ("hours", "new_trades_until", "24:00", 'written "HH:MM"'),
     ("hours", "close_all_trades_at", 2030, 'written "HH:MM"'),
     ("hours", "hold_overnight", True, "must be false"),
     ("news", "big_news_no_new_trades_before_minutes", -1, "must be between"),
@@ -257,7 +265,6 @@ INVALID = [
     ("levels", "turning_candles_each_side", 0, "must be between"),
     ("levels", "turning_min_move_pips", 0, "must be between"),
     ("levels", "round_number_every_pips", 0, "must be between"),
-    ("market", "points_per_pip", 0, "must be between"),
     ("reversal_watch", "times", ["11:00", "10:00"], "in order with no repeats"),
     ("reversal_watch", "times", [], "non-empty list"),
     ("reversal_watch", "minutes_before", 500, "must be between"),
@@ -282,7 +289,6 @@ INVALID = [
     ("ig", "slowed_down_waits_seconds", [], "non-empty list"),
     ("ig", "slowed_down_waits_seconds", [60, 0], "must be between"),
     ("ig", "request_timeout_seconds", 0, "must be between"),
-    ("market", "epic", "GBPUSD", "must be an IG epic"),
     ("market_hours", "opens_day", "Sun", "must be a day name"),
     ("market_hours", "closes_at", "21:59", "5-minute mark"),
     ("market_hours", "closes_time_zone", "UTC", "must be 'Europe/London' or 'America/New_York'"),
@@ -342,17 +348,112 @@ def test_all_problems_reported_together(tmp_path):
     assert "Invalid setting [levels] line_up_within_pips" in msg
 
 
+# ---- the .env switches ------------------------------------------------------
+
+SWITCHES_OK = {"PAIRS_ON": "GBPUSD", "NEW_TRADES_FROM": "06:00", "NEW_TRADES_UNTIL": "20:30",
+               "STRATEGY_SLOW_GRIND": "on", "STRATEGY_EMA_PULLBACK": "on",
+               "STRATEGY_BOLLINGER_BOUNCE": "off", "STRATEGY_RANGE_TRADE": "on"}
+
+
+def _env(tmp_path, values, secrets=True):
+    lines = ["IG_PASSWORD=pretend#secret-value"] if secrets else []
+    lines += [f"{k}={v}" for k, v in values.items()]
+    p = tmp_path / "switches.env"
+    p.write_text("\n".join(lines) + "\n")
+    return p
+
+
+def test_switches_load_with_their_values(tmp_path):
+    st = load_settings(switches_from=_env(tmp_path, SWITCHES_OK))
+    sw = st.switches
+    assert sw.pairs_on == ("GBPUSD",)
+    assert (sw.new_trades_from, sw.new_trades_until) == (time(6, 0), time(20, 30))
+    assert (sw.slow_grind, sw.ema_pullback, sw.bollinger_bounce, sw.range_trade) == (True, True, False, True)
+    assert [p.market.pair for p in st.pairs_on()] == ["GBPUSD"]
+
+
+def test_the_settings_alone_have_no_switches_and_no_market():
+    st = load_settings()
+    assert not hasattr(st, "switches") and not hasattr(st, "market")
+
+
+@pytest.mark.parametrize("key,bad,reason", [
+    ("PAIRS_ON", "", "must name at least one pair"),
+    ("PAIRS_ON", "GBP/USD", "is not a pair name"),
+    ("PAIRS_ON", "GBPUSD,GBPUSD", "must not repeat"),
+    ("NEW_TRADES_FROM", "6am", 'written "HH:MM"'),
+    ("NEW_TRADES_UNTIL", "24:00", 'written "HH:MM"'),
+    ("STRATEGY_SLOW_GRIND", "yes", "must be on or off"),
+    ("STRATEGY_RANGE_TRADE", "", "must be on or off"),
+])
+def test_an_invalid_switch_is_named_with_its_reason(tmp_path, key, bad, reason):
+    with pytest.raises(SettingsError) as e:
+        load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, key: bad}))
+    assert f"Invalid switch {key}" in str(e.value) and reason in str(e.value)
+
+
+@pytest.mark.parametrize("key", list(SWITCHES_OK))
+def test_a_missing_switch_is_named(tmp_path, key):
+    values = {k: v for k, v in SWITCHES_OK.items() if k != key}
+    with pytest.raises(SettingsError, match=f"Missing switch {key} in"):
+        load_settings(switches_from=_env(tmp_path, values))
+
+
+def test_a_switched_on_pair_must_have_its_settings(tmp_path):
+    with pytest.raises(SettingsError, match="names EURUSD, which has no \\[pairs.<PAIR>\\] section"):
+        load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "PAIRS_ON": "GBPUSD,EURUSD"}))
+
+
 def test_trading_hours_must_be_in_order(tmp_path):
-    data = _raw()
-    data["hours"]["new_trades_from"] = "21:00"
-    with pytest.raises(SettingsError, match="new_trades_from must be earlier than new_trades_until"):
-        load_settings(_write(tmp_path, data))
+    with pytest.raises(SettingsError, match="NEW_TRADES_FROM .* must be earlier than NEW_TRADES_UNTIL"):
+        load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "NEW_TRADES_FROM": "21:00"}))
 
 
 def test_close_time_not_before_last_new_trade(tmp_path):
+    with pytest.raises(SettingsError, match="close_all_trades_at must not be earlier than the switch NEW_TRADES_UNTIL"):
+        load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "NEW_TRADES_UNTIL": "21:00"}))
+
+
+def test_a_missing_env_file_is_named(tmp_path):
+    with pytest.raises(SettingsError, match="does not exist"):
+        load_settings(switches_from=tmp_path / "nope.env")
+
+
+def test_switch_problems_never_show_the_secrets(tmp_path):
+    with pytest.raises(SettingsError) as e:
+        load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "STRATEGY_SLOW_GRIND": "maybe"}))
+    assert "pretend#secret-value" not in str(e.value) and "IG_PASSWORD" not in str(e.value)
+
+
+def test_load_or_exit_reads_the_switches(tmp_path, monkeypatch):
+    from config.env_file import ENV_PATH_VAR
+    monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {**SWITCHES_OK, "NEW_TRADES_FROM": "07:15"})))
+    assert load_or_exit().switches.new_trades_from == time(7, 15)
+    monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {"PAIRS_ON": "GBPUSD"})))
+    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 6 problem"):
+        load_or_exit()
+
+
+@pytest.mark.parametrize("name,given,reason", [
+    ("GBPUSD", {"epic": "CS.D.GBPUSD.TODAY.IP", "pip_size": 0.0001, "price_scale": 10000}, "must be written in quotes"),
+    ("GBPUSD", {"epic": "CS.D.GBPUSD.TODAY.IP", "pip_size": "0", "price_scale": 10000}, "must be above 0"),
+    ("GBPUSD", {"epic": "GBPUSD", "pip_size": "0.0001", "price_scale": 10000}, "must be an IG epic"),
+    ("GBPUSD", {"epic": "CS.D.GBPUSD.TODAY.IP", "pip_size": "0.0001", "price_scale": 0}, "must be between"),
+    ("GBPUSD", {"epic": "CS.D.GBPUSD.TODAY.IP", "pip_size": "0.0001"}, "Missing setting [pairs.GBPUSD] price_scale"),
+    ("GBP_USD", {"epic": "CS.D.GBPUSD.TODAY.IP", "pip_size": "0.0001", "price_scale": 10000}, "6 capital letters"),
+])
+def test_an_invalid_pair_is_named_with_its_reason(tmp_path, name, given, reason):
     data = _raw()
-    data["hours"]["close_all_trades_at"] = "20:00"
-    with pytest.raises(SettingsError, match="close_all_trades_at must not be earlier"):
+    data["pairs"] = {name: given}
+    with pytest.raises(SettingsError) as e:
+        load_settings(_write(tmp_path, data))
+    assert reason in str(e.value)
+
+
+def test_two_pairs_cannot_share_an_epic(tmp_path):
+    data = _raw()
+    data["pairs"]["EURUSD"] = dict(data["pairs"]["GBPUSD"])
+    with pytest.raises(SettingsError, match="same epic"):
         load_settings(_write(tmp_path, data))
 
 
@@ -407,7 +508,7 @@ def test_bot_process_stops_with_clear_message(tmp_path):
     bad = _write(tmp_path, data)
     r = subprocess.run(
         [sys.executable, "-m", "config"],
-        cwd=ROOT, env={"AUTOBOT_SETTINGS": str(bad), "PATH": "/usr/bin:/bin"},
+        cwd=ROOT, env={"AUTOBOT_SETTINGS": str(bad), "PATH": "/usr/bin:/bin", "AUTOBOT_ENV_FILE": "/nonexistent"},
         capture_output=True, text=True, timeout=30,
     )
     assert r.returncode == 1
@@ -416,17 +517,19 @@ def test_bot_process_stops_with_clear_message(tmp_path):
     assert "Settings OK" not in r.stdout
 
 
-def test_bot_process_starts_with_good_settings():
+def test_bot_process_starts_with_good_settings(pretend_switches):
     r = subprocess.run(
         [sys.executable, "-m", "config"],
-        cwd=ROOT, env={"PATH": "/usr/bin:/bin"},
+        cwd=ROOT, env={"PATH": "/usr/bin:/bin", "AUTOBOT_ENV_FILE": str(pretend_switches)},
         capture_output=True, text=True, timeout=30,
     )
     assert r.returncode == 0, r.stderr
     assert "Settings OK." in r.stdout
     # Times print as HH:MM and lists print plainly, as written in settings.toml.
-    assert "  [hours] new_trades_from = 06:00\n" in r.stdout
-    assert "  [hours] new_trades_until = 20:30\n" in r.stdout
+    assert "  [.env switches] new_trades_from = 06:00\n" in r.stdout
+    assert "  [.env switches] new_trades_until = 20:30\n" in r.stdout
+    assert "  [.env switches] pairs_on = GBPUSD\n" in r.stdout
+    assert "  [pairs.GBPUSD] epic = CS.D.GBPUSD.TODAY.IP\n" in r.stdout
     assert "  [hours] close_all_trades_at = 20:30\n" in r.stdout
     assert ("  [reversal_watch] times = 10:00, 11:00, 13:00, 14:00, 16:00, 17:00\n"
             in r.stdout)

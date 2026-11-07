@@ -20,20 +20,20 @@ def warnings():
 
 @pytest.fixture
 def store(tmp_path, warnings):
-    return CandleStore(tmp_path / "candles", 30, warn=warnings.append)
+    return CandleStore(tmp_path / "candles" / "GBPUSD", 30, warn=warnings.append)
 
 
 def test_one_file_per_day_per_candle_size_named_by_utc_date(store, tmp_path):
     store.add(five(T(2026, 11, 4, 23, 55)))
     store.add(five(T(2026, 11, 5, 0, 0)))
     store.add(five(T(2026, 11, 4, 22, 0), tf="1h", minutes=60))
-    files = sorted(p.relative_to(tmp_path / "candles").as_posix() for p in (tmp_path / "candles").rglob("*.csv"))
+    files = sorted(p.relative_to(tmp_path / "candles" / "GBPUSD").as_posix() for p in (tmp_path / "candles" / "GBPUSD").rglob("*.csv"))
     assert files == ["1h/2026-11-04.csv", "5m/2026-11-04.csv", "5m/2026-11-05.csv"]
 
 
 def test_times_are_stored_in_utc_and_buy_and_sell_are_kept_apart(store, tmp_path):
     store.add(five(T(2026, 7, 6, 9, 0)))   # summer: UK time is 10:00 BST, stored as 09:00Z
-    text = (tmp_path / "candles" / "5m" / "2026-07-06.csv").read_text().splitlines()
+    text = (tmp_path / "candles" / "GBPUSD" / "5m" / "2026-07-06.csv").read_text().splitlines()
     assert text[0].split(",") == list(COLUMNS)
     assert "mid" not in text[0]
     assert text[1] == ("2026-07-06T09:00:00Z,2026-07-06T09:05:00Z,"
@@ -49,9 +49,9 @@ def test_prices_are_kept_exactly(store):
 def test_a_stored_candle_is_never_overwritten_and_a_different_value_is_warned(store, warnings, tmp_path):
     start = T(2026, 11, 4, 10, 0)
     assert store.add(five(start)) == "stored"
-    before = (tmp_path / "candles" / "5m" / "2026-11-04.csv").read_bytes()
+    before = (tmp_path / "candles" / "GBPUSD" / "5m" / "2026-11-04.csv").read_bytes()
     assert store.add(five(start, bc="1.39999")) == "different"
-    assert (tmp_path / "candles" / "5m" / "2026-11-04.csv").read_bytes() == before
+    assert (tmp_path / "candles" / "GBPUSD" / "5m" / "2026-11-04.csv").read_bytes() == before
     assert str(store.get("5m", start).buy_close) == "1.31030"
     assert len(warnings) == 1 and "DIFFERENT VALUE" in warnings[0] and "kept the stored one" in warnings[0]
 
@@ -66,7 +66,7 @@ def test_the_same_candle_arriving_again_is_not_written_or_warned(store, warnings
 
 def test_crash_part_way_through_a_write_leaves_the_old_file_whole(store, tmp_path, monkeypatch):
     store.add(five(T(2026, 11, 4, 10, 0)))
-    path = tmp_path / "candles" / "5m" / "2026-11-04.csv"
+    path = tmp_path / "candles" / "GBPUSD" / "5m" / "2026-11-04.csv"
     before = path.read_bytes()
 
     real_open = open
@@ -101,7 +101,7 @@ def test_crash_part_way_through_a_write_leaves_the_old_file_whole(store, tmp_pat
 
 def test_crash_between_writing_and_renaming_leaves_the_old_file_whole(store, tmp_path, monkeypatch):
     store.add(five(T(2026, 11, 4, 10, 0)))
-    path = tmp_path / "candles" / "5m" / "2026-11-04.csv"
+    path = tmp_path / "candles" / "GBPUSD" / "5m" / "2026-11-04.csv"
     before = path.read_bytes()
 
     def no_rename(*a):
@@ -123,7 +123,7 @@ def test_writes_are_flushed_to_disk_before_the_rename(store, monkeypatch):
 
 
 def test_a_damaged_file_is_reported_and_never_written_over(store, tmp_path):
-    path = tmp_path / "candles" / "5m" / "2026-11-04.csv"
+    path = tmp_path / "candles" / "GBPUSD" / "5m" / "2026-11-04.csv"
     path.parent.mkdir(parents=True)
     path.write_text("start_utc,end_utc\ngarbage")
     with pytest.raises(DamagedFile):
@@ -137,7 +137,7 @@ def test_old_files_are_compressed_not_deleted_and_still_readable(store, tmp_path
     store.add(five(recent))
     n = store.compress_old(T(2026, 11, 6, 12, 0))   # 30 days in the settings used here
     assert n == 1
-    folder = tmp_path / "candles" / "5m"
+    folder = tmp_path / "candles" / "GBPUSD" / "5m"
     assert not (folder / "2026-09-01.csv").exists()
     assert (folder / "2026-09-01.csv.gz").exists()
     assert (folder / "2026-11-01.csv").exists()
@@ -174,8 +174,8 @@ def test_a_note_can_be_added_to_a_gap_record_which_is_kept(store):
 def test_an_older_gap_file_without_the_note_column_still_reads_and_keeps_its_rows(store, tmp_path):
     old = ("timeframe,from_utc,to_utc,missing_candles,found_utc,how_found\n"
            "5m,2026-11-04T10:00:00Z,2026-11-04T10:05:00Z,1,2026-11-04T11:00:00Z,test\n")
-    (tmp_path / "candles").mkdir()
-    (tmp_path / "candles" / "gaps.csv").write_text(old)
+    (tmp_path / "candles" / "GBPUSD").mkdir(parents=True)
+    (tmp_path / "candles" / "GBPUSD" / "gaps.csv").write_text(old)
     assert store.recorded_gaps()[0]["note"] == ""
     store.record_gap("5m", T(2026, 11, 5, 10), T(2026, 11, 5, 10, 5), 1, T(2026, 11, 5, 11), "test")
     assert [r["from_utc"] for r in store.recorded_gaps()] == ["2026-11-04T10:00:00Z", "2026-11-05T10:00:00Z"]

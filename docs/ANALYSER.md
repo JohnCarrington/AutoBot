@@ -36,7 +36,7 @@ Price is the live sell price when there is one. With stored candles (a replay or
 ## Checking a time against the chart
 
 ```
-.venv/bin/python -m analyser 2026-11-06T13:00:00Z [more UTC times ...]
+.venv/bin/python -m analyser 2026-11-06T13:00:00Z [more UTC times ...] [--pair GBPUSD]
 ```
 
 Prints the direction and why, the data status, and every indicator on the 5-minute and hourly candles (`*` marks one still warming up). Contacts nobody.

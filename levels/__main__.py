@@ -11,6 +11,7 @@ import argparse
 import sys
 from datetime import datetime, timezone
 
+from config.pairs import choose_pair
 from config.settings_loader import load_or_exit
 from levels.current import LevelList, build, write_current
 from levels.rules import PIVOT, R1, R2, R3, S1, S2, S3, close, high, low
@@ -46,8 +47,9 @@ def show(ll: LevelList) -> list[str]:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--at", help="a UTC time like 2026-11-06T00:00:00Z: show levels as they stood then (no file written)")
+    ap.add_argument("--pair", help="which pair (may be left out when only one is switched on)")
     args = ap.parse_args(argv)
-    settings = load_or_exit()
+    settings = choose_pair(load_or_exit(), args.pair)
     store = CandleStore(settings.candles.folder, settings.candles.compress_after_days)
     now = datetime.now(timezone.utc)
     at = parse_iso(args.at) if args.at else now

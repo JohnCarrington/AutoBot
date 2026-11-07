@@ -13,6 +13,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from typing import Any
 
+from config.pairs import check_same_pair
 from levels.current import build
 from prices.indicators import bollinger
 from prices.store import CandleStore
@@ -23,6 +24,7 @@ WARM_UP_DAYS = 3     # candles read before `start`, so the Bollinger band is rea
 
 def replay(settings: Any, store: CandleStore, start: datetime, end: datetime,
            with_levels: bool = True) -> RejectionWatcher:
+    check_same_pair(settings, store)
     tf = settings.rejection.candle_timeframe
     ind = settings.indicators
     candles = store.read_range(tf, start - timedelta(days=WARM_UP_DAYS), end)

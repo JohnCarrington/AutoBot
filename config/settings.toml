@@ -4,7 +4,6 @@
 # One exception: the session times under [levels] are UTC (levels.sessions_time_zone).
 
 [account]
-pair = "GBPUSD"
 account_type = "demo"
 
 [prices]
@@ -16,9 +15,9 @@ stop_loss_pips = 6
 take_profit_pips = 100
 
 [hours]
+# The trading hours themselves (new trades from 06:00 until 20:30) are switches
+# in .env: NEW_TRADES_FROM and NEW_TRADES_UNTIL (config/switches.py).
 timezone = "Europe/London"
-new_trades_from = "06:00"
-new_trades_until = "20:30"
 close_all_trades_at = "20:30"
 hold_overnight = false
 
@@ -149,13 +148,21 @@ demo_base_url = "https://demo-api.ig.com/gateway/deal"
 slowed_down_waits_seconds = [60, 90, 120, 180]
 request_timeout_seconds = 30
 
-[market]
-# IG epic for GBPUSD on the spread bet account. Found with one market search
-# (GET /markets?searchTerm=GBPUSD) on 6 November 2026: "GBP/USD", expiry DFB.
+# Every currency pair the bot knows (config/pairs.py). Which ones are switched
+# on is in .env (PAIRS_ON). Each pair has its own candle store
+# (<candles folder>/<PAIR>/) and levels (<levels folder>/<PAIR>/); the history
+# door's budget and IG's history allowance are shared by all pairs.
+#   epic         IG's market for the pair on the spread bet account
+#   pip_size     one pip in the real price, in quotes (0.0001; JPY pairs 0.01)
+#   price_scale  IG's price = real price x this
+# One pip is pip_size x price_scale of IG's points.
+[pairs.GBPUSD]
+# Found with one market search (GET /markets?searchTerm=GBPUSD) on 6 November
+# 2026: "GBP/USD", expiry DFB. IG sends 13354.4 for 1.33544, so one pip
+# (0.0001) is 1 point.
 epic = "CS.D.GBPUSD.TODAY.IP"
-# IG sends GBPUSD spread bet prices in points: 13354.4 means 1.33544, so one
-# pip (0.0001) is 1 point.
-points_per_pip = 1
+pip_size = "0.0001"
+price_scale = 10000
 
 [market_hours]
 # IG's trading hours for GBPUSD. Set from two sources (docs/SETTINGS.md):

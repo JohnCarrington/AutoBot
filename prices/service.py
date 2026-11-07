@@ -4,13 +4,16 @@ Run by systemd (deploy/autobot-prices.service):
     /opt/autobot/.venv/bin/python -m prices.service
 
 What it does:
-  1. Start-up, exactly as the live run: checks the candle store, reports the
-     newest candle and its age, and RECORDS any gap since it. It never asks IG
-     for history: this module does not use the history door at all (a test
-     checks that).
-  2. Logs in (Stage 3 rules) and streams GBPUSD ticks and IG's 5-minute
-     candles, storing finished candles and building the bigger ones, until it
-     is told to stop. Drops are reconnected with increasing waits; IG refusing
+  1. Start-up, for EACH pair switched on in .env (PAIRS_ON), exactly as the
+     live run: checks that pair's candle store, reports the newest candle and
+     its age, and RECORDS any gap since it. It never asks IG for history: this
+     module does not use the history door at all (a test checks that). A pair
+     switched on for the first time simply starts with an empty store; filling
+     its history needs the owner's go-ahead (prices.history_fill --pair).
+  2. Logs in ONCE (Stage 3 rules) and streams every switched-on pair's ticks
+     and IG's 5-minute candles on one connection. Each update carries its
+     epic and goes to that pair's feed and store only. Finished candles are
+     stored and the bigger ones built, until it is told to stop. Drops are reconnected with increasing waits; IG refusing
      the stream gets one controlled re-login, then exit code 78.
   3. Every stream.status_log_minutes it logs a status line.
   4. On SIGTERM or SIGINT (systemctl stop): stops the stream, logs out of IG
@@ -52,10 +55,10 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
     if logs:
         setup_logging(settings.housekeeping, "prices")
     stop = stop or threading.Event()
-    store = CandleStore(settings.candles.folder, settings.candles.compress_after_days)
-    feed = PriceFeed(settings, store, now=now, disk_check=lambda: check_free_space(
-        settings.candles.folder, settings.housekeeping.min_free_disk_mb, feed.warn),
-        after_new_candle=LevelsUpdater(settings, store))
+    feeds: dict[str, PriceFeed] = {}            # epic -> that pair's feed
+    for ps in settings.pairs_on():
+        feeds[ps.market.epic] = _feed(ps, now)
+    any_feed = next(iter(feeds.values()))
     stream: PriceStream | None = None
 
     def on_signal(signum, frame):
@@ -68,8 +71,10 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
         signal.signal(signal.SIGTERM, on_signal)
         signal.signal(signal.SIGINT, on_signal)
 
-    log.info("AutoBot price service starting for %s.", settings.market.epic)
-    feed.start_up()   # store check, newest candle, gap recorded; no history asked for
+    log.info("AutoBot price service starting for %s.",
+             ", ".join(f"{f.pair} ({epic})" for epic, f in feeds.items()))
+    for f in feeds.values():
+        f.start_up()   # store check, newest candle, gap recorded; no history asked for
 
     client = client or IGClient(settings.ig, load_credentials(ENV_PATH))
     every = timedelta(minutes=settings.stream.status_log_minutes)
@@ -80,19 +85,26 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
             stream.request_stop()
         if now() >= next_status[0]:
             next_status[0] = now() + every
-            log.info("Status: %d ticks (%d with a price carried forward, %d skipped) and %d five-minute "
-                     "candles stored since start; last tick %s; stream connections %d, drops %d, re-logins %d.",
-                     feed.ticks, feed.carried_forward, feed.bad_ticks, len(feed.stored),
-                     feed.describe_last_tick(), stream.stats.connects, stream.stats.drops, stream.stats.relogins)
+            for f in feeds.values():
+                f.log.info("Status: %d ticks (%d with a price carried forward, %d skipped) and %d five-minute "
+                           "candles stored since start; last tick %s.",
+                           f.ticks, f.carried_forward, f.bad_ticks, len(f.stored), f.describe_last_tick())
+            log.info("Stream connections %d, drops %d, re-logins %d.",
+                     stream.stats.connects, stream.stats.drops, stream.stats.relogins)
+
+    def new_connection() -> None:
+        for f in feeds.values():
+            f.new_connection()
 
     try:
         if stop.is_set():
             return 0
         client.connect()
-        stream = PriceStream(client, settings.market.epic, settings.stream, transport_factory,
-                             on_tick=feed.on_tick, on_candle=feed.on_candle,
-                             on_new_connection=feed.new_connection,
-                             market_open_since=feed.market_open_since, now=now, warn=feed.warn)
+        stream = PriceStream(client, tuple(feeds), settings.stream, transport_factory,
+                             on_tick=lambda epic, fields: feeds[epic].on_tick(fields),
+                             on_candle=lambda epic, fields: feeds[epic].on_candle(fields),
+                             on_new_connection=new_connection,
+                             market_open_since=any_feed.market_open_since, now=now, warn=any_feed.warn)
         if stop.is_set():
             stream.request_stop()
         stream.start()
@@ -113,9 +125,19 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
         if stream:
             stream.stop()
     client.logout()
-    log.info("AutoBot price service stopped at %s: %d ticks and %d five-minute candles stored since start.",
-             uk(now()), feed.ticks, len(feed.stored))
+    log.info("AutoBot price service stopped at %s.", uk(now()))
+    for f in feeds.values():
+        f.log.info("%d ticks and %d five-minute candles stored since start.", f.ticks, len(f.stored))
     return 0
+
+
+def _feed(ps: Any, now: Callable[[], datetime]) -> PriceFeed:
+    """One pair's store, feed and levels (ps: settings.for_pair(...))."""
+    store = CandleStore(ps.candles.folder, ps.candles.compress_after_days)
+    feed: PriceFeed = PriceFeed(ps, store, now=now, disk_check=lambda: check_free_space(
+        ps.candles.folder, ps.housekeeping.min_free_disk_mb, feed.warn),
+        after_new_candle=LevelsUpdater(ps, store))
+    return feed
 
 
 def main() -> int:

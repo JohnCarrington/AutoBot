@@ -8,7 +8,7 @@ The levels part (`levels/`) reads only the candle store. **It never contacts IG.
 
 - **Every level uses the SELL price** (IG's bid, `BID`): the sell high, sell low and sell close of the stored candles, with daily candles running midnight to midnight UK. Johnny's IG chart is set to the sell price, so this matches it. The two prices are never mixed. This is one setting for the whole bot, `chart.price` (`sell`): the analyser's and strategies' indicators will use it too. Trades still open and close at IG's real buy or sell price as normal.
 - (Until 6 November 2026 the design said levels used the buy price. Johnny's chart turned out to be set to the sell price, so the design and the levels were changed to match.)
-- **Prices are in IG's points**, exactly as stored: `13450` means 1.3450. One pip (0.0001) is one point (`market.points_per_pip`). Every distance in pips in the settings is turned into points this way.
+- **Prices are in IG's points**, exactly as stored: `13450` means 1.3450. For GBPUSD one pip (0.0001) is one point (`pairs.GBPUSD.pip_size` x `pairs.GBPUSD.price_scale`; each pair has its own, `docs/PAIRS.md`). Every distance in pips in the settings is turned into points this way.
 - Levels are worked out **as they stood at a given time**, using only candles that had finished by then. A candle still in progress is never used.
 - "Today" is the daily candle that the time falls in: midnight to midnight UK, like IG's chart (`docs/PRICES_AND_CANDLES.md`).
 
@@ -84,7 +84,7 @@ Hourly highs and lows where price clearly reversed, from the last **2 weeks** (`
 
 ## 4. The current list
 
-- **One file: `/opt/autobot/data/levels/current.json`** (`levels.folder`), on the server only, not in git. It is written with a safe write (a new file is written, flushed and renamed in one step), so a reader never sees a half-written list.
+- **One file per pair: `/opt/autobot/data/levels/<PAIR>/current.json`** (`levels.folder`/`<PAIR>`), on the server only, not in git. It is written with a safe write (a new file is written, flushed and renamed in one step), so a reader never sees a half-written list.
 - It holds:
   - when it was written and what time the levels are for (UTC), the price used (`sell`), the start of today's daily candle, the previous day's daily candle it used, and the latest sell close;
   - any warnings (for example, the previous day's candle not stored yet);
@@ -102,7 +102,7 @@ Hourly highs and lows where price clearly reversed, from the last **2 weeks** (`
 
 ### Commands (contact nobody)
 
-- `.venv/bin/python -m levels` works out the levels now, prints them by group (highest first), and writes `current.json`.
+- `.venv/bin/python -m levels [--pair GBPUSD]` works out the levels now, prints them by group (highest first), and writes `current.json`.
 - `.venv/bin/python -m levels --at 2026-11-06T00:00:00Z` prints the levels as they stood at that UTC time. It never writes the file.
 
 ## Checked against real days

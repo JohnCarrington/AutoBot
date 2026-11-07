@@ -73,11 +73,13 @@ def _settings(tmp_path):
         d = {k: v for k, v in vars(section).items() if not k.startswith("_")}
         d.update(over)
         return SimpleNamespace(**d)
-    return SimpleNamespace(market=SETTINGS.market, chart=SETTINGS.chart, market_hours=SETTINGS.market_hours,
-                           stream=SETTINGS.stream,
-                           candles=copy(SETTINGS.candles, folder=tmp_path / "candles"),
-                           housekeeping=copy(SETTINGS.housekeeping), ig=SETTINGS.ig,
-                           levels=copy(SETTINGS.levels, folder=tmp_path / "levels"))
+    s = SimpleNamespace(market=SETTINGS.market, chart=SETTINGS.chart, market_hours=SETTINGS.market_hours,
+                        stream=SETTINGS.stream,
+                        candles=copy(SETTINGS.candles, folder=tmp_path / "candles" / "GBPUSD"),
+                        housekeeping=copy(SETTINGS.housekeeping), ig=SETTINGS.ig,
+                        levels=copy(SETTINGS.levels, folder=tmp_path / "levels" / "GBPUSD"))
+    s.pairs_on = lambda: [s]          # GBPUSD the only pair switched on
+    return s
 
 
 class Clock:
@@ -175,7 +177,8 @@ def test_service_logs_out_and_exits_with_an_error_after_a_crash(tmp_path):
 def test_a_stop_request_ends_a_reconnect_wait_at_once(tmp_path):
     from ig.stream import PriceStream
     stream = PriceStream(SimpleNamespace(streaming_endpoint="x", stream_login=lambda: ("u", "p")),
-                         "EPIC", SETTINGS.stream, new_transport, on_tick=lambda f: None, on_candle=lambda f: None)
+                         ("EPIC",), SETTINGS.stream, new_transport, on_tick=lambda e, f: None,
+                         on_candle=lambda e, f: None)
     stream.start()
     FakeTransport.opened[-1].drop()
     th = threading.Thread(target=stream.pump)

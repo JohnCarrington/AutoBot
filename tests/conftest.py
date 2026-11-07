@@ -35,3 +35,27 @@ def no_real_network(monkeypatch):
         raise RealNetworkUsed(f"Test tried to send a real HTTP request to {request.url}")
 
     monkeypatch.setattr(requests.adapters.HTTPAdapter, "send", guarded_send)
+
+
+# The switches normally come from the real .env, next to the IG secrets. Tests
+# never read the real .env: every test uses this pretend file instead
+# (GBPUSD only, 06:00 to 20:30, every strategy on), unless it sets its own.
+PRETEND_SWITCHES = """\
+PAIRS_ON=GBPUSD
+NEW_TRADES_FROM=06:00
+NEW_TRADES_UNTIL=20:30
+STRATEGY_SLOW_GRIND=on
+STRATEGY_EMA_PULLBACK=on
+STRATEGY_BOLLINGER_BOUNCE=on
+STRATEGY_RANGE_TRADE=on
+"""
+
+
+@pytest.fixture(autouse=True)
+def pretend_switches(tmp_path_factory, monkeypatch):
+    from config.env_file import ENV_PATH_VAR
+    path = tmp_path_factory.getbasetemp() / "pretend_switches.env"
+    if not path.exists():
+        path.write_text(PRETEND_SWITCHES)
+    monkeypatch.setenv(ENV_PATH_VAR, str(path))
+    return path

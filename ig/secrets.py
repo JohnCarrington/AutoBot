@@ -9,9 +9,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from config.env_file import ENV_PATH, parse
 from ig.errors import IGLoginFailure
-
-ENV_PATH = Path(__file__).resolve().parents[1] / ".env"
 REQUIRED = ("IG_USERNAME", "IG_PASSWORD", "IG_API_KEY", "IG_ACCOUNT_ID")
 
 
@@ -36,22 +35,7 @@ class IGCredentials:
     __str__ = __repr__
 
 
-def _parse(text: str) -> dict[str, str]:
-    """KEY=value lines. Lines starting with # are comments. Values may be in
-    quotes. A # inside a value is kept (passwords may contain #)."""
-    values: dict[str, str] = {}
-    for line in text.splitlines():
-        line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        if line.startswith("export "):
-            line = line[len("export "):]
-        key, value = line.split("=", 1)
-        key, value = key.strip(), value.strip()
-        if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
-            value = value[1:-1]
-        values[key] = value
-    return values
+_parse = parse   # the .env reader (config/env_file.py), shared with the switches
 
 
 def load_credentials(path: str | Path = ENV_PATH) -> IGCredentials:

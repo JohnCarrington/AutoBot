@@ -1,12 +1,12 @@
 # How AutoBot fits together
 
-AutoBot trades GBPUSD on an IG demo account. It is split into parts, each in its own folder. Each part does one job. Only the `ig/` part talks to IG's servers, and only the order sender (through `ig/`) places or changes trades.
+AutoBot works for any currency pair (only GBPUSD is switched on, `docs/PAIRS.md`) on an IG demo account. Every part works on one pair, given to it. It is split into parts, each in its own folder. Each part does one job. Only the `ig/` part talks to IG's servers, and only the order sender (through `ig/`) places or changes trades.
 
 ## The parts
 
 | Folder | What it does |
 |---|---|
-| `ig/` | The only part that talks to IG's servers. Logs in, chooses the bot's account without changing IG's default account, and handles IG's errors. It also runs IG's live price stream (`ig/stream.py`), reconnecting with increasing waits. Its history door (`ig/history.py`) is the only place allowed to ask IG for historical prices, under a weekly budget, an IG allowance floor, a size limit and a block marker; every other historical prices call is refused. The order sender will make its IG calls through it. See `docs/IG_CONNECTION.md` and `docs/PRICES_AND_CANDLES.md`. |
+| `ig/` | The only part that talks to IG's servers. Logs in, chooses the bot's account without changing IG's default account, and handles IG's errors. It also runs IG's live price stream (`ig/stream.py`): one connection for every pair switched on, each update tagged with its epic, reconnecting with increasing waits. Its history door (`ig/history.py`) is the only place allowed to ask IG for historical prices, under a weekly budget, an IG allowance floor, a size limit and a block marker, all shared by every pair; every other historical prices call is refused. The order sender will make its IG calls through it. See `docs/IG_CONNECTION.md` and `docs/PRICES_AND_CANDLES.md`. |
 | `prices/` | (Also `prices/indicators.py`: the Bollinger band, EMA, MACD and RSI, on the sell price, for the rejection part, the analyser and the strategies.) Takes the live GBPUSD ticks and IG's finished 5-minute candles from the stream, stores the candles (buy and sell kept apart, UTC, one file per day per size, safe writes, never overwritten), builds 1-hour, 4-hour, daily and weekly candles from them on IG's boundaries, and checks the store. It fills recorded gaps through the history door (`prices/history_fill.py`), only into missing candles. See `docs/PRICES_AND_CANDLES.md`. |
 | `levels/` | Works out, from the stored candles and always with the sell (bid) price, as on Johnny's IG chart (`chart.price`): the daily pivot, R1–R3 and S1–S3, round numbers, the previous day's high and low, London and New York session highs and lows, and hourly turning levels from the last 2 weeks. Groups levels that line up (within 5 pips) and marks the ones that matter most. Writes one current list (`data/levels/current.json`), updated each time a 5-minute candle is stored. Never contacts IG. See `docs/LEVELS.md`. |
 | `rejection/` | One shared part that works out, step by step, whether price has been rejected at a level or the Bollinger band: pierce (a level reached within 3 pips counts), reversal candle, confirmation candle, live trigger, cancelled or expired, each a timestamped event. Both the bounce and the quicker range-trade version, both directions, on the sell price. Records the reversal candle's size against the piercing candle and which levels lined up, and marks whether it counts under the reversal watch windows; it never filters. Ignores candles with a spread spike for starting or cancelling. Shared by the analyser, the strategies and the trade manager. Never contacts IG. See `docs/REJECTION.md`. |
@@ -18,11 +18,11 @@ AutoBot trades GBPUSD on an IG demo account. It is split into parts, each in its
 | `records/` | Records every trade. |
 | `dashboard/` | Shows trades, the market state and warnings. |
 | `alerts/` | Sends Telegram alerts. |
-| `config/` | The settings file (`settings.toml`) and the code that loads and checks it. Every part reads its numbers from here. |
+| `config/` | The settings file (`settings.toml`, including each pair's `[pairs.<PAIR>]`), the switches in `.env` (pairs switched on, trading hours, strategies on or off: `switches.py`), and the code that loads and checks them. `settings.for_pair(name)` gives a part its pair (`pairs.py`). Every part reads its numbers from here. |
 | `deploy/` | The systemd service file: the price stream runs all the time as `autobot-prices`, restarting after a crash but never after a login failure (exit code 78). |
 | `housekeeping/` | Log files rotated by size and age (so they can never fill the disk), and the low disk space warning. |
-| `data/candles/` | The candle store, on the server only (not in git). Never deleted; old files are compressed. |
-| `data/levels/` | The current list of levels (`current.json`), on the server only (not in git). Rewritten (safe write) after every new 5-minute candle. |
+| `data/candles/<PAIR>/` | Each pair's candle store and gap records, on the server only (not in git). Never deleted; old files are compressed. |
+| `data/levels/<PAIR>/` | Each pair's current list of levels (`current.json`), on the server only (not in git). Rewritten (safe write) after every new 5-minute candle. |
 | `data/history/` | The history door's records: points ledger, IG's allowance figures, daily record, block marker, and the one-off fill record. |
 
 ## How they connect
@@ -34,7 +34,7 @@ AutoBot trades GBPUSD on an IG demo account. It is split into parts, each in its
        ig ── logs in, chooses the account, handles IG's errors
         │
         ▼  live prices (stream: ticks + IG's finished 5-minute candles)
-  prices ──────► candle store (data/candles: 5m, 1h, 4h, 1d, 1w)
+  prices ──────► candle store, one per pair (data/candles/<PAIR>: 5m, 1h, 4h, 1d, 1w)
                    │
       ┌────────────┼──────────────┐
       ▼            ▼              ▼

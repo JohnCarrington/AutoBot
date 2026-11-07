@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from decimal import Decimal
 from typing import Any
 
+from config.pairs import check_same_pair
 from analyser.data_status import DataStatus, judge
 from analyser.direction import Direction, decide
 from analyser.indicators import TimeframeIndicators, work_out
@@ -36,6 +37,7 @@ class AnalyserReport:
 def analyse(settings: Any, store: CandleStore, as_of: datetime, price: Decimal | None = None) -> AnalyserReport:
     """Everything as it stood at `as_of`, from candles finished by then.
     `price`: the live sell price, if there is one (otherwise the latest close)."""
+    check_same_pair(settings, store)
     as_of = as_of.astimezone(UTC)
     frames = {tf: work_out(settings, store, tf, as_of) for tf in settings.indicators.timeframes}
     an = settings.analyser

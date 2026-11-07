@@ -1,24 +1,21 @@
 # Settings
 
-All settings live in one file: `config/settings.toml`. The code that loads and checks them is `config/settings_loader.py`.
+The settings live in `config/settings.toml`, except a few **switches**, which live in `.env` next to the IG secrets (see "Switches in .env" below). The code that loads and checks them is `config/settings_loader.py` and `config/switches.py`.
 
 - All times are **UK time** (Europe/London: GMT in winter, BST in summer), written `"HH:MM"`. (Candles and prices are *stored* in UTC; every time in this file, and every time shown to a person, is UK time.)
 - **One exception:** the four session times under `[levels]` are in **UTC**, as the owner gave them (`levels.sessions_time_zone`).
 - If any setting is missing, unknown, or has an invalid value, the bot **refuses to start** and says exactly which setting is wrong.
-- To check the settings file: `.venv/bin/python -m config`
-- Every setting in the file must have a row here. A test fails if one is missing.
+- To check the settings file and the switches: `.venv/bin/python -m config`
+- Every setting in the file, and every switch in `.env`, must have a row here. A test fails if one is missing.
 
 | Setting | What it does | Value |
 |---|---|---|
-| `account.pair` | The only market the bot trades. | `GBPUSD` |
 | `account.account_type` | Which IG account to use. Only the demo account is allowed for now. | `demo` |
 | `prices.candle_timeframes` | The candle sizes built from live prices: tick, 5-minute, 1-hour, 4-hour, daily and weekly. | `tick, 5m, 1h, 4h, 1d, 1w` |
 | `trade.size_gbp_per_pip` | Trade size: how many pounds each pip of movement is worth. | £10 per pip |
 | `trade.stop_loss_pips` | Stop loss sent with every trade, for every strategy. | 6 pips |
 | `trade.take_profit_pips` | Take profit sent to IG with every trade. (The bot may close earlier itself; this is the backstop.) | 100 pips |
 | `hours.timezone` | The time zone all times are in. Must be UK time. | `Europe/London` |
-| `hours.new_trades_from` | Earliest time a new trade may be opened. | 06:00 |
-| `hours.new_trades_until` | Latest time a new trade may be opened. | 20:30 |
 | `hours.close_all_trades_at` | Any trade still open is closed at this time. | 20:30 |
 | `hours.hold_overnight` | Whether trades may be held overnight. Must be `false`; the bot refuses to start otherwise. | `false` (never) |
 | `news.big_news_no_new_trades_before_minutes` | No new trades from this many minutes before big news. | 15 minutes |
@@ -76,8 +73,9 @@ All settings live in one file: `config/settings.toml`. The code that loads and c
 | `ig.demo_base_url` | IG's demo address. Every IG call goes here. Only the demo address is allowed; the bot refuses to start with any other. | `https://demo-api.ig.com/gateway/deal` |
 | `ig.slowed_down_waits_seconds` | When IG slows the bot down, how long to wait before each try again, in order. If IG is still slowing it down after the last wait, the bot stops. | 60, 90, 120, 180 seconds |
 | `ig.request_timeout_seconds` | How long to wait for IG to reply to one call before giving up on it. | 30 seconds |
-| `market.epic` | IG's name for the one market the bot streams: GBPUSD on the spread bet account. Found with one IG market search (`GET /markets?searchTerm=GBPUSD`) on 6 November 2026: "GBP/USD", expiry DFB (daily funded bet), status TRADEABLE. | `CS.D.GBPUSD.TODAY.IP` |
-| `market.points_per_pip` | How many of IG's price points make one pip. IG sends GBPUSD spread bet prices in points (`13354.4` means 1.33544), so one pip (0.0001) is 1 point. Used to turn pip distances in the settings into prices. | 1 |
+| `pairs.PAIR.epic` | Each pair the bot knows has a `[pairs.<PAIR>]` section (pair names are 6 capital letters). `epic`: IG's name for the pair on the spread bet account. GBPUSD's was found with one IG market search (`GET /markets?searchTerm=GBPUSD`) on 6 November 2026: "GBP/USD", expiry DFB (daily funded bet), status TRADEABLE. For a new pair, `python -m ig.find_market <PAIR>` makes the one search. Two pairs cannot share an epic. | GBPUSD: `CS.D.GBPUSD.TODAY.IP` |
+| `pairs.PAIR.pip_size` | One pip in the real exchange rate, written in quotes. 0.0001 for most pairs; 0.01 for pairs with JPY. | GBPUSD: `"0.0001"` |
+| `pairs.PAIR.price_scale` | IG's price = real price x this. IG sends GBPUSD spread bet prices as `13354.4` for 1.33544, so 10000. One pip is `pip_size` x `price_scale` of IG's points (GBPUSD: 1 point); every pip distance in these settings is turned into IG's points that way, per pair. Check it against IG's prices before switching a new pair on. | GBPUSD: 10000 |
 | `market_hours.opens_day` | The day IG's GBPUSD market opens each week. | Sunday |
 | `market_hours.opens_at` | The time it opens, in `opens_time_zone`. From IG's page and IG's own candles (see below). | 21:00 |
 | `market_hours.opens_time_zone` | The time zone of `opens_at`. IG's open follows UK time all year (see below). | `Europe/London` (UK time) |
@@ -164,3 +162,17 @@ The boundaries **match IG's own candles**. This was checked against IG's daily c
 **The earlier layout.** Until 6 November 2026 the boundaries were 22:00 to 22:00 UK, with Sunday's first hour joined onto Monday. That layout is still available by setting `day_starts_at = "22:00"`, `four_hour_starts_at = "22:00"` and `join_opening_stretch = true`.
 
 The 1-hour, 4-hour, daily and weekly candles first built under that layout were **moved, not deleted**, to `/opt/autobot/data/candles/archive_22h_layout/` on 6 November 2026. They were then rebuilt from the stored 5-minute candles on IG's boundaries. A new bigger candle is never built over one already stored.
+
+## Switches in .env
+
+These live in `.env` (not in `config/settings.toml`), next to the IG secrets, so they can be changed without touching the settings file. They are checked every time a program starts: a missing or invalid switch stops it with a message naming the switch (never showing a secret). `.env.example` lists them with their current values. Tests never read the real `.env`.
+
+| Setting | What it does | Value |
+|---|---|---|
+| `PAIRS_ON` | The pairs switched on, comma-separated. The price service streams each one, into its own candle store. Each must have a `[pairs.<PAIR>]` section in `config/settings.toml`. A newly switched-on pair starts with an empty store and is **never** filled from IG's history automatically: that needs the owner's go-ahead (`python -m prices.history_fill plan|go --pair <PAIR>`). | `GBPUSD` |
+| `NEW_TRADES_FROM` | Trading hours: the earliest UK time a new trade may be opened, `HH:MM`. Must be earlier than `NEW_TRADES_UNTIL`. | 06:00 |
+| `NEW_TRADES_UNTIL` | Trading hours: the latest UK time a new trade may be opened, `HH:MM`. Must not be later than `hours.close_all_trades_at`. | 20:30 |
+| `STRATEGY_SLOW_GRIND` | The slow grind strategy, `on` or `off`. | on |
+| `STRATEGY_EMA_PULLBACK` | The EMA pullback strategy, `on` or `off`. | on |
+| `STRATEGY_BOLLINGER_BOUNCE` | The Bollinger band bounce strategy, `on` or `off`. | on |
+| `STRATEGY_RANGE_TRADE` | The range trade strategy, `on` or `off`. | on |

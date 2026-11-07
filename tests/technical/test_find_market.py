@@ -12,7 +12,7 @@ def test_find_market_makes_one_market_search_and_no_other_market_call(capsys):
         {"epic": "CF.D.GBPUSD.DEC.IP", "instrumentName": "GBP/USD Forward", "instrumentType": "CURRENCIES",
          "expiry": "DEC-26", "marketStatus": "TRADEABLE"}]})
     ig = FakeIG(login_ok(), accounts_ok(), switch_ok(), found, logout_ok())
-    assert find_market.main(SETTINGS, CREDS, ig) == 0
+    assert find_market.main("GBPUSD", SETTINGS, CREDS, ig) == 0
     assert ig.calls() == [("POST", "/session"), ("GET", "/accounts"), ("PUT", "/session"),
                           ("GET", "/markets?searchTerm=GBPUSD"), ("DELETE", "/session")]
     out = capsys.readouterr().out

@@ -26,8 +26,13 @@ Then:
   * A daily record (points used, requests, refusals, IG's figures) is rewritten
     after every request and every refusal.
 
-Files, in history.folder (all written with safe writes):
-  ledger.json         every request: when, points, what, what happened
+ONE door, ONE budget and ONE copy of IG's allowance for ALL pairs: IG's
+history allowance belongs to the account, not to a pair, so every pair's
+requests count against the same weekly budget and the same floor. Each
+request records its epic in the ledger.
+
+Files, in history.folder itself, shared by all pairs (all written with safe writes):
+  ledger.json         every request: when, points, epic, what, what happened
   ig_allowance.json   IG's last reported figures
   daily_record.csv    one line per UTC day
   BLOCKED.json        the block marker (only while blocked)
@@ -181,7 +186,7 @@ class HistoryDoor:
             raise ValueError(f"unknown resolution {resolution!r}")
         if points < 1:
             raise ValueError("a request must count at least 1 point")
-        what = {"resolution": resolution, "from_utc": _iso(start), "to_utc": _iso(end), "purpose": purpose}
+        what = {"epic": epic, "resolution": resolution, "from_utc": _iso(start), "to_utc": _iso(end), "purpose": purpose}
 
         # a. block marker
         why = self.block_in_place()

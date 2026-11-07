@@ -21,7 +21,7 @@ from prices.store import CandleStore
 from rejection.replay import replay
 from rejection.watch import BUY, SELL, TRIGGER
 
-SETTINGS = load_settings()
+SETTINGS = load_settings().for_pair("GBPUSD")
 UTC = timezone.utc
 
 pytestmark = pytest.mark.skipif(not (SETTINGS.candles.folder / "5m").is_dir(),

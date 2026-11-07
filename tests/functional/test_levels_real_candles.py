@@ -19,7 +19,7 @@ from levels.rules import PIVOT, R1, R2, R3, ROUND_NUMBER, S1, S2, S3
 from prices.model import UK, plain, uk_short
 from prices.store import CandleStore
 
-SETTINGS = load_settings()
+SETTINGS = load_settings().for_pair("GBPUSD")
 UTC = timezone.utc
 ABOUT_PIPS = D(2)
 

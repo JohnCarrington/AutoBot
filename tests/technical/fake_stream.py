@@ -12,7 +12,7 @@ from ig.stream import (CandleUpdate, Connected, Dropped, Refused, Subscribed,
 from prices.model import Candle
 
 UTC = timezone.utc
-SETTINGS = load_settings()
+SETTINGS = load_settings().for_pair("GBPUSD")
 STREAMING = "https://pretend-streaming.example"
 EPIC = SETTINGS.market.epic
 
@@ -42,10 +42,11 @@ class FakeTransport:
         self.emit = None
         self.args = None
 
-    def open(self, endpoint, user, password, epic, emit):
-        self.args = (endpoint, user, password, epic)
+    def open(self, endpoint, user, password, epics, emit):
+        self.args = (endpoint, user, password, epics)
+        self.epics = tuple(epics)
         self.emit = emit
-        self.subscriptions_requested = 2
+        self.subscriptions_requested = 2 * len(epics)
         FakeTransport.opened.append(self)
 
     def close(self):
@@ -54,8 +55,9 @@ class FakeTransport:
     # what IG would send
     def connect(self):
         self.emit(Connected("CONNECTED:WS-STREAMING"))
-        self.emit(Subscribed(tick_item(EPIC)))
-        self.emit(Subscribed(candle_item(EPIC)))
+        for epic in self.epics:
+            self.emit(Subscribed(tick_item(epic)))
+            self.emit(Subscribed(candle_item(epic)))
 
     def drop(self, why="DISCONNECTED:WILL-RETRY"):
         self.emit(Dropped(why))
@@ -66,18 +68,18 @@ class FakeTransport:
     def sub_fail(self):
         self.emit(SubscriptionFailed(candle_item(EPIC), 21, "bad item"))
 
-    def tick(self, t: datetime, bid="1.31000", ofr="1.31010"):
-        self.emit(TickUpdate({"BID": bid, "OFR": ofr, "UTM": str(int(t.timestamp() * 1000))}))
+    def tick(self, t: datetime, bid="1.31000", ofr="1.31010", epic=EPIC):
+        self.emit(TickUpdate(epic, {"BID": bid, "OFR": ofr, "UTM": str(int(t.timestamp() * 1000))}))
 
     def candle(self, start: datetime, finished=True, bid=("1.31000", "1.31050", "1.30950", "1.31020"),
-               ofr=("1.31010", "1.31060", "1.30960", "1.31030")):
+               ofr=("1.31010", "1.31060", "1.30960", "1.31030"), epic=EPIC):
         f = {"UTM": str(int(start.timestamp() * 1000)), "CONS_END": "1" if finished else "0",
              "CONS_TICK_COUNT": "42"}
         for name, v in zip(("OPEN", "HIGH", "LOW", "CLOSE"), bid):
             f[f"BID_{name}"] = v
         for name, v in zip(("OPEN", "HIGH", "LOW", "CLOSE"), ofr):
             f[f"OFR_{name}"] = v
-        self.emit(CandleUpdate(f))
+        self.emit(CandleUpdate(epic, f))
 
 
 def new_transport():

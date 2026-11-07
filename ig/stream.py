@@ -1,6 +1,7 @@
 """IG's live price stream (Lightstreamer), with the reconnect rules.
 
-What it subscribes to, for one market (the epic in settings market.epic):
+What it subscribes to, for EACH pair switched on (its epic in settings
+[pairs.<PAIR>] epic), all on one connection with one IG login:
   CHART:<epic>:TICK      every tick: BID (sell), OFR (buy), UTM (time)
   CHART:<epic>:5MINUTE   IG's own 5-minute candle: buy (OFR_*) and sell (BID_*)
                          open/high/low/close, UTM (candle start) and CONS_END
@@ -22,8 +23,9 @@ The rules:
   * If no prices arrive for stream.no_prices_warning_seconds while the market
     is open, it writes a warning (once), and says when prices come back.
 
-Callers get prices through on_tick(fields) and on_candle(fields), as plain
-dictionaries of what IG sent. The prices part turns them into ticks and candles.
+Callers get prices through on_tick(epic, fields) and on_candle(epic, fields),
+as plain dictionaries of what IG sent, with the epic they came from (so each
+pair's prices go to that pair's store only). The prices part turns them into ticks and candles.
 on_new_connection() is called each time a new connection is opened (first
 connect, reconnect, re-login), before anything from it arrives: IG sends only
 the tick price that changed, so the prices part starts fresh on each one.
@@ -89,18 +91,20 @@ class SubscriptionFailed:
 
 @dataclass(frozen=True)
 class TickUpdate:
+    epic: str
     fields: dict
 
 
 @dataclass(frozen=True)
 class CandleUpdate:
+    epic: str
     fields: dict
 
 
 class Transport(Protocol):
     subscriptions_requested: int
 
-    def open(self, endpoint: str, user: str, password: str, epic: str,
+    def open(self, endpoint: str, user: str, password: str, epics: tuple[str, ...],
              emit: Callable[[object], None]) -> None: ...
 
     def close(self) -> None: ...
@@ -118,16 +122,18 @@ class StreamStats:
 
 
 class PriceStream:
-    def __init__(self, client: Any, epic: str, stream_settings: Any,
+    def __init__(self, client: Any, epics: tuple[str, ...] | list[str], stream_settings: Any,
                  transport_factory: Callable[[], Transport], *,
-                 on_tick: Callable[[dict], None], on_candle: Callable[[dict], None],
+                 on_tick: Callable[[str, dict], None], on_candle: Callable[[str, dict], None],
                  on_new_connection: Callable[[], None] = lambda: None,
                  market_open_since: Callable[[datetime], datetime | None] = lambda now: now,
                  now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
                  wait: Callable[[float], None] | None = None,
                  warn: Callable[[str], None] | None = None):
         self.client = client
-        self.epic = epic
+        if isinstance(epics, str) or not epics or len(set(epics)) != len(epics):
+            raise ValueError("PriceStream needs a list of different epics, one per pair")
+        self.epics = tuple(epics)
         self.waits = tuple(stream_settings.reconnect_waits_seconds)
         self.quiet_after = timedelta(seconds=stream_settings.no_prices_warning_seconds)
         self.healthy_after = timedelta(minutes=stream_settings.healthy_after_minutes)
@@ -169,7 +175,7 @@ class PriceStream:
         if self.last_price_at is None:
             self.last_price_at = self.now()
         self.stats.connects += 1
-        t.open(endpoint, user, password, self.epic, lambda ev, g=gen: self.events.put((g, ev)))
+        t.open(endpoint, user, password, self.epics, lambda ev, g=gen: self.events.put((g, ev)))
         self.stats.subscriptions += getattr(t, "subscriptions_requested", 0)
 
     def _close(self) -> None:
@@ -219,12 +225,18 @@ class PriceStream:
             log.info("Subscribed to %s.", ev.item)
         elif isinstance(ev, TickUpdate):
             self.stats.ticks += 1
+            if ev.epic not in self.epics:
+                log.warning("Ignored a tick for %s, which this stream did not ask for.", ev.epic)
+                return
             self._price_arrived(now)
-            self.on_tick(ev.fields)
+            self.on_tick(ev.epic, ev.fields)
         elif isinstance(ev, CandleUpdate):
             self.stats.candle_updates += 1
+            if ev.epic not in self.epics:
+                log.warning("Ignored a candle for %s, which this stream did not ask for.", ev.epic)
+                return
             self._price_arrived(now)
-            self.on_candle(ev.fields)
+            self.on_candle(ev.epic, ev.fields)
         elif isinstance(ev, Dropped):
             self._reconnect(ev.why)
         elif isinstance(ev, SubscriptionFailed):
@@ -309,7 +321,7 @@ class LightstreamerTransport:
         self._closing = False
         self._server_error = threading.Event()
 
-    def open(self, endpoint: str, user: str, password: str, epic: str,
+    def open(self, endpoint: str, user: str, password: str, epics: tuple[str, ...],
              emit: Callable[[object], None]) -> None:
         from lightstreamer.client import (ClientListener, LightstreamerClient,
                                           Subscription, SubscriptionListener)
@@ -337,8 +349,8 @@ class LightstreamerTransport:
                 emit(Refused(int(code), str(message)))
 
         class _Sub(SubscriptionListener):
-            def __init__(self, item, fields, kind):
-                self.item, self.fields, self.kind = item, fields, kind
+            def __init__(self, epic, item, fields, kind):
+                self.epic, self.item, self.fields, self.kind = epic, item, fields, kind
 
             def onSubscription(self):
                 emit(Subscribed(self.item))
@@ -348,22 +360,25 @@ class LightstreamerTransport:
 
             def onItemUpdate(self, update):
                 values = {f: update.getValue(f) for f in self.fields}
-                emit(self.kind(values))
+                emit(self.kind(self.epic, values))
 
         client = LightstreamerClient(endpoint, None)
         client.connectionDetails.setUser(user)
         client.connectionDetails.setPassword(password)
         client.addListener(_Client())
 
-        ticks = Subscription("DISTINCT", [tick_item(epic)], list(TICK_FIELDS))
-        ticks.setRequestedSnapshot("no")
-        ticks.addListener(_Sub(tick_item(epic), TICK_FIELDS, TickUpdate))
-        candles = Subscription("MERGE", [candle_item(epic)], list(CANDLE_FIELDS))
-        candles.setRequestedSnapshot("yes")  # the current candle's values so far
-        candles.addListener(_Sub(candle_item(epic), CANDLE_FIELDS, CandleUpdate))
-        client.subscribe(ticks)
-        client.subscribe(candles)
-        self.subscriptions_requested = 2
+        # Two subscriptions per pair, each for one item, so every update is
+        # known to belong to its epic.
+        for epic in epics:
+            ticks = Subscription("DISTINCT", [tick_item(epic)], list(TICK_FIELDS))
+            ticks.setRequestedSnapshot("no")
+            ticks.addListener(_Sub(epic, tick_item(epic), TICK_FIELDS, TickUpdate))
+            candles = Subscription("MERGE", [candle_item(epic)], list(CANDLE_FIELDS))
+            candles.setRequestedSnapshot("yes")  # the current candle's values so far
+            candles.addListener(_Sub(epic, candle_item(epic), CANDLE_FIELDS, CandleUpdate))
+            client.subscribe(ticks)
+            client.subscribe(candles)
+        self.subscriptions_requested = 2 * len(epics)
         self._client = client
         client.connect()
 

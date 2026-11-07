@@ -13,6 +13,7 @@ The `ig/` part is the only part of the bot that talks to IG's servers. It logs i
 - The bot reads `.env` itself. Lines starting with `#` are comments. A `#` inside a value is kept as part of the value, because a password may contain one.
 - Passwords, API keys, session tokens and account numbers are never printed, logged, or put in an error message. Wherever an account number has to be shown, only its last 4 characters appear, like `****AB12`.
 - If `.env` is missing, or any of the four values is missing or empty, the bot stops before making any IG call.
+- `.env` also holds the **switches** (pairs switched on, trading hours, each strategy on or off). They are not secret, and are read and checked by `config/switches.py`, which never reads the secrets. See `docs/SETTINGS.md`.
 
 ## Logging in
 

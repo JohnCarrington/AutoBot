@@ -1,8 +1,14 @@
-"""Fails if any setting in config/settings.toml is not described in docs/SETTINGS.md.
+"""Fails if any setting in config/settings.toml, or any switch in .env, is not
+described in docs/SETTINGS.md.
 
 A setting counts as described when docs/SETTINGS.md has a table row whose first
 column is the setting's name in backticks, `section.name`, followed by a
-non-empty description and value.
+non-empty description and value. Each pair's settings are described once, as
+`pairs.PAIR.epic` and so on. A switch in .env is described by a row whose first
+column is its .env name, e.g. `PAIRS_ON`.
+
+The switches are taken from config/switches.py and .env.example (never the real
+.env, which also holds the secrets): both must list the same switches.
 """
 
 import re
@@ -10,9 +16,13 @@ import tomllib
 from pathlib import Path
 
 from config.settings_loader import DEFAULT_PATH
+from config.switches import SWITCHES
 
-DOC = Path(__file__).resolve().parents[2] / "docs" / "SETTINGS.md"
-ROW = re.compile(r"^\|\s*`([a-z_]+\.[a-z_]+)`\s*\|(.*)\|\s*$")
+ROOT = Path(__file__).resolve().parents[2]
+DOC = ROOT / "docs" / "SETTINGS.md"
+EXAMPLE = ROOT / ".env.example"
+ROW = re.compile(r"^\|\s*`([a-z_]+(?:\.[A-Za-z_]+)+|[A-Z][A-Z_]+)`\s*\|(.*)\|\s*$")
+SECRETS = {"IG_USERNAME", "IG_PASSWORD", "IG_API_KEY", "IG_ACCOUNT_ID", "TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID"}
 
 
 def _documented():
@@ -28,13 +38,29 @@ def _documented():
 def _in_settings_file():
     with DEFAULT_PATH.open("rb") as f:
         raw = tomllib.load(f)
-    return {f"{s}.{k}" for s, items in raw.items() for k in items}
+    names = set()
+    for s, items in raw.items():
+        for k, v in items.items():
+            if isinstance(v, dict):                     # [pairs.<PAIR>]: one row per field, for every pair
+                names |= {f"{s}.PAIR.{field}" for field in v}
+            else:
+                names.add(f"{s}.{k}")
+    return names | set(SWITCHES)
+
+
+def _in_env_example():
+    keys = set()
+    for line in EXAMPLE.read_text().splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            keys.add(line.split("=", 1)[0].strip())
+    return keys
 
 
 def test_every_setting_is_described_in_settings_doc():
     missing = sorted(_in_settings_file() - set(_documented()))
     assert not missing, (
-        "These settings are in config/settings.toml but not described in "
+        "These settings or switches are not described in "
         f"docs/SETTINGS.md: {', '.join(missing)}"
     )
 
@@ -49,5 +75,22 @@ def test_every_description_is_filled_in():
 def test_doc_does_not_describe_settings_that_do_not_exist():
     extra = sorted(set(_documented()) - _in_settings_file())
     assert not extra, (
-        f"docs/SETTINGS.md describes settings that are not in config/settings.toml: {', '.join(extra)}"
+        f"docs/SETTINGS.md describes settings that do not exist: {', '.join(extra)}"
     )
+
+
+def test_env_example_lists_every_switch_and_nothing_unknown():
+    keys = _in_env_example()
+    assert set(SWITCHES) <= keys, f"Missing from .env.example: {sorted(set(SWITCHES) - keys)}"
+    assert keys - set(SWITCHES) <= SECRETS, f"Unknown keys in .env.example: {sorted(keys - set(SWITCHES) - SECRETS)}"
+
+
+def test_env_example_switches_are_valid_and_hold_no_secrets(tmp_path):
+    from config.settings_loader import load_settings
+    st = load_settings(switches_from=EXAMPLE)          # the example's switch values pass the start-up checks
+    assert st.switches.pairs_on == ("GBPUSD",)
+    for line in EXAMPLE.read_text().splitlines():
+        if "=" in line and not line.lstrip().startswith("#"):
+            k, v = line.split("=", 1)
+            if k.strip() in SECRETS:
+                assert v.strip() == "", f".env.example must not hold a value for {k.strip()}"

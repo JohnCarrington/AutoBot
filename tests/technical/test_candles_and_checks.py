@@ -33,7 +33,7 @@ def warnings():
 
 @pytest.fixture
 def store(tmp_path, warnings):
-    return CandleStore(tmp_path / "candles", 30, warn=warnings.append)
+    return CandleStore(tmp_path / "candles" / "GBPUSD", 30, warn=warnings.append)
 
 
 # ---- market hours ---------------------------------------------------------------
@@ -301,7 +301,7 @@ def test_damaged_file_is_found(store):
 
 def test_checks_run_after_every_new_candle_and_warn(tmp_path):
     clock = Clock(T(2026, 11, 4, 10, 10))
-    store = CandleStore(tmp_path / "c", 30)
+    store = CandleStore(tmp_path / "c" / "GBPUSD", 30)
     feed = PriceFeed(SETTINGS, store, now=clock)
     feed.add_five_minute(five(T(2026, 11, 4, 10)))
     feed.add_five_minute(five(T(2026, 11, 4, 10, 15)))           # 10:05 and 10:10 missing
@@ -313,7 +313,7 @@ def test_checks_run_after_every_new_candle_and_warn(tmp_path):
 
 def test_disk_space_is_checked_after_every_new_candle(tmp_path):
     calls = []
-    feed = PriceFeed(SETTINGS, CandleStore(tmp_path / "c", 30), now=Clock(T(2026, 11, 4, 10, 10)),
+    feed = PriceFeed(SETTINGS, CandleStore(tmp_path / "c" / "GBPUSD", 30), now=Clock(T(2026, 11, 4, 10, 10)),
                      disk_check=lambda: calls.append(1))
     feed.add_five_minute(five(T(2026, 11, 4, 10)))
     feed.add_five_minute(five(T(2026, 11, 4, 10, 5)))
@@ -323,7 +323,7 @@ def test_disk_space_is_checked_after_every_new_candle(tmp_path):
 # ---- restarts ---------------------------------------------------------------------
 
 def _restart(tmp_path, now):
-    feed = PriceFeed(SETTINGS, CandleStore(tmp_path / "candles", 30), now=Clock(now))
+    feed = PriceFeed(SETTINGS, CandleStore(tmp_path / "candles" / "GBPUSD", 30), now=Clock(now))
     return feed, feed.start_up()
 
 
@@ -381,9 +381,9 @@ def test_restart_reports_an_empty_store(tmp_path):
 
 def test_start_up_removes_leftover_temp_files_and_checks_the_store(store, tmp_path):
     fill(store, T(2026, 11, 4, 9), T(2026, 11, 4, 10))
-    (tmp_path / "candles" / "5m" / "2026-11-04.csv.tmp-999").write_text("half a fi")
+    (tmp_path / "candles" / "GBPUSD" / "5m" / "2026-11-04.csv.tmp-999").write_text("half a fi")
     feed, r = _restart(tmp_path, T(2026, 11, 4, 10, 1))
-    assert not list((tmp_path / "candles").rglob("*.tmp-*"))
+    assert not list((tmp_path / "candles" / "GBPUSD").rglob("*.tmp-*"))
     assert r.check.candles["5m"] == 12 and r.check.problems == []
 
 

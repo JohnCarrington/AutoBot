@@ -107,7 +107,7 @@ def _settings(tmp_path, **ind):
     d = {k: v for k, v in vars(SETTINGS.indicators).items() if not k.startswith("_")}
     d.update(ind)
     cand = {k: v for k, v in vars(SETTINGS.candles).items() if not k.startswith("_")}
-    cand["folder"] = tmp_path / "candles"
+    cand["folder"] = tmp_path / "candles" / "GBPUSD"
     lv = {k: v for k, v in vars(SETTINGS.levels).items() if not k.startswith("_")}
     lv["folder"] = tmp_path / "levels"
     return SimpleNamespace(indicators=SimpleNamespace(**d), chart=SETTINGS.chart, analyser=SETTINGS.analyser,

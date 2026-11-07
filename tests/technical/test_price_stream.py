@@ -25,11 +25,11 @@ def fresh_transports():
 def make(tmp_path, at=OPEN_TIME):
     clock = Clock(at)
     waits = []
-    store = CandleStore(tmp_path / "candles", 30)
+    store = CandleStore(tmp_path / "candles" / "GBPUSD", 30)
     feed = PriceFeed(SETTINGS, store, now=clock)
     client = FakeClient()
-    stream = PriceStream(client, EPIC, SETTINGS.stream, new_transport,
-                         on_tick=feed.on_tick, on_candle=feed.on_candle,
+    stream = PriceStream(client, (EPIC,), SETTINGS.stream, new_transport,
+                         on_tick=lambda e, f: feed.on_tick(f), on_candle=lambda e, f: feed.on_candle(f),
                          on_new_connection=feed.new_connection,
                          market_open_since=feed.market_open_since, now=clock,
                          wait=lambda s: (waits.append(s), clock.advance(seconds=s)), warn=feed.warn)
@@ -43,11 +43,11 @@ def current():
 def test_connects_to_the_streaming_address_as_the_bots_account(tmp_path):
     stream, *_ = make(tmp_path)
     stream.start()
-    endpoint, user, password, epic = current().args
+    endpoint, user, password, epics = current().args
     assert endpoint == STREAMING
     assert user == "ACC-SECRET-1234"
     assert password == "CST-secret1|XST-secret1"
-    assert epic == "CS.D.GBPUSD.TODAY.IP" == SETTINGS.market.epic
+    assert epics == ("CS.D.GBPUSD.TODAY.IP",) == (SETTINGS.market.epic,)
     assert stream.stats.connects == 1 and stream.stats.subscriptions == 2
 
 
@@ -263,8 +263,8 @@ def test_with_the_real_ig_client_a_refused_stream_relogs_in_once_and_switches_ba
     ig = FakeIG(login_ok(1), accounts_ok(), switch_ok("XST-switched"), login_ok(2), switch_ok("XST-again"))
     client = IGClient(SETTINGS.ig, CREDS, http=ig, sleep=lambda s: None)
     client.connect()
-    stream = PriceStream(client, EPIC, SETTINGS.stream, new_transport, on_tick=lambda f: None,
-                         on_candle=lambda f: None, wait=lambda s: None)
+    stream = PriceStream(client, (EPIC,), SETTINGS.stream, new_transport, on_tick=lambda e, f: None,
+                         on_candle=lambda e, f: None, wait=lambda s: None)
     stream.start()
     assert current().args[1] == CREDS.account_id
     assert current().args[2] == "CST-CST-token-1|XST-XST-switched"
@@ -421,7 +421,7 @@ def test_an_unreadable_price_is_not_used_and_that_side_must_arrive_fresh(tmp_pat
 def test_a_tick_without_a_readable_time_is_skipped(tmp_path):
     stream, feed, *_ = _connected(tmp_path)
     current().emit(__import__("ig.stream", fromlist=["TickUpdate"]).TickUpdate(
-        {"BID": "1.31000", "OFR": "1.31010", "UTM": None}))
+        EPIC, {"BID": "1.31000", "OFR": "1.31010", "UTM": None}))
     stream.pump()
     assert feed.ticks == 0 and feed.bad_ticks == 1
 
@@ -429,5 +429,7 @@ def test_a_tick_without_a_readable_time_is_skipped(tmp_path):
 def test_the_live_run_and_the_service_both_reset_the_feed_on_every_new_connection():
     from pathlib import Path
     root = Path(__file__).resolve().parents[2]
-    for f in ("prices/run.py", "prices/service.py"):
-        assert "on_new_connection=feed.new_connection" in (root / f).read_text(), f
+    assert "on_new_connection=feed.new_connection" in (root / "prices/run.py").read_text()
+    service = (root / "prices/service.py").read_text()
+    assert "on_new_connection=new_connection" in service
+    assert "for f in feeds.values():\n            f.new_connection()" in service      # every pair's feed
