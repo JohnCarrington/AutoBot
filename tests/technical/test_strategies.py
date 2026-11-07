@@ -83,7 +83,7 @@ def test_a_strategy_switched_off_has_no_ideas(S):
 # Section 2.2, every state against every strategy (a sell, with the state's direction down)
 @pytest.mark.parametrize("st,allowed", [
     (RANGING, {RANGE_TRADE, BOLLINGER_BOUNCE}),
-    (EMERGING, {SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE}),
+    (EMERGING, {SLOW_GRIND, BOLLINGER_BOUNCE}),
     (TREND, {SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE}),
     (POSSIBLE_REVERSAL, {BOLLINGER_BOUNCE}),
     (CONSOLIDATION, set()),
@@ -94,8 +94,8 @@ def test_which_states_allow_which_strategies(S, st, allowed):
         assert i.allowed == (name in allowed), (st, name, i.blocked_by)
 
 
-@pytest.mark.parametrize("st", [EMERGING, TREND])
-@pytest.mark.parametrize("name", [SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE])
+@pytest.mark.parametrize("st,name", [(EMERGING, SLOW_GRIND), (EMERGING, BOLLINGER_BOUNCE), (TREND, SLOW_GRIND),
+                                     (TREND, EMA_PULLBACK), (TREND, BOLLINGER_BOUNCE)])
 def test_in_a_trend_only_the_trends_direction(S, st, name):
     assert check(S, "GBPUSD", cand(name, SELL), state(st, DOWN), PIVOT, EMA100).allowed
     against = check(S, "GBPUSD", cand(name, BUY, 120), state(st, DOWN), PIVOT, EMA100)
@@ -551,9 +551,8 @@ OTHERS = (SLOW_GRIND, BOLLINGER_BOUNCE, RANGE_TRADE)
 
 
 @pytest.mark.parametrize("t", [U(2026, 11, 3, 3, 0), U(2026, 11, 3, 23, 0), U(2026, 11, 1, 21, 5), U(2026, 11, 6, 21, 30)])
-def test_the_ema_pullback_may_open_at_any_time_the_market_is_open(S, t):
-    assert may_open(S, "GBPUSD", EMA_PULLBACK, t, []) == []
-    for name in OTHERS:
+def test_no_strategy_opens_outside_06_00_to_20_30_uk_the_ema_pullback_included(S, t):
+    for name in (EMA_PULLBACK,) + OTHERS:
         assert "outside the trading hours 06:00 to 20:30 UK" in may_open(S, "GBPUSD", name, t, [])
 
 
@@ -563,8 +562,8 @@ def test_nothing_opens_while_the_market_is_closed(S, t):
         assert "the market is closed" in may_open(S, "GBPUSD", name, t, [])
 
 
-def test_the_other_strategies_open_from_06_00_until_20_30_uk_only(S):
-    for name in OTHERS:
+def test_every_strategy_opens_from_06_00_until_20_30_uk_only(S):
+    for name in (EMA_PULLBACK,) + OTHERS:
         assert may_open(S, "GBPUSD", name, U(2026, 11, 3, 6, 0), []) == []          # GMT: 06:00 UK
         assert may_open(S, "GBPUSD", name, U(2026, 11, 3, 20, 25), []) == []
         assert may_open(S, "GBPUSD", name, U(2026, 11, 3, 20, 30), []) != []
@@ -600,3 +599,14 @@ def test_the_ema_pullback_is_held_overnight_and_closed_only_on_friday_at_20_30_u
 def test_the_ema_pullback_is_not_closed_on_a_rejection_at_a_level(S):
     assert closed_on_level_rejection(EMA_PULLBACK) is False
     assert all(closed_on_level_rejection(n) for n in OTHERS)
+
+
+def test_the_ema_pullback_trades_in_a_trend_only_not_in_an_emerging_trend(S):
+    i = check(S, "GBPUSD", cand(EMA_PULLBACK, SELL), state(EMERGING, DOWN), PIVOT, EMA100)
+    assert not i.allowed and "the analyser's state is emerging trend, which does not allow EMA pullback" in i.blocked_by
+    assert check(S, "GBPUSD", cand(EMA_PULLBACK, SELL), state(TREND, DOWN), PIVOT, EMA100).allowed
+
+
+def test_the_analysers_list_of_strategies_matches(S):
+    from analyser.states import ALLOWED
+    assert "EMA pullback" not in ALLOWED[EMERGING] and "EMA pullback" in ALLOWED[TREND]

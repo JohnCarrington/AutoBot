@@ -38,8 +38,8 @@ Every result gives: the market state, the direction (up, down or none), the type
 | State | Strategies allowed |
 | --- | --- |
 | Ranging | Range trade, Bollinger band bounce |
-| Emerging trend | Slow grind, EMA pullback, Bollinger band bounce in the trend's direction only |
-| Trend | Slow grind, EMA pullback, Bollinger band bounce in the trend's direction only |
+| Emerging trend | Slow grind, Bollinger band bounce in the trend's direction only |
+| Trend | Slow grind, EMA pullback (owner, 7 November 2026: in a trend only, not an emerging trend), Bollinger band bounce in the trend's direction only |
 | Possible reversal | Bollinger band bounce |
 | Consolidation | None. Watch and wait for a break |
 
@@ -168,7 +168,7 @@ One shared trade manager for every trade.
 - **Stop loss:** a fixed 6 pips for every strategy except the EMA pullback, sent to IG. A switch in `.env` (`STOP_LOSS_PIPS`). The EMA pullback's stop is 12 pips (owner, 7 November 2026), its own switch in `.env` (`STOP_LOSS_PIPS_EMA_PULLBACK`).
 - **Take profit:** a fixed 100 pips sent to IG as a safety net. A switch in `.env` (`TAKE_PROFIT_PIPS`). Both are the bot's own rule, not an IG requirement.
 - **Holding:** there is no profit lock, and no close when the analyser's state changes (owner, 7 November 2026): a trade (except the EMA pullback, below) runs until one of the exits in this section closes it: the 6-pip stop or the 100-pip take profit at IG, the 20:30 close, the close 15 minutes before big news, the range trade's half close at the opposite band, or the close on a confirmed rejection at a level against the trade.
-- **EMA pullback exits** (owner, 7 November 2026): an EMA pullback trade runs until its 12-pip stop or the 100-pip take profit at IG, or 20:30 UK on Friday, when any EMA pullback trade still open is closed. It is not closed at 20:30 on other days (it may be held overnight), not closed before big news, and the close on a rejection at a level does not apply to it. It may open at any time the market is open, and during a big-news window (section 6).
+- **EMA pullback exits** (owner, 7 November 2026): an EMA pullback trade runs until its 12-pip stop or the 100-pip take profit at IG, or 20:30 UK on Friday, when any EMA pullback trade still open is closed. It is not closed at 20:30 on other days (it may be held overnight), not closed before big news, and the close on a rejection at a level does not apply to it. It opens new trades only from 06:00 to 20:30 UK, and may open during a big-news window (section 6).
 - **At a level:** the trade stays open while price is only wobbling. If price is rejected at the level against the trade, the trade closes at the same moment a bounce the other way would open: when the live price breaks past the confirmation candle. This never depends on a trade the other way being allowed.
 - **Distance travelled** does not force a close on its own.
 - **Reversal watch times:** 10:00, 11:00, 13:00, 14:00, 16:00 and 17:00 UK, from 20 minutes before to 20 minutes after. In those windows a rejection at any level counts; outside them, only at levels where several line up.
@@ -205,7 +205,7 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 - Trades open at once: 1 per strategy; the bounce may also have 1 in the opposite direction. The EMA pullback is not limited to one trade at a time: it may have several trades open at once, each managed on its own (owner, 7 November 2026). Most at once: 5.
 - Total risk across all open trades and available funds are also checked.
 - Trading hours (UK clock time): new trades from 06:00 to 20:30 (switches in `.env`, section 13). Any trade open at 20:30 is closed. Nothing held overnight. A trade opened just before 20:30 is simply closed at 20:30.
-- **EMA pullback hours** (owner, 7 November 2026): the EMA pullback may open at any time the market is open, not only 06:00 to 20:30. It may be held overnight: it is not closed at 20:30, except on Friday, when any EMA pullback trade still open at 20:30 UK is closed. All other strategies keep the hours above.
+- **EMA pullback hours** (owner, 7 November 2026): the EMA pullback opens new trades only from 06:00 to 20:30 UK, like the other strategies. It may be held overnight: it is not closed at 20:30, except on Friday, when any EMA pullback trade still open at 20:30 UK is closed. All other strategies keep the hours above.
 - **Per pair and in total (to be built with the safety rules):** every limit above will apply to each pair on its own, plus a total across all pairs switched on (for example the most trades open at once, and the total risk, across all pairs). Nothing is built for this yet.
 - Big news: no new trades from 15 minutes before to 30 minutes after. Open trades closed 15 minutes before. This does not apply to the EMA pullback (owner, 7 November 2026): it may open during the window, and its open trades are not closed before big news. Medium and small news ignored. Which releases count as big comes from AutoBot's own small, medium and big table (built: the owner's table from AutoBot 161, copied as data into `config/news_table.toml`, plus a GBP "Interest Rate" row for the Bank of England decision; `docs/NEWS.md`). News times and figures from Finnhub (built: `news/`, fetched a few times a day by the price service). If the news data is missing or out of date, alert Johnny rather than block trading indefinitely (built: a Telegram problem alert; trading is not blocked by it).
 

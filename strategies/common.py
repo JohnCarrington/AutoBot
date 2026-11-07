@@ -6,9 +6,10 @@ reached, all of these allow it (design sections 2.2 and 2.3; checked at entry
 only, owner 7 November 2026):
   1. its switch in .env is on (STRATEGY_SLOW_GRIND, ...);
   2. the analyser's current state allows the strategy (section 2.2): ranging ->
-     range trade, Bollinger bounce; emerging trend and trend -> slow grind, EMA
-     pullback, Bollinger bounce IN THE TREND'S DIRECTION ONLY; possible reversal
-     -> Bollinger bounce; consolidation -> none;
+     range trade, Bollinger bounce; emerging trend -> slow grind, Bollinger bounce;
+     trend -> slow grind, EMA pullback, Bollinger bounce; in an emerging trend and
+     a trend IN THE TREND'S DIRECTION ONLY; possible reversal -> Bollinger
+     bounce; consolidation -> none;
   3. the direction rule allows that direction (section 2.3): a buy needs buy
      side (price above the daily pivot and the 5-minute 100 EMA), a sell needs
      sell side. It does not apply to the range trade, nor to the Bollinger
@@ -39,7 +40,7 @@ BUY, SELL = "buy", "sell"
 # Section 2.2: which states allow which strategy, and whether only in the trend's direction.
 ALLOWED_IN = {
     SLOW_GRIND: {EMERGING: "trend", TREND: "trend"},
-    EMA_PULLBACK: {EMERGING: "trend", TREND: "trend"},
+    EMA_PULLBACK: {TREND: "trend"},              # not in an emerging trend (owner, 7 November 2026)
     BOLLINGER_BOUNCE: {RANGING: "any", EMERGING: "trend", TREND: "trend", POSSIBLE_REVERSAL: "any"},
     RANGE_TRADE: {RANGING: "any"},
 }
@@ -90,21 +91,22 @@ class Idea:
 
 def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: list | None = None) -> list[str]:
     """Every reason a new trade of this strategy may not open at t (empty: hours and news allow it).
-    EMA pullback: any time the market is open, big-news windows included. Every other strategy:
-    UK time from NEW_TRADES_FROM to NEW_TRADES_UNTIL, and not in a big-news no-new-trades window."""
+    Every strategy: the market open and UK time from NEW_TRADES_FROM to NEW_TRADES_UNTIL. Every
+    strategy except the EMA pullback: not in a big-news no-new-trades window (the EMA pullback may
+    open during one; owner, 7 November 2026)."""
     from zoneinfo import ZoneInfo
     from news.calendar import no_new_trades
     from prices.calendar import MarketHours
     reasons = []
     if not MarketHours(settings.market_hours).is_open(t):
         reasons.append("the market is closed")
-    if strategy == EMA_PULLBACK:
-        return reasons
     tz = settings.hours.timezone
     lt = t.astimezone(ZoneInfo(tz) if isinstance(tz, str) else tz).time()
     sw = settings.switches
     if not (sw.new_trades_from <= lt < sw.new_trades_until):
         reasons.append(f"outside the trading hours {sw.new_trades_from:%H:%M} to {sw.new_trades_until:%H:%M} UK")
+    if strategy == EMA_PULLBACK:
+        return reasons
     windows = no_new_trades(settings, pair, t, calendar)
     if windows:
         reasons.append("in a big-news window: " + ", ".join(sorted({w.event for w in windows})))
