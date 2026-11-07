@@ -242,3 +242,181 @@ Every table above gives, for each result: trades, wins, losses, total pips, the 
 - **C1 #10** (+303.4 pips): one day: Fri 06 Nov gives +345.8 of +303.4; one week: week 2 gives +362.5 of +303.4
 
 Of all 7680 combinations, 1815 have a positive total; 1693 of those get nearly all their profit from one day or one week; 320 are positive in both weeks.
+
+---
+
+# Part 2: more profit protection (added 7 November 2026)
+
+Same candles, entries, IG's prices and rules as part 1; only these protection options are added
+(15 options; with every other variable, 26880 combinations in all, of which 19200 use a new option). The
+7,680 results of part 1 were recomputed and are unchanged.
+
+- **"trail X from S up":** nothing until the trade has been S pips up (20, 25 or 30); then the stop
+  follows X pips (10, 15 or 20) behind the best price reached.
+- **"21 EMA close from S up":** once the trade has been S pips up (10, 20 or 30; the candle's own best
+  counts, as its close comes after it), it is closed at the close of the first 5-minute candle that
+  closes back across the 21 EMA (the strategy's own 5-minute 21 EMA, on sell prices; a sell closes when
+  a candle closes above it, a buy when one closes below it). The close is on IG's closing price.
+- **"swing stop from S up":** once the trade has been S pips up (10, 20 or 30), the stop is kept 2 pips
+  beyond the most recent 5-minute swing high (sell) or swing low (buy), moving only in the trade's favour
+  and never looser than the starting stop. **A swing high** is a candle whose high is above the highs of
+  the two candles before and the two after it, known once those two have finished; measured on the
+  closing price (the buy price for a sell, the sell price for a buy: the price IG triggers the stop on).
+  Swings from just before the entry count too.
+- As before: "S up" is judged on the best price reached up to the candle before (so a new stop applies
+  from the next candle); a stop and a target inside one candle count the stop first.
+
+## Part 2, A. The current rules (unchanged)
+
+| Run | Trades | Won | Lost | Total pips | Biggest loss | Worst losing run | Week 1 (26-30 Oct) | Week 2 (2-6 Nov) | Profit from one day or week |
+|---|---|---|---|---|---|---|---|---|---|
+| Current rules | 19 | 4 | 15 | **-58.8** | -12.0 | 13 | -96.0 | +37.2 |  |
+
+## Part 2, B. Profit protection changed on its own (every option, old and new)
+
+Everything else as in A.
+
+| Run | Trades | Won | Lost | Total pips | Biggest loss | Worst losing run | Week 1 (26-30 Oct) | Week 2 (2-6 Nov) | Profit from one day or week |
+|---|---|---|---|---|---|---|---|---|---|
+| none (A) | 19 | 4 | 15 | **-58.8** | -12.0 | 13 | -96.0 | +37.2 |  |
+| lock 15/10 | 19 | 8 | 11 | **-53.4** | -12.0 | 6 | -52.0 | -1.4 |  |
+| break-even at 10 | 19 | 0 | 10 | **-108.6** | -12.0 | 4 | -48.0 | -60.6 |  |
+| trail 10 | 19 | 6 | 13 | **-52.0** | -10.9 | 5 | -38.8 | -13.2 |  |
+| trail 15 | 19 | 2 | 17 | **-106.9** | -12.0 | 9 | -70.0 | -36.9 |  |
+| trail 20 | 19 | 7 | 12 | **-64.1** | -12.0 | 6 | -60.6 | -3.5 |  |
+| trail 10 from 20 up (new) | 19 | 8 | 11 | **+6.0** | -12.0 | 6 | -49.4 | +55.4 | one day: Fri 06 Nov gives +58.4 of +6.0; one week: week 2 gives +55.4 of +6.0 |
+| trail 15 from 20 up (new) | 19 | 8 | 11 | **-29.0** | -12.0 | 6 | -59.4 | +30.4 |  |
+| trail 20 from 20 up (new) | 19 | 8 | 11 | **-41.2** | -12.0 | 6 | -69.4 | +28.2 |  |
+| trail 10 from 25 up (new) | 19 | 8 | 11 | **+28.6** | -12.0 | 6 | -26.8 | +55.4 | one day: Fri 06 Nov gives +58.4 of +28.6; one week: week 2 gives +55.4 of +28.6 |
+| trail 15 from 25 up (new) | 19 | 8 | 11 | **+10.8** | -12.0 | 6 | -19.6 | +30.4 | one day: Mon 26 Oct gives +52.4 of +10.8; one week: week 2 gives +30.4 of +10.8 |
+| trail 20 from 25 up (new) | 19 | 8 | 11 | **-1.4** | -12.0 | 6 | -29.6 | +28.2 |  |
+| trail 10 from 30 up (new) | 19 | 6 | 13 | **+4.4** | -12.0 | 11 | -26.8 | +31.2 | one day: Fri 06 Nov gives +91.2 of +4.4; one week: week 2 gives +31.2 of +4.4 |
+| trail 15 from 30 up (new) | 19 | 6 | 13 | **-8.4** | -12.0 | 11 | -19.6 | +11.2 |  |
+| trail 20 from 30 up (new) | 19 | 6 | 13 | **-38.4** | -12.0 | 11 | -29.6 | -8.8 |  |
+| 21 EMA close from 10 up (new) | 19 | 12 | 7 | **-24.3** | -12.0 | 3 | -29.2 | +4.9 |  |
+| 21 EMA close from 20 up (new) | 19 | 8 | 11 | **-58.2** | -12.0 | 6 | -58.6 | +0.4 |  |
+| 21 EMA close from 30 up (new) | 19 | 6 | 13 | **-66.0** | -12.0 | 11 | -30.4 | -35.6 |  |
+| swing stop from 10 up (new) | 19 | 9 | 10 | **-73.9** | -12.0 | 6 | -34.0 | -39.9 |  |
+| swing stop from 20 up (new) | 19 | 6 | 13 | **-100.4** | -12.0 | 11 | -65.2 | -35.2 |  |
+| swing stop from 30 up (new) | 19 | 6 | 13 | **-51.2** | -12.0 | 11 | -16.0 | -35.2 |  |
+
+## Part 2, C1. The 10 best combinations using a new option
+
+| Run | Trades | Won | Lost | Total pips | Biggest loss | Worst losing run | Week 1 (26-30 Oct) | Week 2 (2-6 Nov) | Profit from one day or week |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 62 | 26 | 36 | **+335.4** | -19.3 | 9 | +90.0 | +245.4 |  |
+| 2 | 62 | 26 | 36 | **+335.4** | -19.3 | 9 | +90.0 | +245.4 |  |
+| 3 | 62 | 26 | 36 | **+335.4** | -19.3 | 9 | +90.0 | +245.4 |  |
+| 4 | 62 | 26 | 36 | **+335.4** | -19.3 | 9 | +90.0 | +245.4 |  |
+| 5 | 62 | 26 | 36 | **+335.4** | -19.3 | 9 | +90.0 | +245.4 |  |
+| 6 | 62 | 28 | 34 | **+305.4** | -19.3 | 7 | +90.0 | +215.4 |  |
+| 7 | 61 | 25 | 36 | **+305.4** | -19.3 | 9 | +90.0 | +215.4 |  |
+| 8 | 61 | 25 | 36 | **+305.4** | -19.3 | 9 | +90.0 | +215.4 |  |
+| 9 | 61 | 25 | 36 | **+305.4** | -19.3 | 9 | +90.0 | +215.4 |  |
+| 10 | 61 | 25 | 36 | **+305.4** | -19.3 | 9 | +90.0 | +215.4 |  |
+
+1. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection trail 10 from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+2. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection trail 15 from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+3. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection trail 20 from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+4. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection 21 EMA close from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+5. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection swing stop from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+6. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection trail 15 from 25 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+7. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection trail 10 from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit applied
+8. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection trail 15 from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit applied
+9. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection trail 20 from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit applied
+10. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection 21 EMA close from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit applied
+
+## Part 2, C2. The 10 worst combinations using a new option
+
+| Run | Trades | Won | Lost | Total pips | Biggest loss | Worst losing run | Week 1 (26-30 Oct) | Week 2 (2-6 Nov) | Profit from one day or week |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 62 | 5 | 57 | **-280.9** | -19.3 | 25 | -72.1 | -208.8 |  |
+| 2 | 62 | 5 | 57 | **-280.9** | -19.3 | 25 | -72.1 | -208.8 |  |
+| 3 | 62 | 5 | 57 | **-280.9** | -19.3 | 25 | -72.1 | -208.8 |  |
+| 4 | 62 | 5 | 57 | **-280.9** | -19.3 | 25 | -72.1 | -208.8 |  |
+| 5 | 62 | 6 | 56 | **-271.7** | -19.3 | 25 | -62.9 | -208.8 |  |
+| 6 | 62 | 6 | 56 | **-271.7** | -19.3 | 25 | -62.9 | -208.8 |  |
+| 7 | 62 | 6 | 56 | **-271.7** | -19.3 | 25 | -62.9 | -208.8 |  |
+| 8 | 62 | 6 | 56 | **-271.7** | -19.3 | 25 | -62.9 | -208.8 |  |
+| 9 | 62 | 10 | 52 | **-264.2** | -19.3 | 17 | -83.5 | -180.7 |  |
+| 10 | 62 | 10 | 52 | **-264.2** | -19.3 | 17 | -83.5 | -180.7 |  |
+
+1. states allowed trend and emerging trend, stop loss 6, take profit 100, profit protection swing stop from 20 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+2. states allowed trend and emerging trend, stop loss 6, take profit 100, profit protection swing stop from 20 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit applied
+3. states allowed trend and emerging trend, stop loss 6, take profit 50, profit protection swing stop from 20 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+4. states allowed trend and emerging trend, stop loss 6, take profit 50, profit protection swing stop from 20 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit applied
+5. states allowed trend and emerging trend, stop loss 6, take profit 100, profit protection swing stop from 20 up, holding daily 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+6. states allowed trend and emerging trend, stop loss 6, take profit 100, profit protection swing stop from 20 up, holding daily 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit applied
+7. states allowed trend and emerging trend, stop loss 6, take profit 50, profit protection swing stop from 20 up, holding daily 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+8. states allowed trend and emerging trend, stop loss 6, take profit 50, profit protection swing stop from 20 up, holding daily 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit applied
+9. states allowed trend and emerging trend, stop loss 8, take profit 100, profit protection swing stop from 20 up, holding daily 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+10. states allowed trend and emerging trend, stop loss 8, take profit 100, profit protection swing stop from 20 up, holding daily 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit applied
+
+## Part 2, C3. The 10 best using a new option, positive in both weeks and not marked in E
+
+| Run | Trades | Won | Lost | Total pips | Biggest loss | Worst losing run | Week 1 (26-30 Oct) | Week 2 (2-6 Nov) | Profit from one day or week |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 62 | 26 | 36 | **+335.4** | -19.3 | 9 | +90.0 | +245.4 |  |
+| 2 | 62 | 26 | 36 | **+335.4** | -19.3 | 9 | +90.0 | +245.4 |  |
+| 3 | 62 | 26 | 36 | **+335.4** | -19.3 | 9 | +90.0 | +245.4 |  |
+| 4 | 62 | 26 | 36 | **+335.4** | -19.3 | 9 | +90.0 | +245.4 |  |
+| 5 | 62 | 26 | 36 | **+335.4** | -19.3 | 9 | +90.0 | +245.4 |  |
+| 6 | 62 | 28 | 34 | **+305.4** | -19.3 | 7 | +90.0 | +215.4 |  |
+| 7 | 61 | 25 | 36 | **+305.4** | -19.3 | 9 | +90.0 | +215.4 |  |
+| 8 | 61 | 25 | 36 | **+305.4** | -19.3 | 9 | +90.0 | +215.4 |  |
+| 9 | 61 | 25 | 36 | **+305.4** | -19.3 | 9 | +90.0 | +215.4 |  |
+| 10 | 61 | 25 | 36 | **+305.4** | -19.3 | 9 | +90.0 | +215.4 |  |
+
+1. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection trail 10 from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+2. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection trail 15 from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+3. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection trail 20 from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+4. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection 21 EMA close from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+5. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection swing stop from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+6. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection trail 15 from 25 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit not applied
+7. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection trail 10 from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit applied
+8. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection trail 15 from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit applied
+9. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection trail 20 from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit applied
+10. states allowed trend and emerging trend, stop loss 12, take profit 30, profit protection 21 EMA close from 30 up, holding Friday 20:30, opening hours any time, big-news rules not applied, identical setups each separate, 5-trade limit applied
+
+**For comparison, the 10 best of all 26880 combinations** use these protections: #1 none (+394.2), #2 none (+394.2), #3 none (+371.2), #4 none (+371.2), #5 none (+335.4), #6 trail 10 from 30 up (+335.4), #7 trail 15 from 30 up (+335.4), #8 trail 20 from 30 up (+335.4), #9 21 EMA close from 30 up (+335.4), #10 swing stop from 30 up (+335.4).
+
+## Part 2, D. The measures
+
+As in part 1: every table gives trades, wins, losses, total pips, the biggest single loss, the worst losing run and each week's pips.
+
+## Part 2, E. Results where nearly all the profit comes from one day or one week
+
+- **B: trail 10 from 20 up** (+6.0 pips): one day: Fri 06 Nov gives +58.4 of +6.0; one week: week 2 gives +55.4 of +6.0
+- **B: trail 10 from 25 up** (+28.6 pips): one day: Fri 06 Nov gives +58.4 of +28.6; one week: week 2 gives +55.4 of +28.6
+- **B: trail 15 from 25 up** (+10.8 pips): one day: Mon 26 Oct gives +52.4 of +10.8; one week: week 2 gives +30.4 of +10.8
+- **B: trail 10 from 30 up** (+4.4 pips): one day: Fri 06 Nov gives +91.2 of +4.4; one week: week 2 gives +31.2 of +4.4
+
+Of the 19200 combinations using a new option, 6864 have a positive total; 5743 of those get nearly all their profit from one day or one week; 2940 are positive in both weeks.
+
+## Part 2, the Friday 6 November 06:45 sell (entry 13417.7) under each protection
+
+Stop 12, take profit 100, held to Friday 20:30, big news not applied; IG's prices. (It was entered in an emerging trend, so the current rules, trend only, would not take it.)
+
+| Protection | Exit | Exit time (UK) | Pips |
+|---|---|---|---|
+| none | 20:30 | Fri 06 Nov 20:30 | +66.3 |
+| lock 15/10 | lock | Fri 06 Nov 07:05 | +10.0 |
+| break-even at 10 | 20:30 | Fri 06 Nov 20:30 | +66.3 |
+| trail 10 | trail | Fri 06 Nov 07:10 | +6.1 |
+| trail 15 | trail | Fri 06 Nov 08:15 | +7.1 |
+| trail 20 | trail | Fri 06 Nov 11:25 | +15.7 |
+| trail 10 from 20 up (new) | trail | Fri 06 Nov 07:50 | +12.1 |
+| trail 15 from 20 up (new) | trail | Fri 06 Nov 08:15 | +7.1 |
+| trail 20 from 20 up (new) | trail | Fri 06 Nov 11:25 | +15.7 |
+| trail 10 from 25 up (new) | trail | Fri 06 Nov 10:35 | +25.7 |
+| trail 15 from 25 up (new) | trail | Fri 06 Nov 11:05 | +20.7 |
+| trail 20 from 25 up (new) | trail | Fri 06 Nov 11:25 | +15.7 |
+| trail 10 from 30 up (new) | trail | Fri 06 Nov 10:35 | +25.7 |
+| trail 15 from 30 up (new) | trail | Fri 06 Nov 11:05 | +20.7 |
+| trail 20 from 30 up (new) | trail | Fri 06 Nov 11:25 | +15.7 |
+| 21 EMA close from 10 up (new) | 21 EMA close | Fri 06 Nov 10:35 | +26.2 |
+| 21 EMA close from 20 up (new) | 21 EMA close | Fri 06 Nov 10:35 | +26.2 |
+| 21 EMA close from 30 up (new) | 21 EMA close | Fri 06 Nov 10:35 | +26.2 |
+| swing stop from 10 up (new) | swing stop | Fri 06 Nov 08:10 | +9.8 |
+| swing stop from 20 up (new) | swing stop | Fri 06 Nov 08:10 | +9.8 |
+| swing stop from 30 up (new) | swing stop | Fri 06 Nov 10:40 | +24.9 |
