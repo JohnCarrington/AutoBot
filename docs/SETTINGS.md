@@ -87,7 +87,7 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `market_states.ema_stacked_candles` | The 7, 13 and 21 EMAs count as stacked (crossed and turned) once in order for this many candles. **From 161:** rule E7 ("EMA 7>13>21 three bars"). | 3 candles |
 | `market_states.failed_bounce_within_pips` | A failed bounce (section 2.5): a candle against the trend whose high (low, for an uptrend) stays at or within this many pips beyond the higher of the 21 EMA and the middle band. **New starting value.** | 1 pip |
 | `market_states.push_candles` | Strong push (section 2.5): the candles looked at. **New starting value.** | 6 candles |
-| `market_states.push_same_colour_percent` | Strong push: at least this share of those candles are the trend's colour. **New starting value.** | 70% |
+| `market_states.push_colour_body_percent` | Strong push: at least this percent of the total candle body size over the `push_candles` is in the trend's colour (red bodies added up / all bodies added up, for a fall). By body size, so a few big red candles with small green ones between still count (**owner's rule, 7 November 2026**; it replaced a count of candles). The 70 is a new starting value. | 70% |
 | `market_states.push_band_widening_percent` | Strong push ("the bands opening up wide"): the band at least this percent of its width `band_widening_candles` before. **New starting value.** | 150% |
 | `market_states.band_widening_candles` | How far back the band width is compared. **New starting value.** | 12 candles |
 | `market_states.push_ema_fan_pips` | Strong push ("the 7, 13 and 21 EMAs fanning wide apart"): the 7 and 21 EMAs at least this many pips apart. **New starting value.** | 6 pips |

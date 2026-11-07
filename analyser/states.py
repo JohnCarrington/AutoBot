@@ -214,7 +214,7 @@ class StateMachine:
         m = self.m
         share = f.red_share if d == DOWN else f.green_share
         riding = f.closes_on_lower if d == DOWN else f.closes_on_upper
-        return (share * 100 >= m.push_same_colour_percent and f.widening is not None
+        return (share * 100 >= m.push_colour_body_percent and f.widening is not None
                 and f.widening * 100 >= m.push_band_widening_percent and f.fan is not None
                 and f.fan >= m.push_ema_fan_pips and riding >= m.push_riding_band_closes)
 
@@ -460,8 +460,8 @@ class StateMachine:
         if self._type_count < self.m.persistence_candles:
             return None
         why = (f"{'strong push' if want == STRONG_PUSH else 'slow grind'}: "
-               f"{int((f.red_share if d == DOWN else f.green_share) * 100)}% {'red' if d == DOWN else 'green'} "
-               f"candles, bands {self._p(f.widening)}x as wide as {self.m.band_widening_candles} candles ago, "
+               f"{int((f.red_share if d == DOWN else f.green_share) * 100)}% of the body size "
+               f"{'red' if d == DOWN else 'green'}, bands {self._p(f.widening)}x as wide as {self.m.band_widening_candles} candles ago, "
                f"7/21 EMAs {self._p(f.fan)} pips apart, {f.closes_on_lower if d == DOWN else f.closes_on_upper} "
                f"closes on the band")
         news = self.last_news             # a change of type is not new evidence of the trend

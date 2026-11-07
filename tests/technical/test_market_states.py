@@ -225,11 +225,27 @@ def push(i, low):
              ema100=low + 30)
 
 
+def test_the_push_colour_is_measured_by_body_size_not_by_count(st):
+    from analyser.features import compute
+    t0 = datetime(2026, 11, 4, 10, tzinfo=UTC)
+    # 6 candles: 2 big red (10 pips each), 4 small green (1 pip each): 2 of 6 red by count, 83% red by size
+    spec = [(-10), 1, 1, (-10), 1, 1]
+    candles, p = [], D(11650)
+    for i, body in enumerate(spec):
+        o, c = p, p + D(body)
+        candles.append(Candle("5m", t0 + i * FIVE, t0 + (i + 1) * FIVE, o + 1, max(o, c) + 2, min(o, c), c + 1,
+                              o, max(o, c) + 1, min(o, c) - 1, c))
+        p = c
+    f = compute(candles, st)[-1]
+    assert f.red_share == D(20) / D(24) and f.green_share == D(4) / D(24)
+    assert st.market_states.push_colour_body_percent == 70
+
+
 def test_a_strong_push_needs_its_signs_for_2_candles_in_a_row(st):
     m = trend(st)
     assert run(m, [(3, push(3, 11636))]) == []
     (ch,) = run(m, [(4, push(4, 11635))])
-    assert (ch.state, ch.trend_type) == (TREND, STRONG_PUSH) and ch.reason.startswith("strong push: 80% red")
+    assert (ch.state, ch.trend_type) == (TREND, STRONG_PUSH) and ch.reason.startswith("strong push: 80% of the body size red")
 
 
 def test_a_trend_ends_after_2_closes_back_past_the_100_ema(st):

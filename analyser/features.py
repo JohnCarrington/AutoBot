@@ -61,8 +61,8 @@ class Features:
     body: Decimal                        # pips
     range_: Decimal                      # pips, high - low
     spike: bool                          # range more than spike_range_multiple x the average
-    green_share: Decimal                 # share of green candles over push_candles
-    red_share: Decimal
+    green_share: Decimal                 # green bodies / all bodies (size), over push_candles
+    red_share: Decimal                   # red bodies / all bodies (size), over push_candles
     widening: Decimal | None             # band width now / width band_widening_candles ago
     fan: Decimal | None                  # pips between the 7 and 21 EMAs
     closes_on_upper: int                 # closes on or beyond the upper band, over push_candles
@@ -163,8 +163,12 @@ def compute(candles: Sequence[Candle], settings: Any) -> list[Features]:
         avg_range = sum(prev_ranges) / len(prev_ranges) if len(prev_ranges) == m.spike_average_candles else None
         spike = avg_range is not None and avg_range > 0 and rng > avg_range * m.spike_range_multiple
         pc = candles[max(0, i - m.push_candles + 1):i + 1]
-        green_share = Decimal(sum(1 for x in pc if g(x, "close") > g(x, "open"))) / len(pc)
-        red_share = Decimal(sum(1 for x in pc if g(x, "close") < g(x, "open"))) / len(pc)
+        # by body SIZE, so a few big red candles with small green ones between still count as red
+        up_bodies = sum((g(x, "close") - g(x, "open") for x in pc if g(x, "close") > g(x, "open")), ZERO)
+        down_bodies = sum((g(x, "open") - g(x, "close") for x in pc if g(x, "close") < g(x, "open")), ZERO)
+        all_bodies = up_bodies + down_bodies
+        green_share = up_bodies / all_bodies if all_bodies else ZERO
+        red_share = down_bodies / all_bodies if all_bodies else ZERO
         wb = back(m.band_widening_candles)
         widening = (width / wb.width) if (width is not None and wb is not None and wb.width) else None
         on_up = on_dn = 0

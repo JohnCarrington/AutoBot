@@ -92,19 +92,19 @@ def measure_push(settings, store, start, end) -> list[str]:
     t.replay(end + timedelta(minutes=5))
     q = lambda x: "-" if x is None else str(x.quantize(Decimal("0.01")))  # noqa: E731
     out = [f"Strong push down (all must pass, for {m.persistence_candles} candles in a row, in a trend): over "
-           f"{m.push_candles} candles at least {m.push_same_colour_percent}% red; bands at least "
+           f"{m.push_candles} candles at least {m.push_colour_body_percent}% of the total body size red; bands at least "
            f"{m.push_band_widening_percent}% of their width {m.band_widening_candles} candles before; 7 and 21 EMAs "
            f"at least {m.push_ema_fan_pips} pips apart; at least {m.push_riding_band_closes} closes on or beyond the "
            f"lower band (within {m.near_band_pips} pip).",
-           f"{'candle (UK)':<21}{'state':<26}{'red %':>6}{'widen':>7}{'fan':>7}{'on band':>8}{'moved':>7}  "
+           f"{'candle (UK)':<21}{'state':<26}{'red body %':>11}{'widen':>7}{'fan':>7}{'on band':>8}{'moved':>7}  "
            "push checks failed | rejection events on this candle"]
     for f, state, direction, events, moved, start_price in t.history:
         if not start <= f.candle.start <= end:
             continue
         failed = []
         red = f.red_share * 100
-        if red < m.push_same_colour_percent:
-            failed.append(f"red {q(red)}% < {m.push_same_colour_percent}")
+        if red < m.push_colour_body_percent:
+            failed.append(f"red bodies {q(red)}% < {m.push_colour_body_percent}")
         if f.widening is None or f.widening * 100 < m.push_band_widening_percent:
             failed.append(f"widening {q(f.widening * 100 if f.widening is not None else None)}% < "
                           f"{m.push_band_widening_percent}")
@@ -114,7 +114,7 @@ def measure_push(settings, store, start, end) -> list[str]:
             failed.append(f"on band {f.closes_on_lower} < {m.push_riding_band_closes}")
         evs = [f"#{e.setup} {e.version} {e.direction} {e.kind}" for e in events if e.kind != "ignored"]
         kind = f"{state} {direction}"
-        out.append(f"{uk_short(f.candle.start):<21}{kind[:25]:<26}{q(red):>6}{q(f.widening):>7}{q(f.fan):>7}"
+        out.append(f"{uk_short(f.candle.start):<21}{kind[:25]:<26}{q(red):>11}{q(f.widening):>7}{q(f.fan):>7}"
                    f"{f.closes_on_lower:>8}{q(moved):>7}  "
                    + ("; ".join(failed) if failed else "ALL PASS") + " | " + (", ".join(evs) if evs else "-"))
     return out

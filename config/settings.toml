@@ -182,12 +182,13 @@ ema_stacked_candles = 3
 # A failed bounce: its high (low, for an uptrend) at or within this many pips
 # above the higher of the 21 EMA and the middle band (new).
 failed_bounce_within_pips = 1
-# Strong push, over this many candles (new): at least this percent of candles
-# the trend's colour, the band at least this percent of its width this many
+# Strong push, over this many candles (new): at least this percent of the total
+# candle body size in the trend's colour (owner's rule, 7 November 2026: by body
+# size, so a few big red candles with small green ones between still count), the band at least this percent of its width this many
 # candles before, the 7 and 21 EMAs at least this many pips apart, and at least
 # this many closes on or beyond the outer band.
 push_candles = 6
-push_same_colour_percent = 70
+push_colour_body_percent = 70
 push_band_widening_percent = 150
 band_widening_candles = 12
 push_ema_fan_pips = 6

@@ -320,7 +320,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "ema_stacked_candles": _whole_number(1, 50),
         "failed_bounce_within_pips": _whole_number(0, 20),
         "push_candles": _whole_number(2, 50),
-        "push_same_colour_percent": _whole_number(1, 100),
+        "push_colour_body_percent": _whole_number(1, 100),
         "push_band_widening_percent": _whole_number(100, 1000),
         "band_widening_candles": _whole_number(2, 100),
         "push_ema_fan_pips": _whole_number(1, 100),

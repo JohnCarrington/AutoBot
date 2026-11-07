@@ -129,7 +129,7 @@ EXPECTED = {
         "consolidation_max_body_pips": 3, "consolidation_colour_max_ratio": 2, "near_band_pips": 1,
         "persistence_candles": 2, "evidence_fades_after_candles": 24, "ema_stacked_candles": 3,
         "failed_bounce_within_pips": 1, "push_candles": 6,
-        "push_same_colour_percent": 70, "push_band_widening_percent": 150, "band_widening_candles": 12,
+        "push_colour_body_percent": 70, "push_band_widening_percent": 150, "band_widening_candles": 12,
         "push_ema_fan_pips": 6, "push_riding_band_closes": 3, "spike_range_multiple": 3,
         "spike_average_candles": 20, "indicator_warm_up_candles": 2000,
         "folder": Path("/opt/autobot/data/analyser"),
