@@ -6,9 +6,9 @@ reached, all of these allow it (design sections 2.2 and 2.3; checked at entry
 only, owner 7 November 2026):
   1. its switch in .env is on (STRATEGY_SLOW_GRIND, ...);
   2. the analyser's current state allows the strategy (section 2.2): ranging ->
-     range trade; emerging trend and trend -> slow grind, EMA pullback,
-     Bollinger bounce IN THE TREND'S DIRECTION ONLY; possible reversal ->
-     Bollinger bounce; consolidation -> none;
+     range trade, Bollinger bounce; emerging trend and trend -> slow grind, EMA
+     pullback, Bollinger bounce IN THE TREND'S DIRECTION ONLY; possible reversal
+     -> Bollinger bounce; consolidation -> none;
   3. the direction rule allows that direction (section 2.3): a buy needs buy
      side (price above the daily pivot and the 5-minute 100 EMA), a sell needs
      sell side. It does not apply to the range trade, nor to the Bollinger
@@ -40,7 +40,7 @@ BUY, SELL = "buy", "sell"
 ALLOWED_IN = {
     SLOW_GRIND: {EMERGING: "trend", TREND: "trend"},
     EMA_PULLBACK: {EMERGING: "trend", TREND: "trend"},
-    BOLLINGER_BOUNCE: {EMERGING: "trend", TREND: "trend", POSSIBLE_REVERSAL: "any"},
+    BOLLINGER_BOUNCE: {RANGING: "any", EMERGING: "trend", TREND: "trend", POSSIBLE_REVERSAL: "any"},
     RANGE_TRADE: {RANGING: "any"},
 }
 
@@ -83,6 +83,13 @@ class Idea:
         head = (f"{uk_short(self.time)}  {self.strategy} {self.direction.upper()} at {plain(self.entry_price)}  "
                 f"[{self.state} {self.state_direction}{kind}; {self.direction_rule}]")
         return head + ("" if self.allowed else f"  BLOCKED: {self.blocked_by}")
+
+
+def stop_loss_pips(settings: Any, strategy: str) -> int:
+    """Design section 4: the EMA pullback's own stop (STOP_LOSS_PIPS_EMA_PULLBACK); every other
+    strategy uses STOP_LOSS_PIPS."""
+    sw = settings.switches
+    return sw.stop_loss_pips_ema_pullback if strategy == EMA_PULLBACK else sw.stop_loss_pips
 
 
 def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state: Any, pivot: Decimal | None,

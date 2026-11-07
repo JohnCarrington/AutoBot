@@ -82,7 +82,7 @@ def test_a_strategy_switched_off_has_no_ideas(S):
 
 # Section 2.2, every state against every strategy (a sell, with the state's direction down)
 @pytest.mark.parametrize("st,allowed", [
-    (RANGING, {RANGE_TRADE}),
+    (RANGING, {RANGE_TRADE, BOLLINGER_BOUNCE}),
     (EMERGING, {SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE}),
     (TREND, {SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE}),
     (POSSIBLE_REVERSAL, {BOLLINGER_BOUNCE}),
@@ -101,6 +101,28 @@ def test_in_a_trend_only_the_trends_direction(S, st, name):
     against = check(S, "GBPUSD", cand(name, BUY, 120), state(st, DOWN), PIVOT, EMA100)
     assert not against.allowed and "only in the trend's direction" in against.blocked_by
     assert check(S, "GBPUSD", cand(name, BUY, 120), state(st, UP), PIVOT, EMA100).allowed
+
+
+def test_a_bounce_when_ranging_may_go_either_way(S):
+    for d, price in ((BUY, 120), (SELL, 100)):
+        assert check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, d, price), state(RANGING), PIVOT, EMA100).allowed
+
+
+def test_a_bounce_when_ranging_still_needs_the_direction_rule(S):
+    i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, BUY, 100), state(RANGING), PIVOT, EMA100)
+    assert not i.allowed and "the direction rule says sell side" in i.blocked_by
+
+
+def test_a_bounce_in_consolidation_is_still_not_allowed(S):
+    i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, SELL, 100), state(CONSOLIDATION), PIVOT, EMA100)
+    assert not i.allowed and "does not allow Bollinger bounce" in i.blocked_by
+
+
+def test_the_ema_pullback_has_its_own_stop_loss(S):
+    from strategies.common import stop_loss_pips
+    assert stop_loss_pips(S, EMA_PULLBACK) == 12
+    for name in (SLOW_GRIND, BOLLINGER_BOUNCE, RANGE_TRADE):
+        assert stop_loss_pips(S, name) == 6
 
 
 def test_a_bounce_in_a_possible_reversal_may_go_either_way(S):

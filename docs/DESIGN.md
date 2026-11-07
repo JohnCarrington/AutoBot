@@ -37,7 +37,7 @@ Every result gives: the market state, the direction (up, down or none), the type
 
 | State | Strategies allowed |
 | --- | --- |
-| Ranging | Range trade |
+| Ranging | Range trade, Bollinger band bounce |
 | Emerging trend | Slow grind, EMA pullback, Bollinger band bounce in the trend's direction only |
 | Trend | Slow grind, EMA pullback, Bollinger band bounce in the trend's direction only |
 | Possible reversal | Bollinger band bounce |
@@ -165,9 +165,10 @@ Spread spikes are ignored in the same way as for the bounce (3.3).
 
 One shared trade manager for every trade.
 
-- **Stop loss:** a fixed 6 pips for every strategy, sent to IG. A switch in `.env` (`STOP_LOSS_PIPS`).
+- **Stop loss:** a fixed 6 pips for every strategy except the EMA pullback, sent to IG. A switch in `.env` (`STOP_LOSS_PIPS`). The EMA pullback's stop is 12 pips (owner, 7 November 2026), its own switch in `.env` (`STOP_LOSS_PIPS_EMA_PULLBACK`).
 - **Take profit:** a fixed 100 pips sent to IG as a safety net. A switch in `.env` (`TAKE_PROFIT_PIPS`). Both are the bot's own rule, not an IG requirement.
-- **Holding:** there is no profit lock, and no close when the analyser's state changes (owner, 7 November 2026): a trade runs until one of the exits in this section closes it: the 6-pip stop or the 100-pip take profit at IG, the 20:30 close, the close 15 minutes before big news, the range trade's half close at the opposite band, or the close on a confirmed rejection at a level against the trade.
+- **Holding:** there is no profit lock, and no close when the analyser's state changes (owner, 7 November 2026): a trade (except the EMA pullback, below) runs until one of the exits in this section closes it: the 6-pip stop or the 100-pip take profit at IG, the 20:30 close, the close 15 minutes before big news, the range trade's half close at the opposite band, or the close on a confirmed rejection at a level against the trade.
+- **EMA pullback exits** (owner, 7 November 2026): an EMA pullback trade runs until its 12-pip stop or the 100-pip take profit at IG, the 20:30 close, or the close 15 minutes before big news. The close on a rejection at a level does not apply to it.
 - **At a level:** the trade stays open while price is only wobbling. If price is rejected at the level against the trade, the trade closes at the same moment a bounce the other way would open: when the live price breaks past the confirmation candle. This never depends on a trade the other way being allowed.
 - **Distance travelled** does not force a close on its own.
 - **Reversal watch times:** 10:00, 11:00, 13:00, 14:00, 16:00 and 17:00 UK, from 20 minutes before to 20 minutes after. In those windows a rejection at any level counts; outside them, only at levels where several line up.
@@ -293,5 +294,5 @@ Remaining, in three rounds:
 - **Shared:** one IG login and one price stream connection for all pairs switched on; one history door, with one weekly budget and IG's one allowance (section 8).
 - **A newly switched-on pair is never filled from IG's history automatically.** Its one-off fill needs Johnny's go-ahead (`python -m prices.history_fill plan|go --pair <PAIR>`), like GBPUSD's first fill.
 - **Limits** will be per pair plus a total across all pairs (section 6). Not built yet.
-- **Switches in `.env`**, checked at start-up and documented in `docs/SETTINGS.md`: the pairs switched on (`PAIRS_ON`, GBPUSD only for now), the trading hours (`NEW_TRADES_FROM` 06:00, `NEW_TRADES_UNTIL` 20:30) each strategy on or off (`STRATEGY_SLOW_GRIND`, `STRATEGY_EMA_PULLBACK`, `STRATEGY_BOLLINGER_BOUNCE`, `STRATEGY_RANGE_TRADE`), and the stop loss and take profit sent to IG (`STOP_LOSS_PIPS` 6, `TAKE_PROFIT_PIPS` 100). Everything else stays in `config/settings.toml`.
+- **Switches in `.env`**, checked at start-up and documented in `docs/SETTINGS.md`: the pairs switched on (`PAIRS_ON`, GBPUSD only for now), the trading hours (`NEW_TRADES_FROM` 06:00, `NEW_TRADES_UNTIL` 20:30) each strategy on or off (`STRATEGY_SLOW_GRIND`, `STRATEGY_EMA_PULLBACK`, `STRATEGY_BOLLINGER_BOUNCE`, `STRATEGY_RANGE_TRADE`), and the stop loss and take profit sent to IG (`STOP_LOSS_PIPS` 6, the EMA pullback's own `STOP_LOSS_PIPS_EMA_PULLBACK` 12, `TAKE_PROFIT_PIPS` 100). Everything else stays in `config/settings.toml`.
 - More detail: `docs/PAIRS.md`.

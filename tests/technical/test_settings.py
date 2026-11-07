@@ -414,7 +414,7 @@ def test_all_problems_reported_together(tmp_path):
 SWITCHES_OK = {"PAIRS_ON": "GBPUSD", "NEW_TRADES_FROM": "06:00", "NEW_TRADES_UNTIL": "20:30",
                "STRATEGY_SLOW_GRIND": "on", "STRATEGY_EMA_PULLBACK": "on",
                "STRATEGY_BOLLINGER_BOUNCE": "off", "STRATEGY_RANGE_TRADE": "on",
-               "STOP_LOSS_PIPS": "6", "TAKE_PROFIT_PIPS": "100"}
+               "STOP_LOSS_PIPS": "6", "STOP_LOSS_PIPS_EMA_PULLBACK": "12", "TAKE_PROFIT_PIPS": "100"}
 
 
 def _env(tmp_path, values, secrets=True):
@@ -431,8 +431,14 @@ def test_switches_load_with_their_values(tmp_path):
     assert sw.pairs_on == ("GBPUSD",)
     assert (sw.new_trades_from, sw.new_trades_until) == (time(6, 0), time(20, 30))
     assert (sw.slow_grind, sw.ema_pullback, sw.bollinger_bounce, sw.range_trade) == (True, True, False, True)
-    assert (sw.stop_loss_pips, sw.take_profit_pips) == (6, 100)
+    assert (sw.stop_loss_pips, sw.stop_loss_pips_ema_pullback, sw.take_profit_pips) == (6, 12, 100)
     assert [p.market.pair for p in st.pairs_on()] == ["GBPUSD"]
+
+
+def test_the_ema_pullback_stop_loss_switch_is_required(tmp_path):
+    values = {k: v for k, v in SWITCHES_OK.items() if k != "STOP_LOSS_PIPS_EMA_PULLBACK"}
+    with pytest.raises(SettingsError, match="Missing switch STOP_LOSS_PIPS_EMA_PULLBACK"):
+        load_settings(switches_from=_env(tmp_path, values))
 
 
 def test_the_stop_loss_and_take_profit_are_no_longer_in_the_settings_file(tmp_path):
@@ -461,6 +467,9 @@ def test_the_settings_alone_have_no_switches_and_no_market():
     ("STOP_LOSS_PIPS", "0", "must be between 1 and 100 pips"),
     ("STOP_LOSS_PIPS", "6.5", "must be a whole number of pips"),
     ("STOP_LOSS_PIPS", "six", "must be a whole number of pips"),
+    ("STOP_LOSS_PIPS_EMA_PULLBACK", "0", "must be between 1 and 100 pips"),
+    ("STOP_LOSS_PIPS_EMA_PULLBACK", "101", "must be between 1 and 100 pips"),
+    ("STOP_LOSS_PIPS_EMA_PULLBACK", "12.5", "must be a whole number of pips"),
     ("TAKE_PROFIT_PIPS", "1001", "must be between 1 and 1000 pips"),
     ("TAKE_PROFIT_PIPS", "-100", "must be a whole number of pips"),
 ])
@@ -508,7 +517,7 @@ def test_load_or_exit_reads_the_switches(tmp_path, monkeypatch):
     monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {**SWITCHES_OK, "NEW_TRADES_FROM": "07:15"})))
     assert load_or_exit().switches.new_trades_from == time(7, 15)
     monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {"PAIRS_ON": "GBPUSD"})))
-    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 8 problem"):
+    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 9 problem"):
         load_or_exit()
 
 
