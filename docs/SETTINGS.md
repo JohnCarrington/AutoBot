@@ -13,8 +13,6 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `account.account_type` | Which IG account to use. Only the demo account is allowed for now. | `demo` |
 | `prices.candle_timeframes` | The candle sizes built from live prices: tick, 5-minute, 1-hour, 4-hour, daily and weekly. | `tick, 5m, 1h, 4h, 1d, 1w` |
 | `trade.size_gbp_per_pip` | Trade size: how many pounds each pip of movement is worth. | £10 per pip |
-| `trade.stop_loss_pips` | Stop loss sent with every trade, for every strategy. | 6 pips |
-| `trade.take_profit_pips` | Take profit sent to IG with every trade. (The bot may close earlier itself; this is the backstop.) | 100 pips |
 | `hours.timezone` | The time zone all times are in. Must be UK time. | `Europe/London` |
 | `hours.close_all_trades_at` | Any trade still open is closed at this time. | 20:30 |
 | `hours.hold_overnight` | Whether trades may be held overnight. Must be `false`; the bot refuses to start otherwise. | `false` (never) |
@@ -189,3 +187,5 @@ These live in `.env` (not in `config/settings.toml`), next to the IG secrets, so
 | `STRATEGY_EMA_PULLBACK` | The EMA pullback strategy, `on` or `off`. | on |
 | `STRATEGY_BOLLINGER_BOUNCE` | The Bollinger band bounce strategy, `on` or `off`. | on |
 | `STRATEGY_RANGE_TRADE` | The range trade strategy, `on` or `off`. | on |
+| `STOP_LOSS_PIPS` | The stop loss sent with every trade, for every strategy, in pips: a whole number from 1 to 100. Turned into IG's points per pair (`pairs.PAIR.pip_size` x `pairs.PAIR.price_scale`). Moved from `trade.stop_loss_pips` in `config/settings.toml` on 7 November 2026. | 6 |
+| `TAKE_PROFIT_PIPS` | The take profit sent to IG with every trade, in pips: a whole number from 1 to 1000. The bot may close earlier itself; this is the backstop. Moved from `trade.take_profit_pips` on 7 November 2026. | 100 |

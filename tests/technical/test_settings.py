@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parents[2]
 EXPECTED = {
     "account": {"account_type": "demo"},
     "prices": {"candle_timeframes": ("tick", "5m", "1h", "4h", "1d", "1w")},
-    "trade": {"size_gbp_per_pip": 10, "stop_loss_pips": 6, "take_profit_pips": 100},
+    "trade": {"size_gbp_per_pip": 10},
     "hours": {
         "close_all_trades_at": time(20, 30),
         "hold_overnight": False,
@@ -187,7 +187,7 @@ def test_gbpusd_is_the_one_pair_in_the_settings(settings):
 
 def test_settings_cannot_be_changed_while_running(settings):
     with pytest.raises(AttributeError):
-        settings.trade.stop_loss_pips = 50
+        settings.trade.size_gbp_per_pip = 50
     with pytest.raises(AttributeError):
         settings.trade = None
 
@@ -257,9 +257,9 @@ INVALID = [
     ("prices", "candle_timeframes", ["5m", "2h"], "not a known candle size"),
     ("trade", "size_gbp_per_pip", "ten", "must be a whole number"),
     ("trade", "size_gbp_per_pip", 0, "must be between"),
-    ("trade", "stop_loss_pips", -6, "must be between"),
-    ("trade", "stop_loss_pips", 6.5, "must be a whole number"),
-    ("trade", "take_profit_pips", True, "must be a whole number"),
+    ("trade", "size_gbp_per_pip", -6, "must be between"),
+    ("trade", "size_gbp_per_pip", 6.5, "must be a whole number"),
+    ("trade", "size_gbp_per_pip", True, "must be a whole number"),
     ("hours", "timezone", "UTC", "must be 'Europe/London'"),
     ("hours", "close_all_trades_at", 2030, 'written "HH:MM"'),
     ("hours", "hold_overnight", True, "must be false"),
@@ -352,13 +352,13 @@ def test_unknown_section_is_rejected(tmp_path):
 
 def test_all_problems_reported_together(tmp_path):
     data = _raw()
-    del data["trade"]["stop_loss_pips"]
+    del data["trade"]["size_gbp_per_pip"]
     data["levels"]["line_up_within_pips"] = "five"
     with pytest.raises(SettingsError) as e:
         load_settings(_write(tmp_path, data))
     msg = str(e.value)
     assert "has 2 problem(s)" in msg
-    assert "Missing setting [trade] stop_loss_pips." in msg
+    assert "Missing setting [trade] size_gbp_per_pip." in msg
     assert "Invalid setting [levels] line_up_within_pips" in msg
 
 
@@ -366,7 +366,8 @@ def test_all_problems_reported_together(tmp_path):
 
 SWITCHES_OK = {"PAIRS_ON": "GBPUSD", "NEW_TRADES_FROM": "06:00", "NEW_TRADES_UNTIL": "20:30",
                "STRATEGY_SLOW_GRIND": "on", "STRATEGY_EMA_PULLBACK": "on",
-               "STRATEGY_BOLLINGER_BOUNCE": "off", "STRATEGY_RANGE_TRADE": "on"}
+               "STRATEGY_BOLLINGER_BOUNCE": "off", "STRATEGY_RANGE_TRADE": "on",
+               "STOP_LOSS_PIPS": "6", "TAKE_PROFIT_PIPS": "100"}
 
 
 def _env(tmp_path, values, secrets=True):
@@ -383,7 +384,18 @@ def test_switches_load_with_their_values(tmp_path):
     assert sw.pairs_on == ("GBPUSD",)
     assert (sw.new_trades_from, sw.new_trades_until) == (time(6, 0), time(20, 30))
     assert (sw.slow_grind, sw.ema_pullback, sw.bollinger_bounce, sw.range_trade) == (True, True, False, True)
+    assert (sw.stop_loss_pips, sw.take_profit_pips) == (6, 100)
     assert [p.market.pair for p in st.pairs_on()] == ["GBPUSD"]
+
+
+def test_the_stop_loss_and_take_profit_are_no_longer_in_the_settings_file(tmp_path):
+    """They moved to .env (STOP_LOSS_PIPS, TAKE_PROFIT_PIPS): left in settings.toml they are refused."""
+    for key in ("stop_loss_pips", "take_profit_pips"):
+        data = _raw()
+        assert key not in data["trade"]
+        data["trade"][key] = 6
+        with pytest.raises(SettingsError, match=rf"Unknown setting \[trade\] {key}\."):
+            load_settings(_write(tmp_path, data))
 
 
 def test_the_settings_alone_have_no_switches_and_no_market():
@@ -399,6 +411,11 @@ def test_the_settings_alone_have_no_switches_and_no_market():
     ("NEW_TRADES_UNTIL", "24:00", 'written "HH:MM"'),
     ("STRATEGY_SLOW_GRIND", "yes", "must be on or off"),
     ("STRATEGY_RANGE_TRADE", "", "must be on or off"),
+    ("STOP_LOSS_PIPS", "0", "must be between 1 and 100 pips"),
+    ("STOP_LOSS_PIPS", "6.5", "must be a whole number of pips"),
+    ("STOP_LOSS_PIPS", "six", "must be a whole number of pips"),
+    ("TAKE_PROFIT_PIPS", "1001", "must be between 1 and 1000 pips"),
+    ("TAKE_PROFIT_PIPS", "-100", "must be a whole number of pips"),
 ])
 def test_an_invalid_switch_is_named_with_its_reason(tmp_path, key, bad, reason):
     with pytest.raises(SettingsError) as e:
@@ -444,7 +461,7 @@ def test_load_or_exit_reads_the_switches(tmp_path, monkeypatch):
     monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {**SWITCHES_OK, "NEW_TRADES_FROM": "07:15"})))
     assert load_or_exit().switches.new_trades_from == time(7, 15)
     monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {"PAIRS_ON": "GBPUSD"})))
-    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 6 problem"):
+    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 8 problem"):
         load_or_exit()
 
 
@@ -507,18 +524,18 @@ def test_broken_file_is_named(tmp_path):
 
 def test_load_or_exit_stops_with_message(tmp_path):
     data = _raw()
-    del data["trade"]["stop_loss_pips"]
+    del data["trade"]["size_gbp_per_pip"]
     with pytest.raises(SystemExit) as e:
         load_or_exit(_write(tmp_path, data))
     assert str(e.value).startswith("AutoBot cannot start: ")
-    assert "Missing setting [trade] stop_loss_pips." in str(e.value)
+    assert "Missing setting [trade] size_gbp_per_pip." in str(e.value)
 
 
 def test_bot_process_stops_with_clear_message(tmp_path):
     """Run the settings check as a real program with a bad file: it must exit
     with an error code and print the reason."""
     data = _raw()
-    data["trade"]["stop_loss_pips"] = "six"
+    data["trade"]["size_gbp_per_pip"] = "six"
     bad = _write(tmp_path, data)
     r = subprocess.run(
         [sys.executable, "-m", "config"],
@@ -527,7 +544,7 @@ def test_bot_process_stops_with_clear_message(tmp_path):
     )
     assert r.returncode == 1
     assert "AutoBot cannot start" in r.stderr
-    assert "Invalid setting [trade] stop_loss_pips: must be a whole number" in r.stderr
+    assert "Invalid setting [trade] size_gbp_per_pip: must be a whole number" in r.stderr
     assert "Settings OK" not in r.stdout
 
 

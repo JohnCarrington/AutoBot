@@ -9,6 +9,9 @@
   STRATEGY_EMA_PULLBACK       on or off
   STRATEGY_BOLLINGER_BOUNCE   on or off
   STRATEGY_RANGE_TRADE        on or off
+  STOP_LOSS_PIPS              the stop loss sent with every trade, in pips (whole, 1 to 100)
+  TAKE_PROFIT_PIPS            the take profit sent to IG with every trade, in pips
+                              (whole, 1 to 1000); the bot may close earlier itself
 
 Everything else is in config/settings.toml. Only these keys are read here:
 the secrets in the same file are never looked at, printed or put in a message.
@@ -46,6 +49,17 @@ def _time(v: str) -> time:
     return time(int(m.group(1)), int(m.group(2)))
 
 
+def _pips(minimum: int, maximum: int) -> Callable[[str], int]:
+    def check(v: str) -> int:
+        if not re.fullmatch(r"\d+", v.strip()):
+            raise ValueError(f"must be a whole number of pips, got {v!r}")
+        n = int(v.strip())
+        if not minimum <= n <= maximum:
+            raise ValueError(f"must be between {minimum} and {maximum} pips, got {n}")
+        return n
+    return check
+
+
 def _on_off(v: str) -> bool:
     if v.strip().lower() not in ("on", "off"):
         raise ValueError(f"must be on or off, got {v!r}")
@@ -61,6 +75,8 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "STRATEGY_EMA_PULLBACK": ("ema_pullback", _on_off),
     "STRATEGY_BOLLINGER_BOUNCE": ("bollinger_bounce", _on_off),
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
+    "STOP_LOSS_PIPS": ("stop_loss_pips", _pips(1, 100)),
+    "TAKE_PROFIT_PIPS": ("take_profit_pips", _pips(1, 1000)),
 }
 
 

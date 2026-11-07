@@ -201,8 +201,6 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     },
     "trade": {
         "size_gbp_per_pip": _whole_number(1, 1000),
-        "stop_loss_pips": _whole_number(1, 100),
-        "take_profit_pips": _whole_number(1, 1000),
     },
     "hours": {
         "timezone": _timezone,
@@ -348,7 +346,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
 
 
 class Settings:
-    """Checked settings. Read them as settings.section.name, e.g. settings.trade.stop_loss_pips.
+    """Checked settings. Read them as settings.section.name, e.g. settings.trade.size_gbp_per_pip.
     settings.pairs: every [pairs.<PAIR>]; settings.for_pair(name): the settings for one
     pair (config/pairs.py). settings.switches: the .env switches, when loaded."""
 

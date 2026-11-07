@@ -11,8 +11,8 @@ candle_timeframes = ["tick", "5m", "1h", "4h", "1d", "1w"]
 
 [trade]
 size_gbp_per_pip = 10
-stop_loss_pips = 6
-take_profit_pips = 100
+# The stop loss (6 pips) and take profit sent to IG (100 pips) are switches in
+# .env: STOP_LOSS_PIPS and TAKE_PROFIT_PIPS (config/switches.py).
 
 [hours]
 # The trading hours themselves (new trades from 06:00 until 20:30) are switches
