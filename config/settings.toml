@@ -136,8 +136,11 @@ out_of_date_after_minutes = 10
 # Worked out on the 5-minute candles, sell price. "161" = AutoBot 161's NMS
 # value (audit nms_audit_for_new_bot_20261106.md); "new" = a starting value
 # for Johnny to check against real days (161 had none).
-# Narrow Bollinger bands: band width at most this many pips. 161: CHOP_BB_WIDTH_MAX_PIPS 8.0
-narrow_band_max_pips = 8
+# Consolidation: the Bollinger bands count as narrow when at most this many pips
+# apart, OR when they have narrowed on each of the last narrowing_candles candles.
+# Owner's values, 7 November 2026 (they replaced 161's CHOP_BB_WIDTH_MAX_PIPS 8.0).
+narrow_band_max_pips = 14
+narrowing_candles = 6
 # Flat: the middle band moves less than this many pips a candle, over the
 # number of candles below. 161: CHOP_SLOPE_MAX_PIPS_PER_BAR 0.5, CHOP_SLOPE_LOOKBACK 6
 flat_max_pips_per_candle = 0.5
@@ -159,9 +162,10 @@ weave_candles = 12
 # ... and the 100 EMA has moved less than this many pips over this many candles (new).
 ema100_flat_max_pips = 3
 ema100_flat_candles = 12
-# Consolidation: touching neither band for this many candles (new), average
-# body at most this many pips (new), and green and red bodies within this
-# ratio of each other (new: 2 means one side at most twice the other).
+# Consolidation: no candle has closed outside the bands for this many candles
+# (owner's rule, 7 November 2026; also the window for the next two checks),
+# average body at most this many pips (new), and green and red bodies within
+# this ratio of each other (new: 2 means one side at most twice the other).
 consolidation_quiet_candles = 6
 consolidation_max_body_pips = 3
 consolidation_colour_max_ratio = 2

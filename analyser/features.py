@@ -10,8 +10,8 @@ own pip size). The words in the design become these measures (docs/ANALYSER.md):
   crossings         closes crossing the middle band within crossing_candles
   EMA stack         7 < 13 < 21 (down) or 7 > 13 > 21 (up), and for how many candles
   weave             the stack order changed within weave_candles
-  quiet             no candle reached either band (within near_band_pips) for
-                    consolidation_quiet_candles
+  narrowing         for how many candles in a row the band width has got smaller
+  no close outside  no candle closed outside the bands for consolidation_quiet_candles
 """
 
 from __future__ import annotations
@@ -37,6 +37,9 @@ class Features:
     middle: Decimal | None
     lower: Decimal | None
     width: Decimal | None                # pips
+    narrowing_for: int                   # candles in a row the band width got smaller
+    closed_outside: bool                 # this candle closed beyond a band
+    no_close_outside: bool               # no candle closed beyond a band for consolidation_quiet_candles
     mid_slope: Decimal | None            # pips a candle
     upper_slope: Decimal | None
     lower_slope: Decimal | None
@@ -53,7 +56,6 @@ class Features:
     reached_upper: bool                  # this candle's high on or beyond the upper band
     reached_lower: bool
     both_bands_recently: bool            # both bands reached within ranging_both_bands_candles
-    quiet: bool                          # neither band reached for consolidation_quiet_candles
     avg_body: Decimal | None             # pips, over consolidation_quiet_candles
     colour_ratio: Decimal | None         # larger of (green bodies, red bodies) / smaller
     body: Decimal                        # pips
@@ -136,13 +138,18 @@ def compute(candles: Sequence[Candle], settings: Any) -> list[Features]:
                     break
                 signs.append(closes[j] > bj.middle)
             crossings = sum(1 for a, z in zip(signs, signs[1:]) if a != z) if signs else None
+        width = (b.upper - b.lower) / ppp if b else None
+        prev = out[-1] if out else None
+        narrowing = (prev.narrowing_for + 1 if prev is not None and prev.width is not None and width is not None
+                     and width < prev.width else 0)
+        outside = b is not None and (cl > b.upper or cl < b.lower)
         recent = out[max(0, i - m.ranging_both_bands_candles + 1):] if out else []
         both = (reached_up or any(f.reached_upper for f in recent)) and \
                (reached_dn or any(f.reached_lower for f in recent))
         qn = m.consolidation_quiet_candles
         window = out[i - qn + 1:] if i - qn + 1 >= 0 else []
-        quiet = len(window) == qn - 1 and not (reached_up or reached_dn) and \
-            not any(f.reached_upper or f.reached_lower for f in window)
+        no_outside = len(window) == qn - 1 and b is not None and not outside and \
+            not any(f.closed_outside for f in window)
         bodies = [abs(g(x, "close") - g(x, "open")) / ppp for x in candles[max(0, i - qn + 1):i + 1]]
         avg_body = sum(bodies) / len(bodies) if len(bodies) == qn else None
         greens = sum(abs(g(x, "close") - g(x, "open")) for x in candles[max(0, i - qn + 1):i + 1]
@@ -158,7 +165,6 @@ def compute(candles: Sequence[Candle], settings: Any) -> list[Features]:
         pc = candles[max(0, i - m.push_candles + 1):i + 1]
         green_share = Decimal(sum(1 for x in pc if g(x, "close") > g(x, "open"))) / len(pc)
         red_share = Decimal(sum(1 for x in pc if g(x, "close") < g(x, "open"))) / len(pc)
-        width = (b.upper - b.lower) / ppp if b else None
         wb = back(m.band_widening_candles)
         widening = (width / wb.width) if (width is not None and wb is not None and wb.width) else None
         on_up = on_dn = 0
@@ -173,11 +179,12 @@ def compute(candles: Sequence[Candle], settings: Any) -> list[Features]:
         mh = hist.get(c.start)
         out.append(Features(
             c, o, h, lo, cl, b.upper if b else None, b.middle if b else None, b.lower if b else None, width,
+            narrowing, outside, no_outside,
             slope("middle", m.flat_slope_candles), slope("upper", m.flat_slope_candles),
             slope("lower", m.flat_slope_candles), e7, e13, e21, e100, st, run, weave,
             (abs(e100 - e100b.ema100) / ppp) if (e100 is not None and e100b is not None and e100b.ema100 is not None)
             else None,
-            eff, crossings, reached_up, reached_dn, both, quiet, avg_body, colour_ratio,
+            eff, crossings, reached_up, reached_dn, both, avg_body, colour_ratio,
             abs(cl - o) / ppp, rng, spike, green_share, red_share, widening,
             (abs(e7 - e21) / ppp) if (e7 is not None and e21 is not None) else None,
             on_up, on_dn, mh.histogram if mh else None, rs.get(c.start)))

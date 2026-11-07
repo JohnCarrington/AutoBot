@@ -20,6 +20,8 @@ this candle happen at once (they are proof in the price itself):
     trend, a bounce failed at or below the 21 EMA and middle band, then price
     makes a new extreme on the outer band, with the 7/13/21 EMAs stacked, price
     beyond them and beyond the 100 EMA, and the outer band sloping -> trend;
+  * in an emerging trend, a confirmed rejection at an important level the
+    other way replaces it with an emerging trend that way (owner's rule);
   * a possible reversal needs BOTH a move of at least
     possible_reversal.min_trend_move_pips since the trend started AND a
     confirmed rejection at a level against it (the shared rejection part's
@@ -160,13 +162,15 @@ class StateMachine:
 
     def consolidation(self, f: Features) -> tuple[bool, str]:
         m = self.m
-        ok = (f.width is not None and f.width <= m.narrow_band_max_pips and f.mid_slope is not None
-              and abs(f.mid_slope) < self.flat and f.quiet and f.avg_body is not None
+        narrow = f.width is not None and (f.width <= m.narrow_band_max_pips or f.narrowing_for >= m.narrowing_candles)
+        ok = (narrow and f.mid_slope is not None
+              and abs(f.mid_slope) < self.flat and f.no_close_outside and f.avg_body is not None
               and f.avg_body <= m.consolidation_max_body_pips and f.colour_ratio is not None
               and f.colour_ratio <= m.consolidation_colour_max_ratio)
-        why = (f"bands {self._p(f.width)} pips wide (narrow <= {m.narrow_band_max_pips}), middle band "
-               f"{self._p(f.mid_slope)} pips/candle, touching neither band for {m.consolidation_quiet_candles} "
-               f"candles, average body {self._p(f.avg_body)} pips, green/red {self._p(f.colour_ratio)}")
+        why = (f"bands {self._p(f.width)} pips wide (narrow: <= {m.narrow_band_max_pips}, or narrowing for "
+               f"{m.narrowing_candles} candles: {f.narrowing_for}), middle band {self._p(f.mid_slope)} pips/candle, "
+               f"no close outside the bands for {m.consolidation_quiet_candles} candles, average body "
+               f"{self._p(f.avg_body)} pips, green/red {self._p(f.colour_ratio)}")
         return ok, why
 
     def ranging(self, f: Features) -> tuple[bool, str]:
@@ -289,6 +293,12 @@ class StateMachine:
         # ---- emerging trend and trend ----------------------------------------------------
         if st in TRENDING:
             moved = self._pips(self.extreme, self.start_price) if self.extreme is not None else Decimal(0)
+            if st == EMERGING:
+                for e, stp in important_rejection(CONFIRMATION):
+                    if _move(e.direction) == _opposite(d):
+                        return self._start_emerging(f, _move(e.direction),
+                                                    f"rejected at a level against the emerging {d} trend: {e.note}",
+                                                    stp)
             for e in bounce:
                 if e.kind == CONFIRMATION and _move(e.direction) == _opposite(d):
                     stp = setup_of(e.setup)

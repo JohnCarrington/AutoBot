@@ -41,14 +41,15 @@ def F(i, **kw):
     h = D(str(kw.pop("h", max(o, c) + 1)))
     lo = D(str(kw.pop("l", min(o, c) - 1)))
     candle = Candle("5m", t, t + FIVE, o + 1, h + 1, lo + 1, c + 1, o, h, lo, c)
-    base = dict(candle=candle, o=o, h=h, l=lo, c=c, upper=c + 6, middle=c, lower=c - 6, width=D(12),
+    base = dict(candle=candle, o=o, h=h, l=lo, c=c, upper=c + 6, middle=c, lower=c - 6, width=D(16),
+                narrowing_for=0, closed_outside=False, no_close_outside=False,
                 mid_slope=D(1), upper_slope=D(1), lower_slope=D(1), ema7=c, ema13=c, ema21=c, ema100=c,
                 stack=None, stacked_for=0, weave=True, ema100_move=D(5), efficiency=D("0.6"), crossings=1,
-                reached_upper=False, reached_lower=False, both_bands_recently=False, quiet=False,
+                reached_upper=False, reached_lower=False, both_bands_recently=False,
                 avg_body=D(4), colour_ratio=D(3), body=D(1), range_=D(2), spike=False, green_share=D("0.5"),
                 red_share=D("0.5"), widening=D(1), fan=D(1), closes_on_upper=0, closes_on_lower=0,
                 macd_hist=D("-0.5"), rsi=D(40))
-    whole = ("crossings", "stacked_for", "closes_on_upper", "closes_on_lower")
+    whole = ("crossings", "stacked_for", "closes_on_upper", "closes_on_lower", "narrowing_for")
     base.update({k: (D(str(v)) if isinstance(v, (int, float, str)) and not isinstance(v, bool)
                      and k not in whole and k != "stack" else v) for k, v in kw.items()})
     return Features(**base)
@@ -245,7 +246,7 @@ def test_ranging_and_consolidation_need_2_candles_in_a_row(st):
     assert run(m, [(0, F(0, **ranging)), (1, F(1)), (2, F(2, **ranging))]) == []     # broken by candle 1
     (ch,) = run(m, [(3, F(3, **ranging))])
     assert ch.state == RANGING
-    narrow = dict(width=6, mid_slope="0.1", quiet=True, avg_body=2, colour_ratio="1.5")
+    narrow = dict(width=6, mid_slope="0.1", no_close_outside=True, avg_body=2, colour_ratio="1.5")
     assert run(m, [(4, F(4, **narrow))]) == []
     (ch,) = run(m, [(5, F(5, **narrow))])
     assert ch.state == CONSOLIDATION
@@ -401,3 +402,61 @@ def test_the_tracker_refuses_another_pairs_store(st, tmp_path):
     other = CandleStore(tmp_path / "x" / "EURJPY", 30)
     with pytest.raises(ValueError, match="Pair mix-up"):
         StateTracker(st, other)
+
+
+# ---- 7 November changes: consolidation width or narrowing, no close outside; an emerging trend replaced ----
+
+CONSOL = dict(mid_slope="0.1", no_close_outside=True, avg_body=2, colour_ratio="1.5")
+
+
+@pytest.mark.parametrize("width,narrowing,ok", [
+    (14, 0, True),             # 14 pips or less
+    (14.1, 5, False),          # wider, narrowing for only 5 candles
+    (20, 6, True),             # wider, but narrowing for 6 candles in a row
+])
+def test_consolidation_bands_are_14_pips_or_less_or_narrowing_for_6_candles(st, width, narrowing, ok):
+    m = machine(st)
+    f = F(0, width=width, narrowing_for=narrowing, **CONSOL)
+    assert m.consolidation(f)[0] is ok
+    assert (st.market_states.narrow_band_max_pips, st.market_states.narrowing_candles) == (14, 6)
+
+
+def test_consolidation_needs_no_close_outside_the_bands_for_6_candles(st):
+    m = machine(st)
+    assert m.consolidation(F(0, width=10, **CONSOL))[0]
+    assert not m.consolidation(F(0, width=10, **{**CONSOL, "no_close_outside": False}))[0]
+
+
+def test_a_trend_runs_out_of_steam_into_consolidation_after_2_candles(st):
+    m = trend(st)
+    calm = dict(width=10, ema100=11700, **CONSOL)
+    assert run(m, [(3, F(3, c=11650, **calm))]) == []
+    (ch,) = run(m, [(4, F(4, c=11650, **calm))])
+    assert ch.state == CONSOLIDATION and "ran out of steam" in ch.reason
+
+
+def test_an_opposite_important_level_rejection_replaces_an_emerging_trend(st):
+    m = level_downtrend(st)                                       # emerging down from the pivot 11660
+    r2 = at_level("round_number", 11650, 11650)
+    (ch,) = run(m, [(1, F(1, c=11656))], {1: [ev(2, CONFIRMATION, BUY, OPEN, "closed above")]},
+                setups(**{"2": r2}))
+    assert (ch.state, ch.direction, ch.previous_direction) == (EMERGING, UP, DOWN)
+    assert ch.reason == "rejected at a level against the emerging down trend: closed above"
+    assert any("rejected at the round_number 11650.0" in e for e in ch.evidence)
+
+
+def test_an_opposite_rejection_at_a_band_or_minor_level_does_not_replace_it(st):
+    m = level_downtrend(st)
+    minor = at_level("london_session_low", 11650, 11650)
+    assert run(m, [(1, F(1, c=11656))], {1: [ev(2, CONFIRMATION, BUY, OPEN)]}, setups(**{"2": minor})) == []
+    assert run(m, [(2, F(2, c=11656))], {2: [ev(3, CONFIRMATION, BUY, OPEN)]}, setups(**{"3": BAND})) == []
+    assert (m.now.state, m.now.direction) == (EMERGING, DOWN)
+
+
+def test_a_trend_is_not_replaced_by_one_opposite_level_rejection_before_30_pips(st):
+    m = trend(st)
+    r2 = at_level("round_number", 11650, 11650)
+    assert run(m, [(3, F(3, c=11640, ema100=11660))], {3: [ev(2, CONFIRMATION, BUY, OPEN)]},
+               setups(**{"2": r2})) == []
+    assert m.now.state == TREND
+

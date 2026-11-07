@@ -65,7 +65,8 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `analyser.direction_ema_timeframe` | Direction rule (design section 2.3): the candle size of the EMA price must be above (buy side) or below (sell side), together with the daily pivot. | `5m` |
 | `analyser.direction_ema_periods` | Direction rule: which EMA. Must be one of `indicators.ema_periods`. | 100 |
 | `analyser.out_of_date_after_minutes` | While the market is open, the analyser's data is out of date (new trades blocked) when the newest stored candle on an indicator timeframe is more than this far behind the newest one that should have finished. A weekend is never out of date. **Starting value, for Johnny to confirm.** | 10 minutes |
-| `market_states.narrow_band_max_pips` | Consolidation: the Bollinger bands count as narrow when at most this many pips apart. **From 161:** `CHOP_BB_WIDTH_MAX_PIPS` 8.0. | 8 pips |
+| `market_states.narrow_band_max_pips` | Consolidation: the Bollinger bands count as narrow when at most this many pips apart (or when they have narrowed for `narrowing_candles` in a row). **Owner's value, 7 November 2026**; it replaced 161's `CHOP_BB_WIDTH_MAX_PIPS` 8.0. | 14 pips |
+| `market_states.narrowing_candles` | Consolidation: the bands also count as narrow when their width has got smaller on each of this many candles in a row. **Owner's value, 7 November 2026.** | 6 candles |
 | `market_states.flat_max_pips_per_candle` | A band counts as flat when it moves less than this many pips a candle (over `flat_slope_candles`); at least this much the other way is "sloping". **From 161:** `CHOP_SLOPE_MAX_PIPS_PER_BAR` 0.5. | 0.5 pips a candle |
 | `market_states.flat_slope_candles` | How many candles a band's slope is measured over. **From 161:** `CHOP_SLOPE_LOOKBACK` 6. | 6 candles |
 | `market_states.ranging_min_band_pips` | Ranging: the bands at least this many pips apart. **From 161:** `NORMAL_STATE_BB_MIN_RANGE_PIPS` 8.0. | 8 pips |
@@ -77,7 +78,7 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `market_states.weave_candles` | Ranging ("the EMAs weave instead of staying stacked"): the order of the 7, 13 and 21 EMAs changed at least once within this many candles. **New starting value.** | 12 candles |
 | `market_states.ema100_flat_max_pips` | Ranging ("the 100 EMA is flat"): it moved less than this many pips over `ema100_flat_candles`. **New starting value.** | 3 pips |
 | `market_states.ema100_flat_candles` | Candles the 100 EMA's move is measured over. **New starting value.** | 12 candles |
-| `market_states.consolidation_quiet_candles` | Consolidation ("price between the bands touching neither"): no candle reached either band for this many candles; also the window for the candle sizes below. **New starting value.** | 6 candles |
+| `market_states.consolidation_quiet_candles` | Consolidation ("price between the bands"): no candle has closed outside the Bollinger bands for this many candles (**owner's rule, 7 November 2026**; it replaced "neither band reached"); also the window for the average body and the green/red balance. | 6 candles |
 | `market_states.consolidation_max_body_pips` | Consolidation ("small candles"): average body at most this many pips. **New starting value.** | 3 pips |
 | `market_states.consolidation_colour_max_ratio` | Consolidation ("green and red roughly the same size"): the larger of the green and red bodies added up is at most this many times the smaller. **New starting value.** | 2 |
 | `market_states.near_band_pips` | "On or near" a band: within this many pips of it. **New starting value.** | 1 pip |

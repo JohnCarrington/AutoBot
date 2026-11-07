@@ -116,7 +116,10 @@ class StateTracker:
         levels = build(self.s, store, c.start)
         events = self.watcher.on_candle(c, band, levels)
         ch = self.machine.step(f, events, lambda i: self.watcher.setups[i - 1])
-        self.history.append((f, self.machine.now.state, self.machine.now.direction))
+        mc = self.machine
+        moved = (mc._pips(mc.extreme, mc.start_price) if mc.extreme is not None and mc.start_price is not None
+                 else None)
+        self.history.append((f, mc.now.state, mc.now.direction, events, moved, mc.start_price))
         return ch
 
     @property

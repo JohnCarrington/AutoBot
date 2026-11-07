@@ -299,6 +299,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     },
     "market_states": {
         "narrow_band_max_pips": _whole_number(1, 100),
+        "narrowing_candles": _whole_number(2, 100),
         "flat_max_pips_per_candle": _decimal_number("0.01", "100"),
         "flat_slope_candles": _whole_number(2, 100),
         "ranging_min_band_pips": _whole_number(1, 200),
