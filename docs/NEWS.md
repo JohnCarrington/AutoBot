@@ -11,7 +11,7 @@ The economic calendar (`news/`), for the big-news rules of design section 6 and 
 
 ## Big, medium and small: the news table
 
-AutoBot's own table, `config/news_table.toml`: **the owner's table from AutoBot 161** (the tiers the owner set from their research into how far GBPUSD moved around each release), copied as data from the public audit report `news_impact_table_161.csv` and its README, with one row added: a GBP release named exactly "Interest Rate" is the Bank of England rate decision, and is big (Finnhub used that name on 5 November 2026). Every row, and how releases are matched, is in `docs/SETTINGS.md` ("News table").
+AutoBot's own table, `config/news_table.toml`: **the owner's table from AutoBot 161** (the tiers the owner set from their research into how far GBPUSD moved around each release), copied as data from the public audit report `news_impact_table_161.csv` and its README, with five rows added by the owner (7 November 2026): GBP "Interest Rate" (the Bank of England rate decision, as Finnhub named it on 5 November 2026) and GBP "Unemployment Rate" are big; USD "Building Permits Prel", "Existing Home Sales" and "Housing Starts" are placed as small. Every row, and how releases are matched, is in `docs/SETTINGS.md` ("News table").
 
 In short: only high-impact releases (as Finnhub marks them) are matched; overrides first (each for its own currency), then big rules, then medium rules, otherwise small; two same-day rules (the US unemployment rate is big only on payrolls day; a Fed chair speech only on a rate-decision day). A release that matches no row is small and logged once (`data/news/unmatched.json`), so the owner can place it. Medium and small news is ignored for trading.
 

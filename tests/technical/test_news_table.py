@@ -26,13 +26,13 @@ def c(st, currency, name, same_day=(), impact="high", rows=ROWS):
 
 # ---- every row is valid -----------------------------------------------------------------------
 
-def test_the_table_is_161s_78_rows_plus_one():
+def test_the_table_is_161s_77_rows_plus_the_owners_five():
     by = {s: [r for r in ROWS if r.section == s] for s in ("override", "big", "middle")}
-    assert (len(by["override"]), len(by["big"]), len(by["middle"])) == (8, 45, 25)
+    assert (len(by["override"]), len(by["big"]), len(by["middle"])) == (12, 45, 25)
     # rule names: ours + 161's 4 override, 12 big and 15 medium rule names (161's README says 13 and 13;
     # the CSV, which is what was copied, has 12 and 15)
     names = lambda s: {r.rule for r in ROWS if r.section == s}  # noqa: E731
-    assert (len(names("override")), len(names("big")), len(names("middle"))) == (5, 12, 15)
+    assert (len(names("override")), len(names("big")), len(names("middle"))) == (9, 12, 15)
     assert by["override"][0].rule == "gbp_interest_rate" and by["override"][0].name_is == "Interest Rate"
 
 
@@ -40,7 +40,7 @@ def test_the_table_is_161s_78_rows_plus_one():
 def test_every_row_is_valid(row):
     assert row.section in ("override", "big", "middle") and row.rule
     assert row.tier == (BIG if row.section == "big" else MEDIUM if row.section == "middle" else row.tier)
-    assert row.tier in (BIG, MEDIUM)
+    assert row.tier in ((BIG, MEDIUM, SMALL) if row.section == "override" else (BIG, MEDIUM))
     assert (row.currency is not None) == (row.section == "override")
     assert bool(row.all_of) != bool(row.name_is)                       # exactly one way of matching
     assert all(k and k == k.lower() for k in row.all_of)
@@ -52,7 +52,7 @@ def test_every_row_is_valid(row):
     ('[[big]]\nrule = "x"\nall_of = ["CPI"]\n', "must be lower case"),
     ('[[big]]\nrule = "x"\nall_of = []\n', "non-empty list"),
     ('[[override]]\nrule = "x"\ntier = "big"\nall_of = ["cpi"]\n', "needs its currency"),
-    ('[[override]]\nrule = "x"\ncurrency = "GBP"\ntier = "huge"\nall_of = ["cpi"]\n', "tier must be big or medium"),
+    ('[[override]]\nrule = "x"\ncurrency = "GBP"\ntier = "huge"\nall_of = ["cpi"]\n', "tier must be big, medium or small"),
     ('[[big]]\nrule = "x"\nall_of = ["cpi"]\ncolour = "red"\n', "unknown field"),
     ('[[small]]\nrule = "x"\nall_of = ["cpi"]\n', "Unknown section"),
 ])
@@ -105,7 +105,11 @@ def test_within_a_section_the_first_matching_row_decides(st):
     ("USD", "ISM Manufacturing PMI", MEDIUM, "ism_manufacturing_pmi"),
     ("USD", "Initial Jobless Claims", MEDIUM, "initial_jobless_claims"),
     ("GBP", "Retail Sales MoM", MEDIUM, "retail_sales"),
-    ("USD", "Existing Home Sales", SMALL, "default_small"),
+    ("USD", "Existing Home Sales", SMALL, "usd_existing_home_sales"),          # placed as small
+    ("USD", "Building Permits Prel", SMALL, "usd_building_permits_prel"),
+    ("USD", "Housing Starts", SMALL, "usd_housing_starts"),
+    ("GBP", "Unemployment Rate", BIG, "gbp_unemployment_rate"),                 # big on any day
+    ("USD", "Personal Income MoM", SMALL, "default_small"),
 ])
 def test_real_names(st, currency, name, tier, rule):
     m = c(st, currency, name)
@@ -118,7 +122,8 @@ def test_the_added_interest_rate_row_is_gbp_only_and_exact(st):
     assert c(st, "GBP", "Interest Rate Expectations").tier == SMALL             # the exact name only
 
 
-def test_unemployment_rate_is_big_only_on_payrolls_day(st):
+def test_us_unemployment_rate_is_big_only_on_payrolls_day_but_the_uk_one_always(st):
+    assert c(st, "GBP", "Unemployment Rate").tier == BIG
     assert c(st, "USD", "Unemployment Rate").tier == SMALL
     m = c(st, "USD", "Unemployment Rate", same_day=["Non Farm Payrolls", "Average Hourly Earnings MoM"])
     assert (m.tier, m.rule) == (BIG, "us_unemployment_with_nfp")
@@ -138,11 +143,11 @@ def test_only_high_impact_releases_are_matched(st):
 def test_a_release_in_no_row_is_logged_once(st, caplog):
     caplog.set_level(logging.INFO)
     u = UnmatchedLog(st)
-    assert u.note("USD", "Existing Home Sales", "2026-11-09T15:00:00Z")
-    assert not u.note("USD", "Existing Home Sales", "2026-12-09T15:00:00Z")     # once, even later
-    assert not UnmatchedLog(st).note("USD", "Existing Home Sales", "2027-01-09T15:00:00Z")   # and after a restart
-    assert caplog.text.count("Existing Home Sales") == 1
-    assert json.loads(u.path.read_text())["USD|Existing Home Sales"]["first_seen_release_utc"] == "2026-11-09T15:00:00Z"
+    assert u.note("USD", "Personal Income MoM", "2026-11-09T15:00:00Z")
+    assert not u.note("USD", "Personal Income MoM", "2026-12-09T15:00:00Z")     # once, even later
+    assert not UnmatchedLog(st).note("USD", "Personal Income MoM", "2027-01-09T15:00:00Z")   # and after a restart
+    assert caplog.text.count("Personal Income MoM") == 1
+    assert json.loads(u.path.read_text())["USD|Personal Income MoM"]["first_seen_release_utc"] == "2026-11-09T15:00:00Z"
 
 
 def test_the_windows_use_the_table_and_log_unmatched_releases(st):
@@ -152,10 +157,12 @@ def test_the_windows_use_the_table_and_log_unmatched_releases(st):
             "estimate": 65, "prev": 60},
            {"time_utc": "2026-11-06T13:30:00Z", "country": "US", "event": "Unemployment Rate", "impact": "high",
             "estimate": 4.3, "prev": 4.3},
+           {"time_utc": "2026-11-06T15:00:00Z", "country": "US", "event": "Personal Income MoM", "impact": "high"},
            {"time_utc": "2026-11-06T15:00:00Z", "country": "US", "event": "Existing Home Sales", "impact": "high"},
            {"time_utc": "2026-11-06T09:00:00Z", "country": "GB", "event": "MPC Meeting Minutes", "impact": "medium"}]
     ws = big_news_windows(st, "GBPUSD", datetime(2026, 11, 6, tzinfo=timezone.utc),
                           datetime(2026, 11, 7, tzinfo=timezone.utc), cal)
     assert [w.event for w in ws] == ["Non Farm Payrolls", "Unemployment Rate"]   # unemployment: payrolls day
-    assert "USD|Existing Home Sales" in UnmatchedLog(st).seen()
+    assert "USD|Personal Income MoM" in UnmatchedLog(st).seen()                 # in no row: logged
+    assert "USD|Existing Home Sales" not in UnmatchedLog(st).seen()             # placed as small: not logged
     assert "GBP|MPC Meeting Minutes" not in UnmatchedLog(st).seen()             # medium impact: not matched at all

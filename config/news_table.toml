@@ -4,7 +4,8 @@
 # GBPUSD moved around each release. Copied as DATA from the public audit report
 # JohnCarrington/autobot_reports: news_impact_table_161.csv (78 rows, override
 # table version 2026-08-14.v1, snapshot 2026-11-07) and its README. 161's code
-# was not copied. Added for AutoBot: one row, "gbp_interest_rate" (marked below).
+# was not copied. Added for AutoBot (marked below): "gbp_interest_rate" and
+# "gbp_unemployment_rate" (big), and three USD releases placed as small.
 #
 # HOW A RELEASE IS MATCHED (news/table.py; docs/SETTINGS.md "News table"):
 #   * Only releases Finnhub marks with an impact in news.table_impacts (high)
@@ -16,7 +17,8 @@
 #     order), or, for a "name_is" row, when the name is exactly that text.
 #   * A row with "same_day" matches only if another release of the same
 #     currency on the same UTC day matches one of its keyword groups.
-#   * No row matches: SMALL (logged once, so the owner can place it).
+#   * No row matches: SMALL (logged once, so the owner can place it). An
+#     override may also say small: a release the owner has placed as small.
 #   * Only BIG releases stop trading (design section 6); MEDIUM and SMALL are
 #     ignored.
 # Each row is one keyword group; a rule with several groups has several rows.
@@ -31,6 +33,34 @@ rule = "gbp_interest_rate"
 currency = "GBP"
 tier = "big"
 name_is = "Interest Rate"
+
+[[override]]
+# Added for AutoBot (owner, 7 November 2026): the UK unemployment rate is big.
+rule = "gbp_unemployment_rate"
+currency = "GBP"
+tier = "big"
+name_is = "Unemployment Rate"
+
+[[override]]
+# Added for AutoBot (owner, 7 November 2026): placed as small.
+rule = "usd_building_permits_prel"
+currency = "USD"
+tier = "small"
+name_is = "Building Permits Prel"
+
+[[override]]
+# Added for AutoBot (owner, 7 November 2026): placed as small.
+rule = "usd_existing_home_sales"
+currency = "USD"
+tier = "small"
+name_is = "Existing Home Sales"
+
+[[override]]
+# Added for AutoBot (owner, 7 November 2026): placed as small.
+rule = "usd_housing_starts"
+currency = "USD"
+tier = "small"
+name_is = "Housing Starts"
 
 [[override]]
 rule = "usd_fed_press_conf_override"

@@ -223,13 +223,13 @@ The 1-hour, 4-hour, daily and weekly candles first built under that layout were 
 
 ## News table (`config/news_table.toml`)
 
-Which economic releases are big, medium or small news: **the owner's table from AutoBot 161**, copied as data from the public audit report `news_impact_table_161.csv` (override table version 2026-08-14.v1; snapshot 7 November 2026) and its README. 161's code was not copied. One row was added for AutoBot (marked below).
+Which economic releases are big, medium or small news: **the owner's table from AutoBot 161**, copied as data from the public audit report `news_impact_table_161.csv` (override table version 2026-08-14.v1; snapshot 7 November 2026) and its README. 161's code was not copied. Five rows were added for AutoBot by the owner (marked below): GBP "Interest Rate" and GBP "Unemployment Rate" big; USD "Building Permits Prel", "Existing Home Sales" and "Housing Starts" placed as small. An override may say small: a release the owner has placed as small, so it is no longer logged as unmatched.
 
 **How a release is matched** (`news/table.py`):
 
 1. Only releases Finnhub marks high-impact (`news.table_impacts`) are matched; any other release is small.
 2. Its name is lower-cased. The **override** rows are tried first, each only for its own currency; then the **big** rows; then the **medium** rows (any currency). The first row that matches decides.
-3. A row matches when every keyword in it appears in the name, in any order (or, for the added row, when the name is exactly that).
+3. A row matches when every keyword in it appears in the name, in any order (or, for a "name is exactly" row, when the name is exactly that, ignoring case).
 4. A "same day" row matches only if another release of the same currency on the same UTC day matches one of its keyword groups: the US unemployment rate is big only on a payrolls day, and a Fed chair speech only on a rate-decision day.
 5. No row matches: **small**, and the release is logged once (and kept in `data/news/unmatched.json`) so the owner can place it.
 
@@ -238,83 +238,87 @@ Only **big** releases stop trading (design section 6). Medium and small news is 
 | # | Section | Rule | Tier | Currency | Keywords (all required) | Same day |
 |---|---|---|---|---|---|---|
 | 1 | override | gbp_interest_rate (added for AutoBot) | big | GBP | name is exactly "Interest Rate" |  |
-| 2 | override | usd_fed_press_conf_override | big | USD | fed + press conference |  |
-| 3 | override | usd_fed_press_conf_override | big | USD | fomc + press conference |  |
-| 4 | override | usd_gdp_adv_override | big | USD | gdp + adv |  |
-| 5 | override | gbp_gdp_mom_override | medium | GBP | gdp + mom |  |
-| 6 | override | uk_cpi_override | big | GBP | cpi |  |
-| 7 | override | uk_cpi_override | big | GBP | inflation + rate |  |
-| 8 | override | uk_cpi_override | big | GBP | core + inflation |  |
-| 9 | big | us_core_cpi | big | any | core + cpi |  |
-| 10 | big | us_core_cpi | big | any | core + inflation + rate |  |
-| 11 | big | us_cpi | big | any | cpi |  |
-| 12 | big | us_cpi | big | any | inflation + rate |  |
-| 13 | big | us_nfp | big | any | non farm payroll |  |
-| 14 | big | us_nfp | big | any | non-farm payroll |  |
-| 15 | big | us_nfp | big | any | nonfarm payroll |  |
-| 16 | big | us_nfp | big | any | nfp |  |
-| 17 | big | us_unemployment_with_nfp | big | any | unemployment rate | payrolls day |
-| 18 | big | us_fomc | big | any | fomc |  |
-| 19 | big | us_fomc | big | any | federal funds rate |  |
-| 20 | big | us_fomc | big | any | fed funds rate |  |
-| 21 | big | us_fomc | big | any | fed + interest rate decision |  |
-| 22 | big | us_fomc | big | any | fed + rate decision |  |
-| 23 | big | us_fed_chair_speech_at_rate_decision | big | any | fed chair + speech | rate-decision day |
-| 24 | big | us_fed_chair_speech_at_rate_decision | big | any | powell + speech | rate-decision day |
-| 25 | big | us_fed_chair_speech_at_rate_decision | big | any | warsh + speech | rate-decision day |
-| 26 | big | us_fed_chair_speech_at_rate_decision | big | any | fed chair | rate-decision day |
-| 27 | big | uk_boe_rate | big | any | boe + interest rate decision |  |
-| 28 | big | uk_boe_rate | big | any | boe + rate decision |  |
-| 29 | big | uk_boe_rate | big | any | bank of england + rate decision |  |
-| 30 | big | uk_boe_rate | big | any | bank rate |  |
-| 31 | big | uk_boe_rate | big | any | boe + press conference |  |
-| 32 | big | uk_boe_rate | big | any | boe + monetary policy |  |
-| 33 | big | ecb_rate | big | any | ecb + interest rate decision |  |
-| 34 | big | ecb_rate | big | any | ecb + rate decision |  |
-| 35 | big | ecb_rate | big | any | ecb + press conference |  |
-| 36 | big | ecb_rate | big | any | main refinancing |  |
-| 37 | big | ecb_rate | big | any | deposit facility |  |
-| 38 | big | ecb_rate | big | any | ecb + monetary policy |  |
-| 39 | big | uk_core_cpi | big | any | uk + core + cpi |  |
-| 40 | big | uk_core_cpi | big | any | uk + core + inflation |  |
-| 41 | big | uk_gdp | big | any | uk + gdp |  |
-| 42 | big | uk_gdp | big | any | gdp + prel |  |
-| 43 | big | uk_gdp | big | any | gdp + prelim |  |
-| 44 | big | uk_gdp | big | any | gdp + advance |  |
-| 45 | big | uk_gdp | big | any | gdp + flash |  |
-| 46 | big | us_gdp_advance_prelim | big | any | gdp + advance |  |
-| 47 | big | us_gdp_advance_prelim | big | any | gdp + prel |  |
-| 48 | big | us_gdp_advance_prelim | big | any | gdp + prelim |  |
-| 49 | big | central_bank_minutes | big | any | fomc + minutes |  |
-| 50 | big | central_bank_minutes | big | any | ecb + minutes |  |
-| 51 | big | central_bank_minutes | big | any | boe + minutes |  |
-| 52 | big | central_bank_minutes | big | any | mpc + minutes |  |
-| 53 | big | central_bank_minutes | big | any | monetary policy + minutes |  |
-| 54 | middle | ism_manufacturing_pmi | medium | any | ism + manufacturing |  |
-| 55 | middle | ism_services_pmi | medium | any | ism + services |  |
-| 56 | middle | ism_services_pmi | medium | any | ism + non-manufacturing |  |
-| 57 | middle | global_pmi_flash | medium | any | s&p global + pmi + flash |  |
-| 58 | middle | global_pmi_flash | medium | any | markit + pmi + flash |  |
-| 59 | middle | global_pmi_flash | medium | any | pmi + flash |  |
-| 60 | middle | global_pmi_flash | medium | any | composite pmi |  |
-| 61 | middle | retail_sales | medium | any | retail sales |  |
-| 62 | middle | retail_sales | medium | any | core retail sales |  |
-| 63 | middle | ppi | medium | any | ppi |  |
-| 64 | middle | ppi | medium | any | producer price |  |
-| 65 | middle | initial_jobless_claims | medium | any | initial jobless |  |
-| 66 | middle | initial_jobless_claims | medium | any | initial claims |  |
-| 67 | middle | continuing_claims | medium | any | continuing claims |  |
-| 68 | middle | continuing_claims | medium | any | continuing jobless |  |
-| 69 | middle | adp | medium | any | adp |  |
-| 70 | middle | jolts | medium | any | jolt |  |
-| 71 | middle | consumer_confidence | medium | any | consumer confidence |  |
-| 72 | middle | uom_sentiment | medium | any | michigan + sentiment |  |
-| 73 | middle | uom_sentiment | medium | any | uom + sentiment |  |
-| 74 | middle | uom_sentiment | medium | any | michigan consumer |  |
-| 75 | middle | durable_goods | medium | any | durable goods |  |
-| 76 | middle | core_pce | medium | any | core + pce |  |
-| 77 | middle | pce | medium | any | pce |  |
-| 78 | middle | industrial_production | medium | any | industrial production |  |
+| 2 | override | gbp_unemployment_rate (added for AutoBot) | big | GBP | name is exactly "Unemployment Rate" |  |
+| 3 | override | usd_building_permits_prel (added for AutoBot) | small | USD | name is exactly "Building Permits Prel" |  |
+| 4 | override | usd_existing_home_sales (added for AutoBot) | small | USD | name is exactly "Existing Home Sales" |  |
+| 5 | override | usd_housing_starts (added for AutoBot) | small | USD | name is exactly "Housing Starts" |  |
+| 6 | override | usd_fed_press_conf_override | big | USD | fed + press conference |  |
+| 7 | override | usd_fed_press_conf_override | big | USD | fomc + press conference |  |
+| 8 | override | usd_gdp_adv_override | big | USD | gdp + adv |  |
+| 9 | override | gbp_gdp_mom_override | medium | GBP | gdp + mom |  |
+| 10 | override | uk_cpi_override | big | GBP | cpi |  |
+| 11 | override | uk_cpi_override | big | GBP | inflation + rate |  |
+| 12 | override | uk_cpi_override | big | GBP | core + inflation |  |
+| 13 | big | us_core_cpi | big | any | core + cpi |  |
+| 14 | big | us_core_cpi | big | any | core + inflation + rate |  |
+| 15 | big | us_cpi | big | any | cpi |  |
+| 16 | big | us_cpi | big | any | inflation + rate |  |
+| 17 | big | us_nfp | big | any | non farm payroll |  |
+| 18 | big | us_nfp | big | any | non-farm payroll |  |
+| 19 | big | us_nfp | big | any | nonfarm payroll |  |
+| 20 | big | us_nfp | big | any | nfp |  |
+| 21 | big | us_unemployment_with_nfp | big | any | unemployment rate | payrolls day |
+| 22 | big | us_fomc | big | any | fomc |  |
+| 23 | big | us_fomc | big | any | federal funds rate |  |
+| 24 | big | us_fomc | big | any | fed funds rate |  |
+| 25 | big | us_fomc | big | any | fed + interest rate decision |  |
+| 26 | big | us_fomc | big | any | fed + rate decision |  |
+| 27 | big | us_fed_chair_speech_at_rate_decision | big | any | fed chair + speech | rate-decision day |
+| 28 | big | us_fed_chair_speech_at_rate_decision | big | any | powell + speech | rate-decision day |
+| 29 | big | us_fed_chair_speech_at_rate_decision | big | any | warsh + speech | rate-decision day |
+| 30 | big | us_fed_chair_speech_at_rate_decision | big | any | fed chair | rate-decision day |
+| 31 | big | uk_boe_rate | big | any | boe + interest rate decision |  |
+| 32 | big | uk_boe_rate | big | any | boe + rate decision |  |
+| 33 | big | uk_boe_rate | big | any | bank of england + rate decision |  |
+| 34 | big | uk_boe_rate | big | any | bank rate |  |
+| 35 | big | uk_boe_rate | big | any | boe + press conference |  |
+| 36 | big | uk_boe_rate | big | any | boe + monetary policy |  |
+| 37 | big | ecb_rate | big | any | ecb + interest rate decision |  |
+| 38 | big | ecb_rate | big | any | ecb + rate decision |  |
+| 39 | big | ecb_rate | big | any | ecb + press conference |  |
+| 40 | big | ecb_rate | big | any | main refinancing |  |
+| 41 | big | ecb_rate | big | any | deposit facility |  |
+| 42 | big | ecb_rate | big | any | ecb + monetary policy |  |
+| 43 | big | uk_core_cpi | big | any | uk + core + cpi |  |
+| 44 | big | uk_core_cpi | big | any | uk + core + inflation |  |
+| 45 | big | uk_gdp | big | any | uk + gdp |  |
+| 46 | big | uk_gdp | big | any | gdp + prel |  |
+| 47 | big | uk_gdp | big | any | gdp + prelim |  |
+| 48 | big | uk_gdp | big | any | gdp + advance |  |
+| 49 | big | uk_gdp | big | any | gdp + flash |  |
+| 50 | big | us_gdp_advance_prelim | big | any | gdp + advance |  |
+| 51 | big | us_gdp_advance_prelim | big | any | gdp + prel |  |
+| 52 | big | us_gdp_advance_prelim | big | any | gdp + prelim |  |
+| 53 | big | central_bank_minutes | big | any | fomc + minutes |  |
+| 54 | big | central_bank_minutes | big | any | ecb + minutes |  |
+| 55 | big | central_bank_minutes | big | any | boe + minutes |  |
+| 56 | big | central_bank_minutes | big | any | mpc + minutes |  |
+| 57 | big | central_bank_minutes | big | any | monetary policy + minutes |  |
+| 58 | middle | ism_manufacturing_pmi | medium | any | ism + manufacturing |  |
+| 59 | middle | ism_services_pmi | medium | any | ism + services |  |
+| 60 | middle | ism_services_pmi | medium | any | ism + non-manufacturing |  |
+| 61 | middle | global_pmi_flash | medium | any | s&p global + pmi + flash |  |
+| 62 | middle | global_pmi_flash | medium | any | markit + pmi + flash |  |
+| 63 | middle | global_pmi_flash | medium | any | pmi + flash |  |
+| 64 | middle | global_pmi_flash | medium | any | composite pmi |  |
+| 65 | middle | retail_sales | medium | any | retail sales |  |
+| 66 | middle | retail_sales | medium | any | core retail sales |  |
+| 67 | middle | ppi | medium | any | ppi |  |
+| 68 | middle | ppi | medium | any | producer price |  |
+| 69 | middle | initial_jobless_claims | medium | any | initial jobless |  |
+| 70 | middle | initial_jobless_claims | medium | any | initial claims |  |
+| 71 | middle | continuing_claims | medium | any | continuing claims |  |
+| 72 | middle | continuing_claims | medium | any | continuing jobless |  |
+| 73 | middle | adp | medium | any | adp |  |
+| 74 | middle | jolts | medium | any | jolt |  |
+| 75 | middle | consumer_confidence | medium | any | consumer confidence |  |
+| 76 | middle | uom_sentiment | medium | any | michigan + sentiment |  |
+| 77 | middle | uom_sentiment | medium | any | uom + sentiment |  |
+| 78 | middle | uom_sentiment | medium | any | michigan consumer |  |
+| 79 | middle | durable_goods | medium | any | durable goods |  |
+| 80 | middle | core_pce | medium | any | core + pce |  |
+| 81 | middle | pce | medium | any | pce |  |
+| 82 | middle | industrial_production | medium | any | industrial production |  |
 | | default | default_small | small | any | (no row matched) | |
 
 ## Switches in .env

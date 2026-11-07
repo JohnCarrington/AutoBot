@@ -45,7 +45,7 @@ class NewsTableError(Exception):
 class Row:
     section: str                        # override, big or middle
     rule: str
-    tier: str                           # big or medium
+    tier: str                           # big or medium (an override may also be small: placed by the owner)
     currency: str | None                # overrides only
     all_of: tuple[str, ...]
     name_is: str | None
@@ -112,8 +112,8 @@ def load_table(path: str | Path = TABLE_PATH) -> list[Row]:
                 if not isinstance(currency, str) or not re.fullmatch(r"[A-Z]{3}", currency):
                     raise NewsTableError(f"{where}: an override needs its currency, like GBP, got {currency!r}")
                 row_tier = r.get("tier")
-                if row_tier not in (BIG, MEDIUM):
-                    raise NewsTableError(f"{where}: tier must be big or medium, got {row_tier!r}")
+                if row_tier not in (BIG, MEDIUM, SMALL):
+                    raise NewsTableError(f"{where}: tier must be big, medium or small, got {row_tier!r}")
             rows.append(Row(section, rule, row_tier, currency, all_of, name_is, groups))
     if not rows:
         raise NewsTableError("The news table has no rows.")
