@@ -5,16 +5,19 @@ Reads the candle store only; never contacts IG; places nothing.
 The week is replayed from its open, exactly as the analyser does (so the
 market state at each moment is the one the service would have had). At each
 5-minute candle:
-  * "the current state" is the analyser's state after the previous finished
-    candle (the state the strategy would see while this candle forms);
-  * each strategy is given the candle; when its entry price is reached, the
-    candidate is checked (strategies/common.py: switch, state, direction rule).
+  * each strategy is given the candle; a setup only starts if the checks allow
+    it then (strategies/common.py: switch, state, direction rule), and when its
+    entry price is reached the candidate is checked again;
+  * the bounce and range trade have their OWN rejection watcher (several bounce
+    setups per direction, and the start check); the analyser's watcher is not
+    changed (one setup per version and direction, nothing filtered).
 With stored candles there are no ticks, so an entry is shown at the start of
 the candle it was reached in.
 """
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from datetime import datetime
 from types import SimpleNamespace
 from typing import Any
@@ -25,23 +28,35 @@ from analyser.states import CONSOLIDATION, NONE
 from config.pairs import check_same_pair
 from levels.current import build
 from levels.rules import PIVOT
-from prices.indicators import ema
+from prices.indicators import Band, ema
 from prices.store import CandleStore
+from rejection.watch import BOUNCE, RANGE, RejectionWatcher
 from strategies.bollinger_bounce.strategy import candidates as bounce_candidates
-from strategies.common import Idea, check
+from strategies.common import BOLLINGER_BOUNCE, RANGE_TRADE, Idea, allowed, check, start_note
 from strategies.ema_pullback.strategy import EmaPullback, HourlyTrendReader
 from strategies.range_trade.strategy import candidates as range_candidates
 from strategies.slow_grind.strategy import SlowGrind
 
+STRATEGY_OF = {BOUNCE: BOLLINGER_BOUNCE, RANGE: RANGE_TRADE}
 
-def replay(settings: Any, store: CandleStore, start: datetime, end: datetime) -> list[Idea]:
+
+@dataclass
+class Replay:
+    ideas: list[Idea]
+    not_started: list[tuple] = field(default_factory=list)   # (time, strategy, direction, why)
+    notes: dict = field(default_factory=dict)                 # strategy -> [(time, direction, text)]
+    watcher: Any = None                                       # the strategies' rejection watcher
+    states: dict = field(default_factory=dict)                # candle start -> state after that candle
+
+
+def run(settings: Any, store: CandleStore, start: datetime, end: datetime) -> Replay:
     check_same_pair(settings, store)
     memo = MemoStore(store)
     tracker = StateTracker(settings, memo)
     tracker.replay(end)
     hist = tracker.history
     if not hist:
-        return []
+        return Replay([])
     side = settings.chart.price
     week = [h[0].candle for h in hist]
     warm = last_candles(memo, "5m", tracker.week_open, settings.market_states.indicator_warm_up_candles)
@@ -51,23 +66,62 @@ def replay(settings: Any, store: CandleStore, start: datetime, end: datetime) ->
     fast, slow = ema(allc, side, ep.fast_ema_periods), ema(allc, side, ep.slow_ema_periods)
     ema100 = ema(allc, side, settings.analyser.direction_ema_periods)
     hourly = HourlyTrendReader(settings, last_candles(memo, "1h", end, ep.hourly_history_candles))
-    grind, pullback = SlowGrind(settings), EmaPullback(settings, hourly)
     changes = tracker.changes
-    ideas: list[Idea] = []
-    prev = None
-    for f, _state, _direction, events, _moved, _sp in hist:
+    index = {c.start: i for i, c in enumerate(week)}
+    pivots: dict = {}
+
+    def state_after(i: int):
+        """The analyser's state after week candle i (before the week's first candle: consolidation)."""
+        t = week[i].start if i >= 0 else None
+        before = [ch for ch in changes if t is not None and ch.time <= t]
+        return (SimpleNamespace(state=before[-1].state, direction=before[-1].direction, trend_type=before[-1].trend_type)
+                if before else SimpleNamespace(state=CONSOLIDATION, direction=NONE, trend_type=None))
+
+    def pivot_at(t):
+        if t not in pivots:
+            got = [lv.price for lv in build(settings, memo, t).levels if lv.type == PIVOT]
+            pivots[t] = got[0] if got else None
+        return pivots[t]
+
+    out = Replay([], states={c.start: state_after(i) for i, c in enumerate(week)})
+
+    def may_start(strategy, direction, c, price, during):
+        """At a setup's start: during a candle -> the state after the candle before and the 100 EMA
+        then; at a candle's close -> the state after that candle and its 100 EMA."""
+        i = index[c.start]
+        j = i - 1 if during else i
+        st = state_after(j)
+        e100 = ema100.get(week[j].start) if j >= 0 else None
+        reasons, rule = allowed(settings, strategy, direction, price, st, pivot_at(c.start), e100)
+        if reasons:
+            out.not_started.append((c.start, strategy, direction, "; ".join(reasons)))
+            return False, "; ".join(reasons)
+        return True, start_note(strategy, direction, st, rule)
+
+    def may_start_rejection(version, direction, c):
+        ok, note = may_start(STRATEGY_OF[version], direction, c, getattr(c, f"{side}_close"), False)
+        return ok, note
+
+    grind = SlowGrind(settings, may_start)
+    pullback = EmaPullback(settings, hourly, may_start)
+    watcher = RejectionWatcher(settings, several=frozenset({BOUNCE}), may_start=may_start_rejection)
+    for i, (f, _state, _direction, _events, _moved, _sp) in enumerate(hist):
         c = f.candle
+        band = Band(c.start, f.middle, f.upper, f.lower) if f.upper is not None else None
+        events = watcher.on_candle(c, band, build(settings, memo, c.start))
         cands = (grind.on_candle(c, sg_ema.get(c.start))
                  + pullback.on_candle(c, fast.get(c.start), slow.get(c.start))
-                 + bounce_candidates(tracker.watcher, events) + range_candidates(tracker.watcher, events))
+                 + bounce_candidates(watcher, events) + range_candidates(watcher, events))
         if cands and start <= c.start < end:
-            before = [ch for ch in changes if prev is not None and ch.time <= prev.start]
-            st = (SimpleNamespace(state=before[-1].state, direction=before[-1].direction,
-                                  trend_type=before[-1].trend_type) if before
-                  else SimpleNamespace(state=CONSOLIDATION, direction=NONE, trend_type=None))
-            pivots = [lv.price for lv in build(settings, memo, c.start).levels if lv.type == PIVOT]
-            e100 = ema100.get(prev.start) if prev is not None else None
+            st = state_after(i - 1)
+            e100 = ema100.get(week[i - 1].start) if i > 0 else None
             for cand in cands:
-                ideas.append(check(settings, settings.market.pair, cand, st, pivots[0] if pivots else None, e100))
-        prev = c
-    return ideas
+                out.ideas.append(check(settings, settings.market.pair, cand, st, pivot_at(c.start), e100))
+    out.not_started = [x for x in out.not_started if start <= x[0] < end]
+    out.notes = {"slow grind": grind.notes, "EMA pullback": pullback.notes}
+    out.watcher = watcher
+    return out
+
+
+def replay(settings: Any, store: CandleStore, start: datetime, end: datetime) -> list[Idea]:
+    return run(settings, store, start, end).ideas

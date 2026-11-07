@@ -70,7 +70,7 @@ def test_an_allowed_idea_records_everything(S):
         "pair": "GBPUSD", "strategy": "slow grind", "direction": "sell", "time_utc": "2026-11-04T09:00:00Z",
         "entry_price": "100", "state": "trend", "state_direction": "down", "trend_type": "slow grind",
         "direction_rule": "sell side"}
-    assert d["steps"][0] == "made up" and d["steps"][-1].startswith("allowed: slow grind in a trend down")
+    assert d["steps"][0] == "made up" and d["steps"][-1].startswith("allowed at entry: slow grind in a trend down")
 
 
 def test_a_strategy_switched_off_has_no_ideas(S):
@@ -376,16 +376,17 @@ def test_range_trade_cancelled_above_the_rejection_high_has_no_idea(S):
     assert [x for x in watch(S, candles) if x.strategy == RANGE_TRADE] == []
 
 
-# ---- the replay: the state at the moment the entry price was reached -------------------------
+# ---- the replay: the checks when a setup starts and again at entry -----------------------------
 
-def fake_replay(monkeypatch, S, change_at):
-    """A slow grind sell triggered on candle 4 (as above), with the analyser's
-    state turning to a down trend at candle `change_at`."""
+def fake_replay(monkeypatch, S, states):
+    """A slow grind sell: the pause starts at candle 1 (red 0, green 1), counts at 3, and price
+    breaks it on candle 4. `states`: {candle number: state from that candle on}."""
     candles = SELL_PAUSE + [C(4, 102, 102, 99, 99.5)]
-    hist = [(SimpleNamespace(candle=c), None, None, [], None, None) for c in candles]
+    hist = [(SimpleNamespace(candle=c, upper=None, middle=None, lower=None), None, None, [], None, None)
+            for c in candles]
     tracker = SimpleNamespace(history=hist, week_open=START, watcher=None, replay=lambda end: None,
-                              changes=[SimpleNamespace(time=candles[change_at].start, state=TREND, direction=DOWN,
-                                                       trend_type="slow grind")])
+                              changes=[SimpleNamespace(time=candles[i].start, state=st, direction=d, trend_type=None)
+                                       for i, (st, d) in sorted(states.items())])
     level = SimpleNamespace(type="pivot", price=D(110))
     monkeypatch.setattr(replay_mod, "StateTracker", lambda s, store: tracker)
     monkeypatch.setattr(replay_mod, "MemoStore", lambda store: store)
@@ -393,16 +394,147 @@ def fake_replay(monkeypatch, S, change_at):
     monkeypatch.setattr(replay_mod, "last_candles", lambda *a: [])
     monkeypatch.setattr(replay_mod, "ema", lambda candles, side, periods: {c.start: D(120) for c in candles})
     monkeypatch.setattr(replay_mod, "build", lambda s, store, t: SimpleNamespace(levels=[level]))
-    monkeypatch.setattr(replay_mod, "bounce_candidates", lambda w, ev: [])
-    monkeypatch.setattr(replay_mod, "range_candidates", lambda w, ev: [])
-    return replay_mod.replay(S, None, START, START + timedelta(hours=1))
+    return replay_mod.run(S, None, START, START + timedelta(hours=1))
 
 
-def test_replay_uses_the_state_after_the_last_finished_candle(monkeypatch, S):
-    (i,) = fake_replay(monkeypatch, S, change_at=3)     # the trend began on the candle before the break
+def grind_ideas(r):
+    return [i for i in r.ideas if i.strategy == SLOW_GRIND and i.direction == SELL]
+
+
+def test_replay_allowed_at_start_and_at_entry_gives_an_idea(monkeypatch, S):
+    r = fake_replay(monkeypatch, S, {0: (TREND, DOWN)})
+    (i,) = grind_ideas(r)
     assert i.allowed and (i.state, i.state_direction) == (TREND, DOWN)
+    assert any(x.startswith("setup start allowed: slow grind sell in a trend down") for x in i.steps)
+    assert i.steps[-1].startswith("allowed at entry")
 
 
-def test_replay_a_state_decided_on_the_entry_candle_itself_is_too_late(monkeypatch, S):
-    (i,) = fake_replay(monkeypatch, S, change_at=4)
-    assert not i.allowed and i.state == CONSOLIDATION and "consolidation" in i.blocked_by
+def test_replay_a_setup_that_starts_when_not_allowed_is_not_started(monkeypatch, S):
+    r = fake_replay(monkeypatch, S, {3: (TREND, DOWN)})      # consolidation when the pause starts (candle 1)
+    assert grind_ideas(r) == []
+    assert any(st == SLOW_GRIND and d == SELL and "consolidation" in why for _, st, d, why in r.not_started)
+    assert any("not started" in txt for _, d, txt in r.notes[SLOW_GRIND] if d == SELL)
+
+
+def test_replay_a_setup_starting_at_a_close_uses_the_state_after_that_candle(monkeypatch, S):
+    (i,) = grind_ideas(fake_replay(monkeypatch, S, {1: (TREND, DOWN)}))   # decided on the pause's start candle
+    assert i.allowed
+
+
+def test_replay_checked_again_at_entry_with_the_state_after_the_last_finished_candle(monkeypatch, S):
+    r = fake_replay(monkeypatch, S, {0: (TREND, DOWN), 3: (CONSOLIDATION, NONE)})
+    (i,) = grind_ideas(r)
+    assert not i.allowed and "consolidation" in i.blocked_by
+    (j,) = grind_ideas(fake_replay(monkeypatch, S, {0: (TREND, DOWN), 4: (CONSOLIDATION, NONE)}))
+    assert j.allowed                                          # decided on the entry candle itself: too late to matter
+
+
+# ---- the start check inside each strategy ---------------------------------------------------
+
+def refuse(*a):
+    return False, "not allowed (made up)"
+
+
+def test_slow_grind_a_refused_start_starts_no_pause(S):
+    g = SlowGrind(S, refuse)
+    out = [x for c in SELL_PAUSE + [C(4, 102, 102, 99, 99.5)] for x in g.on_candle(c, EMA21)]
+    assert out == [] and any("not started: not allowed (made up)" in t for _, _, t in g.notes)
+
+
+def test_ema_pullback_a_refused_touch_starts_no_setup(S):
+    p, out = EmaPullback(S, Hourly(), refuse), []
+    for i, c in enumerate(BEFORE + [C(5, 104, 104.5, 102.5, 103.5), C(6, 103.5, 110, 103, 109)]):
+        out += p.on_candle(c, FAST if i >= 4 else D(90), SLOW)
+    assert out == [] and any("setup not started" in t for _, _, t in p.notes)
+
+
+def test_ema_pullback_start_check_gets_the_touch_price_while_the_candle_forms(S):
+    seen = []
+    p = EmaPullback(S, Hourly(), lambda *a: (seen.append(a), (True, "ok"))[1])
+    for i, c in enumerate(BEFORE + [C(5, 104, 104.5, 102.5, 103.5)]):
+        p.on_candle(c, FAST if i >= 4 else D(90), SLOW)
+    (strategy, d, c, price, during), = seen
+    assert (strategy, d, price, during) == (EMA_PULLBACK, BUY, FAST, True)
+
+
+def test_bounce_a_refused_pierce_starts_no_setup(S):
+    w = RejectionWatcher(S, may_start=refuse)
+    for c in BOUNCE_SELL:
+        w.on_candle(c, band(c), None)
+    assert w.setups == [] and w.not_started[0][:2] == ("bounce", SELL)
+
+
+# ---- 3.3: several bounce setups in the same direction ---------------------------------------
+
+TWO_BOUNCES = [C(0, 106, 112, 105, 108),       # pierce 1 (band 110)
+               C(1, 108, 109, 103, 104),       # reversal 1 (cancel above 109)
+               C(2, 104, 105, 100, 101),       # confirmation 1 (closes below 103); the band is down to 104.5: pierce 2
+               C(3, 101, 101.5, 98.5, 99)]     # trigger 1 below 100; reversal 2 (red)
+TWO_BANDS = [110, 110, D("104.5"), 110]
+
+
+def test_bounce_several_setups_per_direction_for_the_strategies(S):
+    w = RejectionWatcher(S, several=frozenset({"bounce"}))
+    for c, up in zip(TWO_BOUNCES, TWO_BANDS):
+        w.on_candle(c, band(c, upper=up), None)
+    sells = [st for st in w.setups if st.version == "bounce" and st.direction == SELL]
+    assert len(sells) == 2 and sells[1].pierce.start == TWO_BOUNCES[2].start
+    assert sells[0].status == "triggered" and sells[1].stage == "confirmation"
+
+
+def test_bounce_the_analysers_watcher_keeps_one_setup_per_direction(S):
+    w = RejectionWatcher(S)
+    for c, up in zip(TWO_BOUNCES, TWO_BANDS):
+        w.on_candle(c, band(c, upper=up), None)
+    assert len([st for st in w.setups if st.version == "bounce" and st.direction == SELL]) == 1
+
+
+def test_bounce_a_fresh_pierce_while_waiting_for_the_reversal_restarts_it_not_a_second_setup(S):
+    w = RejectionWatcher(S, several=frozenset({"bounce"}))
+    for c in [C(0, 106, 112, 105, 108), C(1, 108, 113, 107, 112)]:     # green: pierces again
+        w.on_candle(c, band(c), None)
+    sells = [st for st in w.setups if st.version == "bounce" and st.direction == SELL]
+    assert len(sells) == 1 and sells[0].pierce.start == START + timedelta(minutes=5)
+
+
+# ---- 3.1: a pause starts with two candles in opposite directions, in either order -----------
+
+def test_slow_grind_green_then_red_also_starts_a_pause(S):
+    candles = [C(0, 101, 103, 100, 102.5),      # green
+               C(1, 102.5, 103, 100.5, 101),    # red: no new low below 100, closes below the EMA: counts
+               C(2, 101, 102, 100.2, 101.5), C(3, 101.5, 102.5, 100.1, 102), C(4, 102, 102, 99, 99.5)]
+    (_, x), = grind(S, candles)
+    assert (x.direction, x.entry_price) == (SELL, D(100)) and "green then red" in x.steps[0]
+
+
+def test_slow_grind_no_extra_start_conditions(S):
+    # the second candle makes a new low: the pause still starts, its low is the lower one, and it does not count
+    candles = [C(0, 105, 106, 100, 101), C(1, 99.5, 101, 99, 100.5), C(2, 100.5, 101, 99.5, 100),
+               C(3, 100, 100.8, 99.2, 100.5), C(4, 100.5, 101, 99.3, 100.2), C(5, 100.2, 100.2, 98, 98.5)]
+    (_, x), = grind(S, candles)
+    assert x.entry_price == D(99) and "the second candle counts" not in x.steps[0]
+    # the start candles may close above the EMA (a later close above it still cancels)
+    g = SlowGrind(S)
+    g.on_candle(C(0, 105, 106, 100, 101), D(100.5))
+    g.on_candle(C(1, 101, 103, 100.5, 102), D(100.5))
+    assert g.pause[SELL] is not None and g.pause[SELL].count == 0
+
+
+# ---- 3.2: the entry counts back from the first candle that reached the 8 EMA -----------------
+
+def test_ema_pullback_entry_from_the_candles_before_the_first_candle_to_reach_the_8_ema(S):
+    candles = BEFORE + [C(5, 104, 120, 97, 97.5),         # reaches the 8 EMA but closes below the 21: no setup
+                        C(6, 99, 104, 98.5, 103),          # reaches it again: the setup
+                        C(7, 103, 110, 103, 109)]
+    (x,) = pullback(S, candles)
+    assert x.entry_price == D(109)                       # BEFORE's highest high 106 + 3, not candle 5's 120 + 3
+    assert "the first candle to reach the 8 EMA was" in x.steps[1]
+
+
+def test_ema_pullback_a_candle_that_does_not_reach_the_8_ema_ends_the_run(S):
+    candles = BEFORE + [C(5, 104, 120, 97, 97.5),         # reaches it (closes below the 21)
+                        C(6, 104, 106, 103.5, 105),        # does not reach it: the run ends
+                        C(7, 105, 108, 102.5, 104),        # a new run starts here: the setup
+                        C(8, 104, 124, 104, 123)]
+    (x,) = pullback(S, candles)
+    assert x.entry_price == D(123)                       # highest high of candles 2-6 is candle 5's 120, + 3

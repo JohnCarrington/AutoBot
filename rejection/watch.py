@@ -42,7 +42,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta, timezone
 from decimal import Decimal
-from typing import Any, Iterable
+from typing import Any, Callable, Iterable
 
 from levels.rules import to_decimals
 from prices.indicators import Band
@@ -124,12 +124,24 @@ class RejectionWatcher:
     """Feed it each finished candle in order with on_candle(), and, when live,
     each price with on_price(). It returns the new events each time."""
 
-    def __init__(self, settings: Any):
+    def __init__(self, settings: Any, several: frozenset = frozenset(),
+                 may_start: Callable[[str, str, Candle], tuple[bool, str]] | None = None):
+        """several: the versions (bounce, range) that may have more than one setup
+        running in the same direction (the strategies' own watcher: bounce). A new
+        setup still does not start while one of that version and direction is
+        waiting for its reversal candle: that one starts its count again instead.
+        may_start(version, direction, candle): asked before a setup starts; a setup
+        it refuses is not started (kept in not_started with the reason). The
+        analyser's watcher uses neither: one setup per version and direction, and
+        every setup starts (the rejection part never filters)."""
         self.s = settings
         self.side = settings.chart.price
+        self.several = frozenset(several)
+        self.may_start = may_start
         self.events: list[Event] = []
         self.setups: list[Setup] = []
-        self._active: dict[tuple[str, str], Setup] = {}
+        self.not_started: list[tuple[str, str, datetime, str]] = []   # (version, direction, candle start, why)
+        self._active: dict[int, Setup] = {}
 
     # -- helpers on the chart price
     def _o(self, c): return getattr(c, f"{self.side}_open")
@@ -162,7 +174,7 @@ class RejectionWatcher:
 
     def _end(self, st: Setup, status: str) -> None:
         st.status, st.stage = status, "done"
-        self._active.pop((st.version, st.direction), None)
+        self._active.pop(st.id, None)
 
     # ---- one finished candle ----------------------------------------------------------
 
@@ -175,12 +187,19 @@ class RejectionWatcher:
             self._advance(st, c, band, levels)
         for version in (BOUNCE, RANGE):
             for direction in (SELL, BUY):
-                if (version, direction) not in self._active:
-                    pierced = self._pierced(version, direction, c, band, levels)
-                    if pierced and self.spike(c):
-                        self._ignored(0, version, direction, c, "a new pierce")
-                    elif pierced:
-                        self._start(version, direction, c, pierced, levels)
+                same = [st for st in self._active.values() if st.version == version and st.direction == direction]
+                if same and (version not in self.several or any(st.stage == "reversal" for st in same)):
+                    continue
+                pierced = self._pierced(version, direction, c, band, levels)
+                if pierced and self.spike(c):
+                    self._ignored(0, version, direction, c, "a new pierce")
+                elif pierced:
+                    if self.may_start is not None:
+                        ok, why = self.may_start(version, direction, c)
+                        if not ok:
+                            self.not_started.append((version, direction, c.start, why))
+                            continue
+                    self._start(version, direction, c, pierced, levels)
         return self.events[before:]
 
     def _pierced(self, version, direction, c, band, levels) -> list[dict]:
@@ -208,7 +227,7 @@ class RejectionWatcher:
     def _start(self, version, direction, c, pierced, levels) -> None:
         st = Setup(len(self.setups) + 1, version, direction, c, [])
         self.setups.append(st)
-        self._active[(version, direction)] = st
+        self._active[st.id] = st
         self._set_pierce(st, c, pierced, levels, first=True)
 
     def _set_pierce(self, st: Setup, c: Candle, pierced, levels, first: bool) -> None:

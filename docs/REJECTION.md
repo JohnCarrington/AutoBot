@@ -59,6 +59,12 @@ There is **one** rejection part (`rejection/`), shared by the analyser, the stra
   - The few between 1.6 and 3.0 were mostly the tail of the rollover (22:00 to 01:00). They move the sell price by 1.5 pips or less, which is under the 3-pip level rule.
   - The limit sits where it is not delicate: moving it from 3 to 4 would change only 6 candles.
 
+## The strategies' own watcher
+
+The analyser uses the watcher as described above: one setup per version and direction, and every setup starts. The strategies (`strategies/replay.py`) run a second watcher with two options (`RejectionWatcher(settings, several=..., may_start=...)`):
+- **several = {bounce}:** more than one bounce setup may run in the same direction (owner, 7 November 2026). A new one still does not start while one of the same direction is waiting for its reversal candle: a fresh pierce restarts that one's count instead.
+- **may_start:** the strategy checks (switch, state, direction rule) are asked before a setup starts; a refused setup is not started and is kept in `not_started` with the reason.
+
 ## The reversal watch windows
 
 - From the settings: 10:00, 11:00, 13:00, 14:00, 16:00 and 17:00 UK (`reversal_watch.times`), each from 20 minutes before (`reversal_watch.minutes_before`) to 20 minutes after (`reversal_watch.minutes_after`), both ends included. UK clock time, so the windows move with BST.
