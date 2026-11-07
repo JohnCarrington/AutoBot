@@ -550,7 +550,7 @@ BOE_CAL = [{"time_utc": "2026-11-05T12:00:00Z", "country": "GB", "event": "BoE I
 OTHERS = (SLOW_GRIND, BOLLINGER_BOUNCE, RANGE_TRADE)
 
 
-@pytest.mark.parametrize("t", [U(2026, 11, 3, 3, 0), U(2026, 11, 3, 23, 0), U(2026, 11, 1, 21, 5), U(2026, 11, 6, 21, 30)])
+@pytest.mark.parametrize("t", [U(2026, 11, 3, 3, 0), U(2026, 11, 3, 23, 0), U(2026, 11, 1, 21, 5), U(2026, 11, 5, 21, 30)])
 def test_the_ema_pullback_may_open_at_any_time_the_market_is_open(S, t):
     assert may_open(S, "GBPUSD", EMA_PULLBACK, t, []) == []
     for name in OTHERS:
@@ -620,3 +620,15 @@ def test_ema_pullback_trades_do_not_count_towards_most_at_once(S):
     from strategies.common import counts_towards_most_at_once
     assert counts_towards_most_at_once(EMA_PULLBACK) is False
     assert all(counts_towards_most_at_once(n) for n in OTHERS)
+
+
+@pytest.mark.parametrize("t", [U(2026, 11, 6, 20, 30), U(2026, 11, 6, 20, 45), U(2026, 11, 6, 21, 55),
+                               U(2026, 10, 23, 19, 30), U(2026, 10, 23, 20, 45)])     # GMT, then BST (19:30 UTC = 20:30 UK)
+def test_no_ema_pullback_opens_after_20_30_uk_on_friday(S, t):
+    assert any("after 20:30 UK on Friday" in r for r in may_open(S, "GBPUSD", EMA_PULLBACK, t, []))
+
+
+def test_the_ema_pullback_still_opens_on_friday_before_20_30_uk_and_thursday_night(S):
+    assert may_open(S, "GBPUSD", EMA_PULLBACK, U(2026, 10, 23, 19, 25), []) == []      # 20:25 BST
+    assert may_open(S, "GBPUSD", EMA_PULLBACK, U(2026, 11, 6, 20, 25), []) == []      # 20:25 GMT
+    assert may_open(S, "GBPUSD", EMA_PULLBACK, U(2026, 11, 5, 22, 0), []) == []       # Thursday 22:00

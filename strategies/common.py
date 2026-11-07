@@ -90,7 +90,9 @@ class Idea:
 
 def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: list | None = None) -> list[str]:
     """Every reason a new trade of this strategy may not open at t (empty: hours and news allow it).
-    EMA pullback: any time the market is open, big-news windows included (owner, 7 November 2026).
+    EMA pullback: any time the market is open, big-news windows included, except after
+    hours.close_all_trades_at (20:30) UK on Friday, so none is held over the weekend (owner,
+    7 November 2026).
     Every other strategy: UK time from NEW_TRADES_FROM to NEW_TRADES_UNTIL, and not in a big-news
     no-new-trades window."""
     from zoneinfo import ZoneInfo
@@ -99,9 +101,13 @@ def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: lis
     reasons = []
     if not MarketHours(settings.market_hours).is_open(t):
         reasons.append("the market is closed")
-    if strategy == EMA_PULLBACK:
-        return reasons
     tz = settings.hours.timezone
+    if strategy == EMA_PULLBACK:
+        lt = t.astimezone(ZoneInfo(tz) if isinstance(tz, str) else tz)
+        if lt.weekday() == 4 and lt.time() >= settings.hours.close_all_trades_at:
+            reasons.append(f"after {settings.hours.close_all_trades_at:%H:%M} UK on Friday: "
+                           "no EMA pullback trade is held over the weekend")
+        return reasons
     lt = t.astimezone(ZoneInfo(tz) if isinstance(tz, str) else tz).time()
     sw = settings.switches
     if not (sw.new_trades_from <= lt < sw.new_trades_until):
