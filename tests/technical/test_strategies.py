@@ -632,3 +632,43 @@ def test_the_ema_pullback_still_opens_on_friday_before_20_30_uk_and_thursday_nig
     assert may_open(S, "GBPUSD", EMA_PULLBACK, U(2026, 10, 23, 19, 25), []) == []      # 20:25 BST
     assert may_open(S, "GBPUSD", EMA_PULLBACK, U(2026, 11, 6, 20, 25), []) == []      # 20:25 GMT
     assert may_open(S, "GBPUSD", EMA_PULLBACK, U(2026, 11, 5, 22, 0), []) == []       # Thursday 22:00
+
+
+# ---- the EMA pullback's take profit on big-news days (design section 4) ----------------------
+
+def _ev(t, country, event, impact="high"):
+    return {"time_utc": t, "country": country, "event": event, "estimate": 4.0, "prev": 4.0, "actual": None,
+            "impact": impact, "unit": "%"}
+
+
+def test_an_ema_pullback_opened_on_a_big_news_day_gets_100_pips(S):
+    from strategies.common import take_profit_pips
+    cal = [_ev("2026-11-05T12:00:00Z", "GB", "BoE Interest Rate Decision")]
+    for opened in (U(2026, 11, 5, 0, 5), U(2026, 11, 5, 4, 0), U(2026, 11, 5, 13, 0), U(2026, 11, 5, 23, 55)):
+        assert take_profit_pips(S, EMA_PULLBACK, opened, "GBPUSD", cal) == 100
+    for opened in (U(2026, 11, 4, 23, 55), U(2026, 11, 6, 0, 5)):       # the day before and after
+        assert take_profit_pips(S, EMA_PULLBACK, opened, "GBPUSD", cal) == 30
+
+
+def test_the_big_news_day_is_the_uk_calendar_day(S):
+    from strategies.common import take_profit_pips
+    cal = [_ev("2026-10-21T23:30:00Z", "US", "Non Farm Payrolls")]      # 00:30 BST on Thursday 22 October
+    assert take_profit_pips(S, EMA_PULLBACK, U(2026, 10, 21, 22, 30), "GBPUSD", cal) == 30   # 23:30 BST Wednesday
+    assert take_profit_pips(S, EMA_PULLBACK, U(2026, 10, 22, 8, 0), "GBPUSD", cal) == 100
+
+
+def test_only_big_news_for_the_pair_counts(S):
+    from strategies.common import take_profit_pips
+    t = U(2026, 11, 5, 9, 0)
+    assert take_profit_pips(S, EMA_PULLBACK, t, "GBPUSD", [_ev("2026-11-05T12:00:00Z", "GB", "BoE Interest Rate Decision", "low")]) == 30
+    assert take_profit_pips(S, EMA_PULLBACK, t, "GBPUSD", [_ev("2026-11-05T12:00:00Z", "JP", "BoJ Interest Rate Decision")]) == 30
+    assert take_profit_pips(S, EMA_PULLBACK, t, "GBPUSD", [_ev("2026-11-05T13:30:00Z", "US", "Retail Sales MoM")]) == 30   # medium
+    assert take_profit_pips(S, EMA_PULLBACK, t, "GBPUSD", []) == 30
+
+
+def test_the_other_strategies_keep_100_pips_on_any_day(S):
+    from strategies.common import take_profit_pips
+    cal = [_ev("2026-11-05T12:00:00Z", "GB", "BoE Interest Rate Decision")]
+    for name in OTHERS:
+        for opened in (U(2026, 11, 5, 9, 0), U(2026, 11, 4, 9, 0)):
+            assert take_profit_pips(S, name, opened, "GBPUSD", cal) == 100

@@ -144,10 +144,30 @@ def closed_on_level_rejection(strategy: str) -> bool:
     return strategy != EMA_PULLBACK
 
 
-def take_profit_pips(settings: Any, strategy: str) -> int:
-    """Design section 4: the EMA pullback's own take profit (ema_pullback.take_profit_pips); every
-    other strategy uses TAKE_PROFIT_PIPS."""
-    return settings.ema_pullback.take_profit_pips if strategy == EMA_PULLBACK else settings.switches.take_profit_pips
+def big_news_day(settings: Any, pair: str, t: datetime, calendar: list | None = None) -> bool:
+    """Whether the UK calendar day of t has a BIG release for the pair (the news table)."""
+    from datetime import datetime as dt, time as tm, timedelta, timezone
+    from zoneinfo import ZoneInfo
+    from news.calendar import big_news_windows
+    tz = settings.hours.timezone
+    uk = ZoneInfo(tz) if isinstance(tz, str) else tz
+    day = t.astimezone(uk).date()
+    start = dt.combine(day, tm(0, 0), tzinfo=uk).astimezone(timezone.utc)
+    end = dt.combine(day + timedelta(days=1), tm(0, 0), tzinfo=uk).astimezone(timezone.utc)
+    return any(start <= w.release_utc < end for w in big_news_windows(settings, pair, start, end, calendar))
+
+
+def take_profit_pips(settings: Any, strategy: str, opened: datetime | None = None, pair: str | None = None,
+                     calendar: list | None = None) -> int:
+    """Design section 4: every strategy uses TAKE_PROFIT_PIPS (100), except the EMA pullback: its own
+    ema_pullback.take_profit_pips (30), or TAKE_PROFIT_PIPS for a trade opened on a UK day with big news
+    for the pair (owner, 7 November 2026). Give `opened` and `pair` for an EMA pullback trade; without
+    them its normal take profit (30) is returned."""
+    if strategy != EMA_PULLBACK:
+        return settings.switches.take_profit_pips
+    if opened is not None and pair is not None and big_news_day(settings, pair, opened, calendar):
+        return settings.switches.take_profit_pips
+    return settings.ema_pullback.take_profit_pips
 
 
 def counts_towards_most_at_once(strategy: str) -> bool:
