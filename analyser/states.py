@@ -20,14 +20,16 @@ this candle happen at once (they are proof in the price itself):
     trend, a bounce failed at or below the 21 EMA and middle band, then price
     makes a new extreme on the outer band, with the 7/13/21 EMAs stacked, price
     beyond them and beyond the 100 EMA, and the outer band sloping -> trend;
-  * a reversal candle against an emerging trend or trend that has moved at
-    least possible_reversal.min_trend_move_pips since it started -> possible
-    reversal (no extra size rule: the shared rejection part decides);
-  * in a possible reversal: the reversal confirmed -> emerging trend the new
+  * a possible reversal needs BOTH a move of at least
+    possible_reversal.min_trend_move_pips since the trend started AND a
+    confirmed rejection at a level against it (the shared rejection part's
+    confirmation; a single opposite candle is not enough);
+  * in a possible reversal: the rejection's trigger -> emerging trend the new
     way; the old trend making a new extreme, or the setup cancelled or expired
-    -> back to the old trend;
-  * an emerging trend closing emerging_cancel_pips back past where it started
-    -> cancelled.
+    -> back to the old trend.
+An emerging trend is cancelled only by persistence_candles closes in a row back
+beyond the level it was rejected at (if it started from a level rejection), or
+back inside the Bollinger bands (if it started from a breakout).
 Changes that depend on a CONDITION (ranging, consolidation, a trend ending
 beyond the 100 EMA) need it to hold for persistence_candles candles in a row.
 Evidence fades: an emerging trend, trend or possible reversal with nothing new
@@ -48,7 +50,7 @@ from typing import Any, Callable
 from analyser.features import Features
 from levels.rules import IMPORTANT_TYPES
 from prices.model import plain, uk_short
-from rejection.watch import BOUNCE, BUY, CANCELLED, CONFIRMATION, EXPIRED, REVERSAL, SELL, in_watch_window
+from rejection.watch import BOUNCE, CANCELLED, CONFIRMATION, EXPIRED, SELL, TRIGGER, in_watch_window
 
 RANGING, EMERGING, TREND, POSSIBLE_REVERSAL, CONSOLIDATION = (
     "ranging", "emerging trend", "trend", "possible reversal", "consolidation")
@@ -130,6 +132,9 @@ class StateMachine:
         # a possible reversal remembers the trend it interrupts
         self.reversal_setup: int | None = None
         self.before: tuple[str, str, str | None] | None = None
+        # how the emerging trend started: ("level", level type, price) or ("breakout", None, None)
+        self.origin: tuple[str, str | None, Decimal | None] | None = None
+        self.back_count = 0              # closes in a row back beyond the level / inside the bands
 
     # ---- the answer -----------------------------------------------------------------------
 
@@ -262,8 +267,8 @@ class StateMachine:
         if st == POSSIBLE_REVERSAL and self.before is not None:
             old_state, old_dir, old_type = self.before
             for e in bounce:
-                if e.setup == self.reversal_setup and e.kind == CONFIRMATION:
-                    return self._start_emerging(f, _move(e.direction), f"the reversal was confirmed: {e.note}",
+                if e.setup == self.reversal_setup and e.kind == TRIGGER:
+                    return self._start_emerging(f, _move(e.direction), f"the reversal triggered: {e.note}",
                                                 setup_of(e.setup))
             if new_extreme:
                 ch = self._change(f, old_state, old_dir, old_type,
@@ -285,15 +290,16 @@ class StateMachine:
         if st in TRENDING:
             moved = self._pips(self.extreme, self.start_price) if self.extreme is not None else Decimal(0)
             for e in bounce:
-                if e.kind == REVERSAL and _move(e.direction) == _opposite(d):
-                    if moved >= self.s.possible_reversal.min_trend_move_pips:
-                        stp = setup_of(e.setup)
+                if e.kind == CONFIRMATION and _move(e.direction) == _opposite(d):
+                    stp = setup_of(e.setup)
+                    at = self._levels_of(stp)
+                    if moved >= self.s.possible_reversal.min_trend_move_pips and at:
                         signs = self.reversal_signs(f, d, stp)
                         self.before = (st, d, self.now.trend_type)
                         self.reversal_setup = e.setup
                         return self._change(f, POSSIBLE_REVERSAL, _opposite(d), None,
-                                            f"reversal candle after a {d} move of {moved} pips: {e.note}",
-                                            [e.note, *signs])
+                                            f"rejection at a level ({', '.join(at)}) confirmed after a {d} move of "
+                                            f"{moved} pips: {e.note}", [e.note, *signs])
             for e, stp in important_rejection(CONFIRMATION):
                 if _move(e.direction) == d:
                     self.last_news = self.n
@@ -304,20 +310,18 @@ class StateMachine:
                 if ok:
                     return self._change(f, TREND, d, STRONG_PUSH if self.push(f, d) else SLOW_GRIND,
                                         f"the rejection became a trend: {why}", [why])
-            cancel = Decimal(self.m.emerging_cancel_pips) * self.ppp
-            if st == EMERGING and ((d == DOWN and f.c > self.start_price + cancel)
-                                   or (d == UP and f.c < self.start_price - cancel)):
-                state, why = self.base(f)
-                return self._change(f, state, NONE, None,
-                                    f"the emerging {d} trend was cancelled: close {self._p(f.c)} back past its start "
-                                    f"{self._p(self.start_price)} by more than {self.m.emerging_cancel_pips} pips",
-                                    [why])
+            if st == EMERGING and self.origin is not None:
+                ch = self._cancel_check(f, d)
+                if ch is not None:
+                    return ch
             if self.n - self.last_news >= self.m.evidence_fades_after_candles:
                 state, why = self.base(f)
                 return self._change(f, state, NONE, None,
                                     f"the {st} faded: no new {'low' if d == DOWN else 'high'} for "
                                     f"{self.m.evidence_fades_after_candles} candles; {why}", [why])
-            # conditions (with persistence): price back past the 100 EMA, or ranging / consolidation
+            if st == EMERGING:
+                return None    # an emerging trend ends only by its cancel rule, the proof, or fading
+            # a trend's conditions (with persistence): price back past the 100 EMA, or ranging / consolidation
             wrong_side = f.ema100 is not None and ((d == DOWN and f.c > f.ema100) or (d == UP and f.c < f.ema100))
             r_ok, r_why = self.ranging(f)
             c_ok, c_why = self.consolidation(f)
@@ -373,6 +377,36 @@ class StateMachine:
         self.failed_bounce = False
         self.last_news = self.n
 
+    def _levels_of(self, setup: Any) -> list[str]:
+        """The levels (not the bands) a rejection setup pierced."""
+        return [f"{p['what']} {plain(p['price'])}" for p in setup.pierced
+                if p["what"] not in ("upper Bollinger band", "lower Bollinger band")]
+
+    def _rejected_level(self, setup: Any, d: str) -> tuple[str, Decimal]:
+        """The important level a rejection was at: the one nearest the piercing candle's edge."""
+        side = self.s.chart.price
+        edge = getattr(setup.pierce, f"{side}_high" if d == DOWN else f"{side}_low")
+        cands = [p for p in setup.pierced if p["what"] in IMPORTANT_TYPES] or \
+                [p for p in setup.pierced if p["what"] not in ("upper Bollinger band", "lower Bollinger band")]
+        best = min(cands, key=lambda p: abs(p["price"] - edge))
+        return best["what"], best["price"]
+
+    def _cancel_check(self, f: Features, d: str) -> StateChange | None:
+        kind, what, level = self.origin
+        if kind == "level":
+            back = f.c > level if d == DOWN else f.c < level
+            how = f"back {'above' if d == DOWN else 'below'} the {what} {self._p(level)} it was rejected at"
+        else:
+            back = f.lower is not None and f.lower < f.c < f.upper
+            how = "back inside the Bollinger bands after the breakout"
+        self.back_count = self.back_count + 1 if back else 0
+        if self.back_count < self.m.persistence_candles:
+            return None
+        state, why = self.base(f)
+        return self._change(f, state, NONE, None,
+                            f"the emerging {d} trend was cancelled: {self.back_count} closes in a row {how} "
+                            f"(last {self._p(f.c)})", [why])
+
     def _start_emerging(self, f: Features, d: str, reason: str, setup: Any) -> StateChange:
         self.start_price = f.c
         self.extreme = f.l if d == DOWN else f.h
@@ -380,7 +414,17 @@ class StateMachine:
         self.before = None
         self.reversal_setup = None
         self.breakout_run = (None, 0)
+        self.back_count = 0
         ev = [reason, f"started at {self._p(f.c)}"]
+        if setup is not None:
+            what, level = self._rejected_level(setup, d)
+            self.origin = ("level", what, level)
+            ev.append(f"rejected at the {what} {self._p(level)}: cancelled only by {self.m.persistence_candles} "
+                      f"closes in a row back {'above' if d == DOWN else 'below'} it")
+        else:
+            self.origin = ("breakout", None, None)
+            ev.append(f"a breakout: cancelled only by {self.m.persistence_candles} closes in a row back inside "
+                      "the Bollinger bands")
         return self._change(f, EMERGING, d, None, reason, ev)
 
     def _persist(self, f: Features, target: tuple[str, str, str] | None) -> StateChange | None:

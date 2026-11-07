@@ -175,9 +175,6 @@ persistence_candles = 2
 evidence_fades_after_candles = 24
 # EMAs 7/13/21 count as stacked once in order for this many candles. 161: rule E7, 3 bars
 ema_stacked_candles = 3
-# An emerging trend is cancelled when price closes this many pips back past
-# where it started. 161: emerging -> range at emerging entry price - 3 pips
-emerging_cancel_pips = 3
 # A failed bounce: its high (low, for an uptrend) at or within this many pips
 # above the higher of the 21 EMA and the middle band (new).
 failed_bounce_within_pips = 1

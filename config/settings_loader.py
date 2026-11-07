@@ -317,7 +317,6 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "persistence_candles": _whole_number(1, 20),
         "evidence_fades_after_candles": _whole_number(2, 500),
         "ema_stacked_candles": _whole_number(1, 50),
-        "emerging_cancel_pips": _whole_number(0, 100),
         "failed_bounce_within_pips": _whole_number(0, 20),
         "push_candles": _whole_number(2, 50),
         "push_same_colour_percent": _whole_number(1, 100),

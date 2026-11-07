@@ -68,6 +68,7 @@ class StateTracker:
         self.machine: StateMachine | None = None
         self.watcher: RejectionWatcher | None = None
         self.done = 0                     # candles of this week already stepped
+        self.history: list = []           # (features, state after the candle) for each candle stepped
         self.folder = Path(settings.market_states.folder) / settings.market.pair
 
     # ---- the week and its candles ----------------------------------------------------------
@@ -96,6 +97,7 @@ class StateTracker:
             self.machine = StateMachine(self.s, week_open)
             self.watcher = RejectionWatcher(self.s)
             self.done = 0
+            self.history = []
         memo = MemoStore(self.store)
         warm, week = self._candles(memo, week_open, as_of)
         if len(week) > self.done:
@@ -113,7 +115,9 @@ class StateTracker:
         band = Band(c.start, f.middle, f.upper, f.lower) if f.upper is not None else None
         levels = build(self.s, store, c.start)
         events = self.watcher.on_candle(c, band, levels)
-        return self.machine.step(f, events, lambda i: self.watcher.setups[i - 1])
+        ch = self.machine.step(f, events, lambda i: self.watcher.setups[i - 1])
+        self.history.append((f, self.machine.now.state, self.machine.now.direction))
+        return ch
 
     @property
     def changes(self) -> list[StateChange]:

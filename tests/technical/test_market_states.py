@@ -20,7 +20,7 @@ from analyser.states import (CONSOLIDATION, DOWN, EMERGING, NONE, POSSIBLE_REVER
                              STRONG_PUSH, TREND, UP, StateMachine)
 from prices.model import Candle
 from prices.store import CandleStore
-from rejection.watch import BOUNCE, BUY, CONFIRMATION, EXPIRED, REVERSAL, SELL, Event
+from rejection.watch import BOUNCE, BUY, CONFIRMATION, EXPIRED, REVERSAL, SELL, TRIGGER, Event
 from tests.technical.test_pairs import pretend
 
 UTC = timezone.utc
@@ -62,8 +62,14 @@ def setups(**by_id):
     return lambda i: by_id.get(str(i)) or SimpleNamespace(pierced=[{"what": "lower Bollinger band"}])
 
 
-PIVOT = SimpleNamespace(pierced=[{"what": "pivot"}])
-BAND = SimpleNamespace(pierced=[{"what": "upper Bollinger band"}])
+def at_level(what="pivot", price=11660, edge=11660):
+    """A rejection setup that pierced a level (its piercing candle's high and low at `edge`)."""
+    pierce = F(0, c=edge, h=edge, l=edge).candle
+    return SimpleNamespace(pierced=[{"what": what, "price": D(str(price))}], pierce=pierce)
+
+
+PIVOT = at_level()
+BAND = SimpleNamespace(pierced=[{"what": "upper Bollinger band", "price": D(11660)}], pierce=F(0).candle)
 
 
 def machine(st):
@@ -81,7 +87,16 @@ def run(m, feats, events=None, setup_of=None):
 
 
 def downtrend(st, start=11650):
-    """A machine in an emerging down trend started at `start` (broke out of consolidation)."""
+    """A machine in an emerging down trend started at `start`, from a sell rejection at the pivot
+    11660 (so it is cancelled only by closes back above 11660)."""
+    m = machine(st)
+    run(m, [(0, F(0, c=start))], {0: [ev(1, CONFIRMATION, SELL, OPEN)]}, setups(**{"1": PIVOT}))
+    assert (m.now.state, m.now.direction) == (EMERGING, DOWN)
+    return m
+
+
+def breakout_downtrend(st, start=11650):
+    """An emerging down trend from a close below the lower band."""
     m = machine(st)
     run(m, [(0, F(0, c=start, lower=start + 1, upper=start + 13))])
     assert (m.now.state, m.now.direction) == (EMERGING, DOWN)
@@ -116,11 +131,37 @@ def test_a_level_rejection_starts_an_emerging_trend_but_a_band_only_rejection_do
 
 # ---- emerging trend --------------------------------------------------------------------
 
-def test_an_emerging_trend_is_cancelled_3_pips_back_past_its_start(st):
-    m = downtrend(st, 11650)
-    assert run(m, [(1, F(1, c=11653))]) == []                  # 3 pips back: not more than 3
-    (ch,) = run(m, [(2, F(2, c=11653.1))])
-    assert (ch.state, ch.direction) == (CONSOLIDATION, NONE) and "cancelled" in ch.reason
+def test_a_breakout_trend_is_cancelled_only_by_2_closes_in_a_row_back_inside_the_bands(st):
+    m = breakout_downtrend(st, 11650)                          # broke out below the lower band
+    inside = dict(lower=11640, upper=11660)
+    assert run(m, [(1, F(1, c=11655, **inside)), (2, F(2, c=11639, l=11648, **inside)),   # in, out again
+                   (3, F(3, c=11655, **inside))]) == []
+    (ch,) = run(m, [(4, F(4, c=11656, **inside))])
+    assert (ch.state, ch.direction) == (CONSOLIDATION, NONE)
+    assert "2 closes in a row back inside the Bollinger bands after the breakout" in ch.reason
+
+
+def level_downtrend(st):
+    """An emerging down trend from a sell rejection at the pivot 11660."""
+    m = machine(st)
+    run(m, [(0, F(0, c=11655))], {0: [ev(1, CONFIRMATION, SELL, OPEN)]}, setups(**{"1": PIVOT}))
+    assert (m.now.state, m.now.direction) == (EMERGING, DOWN)
+    return m
+
+
+def test_a_level_trend_is_cancelled_only_by_2_closes_in_a_row_back_beyond_the_level(st):
+    m = level_downtrend(st)
+    assert run(m, [(1, F(1, c=11661)), (2, F(2, c=11659)), (3, F(3, c=11661))]) == []
+    (ch,) = run(m, [(4, F(4, c=11662))])
+    assert ch.state == CONSOLIDATION
+    assert "2 closes in a row back above the pivot 11660.0 it was rejected at" in ch.reason
+
+
+def test_an_emerging_trend_is_not_cancelled_by_3_pips_or_the_100_ema(st):
+    m = level_downtrend(st)
+    # 4 pips back past where it started, and closes above the 100 EMA, but not above the level
+    assert run(m, [(i, F(i, c=11659, ema100=11650)) for i in range(1, 6)]) == []
+    assert m.now.state == EMERGING
 
 
 def proof_candles(i, low):
@@ -230,39 +271,59 @@ def far_down(st):
     return m
 
 
-def test_a_reversal_candle_after_a_30_pip_move_is_a_possible_reversal(st):
+S2 = at_level("S2", 11610, 11610)
+
+
+def possible(m, i=4):
+    return run(m, [(i, F(i, c=11615, ema100=11640))], {i: [ev(7, CONFIRMATION, BUY, OPEN, "closed above")]},
+               setups(**{"7": S2}))
+
+
+def test_a_confirmed_level_rejection_after_a_30_pip_move_is_a_possible_reversal(st):
     m = far_down(st)
-    (ch,) = run(m, [(4, F(4, c=11615, ema100=11640))], {4: [ev(7, REVERSAL, BUY, OPEN, "reversal candle O ...")]})
+    (ch,) = possible(m)
     assert (ch.state, ch.direction, ch.previous_state) == (POSSIBLE_REVERSAL, UP, TREND)
-    assert ch.reason.startswith("reversal candle after a down move of 40.0 pips")
+    assert ch.reason.startswith("rejection at a level (S2 11610) confirmed after a down move of 40.0 pips")
     assert m.now.strategies_allowed == ("Bollinger band bounce",)
     assert any("MACD histogram" in e for e in ch.evidence)                  # section 2.6 signs recorded
 
 
+def test_a_single_opposite_candle_or_a_band_only_rejection_is_not_enough(st):
+    m = far_down(st)
+    assert run(m, [(4, F(4, c=11615, ema100=11640))], {4: [ev(7, REVERSAL, BUY, OPEN)]},
+               setups(**{"7": S2})) == []                                   # a reversal candle alone
+    assert run(m, [(5, F(5, c=11615, ema100=11640))], {5: [ev(8, CONFIRMATION, BUY, OPEN)]},
+               setups(**{"8": BAND})) == []                                 # confirmed, but at the band only
+    assert m.now.state == TREND
+
+
 def test_no_possible_reversal_before_the_trend_has_moved_30_pips(st):
-    m = trend(st)                                                          # moved 13 pips
-    assert run(m, [(3, F(3, c=11640, ema100=11660))], {3: [ev(7, REVERSAL, BUY, OPEN)]}) == []
+    m = trend(st)                                                          # moved 4 pips
+    assert run(m, [(3, F(3, c=11640, ema100=11660))], {3: [ev(7, CONFIRMATION, BUY, OPEN)]},
+               setups(**{"7": S2})) == []
     assert m.now.state == TREND
 
 
 def test_a_possible_reversal_goes_back_to_the_trend_on_a_new_low(st):
     m = far_down(st)
-    run(m, [(4, F(4, c=11615, ema100=11640))], {4: [ev(7, REVERSAL, BUY, OPEN)]})
+    possible(m)
     (ch,) = run(m, [(5, F(5, c=11609, l=11608, ema100=11640))])
     assert (ch.state, ch.direction, ch.trend_type) == (TREND, DOWN, SLOW_GRIND)
     assert ch.reason == "the down trend carried on: new low 11608.0"
 
 
-def test_a_possible_reversal_confirmed_becomes_an_emerging_trend_the_other_way(st):
+def test_a_possible_reversal_that_triggers_becomes_an_emerging_trend_the_other_way(st):
     m = far_down(st)
-    run(m, [(4, F(4, c=11615, ema100=11640))], {4: [ev(7, REVERSAL, BUY, OPEN)]})
-    (ch,) = run(m, [(5, F(5, c=11620, ema100=11640))], {5: [ev(7, CONFIRMATION, BUY, OPEN, "closed above")]})
-    assert (ch.state, ch.direction) == (EMERGING, UP) and ch.reason == "the reversal was confirmed: closed above"
+    possible(m)
+    (ch,) = run(m, [(5, F(5, c=11620, ema100=11640))], {5: [ev(7, TRIGGER, BUY, OPEN, "price went above")]},
+                setups(**{"7": S2}))
+    assert (ch.state, ch.direction) == (EMERGING, UP) and ch.reason == "the reversal triggered: price went above"
+    assert any("rejected at the S2 11610.0" in e for e in ch.evidence)      # cancelled only back below S2
 
 
 def test_a_possible_reversal_whose_setup_expires_goes_back_to_the_trend(st):
     m = far_down(st)
-    run(m, [(4, F(4, c=11615, ema100=11640))], {4: [ev(7, REVERSAL, BUY, OPEN)]})
+    possible(m)
     (ch,) = run(m, [(5, F(5, c=11614, ema100=11640))], {5: [ev(7, EXPIRED, BUY, OPEN)]})
     assert (ch.state, ch.direction) == (TREND, DOWN)
 
