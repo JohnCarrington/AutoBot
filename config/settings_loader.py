@@ -322,7 +322,8 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "history": {
         "folder": _absolute_folder,
         # "well below IG's 10,000"
-        "weekly_budget_points": _whole_number(1, 5000),
+        # At most IG's 10,000 a week less the 2,000 safety floor (docs/SETTINGS.md).
+        "weekly_budget_points": _whole_number(1, 8000),
         "min_ig_allowance_remaining": _whole_number(0, 10000),
         "max_points_per_request": _whole_number(1, 1000),
         "min_block_hours": _whole_number(1, 24 * 14),

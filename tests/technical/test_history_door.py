@@ -64,7 +64,7 @@ def fetch(door, points=3):
 
 # ---- a working request --------------------------------------------------------------
 
-def test_a_request_is_sent_through_the_door_with_utc_times_and_no_paging(tmp_path):
+def test_a_request_is_sent_through_the_door_with_uk_times_and_no_paging(tmp_path):
     door, ig, warnings, _ = make(tmp_path, hist_ok())
     reply = fetch(door)
     (sent,) = history_calls(ig)
@@ -73,6 +73,15 @@ def test_a_request_is_sent_through_the_door_with_utc_times_and_no_paging(tmp_pat
                          "&to=2026-11-04T10%3A10%3A00&pageSize=0")
     assert len(reply.rows) == 3 and reply.points_counted == 3
     assert warnings == []
+
+
+def test_in_summer_the_times_are_sent_in_uk_time_not_utc(tmp_path):
+    # IG reads from/to as UK time: 00:00 UTC on 7 August is sent as 01:00 (BST)
+    door, ig, _, _ = make(tmp_path, hist_ok(start=T(2026, 8, 7, 0, 0)))
+    door.fetch(EPIC, "HOUR", T(2026, 8, 7, 0, 0), T(2026, 8, 7, 2, 0), 3, "test")
+    (sent,) = history_calls(ig)
+    assert "resolution=HOUR&from=2026-08-07T01%3A00%3A00&to=2026-08-07T03%3A00%3A00" in sent.path
+    assert door.ledger()[0]["from_utc"] == "2026-08-07T00:00:00Z"            # the ledger keeps UTC
 
 
 def test_igs_figures_are_saved_after_every_reply(tmp_path):
@@ -218,8 +227,8 @@ def test_budget_is_checked_before_the_floor_and_the_floor_before_the_size(tmp_pa
 def test_limits_come_from_the_settings_file():
     h = SETTINGS.history
     assert (h.weekly_budget_points, h.min_ig_allowance_remaining, h.max_points_per_request, h.min_block_hours) == \
-        (4000, 2000, 500, 24)
-    assert h.weekly_budget_points < 10000 / 2
+        (7000, 2000, 500, 24)                       # budget raised from 4000 by the owner, 7 Nov 2026
+    assert h.weekly_budget_points + h.min_ig_allowance_remaining <= 10000   # within IG's 10,000 a week
 
 
 # ---- the block marker ---------------------------------------------------------------------

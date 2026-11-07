@@ -49,6 +49,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable
 from urllib.parse import urlencode
+from zoneinfo import ZoneInfo
 
 from housekeeping.files import safe_write
 from ig.errors import HISTORY_ALLOWANCE_EXCEEDED, IGRequestError, short_code
@@ -56,7 +57,7 @@ from ig.errors import HISTORY_ALLOWANCE_EXCEEDED, IGRequestError, short_code
 log = logging.getLogger("autobot.ig.history")
 
 UTC = timezone.utc
-RESOLUTIONS = {"MINUTE_5", "DAY"}
+RESOLUTIONS = {"MINUTE_5", "HOUR", "DAY", "WEEK"}
 DAILY_COLUMNS = ("date_utc", "requests_sent", "points_counted", "refused_by_bot", "refused_by_ig",
                  "ig_remaining", "ig_total", "ig_resets_utc", "updated_utc")
 
@@ -92,9 +93,17 @@ def _parse(text: str) -> datetime:
     return datetime.strptime(text, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
 
 
+IG_QUERY_TIME_ZONE = ZoneInfo("Europe/London")
+
+
 def ig_time(t: datetime) -> str:
-    """How a time is sent to IG: UTC, 'YYYY-MM-DDTHH:MM:SS'."""
-    return t.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%S")
+    """How a time is sent to IG: UK time (Europe/London), 'YYYY-MM-DDTHH:MM:SS'.
+    IG reads the from/to of a history request as UK time, not UTC: on
+    7 November 2026 an hourly request sent as 2026-08-07T00:00:00 (meant as
+    UTC) came back starting at 2026-08-06T23:00Z, i.e. 00:00 BST. In winter
+    (GMT) the two are the same, which is why earlier requests lined up.
+    IG's replies give snapshotTimeUTC, which the bot uses; the ledger keeps UTC."""
+    return t.astimezone(IG_QUERY_TIME_ZONE).strftime("%Y-%m-%dT%H:%M:%S")
 
 
 class HistoryDoor:

@@ -15,7 +15,7 @@ How AutoBot receives live GBPUSD prices from IG and keeps them as candles. Every
 Every history request must pass all four. If one fails, the request is refused: nothing is sent, a warning is logged, and the refusal goes into the daily record.
 
 1. **No block marker is in place** (see below).
-2. **The bot's own weekly budget has room for it.** Points counted in the last 7 days, plus this request, must be no more than `history.weekly_budget_points` (4,000; IG allows 10,000 a week). One point is one candle.
+2. **The bot's own weekly budget has room for it.** Points counted in the last 7 days, plus this request, must be no more than `history.weekly_budget_points` (7,000 since 7 November 2026, shared by all pairs; IG allows 10,000 a week). One point is one candle.
 3. **IG's remaining allowance stays above the safety floor.** IG's last reported remaining allowance, less this request, must stay at or above `history.min_ig_allowance_remaining` (2,000). Before IG has ever reported a figure there is nothing to check against, so the first request is allowed and its reply gives the figure.
 4. **The request is no bigger than the maximum,** `history.max_points_per_request` (500).
 
@@ -38,6 +38,7 @@ All of these live in `/opt/autobot/data/history/` (`history.folder`) and are wri
 - **Only gaps the store has recorded** (in `gaps.csv`) are filled. Only 5-minute candles, and only during market hours: **never the weekend**.
 - **Only the missing candles are asked for.** Each request covers one unbroken run of missing 5-minute candles and is no bigger than the maximum size.
 - **What comes back only fills missing candles.** A stored 5-minute candle is never overwritten. Anything IG sends that was not asked for is ignored and reported. If IG's times do not line up with the request, the fill stops.
+- **Request times are sent to IG in UK time.** IG reads a history request's `from` and `to` as UK time, not UTC (found 7 November 2026: an hourly request in August came back one hour early). In winter the two are the same. The bot sends UK time and keeps UTC everywhere else, including the ledger.
 - **IG's own UTC times are used** (`snapshotTimeUTC`). The buy price is IG's ask, the sell price IG's bid. A candle with a missing price is not used.
 
 ### The one-off two-week fill (6 November 2026)
@@ -64,6 +65,24 @@ With the owner's go-ahead: `.venv/bin/python -m prices.history_fill gap-go --pai
 - Built: Friday's daily candle (264 of 264), the 4-hour 20:00 candle (24 of 24) and the week from Sun 1 Nov (1,450 of 1,452: the two Sunday 1 November candles IG never sent).
 - The 1-hour 20:00 candle had already been built from the 5 candles then stored (5 of 12). At first it was kept, and the full rebuild was logged as a "DIFFERENT VALUE" warning in `logs/history.log`. With the owner's go-ahead it was then swapped for the full rebuild (12 of 12) under the rebuild rule below, with `.venv/bin/python -m prices.history_fill rebuild --pair GBPUSD --from 2026-11-06T20:00:00Z --to 2026-11-06T20:35:00Z` (no IG contact; the price service kept running). Sell open 13348.4 became 13351.4, high 13350.7 became 13353.2; low and close unchanged. The old candle is in `data/candles/GBPUSD/archive_rebuilt/1h/2026-11-06.csv`.
 - Store checks after: 0 problems; 2 gaps left, both on Sunday 1 November (IG never sent them).
+
+### The long history fill (done 7 November 2026)
+
+IG's own candles for GBPUSD, buy and sell: weekly for the last 4 years, daily for the last 2 years and hourly for the last 3 months (`prices/long_history.py`). Steps, each only with the owner's go-ahead:
+
+1. `.venv/bin/python -m prices.long_history plan --pair GBPUSD`: the requests, the points, the shared weekly budget and IG's allowance before and after. Contacts nobody.
+2. `... go --pair GBPUSD`: refuses while the price service is running (one IG login at a time). Sends the requests through the history door; **every reply is saved as IG sent it** (`data/history/GBPUSD/long_history_replies/`) before it is checked; IG's candles go into a **holding folder**, `data/candles/GBPUSD/ig_history/`, which no part of the bot reads. Then IG's candles are compared with the bot's own for the same periods (start label and all 8 prices). If it stops, running it again carries on from the same plan and does not resend what is already held.
+3. `... prove --pair GBPUSD`: one 3-point hourly request in UK summer time, to prove IG's times line up with the request.
+4. `... store --pair GBPUSD`: copies IG's candles into the pair's store. The bot's own candles are never overwritten; candles not on the bot's boundaries are not stored. IG's candles are stored with `parts` 0 and `expected_parts` 0 ("IG's candle, not built by the bot"), so the rebuild rule never touches them. Then the rebuild rule, the store checks, and any new gap recorded.
+
+**Weekly labels.** IG labels its weekly candles **Monday 00:00 UK**; the bot labels the same week **Sunday 00:00 UK**, and its week includes the Sunday evening. IG's weeks include the Sunday evening too: both overlapping weeks (25 October and 1 November) had all 8 prices equal, and rebuilding the bot's week from Monday 00:00 does not match. So IG's weeks are compared and stored under the bot's Sunday 00:00 UK label (owner's decision).
+
+What happened:
+
+- Requests 1 to 3 (weekly 208, daily 500 and 126) went through. Request 4 (hourly) came back starting one hour before the time asked for: IG had read the request's times as UK time. The check stopped it, and its 500 points were spent with nothing kept (replies were not saved before the check then; they are now). The door was changed to send UK time, proved with one 3-point summer request (exactly the 3 hours asked for), and the 4 hourly requests (1,593 points) were sent again and all lined up.
+- **Comparison:** weekly 2 of 2, daily 12 of 12 and hourly 241 of 241 of the bot's own candles had the same label and all 8 prices equal (weekly under the bot's label). IG sent no daily candle for Sun 5 Apr 2026 (Easter Sunday), Fri 19 Jun 2026 or Sun 19 Jul 2026; these are recorded as gaps.
+- **Stored:** weekly 206 (from Sun 13 Nov 2022), daily 611 (from Thu 7 Nov 2024), hourly 1,352 (from Fri 7 Aug 2026); the bot's own 2, 12 and 241 kept. The store then held 5m 2,890, 1h 1,593, 4h 62, 1d 623, 1w 208 (5,376 candles), with 0 problems. The rebuild rule found nothing (no 5-minute candles were added).
+- **IG's allowance:** 7,084 before, 4,157 after (2,927 points: 2,424 kept, 500 lost on the first hourly attempt, 3 for the proof). The bot's 7-day use was 5,830 of its 7,000 budget.
 
 ## Which market
 

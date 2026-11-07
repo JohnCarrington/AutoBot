@@ -23,7 +23,7 @@ IG does not publish exactly how its chart starts an EMA or smooths the RSI. Thes
 - **Out of date:** while the market is open, the newest stored candle on the 5-minute or hourly timeframe is more than 10 minutes (`analyser.out_of_date_after_minutes`) behind the newest one that should have finished. While the market is shut (the weekend), the data is judged against the last candle before the close, so a weekend is not out of date. Out of date is checked first.
 - **Ready:** neither. Only then may new trades be allowed (open trades are always managed).
 
-**Now:** the store starts on Sunday 25 October 2026, so the 5-minute indicators are all ready, but the **hourly 100 and 200 EMAs are warming up** (about 235 hourly candles by Friday 6 November; they need 296 and 592). With the price service running, the hourly 100 EMA becomes ready in about the second week of November and the hourly 200 EMA at the end of November, unless more hourly history is filled through the history door. Until then the analyser reports "warming up" and the hourly 100 and 200 EMA values are not yet the chart's.
+**Now:** since the long history fill on 7 November 2026 the store holds IG's hourly candles from 7 August 2026, so every indicator on both timeframes is ready and the analyser reports **ready** (for example at 16:00 on Friday 6 November: 1,587 hourly candles). Before that fill the hourly 100 and 200 EMAs were warming up.
 
 ## Direction rule (design section 2.3)
 

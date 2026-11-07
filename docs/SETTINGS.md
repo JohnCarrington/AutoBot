@@ -101,7 +101,7 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `housekeeping.log_max_age_days` | Old log files older than this are deleted. | 30 days |
 | `housekeeping.min_free_disk_mb` | Write a warning if free disk space falls below this. | 2048 MB |
 | `history.folder` | Where the history door keeps its records: the points ledger, IG's last figures, the daily record and the block marker. | `/opt/autobot/data/history` |
-| `history.weekly_budget_points` | The bot's own budget for IG historical prices: the most points it may use in any 7 days (one point per candle). IG's own allowance is 10,000 a week; this is kept well below it, and may not be set above 5,000. | 4000 points |
+| `history.weekly_budget_points` | The bot's own budget for IG historical prices: the most points it may use in any 7 days (one point per candle). IG's own allowance is 10,000 a week for the whole account, so this one budget is shared by every pair. It may not be set above 8,000 (IG's 10,000 less the 2,000 floor in `history.min_ig_allowance_remaining`). Raised from 4,000 to 7,000 by Johnny on 7 November 2026, for the long history fill. | 7000 points |
 | `history.min_ig_allowance_remaining` | Safety floor: a history request is refused if IG's last reported remaining allowance, less the request, would fall below this. | 2000 points |
 | `history.max_points_per_request` | The biggest history request allowed. | 500 points |
 | `history.min_block_hours` | After IG refuses a history request because the allowance is used up, nothing more is asked for at least this long (longer if IG's reset time is later). | 24 hours |

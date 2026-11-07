@@ -115,7 +115,7 @@ EXPECTED = {
     },
     "history": {
         "folder": Path("/opt/autobot/data/history"),
-        "weekly_budget_points": 4000,
+        "weekly_budget_points": 7000,
         "min_ig_allowance_remaining": 2000,
         "max_points_per_request": 500,
         "min_block_hours": 24,
