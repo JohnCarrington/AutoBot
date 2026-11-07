@@ -6,8 +6,6 @@ own pip size). The words in the design become these measures (docs/ANALYSER.md):
 
   band width        upper minus lower Bollinger band
   flat / sloping    how far a band moved per candle over market_states.flat_slope_candles
-  efficiency ratio  net move / total candle-to-candle movement over efficiency_candles
-  crossings         closes crossing the middle band within crossing_candles
   EMA stack         7 < 13 < 21 (down) or 7 > 13 > 21 (up), and for how many candles
   weave             the stack order changed within weave_candles
   narrowing         for how many candles in a row the band width has got smaller
@@ -51,8 +49,6 @@ class Features:
     stacked_for: int                     # candles the current stack has held
     weave: bool                          # the EMA order changed within weave_candles
     ema100_move: Decimal | None          # pips, over ema100_flat_candles
-    efficiency: Decimal | None
-    crossings: int | None
     reached_upper: bool                  # this candle's high on or beyond the upper band
     reached_lower: bool
     both_bands_recently: bool            # both bands reached within ranging_both_bands_candles
@@ -123,21 +119,6 @@ def compute(candles: Sequence[Candle], settings: Any) -> list[Features]:
         o, h, lo, cl = g(c, "open"), g(c, "high"), g(c, "low"), g(c, "close")
         reached_up = b is not None and h >= b.upper - near
         reached_dn = b is not None and lo <= b.lower + near
-        n_eff = m.efficiency_candles
-        eff = None
-        if i >= n_eff:
-            path = sum(abs(closes[j] - closes[j - 1]) for j in range(i - n_eff + 1, i + 1))
-            eff = (abs(closes[i] - closes[i - n_eff]) / path) if path else ZERO
-        crossings = None
-        if i >= m.crossing_candles and b is not None:
-            signs = []
-            for j in range(i - m.crossing_candles, i + 1):
-                bj = bands.get(candles[j].start)
-                if bj is None:
-                    signs = []
-                    break
-                signs.append(closes[j] > bj.middle)
-            crossings = sum(1 for a, z in zip(signs, signs[1:]) if a != z) if signs else None
         width = (b.upper - b.lower) / ppp if b else None
         prev = out[-1] if out else None
         narrowing = (prev.narrowing_for + 1 if prev is not None and prev.width is not None and width is not None
@@ -188,7 +169,7 @@ def compute(candles: Sequence[Candle], settings: Any) -> list[Features]:
             slope("lower", m.flat_slope_candles), e7, e13, e21, e100, st, run, weave,
             (abs(e100 - e100b.ema100) / ppp) if (e100 is not None and e100b is not None and e100b.ema100 is not None)
             else None,
-            eff, crossings, reached_up, reached_dn, both, avg_body, colour_ratio,
+            reached_up, reached_dn, both, avg_body, colour_ratio,
             abs(cl - o) / ppp, rng, spike, green_share, red_share, widening,
             (abs(e7 - e21) / ppp) if (e7 is not None and e21 is not None) else None,
             on_up, on_dn, mh.histogram if mh else None, rs.get(c.start)))

@@ -44,15 +44,21 @@ def F(i, **kw):
     base = dict(candle=candle, o=o, h=h, l=lo, c=c, upper=c + 6, middle=c, lower=c - 6, width=D(16),
                 narrowing_for=0, closed_outside=False, no_close_outside=False,
                 mid_slope=D(1), upper_slope=D(1), lower_slope=D(1), ema7=c, ema13=c, ema21=c, ema100=c,
-                stack=None, stacked_for=0, weave=True, ema100_move=D(5), efficiency=D("0.6"), crossings=1,
+                stack=None, stacked_for=0, weave=True, ema100_move=D(5),
                 reached_upper=False, reached_lower=False, both_bands_recently=False,
                 avg_body=D(4), colour_ratio=D(3), body=D(1), range_=D(2), spike=False, green_share=D("0.5"),
                 red_share=D("0.5"), widening=D(1), fan=D(1), closes_on_upper=0, closes_on_lower=0,
                 macd_hist=D("-0.5"), rsi=D(40))
-    whole = ("crossings", "stacked_for", "closes_on_upper", "closes_on_lower", "narrowing_for")
+    whole = ("stacked_for", "closes_on_upper", "closes_on_lower", "narrowing_for")
     base.update({k: (D(str(v)) if isinstance(v, (int, float, str)) and not isinstance(v, bool)
                      and k not in whole and k != "stack" else v) for k, v in kw.items()})
     return Features(**base)
+
+
+# Ranging (design 2.2, owner's values): bands 8 to 10 pips wide, upper and lower band flat
+# (under 0.5 pips a candle), both bands reached, EMAs weaving, 100 EMA flat.
+RANGING_OK = dict(width=10, mid_slope="0.1", upper_slope="0.2", lower_slope="-0.2", both_bands_recently=True,
+                  weave=True, ema100_move=1)
 
 
 def ev(n, kind, direction, t, note="note"):
@@ -257,8 +263,7 @@ def test_a_trend_ends_after_2_closes_back_past_the_100_ema(st):
 
 def test_ranging_and_consolidation_need_2_candles_in_a_row(st):
     m = machine(st)
-    ranging = dict(width=10, mid_slope="0.1", efficiency="0.3", crossings=3, both_bands_recently=True,
-                   weave=True, ema100_move=1)
+    ranging = dict(RANGING_OK)
     assert run(m, [(0, F(0, **ranging)), (1, F(1)), (2, F(2, **ranging))]) == []     # broken by candle 1
     (ch,) = run(m, [(3, F(3, **ranging))])
     assert ch.state == RANGING
@@ -270,8 +275,7 @@ def test_ranging_and_consolidation_need_2_candles_in_a_row(st):
 
 def test_a_range_breaks_out_only_after_2_closes_beyond_the_same_band(st):
     m = machine(st)
-    ranging = dict(width=10, mid_slope="0.1", efficiency="0.3", crossings=3, both_bands_recently=True,
-                   weave=True, ema100_move=1)
+    ranging = dict(RANGING_OK)
     run(m, [(0, F(0, **ranging)), (1, F(1, **ranging))])
     assert m.now.state == RANGING
     assert run(m, [(2, F(2, c=11660, upper=11656))]) == []
@@ -484,8 +488,7 @@ def test_consolidation_ends_an_emerging_trend_after_2_candles_but_ranging_does_n
     (ch,) = run(m, [(2, F(2, c=11655, **calm))])
     assert ch.state == CONSOLIDATION and ch.reason.startswith("the emerging down trend settled into consolidation")
     m = level_downtrend(st)
-    ranging = dict(width=10, mid_slope="0.1", efficiency="0.3", crossings=3, both_bands_recently=True,
-                   weave=True, ema100_move=1)
+    ranging = dict(RANGING_OK)
     assert run(m, [(i, F(i, c=11655, **ranging)) for i in range(1, 5)]) == [] and m.now.state == EMERGING
 
 
@@ -569,3 +572,40 @@ def test_a_session_high_or_low_alone_does_not_start_one(st):
     assert run(m, [(0, F(0))], {0: [ev(1, CONFIRMATION, SELL, OPEN)]},
                setups(**{"1": at_level("london_session_high", 11660, 11660)})) == []
 
+
+
+# ---- the ranging check, design 2.2 (owner's values, 7 November 2026) ----------------------------
+
+@pytest.mark.parametrize("width,ok", [("7.9", False), (8, True), (9, True), (10, True), ("10.1", False), (16, False)])
+def test_ranging_bands_close_together_from_8_to_10_pips(st, width, ok):
+    assert machine(st).ranging(F(0, **{**RANGING_OK, "width": width}))[0] is ok
+
+
+@pytest.mark.parametrize("band", ["upper_slope", "lower_slope"])
+@pytest.mark.parametrize("slope,ok", [("0.49", True), ("-0.49", True), ("0.5", False), ("-0.5", False), (1, False)])
+def test_ranging_both_outer_bands_flat_under_half_a_pip_a_candle(st, band, slope, ok):
+    assert machine(st).ranging(F(0, **{**RANGING_OK, band: slope}))[0] is ok
+
+
+def test_ranging_the_middle_band_alone_is_not_the_test(st):
+    m = machine(st)
+    assert m.ranging(F(0, **{**RANGING_OK, "mid_slope": "0.1", "upper_slope": "0.6", "lower_slope": "-0.4"}))[0] is False
+    assert m.ranging(F(0, **{**RANGING_OK, "mid_slope": "0.45", "upper_slope": "0.4", "lower_slope": "0.45"}))[0] is True
+
+
+@pytest.mark.parametrize("change", [dict(both_bands_recently=False), dict(weave=False), dict(ema100_move=3)])
+def test_ranging_keeps_both_bands_reached_the_weave_and_the_flat_100_ema(st, change):
+    assert machine(st).ranging(F(0, **{**RANGING_OK, **change}))[0] is False
+
+
+def test_ranging_no_efficiency_or_crossings_check(st):
+    import dataclasses
+    names = {f.name for f in dataclasses.fields(F(0))}
+    assert not {"efficiency", "crossings"} & names
+    assert not {"ranging_max_efficiency_ratio", "efficiency_candles", "ranging_min_crossings",
+                "crossing_candles"} & set(vars(st.market_states))
+
+
+def test_ranging_reason_names_the_numbers(st):
+    ok, why = machine(st).ranging(F(0, **RANGING_OK))
+    assert ok and "close together: 8 to 10" in why and "upper 0.2, lower -0.2 pips/candle" in why

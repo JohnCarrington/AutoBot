@@ -175,15 +175,21 @@ class StateMachine:
         return ok, why
 
     def ranging(self, f: Features) -> tuple[bool, str]:
+        """Design 2.2: "the Bollinger bands are flat and close together, and price bounces between the
+        upper and lower band. The EMAs weave back and forth instead of staying stacked, and the 100 EMA
+        is flat." Close together: the width from ranging_min_band_pips to ranging_max_band_pips. Flat:
+        the upper and the lower band each move less than ranging_band_flat_max_pips_per_candle (over
+        flat_slope_candles). Bounces between: both bands reached within ranging_both_bands_candles."""
         m = self.m
-        ok = (f.width is not None and f.width >= m.ranging_min_band_pips and f.mid_slope is not None
-              and abs(f.mid_slope) < self.flat and f.efficiency is not None
-              and f.efficiency < m.ranging_max_efficiency_ratio and f.crossings is not None
-              and f.crossings >= m.ranging_min_crossings and f.both_bands_recently and f.weave
+        flat = m.ranging_band_flat_max_pips_per_candle
+        ok = (f.width is not None and m.ranging_min_band_pips <= f.width <= m.ranging_max_band_pips
+              and f.upper_slope is not None and abs(f.upper_slope) < flat
+              and f.lower_slope is not None and abs(f.lower_slope) < flat
+              and f.both_bands_recently and f.weave
               and f.ema100_move is not None and f.ema100_move < m.ema100_flat_max_pips)
-        why = (f"bands {self._p(f.width)} pips wide and flat ({self._p(f.mid_slope)} pips/candle), "
-               f"efficiency {self._p(f.efficiency)}, {f.crossings} middle-band crossings, both bands reached, "
-               f"EMAs weaving, 100 EMA moved {self._p(f.ema100_move)} pips")
+        why = (f"bands {self._p(f.width)} pips wide (close together: {m.ranging_min_band_pips} to "
+               f"{m.ranging_max_band_pips}) and flat (upper {self._p(f.upper_slope)}, lower {self._p(f.lower_slope)} "
+               f"pips/candle), both bands reached, EMAs weaving, 100 EMA moved {self._p(f.ema100_move)} pips")
         return ok, why
 
     def base(self, f: Features) -> tuple[str, str]:

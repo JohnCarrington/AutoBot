@@ -95,11 +95,9 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `market_states.narrowing_candles` | Consolidation: the bands also count as narrow when their width has got smaller on each of this many candles in a row. **Owner's value, 7 November 2026.** | 6 candles |
 | `market_states.flat_max_pips_per_candle` | A band counts as flat when it moves less than this many pips a candle (over `flat_slope_candles`); at least this much the other way is "sloping". **From 161:** `CHOP_SLOPE_MAX_PIPS_PER_BAR` 0.5. | 0.5 pips a candle |
 | `market_states.flat_slope_candles` | How many candles a band's slope is measured over. **From 161:** `CHOP_SLOPE_LOOKBACK` 6. | 6 candles |
-| `market_states.ranging_min_band_pips` | Ranging: the bands at least this many pips apart. **From 161:** `NORMAL_STATE_BB_MIN_RANGE_PIPS` 8.0. | 8 pips |
-| `market_states.ranging_max_efficiency_ratio` | Ranging: the efficiency ratio (net move / total movement over `efficiency_candles`) below this: price is going back and forth, not trending. **From 161:** `NORMAL_STATE_ER_MAX_RANGE` 0.5. | 0.5 |
-| `market_states.efficiency_candles` | Candles the efficiency ratio is worked out over. **From 161:** `REGIME_RANGE_ER_BARS` 10. | 10 candles |
-| `market_states.ranging_min_crossings` | Ranging: the close crosses the middle band at least this often within `crossing_candles`. **From 161:** `NORMAL_STATE_CROSS_MIN_RANGE` 2. | 2 |
-| `market_states.crossing_candles` | Candles the middle-band crossings are counted over. **From 161:** `REGIME_RANGE_CROSSING_WINDOW` 12. | 12 candles |
+| `market_states.ranging_min_band_pips` | Ranging ("the Bollinger bands are close together"): the bands at least this many pips apart. **Owner's value, 7 November 2026** (the same as 161's `NORMAL_STATE_BB_MIN_RANGE_PIPS` 8.0). | 8 pips |
+| `market_states.ranging_max_band_pips` | Ranging ("close together"): the bands at most this many pips apart. **Owner's value, 7 November 2026.** | 10 pips |
+| `market_states.ranging_band_flat_max_pips_per_candle` | Ranging ("the Bollinger bands are flat"): the upper band and the lower band each move less than this many pips a candle, over `flat_slope_candles`. **Owner's value, 7 November 2026.** | 0.5 pips a candle |
 | `market_states.ranging_both_bands_candles` | Ranging ("price bounces between the upper and lower band"): both bands reached within this many candles. **New starting value.** | 24 candles |
 | `market_states.weave_candles` | Ranging ("the EMAs weave instead of staying stacked"): the order of the 7, 13 and 21 EMAs changed at least once within this many candles. **New starting value.** | 12 candles |
 | `market_states.ema100_flat_max_pips` | Ranging ("the 100 EMA is flat"): it moved less than this many pips over `ema100_flat_candles`. **New starting value.** | 3 pips |
