@@ -14,7 +14,7 @@ from config.pairs import choose_pair, take_pair_option
 from config.settings_loader import load_or_exit
 from prices.model import parse_iso
 from prices.store import CandleStore
-from strategies.common import BOLLINGER_BOUNCE, EMA_PULLBACK, RANGE_TRADE, SLOW_GRIND
+from strategies.common import BOLLINGER_BOUNCE, BREAKOUT, EMA_PULLBACK, RANGE_TRADE, SLOW_GRIND
 from strategies.replay import replay
 
 
@@ -28,7 +28,7 @@ def main(argv: list[str] | None = None) -> int:
     settings = choose_pair(load_or_exit(), pair)
     store = CandleStore(settings.candles.folder, settings.candles.compress_after_days)
     ideas = replay(settings, store, parse_iso(args[0]), parse_iso(args[1]))
-    for name in (SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE):
+    for name in (SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE, BREAKOUT):
         mine = [i for i in ideas if i.strategy == name]
         ok = [i for i in mine if i.allowed]
         print(f"\n=== {name}: {len(ok)} idea(s), {len(mine) - len(ok)} blocked ===")

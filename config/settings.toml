@@ -144,6 +144,15 @@ hourly_history_candles = 600
 [possible_reversal]
 min_trend_move_pips = 30
 
+[breakout]
+# Design 3.5 (owner, 7 November 2026). The breakout candle's high (buy) or low
+# (sell) must be broken within this many candles after it, or the setup expires.
+trigger_within_candles = 3
+# Its stop loss and take profit in pips: NOT YET CHOSEN (0). STRATEGY_BREAKOUT
+# must stay off until both are chosen; the bot refuses to start otherwise.
+stop_loss_pips = 0
+take_profit_pips = 0
+
 [range_trade]
 close_percent_at_opposite_band = 50
 # The rejection candle must be the candle straight after the one that pierced

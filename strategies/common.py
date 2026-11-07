@@ -13,8 +13,8 @@ only, owner 7 November 2026):
   3. the direction rule allows that direction (section 2.3): a buy needs buy
      side (price above the daily pivot and the 5-minute 100 EMA), a sell needs
      sell side. It does not apply to the range trade, nor to the Bollinger
-     bounce when the analyser says possible reversal (owner, 7 November 2026);
-     the rule's answer is still recorded.
+     bounce in any state (owner, 7 November 2026); the rule's answer is still
+     recorded.
 "The current state" is the analyser's state after the last finished 5-minute
 candle, and the direction rule uses the entry price. A candidate that fails a
 check is kept as BLOCKED with the reason, never as an idea.
@@ -24,7 +24,7 @@ Ideas only: nothing here places, changes or closes a trade, or contacts IG.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from decimal import Decimal
 from typing import Any
@@ -32,10 +32,12 @@ from typing import Any
 from analyser.direction import BUY_SIDE, SELL_SIDE, decide
 from analyser.states import DOWN, EMERGING, POSSIBLE_REVERSAL, RANGING, TREND, UP
 
-SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE = (
-    "slow grind", "EMA pullback", "Bollinger bounce", "range trade")
+SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE, BREAKOUT = (
+    "slow grind", "EMA pullback", "Bollinger bounce", "range trade", "breakout")
 SWITCH = {SLOW_GRIND: "slow_grind", EMA_PULLBACK: "ema_pullback", BOLLINGER_BOUNCE: "bollinger_bounce",
-          RANGE_TRADE: "range_trade"}
+          RANGE_TRADE: "range_trade", BREAKOUT: "breakout"}
+# The EMA pullback's hours, news and Friday rules; the breakout has the same (owner, 7 November 2026).
+OWN_HOURS = (EMA_PULLBACK, BREAKOUT)
 BUY, SELL = "buy", "sell"
 # Section 2.2: which states allow which strategy: "any" direction, only in the trend's direction
 # ("trend"), or only against it ("against").
@@ -44,6 +46,7 @@ ALLOWED_IN = {
     EMA_PULLBACK: {EMERGING: "trend", TREND: "trend"},
     BOLLINGER_BOUNCE: {TREND: "against", POSSIBLE_REVERSAL: "any"},
     RANGE_TRADE: {RANGING: "any"},
+    BREAKOUT: {EMERGING: "trend", TREND: "trend"},
 }
 
 
@@ -55,6 +58,7 @@ class Candidate:
     time: datetime                      # the moment the entry price was reached (replay: the candle's start)
     entry_price: Decimal
     steps: list[str]                    # the reason, step by step
+    context: dict = field(default_factory=dict)   # what the trade manager may need (e.g. the breakout's range)
 
 
 @dataclass
@@ -104,11 +108,11 @@ def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: lis
     if not MarketHours(settings.market_hours).is_open(t):
         reasons.append("the market is closed")
     tz = settings.hours.timezone
-    if strategy == EMA_PULLBACK:
+    if strategy in OWN_HOURS:
         lt = t.astimezone(ZoneInfo(tz) if isinstance(tz, str) else tz)
         if lt.weekday() == 4 and lt.time() >= settings.hours.close_all_trades_at:
             reasons.append(f"after {settings.hours.close_all_trades_at:%H:%M} UK on Friday: "
-                           "no EMA pullback trade is held over the weekend")
+                           f"no {strategy} trade is held over the weekend")
         return reasons
     lt = t.astimezone(ZoneInfo(tz) if isinstance(tz, str) else tz).time()
     sw = settings.switches
@@ -131,14 +135,14 @@ def forced_close_at(settings: Any, strategy: str, opened: datetime) -> datetime:
     for k in range(0, 8):
         day = lt.date() + timedelta(days=k)
         cut = dt.combine(day, settings.hours.close_all_trades_at, tzinfo=uk)
-        if cut > lt and (strategy != EMA_PULLBACK or day.weekday() == 4):
+        if cut > lt and (strategy not in OWN_HOURS or day.weekday() == 4):
             return cut.astimezone(timezone.utc)
     raise AssertionError("no close found within a week")
 
 
 def closed_before_big_news(strategy: str) -> bool:
-    """Open trades are closed 15 minutes before big news, except the EMA pullback's."""
-    return strategy != EMA_PULLBACK
+    """Open trades are closed 15 minutes before big news, except the EMA pullback's and the breakout's."""
+    return strategy not in OWN_HOURS
 
 
 def closed_on_level_rejection(strategy: str) -> bool:
@@ -165,6 +169,8 @@ def take_profit_pips(settings: Any, strategy: str, opened: datetime | None = Non
     ema_pullback.take_profit_pips (30), or TAKE_PROFIT_PIPS for a trade opened on a UK day with big news
     for the pair (owner, 7 November 2026). Give `opened` and `pair` for an EMA pullback trade; without
     them its normal take profit (30) is returned."""
+    if strategy == BREAKOUT:
+        return settings.breakout.take_profit_pips          # 0: not chosen yet
     if strategy != EMA_PULLBACK:
         return settings.switches.take_profit_pips
     if opened is not None and pair is not None and big_news_day(settings, pair, opened, calendar):
@@ -181,6 +187,8 @@ def stop_loss_pips(settings: Any, strategy: str) -> int:
     """Design section 4: the EMA pullback's own stop (STOP_LOSS_PIPS_EMA_PULLBACK); every other
     strategy uses STOP_LOSS_PIPS."""
     sw = settings.switches
+    if strategy == BREAKOUT:
+        return settings.breakout.stop_loss_pips            # 0: not chosen yet
     return sw.stop_loss_pips_ema_pullback if strategy == EMA_PULLBACK else sw.stop_loss_pips
 
 
@@ -203,8 +211,7 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
             how = "in" if ok_in[state.state] == "trend" else "against"
             reasons.append(f"the {state.state} is {state.direction}: {strategy} only {how} the trend's direction")
     need = BUY_SIDE if direction == BUY else SELL_SIDE
-    exempt = strategy == RANGE_TRADE or (strategy == BOLLINGER_BOUNCE and state.state == POSSIBLE_REVERSAL)
-    if rule.side != need and not exempt:
+    if rule.side != need and strategy not in (RANGE_TRADE, BOLLINGER_BOUNCE):
         reasons.append(f"the direction rule says {rule.side} ({rule.reason})")
     return reasons, rule
 
@@ -218,9 +225,8 @@ def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | N
     if reasons:
         idea.allowed, idea.blocked_by = False, "; ".join(reasons)
     else:
-        exempt = c.strategy == RANGE_TRADE or (c.strategy == BOLLINGER_BOUNCE and state.state == POSSIBLE_REVERSAL)
+        exempt = c.strategy in (RANGE_TRADE, BOLLINGER_BOUNCE)
         idea.steps.append(f"allowed at entry: {c.strategy} in a {state.state} {state.direction}; direction rule "
                           f"{rule.side} ({rule.reason.replace('the price', 'the entry price')})"
-                          + (f"; the direction rule does not apply to {c.strategy}"
-                             + (" in a possible reversal" if c.strategy == BOLLINGER_BOUNCE else "") if exempt else ""))
+                          + (f"; the direction rule does not apply to {c.strategy}" if exempt else ""))
     return idea

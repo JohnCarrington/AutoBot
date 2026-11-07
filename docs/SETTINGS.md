@@ -77,6 +77,9 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `range_trade.close_percent_at_opposite_band` | Share of a range trade closed when price reaches the opposite band. | 50% |
 | `range_trade.rejection_candle_within_candles` | Range trade (and the shared rejection part's range version): the red rejection candle must come within this many candles after the candle that pierced the band. 1 means the very next candle, as the design says. | 1 candle |
 | `range_trade.trigger_within_candles` | Range trade: the live price must go below the rejection candle's low within this many candles after the rejection candle. 1 means during the candle after it, as the design says; otherwise the setup expires. | 1 candle |
+| `breakout.trigger_within_candles` | Breakout (design 3.5): the breakout candle's high (buy) or low (sell) must be broken within this many candles after it, or the setup expires. **Owner's value, 7 November 2026.** | 3 candles |
+| `breakout.stop_loss_pips` | The breakout's stop loss, in pips. **Not yet chosen: 0.** `STRATEGY_BREAKOUT` cannot be switched on while it is 0. | 0 (not chosen) |
+| `breakout.take_profit_pips` | The breakout's take profit, in pips. **Not yet chosen: 0.** `STRATEGY_BREAKOUT` cannot be switched on while it is 0. | 0 (not chosen) |
 | `indicators.bollinger_periods` | Bollinger bands: the middle band is the average of this many closes (chart price), as on Johnny's IG chart. | 20 candles |
 | `indicators.bollinger_std_devs` | Bollinger bands: the upper and lower bands are this many standard deviations above and below the middle band. | 2 |
 | `indicators.ema_periods` | The EMAs worked out on each indicator timeframe, on the chart price, as on Johnny's IG chart: 7, 13 and 21 (trend: slope and fanning), 100 and 200. Each starts as the simple average of its first closes, then each value = previous + (close - previous) x 2 / (periods + 1). | 7, 13, 21, 100, 200 |
@@ -351,10 +354,11 @@ These live in `.env` (not in `config/settings.toml`), next to the IG secrets, so
 | `PAIRS_ON` | The pairs switched on, comma-separated. The price service streams each one, into its own candle store. Each must have a `[pairs.<PAIR>]` section in `config/settings.toml`. A newly switched-on pair starts with an empty store and is **never** filled from IG's history automatically: that needs the owner's go-ahead (`python -m prices.history_fill plan|go --pair <PAIR>`). | `GBPUSD` |
 | `NEW_TRADES_FROM` | Trading hours: the earliest UK time a new trade may be opened, `HH:MM`. Must be earlier than `NEW_TRADES_UNTIL`. | 06:00 |
 | `NEW_TRADES_UNTIL` | Trading hours: the latest UK time a new trade may be opened, `HH:MM`. Must not be later than `hours.close_all_trades_at`. | 20:30 |
-| `STRATEGY_SLOW_GRIND` | The slow grind strategy, `on` or `off`. | on |
+| `STRATEGY_SLOW_GRIND` | The slow grind strategy, `on` or `off`. **Switched off** by the owner, 7 November 2026. | off |
 | `STRATEGY_EMA_PULLBACK` | The EMA pullback strategy, `on` or `off`. | on |
 | `STRATEGY_BOLLINGER_BOUNCE` | The Bollinger band bounce strategy, `on` or `off`. | on |
 | `STRATEGY_RANGE_TRADE` | The range trade strategy, `on` or `off`. | on |
+| `STRATEGY_BREAKOUT` | The breakout strategy (design 3.5), `on` or `off`. It must stay off until `breakout.stop_loss_pips` and `breakout.take_profit_pips` are chosen: the bot refuses to start with it on while either is 0. | off |
 | `STOP_LOSS_PIPS` | The stop loss sent with every trade, for every strategy except the EMA pullback (which has `STOP_LOSS_PIPS_EMA_PULLBACK`), in pips: a whole number from 1 to 100. Turned into IG's points per pair (`pairs.PAIR.pip_size` x `pairs.PAIR.price_scale`). Moved from `trade.stop_loss_pips` in `config/settings.toml` on 7 November 2026. | 6 |
 | `STOP_LOSS_PIPS_EMA_PULLBACK` | The EMA pullback's stop loss, sent with each of its trades, in pips: a whole number from 1 to 100. Turned into IG's points per pair like `STOP_LOSS_PIPS`. **Owner's value, 7 November 2026.** | 12 |
 | `TAKE_PROFIT_PIPS` | The take profit sent to IG with every trade, in pips: a whole number from 1 to 1000. The bot may close earlier itself; this is the backstop. Moved from `trade.take_profit_pips` on 7 November 2026. | 100 |

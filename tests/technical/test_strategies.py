@@ -178,14 +178,15 @@ def test_the_direction_rule_does_not_apply_to_the_range_trade(S, price):
 def test_the_direction_rule_does_not_apply_to_a_bounce_in_a_possible_reversal(S, price):
     for d in (BUY, SELL):
         i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, d, price), state(POSSIBLE_REVERSAL, UP), PIVOT, EMA100)
-        assert i.allowed and "does not apply to Bollinger bounce in a possible reversal" in i.steps[-1]
+        assert i.allowed and "does not apply to Bollinger bounce" in i.steps[-1]
 
 
-def test_the_direction_rule_still_applies_to_a_bounce_in_a_trend(S):
-    i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, BUY, 100), state(TREND, DOWN), PIVOT, EMA100)   # against: allowed by state
-    assert not i.allowed and i.blocked_by.startswith("the direction rule says sell side")
-    i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, SELL, 120), state(TREND, UP), PIVOT, EMA100)
-    assert not i.allowed and i.blocked_by.startswith("the direction rule says buy side")
+@pytest.mark.parametrize("price", [100, 105, 120])
+def test_the_direction_rule_does_not_apply_to_the_bounce_in_a_trend_either(S, price):
+    i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, BUY, price), state(TREND, DOWN), PIVOT, EMA100)
+    assert i.allowed and "the direction rule does not apply to Bollinger bounce" in i.steps[-1]
+    i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, SELL, price), state(TREND, UP), PIVOT, EMA100)
+    assert i.allowed
 
 
 def test_the_exceptions_do_not_lift_the_other_checks(S):
@@ -684,3 +685,111 @@ def test_the_other_strategies_keep_100_pips_on_any_day(S):
     for name in OTHERS:
         for opened in (U(2026, 11, 5, 9, 0), U(2026, 11, 4, 9, 0)):
             assert take_profit_pips(S, name, opened, "GBPUSD", cal) == 100
+
+
+# ---- 3.5 breakout ---------------------------------------------------------------------------
+
+from strategies.breakout.strategy import BREAKOUT_REASON, Breakout  # noqa: E402
+from strategies.common import BREAKOUT  # noqa: E402
+
+
+def bchange(direction=UP, prev=CONSOLIDATION, reason=BREAKOUT_REASON + ": close 107 above the upper band 106"):
+    return SimpleNamespace(previous_state=prev, state=EMERGING, direction=direction, reason=reason)
+
+
+CONS = [C(i, 100, 103, 98, 101) for i in range(5)]          # the consolidation: low 98, high 103
+UPC = C(5, 101, 106, 100.5, 105.5)                          # the breakout candle: high 106, low 100.5
+
+
+def run_breakout(s, candles, at=5, change=None, since=START):
+    b, out = Breakout(s), []
+    for k, c in enumerate(candles):
+        out += b.on_candle(c, (change or bchange()) if k == at else None, since if k == at else None)
+    return out, b
+
+
+def test_breakout_buy_opens_above_the_breakout_candle_high(S):
+    (x,), _ = run_breakout(S, CONS + [UPC, C(6, 105.5, 107, 105, 106.5)])
+    assert (x.strategy, x.direction, x.entry_price, x.time) == (BREAKOUT, BUY, D(106), C(6, 0, 0, 0, 0).start)
+    assert "moved from consolidation to an emerging trend up" in x.steps[0]
+    assert (x.context["consolidation_low"], x.context["consolidation_high"]) == (D(98), D(103))   # not the breakout candle
+
+
+def test_breakout_sell_opens_below_the_breakout_candle_low(S):
+    down = C(5, 100, 100.5, 96, 96.5)
+    (x,), _ = run_breakout(S, CONS + [down, C(6, 96.5, 97, 95, 95.5)], change=bchange(DOWN))
+    assert (x.direction, x.entry_price) == (SELL, D(96))
+
+
+def test_breakout_a_candle_opening_past_the_price_enters_at_its_open(S):
+    (x,), _ = run_breakout(S, CONS + [UPC, C(6, 107, 108, 106.5, 107.5)])
+    assert x.entry_price == D(107)
+
+
+def test_breakout_expires_after_3_candles(S):
+    wait = [C(6 + k, 105, 105.8, 104, 105) for k in range(3)]
+    assert run_breakout(S, CONS + [UPC] + wait[:2] + [C(8, 105, 107, 104, 106)])[0] != []     # the 3rd: in time
+    out, b = run_breakout(S, CONS + [UPC] + wait + [C(9, 105, 107, 104, 106)])
+    assert out == [] and any("expired" in t for _, _, t in b.notes)
+
+
+def test_breakout_the_expiry_is_a_setting(S):
+    s = changed(S, "breakout", trigger_within_candles=1)
+    assert run_breakout(s, CONS + [UPC, C(6, 105, 105.8, 104, 105), C(7, 105, 107, 104, 106)])[0] == []
+
+
+@pytest.mark.parametrize("change", [
+    bchange(prev=RANGING),                                                       # not from consolidation
+    bchange(reason="rejected at a level: closed 13415.6 above the reversal high"),   # not a band breakout
+    SimpleNamespace(previous_state=CONSOLIDATION, state=RANGING, direction=NONE, reason=BREAKOUT_REASON),
+])
+def test_breakout_only_from_consolidation_to_emerging_by_a_close_outside_the_band(S, change):
+    assert run_breakout(S, CONS + [UPC, C(6, 105.5, 107, 105, 106.5)], change=change)[0] == []
+
+
+def test_breakout_states_hours_news_and_friday_as_the_ema_pullback(S):
+    from strategies.common import closed_before_big_news, counts_towards_most_at_once
+    on = changed(S, "switches", breakout=True)
+    assert check(on, "GBPUSD", cand(BREAKOUT, BUY, 120), state(EMERGING, UP), PIVOT, EMA100).allowed
+    assert check(on, "GBPUSD", cand(BREAKOUT, BUY, 120), state(TREND, UP), PIVOT, EMA100).allowed
+    assert "only in the trend's direction" in check(on, "GBPUSD", cand(BREAKOUT, SELL, 100), state(EMERGING, UP), PIVOT, EMA100).blocked_by
+    i = check(on, "GBPUSD", cand(BREAKOUT, BUY, 100), state(EMERGING, UP), PIVOT, EMA100)
+    assert not i.allowed and "direction rule says sell side" in i.blocked_by
+    assert "STRATEGY_BREAKOUT is off" in check(S, "GBPUSD", cand(BREAKOUT, BUY, 120), state(EMERGING, UP), PIVOT, EMA100).blocked_by
+    for st in (RANGING, CONSOLIDATION, POSSIBLE_REVERSAL):
+        assert "does not allow breakout" in check(on, "GBPUSD", cand(BREAKOUT, BUY, 120), state(st, UP), PIVOT, EMA100).blocked_by
+    assert may_open(S, "GBPUSD", BREAKOUT, U(2026, 11, 3, 3, 0), []) == []
+    assert may_open(S, "GBPUSD", BREAKOUT, U(2026, 11, 5, 11, 50), BOE_CAL) == []
+    assert any("after 20:30 UK on Friday" in r for r in may_open(S, "GBPUSD", BREAKOUT, U(2026, 11, 6, 20, 45), []))
+    assert forced_close_at(S, BREAKOUT, U(2026, 11, 3, 10, 0)) == U(2026, 11, 6, 20, 30)
+    assert closed_before_big_news(BREAKOUT) is False and closed_on_level_rejection(BREAKOUT) is True
+    assert counts_towards_most_at_once(BREAKOUT) is True
+
+
+def test_breakout_stop_and_take_profit_are_its_settings_not_yet_chosen(S):
+    from strategies.common import stop_loss_pips, take_profit_pips
+    assert (stop_loss_pips(S, BREAKOUT), take_profit_pips(S, BREAKOUT)) == (0, 0)
+    s = changed(S, "breakout", stop_loss_pips=15, take_profit_pips=50)
+    s.switches = S.switches
+    assert (stop_loss_pips(s, BREAKOUT), take_profit_pips(s, BREAKOUT)) == (15, 50)
+
+
+def test_the_replay_gives_the_breakout_the_analysers_breakout(monkeypatch, S):
+    candles = CONS + [UPC, C(6, 105.5, 107, 105, 106.5)]
+    hist = [(SimpleNamespace(candle=c, upper=None, middle=None, lower=None), None, None, [], None, None) for c in candles]
+    changes = [SimpleNamespace(time=candles[0].start, state=CONSOLIDATION, direction=NONE, trend_type=None,
+                               previous_state=TREND, reason="ran out of steam"),
+               SimpleNamespace(time=candles[5].start, state=EMERGING, direction=UP, trend_type=None,
+                               previous_state=CONSOLIDATION, reason=BREAKOUT_REASON + ": close above the band")]
+    tracker = SimpleNamespace(history=hist, week_open=START, watcher=None, replay=lambda end: None, changes=changes)
+    level = SimpleNamespace(type="pivot", price=D(90))
+    monkeypatch.setattr(replay_mod, "StateTracker", lambda s, store: tracker)
+    monkeypatch.setattr(replay_mod, "MemoStore", lambda store: store)
+    monkeypatch.setattr(replay_mod, "check_same_pair", lambda s, store: None)
+    monkeypatch.setattr(replay_mod, "last_candles", lambda *a: [])
+    monkeypatch.setattr(replay_mod, "ema", lambda candles, side, periods: {c.start: D(80) for c in candles})
+    monkeypatch.setattr(replay_mod, "build", lambda s, store, t: SimpleNamespace(levels=[level]))
+    (i,) = [x for x in replay_mod.run(S, None, START, START + timedelta(hours=1)).ideas if x.strategy == BREAKOUT]
+    assert (i.direction, i.entry_price, i.state) == (BUY, D(106), EMERGING)
+    assert not i.allowed and i.blocked_by == "its switch STRATEGY_BREAKOUT is off"
+    assert i.steps[0].endswith("close above the band")

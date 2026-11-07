@@ -1,6 +1,5 @@
 """The direction rule (design section 2.3), which applies to every strategy except
-the range trade, and except the Bollinger bounce when the analyser says possible
-reversal (strategies/common.py applies it):
+the range trade and the Bollinger bounce (strategies/common.py applies it):
 
   BUY SIDE   price above the daily pivot AND above the 5-minute 100 EMA;
   SELL SIDE  price below the daily pivot AND below the 5-minute 100 EMA;

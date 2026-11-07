@@ -338,6 +338,11 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "possible_reversal": {
         "min_trend_move_pips": _whole_number(1, 1000),
     },
+    "breakout": {
+        "trigger_within_candles": _whole_number(1, 50),
+        "stop_loss_pips": _whole_number(0, 100),
+        "take_profit_pips": _whole_number(0, 1000),
+    },
     "range_trade": {
         "close_percent_at_opposite_band": _whole_number(1, 100),
         "rejection_candle_within_candles": _whole_number(1, 10),
@@ -566,6 +571,9 @@ def _check_switches(sw: dict[str, Any], v: dict[str, dict[str, Any]], pairs: dic
     if v["hours"]["close_all_trades_at"] < sw["new_trades_until"]:
         raise SettingsError(f"Setting [hours] close_all_trades_at must not be earlier than the switch "
                             f"NEW_TRADES_UNTIL in {where}.")
+    if sw["breakout"] and not (v["breakout"]["stop_loss_pips"] and v["breakout"]["take_profit_pips"]):
+        raise SettingsError(f"Switch STRATEGY_BREAKOUT in {where} is on, but breakout.stop_loss_pips and "
+                            "breakout.take_profit_pips are not both chosen (0 means not chosen) in settings.toml.")
 
 
 def _check_together(v: dict[str, dict[str, Any]]) -> None:

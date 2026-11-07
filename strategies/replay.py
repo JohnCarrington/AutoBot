@@ -37,6 +37,7 @@ from strategies.common import Idea, check
 from strategies.ema_pullback.strategy import EmaPullback, HourlyTrendReader
 from strategies.range_trade.strategy import candidates as range_candidates
 from strategies.slow_grind.strategy import SlowGrind
+from strategies.breakout.strategy import Breakout
 
 @dataclass
 class Replay:
@@ -85,11 +86,16 @@ def run(settings: Any, store: CandleStore, start: datetime, end: datetime) -> Re
     grind = SlowGrind(settings)
     pullback = EmaPullback(settings, hourly)
     watcher = RejectionWatcher(settings, design_only=True)
+    breakout = Breakout(settings)
+    change_at = {ch.time: (k, ch) for k, ch in enumerate(changes)}
     for i, (f, _state, _direction, _events, _moved, _sp) in enumerate(hist):
         c = f.candle
         band = Band(c.start, f.middle, f.upper, f.lower) if f.upper is not None else None
         events = watcher.on_candle(c, band, build(settings, memo, c.start))
-        cands = (grind.on_candle(c, sg_ema.get(c.start))
+        kc = change_at.get(c.start)
+        since = changes[kc[0] - 1].time if kc and kc[0] > 0 else None
+        cands = (breakout.on_candle(c, kc[1] if kc else None, since)
+                 + grind.on_candle(c, sg_ema.get(c.start))
                  + pullback.on_candle(c, fast.get(c.start), slow.get(c.start))
                  + bounce_candidates(watcher, events) + range_candidates(watcher, events))
         if cands and start <= c.start < end:
@@ -97,7 +103,7 @@ def run(settings: Any, store: CandleStore, start: datetime, end: datetime) -> Re
             e100 = ema100.get(week[i - 1].start) if i > 0 else None
             for cand in cands:
                 out.ideas.append(check(settings, settings.market.pair, cand, st, pivot_at(c.start), e100))
-    out.notes = {"slow grind": grind.notes, "EMA pullback": pullback.notes}
+    out.notes = {"slow grind": grind.notes, "EMA pullback": pullback.notes, "breakout": breakout.notes}
     out.watcher = watcher
     return out
 
