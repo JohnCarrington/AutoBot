@@ -149,3 +149,42 @@ class StateTracker:
             "state": now.state, "direction": now.direction, "trend_type": now.trend_type,
             "since_utc": now.since.strftime("%Y-%m-%dT%H:%M:%SZ"), "evidence": now.evidence,
             "strategies_allowed": list(now.strategies_allowed)}, indent=1) + "\n").encode())
+
+
+class StatesUpdater:
+    """Called by the price service at start-up and after each new 5-minute
+    candle. The first call replays the week from its open (start-up); each
+    later call takes the new candles. Every state change is recorded (and
+    written to the log). It can never stop the price service: a problem is
+    written as a warning."""
+
+    def __init__(self, settings: Any, store: CandleStore, warn: Any = None):
+        import logging
+        self.log = logging.getLogger("autobot.analyser")
+        self.settings, self.store = settings, store
+        self.tracker: StateTracker | None = None
+        self.pair = settings.market.pair
+        self.warn = warn or self.log.warning
+        self.started = False
+
+    def __call__(self, now: datetime) -> None:
+        try:
+            if self.tracker is None:
+                self.tracker = StateTracker(self.settings, self.store, record=True)
+            before = len(self.tracker.changes) if self.started else 0
+            first = not self.started
+            state = self.tracker.advance(now)
+            self.started = True
+        except Exception as e:      # never stop the price service
+            self.warn(f"[{self.pair}] Market state not updated ({type(e).__name__}: {e}).")
+            return
+        kind = f", {state.trend_type}" if state.trend_type else ""
+        if first:
+            self.log.info("[%s] Market states replayed from the week's open (%s candles): %s (%s%s) since %s; "
+                          "%d state change(s) this week, recorded in %s.", self.pair, self.tracker.done, state.state,
+                          state.direction, kind, state.since.strftime("%Y-%m-%d %H:%M UTC"),
+                          len(self.tracker.changes), self.tracker.folder / JOURNAL)
+            return
+        for ch in self.tracker.changes[before:]:
+            self.log.info("[%s] Market state: %s", self.pair, ch.line())
+

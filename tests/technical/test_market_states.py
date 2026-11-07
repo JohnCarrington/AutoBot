@@ -488,3 +488,31 @@ def test_consolidation_ends_an_emerging_trend_after_2_candles_but_ranging_does_n
                    weave=True, ema100_move=1)
     assert run(m, [(i, F(i, c=11655, **ranging)) for i in range(1, 5)]) == [] and m.now.state == EMERGING
 
+
+# ---- in the price service --------------------------------------------------------------------
+
+def test_the_price_service_replays_the_states_at_start_up_and_records_each_change(st, caplog):
+    import logging
+    from analyser.market_state import StatesUpdater
+    caplog.set_level(logging.INFO)
+    store, end = _make_store(st)
+    u = StatesUpdater(st, store)
+    u(OPEN + timedelta(hours=20))                          # start-up: replays the week so far
+    assert "Market states replayed from the week's open" in caplog.text
+    n = len(u.tracker.recorded())
+    u(end)                                                 # later candles: each change recorded and logged
+    rows = u.tracker.recorded()
+    assert len(rows) > n and [r["time_utc"] for r in rows] == [c.as_dict()["time_utc"] for c in u.tracker.changes]
+    assert "Market state: " in caplog.text
+    replayed = StateTracker(st, store)
+    replayed.replay(end)
+    assert vars(replayed.machine.now) == vars(u.tracker.machine.now)     # the same as a fresh replay
+
+
+def test_a_market_state_problem_never_stops_the_price_service(st):
+    from analyser.market_state import StatesUpdater
+    warned = []
+    broken = SimpleNamespace(market=st.market, candles=st.candles)        # no market_states settings
+    StatesUpdater(broken, CandleStore(st.candles.folder, 30), warn=warned.append)(OPEN)
+    assert warned and warned[0].startswith("[EURUSD] Market state not updated")
+

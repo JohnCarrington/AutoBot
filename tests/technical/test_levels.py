@@ -431,4 +431,5 @@ def test_the_levels_part_never_contacts_ig():
 
 def test_the_live_run_and_the_service_update_the_levels():
     assert "after_new_candle=LevelsUpdater(settings, store)" in (ROOT / "prices/run.py").read_text()
-    assert "after_new_candle=LevelsUpdater(ps, store)" in (ROOT / "prices/service.py").read_text()   # each pair's own
+    assert "after_new_candle=_after_candle(LevelsUpdater(ps, store), StatesUpdater(ps, store))" in \
+        (ROOT / "prices/service.py").read_text()   # each pair's own levels, then its market states

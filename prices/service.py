@@ -16,6 +16,10 @@ What it does:
      stored and the bigger ones built, until it is told to stop. Drops are reconnected with increasing waits; IG refusing
      the stream gets one controlled re-login, then exit code 78.
   3. Every stream.status_log_minutes it logs a status line.
+  3b. After start-up and each new 5-minute candle, each pair's levels and its
+     market states (analyser/market_state.py): at start-up the states replay
+     the week from its open; every state change is recorded in
+     data/analyser/<PAIR>/state_changes.jsonl.
   3a. Telegram (alerts/): the Sunday and daily "ready" messages (alerts/ready.py),
      and a problem alert for an IG login failure that stops it, the stream going
      quiet while the market is open, any candle store problem, and a crash.
@@ -43,6 +47,7 @@ from ig.client import IGClient
 from ig.errors import IGLoginFailure, stop_bot
 from ig.secrets import ENV_PATH, load_credentials
 from ig.stream import LightstreamerTransport, PriceStream
+from analyser.market_state import StatesUpdater
 from levels.current import LevelsUpdater
 from prices.feed import PriceFeed
 from prices.model import uk
@@ -150,12 +155,21 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
     return 0
 
 
+def _after_candle(*parts: Callable[[datetime], None]) -> Callable[[datetime], None]:
+    """After start-up and each new 5-minute candle: the levels, then the market states."""
+    def run(now: datetime) -> None:
+        for part in parts:
+            part(now)
+    return run
+
+
 def _feed(ps: Any, now: Callable[[], datetime], on_store_problem: Callable[[str], None]) -> PriceFeed:
     """One pair's store, feed and levels (ps: settings.for_pair(...))."""
     store = CandleStore(ps.candles.folder, ps.candles.compress_after_days)
     feed: PriceFeed = PriceFeed(ps, store, now=now, disk_check=lambda: check_free_space(
         ps.candles.folder, ps.housekeeping.min_free_disk_mb, feed.warn),
-        after_new_candle=LevelsUpdater(ps, store), on_store_problem=on_store_problem)
+        after_new_candle=_after_candle(LevelsUpdater(ps, store), StatesUpdater(ps, store)),
+        on_store_problem=on_store_problem)
     return feed
 
 
