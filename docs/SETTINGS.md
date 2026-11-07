@@ -33,10 +33,7 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `news.folder` | Where the copy of the calendar is kept (`calendar.json`). On the server only, not in git. | `/opt/autobot/data/news` |
 | `news.lower_is_better` | Expected direction (design section 2.4): for most releases a higher forecast than the previous figure is good for the currency; for releases whose name contains one of these, a lower one is. | Unemployment Rate, Jobless Claims, Claimant Count Change |
 | `news.country_currencies` | Finnhub's country code for each currency, so a release can be matched to the currencies of each pair switched on. | GB and UK = GBP, US = USD, EU and EMU = EUR, JP = JPY, CH = CHF, CA = CAD, AU = AUD, NZ = NZD |
-| `news_tiers.big_GBP` | The GBP releases that are **big** news, by Finnhub's event name: AutoBot 161's own table (see `docs/NEWS.md`). Only big releases make no-trading windows. | 11 names: BoE Interest Rate Decision, BoE Monetary Policy Report, BoE FPC Meeting Minutes, MPC Meeting Minutes, Inflation Rate MoM and YoY, Core Inflation Rate MoM and YoY, GDP Growth Rate QoQ Prel and YoY Prel, DMP 1Y CPI Expectations |
-| `news_tiers.big_USD` | The USD releases that are **big** news: AutoBot 161's own table. | 16 names: Fed Interest Rate Decision, Fed Press Conference, FOMC Minutes, FOMC Economic Projections, CPI, CPI s.a, Inflation Rate MoM and YoY, Core Inflation Rate MoM and YoY, Non Farm Payrolls, Nonfarm Payrolls Private, Non Farm Payrolls Annual Revision Prel, GDP Growth Rate QoQ Adv, GDP Price Index QoQ Adv, GDP Sales QoQ Adv |
-| `news_tiers.middle_GBP` | The GBP releases that are **medium** news (ignored, kept for the record): AutoBot 161's own table. Anything not listed big or medium is small. | 20 names (retail sales, PPI, PMIs, GDP MoM, industrial production, consumer confidence) |
-| `news_tiers.middle_USD` | The USD releases that are **medium** news (ignored): AutoBot 161's own table. | 51 names (PCE, PPI, ISM, retail sales, jobless claims, JOLTs, durable goods, Michigan, S&P PMIs, ADP) |
+| `news.table_impacts` | Big, medium and small news come from AutoBot's news table, `config/news_table.toml` (see "News table" below). As on AutoBot 161, the table is applied only to releases Finnhub marks with one of these impacts; every other release is small. | high |
 | `limits.max_open_trades_per_strategy` | How many trades each strategy may have open at once. | 1 |
 | `limits.bollinger_bounce_extra_opposite_direction_trades` | The Bollinger band bounce may also have this many trades open in the opposite direction (so up to 1 buy and 1 sell). | 1 |
 | `chart.price` | The price every level and indicator is worked out from: `sell` (IG's bid), to match Johnny's IG chart, which is set to the sell price. Daily candles run midnight to midnight UK (`candles.day_starts_at`). Trades still open and close at IG's real buy or sell price as normal. Must be `sell` or `buy`. | `sell` |
@@ -222,6 +219,103 @@ The 1-hour, 4-hour, daily and weekly candles first built under that layout were 
 | `alerts.daily_ready_late_by_minutes` | The daily ready message is sent at the first check at or after `daily_ready_at`, but not if the price service only starts more than this many minutes later that day. | 60 minutes |
 | `alerts.sunday_ready_within_minutes` | The Sunday "ready" message is sent when every pair switched on has its first 5-minute candle of the week. If a pair still has none this many minutes after the reopen, a problem alert is sent instead. | 30 minutes |
 | `alerts.candles_arriving_within_minutes` | For the ready checks, a pair's candles count as arriving if its newest 5-minute candle finished no more than this many minutes ago. | 10 minutes |
+
+
+## News table (`config/news_table.toml`)
+
+Which economic releases are big, medium or small news: **the owner's table from AutoBot 161**, copied as data from the public audit report `news_impact_table_161.csv` (override table version 2026-08-14.v1; snapshot 7 November 2026) and its README. 161's code was not copied. One row was added for AutoBot (marked below).
+
+**How a release is matched** (`news/table.py`):
+
+1. Only releases Finnhub marks high-impact (`news.table_impacts`) are matched; any other release is small.
+2. Its name is lower-cased. The **override** rows are tried first, each only for its own currency; then the **big** rows; then the **medium** rows (any currency). The first row that matches decides.
+3. A row matches when every keyword in it appears in the name, in any order (or, for the added row, when the name is exactly that).
+4. A "same day" row matches only if another release of the same currency on the same UTC day matches one of its keyword groups: the US unemployment rate is big only on a payrolls day, and a Fed chair speech only on a rate-decision day.
+5. No row matches: **small**, and the release is logged once (and kept in `data/news/unmatched.json`) so the owner can place it.
+
+Only **big** releases stop trading (design section 6). Medium and small news is ignored. Each row below is one keyword group; a rule with several groups has several rows.
+
+| # | Section | Rule | Tier | Currency | Keywords (all required) | Same day |
+|---|---|---|---|---|---|---|
+| 1 | override | gbp_interest_rate (added for AutoBot) | big | GBP | name is exactly "Interest Rate" |  |
+| 2 | override | usd_fed_press_conf_override | big | USD | fed + press conference |  |
+| 3 | override | usd_fed_press_conf_override | big | USD | fomc + press conference |  |
+| 4 | override | usd_gdp_adv_override | big | USD | gdp + adv |  |
+| 5 | override | gbp_gdp_mom_override | medium | GBP | gdp + mom |  |
+| 6 | override | uk_cpi_override | big | GBP | cpi |  |
+| 7 | override | uk_cpi_override | big | GBP | inflation + rate |  |
+| 8 | override | uk_cpi_override | big | GBP | core + inflation |  |
+| 9 | big | us_core_cpi | big | any | core + cpi |  |
+| 10 | big | us_core_cpi | big | any | core + inflation + rate |  |
+| 11 | big | us_cpi | big | any | cpi |  |
+| 12 | big | us_cpi | big | any | inflation + rate |  |
+| 13 | big | us_nfp | big | any | non farm payroll |  |
+| 14 | big | us_nfp | big | any | non-farm payroll |  |
+| 15 | big | us_nfp | big | any | nonfarm payroll |  |
+| 16 | big | us_nfp | big | any | nfp |  |
+| 17 | big | us_unemployment_with_nfp | big | any | unemployment rate | payrolls day |
+| 18 | big | us_fomc | big | any | fomc |  |
+| 19 | big | us_fomc | big | any | federal funds rate |  |
+| 20 | big | us_fomc | big | any | fed funds rate |  |
+| 21 | big | us_fomc | big | any | fed + interest rate decision |  |
+| 22 | big | us_fomc | big | any | fed + rate decision |  |
+| 23 | big | us_fed_chair_speech_at_rate_decision | big | any | fed chair + speech | rate-decision day |
+| 24 | big | us_fed_chair_speech_at_rate_decision | big | any | powell + speech | rate-decision day |
+| 25 | big | us_fed_chair_speech_at_rate_decision | big | any | warsh + speech | rate-decision day |
+| 26 | big | us_fed_chair_speech_at_rate_decision | big | any | fed chair | rate-decision day |
+| 27 | big | uk_boe_rate | big | any | boe + interest rate decision |  |
+| 28 | big | uk_boe_rate | big | any | boe + rate decision |  |
+| 29 | big | uk_boe_rate | big | any | bank of england + rate decision |  |
+| 30 | big | uk_boe_rate | big | any | bank rate |  |
+| 31 | big | uk_boe_rate | big | any | boe + press conference |  |
+| 32 | big | uk_boe_rate | big | any | boe + monetary policy |  |
+| 33 | big | ecb_rate | big | any | ecb + interest rate decision |  |
+| 34 | big | ecb_rate | big | any | ecb + rate decision |  |
+| 35 | big | ecb_rate | big | any | ecb + press conference |  |
+| 36 | big | ecb_rate | big | any | main refinancing |  |
+| 37 | big | ecb_rate | big | any | deposit facility |  |
+| 38 | big | ecb_rate | big | any | ecb + monetary policy |  |
+| 39 | big | uk_core_cpi | big | any | uk + core + cpi |  |
+| 40 | big | uk_core_cpi | big | any | uk + core + inflation |  |
+| 41 | big | uk_gdp | big | any | uk + gdp |  |
+| 42 | big | uk_gdp | big | any | gdp + prel |  |
+| 43 | big | uk_gdp | big | any | gdp + prelim |  |
+| 44 | big | uk_gdp | big | any | gdp + advance |  |
+| 45 | big | uk_gdp | big | any | gdp + flash |  |
+| 46 | big | us_gdp_advance_prelim | big | any | gdp + advance |  |
+| 47 | big | us_gdp_advance_prelim | big | any | gdp + prel |  |
+| 48 | big | us_gdp_advance_prelim | big | any | gdp + prelim |  |
+| 49 | big | central_bank_minutes | big | any | fomc + minutes |  |
+| 50 | big | central_bank_minutes | big | any | ecb + minutes |  |
+| 51 | big | central_bank_minutes | big | any | boe + minutes |  |
+| 52 | big | central_bank_minutes | big | any | mpc + minutes |  |
+| 53 | big | central_bank_minutes | big | any | monetary policy + minutes |  |
+| 54 | middle | ism_manufacturing_pmi | medium | any | ism + manufacturing |  |
+| 55 | middle | ism_services_pmi | medium | any | ism + services |  |
+| 56 | middle | ism_services_pmi | medium | any | ism + non-manufacturing |  |
+| 57 | middle | global_pmi_flash | medium | any | s&p global + pmi + flash |  |
+| 58 | middle | global_pmi_flash | medium | any | markit + pmi + flash |  |
+| 59 | middle | global_pmi_flash | medium | any | pmi + flash |  |
+| 60 | middle | global_pmi_flash | medium | any | composite pmi |  |
+| 61 | middle | retail_sales | medium | any | retail sales |  |
+| 62 | middle | retail_sales | medium | any | core retail sales |  |
+| 63 | middle | ppi | medium | any | ppi |  |
+| 64 | middle | ppi | medium | any | producer price |  |
+| 65 | middle | initial_jobless_claims | medium | any | initial jobless |  |
+| 66 | middle | initial_jobless_claims | medium | any | initial claims |  |
+| 67 | middle | continuing_claims | medium | any | continuing claims |  |
+| 68 | middle | continuing_claims | medium | any | continuing jobless |  |
+| 69 | middle | adp | medium | any | adp |  |
+| 70 | middle | jolts | medium | any | jolt |  |
+| 71 | middle | consumer_confidence | medium | any | consumer confidence |  |
+| 72 | middle | uom_sentiment | medium | any | michigan + sentiment |  |
+| 73 | middle | uom_sentiment | medium | any | uom + sentiment |  |
+| 74 | middle | uom_sentiment | medium | any | michigan consumer |  |
+| 75 | middle | durable_goods | medium | any | durable goods |  |
+| 76 | middle | core_pce | medium | any | core + pce |  |
+| 77 | middle | pce | medium | any | pce |  |
+| 78 | middle | industrial_production | medium | any | industrial production |  |
+| | default | default_small | small | any | (no row matched) | |
 
 ## Switches in .env
 

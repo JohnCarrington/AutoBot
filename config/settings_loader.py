@@ -91,6 +91,12 @@ def _names(v: Any) -> tuple[str, ...]:
     return tuple(x.strip() for x in v)
 
 
+def _impacts(v: Any) -> tuple[str, ...]:
+    if not isinstance(v, list) or not v or any(x not in ("high", "medium", "low") for x in v):
+        raise ValueError(f"must be a non-empty list of Finnhub impacts (high, medium, low), got {v!r}")
+    return tuple(v)
+
+
 def _country_currencies(v: Any) -> dict[str, str]:
     if not isinstance(v, list) or not v:
         raise ValueError(f"must be a non-empty list like [\"GB=GBP\"], got {v!r}")
@@ -274,12 +280,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "folder": _absolute_folder,
         "lower_is_better": _names,
         "country_currencies": _country_currencies,
-    },
-    "news_tiers": {
-        "big_GBP": _names,
-        "big_USD": _names,
-        "middle_GBP": _names,
-        "middle_USD": _names,
+        "table_impacts": _impacts,
     },
     "limits": {
         "max_open_trades_per_strategy": _whole_number(1, 10),

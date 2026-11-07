@@ -1,12 +1,13 @@
 """The economic calendar's rules (design sections 2.4 and 6), from the copy on
 disk (news/finnhub.py). Contacts nobody.
 
-  * tier: BIG or MIDDLE from settings [news_tiers] (AutoBot 161's own table),
-    by currency and Finnhub's event name; anything else SMALL.
+  * tier: BIG, MEDIUM or SMALL from AutoBot's news table, config/news_table.toml
+    (the owner's table from AutoBot 161; matching in news/table.py: overrides,
+    then big rules, then medium rules, otherwise SMALL, logged once).
   * no-trading windows: for each BIG release in a currency of the pair (GBPUSD:
     GBP and USD), no new trades from news.big_news_no_new_trades_before_minutes
     before to news.big_news_no_new_trades_after_minutes after; open trades
-    closed news.big_news_close_trades_before_minutes before. MIDDLE and SMALL
+    closed news.big_news_close_trades_before_minutes before. MEDIUM and SMALL
     releases are ignored (news.ignore_medium_and_small_news).
   * expected direction of a BIG release (section 2.4): the forecast (estimate)
     against the previous figure. Higher is good for the currency, except for the
@@ -25,10 +26,24 @@ from datetime import datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
 from typing import Any
 
+from pathlib import Path
+
 from news.finnhub import read_store
 
 UTC = timezone.utc
-BIG, MIDDLE, SMALL = "big", "middle", "small"
+from news.table import BIG, MEDIUM, SMALL, UnmatchedLog, classify, load_table  # noqa: E402
+
+_TABLE: dict = {}
+
+
+def table(path=None) -> list:
+    """The news table, read once and again whenever the file changes."""
+    from news.table import TABLE_PATH
+    p = Path(path or TABLE_PATH)
+    stamp = p.stat().st_mtime_ns
+    if _TABLE.get("stamp") != (str(p), stamp):
+        _TABLE["rows"], _TABLE["stamp"] = load_table(p), (str(p), stamp)
+    return _TABLE["rows"]
 UP, DOWN, IN_LINE, NO_DIRECTION = "up", "down", "in line", "no direction"
 
 
@@ -40,15 +55,10 @@ def currency_of(settings: Any, country: str) -> str | None:
     return settings.news.country_currencies.get(country.upper())
 
 
-def tier_of(settings: Any, currency: str | None, event: str) -> str:
-    t = settings.news_tiers
-    if currency is None:
-        return SMALL
-    if event in getattr(t, f"big_{currency}", ()):
-        return BIG
-    if event in getattr(t, f"middle_{currency}", ()):
-        return MIDDLE
-    return SMALL
+def tier_of(settings: Any, currency: str | None, event: str, impact: Any = "high",
+            same_day_names: tuple = ()) -> str:
+    """The tier of a release by name (a high-impact release, with no other release that day, unless given)."""
+    return classify(table(), settings, currency, event, impact, same_day_names).tier
 
 
 def _num(x: Any) -> Decimal | None:
@@ -108,10 +118,20 @@ def big_news_windows(settings: Any, pair: str, start: datetime, end: datetime,
     after = timedelta(minutes=n.big_news_no_new_trades_after_minutes)
     close = timedelta(minutes=n.big_news_close_trades_before_minutes)
     currencies = {pair[:3], pair[3:]}
+    cal = calendar if calendar is not None else events(settings)
+    same_day: dict = {}
+    for e in cal:
+        same_day.setdefault((e["time_utc"][:10], currency_of(settings, e["country"])), []).append(e["event"])
+    rows, unmatched = table(), UnmatchedLog(settings)
     out = []
-    for e in (calendar if calendar is not None else events(settings)):
+    for e in cal:
         cur = currency_of(settings, e["country"])
-        if cur not in currencies or tier_of(settings, cur, e["event"]) != BIG:
+        if cur not in currencies:
+            continue
+        m = classify(rows, settings, cur, e["event"], e.get("impact"), same_day[(e["time_utc"][:10], cur)])
+        if m.rule == "default_small":
+            unmatched.note(cur, e["event"], e["time_utc"])
+        if m.tier != BIG:
             continue
         t = _t(e["time_utc"])
         if t - before >= end or t + after <= start:

@@ -9,14 +9,13 @@ The economic calendar (`news/`), for the big-news rules of design section 6 and 
 - The **copy on disk**, `data/news/calendar.json`, keeps every release fetched so far (a newer fetch updates its figures; releases older than 90 days are dropped). A restart uses it and does not fetch again while it is fresh.
 - `.venv/bin/python -m news status` (contacts nobody), `... news fetch` (one request now), `... news windows <from UTC> <to UTC> [--pair GBPUSD]` (contacts nobody).
 
-## Big, medium and small: AutoBot 161's own table
+## Big, medium and small: the news table
 
-161 classified every release with its own `news_tier_classifier` into BIG, MIDDLE and SMALL. Its table was recovered from the public audit report `news_rest_break_event_study_20261007.md`, which tags every GBP and USD release from 1 January to 7 October 2026 (4,427 releases, 398 distinct names) with 161's tier; each name always had the same tier. The names are Finnhub's own (161's calendar also came from Finnhub).
+AutoBot's own table, `config/news_table.toml`: **the owner's table from AutoBot 161** (the tiers the owner set from their research into how far GBPUSD moved around each release), copied as data from the public audit report `news_impact_table_161.csv` and its README, with one row added: a GBP release named exactly "Interest Rate" is the Bank of England rate decision, and is big (Finnhub used that name on 5 November 2026). Every row, and how releases are matched, is in `docs/SETTINGS.md` ("News table").
 
-- **GBP big (11):** BoE Interest Rate Decision, BoE Monetary Policy Report, BoE FPC Meeting Minutes, MPC Meeting Minutes, Inflation Rate MoM, Inflation Rate YoY, Core Inflation Rate MoM, Core Inflation Rate YoY, GDP Growth Rate QoQ Prel, GDP Growth Rate YoY Prel, DMP 1Y CPI Expectations.
-- **USD big (16):** Fed Interest Rate Decision, Fed Press Conference, FOMC Minutes, FOMC Economic Projections, CPI, CPI s.a, Inflation Rate MoM, Inflation Rate YoY, Core Inflation Rate MoM, Core Inflation Rate YoY, Non Farm Payrolls, Nonfarm Payrolls Private, Non Farm Payrolls Annual Revision Prel, GDP Growth Rate QoQ Adv, GDP Price Index QoQ Adv, GDP Sales QoQ Adv.
-- **Medium:** 20 GBP and 51 USD names (settings `news_tiers.middle_GBP`, `middle_USD`). **Small:** everything else. Medium and small are ignored.
-- 161's table only covers GBP and USD. A pair with another currency (for example EUR) needs its lists added before its news counts.
+In short: only high-impact releases (as Finnhub marks them) are matched; overrides first (each for its own currency), then big rules, then medium rules, otherwise small; two same-day rules (the US unemployment rate is big only on payrolls day; a Fed chair speech only on a rate-decision day). A release that matches no row is small and logged once (`data/news/unmatched.json`), so the owner can place it. Medium and small news is ignored for trading.
+
+Because only high-impact releases are matched, a release Finnhub marks medium (for example the BoE Monetary Policy Report and the MPC minutes on 5 November 2026) is not big, even though a big rule names it. This is how 161 worked; `news.table_impacts` can widen it.
 
 ## The no-trading windows
 

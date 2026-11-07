@@ -10,7 +10,7 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from news.calendar import (BIG, DOWN, IN_LINE, MIDDLE, NO_DIRECTION, SMALL, UP, big_news_windows,
+from news.calendar import (BIG, DOWN, IN_LINE, MEDIUM, NO_DIRECTION, SMALL, UP, big_news_windows,
                            close_open_trades, expected_direction, no_new_trades, status, tier_of)
 from news.finnhub import FinnhubKey, FinnhubNotSetUp, fetch, load_key, read_store, store_path
 from news.keeper import NewsKeeper
@@ -34,19 +34,17 @@ def ev(time, country, event, estimate=None, prev=None, impact="high"):
             "actual": None, "impact": impact, "unit": "%"}
 
 
-BOE = ev("2026-11-05T12:00:00Z", "GB", "BoE Interest Rate Decision", 4.0, 4.0)
+BOE = ev("2026-11-05T12:00:00Z", "GB", "BoE Interest Rate Decision", 4.0, 4.0)   # Finnhub impact: high
 
 
-# ---- tiers: 161's table ----------------------------------------------------------------------
+# ---- tiers: the news table (more in test_news_table.py) -----------------------------------
 
-def test_the_tiers_are_161s_table(st):
+def test_the_tiers_come_from_the_news_table(st):
     assert tier_of(st, "GBP", "BoE Interest Rate Decision") == BIG
     assert tier_of(st, "USD", "Non Farm Payrolls") == BIG
-    assert tier_of(st, "GBP", "GDP MoM") == MIDDLE                   # 161: MIDDLE for GBP
-    assert tier_of(st, "USD", "Initial Jobless Claims") == MIDDLE
-    assert tier_of(st, "GBP", "BRC Shop Price Index YoY") == SMALL     # not listed: SMALL
-    assert tier_of(st, "EUR", "Inflation Rate YoY") == SMALL           # no EUR list yet
-    assert (len(st.news_tiers.big_GBP), len(st.news_tiers.big_USD)) == (11, 16)
+    assert tier_of(st, "GBP", "GDP MoM") == MEDIUM
+    assert tier_of(st, "USD", "Initial Jobless Claims") == MEDIUM
+    assert tier_of(st, "GBP", "BRC Shop Price Index YoY") == SMALL
 
 
 # ---- windows ---------------------------------------------------------------------------------
@@ -68,10 +66,11 @@ def test_only_big_news_in_the_pairs_own_currencies_counts(st):
     cal = [BOE, ev("2026-11-05T13:30:00Z", "US", "Initial Jobless Claims", 220, 218),       # USD MIDDLE: ignored
            ev("2026-11-05T09:00:00Z", "GB", "BRC Shop Price Index YoY", 1, 1),             # GBP SMALL: ignored
            ev("2026-11-06T13:30:00Z", "US", "Non Farm Payrolls", 150, 120),                # USD BIG
-           ev("2026-11-05T10:00:00Z", "JP", "BoJ Interest Rate Decision")]                 # not GBP or USD
+           ev("2026-11-05T10:00:00Z", "JP", "BoJ Interest Rate Decision"),                 # not GBP or USD
+           ev("2026-11-05T12:00:00Z", "GB", "MPC Meeting Minutes", impact="medium")]       # medium impact: not matched
     got = [(w.currency, w.event) for w in big_news_windows(st, "GBPUSD", T(2026, 11, 4), T(2026, 11, 8), cal)]
     assert got == [("GBP", "BoE Interest Rate Decision"), ("USD", "Non Farm Payrolls")]
-    assert big_news_windows(st, "EURJPY", T(2026, 11, 4), T(2026, 11, 8), cal) == []        # no EUR or JPY BIG list
+    assert big_news_windows(st, "EURJPY", T(2026, 11, 4), T(2026, 11, 8), cal) == []        # neither EUR nor JPY here
 
 
 # ---- expected direction (section 2.4) -------------------------------------------------------

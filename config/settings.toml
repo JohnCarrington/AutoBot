@@ -50,125 +50,16 @@ check_minutes = 5
 alert_every_hours = 6
 # Where the copy of the calendar is kept (data/, not in git).
 folder = "/opt/autobot/data/news"
+# Big, medium and small news: AutoBot's news table, config/news_table.toml (the
+# owner's table from AutoBot 161). As on 161, it is applied only to releases
+# Finnhub marks with one of these impacts; every other release is small.
+table_impacts = ["high"]
 # Expected direction (design section 2.4): the forecast against the previous
 # figure. For most releases a higher figure is good for the currency; for these
 # (matched by name) a lower figure is good.
 lower_is_better = ["Unemployment Rate", "Jobless Claims", "Claimant Count Change"]
 # Finnhub country code -> currency.
 country_currencies = ["GB=GBP", "UK=GBP", "US=USD", "EU=EUR", "EMU=EUR", "JP=JPY", "CH=CHF", "CA=CAD", "AU=AUD", "NZ=NZD"]
-
-[news_tiers]
-# Which releases are BIG and MIDDLE, per currency, by Finnhub's event name:
-# AutoBot 161's own table (its news_tier_classifier, as recorded for every
-# GBP and USD release from 1 January to 7 October 2026 in the audit report
-# news_rest_break_event_study_20261007.md). Anything not listed is SMALL.
-# Only BIG releases make no-trading windows; MIDDLE and SMALL are ignored.
-big_GBP = [
-  "BoE Interest Rate Decision",
-  "BoE Monetary Policy Report",
-  "BoE FPC Meeting Minutes",
-  "MPC Meeting Minutes",
-  "Inflation Rate MoM",
-  "Inflation Rate YoY",
-  "Core Inflation Rate MoM",
-  "Core Inflation Rate YoY",
-  "GDP Growth Rate QoQ Prel",
-  "GDP Growth Rate YoY Prel",
-  "DMP 1Y CPI Expectations",
-]
-big_USD = [
-  "Fed Interest Rate Decision",
-  "Fed Press Conference",
-  "FOMC Minutes",
-  "FOMC Economic Projections",
-  "CPI",
-  "CPI s.a",
-  "Inflation Rate MoM",
-  "Inflation Rate YoY",
-  "Core Inflation Rate MoM",
-  "Core Inflation Rate YoY",
-  "Non Farm Payrolls",
-  "Nonfarm Payrolls Private",
-  "Non Farm Payrolls Annual Revision Prel",
-  "GDP Growth Rate QoQ Adv",
-  "GDP Price Index QoQ Adv",
-  "GDP Sales QoQ Adv",
-]
-middle_GBP = [
-  "BRC Retail Sales Monitor YoY",
-  "GDP MoM",
-  "GfK Consumer Confidence",
-  "Gfk Consumer Confidence",
-  "Industrial Production MoM",
-  "Industrial Production YoY",
-  "PPI Core Output MoM",
-  "PPI Core Output YoY",
-  "PPI Input MoM",
-  "PPI Input YoY",
-  "PPI Output MoM",
-  "PPI Output YoY",
-  "Retail Sales MoM",
-  "Retail Sales YoY",
-  "Retail Sales ex Fuel MoM",
-  "Retail Sales ex Fuel YoY",
-  "S&P Global Composite PMI Final",
-  "S&P Global Composite PMI Flash",
-  "S&P Global Manufacturing PMI Flash",
-  "S&P Global Services PMI Flash",
-]
-middle_USD = [
-  "ADP Employment Change",
-  "ADP Employment Change Weekly",
-  "CB Consumer Confidence",
-  "Continuing Jobless Claims",
-  "Core PCE Price Index MoM",
-  "Core PCE Price Index YoY",
-  "Core PCE Prices QoQ 2nd Est",
-  "Core PCE Prices QoQ Adv",
-  "Core PCE Prices QoQ Final",
-  "Core PPI MoM",
-  "Core PPI YoY",
-  "Durable Goods Orders Ex Transp MoM",
-  "Durable Goods Orders MoM",
-  "Durable Goods Orders ex Defense MoM",
-  "ISM Manufacturing Employment",
-  "ISM Manufacturing New Orders",
-  "ISM Manufacturing PMI",
-  "ISM Manufacturing Prices",
-  "ISM Services Business Activity",
-  "ISM Services Employment",
-  "ISM Services New Orders",
-  "ISM Services PMI",
-  "ISM Services Prices",
-  "Industrial Production MoM",
-  "Industrial Production YoY",
-  "Initial Jobless Claims",
-  "JOLTs Job Openings",
-  "JOLTs Job Quits",
-  "Michigan Consumer Expectations Final",
-  "Michigan Consumer Expectations Prel",
-  "Michigan Consumer Sentiment Final",
-  "Michigan Consumer Sentiment Prel",
-  "PCE Price Index MoM",
-  "PCE Price Index YoY",
-  "PCE Prices QoQ 2nd Est",
-  "PCE Prices QoQ Adv",
-  "PCE Prices QoQ Final",
-  "PPI",
-  "PPI Ex Food, Energy and Trade MoM",
-  "PPI Ex Food, Energy and Trade YoY",
-  "PPI MoM",
-  "PPI YoY",
-  "Retail Sales Control Group MoM",
-  "Retail Sales Ex Autos MoM",
-  "Retail Sales Ex Gas/Autos MoM",
-  "Retail Sales MoM",
-  "Retail Sales YoY",
-  "S&P Global Composite PMI Final",
-  "S&P Global Composite PMI Flash",
-  "S&P Global Manufacturing PMI Flash",
-  "S&P Global Services PMI Flash",
-]
 
 [limits]
 max_open_trades_per_strategy = 1

@@ -50,13 +50,7 @@ EXPECTED = {
         "lower_is_better": ("Unemployment Rate", "Jobless Claims", "Claimant Count Change"),
         "country_currencies": {"GB": "GBP", "UK": "GBP", "US": "USD", "EU": "EUR", "EMU": "EUR", "JP": "JPY",
                                "CH": "CHF", "CA": "CAD", "AU": "AUD", "NZ": "NZD"},
-    },
-    # AutoBot 161's own table (docs/NEWS.md)
-    "news_tiers": {
-        "big_GBP": ('BoE Interest Rate Decision', 'BoE Monetary Policy Report', 'BoE FPC Meeting Minutes', 'MPC Meeting Minutes', 'Inflation Rate MoM', 'Inflation Rate YoY', 'Core Inflation Rate MoM', 'Core Inflation Rate YoY', 'GDP Growth Rate QoQ Prel', 'GDP Growth Rate YoY Prel', 'DMP 1Y CPI Expectations'),
-        "big_USD": ('Fed Interest Rate Decision', 'Fed Press Conference', 'FOMC Minutes', 'FOMC Economic Projections', 'CPI', 'CPI s.a', 'Inflation Rate MoM', 'Inflation Rate YoY', 'Core Inflation Rate MoM', 'Core Inflation Rate YoY', 'Non Farm Payrolls', 'Nonfarm Payrolls Private', 'Non Farm Payrolls Annual Revision Prel', 'GDP Growth Rate QoQ Adv', 'GDP Price Index QoQ Adv', 'GDP Sales QoQ Adv'),
-        "middle_GBP": ('BRC Retail Sales Monitor YoY', 'GDP MoM', 'GfK Consumer Confidence', 'Gfk Consumer Confidence', 'Industrial Production MoM', 'Industrial Production YoY', 'PPI Core Output MoM', 'PPI Core Output YoY', 'PPI Input MoM', 'PPI Input YoY', 'PPI Output MoM', 'PPI Output YoY', 'Retail Sales MoM', 'Retail Sales YoY', 'Retail Sales ex Fuel MoM', 'Retail Sales ex Fuel YoY', 'S&P Global Composite PMI Final', 'S&P Global Composite PMI Flash', 'S&P Global Manufacturing PMI Flash', 'S&P Global Services PMI Flash'),
-        "middle_USD": ('ADP Employment Change', 'ADP Employment Change Weekly', 'CB Consumer Confidence', 'Continuing Jobless Claims', 'Core PCE Price Index MoM', 'Core PCE Price Index YoY', 'Core PCE Prices QoQ 2nd Est', 'Core PCE Prices QoQ Adv', 'Core PCE Prices QoQ Final', 'Core PPI MoM', 'Core PPI YoY', 'Durable Goods Orders Ex Transp MoM', 'Durable Goods Orders MoM', 'Durable Goods Orders ex Defense MoM', 'ISM Manufacturing Employment', 'ISM Manufacturing New Orders', 'ISM Manufacturing PMI', 'ISM Manufacturing Prices', 'ISM Services Business Activity', 'ISM Services Employment', 'ISM Services New Orders', 'ISM Services PMI', 'ISM Services Prices', 'Industrial Production MoM', 'Industrial Production YoY', 'Initial Jobless Claims', 'JOLTs Job Openings', 'JOLTs Job Quits', 'Michigan Consumer Expectations Final', 'Michigan Consumer Expectations Prel', 'Michigan Consumer Sentiment Final', 'Michigan Consumer Sentiment Prel', 'PCE Price Index MoM', 'PCE Price Index YoY', 'PCE Prices QoQ 2nd Est', 'PCE Prices QoQ Adv', 'PCE Prices QoQ Final', 'PPI', 'PPI Ex Food, Energy and Trade MoM', 'PPI Ex Food, Energy and Trade YoY', 'PPI MoM', 'PPI YoY', 'Retail Sales Control Group MoM', 'Retail Sales Ex Autos MoM', 'Retail Sales Ex Gas/Autos MoM', 'Retail Sales MoM', 'Retail Sales YoY', 'S&P Global Composite PMI Final', 'S&P Global Composite PMI Flash', 'S&P Global Manufacturing PMI Flash', 'S&P Global Services PMI Flash'),
+        "table_impacts": ("high",),
     },
     "limits": {
         "max_open_trades_per_strategy": 1,
@@ -364,7 +358,7 @@ INVALID = [
     ("news", "refresh_hours", 0, "must be between"),
     ("news", "retry_minutes", 1, "must be between"),
     ("news", "country_currencies", ["GB:GBP"], 'must look like "GB=GBP"'),
-    ("news_tiers", "big_GBP", [], "non-empty list of names"),
+    ("news", "table_impacts", ["huge"], "Finnhub impacts"),
     ("alerts", "telegram_url", "http://api.telegram.org", "must be 'https://api.telegram.org'"),
     ("alerts", "same_problem_every_minutes", 0, "must be between"),
     ("alerts", "daily_ready_at", "6am", 'written "HH:MM"'),
