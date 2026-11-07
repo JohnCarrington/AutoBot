@@ -322,6 +322,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "setup_expires_after_minutes": _whole_number(1, 1440),
         "entry_beyond_pips": _whole_number(0, 100),
         "entry_lookback_candles": _whole_number(1, 100),
+        "take_profit_pips": _whole_number(1, 1000),
         "fast_ema_periods": _whole_number(2, 200),
         "mid_ema_periods": _whole_number(2, 200),
         "slow_ema_periods": _whole_number(2, 200),

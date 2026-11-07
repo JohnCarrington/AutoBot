@@ -61,6 +61,7 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `ema_pullback.setup_expires_after_minutes` | An EMA pullback setup that has not triggered is dropped after this long. | 20 minutes |
 | `ema_pullback.entry_beyond_pips` | Entry is this many pips beyond the high (for a buy) or low (for a sell) of the candles before the pullback. | 3 pips |
 | `ema_pullback.entry_lookback_candles` | How many candles before the pullback are used to find that high or low. | 5 candles |
+| `ema_pullback.take_profit_pips` | The EMA pullback's own take profit, sent to IG with each of its trades (every other strategy uses `TAKE_PROFIT_PIPS`). **Owner's value, 7 November 2026.** | 30 pips |
 | `ema_pullback.fast_ema_periods` | The 5-minute EMA the pullback must reach (design 3.2). | 8 |
 | `ema_pullback.mid_ema_periods` | The 5-minute middle EMA (price may cross it; named in design 3.2, used in no rule). | 13 |
 | `ema_pullback.slow_ema_periods` | A 5-minute candle closing beyond this EMA cancels the setup. | 21 |

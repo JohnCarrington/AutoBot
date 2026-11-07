@@ -114,6 +114,9 @@ min_pause_candles = 3
 ema_periods = 21
 
 [ema_pullback]
+# The EMA pullback's own take profit, sent to IG (owner, 7 November 2026; every other
+# strategy uses TAKE_PROFIT_PIPS in .env).
+take_profit_pips = 30
 setup_expires_after_minutes = 20
 entry_beyond_pips = 3
 entry_lookback_candles = 5

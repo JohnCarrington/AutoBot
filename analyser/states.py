@@ -62,7 +62,7 @@ UP, DOWN, NONE = "up", "down", "none"
 SLOW_GRIND, STRONG_PUSH = "slow grind", "strong push"
 ALLOWED = {
     RANGING: ("range trade", "Bollinger band bounce"),
-    EMERGING: ("slow grind", "Bollinger band bounce (trend's direction only)"),
+    EMERGING: ("slow grind", "EMA pullback", "Bollinger band bounce (trend's direction only)"),
     TREND: ("slow grind", "EMA pullback", "Bollinger band bounce (trend's direction only)"),
     POSSIBLE_REVERSAL: ("Bollinger band bounce",),
     CONSOLIDATION: (),

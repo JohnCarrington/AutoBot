@@ -87,6 +87,7 @@ EXPECTED = {
         "setup_expires_after_minutes": 20,
         "entry_beyond_pips": 3,
         "entry_lookback_candles": 5,
+        "take_profit_pips": 30,
         "fast_ema_periods": 8, "mid_ema_periods": 13, "slow_ema_periods": 21,
         "hourly_fast_ema_periods": 8, "hourly_mid_ema_periods": 13, "hourly_slow_ema_periods": 20,
         "hourly_slope_candles": 3, "hourly_min_slope_pips_per_hour": Decimal("0.16"),
