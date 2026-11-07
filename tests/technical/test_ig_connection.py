@@ -80,7 +80,8 @@ def test_requests_version_is_pinned():
     assert f"requests=={requests.__version__}" in lines
 
 
-TELEGRAM_SENDER = Path("alerts/telegram.py")   # the one other file that may make web requests: to Telegram only
+TELEGRAM_SENDER = Path("alerts/telegram.py")   # the other files that may make web requests: to Telegram ...
+FINNHUB_FETCHER = Path("news/finnhub.py")      # ... and to Finnhub, only
 
 
 def test_ig_is_the_only_part_that_talks_to_ig():
@@ -95,6 +96,9 @@ def test_ig_is_the_only_part_that_talks_to_ig():
         text = f.read_text()
         if rel == TELEGRAM_SENDER:
             assert "ig.com" not in text and "telegram_url" in text, rel
+            continue
+        if rel == FINNHUB_FETCHER:
+            assert "ig.com" not in text and "finnhub_url" in text, rel
             continue
         for http_library in ("import requests", "from requests", "urllib", "http.client", "socket",
                              "import lightstreamer", "from lightstreamer"):

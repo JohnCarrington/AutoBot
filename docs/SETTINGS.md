@@ -20,6 +20,23 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `news.big_news_no_new_trades_after_minutes` | No new trades until this many minutes after big news. | 30 minutes |
 | `news.big_news_close_trades_before_minutes` | Open trades are closed this many minutes before big news. | 15 minutes |
 | `news.ignore_medium_and_small_news` | Medium and small news are ignored; only big news counts. | `true` |
+| `news.finnhub_url` | Finnhub's address for the economic calendar. The API key is a secret in `.env` (`FINNHUB_API_KEY`), never printed, logged or committed. | `https://finnhub.io/api/v1` |
+| `news.request_timeout_seconds` | How long to wait for Finnhub before giving up on one fetch. | 20 seconds |
+| `news.refresh_hours` | Fetch the calendar again once the copy on disk is this old. So a few requests a day, and a restart does not fetch again while the copy is fresh. | 6 hours |
+| `news.retry_minutes` | After a failed fetch, wait at least this long before trying again (never a fast loop). | 60 minutes |
+| `news.fetch_days_back` | Each fetch covers this many days before today (UTC) ... | 7 days |
+| `news.fetch_days_ahead` | ... and this many days after. | 14 days |
+| `news.keep_days` | Releases older than this are dropped from the copy on disk. | 90 days |
+| `news.out_of_date_hours` | The calendar is out of date when the last good fetch is older than this: a Telegram problem alert. It does not block trading by itself (design section 6). | 24 hours |
+| `news.check_minutes` | How often the price service looks at the copy on disk (it fetches only when `refresh_hours` and `retry_minutes` say so). | 5 minutes |
+| `news.alert_every_hours` | While the calendar is missing, out of date, or the key is not set up, the problem alert is sent at most this often. | 6 hours |
+| `news.folder` | Where the copy of the calendar is kept (`calendar.json`). On the server only, not in git. | `/opt/autobot/data/news` |
+| `news.lower_is_better` | Expected direction (design section 2.4): for most releases a higher forecast than the previous figure is good for the currency; for releases whose name contains one of these, a lower one is. | Unemployment Rate, Jobless Claims, Claimant Count Change |
+| `news.country_currencies` | Finnhub's country code for each currency, so a release can be matched to the currencies of each pair switched on. | GB and UK = GBP, US = USD, EU and EMU = EUR, JP = JPY, CH = CHF, CA = CAD, AU = AUD, NZ = NZD |
+| `news_tiers.big_GBP` | The GBP releases that are **big** news, by Finnhub's event name: AutoBot 161's own table (see `docs/NEWS.md`). Only big releases make no-trading windows. | 11 names: BoE Interest Rate Decision, BoE Monetary Policy Report, BoE FPC Meeting Minutes, MPC Meeting Minutes, Inflation Rate MoM and YoY, Core Inflation Rate MoM and YoY, GDP Growth Rate QoQ Prel and YoY Prel, DMP 1Y CPI Expectations |
+| `news_tiers.big_USD` | The USD releases that are **big** news: AutoBot 161's own table. | 16 names: Fed Interest Rate Decision, Fed Press Conference, FOMC Minutes, FOMC Economic Projections, CPI, CPI s.a, Inflation Rate MoM and YoY, Core Inflation Rate MoM and YoY, Non Farm Payrolls, Nonfarm Payrolls Private, Non Farm Payrolls Annual Revision Prel, GDP Growth Rate QoQ Adv, GDP Price Index QoQ Adv, GDP Sales QoQ Adv |
+| `news_tiers.middle_GBP` | The GBP releases that are **medium** news (ignored, kept for the record): AutoBot 161's own table. Anything not listed big or medium is small. | 20 names (retail sales, PPI, PMIs, GDP MoM, industrial production, consumer confidence) |
+| `news_tiers.middle_USD` | The USD releases that are **medium** news (ignored): AutoBot 161's own table. | 51 names (PCE, PPI, ISM, retail sales, jobless claims, JOLTs, durable goods, Michigan, S&P PMIs, ADP) |
 | `limits.max_open_trades_per_strategy` | How many trades each strategy may have open at once. | 1 |
 | `limits.bollinger_bounce_extra_opposite_direction_trades` | The Bollinger band bounce may also have this many trades open in the opposite direction (so up to 1 buy and 1 sell). | 1 |
 | `chart.price` | The price every level and indicator is worked out from: `sell` (IG's bid), to match Johnny's IG chart, which is set to the sell price. Daily candles run midnight to midnight UK (`candles.day_starts_at`). Trades still open and close at IG's real buy or sell price as normal. Must be `sell` or `buy`. | `sell` |

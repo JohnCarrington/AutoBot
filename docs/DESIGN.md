@@ -205,7 +205,7 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 - Total risk across all open trades and available funds are also checked.
 - Trading hours (UK clock time): new trades from 06:00 to 20:30 (switches in `.env`, section 13). Any trade open at 20:30 is closed. Nothing held overnight. A trade opened just before 20:30 is simply closed at 20:30.
 - **Per pair and in total (to be built with the safety rules):** every limit above will apply to each pair on its own, plus a total across all pairs switched on (for example the most trades open at once, and the total risk, across all pairs). Nothing is built for this yet.
-- Big news: no new trades from 15 minutes before to 30 minutes after. Open trades closed 15 minutes before. Medium and small news ignored. Which releases count as big comes from AutoBot's own small, medium and big table. News times and figures from Finnhub. If the news data is missing or out of date, alert Johnny rather than block trading indefinitely.
+- Big news: no new trades from 15 minutes before to 30 minutes after. Open trades closed 15 minutes before. Medium and small news ignored. Which releases count as big comes from AutoBot's own small, medium and big table (built: 161's table, recovered from the audit report; `docs/NEWS.md`). News times and figures from Finnhub (built: `news/`, fetched a few times a day by the price service). If the news data is missing or out of date, alert Johnny rather than block trading indefinitely (built: a Telegram problem alert; trading is not blocked by it).
 
 ---
 

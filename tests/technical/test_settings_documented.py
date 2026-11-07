@@ -22,7 +22,8 @@ ROOT = Path(__file__).resolve().parents[2]
 DOC = ROOT / "docs" / "SETTINGS.md"
 EXAMPLE = ROOT / ".env.example"
 ROW = re.compile(r"^\|\s*`([a-z_]+(?:\.[A-Za-z0-9_]+)+|[A-Z][A-Z_]+)`\s*\|(.*)\|\s*$")
-SECRETS = {"IG_USERNAME", "IG_PASSWORD", "IG_API_KEY", "IG_ACCOUNT_ID", "TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID"}
+SECRETS = {"IG_USERNAME", "IG_PASSWORD", "IG_API_KEY", "IG_ACCOUNT_ID", "TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID",
+           "FINNHUB_API_KEY"}
 
 
 def _documented():

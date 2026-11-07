@@ -16,6 +16,8 @@ What it does:
      stored and the bigger ones built, until it is told to stop. Drops are reconnected with increasing waits; IG refusing
      the stream gets one controlled re-login, then exit code 78.
   3. Every stream.status_log_minutes it logs a status line.
+  3c. The economic calendar (news/): fetched from Finnhub a few times a day and
+     kept on disk; a Telegram problem alert if it is missing or out of date.
   3b. After start-up and each new 5-minute candle, each pair's levels and its
      market states (analyser/market_state.py): at start-up the states replay
      the week from its open; every state change is recorded in
@@ -97,9 +99,16 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
         ready = ReadyAlerts(settings, alerts, lambda: ReadyContext(
             settings, client, stream, {f.pair: f for f in feeds.values()}, door), now=now)
 
+    keeper = None
+    if hasattr(settings, "news"):
+        from news.keeper import NewsKeeper
+        keeper = NewsKeeper(settings, alerts, now=now)
+
     def every_second() -> None:
         if ready is not None and stream is not None:
             ready.tick()
+        if keeper is not None:
+            keeper.tick()            # the economic calendar: fetched a few times a day, never in a loop
         if stop.is_set() and stream is not None:
             stream.request_stop()
         if now() >= next_status[0]:

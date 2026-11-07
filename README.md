@@ -14,6 +14,7 @@ An automated trading bot for GBPUSD on an IG **demo** account. It reads live pri
 - `docs/ARCHITECTURE.md`: the parts of the bot and how they connect
 - `docs/LEVELS.md`: every levels rule, the current list and its file
 - `docs/REJECTION.md`: every rejection rule, the spread-spike rule, and the checks on 5 November
+- `docs/NEWS.md`: the economic calendar, big news (161's table), the no-trading windows and expected directions
 - `docs/ALERTS.md`: the Telegram alerts: ready messages, problem alerts, trade messages, the limit on repeats
 - `docs/PAIRS.md`: how the bot works for any currency pair, what is shared, and how to switch a new pair on
 - `docs/ANALYSER.md`: the analyser's indicators, the direction rule, and when its data is ready, warming up or out of date

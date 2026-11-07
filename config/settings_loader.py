@@ -85,6 +85,24 @@ def _level_types(v: Any) -> tuple[str, ...]:
     return tuple(v)
 
 
+def _names(v: Any) -> tuple[str, ...]:
+    if not isinstance(v, list) or not v or not all(isinstance(x, str) and x.strip() for x in v):
+        raise ValueError(f"must be a non-empty list of names, got {v!r}")
+    return tuple(x.strip() for x in v)
+
+
+def _country_currencies(v: Any) -> dict[str, str]:
+    if not isinstance(v, list) or not v:
+        raise ValueError(f"must be a non-empty list like [\"GB=GBP\"], got {v!r}")
+    out = {}
+    for x in v:
+        if not isinstance(x, str) or not re.fullmatch(r"[A-Z]{2,3}=[A-Z]{3}", x):
+            raise ValueError(f"each item must look like \"GB=GBP\", got {x!r}")
+        k, c = x.split("=")
+        out[k] = c
+    return out
+
+
 def _exactly(expected: str) -> Callable[[Any], str]:
     def check(v: Any) -> str:
         if v != expected:
@@ -243,6 +261,25 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "big_news_no_new_trades_after_minutes": _whole_number(0, 240),
         "big_news_close_trades_before_minutes": _whole_number(0, 240),
         "ignore_medium_and_small_news": _yes_no,
+        "finnhub_url": _exactly("https://finnhub.io/api/v1"),
+        "request_timeout_seconds": _whole_number(1, 120),
+        "refresh_hours": _whole_number(1, 48),
+        "retry_minutes": _whole_number(5, 1440),
+        "fetch_days_back": _whole_number(0, 60),
+        "fetch_days_ahead": _whole_number(1, 60),
+        "keep_days": _whole_number(7, 3650),
+        "out_of_date_hours": _whole_number(1, 168),
+        "check_minutes": _whole_number(1, 120),
+        "alert_every_hours": _whole_number(1, 72),
+        "folder": _absolute_folder,
+        "lower_is_better": _names,
+        "country_currencies": _country_currencies,
+    },
+    "news_tiers": {
+        "big_GBP": _names,
+        "big_USD": _names,
+        "middle_GBP": _names,
+        "middle_USD": _names,
     },
     "limits": {
         "max_open_trades_per_strategy": _whole_number(1, 10),
