@@ -75,6 +75,7 @@ class Idea:
     steps: list[str]
     allowed: bool = True
     blocked_by: str = ""
+    context: dict = field(default_factory=dict)   # from the candidate (e.g. the breakout's consolidation range)
 
     def as_dict(self) -> dict:
         return {"pair": self.pair, "strategy": self.strategy, "direction": self.direction,
@@ -221,7 +222,7 @@ def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | N
     """Turn a candidate into an idea, or a blocked one with every reason."""
     reasons, rule = allowed(settings, c.strategy, c.direction, c.entry_price, state, pivot, ema100)
     idea = Idea(pair, c.strategy, c.direction, c.time, c.entry_price, state.state, state.direction,
-                state.trend_type, rule.side, list(c.steps))
+                state.trend_type, rule.side, list(c.steps), context=dict(c.context))
     if reasons:
         idea.allowed, idea.blocked_by = False, "; ".join(reasons)
     else:

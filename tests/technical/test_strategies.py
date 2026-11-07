@@ -793,3 +793,4 @@ def test_the_replay_gives_the_breakout_the_analysers_breakout(monkeypatch, S):
     assert (i.direction, i.entry_price, i.state) == (BUY, D(106), EMERGING)
     assert not i.allowed and i.blocked_by == "its switch STRATEGY_BREAKOUT is off"
     assert i.steps[0].endswith("close above the band")
+    assert (i.context["consolidation_low"], i.context["consolidation_high"]) == (D(98), D(103))   # kept on the idea
