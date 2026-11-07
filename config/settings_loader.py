@@ -316,11 +316,23 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     },
     "slow_grind": {
         "min_pause_candles": _whole_number(1, 100),
+        "ema_periods": _whole_number(2, 200),
     },
     "ema_pullback": {
         "setup_expires_after_minutes": _whole_number(1, 1440),
         "entry_beyond_pips": _whole_number(0, 100),
         "entry_lookback_candles": _whole_number(1, 100),
+        "fast_ema_periods": _whole_number(2, 200),
+        "mid_ema_periods": _whole_number(2, 200),
+        "slow_ema_periods": _whole_number(2, 200),
+        "hourly_fast_ema_periods": _whole_number(2, 200),
+        "hourly_mid_ema_periods": _whole_number(2, 200),
+        "hourly_slow_ema_periods": _whole_number(2, 200),
+        "hourly_slope_candles": _whole_number(1, 50),
+        "hourly_min_slope_pips_per_hour": _decimal_number("0", "100"),
+        "hourly_min_gap_fast_mid_pips": _decimal_number("0", "100"),
+        "hourly_min_gap_mid_slow_pips": _decimal_number("0", "100"),
+        "hourly_history_candles": _whole_number(50, 5000),
     },
     "possible_reversal": {
         "min_trend_move_pips": _whole_number(1, 1000),

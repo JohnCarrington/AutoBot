@@ -110,11 +110,33 @@ confirmation_candle_within_candles_of_reversal = 3
 
 [slow_grind]
 min_pause_candles = 3
+# The EMA a pause must stay under (over, for a buy); a close beyond it cancels (design 3.1).
+ema_periods = 21
 
 [ema_pullback]
 setup_expires_after_minutes = 20
 entry_beyond_pips = 3
 entry_lookback_candles = 5
+# The 5-minute EMAs (design 3.2): the pullback reaches the fast one; a close
+# beyond the slow one cancels.
+fast_ema_periods = 8
+mid_ema_periods = 13
+slow_ema_periods = 21
+# Step 0, the hourly trend (design 3.2: "hourly 8, 13 and 20 EMAs in order and
+# all rising, with the slope and gap minimums from 161's service"). From AutoBot
+# 161's EMA pullback service (audit ema_pullback_audit_for_new_bot_20261106.md,
+# trend.py): EMAs 8/13/20 in order and each rising on the last hourly candle;
+# each EMA's slope over the last 3 hourly candles at least 0.16 pips an hour;
+# the 8 and 13 EMAs at least 0.25 pips apart, the 13 and 20 at least 0.20.
+hourly_fast_ema_periods = 8
+hourly_mid_ema_periods = 13
+hourly_slow_ema_periods = 20
+hourly_slope_candles = 3
+hourly_min_slope_pips_per_hour = 0.16
+hourly_min_gap_fast_mid_pips = 0.25
+hourly_min_gap_mid_slow_pips = 0.20
+# Stored hourly candles read to work out the hourly EMAs.
+hourly_history_candles = 600
 
 [possible_reversal]
 min_trend_move_pips = 30

@@ -57,9 +57,21 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `bounce.reversal_candle_within_candles_of_pierce` | A bounce needs a reversal candle within this many candles of the candle that pierced the band or reached a level. | 3 candles |
 | `bounce.confirmation_candle_within_candles_of_reversal` | A bounce needs a confirmation candle within this many candles of the reversal candle. | 3 candles |
 | `slow_grind.min_pause_candles` | A slow grind's pause must last at least this many candles. | 3 candles |
+| `slow_grind.ema_periods` | The EMA a slow grind's pause must stay below (above, for a buy); a candle closing beyond it cancels the setup (design 3.1). | 21 |
 | `ema_pullback.setup_expires_after_minutes` | An EMA pullback setup that has not triggered is dropped after this long. | 20 minutes |
 | `ema_pullback.entry_beyond_pips` | Entry is this many pips beyond the high (for a buy) or low (for a sell) of the candles before the pullback. | 3 pips |
 | `ema_pullback.entry_lookback_candles` | How many candles before the pullback are used to find that high or low. | 5 candles |
+| `ema_pullback.fast_ema_periods` | The 5-minute EMA the pullback must reach (design 3.2). | 8 |
+| `ema_pullback.mid_ema_periods` | The 5-minute middle EMA (price may cross it; named in design 3.2, used in no rule). | 13 |
+| `ema_pullback.slow_ema_periods` | A 5-minute candle closing beyond this EMA cancels the setup. | 21 |
+| `ema_pullback.hourly_fast_ema_periods` | Step 0, the hourly trend: the fast hourly EMA. From AutoBot 161's EMA pullback service. | 8 |
+| `ema_pullback.hourly_mid_ema_periods` | The middle hourly EMA. | 13 |
+| `ema_pullback.hourly_slow_ema_periods` | The slow hourly EMA. For a buy the three are in order (8 above 13 above 20) and each rose since the hourly candle before. | 20 |
+| `ema_pullback.hourly_slope_candles` | Each hourly EMA's slope is measured over this many finished hourly candles. | 3 hourly candles |
+| `ema_pullback.hourly_min_slope_pips_per_hour` | Each hourly EMA's slope must be at least this. 161's value. | 0.16 pips an hour |
+| `ema_pullback.hourly_min_gap_fast_mid_pips` | The hourly 8 and 13 EMAs must be at least this far apart. 161's value. | 0.25 pips |
+| `ema_pullback.hourly_min_gap_mid_slow_pips` | The hourly 13 and 20 EMAs must be at least this far apart. 161's value. | 0.20 pips |
+| `ema_pullback.hourly_history_candles` | Stored hourly candles read to work out the hourly EMAs (enough for them to settle). | 600 hourly candles |
 | `possible_reversal.min_trend_move_pips` | A possible reversal only counts if the trend before it moved at least this far. | 30 pips |
 | `range_trade.close_percent_at_opposite_band` | Share of a range trade closed when price reaches the opposite band. | 50% |
 | `range_trade.rejection_candle_within_candles` | Range trade (and the shared rejection part's range version): the red rejection candle must come within this many candles after the candle that pierced the band. 1 means the very next candle, as the design says. | 1 candle |
