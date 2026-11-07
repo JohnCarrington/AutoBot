@@ -17,6 +17,10 @@ Rules for filling (docs/PRICES_AND_CANDLES.md):
   * What comes back only fills missing candles. A stored candle is never
     overwritten; anything outside the request is ignored and reported.
   * IG's own UTC times (snapshotTimeUTC) are used. Buy = IG's ask, sell = IG's bid.
+  * The rebuild rule: when a fill completes missing 5-minute candles, every
+    bigger candle (1h, 4h, 1d, 1w) that holds one of them and was built from an
+    incomplete set is rebuilt from the fuller set. The old candle is archived
+    (<candles folder>/<PAIR>/archive_rebuilt/), never deleted.
 
 Commands:
   .venv/bin/python -m prices.history_fill gap-plan --pair GBPUSD --from <UTC> --to <UTC>
@@ -24,6 +28,9 @@ Commands:
   .venv/bin/python -m prices.history_fill gap-go --pair GBPUSD --from <UTC> --to <UTC>
         fills them (only with the owner's go-ahead), then builds the bigger candles
         that are due and checks the store
+  .venv/bin/python -m prices.history_fill rebuild --pair GBPUSD --from <UTC> --to <UTC>
+        applies the rebuild rule (below) to the 5-minute candles stored in that window,
+        for a fill that has already been done; contacts nobody
   .venv/bin/python -m prices.history_fill plan --pair GBPUSD   shows the plan; contacts nobody
   .venv/bin/python -m prices.history_fill go --pair GBPUSD     runs it (once ever per pair: then
                                                                 it is recorded as done for that pair)
@@ -43,7 +50,7 @@ from typing import Any, Callable
 
 from config.pairs import check_same_pair
 from housekeeping.files import safe_write
-from prices.builder import build_due
+from prices.builder import build_due, rebuild_incomplete
 from prices.calendar import Boundaries, MarketHours, floor_5m
 from prices.checks import check_store
 from prices.model import FIVE_MIN, UK, Candle, plain, price, uk_short
@@ -138,7 +145,7 @@ def requests_for_recorded_gaps(store: CandleStore, hours: MarketHours, max_point
 def apply_fill(store: CandleStore, req: Planned, candles: list[Candle]) -> dict:
     """Store what came back, but only into the missing candles asked for."""
     wanted = set(req.slots)
-    result = {"stored": 0, "already_stored": 0, "not_asked_for": 0, "not_asked_times": []}
+    result = {"stored": 0, "already_stored": 0, "not_asked_for": 0, "not_asked_times": [], "stored_times": []}
     for c in candles:
         if c.start not in wanted:
             result["not_asked_for"] += 1
@@ -149,6 +156,7 @@ def apply_fill(store: CandleStore, req: Planned, candles: list[Candle]) -> dict:
             continue
         if store.add(c) == "stored":
             result["stored"] += 1
+            result["stored_times"].append(c.start)
     return result
 
 
@@ -218,6 +226,7 @@ class FillResult:
     stored: int = 0
     compare_rows: list = field(default_factory=list)
     ig_daily: list = field(default_factory=list)
+    rebuilt: list = field(default_factory=list)       # (old, new): incomplete bigger candles rebuilt
     notes: list = field(default_factory=list)
 
 
@@ -279,6 +288,8 @@ def run_one_off(door: Any, store: CandleStore, settings: Any, now: datetime,
             continue
         r = apply_fill(store, p, got)
         res.stored += r["stored"]
+        res.rebuilt += rebuild_incomplete(store, b, r["stored_times"], now, f"one-off fill {_short_iso(p.start)} "
+                                          f"to {_short_iso(p.end)}: rebuilt from the fuller set")
         say(f"  {n}. fill {uk_short(p.start)} to {uk_short(p.end)}: asked {p.points}, received {len(got)}, "
             f"stored {r['stored']}, already stored {r['already_stored']}, not asked for {r['not_asked_for']}; "
             f"IG allowance now {reply.remaining} of {reply.total}")
@@ -309,7 +320,12 @@ class GapFillResult:
     points: int = 0
     stored: int = 0
     built: list = field(default_factory=list)
+    rebuilt: list = field(default_factory=list)       # (old, new): incomplete bigger candles rebuilt
     notes: list = field(default_factory=list)
+
+
+def _short_iso(t: datetime) -> str:
+    return t.strftime("%Y-%m-%dT%H:%MZ")
 
 
 def run_gap_fill(door: Any, store: CandleStore, settings: Any, start: datetime, end: datetime, now: datetime,
@@ -330,6 +346,8 @@ def run_gap_fill(door: Any, store: CandleStore, settings: Any, start: datetime, 
             raise RuntimeError(f"IG sent candles outside the requested times ({uk_short(min(outside))} ...): "
                                "the times do not line up. Stopping the fill.")
         r = apply_fill(store, p, got)
+        res.rebuilt += rebuild_incomplete(store, b, r["stored_times"], now, f"gap fill {_short_iso(p.start)} "
+                                          f"to {_short_iso(p.end)}: rebuilt from the fuller set")
         res.requests += 1
         res.points += reply.points_counted
         res.stored += r["stored"]
@@ -419,7 +437,7 @@ def main(argv: list[str] | None = None) -> int:
     from ig.history import HistoryDoor
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("action", choices=["plan", "go", "gap-plan", "gap-go"])
+    ap.add_argument("action", choices=["plan", "go", "gap-plan", "gap-go", "rebuild"])
     ap.add_argument("--from", dest="start", help="gap-plan / gap-go: from this UTC time")
     ap.add_argument("--to", dest="end", help="gap-plan / gap-go: up to this UTC time")
     ap.add_argument("--pair", required=True, help="the pair to fill, e.g. GBPUSD (always named: never assumed)")
@@ -431,6 +449,8 @@ def main(argv: list[str] | None = None) -> int:
     now = datetime.now(UTC)
     say = lambda t="": print(t, flush=True)  # noqa: E731
 
+    if args.action == "rebuild":
+        return _rebuild(args, settings, store, hours, now, say)
     if args.action.startswith("gap-"):
         return _gap(args, settings, store, hours, now, say)
 
@@ -516,6 +536,7 @@ def _gap(args: Any, settings: Any, store: CandleStore, hours: MarketHours, now: 
         return 2
     client.logout()
     say(f"Stored {res.stored} five-minute candle(s) from {res.requests} request(s), {res.points} point(s) counted.")
+    _say_rebuilt(res.rebuilt, say)
     for c in res.built:
         say(f"  built {c.describe()} ({c.parts} of {c.expected_parts})")
     for n in res.notes:
@@ -524,6 +545,36 @@ def _gap(args: Any, settings: Any, store: CandleStore, hours: MarketHours, now: 
     say("AFTER:")
     _counts(store, settings, say)
     _calls(client, say)
+    return 0
+
+
+def _say_rebuilt(rebuilt: list, say: Callable[[str], None]) -> None:
+    for old, new in rebuilt:
+        say(f"  REBUILT {new.timeframe} {uk_short(new.start)}: {old.parts} -> {new.parts} of {new.expected_parts} "
+            "five-minute candles; the old one is archived")
+        say(f"    old: {old.describe()}")
+        say(f"    new: {new.describe()}")
+
+
+def _rebuild(args: Any, settings: Any, store: CandleStore, hours: MarketHours, now: datetime,
+             say: Callable[[str], None]) -> int:
+    from prices.model import parse_iso
+    if not (args.start and args.end):
+        say("rebuild needs --from and --to (UTC times).")
+        return 2
+    start, end = parse_iso(args.start), parse_iso(args.end)
+    filled = [c.start for c in store.read_range("5m", start, end)]
+    say(f"REBUILD RULE for {settings.market.pair}, 5-minute candles stored from {uk_short(start)} to "
+        f"{uk_short(end)}: {len(filled)}. Contacts nobody.")
+    say("BEFORE:")
+    _counts(store, settings, say)
+    rebuilt = rebuild_incomplete(store, Boundaries(settings.candles, hours), filled, now,
+                                 f"rebuild rule applied by hand for {_short_iso(start)} to {_short_iso(end)}")
+    _say_rebuilt(rebuilt, say)
+    if not rebuilt:
+        say("  Nothing to rebuild: no incomplete bigger candle there has a fuller set now.")
+    say("AFTER:")
+    _counts(store, settings, say)
     return 0
 
 

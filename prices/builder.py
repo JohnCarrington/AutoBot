@@ -8,6 +8,10 @@ A bigger candle is built once its time is over and either
   * candles.wait_for_late_candle_seconds has passed since its end.
 If some 5-minute candles are missing, it is still built, from those that are
 stored, and it records how many it used ("parts", e.g. 11 of 12) with a warning.
+
+When a gap fill later completes missing 5-minute candles, rebuild_incomplete()
+rebuilds every bigger candle that was built from an incomplete set, from the
+fuller set, and archives the old one (never deleted).
 """
 
 from __future__ import annotations
@@ -73,3 +77,27 @@ def build_due(store: CandleStore, b: Boundaries, now: datetime, wait_seconds: in
                     warn(f"{tf} candle {uk_short(s)} built from only {len(parts)} of {expected} "
                          "5-minute candles (some are missing).")
     return stored
+
+
+def rebuild_incomplete(store: CandleStore, b: Boundaries, filled: list[datetime], now: datetime,
+                       reason: str) -> list[tuple[Candle, Candle]]:
+    """The standing rule after a gap fill (docs/PRICES_AND_CANDLES.md): every
+    bigger candle that holds one of the `filled` 5-minute candles, and that was
+    built from an incomplete set, is rebuilt from ALL the 5-minute candles now
+    stored, if that is a fuller set. The old one is archived, never deleted
+    (CandleStore.replace_with_fuller). Candles not yet built are left to
+    build_due. Returns (old, new) for each one replaced."""
+    out: list[tuple[Candle, Candle]] = []
+    for tf in BUILT:
+        for s, e in sorted({b.bucket(tf, t) for t in filled}):
+            old = store.get(tf, s)
+            if old is None or old.parts >= old.expected_parts:
+                continue
+            parts = store.read_range("5m", s, e)
+            if len(parts) <= old.parts:
+                continue
+            new = build_from(tf, s, e, parts, old.expected_parts)
+            store.replace_with_fuller(new, reason, now)
+            out.append((old, new))
+    return out
+

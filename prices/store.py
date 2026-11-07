@@ -7,6 +7,11 @@
 Rules:
   * A stored candle is never overwritten. If a different value arrives for a
     stored candle, the stored one is kept and a warning is written.
+    The ONE exception (replace_with_fuller): a bigger candle (1h, 4h, 1d, 1w)
+    built from an incomplete set of 5-minute candles is rebuilt from the fuller
+    set after a gap fill. The old one is archived first
+    (archive_rebuilt/<size>/<UTC date>.csv, with when and why), never deleted.
+    A 5-minute candle is never replaced.
   * Every write is safe: the new file is written in full to a temporary file
     in the same folder, flushed to disk, then renamed over the old one in one
     step. A crash or power cut leaves either the old file or the new file,
@@ -31,6 +36,7 @@ from prices.model import (PRICE_FIELDS, TIMEFRAMES, UTC, Candle, iso, parse_iso,
                           plain, price, uk_short)
 
 log = logging.getLogger("autobot.prices.store")
+BUILT_SIZES = ("1h", "4h", "1d", "1w")
 
 COLUMNS = ("start_utc", "end_utc") + PRICE_FIELDS + ("parts", "expected_parts")
 GAP_COLUMNS = ("timeframe", "from_utc", "to_utc", "missing_candles", "found_utc", "how_found", "note")
@@ -146,6 +152,50 @@ class CandleStore:
         self._write_day(tf, day, [c for c in self.read_day(tf, day) if c.start != old_start])
         log.info("Relabelled %s candle %s as %s (prices unchanged).", tf, iso(old_start), iso(new_start))
         return new
+
+    # ---- replacing an incomplete bigger candle (the one exception) ---------
+
+    ARCHIVE_REBUILT = "archive_rebuilt"
+    ARCHIVE_COLUMNS = COLUMNS + ("archived_utc", "reason", "replaced_by_parts")
+
+    def replace_with_fuller(self, new: Candle, reason: str, now: datetime) -> Candle:
+        """The ONE case where a stored candle is replaced: a bigger candle that
+        was built from an incomplete set of 5-minute candles, rebuilt from a
+        fuller set after a gap fill. The old candle is ARCHIVED first, never
+        deleted (<store>/archive_rebuilt/<size>/<UTC date>.csv, with when and
+        why), then the day file is rewritten with the new candle in its place,
+        each with a safe write. A crash in between leaves the old candle stored
+        and archived; running again archives it only once. Returns the old candle."""
+        tf = new.timeframe
+        if tf not in BUILT_SIZES:
+            raise ValueError(f"only built candles (1h, 4h, 1d, 1w) can be rebuilt, not {tf}")
+        old = self.get(tf, new.start)
+        if old is None:
+            raise KeyError(f"no stored {tf} candle at {iso(new.start)}")
+        if old.end != new.end or old.expected_parts != new.expected_parts:
+            raise ValueError(f"the rebuilt {tf} candle at {iso(new.start)} does not cover the same time")
+        if not (old.parts < old.expected_parts and new.parts > old.parts):
+            raise ValueError(f"the stored {tf} candle at {iso(new.start)} ({old.parts}/{old.expected_parts}) "
+                             f"is complete, or the rebuild ({new.parts}) is not fuller: nothing replaced")
+        day = new.start.astimezone(UTC).date()
+        apath = self.folder / self.ARCHIVE_REBUILT / tf / f"{day.isoformat()}.csv"
+        row = [iso(old.start), iso(old.end), *(plain(x) for x in old.prices()), str(old.parts),
+               str(old.expected_parts)]
+        rows: list[list[str]] = []
+        if apath.exists():
+            rows = list(csv.reader(io.StringIO(apath.read_text())))[1:]
+        if not any(r[:len(row)] == row for r in rows):
+            rows.append(row + [iso(now), reason, str(new.parts)])
+            buf = io.StringIO()
+            w = csv.writer(buf, lineterminator="\n")
+            w.writerow(self.ARCHIVE_COLUMNS)
+            w.writerows(rows)
+            apath.parent.mkdir(parents=True, exist_ok=True)
+            safe_write(apath, buf.getvalue().encode())
+        self._write_day(tf, day, [new if c.start == new.start else c for c in self.read_day(tf, day)])
+        log.info("Rebuilt %s from %d of %d 5-minute candles (was %d); the old one is archived in %s.",
+                 new.describe(), new.parts, new.expected_parts, old.parts, apath)
+        return old
 
     def add(self, candle: Candle) -> str:
         """Store one candle. Returns 'stored', 'same' (already stored with the

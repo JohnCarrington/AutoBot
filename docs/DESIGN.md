@@ -224,7 +224,7 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 
 - The bot never exceeds IG's history allowance (10,000 points a week for the whole account). The allowance, the bot's weekly budget and the block marker are **shared by all pairs**: every pair's requests go through the same door and count against the same budget. It keeps its own smaller weekly budget, counts points before every request, saves the count straight away, and records IG's own figures from every reply.
 - Only one guarded part of the code may ask IG for history. A refusal writes a block marker that survives restarts.
-- History is only requested for a candle genuinely missing during market hours. It only fills gaps and never overwrites stored candles.
+- History is only requested for a candle genuinely missing during market hours. It only fills gaps and never overwrites stored candles, with one exception: when a gap fill completes missing 5-minute candles, any bigger candle that was built from an incomplete set is rebuilt from the full set, and the old one is archived, never deleted.
 - The weekend is never missing data. Market hours: open Sunday 21:00 UK, close Friday 17:00 New York time (22:00 UK most of the year, 21:00 in the clock-change weeks).
 - Every candle keeps buy and sell prices separately, never mixed. Times stored in UTC, shown in UK time. Candles with a spread spike are stored as normal; only the rejection rules ignore their highs and lows (3.3).
 - Daily candles run midnight to midnight UK, with IG's short Sunday candle, matching IG's chart. Hourly, 4-hour, daily and weekly are built from the bot's own 5-minute candles.

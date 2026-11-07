@@ -90,7 +90,8 @@ def test_what_comes_back_only_fills_missing_candles_and_never_overwrites(store):
                  five(T(2026, 11, 4, 10, 10))]
     r = apply_fill(store, req, came_back)
     assert r == {"stored": 2, "already_stored": 0, "not_asked_for": 2,
-                 "not_asked_times": [T(2026, 11, 4, 9, 55), T(2026, 11, 4, 10, 5)]}
+                 "not_asked_times": [T(2026, 11, 4, 9, 55), T(2026, 11, 4, 10, 5)],
+                 "stored_times": [T(2026, 11, 4, 10), T(2026, 11, 4, 10, 10)]}
     assert str(store.get("5m", T(2026, 11, 4, 10, 5)).buy_close) == "1.11111"
     assert store.get("5m", T(2026, 11, 4, 9, 55)) is None
 
@@ -218,3 +219,87 @@ def test_a_gap_fill_asks_only_for_the_missing_candles_in_the_window_and_builds_t
     hour = [c for c in res.built if c.timeframe == "1h" and c.start == T(2026, 11, 4, 10)]
     assert [(c.parts, c.expected_parts) for c in hour] == [(12, 12)]      # the 10:00 hour, now complete
     assert door.ledger()[0]["epic"] == SETTINGS.market.epic and door.ledger()[0]["purpose"] == "gap fill"
+
+
+# ---- the rebuild rule: incomplete bigger candles are rebuilt after a fill -------------------
+
+def _incomplete_hour(store):
+    """The 10:00 hour stored with 5 of 12 candles, as the bot would have built it
+    before a gap; then the gap 10:25 to 11:00 recorded."""
+    from prices.builder import build_due
+    from prices.model import build_from
+    for i in range(5):
+        store.add(five(T(2026, 11, 4, 10) + i * FIVE, sh=f"1.310{50 + i}"))
+    store.add(build_from("1h", T(2026, 11, 4, 10), T(2026, 11, 4, 11), store.read_range("5m", T(2026, 11, 4, 10),
+                                                                                         T(2026, 11, 4, 11)), 12))
+    store.record_gap("5m", T(2026, 11, 4, 10, 25), T(2026, 11, 4, 11), 7, T(2026, 11, 4, 11), "test")
+    old = store.get("1h", T(2026, 11, 4, 10))
+    assert (old.parts, old.expected_parts) == (5, 12)
+    return old
+
+
+def _fill_reply(slots, high=13360.0):
+    rows = [row(t) for t in slots]
+    rows[-1]["highPrice"]["bid"] = high                      # a new high inside the filled part
+    return Reply(200, {"prices": rows, "metadata": {
+        "allowance": {"remainingAllowance": 8000, "totalAllowance": 10000, "allowanceExpiry": 86400},
+        "size": len(rows), "pageData": {"totalPages": 1}}})
+
+
+def test_a_gap_fill_rebuilds_an_incomplete_bigger_candle_and_archives_the_old_one(tmp_path, store):
+    from prices.history_fill import run_gap_fill
+    old = _incomplete_hour(store)
+    missing = [T(2026, 11, 4, 10, 25) + i * FIVE for i in range(7)]
+    ig = FakeIG(login_ok(), accounts_ok(), switch_ok(), _fill_reply(missing))
+    client = IGClient(SETTINGS.ig, CREDS, http=ig, sleep=lambda x: None)
+    client.connect()
+    s, now = _settings(tmp_path), T(2026, 11, 7, 9)
+    res = run_gap_fill(HistoryDoor(client, s.history, now=lambda: now), store, s,
+                       T(2026, 11, 4, 10), T(2026, 11, 4, 11), now, print)
+    new = store.get("1h", T(2026, 11, 4, 10))
+    assert (new.parts, new.expected_parts) == (12, 12) and str(new.sell_high) == "13360.0"
+    assert [(o.parts, n.parts) for o, n in res.rebuilt if n.timeframe == "1h"] == [(5, 12)]
+    # the old candle is archived, with when and why, never deleted
+    arch = (store.folder / "archive_rebuilt" / "1h" / "2026-11-04.csv").read_text().splitlines()
+    assert arch[0].endswith("archived_utc,reason,replaced_by_parts") and len(arch) == 2
+    assert arch[1].startswith("2026-11-04T10:00:00Z,2026-11-04T11:00:00Z,") and ",5,12,2026-11-07T09:00:00Z,gap fill" in arch[1]
+    assert arch[1].endswith(",12") and old.describe() != new.describe()
+    # only one 1h candle at 10:00 in the store
+    assert [c.start for c in store.read_day("1h", T(2026, 11, 4).date())].count(T(2026, 11, 4, 10)) == 1
+
+
+def test_the_rule_never_replaces_a_complete_candle_or_with_a_set_that_is_not_fuller(store):
+    from prices.builder import rebuild_incomplete
+    from prices.model import build_from
+    _incomplete_hour(store)
+    b = Boundaries(SETTINGS.candles, HOURS)
+    now = T(2026, 11, 7, 9)
+    # no new 5-minute candles: nothing to rebuild
+    assert rebuild_incomplete(store, b, [T(2026, 11, 4, 10)], now, "test") == []
+    assert not (store.folder / "archive_rebuilt").exists()
+    # a complete candle is never replaced
+    for i in range(12):
+        store.add(five(T(2026, 11, 4, 12) + i * FIVE))
+    full = build_from("1h", T(2026, 11, 4, 12), T(2026, 11, 4, 13), store.read_range("5m", T(2026, 11, 4, 12),
+                                                                                       T(2026, 11, 4, 13)), 12)
+    store.add(full)
+    assert rebuild_incomplete(store, b, [T(2026, 11, 4, 12)], now, "test") == []
+    with pytest.raises(ValueError, match="is complete, or the rebuild"):
+        store.replace_with_fuller(full, "test", now)
+    with pytest.raises(ValueError, match="only built candles"):
+        store.replace_with_fuller(five(T(2026, 11, 4, 12)), "test", now)
+
+
+def test_running_the_rule_twice_archives_once_and_changes_nothing_more(store):
+    from prices.builder import rebuild_incomplete
+    _incomplete_hour(store)
+    for i in range(5, 12):
+        store.add(five(T(2026, 11, 4, 10) + i * FIVE))
+    b = Boundaries(SETTINGS.candles, HOURS)
+    first = rebuild_incomplete(store, b, [T(2026, 11, 4, 10, 25)], T(2026, 11, 7, 9), "test")
+    assert [(o.parts, n.parts) for o, n in first] == [(5, 12)]
+    before = (store.folder / "1h" / "2026-11-04.csv").read_bytes()
+    assert rebuild_incomplete(store, b, [T(2026, 11, 4, 10, 25)], T(2026, 11, 7, 10), "test") == []
+    assert (store.folder / "1h" / "2026-11-04.csv").read_bytes() == before
+    assert len((store.folder / "archive_rebuilt" / "1h" / "2026-11-04.csv").read_text().splitlines()) == 2
+
