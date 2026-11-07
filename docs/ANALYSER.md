@@ -1,6 +1,6 @@
 # Market analyser
 
-Stage 7 is built in parts. **Part 1 (built):** the indicators, the direction rule, and whether the data is ready, warming up or out of date. **Part 2 (built, not yet checked against real days):** the five market states. Functional tests for the states come after Johnny has compared a timeline with his chart.
+Stage 7 is built in parts. **Part 1 (built):** the indicators, the direction rule, and whether the data is ready, warming up or out of date. **Part 2 (built):** the five market states, checked against Johnny's chart for 5 and 6 November and fixed into functional tests (`tests/functional/test_market_states_real_candles.py`). Known shortfall: the S2 flat spell from 11:30 to 12:45 on 6 November is not yet called consolidation (design section 12).
 
 The analyser reads the candle store and the levels only. It never contacts IG (a test checks that `analyser/` never imports the IG connection). Everything uses the chart price, the **sell (bid) price**, with daily candles midnight to midnight UK, as on Johnny's IG chart. Only candles that had **finished** at the time asked about are used, so the answer for a past time never changes.
 
