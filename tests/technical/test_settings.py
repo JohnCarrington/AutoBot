@@ -143,7 +143,7 @@ EXPECTED = {
     },
     "market_states": {
         "narrow_band_max_pips": 14, "narrowing_candles": 6, "flat_max_pips_per_candle": Decimal("0.5"), "flat_slope_candles": 6,
-        "ranging_min_band_pips": 8, "ranging_max_band_pips": 10, "ranging_band_flat_max_pips_per_candle": Decimal("0.5"),
+        "ranging_min_band_pips": 6, "ranging_max_band_pips": 18, "ranging_band_flat_max_pips_per_candle": Decimal("0.2"),
         "ranging_both_bands_candles": 24, "weave_candles": 12,
         "ema100_flat_max_pips": 3, "ema100_flat_candles": 12, "consolidation_quiet_candles": 6,
         "consolidation_max_body_pips": 3, "consolidation_colour_max_ratio": 2, "near_band_pips": 1,

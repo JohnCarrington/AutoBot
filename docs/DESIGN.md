@@ -43,7 +43,7 @@ Every result gives: the market state, the direction (up, down or none), the type
 | Possible reversal | Bollinger band bounce |
 | Consolidation | None. Watch and wait for a break |
 
-- **Ranging:** the Bollinger bands are flat and close together, and price bounces between the upper and lower band. The EMAs weave back and forth instead of staying stacked, and the 100 EMA is flat. In numbers (owner, 7 November 2026): close together is a band width of at least 8 and at most 10 pips; flat is the upper band and the lower band each moving less than 0.5 pips a candle, measured over 6 candles; price bounces between the bands when both bands have been reached within 24 candles.
+- **Ranging:** the Bollinger bands are flat and close together, and price bounces between the upper and lower band. The EMAs weave back and forth instead of staying stacked, and the 100 EMA is flat. In numbers (owner, 7 November 2026): close together is a band width of at least 6 and at most 18 pips; flat is the upper band and the lower band each moving less than 0.2 pips a candle, measured over 6 candles; price bounces between the bands when both bands have been reached within 24 candles.
 - **Emerging trend:** a direction is starting to form. Its main job is to stop bounces against the new direction early. Bounces with the new direction are still allowed.
 - **Trend:** an established direction, either a slow grind or a strong push. Both are recognised from price action.
 - **Possible reversal:** after a trend has been running and price has moved at least 30 pips since it started, a strong reversal candle appears, recognised by the shared rejection part with no extra size rule.

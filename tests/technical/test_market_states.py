@@ -55,9 +55,9 @@ def F(i, **kw):
     return Features(**base)
 
 
-# Ranging (design 2.2, owner's values): bands 8 to 10 pips wide, upper and lower band flat
-# (under 0.5 pips a candle), both bands reached, EMAs weaving, 100 EMA flat.
-RANGING_OK = dict(width=10, mid_slope="0.1", upper_slope="0.2", lower_slope="-0.2", both_bands_recently=True,
+# Ranging (design 2.2, owner's values): bands 6 to 18 pips wide, upper and lower band flat
+# (under 0.2 pips a candle), both bands reached, EMAs weaving, 100 EMA flat.
+RANGING_OK = dict(width=10, mid_slope="0.05", upper_slope="0.1", lower_slope="-0.1", both_bands_recently=True,
                   weave=True, ema100_move=1)
 
 
@@ -576,21 +576,21 @@ def test_a_session_high_or_low_alone_does_not_start_one(st):
 
 # ---- the ranging check, design 2.2 (owner's values, 7 November 2026) ----------------------------
 
-@pytest.mark.parametrize("width,ok", [("7.9", False), (8, True), (9, True), (10, True), ("10.1", False), (16, False)])
-def test_ranging_bands_close_together_from_8_to_10_pips(st, width, ok):
+@pytest.mark.parametrize("width,ok", [("5.9", False), (6, True), (12, True), (18, True), ("18.1", False), (25, False)])
+def test_ranging_bands_close_together_from_6_to_18_pips(st, width, ok):
     assert machine(st).ranging(F(0, **{**RANGING_OK, "width": width}))[0] is ok
 
 
 @pytest.mark.parametrize("band", ["upper_slope", "lower_slope"])
-@pytest.mark.parametrize("slope,ok", [("0.49", True), ("-0.49", True), ("0.5", False), ("-0.5", False), (1, False)])
-def test_ranging_both_outer_bands_flat_under_half_a_pip_a_candle(st, band, slope, ok):
+@pytest.mark.parametrize("slope,ok", [("0.19", True), ("-0.19", True), ("0.2", False), ("-0.2", False), ("0.5", False)])
+def test_ranging_both_outer_bands_flat_under_0_2_pips_a_candle(st, band, slope, ok):
     assert machine(st).ranging(F(0, **{**RANGING_OK, band: slope}))[0] is ok
 
 
 def test_ranging_the_middle_band_alone_is_not_the_test(st):
     m = machine(st)
-    assert m.ranging(F(0, **{**RANGING_OK, "mid_slope": "0.1", "upper_slope": "0.6", "lower_slope": "-0.4"}))[0] is False
-    assert m.ranging(F(0, **{**RANGING_OK, "mid_slope": "0.45", "upper_slope": "0.4", "lower_slope": "0.45"}))[0] is True
+    assert m.ranging(F(0, **{**RANGING_OK, "mid_slope": "0.05", "upper_slope": "0.3", "lower_slope": "-0.2"}))[0] is False
+    assert m.ranging(F(0, **{**RANGING_OK, "mid_slope": "0.18", "upper_slope": "0.17", "lower_slope": "0.19"}))[0] is True
 
 
 @pytest.mark.parametrize("change", [dict(both_bands_recently=False), dict(weave=False), dict(ema100_move=3)])
@@ -608,4 +608,4 @@ def test_ranging_no_efficiency_or_crossings_check(st):
 
 def test_ranging_reason_names_the_numbers(st):
     ok, why = machine(st).ranging(F(0, **RANGING_OK))
-    assert ok and "close together: 8 to 10" in why and "upper 0.2, lower -0.2 pips/candle" in why
+    assert ok and "close together: 6 to 18" in why and "upper 0.1, lower -0.1 pips/candle" in why
