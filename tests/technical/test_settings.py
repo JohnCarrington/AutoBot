@@ -5,6 +5,7 @@ import subprocess
 import sys
 import tomllib
 from datetime import time
+from decimal import Decimal
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -119,6 +120,19 @@ EXPECTED = {
         "min_ig_allowance_remaining": 2000,
         "max_points_per_request": 500,
         "min_block_hours": 24,
+    },
+    "market_states": {
+        "narrow_band_max_pips": 8, "flat_max_pips_per_candle": Decimal("0.5"), "flat_slope_candles": 6,
+        "ranging_min_band_pips": 8, "ranging_max_efficiency_ratio": Decimal("0.5"), "efficiency_candles": 10,
+        "ranging_min_crossings": 2, "crossing_candles": 12, "ranging_both_bands_candles": 24, "weave_candles": 12,
+        "ema100_flat_max_pips": 3, "ema100_flat_candles": 12, "consolidation_quiet_candles": 6,
+        "consolidation_max_body_pips": 3, "consolidation_colour_max_ratio": 2, "near_band_pips": 1,
+        "persistence_candles": 2, "evidence_fades_after_candles": 24, "ema_stacked_candles": 3,
+        "emerging_cancel_pips": 3, "failed_bounce_within_pips": 1, "push_candles": 6,
+        "push_same_colour_percent": 70, "push_band_widening_percent": 150, "band_widening_candles": 12,
+        "push_ema_fan_pips": 6, "push_riding_band_closes": 3, "spike_range_multiple": 3,
+        "spike_average_candles": 20, "indicator_warm_up_candles": 2000,
+        "folder": Path("/opt/autobot/data/analyser"),
     },
     "alerts": {
         "telegram_url": "https://api.telegram.org",
@@ -317,6 +331,10 @@ INVALID = [
     ("history", "max_points_per_request", 0, "must be between"),
     ("history", "min_block_hours", 0, "must be between"),
     ("history", "folder", "history", "full folder path"),
+    ("market_states", "flat_max_pips_per_candle", "0.5", "must be a number"),
+    ("market_states", "ranging_max_efficiency_ratio", 1.5, "must be between"),
+    ("market_states", "persistence_candles", 0, "must be between"),
+    ("market_states", "folder", "analyser", "full folder path"),
     ("alerts", "telegram_url", "http://api.telegram.org", "must be 'https://api.telegram.org'"),
     ("alerts", "same_problem_every_minutes", 0, "must be between"),
     ("alerts", "daily_ready_at", "6am", 'written "HH:MM"'),

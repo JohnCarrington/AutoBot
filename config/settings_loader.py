@@ -54,6 +54,23 @@ def _whole_numbers(minimum: int, maximum: int) -> Callable[[Any], tuple[int, ...
     return check
 
 
+def _decimal_number(minimum: str, maximum: str) -> Callable[[Any], "Decimal"]:
+    from decimal import Decimal, InvalidOperation
+    lo, hi = Decimal(minimum), Decimal(maximum)
+
+    def check(v: Any) -> Decimal:
+        if isinstance(v, bool) or not isinstance(v, (int, float)):
+            raise ValueError(f"must be a number, got {v!r}")
+        try:
+            d = Decimal(str(v))
+        except InvalidOperation:
+            raise ValueError(f"must be a number, got {v!r}") from None
+        if not lo <= d <= hi:
+            raise ValueError(f"must be between {minimum} and {maximum}, got {v}")
+        return d
+    return check
+
+
 def _exactly(expected: str) -> Callable[[Any], str]:
     def check(v: Any) -> str:
         if v != expected:
@@ -279,6 +296,39 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "direction_ema_timeframe": _one_of("5m", "1h", "4h"),
         "direction_ema_periods": _whole_number(2, 500),
         "out_of_date_after_minutes": _whole_number(1, 1440),
+    },
+    "market_states": {
+        "narrow_band_max_pips": _whole_number(1, 100),
+        "flat_max_pips_per_candle": _decimal_number("0.01", "100"),
+        "flat_slope_candles": _whole_number(2, 100),
+        "ranging_min_band_pips": _whole_number(1, 200),
+        "ranging_max_efficiency_ratio": _decimal_number("0.01", "1"),
+        "efficiency_candles": _whole_number(2, 100),
+        "ranging_min_crossings": _whole_number(1, 50),
+        "crossing_candles": _whole_number(2, 100),
+        "ranging_both_bands_candles": _whole_number(2, 200),
+        "weave_candles": _whole_number(2, 100),
+        "ema100_flat_max_pips": _whole_number(1, 100),
+        "ema100_flat_candles": _whole_number(2, 200),
+        "consolidation_quiet_candles": _whole_number(2, 100),
+        "consolidation_max_body_pips": _whole_number(1, 50),
+        "consolidation_colour_max_ratio": _whole_number(1, 20),
+        "near_band_pips": _whole_number(0, 20),
+        "persistence_candles": _whole_number(1, 20),
+        "evidence_fades_after_candles": _whole_number(2, 500),
+        "ema_stacked_candles": _whole_number(1, 50),
+        "emerging_cancel_pips": _whole_number(0, 100),
+        "failed_bounce_within_pips": _whole_number(0, 20),
+        "push_candles": _whole_number(2, 50),
+        "push_same_colour_percent": _whole_number(1, 100),
+        "push_band_widening_percent": _whole_number(100, 1000),
+        "band_widening_candles": _whole_number(2, 100),
+        "push_ema_fan_pips": _whole_number(1, 100),
+        "push_riding_band_closes": _whole_number(1, 50),
+        "spike_range_multiple": _whole_number(2, 20),
+        "spike_average_candles": _whole_number(2, 200),
+        "indicator_warm_up_candles": _whole_number(100, 20000),
+        "folder": _absolute_folder,
     },
     "rejection": {
         "candle_timeframe": _one_of("5m", "1h", "4h"),

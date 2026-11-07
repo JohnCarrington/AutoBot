@@ -1,6 +1,6 @@
 # Market analyser
 
-Stage 7 is built in parts. **Part 1 (built):** the indicators, the direction rule, and whether the data is ready, warming up or out of date. The five market states (design section 2.2) come in later parts.
+Stage 7 is built in parts. **Part 1 (built):** the indicators, the direction rule, and whether the data is ready, warming up or out of date. **Part 2 (built, not yet checked against real days):** the five market states. Functional tests for the states come after Johnny has compared a timeline with his chart.
 
 The analyser reads the candle store and the levels only. It never contacts IG (a test checks that `analyser/` never imports the IG connection). Everything uses the chart price, the **sell (bid) price**, with daily candles midnight to midnight UK, as on Johnny's IG chart. Only candles that had **finished** at the time asked about are used, so the answer for a past time never changes.
 
@@ -54,3 +54,26 @@ Prints the direction and why, the data status, and every indicator on the 5-minu
 | 16:00 | 13358.4 (15:55 close) | 13385.4 | 13463.8 | sell side |
 
 The pivot is 13463.8 from the stored candles; Johnny's chart shows 13463.4 for this day (the difference is still to be explained, `docs/LEVELS.md`). It does not change any direction here.
+
+## The five market states (Stage 7, part 2)
+
+Code: `analyser/features.py` (what each state looks at, per 5-minute candle), `analyser/states.py` (the state machine), `analyser/market_state.py` (the start-up replay, the live steps and the records). Sell price, 5-minute candles. **Every number is a setting** (`[market_states]`, listed in `docs/SETTINGS.md` with where each came from: AutoBot 161's NMS, the design, or a new starting value).
+
+Each result gives the state, the direction (up, down or none), the type of trend (slow grind or strong push, for a trend), when the state started, and the evidence, plus the strategies it allows (design section 2.2).
+
+| State | How the analyser recognises it |
+| --- | --- |
+| **Consolidation** | Bands narrow (at most 8 pips) and flat (middle band under 0.5 pips a candle over 6), no candle reaching either band for 6 candles, average body at most 3 pips, green and red bodies within 2 times of each other. Also the state at each week's open ("watch and wait"), and where a trend ends with no range. |
+| **Ranging** | Bands at least 8 pips apart and flat, efficiency ratio under 0.5 over 10 candles, at least 2 middle-band crossings in 12, both bands reached within 24 candles, the 7/13/21 EMAs changing order within 12, the 100 EMA moving under 3 pips over 12. |
+| **Emerging trend** | Started at once by: a level rejection (the shared rejection part confirms a bounce rejection at an important level: pivot, R2, S2, round number, turning level), a close beyond a band out of consolidation, or 2 closes beyond the same band out of a range, or a possible reversal being confirmed. |
+| **Trend** | An emerging trend becomes a trend at the moment of the proof in section 2.5: a bounce failed at or under the 21 EMA and middle band, then price makes a new extreme on the outer band, with the 7/13/21 EMAs stacked for 3 candles, price beyond them and the 100 EMA, and the outer band sloping. **Strong push** when, over 6 candles, 70% are the trend's colour, the bands are at least 1.5 times as wide as 12 candles before, the 7 and 21 EMAs are at least 6 pips apart and at least 3 closes are on the band; otherwise **slow grind**. |
+| **Possible reversal** | In an emerging trend or trend that has moved at least 30 pips since it started, the shared rejection part sees a reversal candle against it (no extra size rule). Section 2.6's signs (MACD still showing the move, RSI, the time of day, a level) are recorded as evidence; none is waited for. |
+
+**How it moves on** (sections 2.5 to 2.7). What price *did* on a candle acts at once: a level rejection, a breakout, the trend proof, a reversal candle, the old trend making a new extreme (possible reversal back to the trend), the reversal setup being cancelled or expiring (back to the trend), the reversal being confirmed (emerging trend the new way), an emerging trend closing 3 pips back past its start (cancelled). Anything that depends on a **condition** needs it for **2 candles in a row** (flip-flop protection): ranging, consolidation, a trend ending with 2 closes back past the 100 EMA, a change of trend type. **Evidence fades:** an emerging trend, trend or possible reversal with nothing new for 24 candles (2 hours) ends.
+
+**Start-up replay.** The machine starts fresh at each week's open (Sunday 21:00 UK), and its indicators always start 2,000 candles before that open. So on start-up it replays the week from the open and reaches exactly the state, and the same list of changes, as a run that never stopped. A technical test checks this three ways (replayed, never stopped, stopped part-way and started again).
+
+**Records.** Each change is recorded with its time (the 5-minute candle it was decided on), state, direction, type of trend, one-line reason and evidence, in `data/analyser/<PAIR>/state_changes.jsonl`, once each even after a restart; the current state is in `current.json`. (Recording starts when the analyser runs in the price service, which is not wired in yet.)
+
+**Timeline.** `.venv/bin/python -m analyser.states_timeline <from UTC> <to UTC> [--pair GBPUSD]` replays the week and prints every change in between. Contacts nobody; writes nothing.
+

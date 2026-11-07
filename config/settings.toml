@@ -131,6 +131,75 @@ direction_ema_periods = 100
 # newest one that should have finished. STARTING VALUE.
 out_of_date_after_minutes = 10
 
+[market_states]
+# The analyser's five market states (design section 2; docs/ANALYSER.md).
+# Worked out on the 5-minute candles, sell price. "161" = AutoBot 161's NMS
+# value (audit nms_audit_for_new_bot_20261106.md); "new" = a starting value
+# for Johnny to check against real days (161 had none).
+# Narrow Bollinger bands: band width at most this many pips. 161: CHOP_BB_WIDTH_MAX_PIPS 8.0
+narrow_band_max_pips = 8
+# Flat: the middle band moves less than this many pips a candle, over the
+# number of candles below. 161: CHOP_SLOPE_MAX_PIPS_PER_BAR 0.5, CHOP_SLOPE_LOOKBACK 6
+flat_max_pips_per_candle = 0.5
+flat_slope_candles = 6
+# Ranging: bands at least this wide (161: NORMAL_STATE_BB_MIN_RANGE_PIPS 8.0) ...
+ranging_min_band_pips = 8
+# ... not efficient: efficiency ratio below this percent over this many candles
+# (161: NORMAL_STATE_ER_MAX_RANGE 0.5, REGIME_RANGE_ER_BARS 10) ...
+ranging_max_efficiency_ratio = 0.5
+efficiency_candles = 10
+# ... the close crosses the middle band at least this often in this many
+# candles (161: NORMAL_STATE_CROSS_MIN_RANGE 2, REGIME_RANGE_CROSSING_WINDOW 12) ...
+ranging_min_crossings = 2
+crossing_candles = 12
+# ... price has reached both bands within this many candles (new) ...
+ranging_both_bands_candles = 24
+# ... the EMAs 7/13/21 have changed order at least once within this many candles (new) ...
+weave_candles = 12
+# ... and the 100 EMA has moved less than this many pips over this many candles (new).
+ema100_flat_max_pips = 3
+ema100_flat_candles = 12
+# Consolidation: touching neither band for this many candles (new), average
+# body at most this many pips (new), and green and red bodies within this
+# ratio of each other (new: 2 means one side at most twice the other).
+consolidation_quiet_candles = 6
+consolidation_max_body_pips = 3
+consolidation_colour_max_ratio = 2
+# "On or near" a band: within this many pips of it (new).
+near_band_pips = 1
+# A condition must hold for this many candles in a row before the state
+# changes (flip-flop protection). 161: PERSISTENCE_BARS 2
+persistence_candles = 2
+# Evidence fades: an emerging trend or a possible reversal with nothing new
+# for this many candles ends. 161: EVIDENCE_TTL_BARS 24 (120 minutes)
+evidence_fades_after_candles = 24
+# EMAs 7/13/21 count as stacked once in order for this many candles. 161: rule E7, 3 bars
+ema_stacked_candles = 3
+# An emerging trend is cancelled when price closes this many pips back past
+# where it started. 161: emerging -> range at emerging entry price - 3 pips
+emerging_cancel_pips = 3
+# A failed bounce: its high (low, for an uptrend) at or within this many pips
+# above the higher of the 21 EMA and the middle band (new).
+failed_bounce_within_pips = 1
+# Strong push, over this many candles (new): at least this percent of candles
+# the trend's colour, the band at least this percent of its width this many
+# candles before, the 7 and 21 EMAs at least this many pips apart, and at least
+# this many closes on or beyond the outer band.
+push_candles = 6
+push_same_colour_percent = 70
+push_band_widening_percent = 150
+band_widening_candles = 12
+push_ema_fan_pips = 6
+push_riding_band_closes = 3
+# A big spike: a candle's high-low range more than this many times the average
+# of the last spike_average_candles (new).
+spike_range_multiple = 3
+spike_average_candles = 20
+# The 5-minute candles read before the week's open to start the indicators from.
+indicator_warm_up_candles = 2000
+# Where every state change is recorded (one file per pair).
+folder = "/opt/autobot/data/analyser"
+
 [rejection]
 # The candle size the shared rejection part watches.
 candle_timeframe = "5m"

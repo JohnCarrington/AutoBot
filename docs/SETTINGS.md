@@ -65,6 +65,37 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `analyser.direction_ema_timeframe` | Direction rule (design section 2.3): the candle size of the EMA price must be above (buy side) or below (sell side), together with the daily pivot. | `5m` |
 | `analyser.direction_ema_periods` | Direction rule: which EMA. Must be one of `indicators.ema_periods`. | 100 |
 | `analyser.out_of_date_after_minutes` | While the market is open, the analyser's data is out of date (new trades blocked) when the newest stored candle on an indicator timeframe is more than this far behind the newest one that should have finished. A weekend is never out of date. **Starting value, for Johnny to confirm.** | 10 minutes |
+| `market_states.narrow_band_max_pips` | Consolidation: the Bollinger bands count as narrow when at most this many pips apart. **From 161:** `CHOP_BB_WIDTH_MAX_PIPS` 8.0. | 8 pips |
+| `market_states.flat_max_pips_per_candle` | A band counts as flat when it moves less than this many pips a candle (over `flat_slope_candles`); at least this much the other way is "sloping". **From 161:** `CHOP_SLOPE_MAX_PIPS_PER_BAR` 0.5. | 0.5 pips a candle |
+| `market_states.flat_slope_candles` | How many candles a band's slope is measured over. **From 161:** `CHOP_SLOPE_LOOKBACK` 6. | 6 candles |
+| `market_states.ranging_min_band_pips` | Ranging: the bands at least this many pips apart. **From 161:** `NORMAL_STATE_BB_MIN_RANGE_PIPS` 8.0. | 8 pips |
+| `market_states.ranging_max_efficiency_ratio` | Ranging: the efficiency ratio (net move / total movement over `efficiency_candles`) below this: price is going back and forth, not trending. **From 161:** `NORMAL_STATE_ER_MAX_RANGE` 0.5. | 0.5 |
+| `market_states.efficiency_candles` | Candles the efficiency ratio is worked out over. **From 161:** `REGIME_RANGE_ER_BARS` 10. | 10 candles |
+| `market_states.ranging_min_crossings` | Ranging: the close crosses the middle band at least this often within `crossing_candles`. **From 161:** `NORMAL_STATE_CROSS_MIN_RANGE` 2. | 2 |
+| `market_states.crossing_candles` | Candles the middle-band crossings are counted over. **From 161:** `REGIME_RANGE_CROSSING_WINDOW` 12. | 12 candles |
+| `market_states.ranging_both_bands_candles` | Ranging ("price bounces between the upper and lower band"): both bands reached within this many candles. **New starting value.** | 24 candles |
+| `market_states.weave_candles` | Ranging ("the EMAs weave instead of staying stacked"): the order of the 7, 13 and 21 EMAs changed at least once within this many candles. **New starting value.** | 12 candles |
+| `market_states.ema100_flat_max_pips` | Ranging ("the 100 EMA is flat"): it moved less than this many pips over `ema100_flat_candles`. **New starting value.** | 3 pips |
+| `market_states.ema100_flat_candles` | Candles the 100 EMA's move is measured over. **New starting value.** | 12 candles |
+| `market_states.consolidation_quiet_candles` | Consolidation ("price between the bands touching neither"): no candle reached either band for this many candles; also the window for the candle sizes below. **New starting value.** | 6 candles |
+| `market_states.consolidation_max_body_pips` | Consolidation ("small candles"): average body at most this many pips. **New starting value.** | 3 pips |
+| `market_states.consolidation_colour_max_ratio` | Consolidation ("green and red roughly the same size"): the larger of the green and red bodies added up is at most this many times the smaller. **New starting value.** | 2 |
+| `market_states.near_band_pips` | "On or near" a band: within this many pips of it. **New starting value.** | 1 pip |
+| `market_states.persistence_candles` | Flip-flop protection: a state that depends on a condition (ranging, consolidation, a trend ending past the 100 EMA, a change of trend type, a breakout from a range) needs it for this many candles in a row. **From 161:** `PERSISTENCE_BARS` 2. | 2 candles |
+| `market_states.evidence_fades_after_candles` | Evidence fades: an emerging trend, trend or possible reversal with nothing new (no new extreme, no new rejection) for this many candles ends. **From 161:** `EVIDENCE_TTL_BARS` 24 (120 minutes). | 24 candles |
+| `market_states.ema_stacked_candles` | The 7, 13 and 21 EMAs count as stacked (crossed and turned) once in order for this many candles. **From 161:** rule E7 ("EMA 7>13>21 three bars"). | 3 candles |
+| `market_states.emerging_cancel_pips` | An emerging trend is cancelled when price closes this many pips back past where it started. **From 161:** emerging trend back to range at its entry price less 3 pips. | 3 pips |
+| `market_states.failed_bounce_within_pips` | A failed bounce (section 2.5): a candle against the trend whose high (low, for an uptrend) stays at or within this many pips beyond the higher of the 21 EMA and the middle band. **New starting value.** | 1 pip |
+| `market_states.push_candles` | Strong push (section 2.5): the candles looked at. **New starting value.** | 6 candles |
+| `market_states.push_same_colour_percent` | Strong push: at least this share of those candles are the trend's colour. **New starting value.** | 70% |
+| `market_states.push_band_widening_percent` | Strong push ("the bands opening up wide"): the band at least this percent of its width `band_widening_candles` before. **New starting value.** | 150% |
+| `market_states.band_widening_candles` | How far back the band width is compared. **New starting value.** | 12 candles |
+| `market_states.push_ema_fan_pips` | Strong push ("the 7, 13 and 21 EMAs fanning wide apart"): the 7 and 21 EMAs at least this many pips apart. **New starting value.** | 6 pips |
+| `market_states.push_riding_band_closes` | Strong push ("price riding along or just outside the band"): at least this many of the `push_candles` closes on or beyond the outer band. **New starting value.** | 3 |
+| `market_states.spike_range_multiple` | A big spike: a candle's high-low range more than this many times the average of the last `spike_average_candles`. **New starting value.** | 3 |
+| `market_states.spike_average_candles` | Candles the average range is taken over, for spikes. **New starting value.** | 20 candles |
+| `market_states.indicator_warm_up_candles` | The 5-minute candles read before the week's open to start the indicators from. Fixed, so a replay after a restart gives exactly what a run that never stopped gave. | 2000 candles |
+| `market_states.folder` | Where every market state change is recorded, one folder per pair (`state_changes.jsonl`, `current.json`). On the server only, not in git. | `/opt/autobot/data/analyser` |
 | `rejection.candle_timeframe` | The candle size the shared rejection part watches for pierces, reversal and confirmation candles. | `5m` |
 | `rejection.near_level_within_pips` | A candle that comes within this many pips of a level counts the same as a pierce of that level (for a sell: it opens at or below the level and its high gets to within this many pips of it; a buy is the mirror image). Levels only: the Bollinger band needs a real pierce. | 3 pips |
 | `rejection.max_spread_pips` | When IG's spread on a candle (the widest buy-minus-sell gap of its open, high, low and close) is over this, the spread is abnormally wide (the 22:00 rollover, news) and that candle's sell highs and lows cannot start a setup or cancel one. The candle is still stored. Chosen from the 2,880 stored candles: normal is 0.9 or 1.5; everything over 3 is at the rollover or at news (`docs/REJECTION.md`). **Starting value, for Johnny to confirm.** | 3 pips |
