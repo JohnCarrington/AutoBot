@@ -296,7 +296,11 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "max_open_trades": _whole_number(1, 50),
     },
     "safety": {
-        "dealing_rules_max_age_minutes": _whole_number(1, 1440),
+        "max_total_risk_gbp": _whole_number(1, 10_000_000),
+        "margin_per_trade_gbp": _whole_number(0, 10_000_000),
+        "ig_stop_refusal_reasons": _names,
+        "ig_funds_refusal_reasons": _names,
+        "folder": _absolute_folder,
     },
     "chart": {
         "price": _one_of("sell", "buy"),

@@ -57,7 +57,9 @@ EXPECTED = {
         "bollinger_bounce_extra_opposite_direction_trades": 1,
         "max_open_trades": 5,
     },
-    "safety": {"dealing_rules_max_age_minutes": 60},
+    "safety": {"max_total_risk_gbp": 100000, "margin_per_trade_gbp": 5000,
+               "ig_stop_refusal_reasons": ("ATTACHED_ORDER_LEVEL_ERROR",), "ig_funds_refusal_reasons": ("INSUFFICIENT_FUNDS",),
+               "folder": Path("/opt/autobot/data/safety")},
     "chart": {"price": "sell"},
     "levels": {
         "line_up_within_pips": 5,

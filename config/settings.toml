@@ -68,9 +68,19 @@ bollinger_bounce_extra_opposite_direction_trades = 1
 max_open_trades = 5
 
 [safety]
-# IG's dealing rules (its minimum stop distance) older than this are not trusted: new
-# trades are refused until they are fetched again (design 7). STARTING VALUE.
-dealing_rules_max_age_minutes = 60
+# Total risk across all open trades (each trade's stop distance x its size), at most this
+# (owner, 8 November 2026: set so it is never reached).
+max_total_risk_gbp = 100000
+# A new trade needs the account's available funds (IG's account details, read at start-up and
+# whenever a trade opens or closes) to be at least the margin for one trade at £10 a pip
+# (owner, 8 November 2026).
+margin_per_trade_gbp = 5000
+# IG's reasons (deal confirmation) for refusing a trade because of its stop, and for lack of
+# funds (design 7). STARTING VALUES: to be confirmed against IG when the order sender is built.
+ig_stop_refusal_reasons = ["ATTACHED_ORDER_LEVEL_ERROR"]
+ig_funds_refusal_reasons = ["INSUFFICIENT_FUNDS"]
+# Where the bot records IG's minimum stop distance each time IG refuses a trade because of its stop.
+folder = "/opt/autobot/data/safety"
 
 [chart]
 # The price every level and indicator is worked out from, to match the owner's

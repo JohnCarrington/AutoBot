@@ -1,5 +1,5 @@
 """Technical tests for the safety rules (design sections 4, 6 and 7), with made-up ideas, open trades,
-dealing rules and times. Nothing here contacts IG or trades."""
+available funds, IG refusals and times. Nothing here contacts IG or trades."""
 
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal as D
@@ -8,7 +8,7 @@ from types import SimpleNamespace
 import pytest
 
 from config.settings_loader import load_settings
-from safety.rules import DealingRules, OpenTrade, Order, decide, order_for
+from safety.rules import AccountFunds, OpenTrade, Order, decide, order_for
 from strategies.common import (BOLLINGER_BOUNCE, BREAKOUT, BUY, EMA_PULLBACK, LEVEL_REVERSAL, RANGE_TRADE, SELL,
                                SLOW_GRIND, Idea)
 
@@ -44,21 +44,21 @@ def idea(strategy, direction=SELL, t=WED, price="13400.0", allowed=True, blocked
                 allowed, blocked, ctx)
 
 
-def rules(t=WED, value="2", unit="POINTS", age=5):
-    return DealingRules(D(value), unit, t - timedelta(minutes=age))
+def funds(available="20000", t=WED):
+    return AccountFunds(D(available), t - timedelta(minutes=30))
 
 
-def go(S, i, open_trades=(), t=None, paused=False, dealing="fresh", size=None, stop=None, calendar=()):
+def go(S, i, open_trades=(), t=None, paused=False, money="enough", size=None, stop=None, calendar=()):
     t = t or i.time
     o = order_for(S, i)
     if size is not None or stop is not None:
         o = Order(i, D(size) if size is not None else o.size_gbp_per_pip, D(stop) if stop is not None else o.stop_pips)
-    dr = rules(t) if dealing == "fresh" else dealing
-    return decide(S, o, list(open_trades), D("10000"), dr, t, paused, list(calendar))
+    f = funds(t=t) if money == "enough" else money
+    return decide(S, o, list(open_trades), f, t, paused, list(calendar))
 
 
-def opened(strategy, direction=BUY):
-    return OpenTrade(strategy, direction, WED - timedelta(hours=1))
+def opened(strategy, direction=BUY, stop="6", size="10"):
+    return OpenTrade(strategy, direction, WED - timedelta(hours=1), D(stop), D(size))
 
 
 # ---- everything allowed ----------------------------------------------------------------------
@@ -186,36 +186,63 @@ def test_each_strategys_stop_in_its_order(S):
     assert order_for(S, lr).stop_pips == D("12.5")                       # from the entry to its stop price
 
 
-def test_the_stop_must_be_at_least_igs_minimum(S):
-    i8 = rules(value="8")
-    d = go(S, idea(BOLLINGER_BOUNCE), dealing=i8)
-    assert d.reasons == ["the stop (6.0 pips) is closer than IG's minimum stop distance (8.0 pips)"]
-    assert go(S, idea(EMA_PULLBACK), dealing=i8).allowed                       # 12 pips
-    assert go(S, idea(SLOW_GRIND), dealing=i8).allowed                         # 15 pips
-    assert go(S, idea(BOLLINGER_BOUNCE), dealing=rules(value="6")).allowed      # exactly the minimum
+def test_igs_minimum_stop_is_not_checked_before_a_trade(S):
+    """Owner, 8 November 2026: the bot assumes each strategy's own stop meets IG's minimum."""
+    import inspect
+    from safety import rules as r
+    assert "dealing" not in inspect.signature(r.decide).parameters and not hasattr(r, "DealingRules")
+    assert go(S, idea(BOLLINGER_BOUNCE), stop="0.5").allowed                    # any stop: IG decides
 
 
-def test_igs_minimum_as_a_percentage_of_the_price(S):
-    d = go(S, idea(BREAKOUT, price="13400.0"), dealing=rules(value="0.05", unit="PERCENTAGE"))   # 6.7 pips
-    assert d.reasons == ["the stop (6.0 pips) is closer than IG's minimum stop distance (6.7 pips)"]
-    assert go(S, idea(EMA_PULLBACK), dealing=rules(value="0.05", unit="PERCENTAGE")).allowed
+# ---- total risk (design 6) ---------------------------------------------------------------------
+
+def test_total_risk_is_every_open_trades_stop_times_size_plus_the_new_one(S):
+    s = Over(S, safety=vars(S.safety) | {"max_total_risk_gbp": 300})
+    two = [opened(EMA_PULLBACK, stop="12"), opened(SLOW_GRIND, stop="15")]        # £120 + £150
+    assert go(s, idea(BREAKOUT), two).allowed is False                           # + £60 = £330
+    assert go(s, idea(BREAKOUT), two).reasons == \
+        ["total risk £330.00 with this trade (its stop x its size, every open trade) is over £300.00"]
+    assert go(s, idea(BREAKOUT), two[:1]).allowed                               # £180
+    assert go(s, idea(BREAKOUT), [opened(EMA_PULLBACK, stop="12"), opened(SLOW_GRIND, stop="12.0")]).allowed  # £300 exactly
 
 
-def test_missing_old_or_odd_dealing_rules_refuse(S):
-    assert go(S, idea(EMA_PULLBACK), dealing=None).reasons == \
-        ["IG's dealing rules for the market are not known: its minimum stop distance cannot be checked"]
-    old = rules(age=61)
-    assert go(S, idea(EMA_PULLBACK), dealing=old).reasons == \
-        ["IG's dealing rules are out of date (fetched 61 minutes ago; at most 60)"]
-    assert go(S, idea(EMA_PULLBACK), dealing=rules(age=60)).allowed
-    assert "unknown unit" in go(S, idea(EMA_PULLBACK), dealing=rules(unit="PIPS")).reasons[0]
+def test_the_owners_total_risk_limit_is_never_reached(S):
+    assert S.safety.max_total_risk_gbp == 100000
+    many = [opened(EMA_PULLBACK, stop="12") for _ in range(40)] + FIVE[:4]      # £5,040
+    assert go(S, idea(LEVEL_REVERSAL), many).allowed
 
 
-def test_dealing_rules_from_igs_market_reply():
+def test_the_level_reversals_risk_uses_its_own_stop_distance(S):
+    s = Over(S, safety=vars(S.safety) | {"max_total_risk_gbp": 99})
+    lr = idea(LEVEL_REVERSAL, context={"stop_price": D("13410.0")})            # 10 pips: £100
+    assert "total risk £100.00" in go(s, lr).reasons[0]
+
+
+# ---- available funds (design 6) ----------------------------------------------------------------
+
+def test_a_new_trade_needs_the_margin_for_one_trade_available(S):
+    assert S.safety.margin_per_trade_gbp == 5000
+    assert go(S, idea(EMA_PULLBACK), money=funds("5000")).allowed
+    d = go(S, idea(EMA_PULLBACK), money=funds("4999.99"))
+    assert d.reasons == ["available funds £4,999.99 are less than the margin for one trade (£5,000.00)"]
+    for name in ALL:
+        assert not go(S, idea(name), money=funds("100")).allowed
+
+
+def test_unknown_funds_refuse(S):
+    assert go(S, idea(EMA_PULLBACK), money=None).reasons == \
+        ["the account's available funds are not known (read from IG at start-up and whenever a trade opens or closes)"]
+
+
+def test_the_funds_come_from_igs_account_details():
     t = U(2026, 11, 4, 9, 0)
-    r = DealingRules.from_ig({"dealingRules": {"minNormalStopOrLimitDistance": {"unit": "POINTS", "value": 2.0},
-                                               "minStepDistance": {"unit": "POINTS", "value": 1.0}}}, t)
-    assert (r.min_stop_value, r.min_stop_unit, r.fetched_at) == (D("2.0"), "POINTS", t)
+    f = AccountFunds.from_ig({"balance": 10000.0, "deposit": 1200.0, "profitLoss": -35.5, "available": 8764.5}, t)
+    assert (f.available, f.read_at) == (D("8764.5"), t)
+
+
+def test_the_margin_is_a_setting(S):
+    s = Over(S, safety=vars(S.safety) | {"margin_per_trade_gbp": 9000})
+    assert "less than the margin for one trade (£9,000.00)" in go(s, idea(EMA_PULLBACK), money=funds("8000")).reasons[0]
 
 
 # ---- every reason at once -------------------------------------------------------------------------
@@ -223,7 +250,107 @@ def test_dealing_rules_from_igs_market_reply():
 def test_every_reason_is_given(S):
     t = U(2026, 11, 5, 11, 50)
     d = go(S, idea(RANGE_TRADE, t=t, allowed=False, blocked="made up"), [opened(RANGE_TRADE)], paused=True,
-           size="20", dealing=None, calendar=BOE_CAL)
+           size="20", money=None, calendar=BOE_CAL)
     assert not d.allowed and len(d.reasons) == 6
     assert d.reasons[0] == "the pause switch is on: no new trades"
     assert "the idea was blocked: made up" in d.reasons and "the size is £20 a pip, not £10" in d.reasons
+
+
+# ---- IG refusing a trade (design 7; safety/refusals.py) -------------------------------------------
+
+import json  # noqa: E402
+
+from ig.markets import MinStop  # noqa: E402
+from safety.refusals import FUNDS, OTHER, STOP, min_stop_pips, on_refusal  # noqa: E402
+
+
+class FakeAlerts:
+    def __init__(self):
+        self.sent = []
+
+    def problem(self, key, text):
+        self.sent.append((key, text))
+
+
+def refusal(S, tmp_path, reason, read=None, funds_known=None):
+    s = Over(S, safety=vars(S.safety) | {"folder": tmp_path / "safety"})
+    calls = []
+
+    def read_min_stop():
+        calls.append(1)
+        if isinstance(read, Exception):
+            raise read
+        return read or MinStop(8.0, "POINTS")
+    alerts = FakeAlerts()
+    kind = on_refusal(s, reason, BOLLINGER_BOUNCE, D("6"), D("13400.0"), read_min_stop, alerts, WED, funds_known)
+    return kind, calls, alerts.sent, tmp_path / "safety" / "ig_min_stop_refusals.jsonl"
+
+
+def test_a_stop_refusal_fetches_igs_minimum_once_records_it_and_alerts(S, tmp_path):
+    kind, calls, sent, rec = refusal(S, tmp_path, "ATTACHED_ORDER_LEVEL_ERROR")
+    assert kind == STOP and calls == [1]
+    (key, text), = sent
+    assert "IG refused a Bollinger bounce trade" in text and "stop is 6.0 pips" in text
+    assert "IG's minimum stop distance is now 8.0 pips" in text and "The stop was not changed." in text
+    row = json.loads(rec.read_text().splitlines()[-1])
+    assert (row["strategy"], row["stop_pips"], row["ig_min_pips"], row["ig_min_unit"]) == (BOLLINGER_BOUNCE, "6.0", "8.0", "POINTS")
+
+
+def test_a_stop_refusal_still_alerts_if_igs_minimum_cannot_be_read(S, tmp_path):
+    kind, calls, sent, rec = refusal(S, tmp_path, "ATTACHED_ORDER_LEVEL_ERROR", read=RuntimeError("no reply"))
+    assert kind == STOP and calls == [1] and "not known (reading it from IG failed: no reply)" in sent[0][1]
+    assert "ig_min_error" in json.loads(rec.read_text())
+
+
+def test_igs_minimum_as_a_percentage(S, tmp_path):
+    assert min_stop_pips(S, 0.05, "PERCENTAGE", D("13400.0")) == D("6.7")
+    kind, _, sent, _ = refusal(S, tmp_path, "ATTACHED_ORDER_LEVEL_ERROR", read=MinStop(0.05, "PERCENTAGE"))
+    assert "6.7 pips (0.05% of the price)" in sent[0][1]
+
+
+def test_a_funds_refusal_alerts_without_fetching_anything(S, tmp_path):
+    kind, calls, sent, rec = refusal(S, tmp_path, "INSUFFICIENT_FUNDS", funds_known=D("1234.5"))
+    assert kind == FUNDS and calls == [] and not rec.exists()
+    assert sent == [("ig-funds-refused", "IG refused a Bollinger bounce trade at Wed 04 Nov 10:00 GMT for lack of funds "
+                                         "(INSUFFICIENT_FUNDS); available funds last read £1,234.50.")]
+
+
+def test_any_other_refusal_is_left_to_the_order_sender(S, tmp_path):
+    kind, calls, sent, rec = refusal(S, tmp_path, "MARKET_CLOSED")
+    assert (kind, calls, sent, rec.exists()) == (OTHER, [], [], False)
+
+
+# ---- the two IG reads (ig/): the account's funds, and the minimum stop after a refusal -----------
+
+class FakeReply:
+    def __init__(self, body, status=200):
+        self.body, self.status_code = body, status
+
+    def json(self):
+        return self.body
+
+
+def test_igs_minimum_stop_read_from_the_market():
+    from ig.markets import min_stop
+    seen = []
+
+    class Client:
+        def request(self, method, path, version, body=None, *, what):
+            seen.append((method, path, version))
+            return FakeReply({"dealingRules": {"minNormalStopOrLimitDistance": {"unit": "POINTS", "value": 2.0}}})
+    assert min_stop(Client(), "CS.D.GBPUSD.TODAY.IP") == MinStop(2.0, "POINTS")
+    assert seen == [("GET", "/markets/CS.D.GBPUSD.TODAY.IP", "3")]
+
+
+def test_the_accounts_balance_read_from_ig(monkeypatch):
+    from ig.client import IGClient
+    from ig.errors import IGRequestError
+    c = IGClient.__new__(IGClient)
+    c._creds = SimpleNamespace(account_id="ABC123")
+    reply = {"accounts": [{"accountId": "XYZ999", "balance": {"available": 1.0}},
+                          {"accountId": "ABC123", "balance": {"balance": 10000.0, "available": 8764.5}}]}
+    monkeypatch.setattr(IGClient, "request", lambda self, m, p, v, body=None, *, what: FakeReply(reply))
+    assert c.account_balance() == {"balance": 10000.0, "available": 8764.5}
+    c._creds = SimpleNamespace(account_id="NOPE")
+    with pytest.raises(IGRequestError, match="account-not-in-reply"):
+        c.account_balance()

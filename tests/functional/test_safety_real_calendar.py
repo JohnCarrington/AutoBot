@@ -8,7 +8,7 @@ import pytest
 
 from config.settings_loader import load_settings
 from news.finnhub import store_path
-from safety.rules import DealingRules, OpenTrade, decide, order_for
+from safety.rules import AccountFunds, OpenTrade, decide, order_for
 from strategies.common import (BOLLINGER_BOUNCE, BREAKOUT, BUY, EMA_PULLBACK, LEVEL_REVERSAL, RANGE_TRADE, SELL,
                                SLOW_GRIND, Idea)
 
@@ -30,7 +30,7 @@ def idea(strategy, t, direction=SELL):
 
 def decision(S, strategy, t, open_trades=()):
     i = idea(strategy, t)
-    return decide(S, order_for(S, i), list(open_trades), D("10000"), DealingRules(D("2"), "POINTS", t - timedelta(minutes=5)),
+    return decide(S, order_for(S, i), list(open_trades), AccountFunds(D("20000"), t - timedelta(minutes=30)),
                   t, False)                                  # calendar: the real one on disk
 
 
@@ -57,9 +57,10 @@ def test_no_ema_pullback_at_20_45_uk_on_friday_6_november(S):
 
 def test_a_sixth_trade_is_refused_when_5_that_count_are_open_but_an_ema_pullback_is_allowed(S):
     t = datetime(2026, 11, 4, 10, 0, tzinfo=UTC)
-    five = [OpenTrade(BOLLINGER_BOUNCE, BUY, t - timedelta(hours=1)), OpenTrade(BOLLINGER_BOUNCE, SELL, t - timedelta(hours=1)),
-            OpenTrade(RANGE_TRADE, BUY, t - timedelta(hours=1)), OpenTrade(BREAKOUT, BUY, t - timedelta(hours=1)),
-            OpenTrade(SLOW_GRIND, BUY, t - timedelta(hours=1))]
+    ago = t - timedelta(hours=1)
+    five = [OpenTrade(BOLLINGER_BOUNCE, BUY, ago, D(6), D(10)), OpenTrade(BOLLINGER_BOUNCE, SELL, ago, D(6), D(10)),
+            OpenTrade(RANGE_TRADE, BUY, ago, D(6), D(10)), OpenTrade(BREAKOUT, BUY, ago, D(6), D(10)),
+            OpenTrade(SLOW_GRIND, BUY, ago, D(15), D(10))]
     d = decision(S, LEVEL_REVERSAL, t, five)
     assert d.reasons == ["5 trades open that count towards the most at once (5; EMA pullback trades not counted)"]
     assert decision(S, EMA_PULLBACK, t, five).allowed

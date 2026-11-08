@@ -33,3 +33,18 @@ def search_markets(client: Any, term: str) -> list[MarketFound]:
             status=str(m.get("marketStatus", "")),
         ))
     return found
+
+
+@dataclass(frozen=True)
+class MinStop:
+    """IG's minimum stop distance for a market (dealingRules.minNormalStopOrLimitDistance)."""
+    value: float
+    unit: str                           # POINTS or PERCENTAGE
+
+
+def min_stop(client: Any, epic: str) -> MinStop:
+    """One call, GET /markets/{epic}: IG's current minimum stop distance. Used only after IG refuses a
+    trade because of its stop (design 7), never before a trade."""
+    r = client.request("GET", f"/markets/{quote(epic)}", "3", what="reading the market's minimum stop")
+    rule = ((r.json() or {}).get("dealingRules") or {}).get("minNormalStopOrLimitDistance") or {}
+    return MinStop(float(rule.get("value")), str(rule.get("unit")))

@@ -374,6 +374,16 @@ class IGClient:
             raise IGRequestError(what, r.status_code, error_code_of(r))
         return r
 
+    def account_balance(self) -> dict:
+        """The bot's account's balance from IG (GET /accounts): {"balance", "deposit", "profitLoss",
+        "available"}, as IG sends them. One call; for the safety part's available-funds check, read at
+        start-up and whenever a trade opens or closes (design 6), never before each trade."""
+        r = self.request("GET", "/accounts", "1", what="reading the account's funds")
+        for a in (r.json() or {}).get("accounts") or []:
+            if str(a.get("accountId")) == self._creds.account_id:
+                return dict(a.get("balance") or {})
+        raise IGRequestError("reading the account's funds", r.status_code, "account-not-in-reply")
+
     @contextmanager
     def _open_history_door(self):
         """Used ONLY by ig/history.py, around one request that has passed every

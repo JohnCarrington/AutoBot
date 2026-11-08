@@ -1,7 +1,8 @@
 """The safety rules (design sections 4, 6 and 7): whether a new order may go out. Decides only from
-what it is given: the order (the trade idea, its size and stop), the bot's open trades, the account
-balance, the market's dealing rules from IG, the time, and the pause switch. Never contacts IG, never
-places, changes or closes anything; the order sender (not built yet) fetches the inputs and calls it.
+what it is given: the order (the trade idea, its size and stop), the bot's open trades, the account's
+available funds (from IG's account details, read at start-up and whenever a trade opens or closes,
+never before each trade), the time, and the pause switch. Never contacts IG, never places, changes or
+closes anything; the order sender (not built yet) gathers the inputs and calls it.
 
 It gives EVERY reason it refuses (an empty list: the order may go out):
   1. the pause switch is on (it blocks every new trade);
@@ -13,24 +14,23 @@ It gives EVERY reason it refuses (an empty list: the order may go out):
      direction; the EMA pullback no limit), and at most limits.max_open_trades (5) in total not counting
      the EMA pullback's (strategies.common.counts_towards_most_at_once);
   6. the size is trade.size_gbp_per_pip (£10 a pip);
-  7. the stop is at least IG's minimum stop distance for the market (dealingRules
-     minNormalStopOrLimitDistance), from dealing rules no older than safety.dealing_rules_max_age_minutes;
-     missing dealing rules refuse (never let a trade through when unsure).
-NOT BUILT YET: total risk across all open trades and the available funds (section 6). The owner is to
-give their figures; `balance` is taken now for those checks.
+  7. total risk: every open trade's risk (its stop distance x its size) plus the new trade's, at most
+     safety.max_total_risk_gbp (£100,000; owner, 8 November 2026: set so it is never reached);
+  8. available funds: the account's available funds at least safety.margin_per_trade_gbp (£5,000, the
+     margin for one trade at £10 a pip); unknown funds refuse (never let a trade through when unsure).
+IG's minimum stop distance is NOT checked before a trade (owner, 8 November 2026): the bot assumes each
+strategy's own stop meets it; safety/refusals.py deals with IG refusing a trade.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime
 from decimal import Decimal
 from typing import Any
 
 from strategies.common import (BOLLINGER_BOUNCE, EMA_PULLBACK, SWITCH, counts_towards_most_at_once, may_open,
                                stop_loss_pips, stop_price)
-
-POINTS, PERCENTAGE = "POINTS", "PERCENTAGE"
 
 
 @dataclass(frozen=True)
@@ -39,30 +39,25 @@ class OpenTrade:
     strategy: str
     direction: str                      # buy or sell
     opened_at: datetime
+    stop_pips: Decimal                  # its stop's distance from its opening price, in pips
+    size_gbp_per_pip: Decimal
     deal_id: str = ""
+
+    @property
+    def risk_gbp(self) -> Decimal:
+        return Decimal(self.stop_pips) * Decimal(self.size_gbp_per_pip)
 
 
 @dataclass(frozen=True)
-class DealingRules:
-    """IG's minimum stop distance for the market (GET /markets/{epic}: dealingRules
-    .minNormalStopOrLimitDistance), and when it was fetched."""
-    min_stop_value: Decimal
-    min_stop_unit: str                  # POINTS or PERCENTAGE
-    fetched_at: datetime
+class AccountFunds:
+    """The account's available funds from IG's account details (ig.client.IGClient.account_balance),
+    and when they were read (at start-up, and whenever a trade opens or closes)."""
+    available: Decimal
+    read_at: datetime
 
     @classmethod
-    def from_ig(cls, market: dict, fetched_at: datetime) -> "DealingRules":
-        rule = market["dealingRules"]["minNormalStopOrLimitDistance"]
-        return cls(Decimal(str(rule["value"])), rule["unit"], fetched_at)
-
-    def min_stop_pips(self, settings: Any, price: Decimal) -> Decimal:
-        """The minimum in pips at this price (IG's points are the pair's price points)."""
-        ppp = Decimal(settings.market.points_per_pip)
-        if self.min_stop_unit == POINTS:
-            return self.min_stop_value / ppp
-        if self.min_stop_unit == PERCENTAGE:
-            return price * self.min_stop_value / Decimal(100) / ppp
-        raise ValueError(f"unknown unit for IG's minimum stop distance: {self.min_stop_unit!r}")
+    def from_ig(cls, balance: dict, read_at: datetime) -> "AccountFunds":
+        return cls(Decimal(str(balance["available"])), read_at)
 
 
 @dataclass(frozen=True)
@@ -71,6 +66,10 @@ class Order:
     idea: Any                           # strategies.common.Idea
     size_gbp_per_pip: Decimal
     stop_pips: Decimal                  # the stop's distance from the entry price, in pips
+
+    @property
+    def risk_gbp(self) -> Decimal:
+        return Decimal(self.stop_pips) * Decimal(self.size_gbp_per_pip)
 
 
 def order_for(settings: Any, idea: Any) -> Order:
@@ -115,29 +114,32 @@ def _limits(settings: Any, order: Order, open_trades: list[OpenTrade]) -> list[s
     return out
 
 
-def _stop(settings: Any, order: Order, rules: DealingRules | None, now: datetime) -> list[str]:
-    if rules is None:
-        return ["IG's dealing rules for the market are not known: its minimum stop distance cannot be checked"]
-    age = now - rules.fetched_at
-    most = timedelta(minutes=settings.safety.dealing_rules_max_age_minutes)
-    if age > most:
-        return [f"IG's dealing rules are out of date (fetched {int(age.total_seconds() // 60)} minutes ago; "
-                f"at most {settings.safety.dealing_rules_max_age_minutes})"]
-    try:
-        least = rules.min_stop_pips(settings, Decimal(order.idea.entry_price))
-    except ValueError as e:
-        return [str(e)]
-    if order.stop_pips < least:
-        return [f"the stop ({order.stop_pips.quantize(Decimal('0.1'))} pips) is closer than IG's minimum stop distance "
-                f"({least.quantize(Decimal('0.1'))} pips)"]
+def _money(x: Decimal) -> str:
+    return f"£{Decimal(x).quantize(Decimal('0.01')):,}"
+
+
+def _risk(settings: Any, order: Order, open_trades: list[OpenTrade]) -> list[str]:
+    most = Decimal(settings.safety.max_total_risk_gbp)
+    total = sum((t.risk_gbp for t in open_trades), Decimal(0)) + order.risk_gbp
+    if total > most:
+        return [f"total risk {_money(total)} with this trade (its stop x its size, every open trade) is over "
+                f"{_money(most)}"]
     return []
 
 
-def decide(settings: Any, order: Order, open_trades: list[OpenTrade], balance: Decimal | None,
-           dealing_rules: DealingRules | None, now: datetime, paused: bool,
-           calendar: list | None = None) -> Decision:
-    """Whether `order` may go out at `now`, with every reason it may not. `balance` is for the total-risk
-    and available-funds checks, not built yet (the owner is to give their figures)."""
+def _funds(settings: Any, funds: AccountFunds | None) -> list[str]:
+    need = Decimal(settings.safety.margin_per_trade_gbp)
+    if funds is None:
+        return ["the account's available funds are not known (read from IG at start-up and whenever a trade "
+                "opens or closes)"]
+    if funds.available < need:
+        return [f"available funds {_money(funds.available)} are less than the margin for one trade ({_money(need)})"]
+    return []
+
+
+def decide(settings: Any, order: Order, open_trades: list[OpenTrade], funds: AccountFunds | None,
+           now: datetime, paused: bool, calendar: list | None = None) -> Decision:
+    """Whether `order` may go out at `now`, with every reason it may not."""
     idea = order.idea
     reasons: list[str] = []
     if paused:
@@ -151,6 +153,6 @@ def decide(settings: Any, order: Order, open_trades: list[OpenTrade], balance: D
     want = Decimal(settings.trade.size_gbp_per_pip)
     if Decimal(order.size_gbp_per_pip) != want:
         reasons.append(f"the size is £{order.size_gbp_per_pip} a pip, not £{want}")
-    reasons += _stop(settings, order, dealing_rules, now)
+    reasons += _risk(settings, order, open_trades)
+    reasons += _funds(settings, funds)
     return Decision(not reasons, reasons)
-
