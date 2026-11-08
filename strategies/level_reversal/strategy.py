@@ -6,7 +6,9 @@ design_only=True, the same setups as the Bollinger bounce, design 3.3), kept onl
      the round numbers only on a multiple of level_reversal.round_numbers_every_pips (100: the 00s,
      not the 50s);
   2. the furthest price went past that level, from the piercing candle to the confirmation candle,
-     is no more than level_reversal.allowance_pips (5). It may also have stopped short of the level
+     is no more than that kind of level's allowance: level_reversal.allowance_pips_r2 (12),
+     allowance_pips_s2 (12), allowance_pips_round_number (5) (owner, 8 November 2026). It may also
+     have stopped short of the level
      (by up to rejection.near_level_within_pips, as the rejection part allows);
   3. entry when price breaks past the confirmation candle (the watcher's trigger: at the confirmation
      candle's low for a sell, or at the candle's open if it opened past it).
@@ -59,6 +61,10 @@ class LevelReversal:
             return f"round number {plain(price)}"
         return f"{what} {plain(price)}"
 
+    def allowance(self, what: str) -> int:
+        """How far past a level of this type price may go, in pips (design 3.6 rule 2)."""
+        return getattr(self.lr, f"allowance_pips_{what.lower()}")
+
     def on_candle(self, c: Candle, watcher: Any, events: list) -> list[Candidate]:
         """Give it every finished candle, after the watcher has seen it, with the watcher's new events."""
         self.candles.append(c)
@@ -82,14 +88,14 @@ class LevelReversal:
         if not span:
             return None
         furthest = max(self._h(c) for c in span) if sell else min(self._l(c) for c in span)
-        allow = Decimal(self.lr.allowance_pips) * self.ppp
         order = sorted(st.pierced, key=lambda p: p["what"] == ROUND_NUMBER)      # S2 and R2 first
         for p in order:
             name = self.kind(p["what"], p["price"])
             if name is None:
                 continue
             past = (furthest - p["price"]) if sell else (p["price"] - furthest)
-            if past > allow:
+            allowance = self.allowance(p["what"])
+            if past > Decimal(allowance) * self.ppp:
                 continue
             beyond = Decimal(self.lr.stop_beyond_furthest_pips) * self.ppp
             stop = furthest + beyond if sell else furthest - beyond
@@ -98,7 +104,7 @@ class LevelReversal:
             steps.append(f"{name}: furthest {'high' if sell else 'low'} {plain(furthest)} from "
                          f"{uk_short(st.pierce.start)} to {uk_short(st.confirmation.start)[-9:]}, "
                          f"{plain((past / self.ppp).quantize(Decimal('0.1')))} pips past the level "
-                         f"(allowance {self.lr.allowance_pips})")
+                         f"(allowance {allowance})")
             steps.append(f"stop {plain(stop)}: {self.lr.stop_beyond_furthest_pips} pips {word} the furthest point; "
                          f"take profit {self.lr.take_profit_pips} pips")
             return Candidate(LEVEL_REVERSAL, SELL if sell else BUY, e.time, e.price, steps,

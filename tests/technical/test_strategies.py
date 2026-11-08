@@ -979,12 +979,25 @@ def test_level_reversal_at_r2_within_the_allowance(S):
     assert "R2 100" in x.steps[-2] and "4.0 pips past the level" in x.steps[-2] and "to 09:15 GMT" in x.steps[-2]
 
 
-def test_level_reversal_allowance_is_5_pips_and_a_setting(S):
-    w, ev, cs = lr_setup([("S2", 100)], [105, 103, 102])          # exactly 5 past: counts
-    assert len(run_lr(S, w, ev, cs)) == 1
-    w, ev, cs = lr_setup([("S2", 100)], [103, 105.1, 102])        # 5.1 past (the reversal candle): does not
+@pytest.mark.parametrize("what,price,allowance", [("R2", 100, 12), ("S2", 100, 12), ("round_number", 200, 5)])
+def test_level_reversal_allowance_for_each_kind_of_level(S, what, price, allowance):
+    w, ev, cs = lr_setup([(what, price)], [price + allowance, price + 1, price])              # exactly the allowance: counts
+    (x,) = run_lr(S, w, ev, cs)
+    assert x.context["past_level_pips"] == allowance and f"(allowance {allowance})" in x.steps[-2]
+    w, ev, cs = lr_setup([(what, price)], [price + 1, price + allowance + 0.1, price])        # 0.1 more (the reversal candle): not
     assert run_lr(S, w, ev, cs) == []
-    assert len(run_lr(over(S, "level_reversal", allowance_pips=6), w, ev, cs)) == 1
+
+
+def test_level_reversal_each_allowance_is_its_own_setting(S):
+    assert (S.level_reversal.allowance_pips_r2, S.level_reversal.allowance_pips_s2,
+            S.level_reversal.allowance_pips_round_number) == (12, 12, 5)
+    w, ev, cs = lr_setup([("S2", 100)], [113, 101, 100])                                     # 13 past S2
+    assert run_lr(S, w, ev, cs) == []
+    assert len(run_lr(over(S, "level_reversal", allowance_pips_s2=13), w, ev, cs)) == 1
+    assert run_lr(over(S, "level_reversal", allowance_pips_r2=13, allowance_pips_round_number=13), w, ev, cs) == []
+    w, ev, cs = lr_setup([("round_number", 200)], [206, 201, 200])                           # 6 past a 00
+    assert run_lr(S, w, ev, cs) == []
+    assert len(run_lr(over(S, "level_reversal", allowance_pips_round_number=6), w, ev, cs)) == 1
 
 
 def test_level_reversal_short_of_the_level_counts(S):
@@ -1013,7 +1026,7 @@ def test_level_reversal_s2_or_r2_before_a_round_number(S):
     w, ev, cs = lr_setup([("round_number", 200), ("R2", 199)], [202, 201, 200])
     (x,) = run_lr(S, w, ev, cs)
     assert x.context["level"] == D(199) and x.context["level_name"].startswith("R2")
-    w, ev, cs = lr_setup([("R2", 190), ("round_number", 200)], [202, 201, 200])    # R2 12 past: the 00 is the level
+    w, ev, cs = lr_setup([("R2", 189), ("round_number", 200)], [202, 201, 200])    # R2 13 past: the 00 is the level
     (x,) = run_lr(S, w, ev, cs)
     assert x.context["level"] == D(200)
 

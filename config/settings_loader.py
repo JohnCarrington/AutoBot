@@ -361,7 +361,9 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "level_reversal": {
         "level_types": _level_reversal_types,
         "round_numbers_every_pips": _whole_number(1, 1000),
-        "allowance_pips": _whole_number(0, 100),
+        "allowance_pips_r2": _whole_number(0, 100),
+        "allowance_pips_s2": _whole_number(0, 100),
+        "allowance_pips_round_number": _whole_number(0, 100),
         "stop_beyond_furthest_pips": _whole_number(1, 100),
         "take_profit_pips": _whole_number(1, 1000),
     },

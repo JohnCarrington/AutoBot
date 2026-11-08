@@ -178,7 +178,7 @@ Spread spikes are ignored in the same way as for the bounce (3.3).
 **Switched on** (`STRATEGY_LEVEL_REVERSAL=on`). From the level reversal research of 8 November 2026 (`docs/research/level_reversal_tolerance_20261108.md`).
 
 1. Only rejections at **round numbers ending in 00** (not 50), **S2** and **R2** (`level_reversal.level_types`, `level_reversal.round_numbers_every_pips`), found by the shared rejection part exactly as for the Bollinger band bounce (3.3 steps 1 to 3 and 5): price reaches the level or comes within 3 pips of it, the reversal candle, the confirmation candle.
-2. The rejection counts only if price went **no more than 5 pips past the level** (`level_reversal.allowance_pips`), measured as the furthest price reached from the piercing candle to the confirmation candle.
+2. The rejection counts only if price went no further past the level than its **allowance**: **12 pips at R2 and S2, 5 pips at round numbers** (owner, 8 November 2026; `level_reversal.allowance_pips_r2`, `level_reversal.allowance_pips_s2`, `level_reversal.allowance_pips_round_number`), measured as the furthest price reached from the piercing candle to the confirmation candle.
 3. The sell opens as soon as price breaks below the confirmation candle's low (a buy, above its high).
 4. **Stop 6 pips beyond the furthest point** price reached (`level_reversal.stop_beyond_furthest_pips`; for a sell, 6 pips above the highest high from the piercing candle to the confirmation candle), so the stop's distance from the entry varies; **take profit 20 pips** (`level_reversal.take_profit_pips`).
 5. In every analyser state except consolidation, either way (2.2); the direction rule (2.3) does not apply.

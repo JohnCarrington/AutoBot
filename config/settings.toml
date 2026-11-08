@@ -175,8 +175,11 @@ take_profit_pips = 50
 level_types = ["S2", "R2", "round_number"]
 round_numbers_every_pips = 100
 # A rejection counts only if price went no more than this far past the level, from the
-# piercing candle to the confirmation candle.
-allowance_pips = 5
+# piercing candle to the confirmation candle: one allowance for each kind of level
+# (owner, 8 November 2026: 12 at R2 and S2, 5 at round numbers).
+allowance_pips_r2 = 12
+allowance_pips_s2 = 12
+allowance_pips_round_number = 5
 # The stop: this many pips beyond the furthest point price reached; the take profit, in
 # pips from the entry.
 stop_beyond_furthest_pips = 6

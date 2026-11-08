@@ -86,7 +86,9 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `range_trade.trigger_within_candles` | Range trade: the live price must go below the rejection candle's low within this many candles after the rejection candle. 1 means during the candle after it, as the design says; otherwise the setup expires. | 1 candle |
 | `level_reversal.level_types` | Level reversal (design 3.6): the levels it trades rejections at, from `S2`, `R2` and `round_number`. **Owner's choice, 8 November 2026.** | S2, R2, round_number |
 | `level_reversal.round_numbers_every_pips` | Round numbers count only on a multiple of this many pips (100: the 00s, not the 50s). **Owner's choice, 8 November 2026.** | 100 pips |
-| `level_reversal.allowance_pips` | A rejection counts only if price went no more than this far past the level, from the piercing candle to the confirmation candle. **Owner's value, 8 November 2026.** | 5 pips |
+| `level_reversal.allowance_pips_r2` | A rejection at R2 counts only if price went no more than this far past it, from the piercing candle to the confirmation candle (design 3.6). **Owner's value, 8 November 2026.** | 12 pips |
+| `level_reversal.allowance_pips_s2` | The same at S2. **Owner's value, 8 November 2026.** | 12 pips |
+| `level_reversal.allowance_pips_round_number` | The same at a round number ending in 00. **Owner's value, 8 November 2026.** | 5 pips |
 | `level_reversal.stop_beyond_furthest_pips` | Its stop: this many pips beyond the furthest point price reached (so the distance from the entry varies). **Owner's value, 8 November 2026.** | 6 pips |
 | `level_reversal.take_profit_pips` | Its take profit, in pips from the entry, sent to IG. **Owner's value, 8 November 2026.** | 20 pips |
 | `breakout.trigger_within_candles` | Breakout (design 3.5): the breakout candle's high (buy) or low (sell) must be broken within this many candles after it, or the setup expires. **Owner's value, 7 November 2026.** | 3 candles |
