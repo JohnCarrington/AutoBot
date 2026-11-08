@@ -47,10 +47,11 @@ class TestOrder:
     __test__ = False                    # not a pytest test class
     def __init__(self, settings: Any, client: Any, alerts: Any, quote: Callable[[], tuple[Decimal, Decimal] | None], *,
                  now: Callable[[], datetime] = lambda: datetime.now(UTC), sleep: Callable[[float], None] = _time.sleep,
-                 threaded: bool = True):
+                 threaded: bool = True, trading_on: bool = False):
         self.s, self.client, self.alerts, self.quote, self.now, self.sleep = settings, client, alerts, quote, now, sleep
         self.folder = Path(settings.orders.folder)
         self.threaded = threaded
+        self.trading_on = trading_on                    # with TRADING on, the trading engine's order sender is live
         self.thread: threading.Thread | None = None
         self.samples: deque = deque()                               # (time, spread in pips or None)
         self.next_check: datetime | None = None
@@ -149,6 +150,9 @@ class TestOrder:
         self.alerts.info("AutoBot test order: " + "; ".join(f"{k}: {v}" for k, v in result.items() if k != "request"))
 
     def _steps(self, r: dict) -> dict:
+        if self.trading_on:
+            return {"refused": "TRADING is on: the trading engine's order sender is live, so the test order does not run "
+                               "(two order senders must never share the order record)"}
         if r.get("approved_by") != "owner":
             return {"refused": "the request is not marked approved_by owner"}
         direction = r.get("direction")

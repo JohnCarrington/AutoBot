@@ -63,6 +63,7 @@ STRATEGY_BOLLINGER_BOUNCE=on
 STRATEGY_RANGE_TRADE=on
 STRATEGY_BREAKOUT=off
 STRATEGY_LEVEL_REVERSAL=on
+TRADING=off
 STOP_LOSS_PIPS=6
 STOP_LOSS_PIPS_EMA_PULLBACK=12
 TAKE_PROFIT_PIPS=100
@@ -194,7 +195,9 @@ def _wait_for(cond, seconds=5):
     return False
 
 
-def test_the_service_streams_every_pair_into_its_own_store_with_one_login_and_no_history(st):
+def test_the_service_streams_every_pair_into_its_own_store_with_one_login_and_no_history(st, monkeypatch):
+    from prices import service as service_mod
+    monkeypatch.setattr(service_mod, "_start_trading", lambda *a: None)      # trading is tested in test_trading.py
     usd_s, jpy_s = st.for_pair("EURUSD"), st.for_pair("EURJPY")
     usd = store_of(usd_s)
     for i in range(12):

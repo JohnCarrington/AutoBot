@@ -25,6 +25,9 @@ What it does:
   3a. Telegram (alerts/): the Sunday and daily "ready" messages (alerts/ready.py),
      and a problem alert for an IG login failure that stops it, the stream going
      quiet while the market is open, any candle store problem, and a crash.
+  3e. Trading (trading/engine.py), on this service's IG login: after each new 5-minute candle the strategies,
+     the safety rules, the order sender and the trade manager; every second the trade manager on the latest
+     price. The master switch TRADING in .env: while off, paper trades only, nothing sent to IG.
   3d. The owner's one test order (orders/test_order.py): nothing unless its request file is there; then
      one order on the demo account, on this service's IG login, closed after its hold time.
   4. On SIGTERM or SIGINT (systemctl stop): stops the stream, logs out of IG
@@ -70,8 +73,23 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
     alerts = alerts if alerts is not None else Alerts.from_env(settings)
     stop = stop or threading.Event()
     feeds: dict[str, PriceFeed] = {}            # epic -> that pair's feed
-    for ps in settings.pairs_on():
-        feeds[ps.market.epic] = _feed(ps, now, lambda m: alerts.problem("store-problem", m))
+    trading: dict = {"engine": None}            # the trading engine, once started (trading/engine.py)
+
+    def trading_after_candle(now_: datetime) -> None:
+        engine = trading["engine"]
+        if engine is None:
+            return
+        try:
+            engine.on_candle(now_)
+        except Exception as e:                  # never stop the price service: trading stops, prices go on
+            trading["engine"] = None
+            log.exception("Trading stopped after a problem on a new candle.")
+            alerts.problem("trading-stopped", f"Trading stopped after a problem on a new candle ({type(e).__name__}: {e}). "
+                                              "The prices go on.")
+
+    for k, ps in enumerate(settings.pairs_on()):
+        extra = (trading_after_candle,) if k == 0 else ()
+        feeds[ps.market.epic] = _feed(ps, now, lambda m: alerts.problem("store-problem", m), extra)
     any_feed = next(iter(feeds.values()))
     stream: PriceStream | None = None
 
@@ -102,17 +120,18 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
             settings, client, stream, {f.pair: f for f in feeds.values()}, door), now=now)
 
     test_order = None
+    first = settings.pairs_on()[0]
+    feed = feeds[first.market.epic]
     if hasattr(settings, "orders"):
         from orders.test_order import TestOrder
-        first = settings.pairs_on()[0]
-        feed = feeds[first.market.epic]
 
         def quote():
             t = feed.last_tick
             if t is None or now() - t.time > timedelta(seconds=60):
                 return None
             return t.sell, t.buy
-        test_order = TestOrder(first, client, alerts, quote, now=now)   # the owner's one test order (orders/test_order.py)
+        test_order = TestOrder(first, client, alerts, quote, now=now,       # the owner's one test order
+                               trading_on=bool(getattr(getattr(settings, "switches", None), "trading", False)))
 
     keeper = None
     if hasattr(settings, "news"):
@@ -126,6 +145,15 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
             keeper.tick()            # the economic calendar: fetched a few times a day, never in a loop
         if test_order is not None and stream is not None and client.account_active:
             test_order.tick()        # nothing unless the owner's test order request file is there
+        engine = trading["engine"]
+        if engine is not None:
+            try:
+                engine.on_price(feed.last_tick)      # the trade manager on the latest price
+            except Exception as e:                   # never stop the price service
+                trading["engine"] = None
+                log.exception("Trading stopped after a problem on the latest price.")
+                alerts.problem("trading-stopped", f"Trading stopped after a problem on the latest price "
+                                                  f"({type(e).__name__}: {e}). The prices go on.")
         if stop.is_set() and stream is not None:
             stream.request_stop()
         if now() >= next_status[0]:
@@ -145,6 +173,8 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
         if stop.is_set():
             return 0
         client.connect()
+        if hasattr(settings, "trade_manager") and hasattr(settings, "switches"):
+            trading["engine"] = _start_trading(first, feed, client, alerts, now, settings.switches.trading)
         stream = PriceStream(client, tuple(feeds), settings.stream, transport_factory,
                              on_tick=lambda epic, fields: feeds[epic].on_tick(fields),
                              on_candle=lambda epic, fields: feeds[epic].on_candle(fields),
@@ -189,12 +219,33 @@ def _after_candle(*parts: Callable[[datetime], None]) -> Callable[[datetime], No
     return run
 
 
-def _feed(ps: Any, now: Callable[[], datetime], on_store_problem: Callable[[str], None]) -> PriceFeed:
-    """One pair's store, feed and levels (ps: settings.for_pair(...))."""
+def _start_trading(ps: Any, feed: Any, client: Any, alerts: Any, now: Callable[[], datetime], trading_on: bool) -> Any:
+    """The trading engine for the first pair switched on (trading/engine.py), on this service's IG login.
+    None (with an alert) if it cannot start: the prices go on."""
+    from trading.engine import Trading
+
+    def quote():
+        t = feed.last_tick
+        if t is None or now() - t.time > timedelta(seconds=60):
+            return None
+        return t.sell, t.buy
+    try:
+        engine = Trading(ps, feed.store, client, alerts, trading_on=trading_on, now=now, quote=quote)
+        engine.start(now())
+        return engine
+    except Exception as e:                      # never stop the price service
+        log.exception("Trading not started.")
+        alerts.problem("trading-not-started", f"Trading did not start ({type(e).__name__}: {e}). The prices go on.")
+        return None
+
+
+def _feed(ps: Any, now: Callable[[], datetime], on_store_problem: Callable[[str], None],
+          extra: tuple = ()) -> PriceFeed:
+    """One pair's store, feed and levels (ps: settings.for_pair(...)); `extra`: more parts after each new candle."""
     store = CandleStore(ps.candles.folder, ps.candles.compress_after_days)
     feed: PriceFeed = PriceFeed(ps, store, now=now, disk_check=lambda: check_free_space(
         ps.candles.folder, ps.housekeeping.min_free_disk_mb, feed.warn),
-        after_new_candle=_after_candle(LevelsUpdater(ps, store), StatesUpdater(ps, store)),
+        after_new_candle=_after_candle(LevelsUpdater(ps, store), StatesUpdater(ps, store), *extra),
         on_store_problem=on_store_problem)
     return feed
 

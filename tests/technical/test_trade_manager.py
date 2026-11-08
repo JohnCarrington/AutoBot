@@ -232,9 +232,9 @@ class PretendSender:
     def __init__(self):
         self.closes = []
 
-    def close(self, reference, *, half=False, why=""):
+    def close(self, reference, *, half=False, why="", price=None):
         self.closes.append((reference, half, why))
-        return SimpleNamespace(what="half closed" if half else "closed")
+        return SimpleNamespace(what="half closed" if half else "closed", ok=True)
 
 
 def test_the_manager_tells_the_order_sender_only_its_own_closes_and_records_every_decision(S):
@@ -277,3 +277,77 @@ def test_a_closed_trade_takes_no_more_decisions(S):
     tr = trade(S, BOLLINGER_BOUNCE, BUY)
     run(S, tr, [(100.5, 101, 100, 100.5), (100.5, 100.5, 95, 96)])
     assert step(S, tr, bar(WED + timedelta(minutes=10), 96, 120, 90, 100)) == []
+
+
+# ---- watching a level, and IG's own closes -----------------------------------------------------------
+
+from trade_manager.manager import HOLD, WATCHING  # noqa: E402
+
+
+def test_watching_a_level_while_a_rejection_setup_runs_against_the_trade(S):
+    m = TradeManager(S, PretendSender(), now=lambda: WED)
+    tr = trade(S, BOLLINGER_BOUNCE, SELL)
+    m.add(tr)
+    bs = bars_from(WED, [(100, 100.5, 99, 99.5), (99.5, 100, 98.5, 99), (99, 99.5, 98, 98.5)])
+    m.on_bar(bs[0], watching=set())
+    assert tr.decision == HOLD
+    m.on_bar(bs[1], watching={BUY})                    # a bounce up setting up at a level: against the sell
+    assert tr.decision == WATCHING and tr.open
+    m.on_bar(bs[2], watching=set())
+    assert tr.decision == HOLD
+    rows = [json.loads(x)["decision"] for x in (S.trade_manager.folder / "GBPUSD" / "decisions.jsonl").read_text().splitlines()]
+    assert rows == [WATCHING, HOLD]
+
+
+def test_not_watching_for_a_setup_the_same_way_or_a_strategy_without_the_level_close(S):
+    m = TradeManager(S, PretendSender(), now=lambda: WED)
+    bb, ep = trade(S, BOLLINGER_BOUNCE, SELL), trade(S, EMA_PULLBACK, SELL)
+    bb.reference, ep.reference = "BB", "EP"
+    m.add(bb)
+    m.add(ep)
+    m.on_bar(bar(WED, 100, 100.5, 99, 99.5), watching={SELL})
+    assert bb.decision == HOLD
+    m.on_bar(bar(WED + timedelta(minutes=5), 99.5, 100, 99, 99.5), watching={BUY})
+    assert bb.decision == WATCHING and ep.decision == HOLD
+
+
+class IGSender(PretendSender):
+    def __init__(self, ig_closed):
+        super().__init__()
+        self.ig_closed, self.asked = ig_closed, []
+
+    def closed_at_ig(self, reference, kind, price=None):
+        self.asked.append((reference, kind))
+        return SimpleNamespace(ok=self.ig_closed, what="closed at IG" if self.ig_closed else "still open at IG")
+
+
+def test_igs_stop_is_passed_to_the_order_sender(S):
+    sender = IGSender(True)
+    m = TradeManager(S, sender, now=lambda: WED)
+    tr = trade(S, BOLLINGER_BOUNCE, BUY)
+    m.add(tr)
+    for b in bars_from(WED, [(100.5, 101, 100, 100.5), (100.5, 100.5, 95, 96)]):
+        m.on_bar(b)
+    assert sender.asked == [("REF1", STOPPED_BY_IG)] and sender.closes == [] and not tr.open
+
+
+def test_live_a_trade_stays_open_until_ig_has_closed_it(S):
+    sender = IGSender(False)
+    m = TradeManager(S, sender, now=lambda: WED, ig_confirms=True)
+    tr = trade(S, BOLLINGER_BOUNCE, BUY)
+    m.add(tr)
+    for b in bars_from(WED, [(100.5, 101, 100, 100.5), (100.5, 100.5, 95, 96)]):
+        m.on_bar(b)
+    assert tr.open and sender.asked == [("REF1", STOPPED_BY_IG)]
+    m.closed_at_ig("REF1")
+    assert not tr.open
+
+
+def test_only_some_trades_can_be_stepped(S):
+    m = TradeManager(S, PretendSender(), now=lambda: WED)
+    a, b = trade(S, BREAKOUT, SELL), trade(S, EMA_PULLBACK, SELL)
+    a.reference, b.reference = "A", "B"
+    m.add(a)
+    m.add(b)
+    m.on_bar(bar(WED, 100, 100.5, 99, 99.5), only=["B"])
+    assert (a.bars, b.bars) == (0, 1)

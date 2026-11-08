@@ -22,8 +22,13 @@ a bar whose open, high, low and close are the same), in this order (as the resea
      trigger. Not for a trade in the day's expected news direction on a day with big news (design 2.4 and 4:
      the expected news direction takes precedence).
 Prices: a buy closes on the sell price, a sell on the buy price; pips are from the price the trade opened at.
-The stop and take profit are IG's: the manager records them (in a replay it fills them as IG would); it
-never sends a close for them. Every decision is recorded in trade_manager.folder/<PAIR>/decisions.jsonl.
+The stop and take profit are IG's: the manager records them (in a replay or a paper trade it fills them as IG
+would); it never sends a close for them. Live, it asks the order sender to confirm with IG that IG closed the
+trade, and the trade stays open until IG has.
+"Watching a level" (design 4): a trade the close on a rejection applies to is watching a level while the
+analyser's rejection part has a setup running against it at a level that counts (after its pierce, before it
+triggers, is cancelled or expires). It goes back to hold when there is none.
+Every decision is recorded in trade_manager.folder/<PAIR>/decisions.jsonl.
 """
 
 from __future__ import annotations
@@ -40,9 +45,10 @@ from strategies.common import (BUY, RANGE_TRADE, SELL, closed_before_big_news, c
 
 UTC = timezone.utc
 # The decisions (design 4: hold, half close, close, forced close, stopped by IG, take profit hit at IG).
-HOLD, HALF_CLOSE, CLOSE, FORCED_CLOSE, STOPPED_BY_IG, TAKE_PROFIT_AT_IG = (
-    "hold", "half close", "close", "forced close", "stopped by IG", "take profit hit at IG")
+HOLD, HALF_CLOSE, CLOSE, FORCED_CLOSE, STOPPED_BY_IG, TAKE_PROFIT_AT_IG, WATCHING = (
+    "hold", "half close", "close", "forced close", "stopped by IG", "take profit hit at IG", "watching a level")
 BOT_CLOSES = (HALF_CLOSE, CLOSE, FORCED_CLOSE)
+IG_CLOSES = (STOPPED_BY_IG, TAKE_PROFIT_AT_IG)
 
 
 @dataclass
@@ -80,6 +86,7 @@ class Decision:
     pips: Decimal | None = None         # for this part
     why: str = ""
     part: Decimal = Decimal(1)          # the share of the trade this decision closes
+    at: datetime | None = None          # the start of the bar it was made on
 
 
 @dataclass
@@ -104,11 +111,17 @@ class ManagedTrade:
     half_pips: Decimal | None = None
     half_share: Decimal = Decimal("0.5")
     state: str = HOLD
+    watching: bool = False
     decisions: list[Decision] = field(default_factory=list)
 
     @property
     def open(self) -> bool:
         return self.state in (HOLD, HALF_CLOSE)
+
+    @property
+    def decision(self) -> str:
+        """The trade's decision now (design 4): hold, watching a level, half close (done), or how it closed."""
+        return WATCHING if (self.open and self.watching) else self.state
 
     def total_pips(self) -> Decimal | None:
         """The whole trade's pips once closed (the half close's share included)."""
@@ -173,7 +186,7 @@ def step(settings: Any, t: ManagedTrade, bar: Bar, band: tuple[Decimal, Decimal]
     out: list[Decision] = []
 
     def finish(kind: str, price: Decimal, why: str) -> list[Decision]:
-        d = Decision(kind, price, pips(price), why, (1 - t.half_share) if t.half_done else Decimal(1))
+        d = Decision(kind, price, pips(price), why, (1 - t.half_share) if t.half_done else Decimal(1), bar.start)
         t.decisions.append(d)
         t.state = kind
         out.append(d)
@@ -207,7 +220,7 @@ def step(settings: Any, t: ManagedTrade, bar: Bar, band: tuple[Decimal, Decimal]
             if first and ((bar.sell_open <= lower) if sell else (bar.sell_open >= upper)):
                 price = g("open")
             share = Decimal(settings.range_trade.close_percent_at_opposite_band) / 100
-            d = Decision(HALF_CLOSE, price, pips(price), "the opposite Bollinger band", share)
+            d = Decision(HALF_CLOSE, price, pips(price), "the opposite Bollinger band", share, bar.start)
             t.half_done, t.half_pips, t.half_share, t.state = True, d.pips, share, HALF_CLOSE
             t.decisions.append(d)
             out.append(d)
@@ -229,8 +242,10 @@ class TradeManager:
     """Keeps the open trades, takes each bar, and tells the order sender to close (in full or by half).
     The stop and take profit are IG's: recorded, never sent."""
 
-    def __init__(self, settings: Any, sender: Any, *, now: Any = lambda: datetime.now(UTC)):
-        self.s, self.sender, self.now = settings, sender, now
+    def __init__(self, settings: Any, sender: Any, *, now: Any = lambda: datetime.now(UTC), ig_confirms: bool = False):
+        """`ig_confirms`: live trades, where IG's stop and take profit close the trade only once the order sender
+        has confirmed it with IG (otherwise, in a replay or for paper trades, the manager's decision closes it)."""
+        self.s, self.sender, self.now, self.ig_confirms = settings, sender, now, ig_confirms
         self.trades: dict[str, ManagedTrade] = {}
         self.folder = Path(settings.trade_manager.folder) / settings.market.pair
         self.journal = self.folder / "decisions.jsonl"
@@ -248,14 +263,35 @@ class TradeManager:
     def add(self, t: ManagedTrade) -> None:
         self.trades[t.reference] = t
 
-    def on_bar(self, bar: Bar, band: tuple[Decimal, Decimal] | None = None,
-               rejections: list[Rejection] = ()) -> list[tuple[ManagedTrade, Decision]]:
+    def on_bar(self, bar: Bar, band: tuple[Decimal, Decimal] | None = None, rejections: list[Rejection] = (),
+               watching: set[str] | frozenset = frozenset(), only: list[str] | None = None) -> list[tuple[ManagedTrade, Decision]]:
+        """One bar for every open trade (or only the references given). `watching`: the directions (buy, sell) of
+        the analyser's rejection setups running at levels that count, after this bar."""
         done = []
-        for t in [t for t in self.trades.values() if t.open]:
+        for t in [t for t in self.trades.values() if t.open and (only is None or t.reference in only)]:
             for d in step(self.s, t, bar, band, rejections):
                 sent = None
                 if d.kind in BOT_CLOSES:
-                    sent = self.sender.close(t.reference, half=d.kind == HALF_CLOSE, why=d.why)
+                    sent = self.sender.close(t.reference, half=d.kind == HALF_CLOSE, why=d.why, price=d.price)
+                elif d.kind in IG_CLOSES and hasattr(self.sender, "closed_at_ig"):
+                    sent = self.sender.closed_at_ig(t.reference, d.kind, d.price)
+                    if self.ig_confirms and not getattr(sent, "ok", False):
+                        t.state, t.decisions = HOLD if not t.half_done else HALF_CLOSE, t.decisions[:-1]
+                        d = Decision(d.kind, d.price, d.pips, d.why + " (expected; IG has not closed it yet)", d.part)
                 self._record(t, d, sent)
                 done.append((t, d))
+            if t.open and t.level_close:
+                against = BUY if t.direction == SELL else SELL
+                now_watching = against in watching and t.news_direction != t.direction
+                if now_watching != t.watching:
+                    t.watching = now_watching
+                    self._record(t, Decision(WATCHING if now_watching else HOLD, why="the analyser's rejection setup "
+                                             + ("running against it at a level" if now_watching else "is over")))
         return done
+
+    def closed_at_ig(self, reference: str) -> None:
+        """The order sender found the trade closed at IG (its stop or take profit): stop managing it."""
+        t = self.trades.get(reference)
+        if t is not None and t.open:
+            t.state = STOPPED_BY_IG
+            self._record(t, Decision(STOPPED_BY_IG, why="closed at IG (found by the order sender)"))

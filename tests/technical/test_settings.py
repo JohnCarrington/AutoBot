@@ -432,7 +432,7 @@ SWITCHES_OK = {"PAIRS_ON": "GBPUSD", "NEW_TRADES_FROM": "06:00", "NEW_TRADES_UNT
                "STRATEGY_SLOW_GRIND": "on", "STRATEGY_EMA_PULLBACK": "on",
                "STRATEGY_BOLLINGER_BOUNCE": "off", "STRATEGY_RANGE_TRADE": "on",
                "STOP_LOSS_PIPS": "6", "STOP_LOSS_PIPS_EMA_PULLBACK": "12", "TAKE_PROFIT_PIPS": "100", "STRATEGY_BREAKOUT": "off",
-               "STRATEGY_LEVEL_REVERSAL": "on"}
+               "STRATEGY_LEVEL_REVERSAL": "on", "TRADING": "off"}
 
 
 def _env(tmp_path, values, secrets=True):
@@ -600,7 +600,7 @@ def test_load_or_exit_reads_the_switches(tmp_path, monkeypatch):
     monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {**SWITCHES_OK, "NEW_TRADES_FROM": "07:15"})))
     assert load_or_exit().switches.new_trades_from == time(7, 15)
     monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {"PAIRS_ON": "GBPUSD"})))
-    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 11 problem"):
+    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 12 problem"):
         load_or_exit()
 
 

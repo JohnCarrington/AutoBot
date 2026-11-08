@@ -48,66 +48,97 @@ class Replay:
     states: dict = field(default_factory=dict)                # candle start -> state after that candle
 
 
+class StrategyRunner:
+    """The strategies one finished 5-minute candle at a time, exactly as the replay below runs them (the replay
+    is built on it) and as the live service runs them. Give it a StateTracker; after the tracker has taken new
+    candles, step() runs the strategies on each of them and returns their ideas (checked: switch, state,
+    direction rule), with the candle each came from. A new week starts everything again from its open.
+    `hourly_end`: build the hourly trend reader once from the hourly candles up to it (a replay); otherwise it
+    is read again for each candle (live)."""
+
+    def __init__(self, settings: Any, memo: Any, tracker: Any, hourly_end: datetime | None = None):
+        self.s, self.memo, self.tracker, self.hourly_end = settings, memo, tracker, hourly_end
+        self.week_open = None
+        self.done = 0
+
+    def _new_week(self) -> None:
+        s = self.s
+        self.week_open = self.tracker.week_open
+        self.warm = last_candles(self.memo, "5m", self.week_open, s.market_states.indicator_warm_up_candles)
+        self.week: list = []
+        self.done = 0
+        self.pivots: dict = {}
+        self.grind = SlowGrind(s)
+        self.pullback = EmaPullback(s, self._hourly(self.hourly_end or self.week_open))
+        self.watcher = RejectionWatcher(s, design_only=True)
+        self.breakout = Breakout(s)
+        self.reversal = LevelReversal(s)
+
+    def _hourly(self, end: datetime) -> HourlyTrendReader:
+        return HourlyTrendReader(self.s, last_candles(self.memo, "1h", end, self.s.ema_pullback.hourly_history_candles))
+
+    def state_after(self, i: int):
+        """The analyser's state after week candle i (before the week's first candle: consolidation)."""
+        t = self.week[i].start if i >= 0 else None
+        before = [ch for ch in self.tracker.changes if t is not None and ch.time <= t]
+        return (SimpleNamespace(state=before[-1].state, direction=before[-1].direction, trend_type=before[-1].trend_type)
+                if before else SimpleNamespace(state=CONSOLIDATION, direction=NONE, trend_type=None))
+
+    def pivot_at(self, t: datetime):
+        if t not in self.pivots:
+            got = [lv.price for lv in build(self.s, self.memo, t).levels if lv.type == PIVOT]
+            self.pivots[t] = got[0] if got else None
+        return self.pivots[t]
+
+    def step(self) -> list[tuple[Any, Idea]]:
+        """Run the strategies on every candle the tracker has taken since the last call: [(candle, idea)]."""
+        s, side = self.s, self.s.chart.price
+        if self.tracker.week_open != self.week_open:
+            self._new_week()
+        hist = self.tracker.history
+        out: list[tuple[Any, Idea]] = []
+        for i in range(self.done, len(hist)):
+            f = hist[i][0]
+            c = f.candle
+            self.week.append(c)
+            allc = self.warm + self.week
+            sg_ema = ema(allc, side, s.slow_grind.ema_periods)
+            fast, slow = ema(allc, side, s.ema_pullback.fast_ema_periods), ema(allc, side, s.ema_pullback.slow_ema_periods)
+            ema100 = ema(allc, side, s.analyser.direction_ema_periods)
+            if self.hourly_end is None:
+                self.pullback.hourly = self._hourly(c.end)
+            changes = self.tracker.changes
+            change_at = {ch.time: (k, ch) for k, ch in enumerate(changes)}
+            band = Band(c.start, f.middle, f.upper, f.lower) if f.upper is not None else None
+            events = self.watcher.on_candle(c, band, build(s, self.memo, c.start))
+            kc = change_at.get(c.start)
+            since = changes[kc[0] - 1].time if kc and kc[0] > 0 else None
+            cands = (self.breakout.on_candle(c, kc[1] if kc else None, since)
+                     + self.grind.on_candle(c, sg_ema.get(c.start))
+                     + self.pullback.on_candle(c, fast.get(c.start), slow.get(c.start))
+                     + bounce_candidates(self.watcher, events) + range_candidates(self.watcher, events)
+                     + self.reversal.on_candle(c, self.watcher, events))
+            if cands:
+                st = self.state_after(i - 1)
+                e100 = ema100.get(self.week[i - 1].start) if i > 0 else None
+                for cand in cands:
+                    out.append((c, check(s, s.market.pair, cand, st, self.pivot_at(c.start), e100)))
+        self.done = len(hist)
+        return out
+
+
 def run(settings: Any, store: CandleStore, start: datetime, end: datetime) -> Replay:
     check_same_pair(settings, store)
     memo = MemoStore(store)
     tracker = StateTracker(settings, memo)
     tracker.replay(end)
-    hist = tracker.history
-    if not hist:
+    if not tracker.history:
         return Replay([])
-    side = settings.chart.price
-    week = [h[0].candle for h in hist]
-    warm = last_candles(memo, "5m", tracker.week_open, settings.market_states.indicator_warm_up_candles)
-    allc = warm + week
-    sg, ep = settings.slow_grind, settings.ema_pullback
-    sg_ema = ema(allc, side, sg.ema_periods)
-    fast, slow = ema(allc, side, ep.fast_ema_periods), ema(allc, side, ep.slow_ema_periods)
-    ema100 = ema(allc, side, settings.analyser.direction_ema_periods)
-    hourly = HourlyTrendReader(settings, last_candles(memo, "1h", end, ep.hourly_history_candles))
-    changes = tracker.changes
-    index = {c.start: i for i, c in enumerate(week)}
-    pivots: dict = {}
-
-    def state_after(i: int):
-        """The analyser's state after week candle i (before the week's first candle: consolidation)."""
-        t = week[i].start if i >= 0 else None
-        before = [ch for ch in changes if t is not None and ch.time <= t]
-        return (SimpleNamespace(state=before[-1].state, direction=before[-1].direction, trend_type=before[-1].trend_type)
-                if before else SimpleNamespace(state=CONSOLIDATION, direction=NONE, trend_type=None))
-
-    def pivot_at(t):
-        if t not in pivots:
-            got = [lv.price for lv in build(settings, memo, t).levels if lv.type == PIVOT]
-            pivots[t] = got[0] if got else None
-        return pivots[t]
-
-    out = Replay([], states={c.start: state_after(i) for i, c in enumerate(week)})
-
-    grind = SlowGrind(settings)
-    pullback = EmaPullback(settings, hourly)
-    watcher = RejectionWatcher(settings, design_only=True)
-    breakout = Breakout(settings)
-    reversal = LevelReversal(settings)
-    change_at = {ch.time: (k, ch) for k, ch in enumerate(changes)}
-    for i, (f, _state, _direction, _events, _moved, _sp) in enumerate(hist):
-        c = f.candle
-        band = Band(c.start, f.middle, f.upper, f.lower) if f.upper is not None else None
-        events = watcher.on_candle(c, band, build(settings, memo, c.start))
-        kc = change_at.get(c.start)
-        since = changes[kc[0] - 1].time if kc and kc[0] > 0 else None
-        cands = (breakout.on_candle(c, kc[1] if kc else None, since)
-                 + grind.on_candle(c, sg_ema.get(c.start))
-                 + pullback.on_candle(c, fast.get(c.start), slow.get(c.start))
-                 + bounce_candidates(watcher, events) + range_candidates(watcher, events)
-                 + reversal.on_candle(c, watcher, events))
-        if cands and start <= c.start < end:
-            st = state_after(i - 1)
-            e100 = ema100.get(week[i - 1].start) if i > 0 else None
-            for cand in cands:
-                out.ideas.append(check(settings, settings.market.pair, cand, st, pivot_at(c.start), e100))
-    out.notes = {"slow grind": grind.notes, "EMA pullback": pullback.notes, "breakout": breakout.notes}
-    out.watcher = watcher
+    runner = StrategyRunner(settings, memo, tracker, hourly_end=end)
+    ideas = [idea for c, idea in runner.step() if start <= c.start < end]
+    out = Replay(ideas, states={c.start: runner.state_after(i) for i, c in enumerate(runner.week)})
+    out.notes = {"slow grind": runner.grind.notes, "EMA pullback": runner.pullback.notes, "breakout": runner.breakout.notes}
+    out.watcher = runner.watcher
     return out
 
 

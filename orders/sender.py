@@ -28,6 +28,10 @@
     position with a new deal ID: it is found among the open positions and recorded.
   * Every order, confirmation, refusal and close is recorded in orders.folder/<PAIR>/orders.jsonl (one JSON
     line per event, written and flushed before the next step). The open trades are rebuilt from it.
+  * PAPER mode (the master switch TRADING=off, design 13): everything runs and is recorded, in
+    orders.folder/<PAIR>/paper_orders.jsonl, but NOTHING is ever sent to IG: no order, no close, and IG's open
+    positions are not read. A paper trade opens and closes at the current price (the offer for a buy, the bid
+    for a sell; a close at the price the trade manager gives).
 """
 
 from __future__ import annotations
@@ -105,16 +109,18 @@ def _dec(x: Any) -> Decimal | None:
 class OrderSender:
     def __init__(self, settings: Any, client: Any, alerts: Any, *, now: Callable[[], datetime] = lambda: datetime.now(UTC),
                  sleep: Callable[[float], None] = _time.sleep,
-                 quote: Callable[[], tuple[Decimal, Decimal] | None] = lambda: None):
-        """`quote`: the current (bid, offer) from the price stream, for the level reversal's stop distance."""
+                 quote: Callable[[], tuple[Decimal, Decimal] | None] = lambda: None, paper: bool = False):
+        """`quote`: the current (bid, offer) from the price stream, for the level reversal's stop distance (and a
+        paper trade's price). `paper`: never send anything to IG (TRADING=off)."""
         self.s, self.client, self.alerts, self.now, self.sleep = settings, client, alerts, now, sleep
         self.quote = quote
+        self.paper = paper
         self.o = settings.orders
         self.pair, self.epic = settings.market.pair, settings.market.epic
         self.ppp = Decimal(settings.market.points_per_pip)
         self.size_gbp = Decimal(settings.trade.size_gbp_per_pip)
         self.folder = Path(self.o.folder) / self.pair
-        self.journal = self.folder / "orders.jsonl"
+        self.journal = self.folder / ("paper_orders.jsonl" if paper else "orders.jsonl")
         self.trades: dict[str, Trade] = {}
         self.unresolved: dict[str, dict] = {}          # references sent but never accounted for by IG
         self.funds: AccountFunds | None = None
@@ -126,6 +132,8 @@ class OrderSender:
     def _record(self, event: str, **data: Any) -> None:
         self.folder.mkdir(parents=True, exist_ok=True)
         row = {"time_utc": _iso(self.now()), "event": event, "pair": self.pair}
+        if self.paper:
+            row["paper"] = True
         row.update({k: (str(v) if isinstance(v, Decimal) else _iso(v) if isinstance(v, datetime) else v)
                     for k, v in data.items()})
         with self.journal.open("a") as f:
@@ -156,7 +164,7 @@ class OrderSender:
             elif ev == "half closed" and ref in self.trades:
                 self.trades[ref].half_closed = True
                 self.trades[ref].size = Decimal(r["remaining_size"])
-            elif ev in ("closed", "gone at IG") and ref in self.trades:
+            elif ev in ("closed", "gone at IG", "closed at IG") and ref in self.trades:
                 self.trades[ref].status = CLOSED
 
     # ---- start-up ----------------------------------------------------------------------------
@@ -164,13 +172,15 @@ class OrderSender:
     def start(self) -> None:
         """Before any order: check the IG session, find the bot's own trades at IG, read the funds."""
         with self._lock:
-            demo = self.s.ig.demo_base_url                      # settings refuse any other address
-            if getattr(self.client, "base_url", None) != demo:
-                raise NotReady(f"the IG client is not on IG's demo address ({demo}): no orders")
-            if not getattr(self.client, "account_active", False):
-                raise NotReady("the price service's IG login is not active: the order sender never logs in itself")
+            if not self.paper:
+                demo = self.s.ig.demo_base_url                  # settings refuse any other address
+                if getattr(self.client, "base_url", None) != demo:
+                    raise NotReady(f"the IG client is not on IG's demo address ({demo}): no orders")
+                if not getattr(self.client, "account_active", False):
+                    raise NotReady("the price service's IG login is not active: the order sender never logs in itself")
             self._read_record()
-            self._recover()
+            if not self.paper:
+                self._recover()
             self._read_funds("start-up")
             self.ready = True
             self._record("ready", open_trades=len(self.open_trades()))
@@ -322,7 +332,9 @@ class OrderSender:
                          size=Decimal(str(body["size"])), stop_pips=order.stop_pips, stop_distance=stop_points,
                          take_profit_pips=tp, idea_time=idea.time, idea_price=idea.entry_price, body=body)
             self.unresolved[ref] = {"strategy": idea.strategy, "direction": idea.direction, "size": str(body["size"]),
-                                    "stop_pips": str(order.stop_pips)}
+                                    "stop_pips": str(stop_points / self.ppp)}
+            if self.paper:
+                return self._paper_open(ref, idea)
             try:
                 r = self.client.request("POST", "/positions/otc", "2", body, what="placing an order",
                                         headers=_headers("2"))
@@ -344,10 +356,25 @@ class OrderSender:
                 return self._settle_unclear(ref, idea, order)
             return self._on_confirmation(ref, idea, order, c)
 
+    def _paper_open(self, ref: str, idea: Any) -> Result:
+        """TRADING=off: nothing is sent to IG; the paper trade opens at the current price."""
+        q = self.quote()
+        sent = self.unresolved.pop(ref)
+        if not q:
+            self._record("not placed", reference=ref, reason="no current price for a paper trade")
+            return Result(False, "refused", ref, reasons=["no current price for a paper trade"])
+        level = Decimal(str(q[1] if idea.direction == "buy" else q[0]))
+        t = Trade(ref, idea.strategy, idea.direction, Decimal(sent["size"]), Decimal(sent["stop_pips"]), self.now(),
+                  f"PAPER-{ref}", level)
+        self.trades[ref] = t
+        self._record("opened", reference=ref, strategy=t.strategy, direction=t.direction, size=t.size,
+                     stop_pips=t.stop_pips, opened_utc=t.opened_at, deal_id=t.deal_id, level=t.level)
+        return Result(True, "opened", ref, t.deal_id, t.level)
+
     def _on_confirmation(self, ref: str, idea: Any, order: Any, c: dict) -> Result:
         if c.get("dealStatus") == "ACCEPTED":
             sent = self.unresolved[ref]
-            t = Trade(ref, idea.strategy, idea.direction, Decimal(sent["size"]), order.stop_pips, self.now(),
+            t = Trade(ref, idea.strategy, idea.direction, Decimal(sent["size"]), Decimal(sent["stop_pips"]), self.now(),
                       c.get("dealId", ""), _dec(c.get("level")))
             self.trades[ref] = t
             self.unresolved.pop(ref, None)
@@ -394,8 +421,32 @@ class OrderSender:
 
     # ---- closing -----------------------------------------------------------------------------
 
-    def close(self, reference: str, *, half: bool = False, why: str = "") -> Result:
-        """Close one of the bot's trades in full, or by half (the range trade only), when the trade manager says so."""
+    def closed_at_ig(self, reference: str, kind: str, price: Decimal | None = None) -> Result:
+        """The trade manager expects IG to have closed this trade (its stop or take profit at IG). Paper: it is
+        recorded closed. Live: confirmed with IG (GET /positions/{dealId}); a position still open is reported."""
+        with self._lock:
+            t = self.trades.get(reference)
+            if t is None or t.status != OPEN:
+                return Result(False, "not open", reference)
+            if not self.paper:
+                try:
+                    self.client.request("GET", f"/positions/{t.deal_id}", "2", what="checking a position",
+                                        headers=_headers("2"))
+                    self._record("still open at IG", reference=reference, deal_id=t.deal_id, expected=kind)
+                    return Result(False, "still open at IG", reference, t.deal_id)
+                except IGRequestError as e:
+                    if e.status != 404:
+                        self._record("not checked at IG", reference=reference, deal_id=t.deal_id, error=str(e))
+                        return Result(False, "not checked", reference, t.deal_id)
+            t.status = CLOSED
+            self._record("closed at IG", reference=reference, deal_id=t.deal_id, how=kind, level=price, size=t.size)
+            if not self.paper:
+                self._read_funds("a trade closed")
+            return Result(True, "closed at IG", reference, t.deal_id, price)
+
+    def close(self, reference: str, *, half: bool = False, why: str = "", price: Decimal | None = None) -> Result:
+        """Close one of the bot's trades in full, or by half (the range trade only), when the trade manager says so.
+        `price`: the trade manager's price (a paper close is recorded at it)."""
         with self._lock:
             t = self.trades.get(reference)
             if t is None or t.status != OPEN:
@@ -404,6 +455,11 @@ class OrderSender:
                 return Result(False, "refused", reference, t.deal_id,
                               reasons=["only a range trade is closed by half, and only once"])
             size = (t.size / 2) if half else t.size
+            if self.paper:
+                q = self.quote()
+                level = price if price is not None else (Decimal(str(q[0] if t.direction == "buy" else q[1])) if q else None)
+                self._record("close sending", reference=reference, deal_id=t.deal_id, size=size, half=half, why=why)
+                return self._closed(t, half, size, level, None, "paper")
             body = {"dealId": t.deal_id,                            # exactly AutoBot 161's close: these four only
                     "direction": "SELL" if t.direction == "buy" else "BUY",      # never the epic or expiry
                     "orderType": "MARKET",
@@ -445,7 +501,7 @@ class OrderSender:
             t.half_closed, t.size = True, t.size - size
             self._record("half closed", reference=t.reference, deal_id=t.deal_id, size=size, remaining_size=t.size,
                          level=level, profit=profit, how=how)
-            new = self._residual(t, t.size)
+            new = t.deal_id if self.paper else self._residual(t, t.size)
             if new is None:
                 self._record("rest not found", reference=t.reference, deal_id=t.deal_id, remaining_size=t.size)
                 self.alerts.problem("part-close-rest", f"After half closing {t.strategy} trade {t.deal_id}, the rest "
@@ -457,7 +513,8 @@ class OrderSender:
         else:
             t.status = CLOSED
             self._record("closed", reference=t.reference, deal_id=t.deal_id, size=size, level=level, profit=profit, how=how)
-        self._read_funds("a trade closed")
+        if not self.paper:
+            self._read_funds("a trade closed")
         return Result(True, "half closed" if half else "closed", t.reference, t.deal_id, level)
 
     def _close_refused(self, t: Trade, reason: str) -> Result:
