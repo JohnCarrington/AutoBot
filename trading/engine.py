@@ -21,6 +21,12 @@ sender and the trade manager, run inside the price service on its IG login.
     A trade opened during a candle is not run on that candle's earlier prices.
   * The trade manager's saved state (each open trade's best pips so far, half close, watching a level) is restored
     at start-up.
+  * Records (records/book.py, design 9): every trade (opened and closed, with everything section 9 lists) and every
+    decision (ideas and why they were blocked, the order sender's answers, the analyser's state changes, the trade
+    manager's decisions, the pause switch); the daily and weekly summaries at trading.daily_summary_at (20:35 UK).
+  * Telegram: "trade opened" and "trade closed" for every real trade (TRADING on); the daily summary every weekday
+    (marked paper while TRADING is off).
+  * The pause switch: while the file trading.pause_file exists, no new trade is sent; open trades are still run.
 """
 
 from __future__ import annotations
@@ -34,6 +40,8 @@ from typing import Any, Callable
 from analyser.market_state import MemoStore, StateTracker
 from analyser.trend_day import trend_day_at
 from orders.sender import OrderSender
+from records.book import Book, daily_text
+from trading.reasons import level_note, one_line, take_profit_kind
 from levels.current import build
 from prices.calendar import floor_5m
 from prices.model import Candle
@@ -80,6 +88,13 @@ class Trading:
         kw = {"sleep": sleep} if sleep is not None else {}
         self.sender = OrderSender(settings, client, alerts, now=now, quote=quote, paper=not trading_on, **kw)
         self.manager = TradeManager(settings, self.sender, now=now, ig_confirms=trading_on)
+        self.book = Book(settings, paper=not trading_on)
+        self.manager.on_decision = lambda t, d, sent: self.book.decision(
+            "trade manager", self.now(), reference=t.reference, strategy=t.strategy, decision=d.kind,
+            price=d.price, pips=d.pips, why=d.why, order_sender=getattr(sent, "what", None))
+        self.meta: dict = {}                                # reference -> what the records and messages need
+        self._changes_seen = 0
+        self._was_paused: bool | None = None
         self.ready = False
         self._lock = threading.RLock()
         self._last_tick = None
@@ -107,6 +122,7 @@ class Trading:
             if not self.replay:
                 self.tracker.replay(now)
                 self.runner.step()                          # the week so far: nothing is sent for the past
+            self._changes_seen = len(self.tracker.changes)
             self.ready = True
             log.info("Trading %s: %d open trade(s) taken over; the strategies are up to %s.",
                      "ON" if self.trading_on else "OFF (paper trades, nothing sent to IG)",
@@ -126,7 +142,13 @@ class Trading:
             if not self.ready:
                 return
             self.tracker.advance(now)
+            for ch in self.tracker.changes[self._changes_seen:]:
+                self.book.decision("analyser state change", ch.time, state=ch.state, direction=ch.direction,
+                                   trend_type=ch.trend_type, line=ch.line() if hasattr(ch, "line") else str(ch))
+            self._changes_seen = len(self.tracker.changes)
             self._take_new_candles()
+            self._sync_ig()
+            self._after_bars()
 
     def _take_new_candles(self) -> None:
         hist = self.tracker.history
@@ -143,8 +165,13 @@ class Trading:
             rej = analyser_rejections(self.tracker.watcher, c.start)
             before = [ref for ref, t in self.manager.trades.items() if t.open and t.opened_at <= c.start]
             self.manager.on_bar(Bar.of(c), band, rej, watching if k == len(new) - 1 else frozenset(), only=before)
+            self._after_bars()
             for idea in ideas_by_candle.get(c.start, []):
-                if idea.allowed and (idea.strategy, idea.direction, c.start) not in self.fired:
+                sent_live = (idea.strategy, idea.direction, c.start) in self.fired
+                self.book.decision("idea", idea.time, strategy=idea.strategy, direction=idea.direction,
+                                   entry_price=idea.entry_price, allowed=idea.allowed, blocked_by=idea.blocked_by,
+                                   state=idea.state, already_sent_live=sent_live)
+                if idea.allowed and not sent_live:
                     self._send(idea, c, band, rej)
         if new:
             last = new[-1].candle.start
@@ -156,20 +183,127 @@ class Trading:
             sell = idea.direction == "sell"
             fill = idea.entry_price if sell else idea.entry_price + (candle.buy_open - candle.sell_open)
             self.sender.quote = lambda: (fill, fill)        # the research's fill: the entry, plus the spread for a buy
-        r = self.sender.place(idea, trend_day=td, calendar=self.calendar)
+        r = self._place(idea, td)
         if not r.ok:
             return
+        self._opened(idea, r, candle.start if self.replay else self.now(), td)
+        if self.replay:                                     # as the research: it may close in the candle it opened in
+            self.manager.on_bar(Bar.of(candle), band, rej, only=[r.reference])
+            self._after_bars()
+
+    def _paused(self) -> bool:
+        """The pause switch (the dashboard): while the file trading.pause_file exists, no new trade is sent."""
+        from pathlib import Path
+        paused = Path(self.s.trading.pause_file).exists()
+        if paused != self._was_paused:
+            if self._was_paused is not None or paused:
+                self.book.decision("pause switch", self.now(), paused=paused)
+            self._was_paused = paused
+        return paused
+
+    def _place(self, idea: Any, td: str | None) -> Any:
+        r = self.sender.place(idea, paused=self._paused(), trend_day=td, calendar=self.calendar)
+        self.book.decision("order", self.now(), strategy=idea.strategy, direction=idea.direction, result=r.what,
+                           reference=r.reference, reasons=r.reasons, level=r.level)
+        return r
+
+    def _opened(self, idea: Any, r: Any, opened_at: datetime, td: str | None) -> None:
+        """A trade the order sender opened: to the trade manager, the records, and Telegram (real trades)."""
         t = self.sender.trades[r.reference]
-        opened_at = candle.start if self.replay else self.now()
         mt = plan(self.s, r.reference, idea.strategy, idea.direction, opened_at, idea.entry_price, r.level,
                   t.stop_pips, self.calendar, td)
         if not self.replay:
-            mt.bars = 1                                     # opened at the market after its candle: every price
-                                                            # from now on is after it opened (no entry-candle rule)
+            mt.bars = 1                                     # opened at the market: every later price is after it
         self.manager.add(mt)
         self.opened.append((idea, mt))
-        if self.replay:                                     # as the research: it may close in the candle it opened in
-            self.manager.on_bar(Bar.of(candle), band, rej, only=[r.reference])
+        ppp = Decimal(self.s.market.points_per_pip)
+        sign = Decimal(1) if idea.direction == "buy" else Decimal(-1)
+        state = f"{idea.state} {idea.state_direction}" + (f", {idea.trend_type}" if idea.trend_type else "")
+        rec = {"reference": r.reference, "deal_id": r.deal_id, "pair": self.s.market.pair, "strategy": idea.strategy,
+               "direction": idea.direction, "size_gbp_per_pip": self.s.trade.size_gbp_per_pip, "market_state": state,
+               "opened_utc": opened_at, "entry_price": idea.entry_price, "open_price": r.level,
+               "stop_pips": mt.stop_pips, "stop_price": mt.fill - sign * mt.stop_pips * ppp,
+               "take_profit_pips": mt.take_profit_pips, "take_profit_price": mt.fill + sign * mt.take_profit_pips * ppp,
+               "take_profit_kind": take_profit_kind(self.s, idea, mt.take_profit_pips, td),
+               "reason": one_line(idea), "level": level_note(idea), "steps": list(idea.steps)}
+        self.meta[r.reference] = rec
+        self.book.opened(rec)
+        if self.trading_on:
+            self.alerts.trade_opened(self._opened_message(rec))
+
+    def _opened_message(self, rec: dict) -> Any:
+        from alerts.trades import TradeOpened
+        return TradeOpened(rec["pair"], rec["direction"], Decimal(rec["size_gbp_per_pip"]), rec["strategy"],
+                           rec["market_state"], Decimal(rec["open_price"]), Decimal(rec["stop_price"]),
+                           Decimal(rec["take_profit_price"]), rec["opened_utc"], self.s.market.price_scale,
+                           rec["reference"], Decimal(rec["stop_pips"]), Decimal(rec["take_profit_pips"]),
+                           rec["take_profit_kind"], rec["reason"], rec["level"])
+
+    def _after_bars(self) -> None:
+        """Every trade the trade manager has just finished: to the records, and Telegram (real trades)."""
+        from alerts.trades import PartClose, TradeClosed
+        size = Decimal(self.s.trade.size_gbp_per_pip)
+        for ref, mt in self.manager.trades.items():
+            rec = self.meta.get(ref)
+            if mt.open or rec is None or rec.get("closed"):
+                continue
+            last = mt.decisions[-1]
+            pips = mt.total_pips()
+            gbp = (pips * size).quantize(Decimal("0.01"))
+            half = rest = None
+            if mt.half_pips is not None:
+                h = next(d for d in mt.decisions if d.kind == "half close")
+                half = PartClose(h.at or last.at, h.price, h.pips, (h.pips * size * mt.half_share).quantize(Decimal("0.01")), h.why)
+                rest = PartClose(last.at, last.price, last.pips,
+                                 (last.pips * size * (1 - mt.half_share)).quantize(Decimal("0.01")), last.why)
+            best = max([x for x in (mt.best, last.pips) if x is not None], default=None)
+            closed_at = last.at or self.now()
+            lined = last.why.split("a confirmed rejection at a level: ", 1)[1] if "rejection at a level" in last.why else ""
+            rec |= {"closed": True}
+            row = {k: v for k, v in rec.items() if k not in ("closed", "steps")} | {
+                "closed_utc": closed_at, "close_price": last.price, "how_closed": last.kind, "close_reason": last.why,
+                "pips": pips, "gbp": gbp, "result": "win" if gbp > 0 else "loss" if gbp < 0 else "break even",
+                "minutes_open": int((closed_at - rec["opened_utc"]).total_seconds() // 60), "best_pips": best,
+                "levels_lined_up": lined,
+                "half_close": None if half is None else vars(half), "rest": None if rest is None else vars(rest)}
+            self.book.closed(row)
+            if self.trading_on:
+                today = self.book.today(closed_at)
+                self.alerts.trade_closed(TradeClosed(self._opened_message(rec), last.price, closed_at, last.why, gbp,
+                                                     pips, best, half, rest, today.trades, today.pips))
+
+    def _sync_ig(self) -> None:
+        """Live: a trade whose stop or take profit the trade manager expected IG to have closed, but IG had not yet,
+        is asked about again (once a candle)."""
+        if not self.trading_on:
+            return
+        for ref, mt in self.manager.trades.items():
+            if mt.open and getattr(mt, "expected_at_ig", None):
+                r = self.sender.closed_at_ig(ref, mt.expected_at_ig[0], mt.expected_at_ig[1])
+                if r.ok:
+                    self.manager.closed_at_ig(ref)
+
+    def daily_summary(self, now: datetime) -> None:
+        """At trading.daily_summary_at (20:35 UK) each weekday, once: the daily and weekly summaries are written and
+        the daily one sent on Telegram."""
+        import json
+        from pathlib import Path
+        uk_now = now.astimezone(self.book.uk)
+        if uk_now.weekday() > 4 or uk_now.time() < self.s.trading.daily_summary_at:
+            return
+        marker = self.book.folder / "summary_sent.json"
+        day = uk_now.date()
+        try:
+            if json.loads(marker.read_text()).get("day") == day.isoformat():
+                return
+        except (FileNotFoundError, ValueError):
+            pass
+        s = self.book.write_daily(day)
+        from datetime import timedelta as td_
+        week = self.book.summary(day - td_(days=day.weekday()), day)
+        self.alerts.info(daily_text(self.s.market.pair, day, s, week, self.book.paper))
+        Path(marker).parent.mkdir(parents=True, exist_ok=True)
+        marker.write_text(json.dumps({"day": day.isoformat()}) + "\n")
 
     # ---- every second: the latest price -----------------------------------------------------------
 
@@ -180,6 +314,7 @@ class Trading:
             if not self.ready or tick is None or tick is self._last_tick:
                 return
             self._last_tick = tick
+            self.daily_summary(tick.time)
             self._live_entries(tick)
             if not any(t.open for t in self.manager.trades.values()):
                 return
@@ -187,6 +322,7 @@ class Trading:
             hist = self.tracker.history
             band = (hist[-1][0].upper, hist[-1][0].lower) if hist and hist[-1][0].upper is not None else None
             self.manager.on_bar(b, band, [], analyser_watching(self.tracker.watcher))
+            self._after_bars()
 
     # ---- live entries ---------------------------------------------------------------------------------
 
@@ -216,13 +352,11 @@ class Trading:
             idea = dataclasses.replace(idea, time=tick.time)
             idea.steps.append(f"reached on the live price at {tick.time.strftime('%H:%M:%S')} UTC "
                               f"(bid {tick.sell}, offer {tick.buy})")
-            r = self.sender.place(idea, trend_day=self._trend_day(idea.time), calendar=self.calendar)
+            self.book.decision("idea", tick.time, strategy=idea.strategy, direction=idea.direction,
+                               entry_price=idea.entry_price, allowed=True, blocked_by="", state=idea.state, live=True)
+            td = self._trend_day(idea.time)
+            r = self._place(idea, td)
             if not r.ok:
                 continue
-            t = self.sender.trades[r.reference]
-            mt = plan(self.s, r.reference, idea.strategy, idea.direction, tick.time, idea.entry_price, r.level,
-                      t.stop_pips, self.calendar, self._trend_day(idea.time))
-            mt.bars = 1                                     # opened at this price: every later price is after it
-            self.manager.add(mt)
-            self.opened.append((idea, mt))
+            self._opened(idea, r, tick.time, td)
             log.info("Live entry: %s %s at %s (entry price %s).", idea.strategy, idea.direction, r.level, idea.entry_price)

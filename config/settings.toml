@@ -90,6 +90,18 @@ confirm_wait_seconds = 1
 # Where the trade manager records every decision it makes (design 4).
 folder = "/opt/autobot/data/trade_manager"
 
+[records]
+# Every trade and every decision, kept for good, with the daily and weekly summaries (design 9):
+# folder/<PAIR>/ (paper trades in folder/<PAIR>/paper/).
+folder = "/opt/autobot/data/records"
+
+[trading]
+# The daily summary (written, and sent on Telegram) each weekday at this UK time (owner, 8 November 2026).
+daily_summary_at = "20:35"
+# The pause switch (design 9): while this file exists, no new trade is sent; open trades are still run.
+# The dashboard will create and remove it.
+pause_file = "/opt/autobot/data/control/pause_new_trades"
+
 [safety]
 # Total risk across all open trades (each trade's stop distance x its size), at most this
 # (owner, 8 November 2026: set so it is never reached).

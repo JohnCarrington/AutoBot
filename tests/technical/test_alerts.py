@@ -381,6 +381,7 @@ def test_the_trade_opened_message_shows_everything():
     text = opened_text(trade())
     assert text.splitlines() == [
         "AutoBot TRADE OPENED: GBPUSD SELL",
+        "Time: Fri 06 Nov 13:05 GMT",
         "Size: £10 per pip",
         "Strategy: slow grind",
         "Market state: trend (slow grind)",

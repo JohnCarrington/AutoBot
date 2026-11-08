@@ -61,6 +61,8 @@ EXPECTED = {
                "deal_reference_prefix": "AB", "unclear_checks": 3, "unclear_check_wait_seconds": 2,
                "confirm_attempts": 5, "confirm_wait_seconds": 1},
     "trade_manager": {"folder": Path("/opt/autobot/data/trade_manager")},
+    "records": {"folder": Path("/opt/autobot/data/records")},
+    "trading": {"daily_summary_at": time(20, 35), "pause_file": Path("/opt/autobot/data/control/pause_new_trades")},
     "safety": {"max_total_risk_gbp": 100000, "margin_per_trade_gbp": 5000,
                "ig_stop_refusal_reasons": ("ATTACHED_ORDER_LEVEL_ERROR",), "ig_funds_refusal_reasons": ("INSUFFICIENT_FUNDS",),
                "folder": Path("/opt/autobot/data/safety")},

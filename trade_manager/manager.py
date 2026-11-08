@@ -114,6 +114,7 @@ class ManagedTrade:
     half_share: Decimal = Decimal("0.5")
     state: str = HOLD
     watching: bool = False
+    expected_at_ig: tuple | None = None     # live: IG's stop or take profit expected, not yet confirmed
     decisions: list[Decision] = field(default_factory=list)
 
     @property
@@ -253,6 +254,7 @@ class TradeManager:
         self.journal = self.folder / "decisions.jsonl"
         self.state_file = self.folder / "open_trades.json"
         self._saved: dict = {}
+        self.on_decision = None                         # the records (trading/engine.py): (trade, decision, answer)
 
     def _record(self, t: ManagedTrade, d: Decision, sent: Any = None) -> None:
         self.folder.mkdir(parents=True, exist_ok=True)
@@ -263,6 +265,8 @@ class TradeManager:
             row["order_sender"] = getattr(sent, "what", str(sent))
         with self.journal.open("a") as f:
             f.write(json.dumps(row) + "\n")
+        if self.on_decision is not None:
+            self.on_decision(t, d, sent)
 
     def add(self, t: ManagedTrade) -> None:
         self.trades[t.reference] = t
@@ -320,6 +324,7 @@ class TradeManager:
                 elif d.kind in IG_CLOSES and hasattr(self.sender, "closed_at_ig"):
                     sent = self.sender.closed_at_ig(t.reference, d.kind, d.price)
                     if self.ig_confirms and not getattr(sent, "ok", False):
+                        t.expected_at_ig = (d.kind, d.price, d)
                         t.state, t.decisions = HOLD if not t.half_done else HALF_CLOSE, t.decisions[:-1]
                         d = Decision(d.kind, d.price, d.pips, d.why + " (expected; IG has not closed it yet)", d.part)
                 self._record(t, d, sent)
@@ -338,6 +343,9 @@ class TradeManager:
         """The order sender found the trade closed at IG (its stop or take profit): stop managing it."""
         t = self.trades.get(reference)
         if t is not None and t.open:
-            t.state = STOPPED_BY_IG
-            self._record(t, Decision(STOPPED_BY_IG, why="closed at IG (found by the order sender)"))
+            expected = getattr(t, "expected_at_ig", None)
+            d = expected[2] if expected else Decision(STOPPED_BY_IG, why="closed at IG (found by the order sender)")
+            t.decisions.append(d)
+            t.state = d.kind
+            self._record(t, d)
             self.save_state()

@@ -31,7 +31,8 @@ def S(pretend_switches, tmp_path):
     return Over(s, switches={k: True for k in ("slow_grind", "ema_pullback", "bollinger_bounce", "range_trade",
                                                  "breakout", "level_reversal")} | {"trading": False},
                 orders={"folder": tmp_path / "orders"}, trade_manager={"folder": tmp_path / "tm"},
-                safety={"folder": tmp_path / "safety"})
+                safety={"folder": tmp_path / "safety"}, records={"folder": tmp_path / "records"},
+                trading={"pause_file": tmp_path / "control" / "pause_new_trades"})
 
 
 def candle(t, o, h, l, c):
@@ -96,7 +97,10 @@ def make(S, monkeypatch, candles, ideas, trading_on=False, ig=None, clock=None, 
     ig = ig or PretendIG()
     clock = clock or {"t": WED}
     quote = {"q": (D("100.0"), D("101.5"))}
-    alerts = SimpleNamespace(sent=[], problem=lambda k, t: alerts.sent.append((k, t)), info=lambda t, key=None: None)
+    alerts = SimpleNamespace(sent=[], infos=[], opened=[], closed=[], problem=lambda k, t: alerts.sent.append((k, t)),
+                             info=lambda t, key=None: alerts.infos.append(t),
+                             trade_opened=lambda t: alerts.opened.append(t), trade_closed=lambda c: alerts.closed.append(c))
+    e_alerts = alerts
     e = eng.Trading(S, None, ig, alerts, trading_on=trading_on, now=lambda: clock["t"], quote=lambda: quote["q"],
                     calendar=[], sleep=lambda s: None)
     e._clock = clock

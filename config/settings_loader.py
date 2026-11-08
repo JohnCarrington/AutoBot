@@ -252,6 +252,12 @@ def _market_time_zone(v: Any) -> ZoneInfo:
     return ZoneInfo(v)
 
 
+def _absolute_file(v: Any) -> Path:
+    if not isinstance(v, str) or not v.startswith("/") or v.endswith("/"):
+        raise ValueError(f"must be an absolute file path, got {v!r}")
+    return Path(v)
+
+
 def _absolute_folder(v: Any) -> Path:
     if not isinstance(v, str) or not v.startswith("/"):
         raise ValueError(f"must be a full folder path starting with '/', got {v!r}")
@@ -314,6 +320,13 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     },
     "trade_manager": {
         "folder": _absolute_folder,
+    },
+    "records": {
+        "folder": _absolute_folder,
+    },
+    "trading": {
+        "daily_summary_at": _clock_time,
+        "pause_file": _absolute_file,
     },
     "safety": {
         "max_total_risk_gbp": _whole_number(1, 10_000_000),
