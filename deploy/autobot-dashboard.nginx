@@ -23,6 +23,12 @@ server {
         add_header Cache-Control "no-cache" always;
     }
 
+    # The page's two fonts (kept on this server, SIL Open Font License: fonts/OFL-*.txt).
+    location /fonts/ {
+        add_header Cache-Control "public, max-age=604800" always;
+        add_header X-Content-Type-Options "nosniff" always;
+    }
+
     # nginx asks the data service whether the session cookie is genuine before every gated address.
     location = /_authcheck {
         internal;

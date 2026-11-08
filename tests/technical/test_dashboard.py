@@ -189,6 +189,7 @@ def test_nginx_listens_only_on_the_tailscale_address_and_gates_the_data():
     assert "limit_req zone=autobot_dashboard_login" in conf.split("location = /auth ", 1)[1].split("}", 1)[0]
     assert 'add_header X-Frame-Options "DENY" always;' in conf and "frame-ancestors 'none'" in conf
     assert "root /opt/autobot/dashboard/static;" in conf and "return 404;" in conf
+    assert "location /fonts/ {" in conf
 
 
 def test_the_data_service_unit():
@@ -211,6 +212,17 @@ def test_the_page_loads_nothing_from_elsewhere_and_sends_the_csrf_token():
     for part in ("Analyser", "Strategies allowed now", "Open trades", "Today", "Warnings", "Pause new trades", "Trading"):
         assert part in page
     assert "textContent" in page and "innerHTML" not in page                    # nothing from the status is run as HTML
+
+
+def test_the_page_has_161s_look_with_its_fonts_kept_here():
+    page = (ROOT / "dashboard" / "static" / "index.html").read_text()
+    for colour in ("--bg: #0a0a0f", "--surface: #111118", "--accent: #00ff88", "--red: #ff4466", "--amber: #ffaa00"):
+        assert colour in page
+    assert "url(fonts/jetbrains-mono-latin.woff2)" in page and "url(fonts/syne-latin.woff2)" in page
+    fonts = ROOT / "dashboard" / "static" / "fonts"
+    for f in ("jetbrains-mono-latin.woff2", "syne-latin.woff2", "OFL-jetbrains-mono.txt", "OFL-syne.txt"):
+        assert (fonts / f).exists(), f
+    assert (fonts / "jetbrains-mono-latin.woff2").read_bytes()[:4] == b"wOF2"
 
 
 # ---- the trading engine's status ---------------------------------------------------------------------------

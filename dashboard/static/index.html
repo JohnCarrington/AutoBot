@@ -2,105 +2,195 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AutoBot dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>AutoBot</title>
 <style>
-  :root { --bg: #f6f7f9; --card: #fff; --text: #1d2330; --muted: #667085; --line: #e3e6ea;
-          --good: #12805c; --bad: #c0362c; --warn: #b54708; --accent: #2b59c3; }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg: #101318; --card: #181c23; --text: #e6e9ef; --muted: #98a2b3; --line: #2a303a;
-            --good: #3ccb91; --bad: #f2786d; --warn: #f5b041; --accent: #7aa2ff; }
+  /* AutoBot 161's look (its colours, fonts, cards and header), simpler: only the new bot's information.
+     The fonts are kept on this server (fonts/, SIL Open Font License), so the page loads nothing from elsewhere. */
+  @font-face { font-family: 'JetBrains Mono'; font-weight: 300 800; font-display: swap;
+               src: url(fonts/jetbrains-mono-latin.woff2) format('woff2'); }
+  @font-face { font-family: 'Syne'; font-weight: 400 800; font-display: swap;
+               src: url(fonts/syne-latin.woff2) format('woff2'); }
+  :root {
+    --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
+    --border: #ffffff0f; --border2: #ffffff18;
+    --text: #e8e8f0; --muted: #6b6b80;
+    --accent: #00ff88; --accent-dim: #00ff8820; --accent-mid: #00ff8840;
+    --red: #ff4466; --red-dim: #ff446620; --amber: #ffaa00; --amber-dim: #ffaa0020;
+    --blue: #4488ff; --blue-dim: #4488ff15;
+    --mono: 'JetBrains Mono', monospace; --sans: 'Syne', sans-serif;
+    --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
-  * { box-sizing: border-box; }
-  body { margin: 0; font: 15px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--text); }
-  main { max-width: 980px; margin: 0 auto; padding: 16px; }
-  h1 { font-size: 20px; margin: 4px 0 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
-  .card h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 8px; }
-  .row { display: flex; flex-wrap: wrap; gap: 16px; }
-  .big { font-size: 22px; font-weight: 600; }
-  .muted { color: var(--muted); }
-  .good { color: var(--good); } .bad { color: var(--bad); } .warn { color: var(--warn); }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th, td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { color: var(--muted); font-weight: 500; }
-  .wrap { overflow-x: auto; }
-  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); font-size: 13px; margin: 2px 4px 2px 0; }
-  button { font: inherit; padding: 9px 16px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--text); cursor: pointer; }
-  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  button.danger { background: var(--bad); border-color: var(--bad); color: #fff; }
-  #login { max-width: 360px; margin: 12vh auto; }
-  input[type=password] { width: 100%; font: inherit; padding: 9px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); margin: 8px 0 12px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 13px;
+         min-height: 100vh; min-height: 100dvh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
   [hidden] { display: none !important; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(.7); } }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .2; } }
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  /* password gate */
+  .auth-overlay { position: fixed; inset: 0; z-index: 9999; background: var(--bg); display: flex; align-items: center;
+                  justify-content: center; flex-direction: column; gap: 20px; padding: 24px; }
+  .auth-logo { width: 48px; height: 48px; border: 2px solid var(--accent); border-radius: 12px; display: flex;
+               align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .auth-logo::before, .header-logo::before { content: ''; position: absolute; background: var(--accent); border-radius: 50%;
+               animation: pulse 2s ease-in-out infinite; }
+  .auth-logo::before { width: 16px; height: 16px; }
+  .auth-title { font-family: var(--sans); font-size: 24px; font-weight: 800; letter-spacing: -.5px; }
+  .auth-title span, .header-title span { color: var(--accent); }
+  .auth-form { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 280px; }
+  .auth-input { background: var(--surface); border: 1px solid var(--border2); border-radius: 10px; padding: 12px 14px;
+                font-family: var(--mono); font-size: 14px; color: var(--text); outline: none; text-align: center; letter-spacing: .15em; }
+  .auth-input:focus { border-color: var(--accent-mid); }
+  .btn { background: var(--accent-dim); border: 1px solid var(--accent); border-radius: 10px; padding: 12px;
+         font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+         color: var(--accent); cursor: pointer; transition: background .15s; }
+  .btn:hover { background: var(--accent-mid); }
+  .btn.red { background: var(--red-dim); border-color: var(--red); color: var(--red); }
+  .btn.red:hover { background: #ff446640; }
+  .btn.ghost { background: transparent; border-color: var(--border2); color: var(--muted); padding: 6px 10px; font-size: 10px; }
+  .auth-error { font-size: 11px; color: var(--red); text-align: center; min-height: 16px; }
+
+  /* header */
+  .header { position: sticky; top: 0; z-index: 100; background: var(--bg); border-bottom: 1px solid var(--border);
+            padding: calc(var(--safe-top) + 12px) 16px 12px; display: flex; align-items: center; justify-content: space-between; }
+  .header-brand { display: flex; align-items: center; gap: 10px; }
+  .header-logo { width: 28px; height: 28px; border: 1.5px solid var(--accent); border-radius: 6px; display: flex;
+                 align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .header-logo::before { width: 10px; height: 10px; }
+  .header-title { font-family: var(--sans); font-size: 18px; font-weight: 800; letter-spacing: -.5px; }
+  .header-pair { font-size: 10px; color: var(--muted); letter-spacing: .12em; margin-left: 2px; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .live-badge { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 500; letter-spacing: .05em;
+                text-transform: uppercase; color: var(--accent); }
+  .live-badge.paper { color: var(--amber); }
+  .live-dot { width: 6px; height: 6px; background: currentColor; border-radius: 50%; animation: blink 1.5s ease-in-out infinite; }
+
+  main { max-width: 960px; margin: 0 auto; padding-bottom: calc(var(--safe-bottom) + 40px); }
+
+  /* banners */
+  .banner { margin: 16px 16px 0; padding: 12px 14px; border-radius: 10px; font-size: 11px; line-height: 1.5; }
+  .banner.warn { background: var(--amber-dim); border: 1px solid #ffaa0040; color: var(--amber); }
+  .banner ul { list-style: none; }
+  .banner li::before { content: '◆ '; }
+
+  /* stat cards */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px;
+               position: relative; overflow: hidden; }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+                       background: linear-gradient(90deg, transparent, var(--accent-mid), transparent); }
+  .stat-label { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .stat-value { font-family: var(--sans); font-size: 26px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
+  .stat-sub { font-size: 10px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+  .positive { color: var(--accent); } .negative { color: var(--red); } .amber { color: var(--amber); }
+  .stat-card .btn { margin-top: 12px; width: 100%; padding: 9px; font-size: 11px; }
+
+  /* sections */
+  .section-title { font-size: 9px; font-weight: 500; letter-spacing: .15em; text-transform: uppercase; color: var(--muted);
+                   padding: 6px 16px 10px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 6px; }
+  .chip { display: inline-block; padding: 4px 9px; border-radius: 6px; font-size: 10px; font-weight: 700; letter-spacing: .08em;
+          text-transform: uppercase; background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-mid); }
+  .chip.off { background: var(--surface2); color: var(--muted); border-color: var(--border2); }
+  .empty { padding: 0 16px 6px; font-size: 11px; color: var(--muted); }
+
+  /* open trades */
+  .trades { padding: 0 16px; }
+  .trade-row { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 8px;
+               display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center;
+               animation: fadeIn .3s ease forwards; opacity: 0; }
+  .trade-dir { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+               font-size: 10px; font-weight: 700; letter-spacing: .05em; }
+  .trade-dir.buy { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-mid); }
+  .trade-dir.sell { background: var(--red-dim); color: var(--red); border: 1px solid #ff446640; }
+  .trade-name { font-family: var(--sans); font-size: 13px; font-weight: 600; letter-spacing: -.2px;
+                white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .trade-meta { font-size: 9px; color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .trade-pips { font-family: var(--sans); font-size: 16px; font-weight: 700; letter-spacing: -.3px; text-align: right; }
+  .trade-best { font-size: 9px; color: var(--muted); text-align: right; margin-top: 3px; }
+
+  .stamp { position: fixed; right: 10px; bottom: calc(var(--safe-bottom) + 10px); font-size: 9px; color: var(--muted);
+           background: #0a0a0fcc; border: 1px solid var(--border); border-radius: 6px; padding: 3px 7px; }
+
+  @media (min-width: 761px) {
+    .stats-grid { grid-template-columns: repeat(4, 1fr); }
+  }
 </style>
 </head>
 <body>
-<main>
-  <section id="login" class="card" hidden>
-    <h2>AutoBot dashboard</h2>
-    <form id="loginform">
-      <label for="pw">Password</label>
-      <input id="pw" type="password" autocomplete="current-password" required>
-      <button class="primary" type="submit">Log in</button>
-      <p id="loginmsg" class="bad"></p>
-    </form>
-  </section>
 
-  <section id="app" hidden>
-    <h1><span>AutoBot <span id="pair" class="muted"></span></span><button id="logout" type="button">Log out</button></h1>
+<div class="auth-overlay" id="login" hidden>
+  <div class="auth-logo"></div>
+  <div class="auth-title">Auto<span>Bot</span></div>
+  <form class="auth-form" id="loginform">
+    <input class="auth-input" id="pw" type="password" placeholder="Password" autocomplete="current-password" required>
+    <button class="btn" type="submit">Unlock</button>
+    <div class="auth-error" id="loginmsg"></div>
+  </form>
+</div>
 
-    <div class="card" id="warnings" hidden><h2>Warnings</h2><ul id="warnlist"></ul></div>
+<div id="app" hidden>
+  <div class="header">
+    <div class="header-brand">
+      <div class="header-logo"></div>
+      <div class="header-title">Auto<span>Bot</span></div>
+      <div class="header-pair" id="pair"></div>
+    </div>
+    <div class="header-right">
+      <div class="live-badge" id="badge"><div class="live-dot"></div><span id="badgetext"></span></div>
+      <button class="btn ghost" id="logout" type="button">Log out</button>
+    </div>
+  </div>
 
-    <div class="row">
-      <div class="card" style="flex:1 1 260px">
-        <h2>Trading</h2>
-        <div class="big" id="trading"></div>
-        <div class="muted" id="updated"></div>
+  <main>
+    <div class="banner warn" id="warnings" hidden><ul id="warnlist" aria-label="Warnings"></ul></div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Trading</div>
+        <div class="stat-value" id="trading"></div>
+        <div class="stat-sub" id="tradingsub"></div>
       </div>
-      <div class="card" style="flex:1 1 260px">
-        <h2>Pause new trades</h2>
-        <div class="big" id="pausestate"></div>
-        <p class="muted">Paused: no new trades are sent. Open trades are still managed.</p>
-        <button id="pausebtn" type="button"></button>
-        <span id="pausemsg" class="muted"></span>
+      <div class="stat-card">
+        <div class="stat-label">Pause new trades</div>
+        <div class="stat-value" id="pausestate"></div>
+        <div class="stat-sub">Paused: no new trades are sent. Open trades are still managed.</div>
+        <button class="btn" id="pausebtn" type="button"></button>
+        <div class="stat-sub" id="pausemsg"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Analyser</div>
+        <div class="stat-value" id="state"></div>
+        <div class="stat-sub" id="since"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Today</div>
+        <div class="stat-value" id="todaypips"></div>
+        <div class="stat-sub" id="todaytrades"></div>
       </div>
     </div>
 
-    <div class="row">
-      <div class="card" style="flex:1 1 260px">
-        <h2>Analyser</h2>
-        <div class="big" id="state"></div>
-        <div class="muted" id="since"></div>
-        <div id="price" class="muted"></div>
-      </div>
-      <div class="card" style="flex:1 1 260px">
-        <h2>Strategies allowed now</h2>
-        <div id="allowed"></div>
-      </div>
-      <div class="card" style="flex:1 1 200px">
-        <h2>Today</h2>
-        <div class="big" id="todaypips"></div>
-        <div class="muted" id="todaytrades"></div>
-      </div>
-    </div>
+    <div class="section-title">Strategies allowed now</div>
+    <div class="chips" id="allowed"></div>
 
-    <div class="card">
-      <h2>Open trades</h2>
-      <div class="wrap"><table>
-        <thead><tr><th>Opened</th><th>Strategy</th><th>Dir</th><th>Open</th><th>Live pips</th><th>Best</th><th>Stop / TP</th><th>Decision</th></tr></thead>
-        <tbody id="trades"></tbody>
-      </table></div>
-      <p id="notrades" class="muted">No open trades.</p>
-    </div>
-  </section>
-</main>
+    <div class="section-title" style="padding-top:16px">Open trades</div>
+    <div class="trades" id="trades"></div>
+    <div class="empty" id="notrades">No open trades.</div>
+  </main>
+  <div class="stamp" id="updated"></div>
+</div>
+
 <script>
 "use strict";
 let csrf = null, paused = null, timer = null;
 const $ = (id) => document.getElementById(id);
 const uk = (iso) => iso ? new Date(iso).toLocaleString("en-GB", {timeZone: "Europe/London", weekday: "short", hour: "2-digit", minute: "2-digit"}) : "";
 const pips = (x) => (x === null || x === undefined) ? "–" : ((Number(x) > 0 ? "+" : "") + Number(x).toFixed(1));
-function cell(text, cls) { const td = document.createElement("td"); td.textContent = text; if (cls) td.className = cls; return td; }
+const tone = (x) => Number(x) > 0 ? "positive" : Number(x) < 0 ? "negative" : "";
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
 
 function showLogin(msg) { clearInterval(timer); $("app").hidden = true; $("login").hidden = false; $("loginmsg").textContent = msg || ""; }
 
@@ -112,34 +202,46 @@ async function load() {
   csrf = s.csrf; paused = !!s.paused;
   $("login").hidden = true; $("app").hidden = false;
   $("pair").textContent = s.pair || "";
-  $("trading").textContent = s.trading_on ? "ON (real orders)" : "OFF (paper trades, nothing sent to IG)";
-  $("trading").className = "big " + (s.trading_on ? "good" : "warn");
-  $("updated").textContent = s.generated_utc ? "Status from " + uk(s.generated_utc) : "";
-  $("pausestate").textContent = paused ? "Paused" : "Not paused";
-  $("pausestate").className = "big " + (paused ? "warn" : "good");
+  $("badge").className = "live-badge" + (s.trading_on ? "" : " paper");
+  $("badgetext").textContent = s.trading_on ? "Live" : "Paper";
+  $("trading").textContent = s.trading_on ? "ON" : "OFF";
+  $("trading").className = "stat-value " + (s.trading_on ? "positive" : "amber");
+  $("tradingsub").textContent = s.trading_on ? "Real orders on the demo account" : "Paper trades only: nothing is sent to IG";
+  $("pausestate").textContent = paused ? "Paused" : "Running";
+  $("pausestate").className = "stat-value " + (paused ? "amber" : "positive");
   $("pausebtn").textContent = paused ? "Resume new trades" : "Pause new trades";
-  $("pausebtn").className = paused ? "primary" : "danger";
+  $("pausebtn").className = "btn" + (paused ? "" : " red");
   const a = s.analyser;
-  $("state").textContent = a ? (a.state + " " + a.direction + (a.trend_type ? " (" + a.trend_type + ")" : "")) : "–";
-  $("since").textContent = a ? "since " + uk(a.since_utc) : "";
-  $("price").textContent = s.price ? ("Bid " + s.price.bid + " / offer " + s.price.offer) : "";
+  $("state").textContent = a ? (a.state + " " + (a.direction === "up" ? "▲" : a.direction === "down" ? "▼" : "")) : "–";
+  $("since").textContent = a ? ((a.trend_type ? a.trend_type + " · " : "") + "since " + uk(a.since_utc)) +
+                              (s.price ? " · bid " + s.price.bid + " / offer " + s.price.offer : "") : "";
   const al = $("allowed"); al.textContent = "";
-  (s.strategies_allowed || []).forEach(x => { const p = document.createElement("span"); p.className = "pill" + (x.switched_on ? "" : " muted");
-    p.textContent = x.name + (x.switched_on ? "" : " (switched off)"); al.appendChild(p); });
-  if (!(s.strategies_allowed || []).length) al.textContent = "None";
+  (s.strategies_allowed || []).forEach(x => al.appendChild(el("span", "chip" + (x.switched_on ? "" : " off"),
+                                                              x.name + (x.switched_on ? "" : " · off"))));
+  if (!(s.strategies_allowed || []).length) al.appendChild(el("span", "empty", "None"));
   const t = s.today || {};
-  $("todaypips").textContent = pips(t.pips) + " pips";
-  $("todaypips").className = "big " + (Number(t.pips) > 0 ? "good" : Number(t.pips) < 0 ? "bad" : "");
-  $("todaytrades").textContent = (t.trades || 0) + " trades closed (" + (t.wins || 0) + " won, " + (t.losses || 0) + " lost), £" + (t.gbp || "0");
-  const tb = $("trades"); tb.textContent = "";
-  (s.open_trades || []).forEach(x => { const tr = document.createElement("tr");
-    tr.append(cell(uk(x.opened_utc)), cell(x.strategy), cell(x.direction.toUpperCase()), cell(x.open_price),
-              cell(pips(x.live_pips), Number(x.live_pips) > 0 ? "good" : Number(x.live_pips) < 0 ? "bad" : ""),
-              cell(pips(x.best_pips)), cell(x.stop_pips + " / " + x.take_profit_pips), cell(x.decision + (x.half_closed ? " (half closed)" : "")));
-    tr.title = x.reason || ""; tb.appendChild(tr); });
+  $("todaypips").textContent = pips(t.pips);
+  $("todaypips").className = "stat-value " + tone(t.pips);
+  $("todaytrades").textContent = (t.trades || 0) + " trades · " + (t.wins || 0) + " won · " + (t.losses || 0) + " lost · £" + (t.gbp || "0");
+  const box = $("trades"); box.textContent = "";
+  (s.open_trades || []).forEach(x => {
+    const row = el("div", "trade-row"); row.title = x.reason || "";
+    row.appendChild(el("div", "trade-dir " + x.direction, x.direction.toUpperCase()));
+    const mid = el("div");
+    mid.appendChild(el("div", "trade-name", x.strategy));
+    mid.appendChild(el("div", "trade-meta", uk(x.opened_utc) + " · " + x.open_price + " · stop " + x.stop_pips + " · tp " +
+                                            x.take_profit_pips + " · " + x.decision + (x.half_closed ? " · half closed" : "")));
+    row.appendChild(mid);
+    const right = el("div");
+    right.appendChild(el("div", "trade-pips " + tone(x.live_pips), pips(x.live_pips)));
+    right.appendChild(el("div", "trade-best", "best " + pips(x.best_pips)));
+    row.appendChild(right);
+    box.appendChild(row);
+  });
   $("notrades").hidden = (s.open_trades || []).length > 0;
   const w = s.warnings || []; $("warnings").hidden = !w.length; const wl = $("warnlist"); wl.textContent = "";
-  w.forEach(x => { const li = document.createElement("li"); li.textContent = x; li.className = "warn"; wl.appendChild(li); });
+  w.forEach(x => wl.appendChild(el("li", "", x)));
+  $("updated").textContent = s.generated_utc ? "status " + uk(s.generated_utc) : "";
 }
 
 $("loginform").addEventListener("submit", async (e) => {

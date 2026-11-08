@@ -19,6 +19,24 @@ address, and the dashboard's data service listens only on 127.0.0.1.
   gated by `auth_request` to the data service, `/auth` is rate limited; security headers (no framing, no other
   sites' scripts).
 
+- **The look** (owner, 8 November 2026): AutoBot 161's colours (near-black, one green accent, red for losses, amber
+  for warnings), fonts (Syne for headings, JetBrains Mono for the rest) and card style, simpler and showing only the
+  new bot's information. The two fonts are kept on this server (`dashboard/static/fonts/`, SIL Open Font License,
+  licences beside them) so the page loads nothing from elsewhere.
+
+## Reloading after a change
+
+- **The page** (`dashboard/static/`): nginx serves it straight from the repository, so a new version is live as soon
+  as it is pulled; reload the browser page (on a phone, close and reopen the tab).
+- **The nginx file** (`deploy/autobot-dashboard.nginx`): install it again and reload nginx:
+
+      TSIP=$(tailscale ip -4 | head -n 1)
+      sed "s/TAILSCALE_IP/$TSIP/" /opt/autobot/deploy/autobot-dashboard.nginx | sudo tee /etc/nginx/sites-available/autobot-dashboard > /dev/null
+      sudo nginx -t && sudo systemctl reload nginx
+
+- **The data service** (`dashboard/server.py`, `dashboard/auth.py`): `sudo systemctl restart autobot-dashboard`
+  (logged-in sessions stay valid while `DASHBOARD_SECRET_KEY` is unchanged).
+
 ## Setting it up (needs sudo)
 
 1. **Secrets** in `/opt/autobot/.env` (never shown or logged):
