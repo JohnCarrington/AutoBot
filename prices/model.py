@@ -103,6 +103,9 @@ class Candle:
                 f"buy O {plain(self.buy_open)} H {plain(self.buy_high)} L {plain(self.buy_low)} C {plain(self.buy_close)} | "
                 f"sell O {plain(self.sell_open)} H {plain(self.sell_high)} L {plain(self.sell_low)} C {plain(self.sell_close)}")
 
+    def __deepcopy__(self, memo):     # never changes once made: a copy can share it
+        return self
+
 
 def build_from(timeframe: str, start: datetime, end: datetime, parts: list[Candle], expected: int) -> Candle:
     """One bigger candle from smaller ones (in time order). Buy and sell are

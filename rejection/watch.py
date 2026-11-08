@@ -92,6 +92,9 @@ class Event:
         live = " (live price)" if self.from_live_price else ""
         return f"{uk_short(self.time)}  #{self.setup} {self.version} {self.direction} {self.kind}{p}{live}: {self.note}"
 
+    def __deepcopy__(self, memo):     # never changes once made: a copy can share it
+        return self
+
 
 @dataclass
 class Setup:
@@ -144,6 +147,18 @@ class RejectionWatcher:
     def _h(self, c): return getattr(c, f"{self.side}_high")
     def _l(self, c): return getattr(c, f"{self.side}_low")
     def _c(self, c): return getattr(c, f"{self.side}_close")
+
+    def fork(self) -> "RejectionWatcher":
+        """A copy to try a candle on without changing this watcher (the live check of trigger prices): the events
+        and finished setups are shared (they never change), the running setups copied."""
+        import copy
+        new = copy.copy(self)
+        new.events = list(self.events)
+        new.setups = list(self.setups)
+        new._active = {}
+        for k, st in self._active.items():
+            new.setups[k - 1] = new._active[k] = copy.deepcopy(st, {id(self.s): self.s})
+        return new
 
     def spread(self, c: Candle) -> Decimal:
         """The candle's spread: the widest of its four buy-minus-sell gaps (open, high, low, close)."""

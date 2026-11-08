@@ -57,9 +57,21 @@ class PretendTracker:
 
 
 class PretendRunner:
-    """The strategies: scripted ideas per candle start."""
-    def __init__(self, tracker, ideas):
+    """The strategies: scripted ideas per candle start; `live`: (strategy, direction, trigger) per forming candle
+    start, an idea once the forming candle's sell price has gone past the trigger (below it for a sell)."""
+    def __init__(self, tracker, ideas, live=None):
         self.tracker, self.ideas, self.done, self.week_open = tracker, ideas, 0, tracker.week_open
+        self.live = live or {}
+        self.peeked = []
+
+    def peek(self, partial, levels=None):
+        self.peeked.append(partial)
+        out = []
+        for strategy, direction, trigger in self.live.get(partial.start, []):
+            past = partial.sell_low <= trigger if direction == SELL else partial.sell_high >= trigger
+            if past:
+                out.append(idea(strategy, partial.start, direction, str(trigger)))
+        return out
 
     def step(self):
         out = []
@@ -74,11 +86,12 @@ def idea(strategy, t, direction=SELL, price="100", allowed=True):
                 "" if allowed else "made up block", {})
 
 
-def make(S, monkeypatch, candles, ideas, trading_on=False, ig=None, clock=None):
+def make(S, monkeypatch, candles, ideas, trading_on=False, ig=None, clock=None, live=None):
     tracker = PretendTracker(candles)
     monkeypatch.setattr(eng, "StateTracker", lambda s, memo: tracker)
     monkeypatch.setattr(eng, "MemoStore", lambda store: None)
-    monkeypatch.setattr(eng, "StrategyRunner", lambda s, memo, tr, hourly_end=None: PretendRunner(tr, ideas))
+    monkeypatch.setattr(eng, "build", lambda s, memo, t: None)
+    monkeypatch.setattr(eng, "StrategyRunner", lambda s, memo, tr, hourly_end=None: PretendRunner(tr, ideas, live))
     monkeypatch.setattr(eng, "trend_day_at", lambda s, store, t: SimpleNamespace(direction=None))
     ig = ig or PretendIG()
     clock = clock or {"t": WED}
@@ -321,3 +334,120 @@ def test_a_trading_problem_never_stops_the_price_service(tmp_path, monkeypatch):
     stop.set()
     th.join(10)
     assert result["code"] == 0 and "trading-stopped" in sent
+
+
+# ---- live entries (design 3: as soon as the live price reaches the trigger) ---------------------------------
+
+def tick(t, sell, spread="1.5"):
+    return SimpleNamespace(time=t, sell=D(str(sell)), buy=D(str(sell)) + D(spread))
+
+
+def test_a_trigger_reached_on_the_live_price_is_sent_at_once_not_when_the_candle_finishes(S, monkeypatch):
+    forming = C[2].start                                       # 10:10
+    live = {forming: [(BREAKOUT, SELL, D("99.0"))]}
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {forming: [idea(BREAKOUT, forming, price="99.0")]},
+                                        trading_on=True, live=live)
+    e.start(WED)
+    feed(e, clock, C[:2])                                      # up to 10:10
+    for k, p in enumerate((99.6, 99.3)):                       # not past 99.0 yet
+        clock["t"] = forming + timedelta(seconds=10 + k)
+        e.on_price(tick(clock["t"], p))
+    assert ig.orders_sent() == []
+    clock["t"] = forming + timedelta(seconds=40)
+    e.on_price(tick(clock["t"], 98.9))                         # past it: sent now, at 10:10:40
+    (o,) = ig.orders_sent()
+    assert o[3]["direction"] == "SELL"
+    sending = [r for r in journal(e) if r["event"] == "sending"][0]
+    assert sending["time_utc"] == "2026-11-04T10:10:40Z"
+    feed(e, clock, C[2:3])                                     # the candle finishes: its idea is not sent again
+    assert len(ig.orders_sent()) == 1
+
+
+def test_the_forming_candle_is_built_from_the_live_prices(S, monkeypatch):
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {})
+    e.start(WED)
+    feed(e, clock, C[:2])
+    for k, p in enumerate((100.0, 101.0, 99.0, 100.5)):
+        e.on_price(tick(C[2].start + timedelta(seconds=k), p))
+    p = e.runner.peeked[-1]
+    assert (p.start, p.sell_open, p.sell_high, p.sell_low, p.sell_close) == (C[2].start, D("100.0"), D("101.0"), D("99.0"), D("100.5"))
+    assert p.buy_high == D("102.5")
+    e.on_price(tick(C[3].start + timedelta(seconds=1), 98.0))  # a new 5 minutes: a new forming candle
+    assert e.runner.peeked[-1].start == C[3].start and e.runner.peeked[-1].sell_high == D("98.0")
+
+
+def test_a_trigger_the_live_prices_did_not_show_is_still_sent_when_the_candle_finishes(S, monkeypatch):
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {C[2].start: [idea(BREAKOUT, C[2].start)]}, trading_on=True)
+    e.start(WED)
+    feed(e, clock, C[:3])
+    assert len(ig.orders_sent()) == 1
+
+
+def test_a_trade_opened_during_a_candle_is_not_run_on_that_candles_earlier_prices(S, monkeypatch):
+    forming = C[2].start
+    spike = candle(forming, 100, 107, 98.5, 99)                 # the high (107) came before the entry
+    cs = C[:2] + [spike] + C[3:]
+    e, ig, tracker, clock, quote = make(S, monkeypatch, cs, {}, live={forming: [(BREAKOUT, SELL, D("99.0"))]})
+    e.start(WED)
+    feed(e, clock, cs[:2])
+    e.on_price(tick(forming + timedelta(seconds=30), 106.0))
+    e.on_price(tick(forming + timedelta(seconds=200), 98.9))   # the entry, after the spike
+    (t,) = e.manager.trades.values()
+    feed(e, clock, cs[2:3])
+    assert t.open and t.state == "hold"                         # the spike did not stop it
+
+
+def test_a_blocked_live_idea_is_not_sent(S, monkeypatch):
+    forming = C[2].start
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {}, trading_on=True, live={forming: [(BREAKOUT, SELL, D("99"))]})
+    e.start(WED)
+    feed(e, clock, C[:2])
+    e.runner.live = {}
+    real_peek = e.runner.peek
+    e.runner.peek = lambda p, levels=None: [idea(BREAKOUT, forming, allowed=False)]
+    e.on_price(tick(forming + timedelta(seconds=5), 98))
+    assert ig.orders_sent() == []
+    e.runner.peek = real_peek
+
+
+# ---- the trade manager's saved state after a restart --------------------------------------------------------
+
+def test_the_best_pips_so_far_are_restored_after_a_restart_so_the_lock_carries_on(S, monkeypatch):
+    t0 = C[0].start
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {C[1].start: [idea(SLOW_GRIND, C[1].start, price="100")]})
+    e.start(WED)
+    feed(e, clock, C[:2])
+    (t,) = e.manager.trades.values()
+    clock["t"] = C[2].start + timedelta(seconds=5)
+    e.on_price(tick(clock["t"], 83.0))                          # 15.5 up (the buy price 84.5 against the bid fill 100)
+    assert t.best == D("15.5")
+    saved = json.loads(e.manager.state_file.read_text())[t.reference]
+    assert saved["best"] == "15.5"
+    again, ig2, *_ = make(S, monkeypatch, C[2:], {})            # a restart
+    again.start(clock["t"])
+    (t2,) = again.manager.trades.values()
+    assert t2.best == D("15.5")
+    clock2 = {"t": C[2].start + timedelta(seconds=20)}
+    again.now = lambda: clock2["t"]
+    again.on_price(tick(clock2["t"], 88.6))                     # back to 10 up (buy 90.1 -> 9.9 up): the lock
+    assert not t2.open and t2.state == "close" and "profit lock" in t2.decisions[-1].why
+
+
+def test_without_saved_state_a_trade_starts_from_nothing(S, monkeypatch):
+    from trade_manager.manager import TradeManager, plan
+    m = TradeManager(S, None)
+    tr = plan(S, "X", SLOW_GRIND, SELL, WED, D(100), D(100), D(15), [])
+    assert m.restore(tr) is False and tr.best is None
+
+
+def test_the_half_close_is_restored_too(S, monkeypatch):
+    from trade_manager.manager import TradeManager, plan
+    from strategies.common import RANGE_TRADE
+    m = TradeManager(S, None)
+    tr = plan(S, "R1", RANGE_TRADE, SELL, WED, D(100), D(100), D(6), [])
+    tr.best, tr.half_done, tr.half_pips, tr.state, tr.bars = D("9"), True, D("8.5"), "half close", 3
+    m.trades["R1"] = tr
+    m.save_state()
+    back = plan(S, "R1", RANGE_TRADE, SELL, WED, D(100), D(100), D(6), [])
+    assert m.restore(back, m.load_state())
+    assert (back.best, back.half_done, back.half_pips, back.state) == (D("9"), True, D("8.5"), "half close")

@@ -28,7 +28,9 @@ trade, and the trade stays open until IG has.
 "Watching a level" (design 4): a trade the close on a rejection applies to is watching a level while the
 analyser's rejection part has a setup running against it at a level that counts (after its pierce, before it
 triggers, is cancelled or expires). It goes back to hold when there is none.
-Every decision is recorded in trade_manager.folder/<PAIR>/decisions.jsonl.
+Every decision is recorded in trade_manager.folder/<PAIR>/decisions.jsonl. Each open trade's best pips reached so
+far, its half close and whether it is watching a level are saved in trade_manager.folder/<PAIR>/open_trades.json
+whenever they change, and restored after a restart (restore()), so the slow grind's lock and the rest carry on.
 """
 
 from __future__ import annotations
@@ -249,6 +251,8 @@ class TradeManager:
         self.trades: dict[str, ManagedTrade] = {}
         self.folder = Path(settings.trade_manager.folder) / settings.market.pair
         self.journal = self.folder / "decisions.jsonl"
+        self.state_file = self.folder / "open_trades.json"
+        self._saved: dict = {}
 
     def _record(self, t: ManagedTrade, d: Decision, sent: Any = None) -> None:
         self.folder.mkdir(parents=True, exist_ok=True)
@@ -262,6 +266,46 @@ class TradeManager:
 
     def add(self, t: ManagedTrade) -> None:
         self.trades[t.reference] = t
+        self.save_state()
+
+    @staticmethod
+    def _snapshot(t: ManagedTrade) -> dict:
+        return {"best": None if t.best is None else str(t.best), "bars": t.bars, "half_done": t.half_done,
+                "half_pips": None if t.half_pips is None else str(t.half_pips), "half_share": str(t.half_share),
+                "watching": t.watching, "opened_at": t.opened_at.strftime("%Y-%m-%dT%H:%M:%SZ")}
+
+    def save_state(self) -> None:
+        """Save each open trade's best pips so far, half close and watching (only when something changed)."""
+        now = {ref: self._snapshot(t) for ref, t in self.trades.items() if t.open}
+        if now == self._saved:
+            return
+        self.folder.mkdir(parents=True, exist_ok=True)
+        tmp = self.state_file.with_suffix(".tmp")
+        tmp.write_text(json.dumps(now, indent=1) + "\n")
+        tmp.replace(self.state_file)
+        self._saved = now
+
+    def load_state(self) -> dict:
+        """What was saved for the open trades (read once at start-up, before any trade is added)."""
+        try:
+            return json.loads(self.state_file.read_text())
+        except (FileNotFoundError, ValueError):
+            return {}
+
+    def restore(self, t: ManagedTrade, saved_all: dict | None = None) -> bool:
+        """After a restart: give a trade back its saved best pips, half close and watching. False if none saved."""
+        saved = (saved_all if saved_all is not None else self.load_state()).get(t.reference)
+        if not saved:
+            return False
+        t.best = None if saved["best"] is None else Decimal(saved["best"])
+        t.bars = max(int(saved["bars"]), 1)
+        t.half_done = bool(saved["half_done"])
+        t.half_pips = None if saved["half_pips"] is None else Decimal(saved["half_pips"])
+        t.half_share = Decimal(saved["half_share"])
+        t.watching = bool(saved["watching"])
+        if t.half_done and t.state == HOLD:
+            t.state = HALF_CLOSE
+        return True
 
     def on_bar(self, bar: Bar, band: tuple[Decimal, Decimal] | None = None, rejections: list[Rejection] = (),
                watching: set[str] | frozenset = frozenset(), only: list[str] | None = None) -> list[tuple[ManagedTrade, Decision]]:
@@ -287,6 +331,7 @@ class TradeManager:
                     t.watching = now_watching
                     self._record(t, Decision(WATCHING if now_watching else HOLD, why="the analyser's rejection setup "
                                              + ("running against it at a level" if now_watching else "is over")))
+        self.save_state()
         return done
 
     def closed_at_ig(self, reference: str) -> None:
@@ -295,3 +340,4 @@ class TradeManager:
         if t is not None and t.open:
             t.state = STOPPED_BY_IG
             self._record(t, Decision(STOPPED_BY_IG, why="closed at IG (found by the order sender)"))
+            self.save_state()

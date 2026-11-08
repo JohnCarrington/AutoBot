@@ -48,6 +48,17 @@ class Replay:
     states: dict = field(default_factory=dict)                # candle start -> state after that candle
 
 
+def fork(strategy: Any) -> Any:
+    """A copy of a strategy to try a candle on without changing it: its waiting setups are copied; the settings,
+    the hourly trend and the finished candles (which never change) are shared."""
+    import copy
+    from collections import deque
+    if hasattr(strategy, "fork"):
+        return strategy.fork()
+    memo = {id(v): v for v in vars(strategy).values() if not isinstance(v, (list, dict, deque, set))}
+    return copy.deepcopy(strategy, memo)
+
+
 class StrategyRunner:
     """The strategies one finished 5-minute candle at a time, exactly as the replay below runs them (the replay
     is built on it) and as the live service runs them. Give it a StateTracker; after the tracker has taken new
@@ -89,6 +100,35 @@ class StrategyRunner:
             got = [lv.price for lv in build(self.s, self.memo, t).levels if lv.type == PIVOT]
             self.pivots[t] = got[0] if got else None
         return self.pivots[t]
+
+    def peek(self, partial: Any, levels: Any = None) -> list[Idea]:
+        """The live check (design 3: a trade opens as soon as the live price reaches its trigger): the strategies'
+        COPIES are given the 5-minute candle forming now, as far as it has gone (`partial`), exactly as step()
+        gives them a finished one; the ideas whose entry price it has reached are returned (checked, as at
+        entry: the state after the last finished candle). Nothing in the strategies changes. `levels`: the levels
+        for the forming candle (worked out here if not given)."""
+        s, side = self.s, self.s.chart.price
+        if self.week_open is None or self.week_open != self.tracker.week_open or not self.week:
+            return []
+        if partial.start <= self.week[-1].start:
+            return []
+        allc = self.warm + self.week + [partial]
+        sg_ema = ema(allc, side, s.slow_grind.ema_periods)
+        fast, slow = ema(allc, side, s.ema_pullback.fast_ema_periods), ema(allc, side, s.ema_pullback.slow_ema_periods)
+        ema100 = ema(self.warm + self.week, side, s.analyser.direction_ema_periods)
+        f = self.tracker.history[-1][0]                     # the band as it stood at the last finished candle
+        band = Band(partial.start, f.middle, f.upper, f.lower) if f.upper is not None else None
+        watcher = fork(self.watcher)
+        breakout, grind, pullback, reversal = fork(self.breakout), fork(self.grind), fork(self.pullback), fork(self.reversal)
+        events = watcher.on_candle(partial, band, levels if levels is not None else build(s, self.memo, partial.start))
+        cands = (breakout.on_candle(partial, None, None)
+                 + grind.on_candle(partial, sg_ema.get(partial.start))
+                 + pullback.on_candle(partial, fast.get(partial.start), slow.get(partial.start))
+                 + bounce_candidates(watcher, events) + range_candidates(watcher, events)
+                 + reversal.on_candle(partial, watcher, events))
+        st = self.state_after(len(self.week) - 1)
+        e100 = ema100.get(self.week[-1].start)
+        return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start), e100) for cand in cands]
 
     def step(self) -> list[tuple[Any, Idea]]:
         """Run the strategies on every candle the tracker has taken since the last call: [(candle, idea)]."""
