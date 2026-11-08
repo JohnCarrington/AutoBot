@@ -23,6 +23,22 @@ server {
         add_header Cache-Control "no-cache" always;
     }
 
+    # The icons and the home-screen manifest (AutoBot 161's; public, as 161 serves them).
+    location = /favicon.svg {
+        add_header Cache-Control "public, max-age=604800" always;
+    }
+    location = /apple-touch-icon.png {
+        add_header Cache-Control "public, max-age=604800" always;
+    }
+    location ~ ^/icon-(192|512)\.png$ {
+        add_header Cache-Control "public, max-age=604800" always;
+    }
+    location = /manifest.json {
+        types { }
+        default_type application/manifest+json;
+        add_header Cache-Control "no-cache" always;
+    }
+
     # The page's two fonts (kept on this server, SIL Open Font License: fonts/OFL-*.txt).
     location /fonts/ {
         add_header Cache-Control "public, max-age=604800" always;

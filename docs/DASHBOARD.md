@@ -24,6 +24,10 @@ address, and the dashboard's data service listens only on 127.0.0.1.
   new bot's information. The two fonts are kept on this server (`dashboard/static/fonts/`, SIL Open Font License,
   licences beside them) so the page loads nothing from elsewhere.
 
+- **Icons** (owner, 8 November 2026): AutoBot 161's `favicon.svg` (the browser tab), `icon-192.png` and `icon-512.png`
+  with `manifest.json` (named "AutoBot") for adding the page to a phone's home screen, and `apple-touch-icon.png`
+  (180 by 180, made from `icon-512.png`) for an iPhone's home screen. Served without the login, as 161 does.
+
 ## Reloading after a change
 
 - **The page** (`dashboard/static/`): nginx serves it straight from the repository, so a new version is live as soon

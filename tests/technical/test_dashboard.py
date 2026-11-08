@@ -214,6 +214,32 @@ def test_the_page_loads_nothing_from_elsewhere_and_sends_the_csrf_token():
     assert "textContent" in page and "innerHTML" not in page                    # nothing from the status is run as HTML
 
 
+def test_161s_icons_and_the_home_screen_manifest():
+    static = ROOT / "dashboard" / "static"
+    page = (static / "index.html").read_text()
+    for link in ('<link rel="icon" href="/favicon.svg" type="image/svg+xml">',
+                 '<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">',
+                 '<link rel="manifest" href="/manifest.json">', '<meta name="apple-mobile-web-app-title" content="AutoBot">'):
+        assert link in page
+    m = json.loads((static / "manifest.json").read_text())
+    assert (m["name"], m["short_name"], m["start_url"], m["display"]) == ("AutoBot", "AutoBot", "/", "standalone")
+    assert [(i["src"], i["sizes"]) for i in m["icons"]] == [("/icon-192.png", "192x192"), ("/icon-512.png", "512x512")]
+    def png_size(name):
+        b = (static / name).read_bytes()
+        assert b[:8] == b"\x89PNG\r\n\x1a\n", name
+        return int.from_bytes(b[16:20], "big"), int.from_bytes(b[20:24], "big")
+    assert png_size("icon-192.png") == (192, 192) and png_size("icon-512.png") == (512, 512)
+    assert png_size("apple-touch-icon.png") == (180, 180)
+    svg = (static / "favicon.svg").read_text()
+    assert svg.lstrip().startswith("<svg") and "<script" not in svg and "#00ff88" in svg
+    conf = (ROOT / "deploy" / "autobot-dashboard.nginx").read_text()
+    for loc in ("location = /favicon.svg", "location = /apple-touch-icon.png", "location ~ ^/icon-(192|512)\\.png$",
+                "location = /manifest.json"):
+        block = conf.split(loc, 1)[1].split("}", 1)[0]
+        assert "auth_request" not in block, loc                                # public, as 161
+    assert "default_type application/manifest+json;" in conf
+
+
 def test_the_page_has_161s_look_with_its_fonts_kept_here():
     page = (ROOT / "dashboard" / "static" / "index.html").read_text()
     for colour in ("--bg: #0a0a0f", "--surface: #111118", "--accent: #00ff88", "--red: #ff4466", "--amber: #ffaa00"):
