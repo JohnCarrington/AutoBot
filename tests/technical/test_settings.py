@@ -62,6 +62,8 @@ EXPECTED = {
                "confirm_attempts": 5, "confirm_wait_seconds": 1},
     "trade_manager": {"folder": Path("/opt/autobot/data/trade_manager")},
     "records": {"folder": Path("/opt/autobot/data/records")},
+    "dashboard": {"port": 8766, "session_days": 30, "login_failures_per_minute": 5,
+                  "status_folder": Path("/opt/autobot/data/trading"), "status_every_seconds": 5, "status_stale_seconds": 30},
     "trading": {"daily_summary_at": time(20, 35), "pause_file": Path("/opt/autobot/data/control/pause_new_trades")},
     "safety": {"max_total_risk_gbp": 100000, "margin_per_trade_gbp": 5000,
                "ig_stop_refusal_reasons": ("ATTACHED_ORDER_LEVEL_ERROR",), "ig_funds_refusal_reasons": ("INSUFFICIENT_FUNDS",),

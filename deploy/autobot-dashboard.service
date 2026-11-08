@@ -1,0 +1,18 @@
+[Unit]
+Description=AutoBot dashboard data service (127.0.0.1 only, behind nginx on the Tailscale address)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=autobot
+Group=autobot
+WorkingDirectory=/opt/autobot
+ExecStart=/opt/autobot/.venv/bin/python -m dashboard.server
+Restart=on-failure
+RestartSec=5
+# 78: DASHBOARD_PASSWORD or DASHBOARD_SECRET_KEY missing in .env: do not restart until they are set.
+RestartPreventExitStatus=78
+
+[Install]
+WantedBy=multi-user.target

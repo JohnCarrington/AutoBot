@@ -38,6 +38,7 @@ class _Over:
         self.safety = SimpleNamespace(**(vars(base.safety) | {"folder": folder / "safety"}))
         self.records = SimpleNamespace(**(vars(base.records) | {"folder": folder / "records"}))
         self.trading = SimpleNamespace(**(vars(base.trading) | {"pause_file": folder / "control" / "pause"}))
+        self.dashboard = SimpleNamespace(**(vars(base.dashboard) | {"status_folder": folder / "status"}))
 
     def __getattr__(self, name):
         return getattr(self._base, name)

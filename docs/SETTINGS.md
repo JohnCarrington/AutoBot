@@ -49,6 +49,12 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `records.folder` | The bot's records, kept for good (design 9): `<folder>/<PAIR>/trades.jsonl` (every trade, opened and closed), `decisions.jsonl` (every decision), `summaries/daily/` and `summaries/weekly/`; paper trades (while `TRADING` is off) in `<folder>/<PAIR>/paper/`. | /opt/autobot/data/records |
 | `trading.daily_summary_at` | The daily summary is written and sent on Telegram each weekday at this UK time. **Owner's value, 8 November 2026.** | 20:35 |
 | `trading.pause_file` | The pause switch (design 9): while this file exists, no new trade is sent; open trades are still run. The dashboard will create and remove it. | /opt/autobot/data/control/pause_new_trades |
+| `dashboard.port` | The dashboard's data service listens on 127.0.0.1 at this port only; nginx (on the Tailscale address, port 3000) is the only way in (design 9). | 8766 |
+| `dashboard.session_days` | The signed session cookie lasts this many days (as AutoBot 161). | 30 days |
+| `dashboard.login_failures_per_minute` | More wrong passwords than this in a minute and logging in is refused for the rest of that minute. **Starting value.** | 5 |
+| `dashboard.status_folder` | The price service writes the trading engine's status for the dashboard here (`<folder>/<PAIR>/status.json`). | /opt/autobot/data/trading |
+| `dashboard.status_every_seconds` | How often that status is written. **Starting value.** | 5 seconds |
+| `dashboard.status_stale_seconds` | The dashboard warns when the status is older than this (the price service may not be running). **Starting value.** | 30 seconds |
 | `safety.max_total_risk_gbp` | Total risk across all open trades (each trade's stop distance x its size, the new trade included) may not be more than this (design 6). **Owner's value, 8 November 2026: set so it is never reached.** | £100,000 |
 | `safety.margin_per_trade_gbp` | A new trade is allowed only if the account's available funds (IG's account details, read at start-up and whenever a trade opens or closes, never before each trade) are at least this: the margin for one trade at £10 a pip (design 6). **Owner's value, 8 November 2026.** | £5,000 |
 | `safety.ig_stop_refusal_reasons` | IG's reasons (in its deal confirmation) that mean it refused a trade because of its stop: the bot then fetches IG's minimum stop distance once, records it and sends a Telegram alert (design 7). **Starting value, to be confirmed against IG when the order sender is built.** | ATTACHED_ORDER_LEVEL_ERROR |

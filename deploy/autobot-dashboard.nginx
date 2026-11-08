@@ -1,0 +1,62 @@
+# AutoBot dashboard (design 9), hosted as AutoBot 161's: nginx on port 3000 with the password login page and a
+# signed session cookie (the data service, dashboard/server.py). ONE DIFFERENCE from 161 (owner, 8 November 2026):
+# it listens ONLY on this server's Tailscale address, never on the public address; the data service listens on
+# 127.0.0.1 only. TAILSCALE_IP is replaced by the address from `tailscale ip -4` when it is installed
+# (docs/DASHBOARD.md). Plain HTTP inside the Tailscale network (WireGuard-encrypted).
+
+limit_req_zone $binary_remote_addr zone=autobot_dashboard_login:1m rate=10r/m;
+
+server {
+    listen TAILSCALE_IP:3000;
+    server_name _;
+    root /opt/autobot/dashboard/static;
+    index index.html;
+
+    add_header X-Frame-Options "DENY" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "no-referrer" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; form-action 'self'" always;
+
+    # The page (public, as 161's: it asks for the password itself).
+    location = / {
+        try_files /index.html =404;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    # nginx asks the data service whether the session cookie is genuine before every gated address.
+    location = /_authcheck {
+        internal;
+        proxy_pass http://127.0.0.1:8766/auth-check;
+        proxy_pass_request_body off;
+        proxy_set_header Content-Length "";
+        proxy_set_header Host $http_host;
+        proxy_set_header Cookie $http_cookie;
+    }
+
+    # Logging in and out (public, rate limited).
+    location = /auth {
+        limit_req zone=autobot_dashboard_login burst=5 nodelay;
+        proxy_pass http://127.0.0.1:8766/auth;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    location = /logout {
+        proxy_pass http://127.0.0.1:8766/logout;
+        proxy_set_header Host $http_host;
+    }
+
+    # The status and the pause switch: only with a genuine session.
+    location /api/ {
+        auth_request /_authcheck;
+        proxy_pass http://127.0.0.1:8766;
+        proxy_set_header Host $http_host;
+        proxy_set_header Origin $http_origin;
+        proxy_set_header X-Real-IP $remote_addr;
+        add_header Cache-Control "no-store" always;
+    }
+
+    # Nothing else.
+    location / {
+        return 404;
+    }
+}

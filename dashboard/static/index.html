@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AutoBot dashboard</title>
+<style>
+  :root { --bg: #f6f7f9; --card: #fff; --text: #1d2330; --muted: #667085; --line: #e3e6ea;
+          --good: #12805c; --bad: #c0362c; --warn: #b54708; --accent: #2b59c3; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #101318; --card: #181c23; --text: #e6e9ef; --muted: #98a2b3; --line: #2a303a;
+            --good: #3ccb91; --bad: #f2786d; --warn: #f5b041; --accent: #7aa2ff; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--text); }
+  main { max-width: 980px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 20px; margin: 4px 0 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+  .card h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 8px; }
+  .row { display: flex; flex-wrap: wrap; gap: 16px; }
+  .big { font-size: 22px; font-weight: 600; }
+  .muted { color: var(--muted); }
+  .good { color: var(--good); } .bad { color: var(--bad); } .warn { color: var(--warn); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 500; }
+  .wrap { overflow-x: auto; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); font-size: 13px; margin: 2px 4px 2px 0; }
+  button { font: inherit; padding: 9px 16px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--text); cursor: pointer; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.danger { background: var(--bad); border-color: var(--bad); color: #fff; }
+  #login { max-width: 360px; margin: 12vh auto; }
+  input[type=password] { width: 100%; font: inherit; padding: 9px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); margin: 8px 0 12px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <section id="login" class="card" hidden>
+    <h2>AutoBot dashboard</h2>
+    <form id="loginform">
+      <label for="pw">Password</label>
+      <input id="pw" type="password" autocomplete="current-password" required>
+      <button class="primary" type="submit">Log in</button>
+      <p id="loginmsg" class="bad"></p>
+    </form>
+  </section>
+
+  <section id="app" hidden>
+    <h1><span>AutoBot <span id="pair" class="muted"></span></span><button id="logout" type="button">Log out</button></h1>
+
+    <div class="card" id="warnings" hidden><h2>Warnings</h2><ul id="warnlist"></ul></div>
+
+    <div class="row">
+      <div class="card" style="flex:1 1 260px">
+        <h2>Trading</h2>
+        <div class="big" id="trading"></div>
+        <div class="muted" id="updated"></div>
+      </div>
+      <div class="card" style="flex:1 1 260px">
+        <h2>Pause new trades</h2>
+        <div class="big" id="pausestate"></div>
+        <p class="muted">Paused: no new trades are sent. Open trades are still managed.</p>
+        <button id="pausebtn" type="button"></button>
+        <span id="pausemsg" class="muted"></span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="card" style="flex:1 1 260px">
+        <h2>Analyser</h2>
+        <div class="big" id="state"></div>
+        <div class="muted" id="since"></div>
+        <div id="price" class="muted"></div>
+      </div>
+      <div class="card" style="flex:1 1 260px">
+        <h2>Strategies allowed now</h2>
+        <div id="allowed"></div>
+      </div>
+      <div class="card" style="flex:1 1 200px">
+        <h2>Today</h2>
+        <div class="big" id="todaypips"></div>
+        <div class="muted" id="todaytrades"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Open trades</h2>
+      <div class="wrap"><table>
+        <thead><tr><th>Opened</th><th>Strategy</th><th>Dir</th><th>Open</th><th>Live pips</th><th>Best</th><th>Stop / TP</th><th>Decision</th></tr></thead>
+        <tbody id="trades"></tbody>
+      </table></div>
+      <p id="notrades" class="muted">No open trades.</p>
+    </div>
+  </section>
+</main>
+<script>
+"use strict";
+let csrf = null, paused = null, timer = null;
+const $ = (id) => document.getElementById(id);
+const uk = (iso) => iso ? new Date(iso).toLocaleString("en-GB", {timeZone: "Europe/London", weekday: "short", hour: "2-digit", minute: "2-digit"}) : "";
+const pips = (x) => (x === null || x === undefined) ? "–" : ((Number(x) > 0 ? "+" : "") + Number(x).toFixed(1));
+function cell(text, cls) { const td = document.createElement("td"); td.textContent = text; if (cls) td.className = cls; return td; }
+
+function showLogin(msg) { clearInterval(timer); $("app").hidden = true; $("login").hidden = false; $("loginmsg").textContent = msg || ""; }
+
+async function load() {
+  const r = await fetch("/api/status", {credentials: "same-origin", cache: "no-store"});
+  if (r.status === 401) return showLogin();
+  if (!r.ok) { $("updated").textContent = "Could not load the status (" + r.status + ")"; return; }
+  const s = await r.json();
+  csrf = s.csrf; paused = !!s.paused;
+  $("login").hidden = true; $("app").hidden = false;
+  $("pair").textContent = s.pair || "";
+  $("trading").textContent = s.trading_on ? "ON (real orders)" : "OFF (paper trades, nothing sent to IG)";
+  $("trading").className = "big " + (s.trading_on ? "good" : "warn");
+  $("updated").textContent = s.generated_utc ? "Status from " + uk(s.generated_utc) : "";
+  $("pausestate").textContent = paused ? "Paused" : "Not paused";
+  $("pausestate").className = "big " + (paused ? "warn" : "good");
+  $("pausebtn").textContent = paused ? "Resume new trades" : "Pause new trades";
+  $("pausebtn").className = paused ? "primary" : "danger";
+  const a = s.analyser;
+  $("state").textContent = a ? (a.state + " " + a.direction + (a.trend_type ? " (" + a.trend_type + ")" : "")) : "–";
+  $("since").textContent = a ? "since " + uk(a.since_utc) : "";
+  $("price").textContent = s.price ? ("Bid " + s.price.bid + " / offer " + s.price.offer) : "";
+  const al = $("allowed"); al.textContent = "";
+  (s.strategies_allowed || []).forEach(x => { const p = document.createElement("span"); p.className = "pill" + (x.switched_on ? "" : " muted");
+    p.textContent = x.name + (x.switched_on ? "" : " (switched off)"); al.appendChild(p); });
+  if (!(s.strategies_allowed || []).length) al.textContent = "None";
+  const t = s.today || {};
+  $("todaypips").textContent = pips(t.pips) + " pips";
+  $("todaypips").className = "big " + (Number(t.pips) > 0 ? "good" : Number(t.pips) < 0 ? "bad" : "");
+  $("todaytrades").textContent = (t.trades || 0) + " trades closed (" + (t.wins || 0) + " won, " + (t.losses || 0) + " lost), £" + (t.gbp || "0");
+  const tb = $("trades"); tb.textContent = "";
+  (s.open_trades || []).forEach(x => { const tr = document.createElement("tr");
+    tr.append(cell(uk(x.opened_utc)), cell(x.strategy), cell(x.direction.toUpperCase()), cell(x.open_price),
+              cell(pips(x.live_pips), Number(x.live_pips) > 0 ? "good" : Number(x.live_pips) < 0 ? "bad" : ""),
+              cell(pips(x.best_pips)), cell(x.stop_pips + " / " + x.take_profit_pips), cell(x.decision + (x.half_closed ? " (half closed)" : "")));
+    tr.title = x.reason || ""; tb.appendChild(tr); });
+  $("notrades").hidden = (s.open_trades || []).length > 0;
+  const w = s.warnings || []; $("warnings").hidden = !w.length; const wl = $("warnlist"); wl.textContent = "";
+  w.forEach(x => { const li = document.createElement("li"); li.textContent = x; li.className = "warn"; wl.appendChild(li); });
+}
+
+$("loginform").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const r = await fetch("/auth", {method: "POST", credentials: "same-origin", headers: {"Content-Type": "application/json"},
+                                  body: JSON.stringify({password: $("pw").value})});
+  $("pw").value = "";
+  if (r.ok) { $("loginmsg").textContent = ""; start(); }
+  else showLogin(r.status === 429 ? "Too many wrong passwords: wait a minute." : "Wrong password.");
+});
+
+$("logout").addEventListener("click", async () => { await fetch("/logout", {method: "POST", credentials: "same-origin"}); showLogin(); });
+
+$("pausebtn").addEventListener("click", async () => {
+  const want = !paused;
+  if (!confirm(want ? "Pause new trades? Open trades will still be managed." : "Resume new trades?")) return;
+  $("pausemsg").textContent = "…";
+  const r = await fetch("/api/pause", {method: "POST", credentials: "same-origin",
+    headers: {"Content-Type": "application/json", "X-CSRF-Token": csrf || ""}, body: JSON.stringify({paused: want})});
+  $("pausemsg").textContent = r.ok ? "Done." : "Not changed (" + r.status + ").";
+  load();
+});
+
+function start() { load(); clearInterval(timer); timer = setInterval(load, 5000); }
+start();
+</script>
+</body>
+</html>

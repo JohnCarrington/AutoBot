@@ -27,6 +27,9 @@ sender and the trade manager, run inside the price service on its IG login.
   * Telegram: "trade opened" and "trade closed" for every real trade (TRADING on); the daily summary every weekday
     (marked paper while TRADING is off).
   * The pause switch: while the file trading.pause_file exists, no new trade is sent; open trades are still run.
+  * The dashboard's status (dashboard.status_folder/<PAIR>/status.json, every dashboard.status_every_seconds):
+    the analyser's state and direction, the strategies allowed now, the open trades with live pips, today's
+    trades and pips, warnings, whether TRADING is on and whether new trades are paused.
 """
 
 from __future__ import annotations
@@ -315,6 +318,7 @@ class Trading:
                 return
             self._last_tick = tick
             self.daily_summary(tick.time)
+            self.write_status(tick.time)
             self._live_entries(tick)
             if not any(t.open for t in self.manager.trades.values()):
                 return
@@ -360,3 +364,67 @@ class Trading:
                 continue
             self._opened(idea, r, tick.time, td)
             log.info("Live entry: %s %s at %s (entry price %s).", idea.strategy, idea.direction, r.level, idea.entry_price)
+
+    # ---- the dashboard's status ----------------------------------------------------------------------
+
+    def status(self, now: datetime) -> dict:
+        """What the dashboard shows (written to its status file)."""
+        from analyser.states import ALLOWED
+        from strategies.common import SWITCH
+        tick = self._last_tick
+        ppp = Decimal(self.s.market.points_per_pip)
+        m = getattr(self.tracker, "machine", None)
+        st = getattr(m, "now", None)
+        warnings = []
+        if tick is None or (now - tick.time).total_seconds() > 60:
+            warnings.append("No live price for over a minute")
+        if self.sender.funds is None:
+            warnings.append("The account's available funds are not known: new trades are refused")
+        for ref, t in self.manager.trades.items():
+            if t.open and t.expected_at_ig:
+                warnings.append(f"Trade {ref}: IG's {t.expected_at_ig[0]} expected but not yet confirmed by IG")
+        allowed = list(ALLOWED.get(st.state, ())) if st is not None else []
+        by_name = {n.lower(): n for n in SWITCH}
+        switches = {name: bool(getattr(self.s.switches, key, False)) for name, key in SWITCH.items()}
+        trades = []
+        for ref, t in self.manager.trades.items():
+            if not t.open:
+                continue
+            live = None
+            if tick is not None:
+                live = ((t.fill - tick.buy) if t.direction == "sell" else (tick.sell - t.fill)) / ppp
+            rec = self.meta.get(ref, {})
+            trades.append({"reference": ref, "strategy": t.strategy, "direction": t.direction,
+                           "opened_utc": t.opened_at.strftime("%Y-%m-%dT%H:%M:%SZ"), "open_price": str(t.fill),
+                           "stop_pips": str(t.stop_pips), "take_profit_pips": str(t.take_profit_pips),
+                           "live_pips": None if live is None else str(live.quantize(Decimal("0.1"))),
+                           "best_pips": None if t.best is None else str(t.best), "decision": t.decision,
+                           "half_closed": t.half_done, "reason": rec.get("reason", "")})
+        today = self.book.today(now)
+        return {"generated_utc": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "pair": self.s.market.pair,
+                "trading_on": self.trading_on, "paused": self._paused(),
+                "analyser": None if st is None else {"state": st.state, "direction": st.direction,
+                                                    "trend_type": st.trend_type,
+                                                    "since_utc": st.since.strftime("%Y-%m-%dT%H:%M:%SZ")},
+                "strategies_allowed": [{"name": a, "switched_on": switches.get(by_name.get(a.split(" (")[0].lower().replace(
+                    "bollinger band bounce", "bollinger bounce"), ""), True)} for a in allowed],
+                "price": None if tick is None else {"bid": str(tick.sell), "offer": str(tick.buy),
+                                                    "time_utc": tick.time.strftime("%Y-%m-%dT%H:%M:%SZ")},
+                "open_trades": trades,
+                "today": {"trades": today.trades, "wins": today.wins, "losses": today.losses,
+                          "pips": str(today.pips), "gbp": str(today.gbp)},
+                "warnings": warnings}
+
+    def write_status(self, now: datetime, force: bool = False) -> None:
+        import json
+        from pathlib import Path
+        every = self.s.dashboard.status_every_seconds
+        last = getattr(self, "_status_at", None)
+        if not force and last is not None and (now - last).total_seconds() < every:
+            return
+        self._status_at = now
+        folder = Path(self.s.dashboard.status_folder) / self.s.market.pair
+        folder.mkdir(parents=True, exist_ok=True)
+        tmp = folder / "status.json.tmp"
+        tmp.write_text(json.dumps(self.status(now), indent=1) + "\n")
+        tmp.replace(folder / "status.json")

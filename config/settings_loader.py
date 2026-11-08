@@ -328,6 +328,14 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "daily_summary_at": _clock_time,
         "pause_file": _absolute_file,
     },
+    "dashboard": {
+        "port": _whole_number(1024, 65535),
+        "session_days": _whole_number(1, 365),
+        "login_failures_per_minute": _whole_number(1, 100),
+        "status_folder": _absolute_folder,
+        "status_every_seconds": _whole_number(1, 300),
+        "status_stale_seconds": _whole_number(5, 3600),
+    },
     "safety": {
         "max_total_risk_gbp": _whole_number(1, 10_000_000),
         "margin_per_trade_gbp": _whole_number(0, 10_000_000),

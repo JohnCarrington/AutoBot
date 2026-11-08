@@ -102,6 +102,20 @@ daily_summary_at = "20:35"
 # The dashboard will create and remove it.
 pause_file = "/opt/autobot/data/control/pause_new_trades"
 
+[dashboard]
+# The dashboard (design 9; hosted as AutoBot 161's): nginx on this server's Tailscale address, port 3000
+# (deploy/autobot-dashboard.nginx), in front of the dashboard's data service on 127.0.0.1 at this port.
+port = 8766
+# The signed session cookie lasts this many days (as 161).
+session_days = 30
+# More wrong passwords than this in a minute and logging in is refused for the rest of that minute.
+login_failures_per_minute = 5
+# The price service writes the trading engine's status for the dashboard here (folder/<PAIR>/status.json)
+# every status_every_seconds; the dashboard warns when it is older than status_stale_seconds.
+status_folder = "/opt/autobot/data/trading"
+status_every_seconds = 5
+status_stale_seconds = 30
+
 [safety]
 # Total risk across all open trades (each trade's stop distance x its size), at most this
 # (owner, 8 November 2026: set so it is never reached).

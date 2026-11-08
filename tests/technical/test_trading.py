@@ -32,7 +32,8 @@ def S(pretend_switches, tmp_path):
                                                  "breakout", "level_reversal")} | {"trading": False},
                 orders={"folder": tmp_path / "orders"}, trade_manager={"folder": tmp_path / "tm"},
                 safety={"folder": tmp_path / "safety"}, records={"folder": tmp_path / "records"},
-                trading={"pause_file": tmp_path / "control" / "pause_new_trades"})
+                trading={"pause_file": tmp_path / "control" / "pause_new_trades"},
+                dashboard={"status_folder": tmp_path / "status"})
 
 
 def candle(t, o, h, l, c):
