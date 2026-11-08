@@ -209,6 +209,8 @@ One shared trade manager for every trade.
 - **Decisions:** each open trade is always in one of: hold, watching a level, half close, close, forced close (news or 20:30), stopped by IG, take profit hit at IG.
 - For every trade closed at a level, the bot records which levels lined up.
 
+**Built (stage 12, `trade_manager/manager.py`, not connected to the live service yet):** the trade manager runs each open trade by the exits above, on each price bar in this order: the scheduled close (20:30, Friday 20:30, or 15 minutes before big news, each strategy as above); the stop at IG or the slow grind's lock; the range trade's half close at the opposite band (the band at the last finished candle); the take profit at IG; the close on a confirmed rejection at a level (from the bar after the entry bar, for the bounce and the range trade, not for a trade in the day's expected news direction on a big-news day). It tells the order sender to make the bot's own closes (in full or by half) and records IG's stop and take profit without sending anything for them. `python -m trade_manager.replay_check` confirms that over 26 October to 6 November 2026 every trade closes at the same time and price as in `docs/research/all_strategies_together_20261108.md`.
+
 Functional test: a profitable sell is held through a temporary wobble at S2 (6 November 2026, about 07:30 to 08:30) and closes only on a confirmed rejection.
 
 ---

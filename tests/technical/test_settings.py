@@ -60,6 +60,7 @@ EXPECTED = {
     "orders": {"folder": Path("/opt/autobot/data/orders"), "expiry": "DFB", "currency": "GBP",
                "deal_reference_prefix": "AB", "unclear_checks": 3, "unclear_check_wait_seconds": 2,
                "confirm_attempts": 5, "confirm_wait_seconds": 1},
+    "trade_manager": {"folder": Path("/opt/autobot/data/trade_manager")},
     "safety": {"max_total_risk_gbp": 100000, "margin_per_trade_gbp": 5000,
                "ig_stop_refusal_reasons": ("ATTACHED_ORDER_LEVEL_ERROR",), "ig_funds_refusal_reasons": ("INSUFFICIENT_FUNDS",),
                "folder": Path("/opt/autobot/data/safety")},

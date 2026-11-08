@@ -312,6 +312,9 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "confirm_attempts": _whole_number(1, 20),
         "confirm_wait_seconds": _whole_number(0, 60),
     },
+    "trade_manager": {
+        "folder": _absolute_folder,
+    },
     "safety": {
         "max_total_risk_gbp": _whole_number(1, 10_000_000),
         "margin_per_trade_gbp": _whole_number(0, 10_000_000),

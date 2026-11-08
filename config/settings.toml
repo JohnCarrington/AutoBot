@@ -86,6 +86,10 @@ unclear_check_wait_seconds = 2
 confirm_attempts = 5
 confirm_wait_seconds = 1
 
+[trade_manager]
+# Where the trade manager records every decision it makes (design 4).
+folder = "/opt/autobot/data/trade_manager"
+
 [safety]
 # Total risk across all open trades (each trade's stop distance x its size), at most this
 # (owner, 8 November 2026: set so it is never reached).
