@@ -293,6 +293,10 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "limits": {
         "max_open_trades_per_strategy": _whole_number(1, 10),
         "bollinger_bounce_extra_opposite_direction_trades": _whole_number(0, 10),
+        "max_open_trades": _whole_number(1, 50),
+    },
+    "safety": {
+        "dealing_rules_max_age_minutes": _whole_number(1, 1440),
     },
     "chart": {
         "price": _one_of("sell", "buy"),

@@ -64,6 +64,13 @@ country_currencies = ["GB=GBP", "UK=GBP", "US=USD", "EU=EUR", "EMU=EUR", "JP=JPY
 [limits]
 max_open_trades_per_strategy = 1
 bollinger_bounce_extra_opposite_direction_trades = 1
+# Most trades open at once (design 6: 5), not counting the EMA pullback's.
+max_open_trades = 5
+
+[safety]
+# IG's dealing rules (its minimum stop distance) older than this are not trusted: new
+# trades are refused until they are fetched again (design 7). STARTING VALUE.
+dealing_rules_max_age_minutes = 60
 
 [chart]
 # The price every level and indicator is worked out from, to match the owner's

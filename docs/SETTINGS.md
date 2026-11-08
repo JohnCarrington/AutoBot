@@ -36,6 +36,8 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `news.table_impacts` | Big, medium and small news come from AutoBot's news table, `config/news_table.toml` (see "News table" below). As on AutoBot 161, the table is applied only to releases Finnhub marks with one of these impacts; every other release is small. | high |
 | `limits.max_open_trades_per_strategy` | How many trades each strategy may have open at once. | 1 |
 | `limits.bollinger_bounce_extra_opposite_direction_trades` | The Bollinger band bounce may also have this many trades open in the opposite direction (so up to 1 buy and 1 sell). | 1 |
+| `limits.max_open_trades` | The most trades open at once, not counting the EMA pullback's (design 6). The safety part refuses a new trade that would go over it. | 5 |
+| `safety.dealing_rules_max_age_minutes` | IG's dealing rules (its minimum stop distance for the market) older than this are not trusted: the safety part refuses new trades until they are fetched again (design 7). **Starting value, for the owner to confirm.** | 60 minutes |
 | `chart.price` | The price every level and indicator is worked out from: `sell` (IG's bid), to match Johnny's IG chart, which is set to the sell price. Daily candles run midnight to midnight UK (`candles.day_starts_at`). Trades still open and close at IG's real buy or sell price as normal. Must be `sell` or `buy`. | `sell` |
 | `levels.line_up_within_pips` | Two levels "line up" when they are within this many pips of each other. | 5 pips |
 | `levels.turning_levels_lookback_weeks` | How far back to look for recent turning levels. | 2 weeks |

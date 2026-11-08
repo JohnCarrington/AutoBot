@@ -55,7 +55,9 @@ EXPECTED = {
     "limits": {
         "max_open_trades_per_strategy": 1,
         "bollinger_bounce_extra_opposite_direction_trades": 1,
+        "max_open_trades": 5,
     },
+    "safety": {"dealing_rules_max_age_minutes": 60},
     "chart": {"price": "sell"},
     "levels": {
         "line_up_within_pips": 5,
