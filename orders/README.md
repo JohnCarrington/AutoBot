@@ -1,5 +1,7 @@
 # orders
 
-**What it does:** Sends orders to IG. Every order always has a stop loss and a take profit attached. It only ever touches the bot's own trades.
+**What it does:** The order sender (`sender.py`, design sections 6 and 7), the only part that places or closes trades at IG. It uses the price service's IG client (already logged in; it never logs in itself) and works on IG's demo address only. It places market orders at £10 a pip with each strategy's own stop and take profit attached and **force open** on every order; records its own unique deal reference before sending; counts a trade only once IG confirms it (deal ID and fill price recorded); on a timeout or an unclear answer checks with IG by the reference (and the open positions) and never sends the same trade twice; runs the safety rules before every order with the open trades and available funds it keeps (funds read at start-up and whenever a trade opens or closes); finds its own open trades at IG after a restart before any new trade, leaving and reporting positions it did not open; closes trades when the trade manager says so, in full or by half for the range trade, confirmed with IG. Every order, confirmation, refusal and close is recorded in `data/orders/<PAIR>/orders.jsonl`.
 
-**What it must never do:** Never send an order without a stop loss and a take profit. Never change or close a trade the bot did not open (for example, a trade placed by hand). Never send an order that has not passed the safety rules.
+**What it must never do:** Never send an order without a stop loss and a take profit. Never change or close a trade the bot did not open (for example, a trade placed by hand). Never send an order that has not passed the safety rules. Never send the same trade twice. Never log in to IG itself.
+
+**Not connected yet:** nothing calls it while the bot runs; the trade manager (next) will, inside the price service.

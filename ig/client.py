@@ -154,7 +154,7 @@ class IGClient:
 
     # ---- sending ----------------------------------------------------------
 
-    def _headers(self, version: str, with_session: bool) -> dict[str, str]:
+    def _headers(self, version: str, with_session: bool, extra: dict | None = None) -> dict[str, str]:
         h = {
             "X-IG-API-KEY": self._creds.api_key,
             "Version": version,
@@ -166,10 +166,12 @@ class IGClient:
                 raise RuntimeError("Not logged in to IG.")
             h["CST"] = self._cst  # type: ignore[assignment]
             h["X-SECURITY-TOKEN"] = self._security_token  # type: ignore[assignment]
+        if extra:
+            h.update(extra)
         return h
 
     def _send(self, method: str, path: str, version: str, body: Any = None,
-              with_session: bool = True) -> Any:
+              with_session: bool = True, headers: dict | None = None) -> Any:
         """One HTTP request. Raises IGRequestError on a network problem."""
         if is_historical_prices_path(path) and not (getattr(self._history_door, "is_open", False) and method == "GET"):
             # Refused before anything is sent, and not recorded as a call.
@@ -179,7 +181,7 @@ class IGClient:
         try:
             response = self._http.request(
                 method, self.base_url + path,
-                headers=self._headers(version, with_session),
+                headers=self._headers(version, with_session, headers),
                 json=body, timeout=self.timeout,
             )
         except requests.RequestException as e:
@@ -273,14 +275,14 @@ class IGClient:
     # ---- after login -------------------------------------------------------
 
     def _call(self, method: str, path: str, version: str, body: Any = None,
-              *, what: str, allow_relogin: bool = True) -> Any:
+              *, what: str, allow_relogin: bool = True, headers: dict | None = None) -> Any:
         """Make one IG call after login, applying the error rules. Returns the
         reply if it is a success, or an error that is not a login problem
         (the caller decides). Raises IGLoginFailure for login problems."""
         tries = _Tries(self, what)
         while True:  # bounded: every way round the loop uses up a wait or the one re-login
             seen = self._session_number
-            r = self._send(method, path, version, body)
+            r = self._send(method, path, version, body, headers=headers)
             if 200 <= r.status_code < 300:
                 self._keep_new_tokens(r)
                 return r
@@ -364,12 +366,14 @@ class IGClient:
         self.login()
         self.choose_account(self.list_accounts())
 
-    def request(self, method: str, path: str, version: str, body: Any = None, *, what: str) -> Any:
+    def request(self, method: str, path: str, version: str, body: Any = None, *, what: str,
+                headers: dict | None = None) -> Any:
         """For later parts (prices, orders): one IG call with the error rules
-        applied. Raises IGRequestError for failures that are not login problems."""
+        applied. Raises IGRequestError for failures that are not login problems.
+        `headers`: extra headers (the order sender's close: "_method: DELETE")."""
         if not self.account_active:
             raise RuntimeError("Not connected to the bot's IG account. Call connect() first.")
-        r = self._call(method, path, version, body, what=what)
+        r = self._call(method, path, version, body, what=what, headers=headers)
         if not 200 <= r.status_code < 300:
             raise IGRequestError(what, r.status_code, error_code_of(r))
         return r

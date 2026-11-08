@@ -157,6 +157,13 @@ def _utc_time(v: Any) -> time:
     return time(int(hours), int(minutes))
 
 
+def _ig_word(v: Any) -> str:
+    """A short word IG takes as it is: letters only (an expiry such as DFB, a currency, a prefix)."""
+    if not isinstance(v, str) or not v.isalpha() or not 1 <= len(v) <= 8:
+        raise ValueError(f"must be 1 to 8 letters, got {v!r}")
+    return v
+
+
 def _level_reversal_types(v: Any) -> tuple[str, ...]:
     """The level types the level reversal trades (design 3.6): a non-empty list of S2, R2 and round_number."""
     known = ("S2", "R2", "round_number")
@@ -294,6 +301,14 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "max_open_trades_per_strategy": _whole_number(1, 10),
         "bollinger_bounce_extra_opposite_direction_trades": _whole_number(0, 10),
         "max_open_trades": _whole_number(1, 50),
+    },
+    "orders": {
+        "folder": _absolute_folder,
+        "expiry": _ig_word,
+        "currency": _ig_word,
+        "deal_reference_prefix": _ig_word,
+        "unclear_checks": _whole_number(1, 20),
+        "unclear_check_wait_seconds": _whole_number(0, 60),
     },
     "safety": {
         "max_total_risk_gbp": _whole_number(1, 10_000_000),

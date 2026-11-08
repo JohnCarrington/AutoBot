@@ -67,6 +67,21 @@ bollinger_bounce_extra_opposite_direction_trades = 1
 # Most trades open at once (design 6: 5), not counting the EMA pullback's.
 max_open_trades = 5
 
+[orders]
+# The order sender (design 7). Every order, confirmation, refusal and close is recorded in
+# folder/<PAIR>/orders.jsonl, and the open trades are rebuilt from it after a restart.
+folder = "/opt/autobot/data/orders"
+# IG's order fields for a spread bet: the expiry (daily funded bet) and the currency.
+expiry = "DFB"
+currency = "GBP"
+# Each deal reference the bot makes starts with this (letters only); IG allows 30 characters.
+deal_reference_prefix = "AB"
+# When IG times out or its answer is unclear, how many times to check with IG (the deal
+# reference, then the open positions) before giving up, and the wait between checks. The
+# order is never sent again. STARTING VALUES.
+unclear_checks = 3
+unclear_check_wait_seconds = 2
+
 [safety]
 # Total risk across all open trades (each trade's stop distance x its size), at most this
 # (owner, 8 November 2026: set so it is never reached).

@@ -37,6 +37,12 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `limits.max_open_trades_per_strategy` | How many trades each strategy may have open at once. | 1 |
 | `limits.bollinger_bounce_extra_opposite_direction_trades` | The Bollinger band bounce may also have this many trades open in the opposite direction (so up to 1 buy and 1 sell). | 1 |
 | `limits.max_open_trades` | The most trades open at once, not counting the EMA pullback's (design 6). The safety part refuses a new trade that would go over it. | 5 |
+| `orders.folder` | The order sender's record: every order, confirmation, refusal and close in `<folder>/<PAIR>/orders.jsonl`, from which the open trades are rebuilt after a restart (design 7). | /opt/autobot/data/orders |
+| `orders.expiry` | IG's expiry for the orders (a daily funded spread bet). From the market search of 6 November 2026. | DFB |
+| `orders.currency` | IG's currency code for the orders. | GBP |
+| `orders.deal_reference_prefix` | Every deal reference the bot makes starts with this (letters only), then the time and a random part (30 characters at most, IG's limit). | AB |
+| `orders.unclear_checks` | When IG times out or its answer is unclear, how many times the order sender checks with IG (the deal reference's confirmation, then the open positions) before reporting it. The order is never sent again (design 7). **Starting value.** | 3 |
+| `orders.unclear_check_wait_seconds` | The wait between those checks. **Starting value.** | 2 seconds |
 | `safety.max_total_risk_gbp` | Total risk across all open trades (each trade's stop distance x its size, the new trade included) may not be more than this (design 6). **Owner's value, 8 November 2026: set so it is never reached.** | £100,000 |
 | `safety.margin_per_trade_gbp` | A new trade is allowed only if the account's available funds (IG's account details, read at start-up and whenever a trade opens or closes, never before each trade) are at least this: the margin for one trade at £10 a pip (design 6). **Owner's value, 8 November 2026.** | £5,000 |
 | `safety.ig_stop_refusal_reasons` | IG's reasons (in its deal confirmation) that mean it refused a trade because of its stop: the bot then fetches IG's minimum stop distance once, records it and sends a Telegram alert (design 7). **Starting value, to be confirmed against IG when the order sender is built.** | ATTACHED_ORDER_LEVEL_ERROR |
