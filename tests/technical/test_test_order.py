@@ -108,3 +108,81 @@ def test_the_safety_rules_still_apply(S):
     test.tick()
     result = json.loads((folder / RESULT).read_text())
     assert result["placed"] == "safety refused" and "the market is closed" in result["reasons"] and ig.orders_sent() == []
+
+
+# ---- the spread condition (owner, 8 November 2026) ---------------------------------------------------
+
+from datetime import datetime, timezone  # noqa: E402
+
+UTC = timezone.utc
+TONIGHT = {"approved_by": "owner", "not_before_utc": "2026-11-08T22:30:00Z", "direction": "buy",
+           "strategy": "EMA pullback", "hold_seconds": 60, "max_spread_pips": 2, "spread_minutes": 15,
+           "check_every_minutes": 5, "give_up_utc": "2026-11-09T00:00:00Z"}
+
+
+def run_night(S, spread_at, start=(22, 0), end=(0, 5), step=10):
+    """Tick every `step` seconds from start to end UK (GMT); spread_at(t) gives the spread in pips (None: no price)."""
+    box = {"q": None}
+    test, ig, alerts, sleeps, clock, folder = make(S, TONIGHT, t=datetime(2026, 11, 8, *start, tzinfo=UTC))
+    test.quote = lambda: box["q"]
+    t = datetime(2026, 11, 8, *start, tzinfo=UTC)
+    stop = datetime(2026, 11, 9 if end[0] < start[0] else 8, *end, tzinfo=UTC)
+    while t <= stop:
+        clock["t"] = t
+        s_ = spread_at(t)
+        box["q"] = None if s_ is None else (D("13400.0"), D("13400.0") + D(str(s_)))
+        test.tick()
+        if ig.orders_sent():
+            break
+        t += timedelta(seconds=step)
+    return test, ig, alerts, folder
+
+
+def test_sent_at_22_30_when_the_spread_was_under_2_pips_for_15_minutes(S):
+    test, ig, alerts, folder = run_night(S, lambda t: 1.4)
+    (o,) = ig.orders_sent()
+    assert o[3]["direction"] == "BUY" and o[3]["stopDistance"] == 12.0 and o[3]["limitDistance"] == 30.0
+    result = json.loads((folder / RESULT).read_text())
+    assert result["started_utc"] == "2026-11-08T22:30:00Z" and result["spread_checks"][0].startswith("22:30:00 UTC: send")
+
+
+def test_a_wide_spread_waits_and_checks_again_every_5_minutes(S):
+    wide = datetime(2026, 11, 8, 22, 20, tzinfo=UTC)
+    test, ig, alerts, folder = run_night(S, lambda t: 2.5 if t == wide else 1.5)
+    assert len(ig.orders_sent()) == 1
+    result = json.loads((folder / RESULT).read_text())
+    assert [c[:14] for c in result["spread_checks"]] == ["22:30:00 UTC: ", "22:35:00 UTC: ", "22:40:00 UTC: "]
+    assert "wait (the spread reached 2.5 pips" in result["spread_checks"][0] and "send" in result["spread_checks"][2]
+    assert result["started_utc"] == "2026-11-08T22:40:00Z"
+
+
+def test_exactly_2_pips_is_not_under_2(S):
+    test, ig, alerts, folder = run_night(S, lambda t: 2.0, end=(22, 31))
+    assert ig.orders_sent() == []
+
+
+def test_never_under_2_pips_by_midnight_sends_nothing_and_tells_the_owner(S):
+    test, ig, alerts, folder = run_night(S, lambda t: 3.0)
+    assert ig.orders_sent() == [] and ig.calls == []
+    result = json.loads((folder / RESULT).read_text())
+    assert result["sent"].startswith("nothing: the spread was never under 2 pips for 15 minutes")
+    assert len(result["checks"]) == 19 and result["checks"][-1].startswith("00:00:00 UTC: wait")   # 22:30 ... 00:00
+    assert alerts.sent[-1][0] == "test-order" and "NOT sent" in alerts.sent[-1][1]
+    assert (folder / DONE).exists() and not (folder / REQUEST).exists()
+
+
+def test_no_current_price_counts_against_it(S):
+    gap = (datetime(2026, 11, 8, 22, 25, tzinfo=UTC), datetime(2026, 11, 8, 22, 25, 30, tzinfo=UTC))
+    test, ig, alerts, folder = run_night(S, lambda t: None if gap[0] <= t <= gap[1] else 1.5)
+    result = json.loads((folder / RESULT).read_text())
+    assert "second(s) with no current price" in result["spread_checks"][0] and result["started_utc"] == "2026-11-08T22:45:00Z"
+
+
+def test_a_gap_in_the_samples_counts_against_it(S):
+    test, ig, alerts, folder = run_night(S, lambda t: 1.5, step=90, end=(22, 31))
+    assert ig.orders_sent() == [] and "gap of 90 seconds" in test.checks[0]
+
+
+def test_not_enough_samples_yet_waits(S):
+    test, ig, alerts, folder = run_night(S, lambda t: 1.5, start=(22, 25), end=(22, 31))
+    assert ig.orders_sent() == [] and "not enough spread samples" in test.checks[0]
