@@ -98,6 +98,8 @@ EXPECTED = {
     },
     "possible_reversal": {"min_trend_move_pips": 30},
     "breakout": {"trigger_within_candles": 3, "stop_loss_pips": 6, "take_profit_pips": 50},
+    "trend_day": {"level_above": "R2", "level_below": "S2", "rsi_periods": 14, "rsi_above": 70, "rsi_below": 30,
+                  "rsi_history_candles": 1000},
     "level_reversal": {"level_types": ("S2", "R2", "round_number"), "round_numbers_every_pips": 100, "allowance_pips_r2": 12,
                        "allowance_pips_s2": 12, "allowance_pips_round_number": 5,
                        "stop_beyond_furthest_pips": 6, "take_profit_pips": 20},
@@ -488,6 +490,15 @@ def test_the_level_reversal_switch_is_required_and_loads(tmp_path):
         load_settings(switches_from=_env(tmp_path, values))
     assert load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches.level_reversal is True
     assert load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "STRATEGY_LEVEL_REVERSAL": "off"})).switches.level_reversal is False
+
+
+@pytest.mark.parametrize("key,bad", [("level_above", "S2"), ("level_above", "R4"), ("level_below", "R2"), ("rsi_above", 40),
+                                     ("rsi_below", 60), ("rsi_periods", 1)])
+def test_the_trend_day_settings_are_checked(tmp_path, key, bad):
+    data = _raw()
+    data["trend_day"][key] = bad
+    with pytest.raises(SettingsError, match=key):
+        load_settings(_write(tmp_path, data))
 
 
 @pytest.mark.parametrize("bad", [[], ["S1"], ["S2", "S2"], "S2"])

@@ -367,6 +367,14 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "stop_beyond_furthest_pips": _whole_number(1, 100),
         "take_profit_pips": _whole_number(1, 1000),
     },
+    "trend_day": {
+        "level_above": _one_of("R1", "R2", "R3"),
+        "level_below": _one_of("S1", "S2", "S3"),
+        "rsi_periods": _whole_number(2, 100),
+        "rsi_above": _whole_number(50, 100),
+        "rsi_below": _whole_number(0, 50),
+        "rsi_history_candles": _whole_number(50, 5000),
+    },
     "range_trade": {
         "close_percent_at_opposite_band": _whole_number(1, 100),
         "rejection_candle_within_candles": _whole_number(1, 10),

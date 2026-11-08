@@ -212,19 +212,24 @@ def big_news_day(settings: Any, pair: str, t: datetime, calendar: list | None = 
 
 
 def take_profit_pips(settings: Any, strategy: str, opened: datetime | None = None, pair: str | None = None,
-                     calendar: list | None = None) -> int:
+                     calendar: list | None = None, direction: str | None = None, trend_day: str | None = None) -> int:
     """Design section 4: every strategy uses TAKE_PROFIT_PIPS (100), except
     - the EMA pullback: its own ema_pullback.take_profit_pips (30) (owner, 7 November 2026);
     - the slow grind: its own slow_grind.take_profit_pips (20) (owner, 8 November 2026);
       each of these two gets TAKE_PROFIT_PIPS instead for a trade opened on a UK day with big news
       for the pair. Give `opened` and `pair`; without them the normal take profit is returned;
     - the breakout: breakout.take_profit_pips (50) on any day;
-    - the level reversal: level_reversal.take_profit_pips (20) on any day (owner, 8 November 2026)."""
+    - the level reversal: level_reversal.take_profit_pips (20) on any day (owner, 8 November 2026).
+    On a trend day (analyser/trend_day.py, design 2.4; owner, 8 November 2026), an EMA pullback or slow
+    grind trade in the trend day's direction gets TAKE_PROFIT_PIPS too: give `direction` (buy or sell)
+    and `trend_day` (the day's check: "down", "up" or None)."""
     if strategy == BREAKOUT:
         return settings.breakout.take_profit_pips
     if strategy == LEVEL_REVERSAL:
         return settings.level_reversal.take_profit_pips
     if strategy not in (EMA_PULLBACK, SLOW_GRIND):
+        return settings.switches.take_profit_pips
+    if trend_day is not None and direction == {"down": SELL, "up": BUY}.get(trend_day):
         return settings.switches.take_profit_pips
     if opened is not None and pair is not None and big_news_day(settings, pair, opened, calendar):
         return settings.switches.take_profit_pips

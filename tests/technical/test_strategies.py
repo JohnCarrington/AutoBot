@@ -1088,3 +1088,25 @@ def test_the_replay_runs_the_level_reversal(monkeypatch, S):
     fake_replay(monkeypatch, S, {0: (TREND, DOWN)})
     assert len(seen) == len(PAUSE) + 1 and all(w is seen[0][1] for _, w, _ in seen)
     assert isinstance(seen[0][1], RejectionWatcher)
+
+
+# ---- the trend day's take profit (design 2.4 and 4; owner, 8 November 2026) ---------------------
+
+def test_on_a_trend_day_ema_pullback_and_slow_grind_in_its_direction_get_100_pips(S):
+    from strategies.common import take_profit_pips
+    t = U(2026, 11, 4, 9, 0)                                  # no big news that day
+    for name, usual in ((EMA_PULLBACK, 30), (SLOW_GRIND, 20)):
+        assert take_profit_pips(S, name, t, "GBPUSD", [], direction=SELL, trend_day="down") == 100
+        assert take_profit_pips(S, name, t, "GBPUSD", [], direction=BUY, trend_day="up") == 100
+        assert take_profit_pips(S, name, t, "GBPUSD", [], direction=BUY, trend_day="down") == usual    # against it
+        assert take_profit_pips(S, name, t, "GBPUSD", [], direction=SELL, trend_day="up") == usual
+        assert take_profit_pips(S, name, t, "GBPUSD", [], direction=SELL, trend_day=None) == usual     # not a trend day
+        assert take_profit_pips(S, name, t, "GBPUSD", [], direction=SELL) == usual
+
+
+def test_the_trend_day_changes_nothing_for_the_other_strategies(S):
+    from strategies.common import take_profit_pips
+    t = U(2026, 11, 4, 9, 0)
+    for name, usual in ((BREAKOUT, 50), (LEVEL_REVERSAL, 20), (BOLLINGER_BOUNCE, 100), (RANGE_TRADE, 100)):
+        for d, td in ((SELL, "down"), (BUY, "up")):
+            assert take_profit_pips(S, name, t, "GBPUSD", [], direction=d, trend_day=td) == usual

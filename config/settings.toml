@@ -231,6 +231,19 @@ direction_ema_periods = 100
 # newest one that should have finished. STARTING VALUE.
 out_of_date_after_minutes = 10
 
+[trend_day]
+# The trend-day check (design 2.4; owner, 8 November 2026): at the day's 00:00 UK open, a trend
+# day downwards when the open is at or above the previous month's level_above and the daily RSI
+# (rsi_periods) at the previous day's close is above rsi_above; upwards when at or below
+# level_below and the RSI is below rsi_below. Monthly levels from the daily candles.
+level_above = "R2"
+level_below = "S2"
+rsi_periods = 14
+rsi_above = 70
+rsi_below = 30
+# Daily candles read to work out the RSI (all the store holds, up to this many).
+rsi_history_candles = 1000
+
 [market_states]
 # The analyser's five market states (design section 2; docs/ANALYSER.md).
 # Worked out on the 5-minute candles, sell price. "161" = AutoBot 161's NMS

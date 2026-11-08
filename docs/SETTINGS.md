@@ -84,6 +84,12 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `range_trade.close_percent_at_opposite_band` | Share of a range trade closed when price reaches the opposite band. | 50% |
 | `range_trade.rejection_candle_within_candles` | Range trade (and the shared rejection part's range version): the red rejection candle must come within this many candles after the candle that pierced the band. 1 means the very next candle, as the design says. | 1 candle |
 | `range_trade.trigger_within_candles` | Range trade: the live price must go below the rejection candle's low within this many candles after the rejection candle. 1 means during the candle after it, as the design says; otherwise the setup expires. | 1 candle |
+| `trend_day.level_above` | The trend-day check (design 2.4): a trend day downwards needs the day's open at or above this level of the previous month (R1, R2 or R3). **Owner's choice, 8 November 2026.** | R2 |
+| `trend_day.level_below` | A trend day upwards needs the open at or below this level of the previous month (S1, S2 or S3). **Owner's choice, 8 November 2026.** | S2 |
+| `trend_day.rsi_periods` | The daily RSI's periods (Wilder's, at the previous day's close). **Owner's value, 8 November 2026.** | 14 |
+| `trend_day.rsi_above` | A trend day downwards needs that RSI above this. **Owner's value, 8 November 2026.** | 70 |
+| `trend_day.rsi_below` | A trend day upwards needs that RSI below this. **Owner's value, 8 November 2026.** | 30 |
+| `trend_day.rsi_history_candles` | Stored daily candles read to work out the RSI (all the store holds, up to this many; the RSI depends a little on where it starts). | 1000 |
 | `level_reversal.level_types` | Level reversal (design 3.6): the levels it trades rejections at, from `S2`, `R2` and `round_number`. **Owner's choice, 8 November 2026.** | S2, R2, round_number |
 | `level_reversal.round_numbers_every_pips` | Round numbers count only on a multiple of this many pips (100: the 00s, not the 50s). **Owner's choice, 8 November 2026.** | 100 pips |
 | `level_reversal.allowance_pips_r2` | A rejection at R2 counts only if price went no more than this far past it, from the piercing candle to the confirmation candle (design 3.6). **Owner's value, 8 November 2026.** | 12 pips |
