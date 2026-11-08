@@ -22,7 +22,10 @@
   * At start-up it finds its own open trades at IG by their recorded deal references (and deal IDs) before
     any new trade is allowed. Positions it did not open are left alone and reported.
   * It closes trades when the trade manager says so, in full, or by half for the range trade, and confirms
-    each close with IG.
+    each close with IG. The close matches AutoBot 161's close_sb_now.py exactly: POST /positions/otc with
+    VERSION 1 and _method DELETE, the body dealId, direction (the opposite), orderType MARKET and size only
+    (never the epic or expiry: IG refuses dealId with either). After a part close IG leaves the rest as a
+    position with a new deal ID: it is found among the open positions and recorded.
   * Every order, confirmation, refusal and close is recorded in orders.folder/<PAIR>/orders.jsonl (one JSON
     line per event, written and flushed before the next step). The open trades are rebuilt from it.
 """
@@ -148,6 +151,8 @@ class OrderSender:
                                          r.get("deal_id", ""), _dec(r.get("level")))
             elif ev in ("refused", "not placed"):
                 self.unresolved.pop(ref, None)
+            elif ev == "deal id changed" and ref in self.trades:
+                self.trades[ref].deal_id = r["deal_id"]
             elif ev == "half closed" and ref in self.trades:
                 self.trades[ref].half_closed = True
                 self.trades[ref].size = Decimal(r["remaining_size"])
@@ -399,8 +404,10 @@ class OrderSender:
                 return Result(False, "refused", reference, t.deal_id,
                               reasons=["only a range trade is closed by half, and only once"])
             size = (t.size / 2) if half else t.size
-            body = {"dealId": t.deal_id, "direction": "SELL" if t.direction == "buy" else "BUY", "size": float(size),
-                    "orderType": "MARKET", "expiry": self.o.expiry}
+            body = {"dealId": t.deal_id,                            # exactly AutoBot 161's close: these four only
+                    "direction": "SELL" if t.direction == "buy" else "BUY",      # never the epic or expiry
+                    "orderType": "MARKET",
+                    "size": float(size)}
             self._record("close sending", reference=reference, deal_id=t.deal_id, size=size, half=half, why=why, body=body)
             try:
                 r = self.client.request("POST", "/positions/otc", "1", body, what="closing a position",
@@ -417,11 +424,36 @@ class OrderSender:
                 return self._close_refused(t, c.get("reason") or "no reason given")
             return self._settle_unclear_close(t, half, size)
 
+    def _residual(self, t: Trade, remaining: Decimal) -> str | None:
+        """After a part close IG leaves the rest as a position with a NEW deal ID (AutoBot 161's close report):
+        the one open position of the pair in the trade's direction and of the remaining size that is not
+        another of the bot's trades. None if there is not exactly one."""
+        others = {x.deal_id for x in self.trades.values() if x.status == OPEN and x is not t}
+        try:
+            positions = self._positions()
+        except IGRequestError:
+            return None
+        if any(p["position"].get("dealId") == t.deal_id for p in positions):
+            return t.deal_id                                        # IG kept the deal ID
+        found = [p["position"]["dealId"] for p in positions
+                 if p.get("market", {}).get("epic") == self.epic and p["position"].get("direction") == t.direction.upper()
+                 and Decimal(str(p["position"].get("size"))) == remaining and p["position"]["dealId"] not in others]
+        return found[0] if len(found) == 1 else None
+
     def _closed(self, t: Trade, half: bool, size: Decimal, level: Decimal | None, profit: Any, how: str) -> Result:
         if half:
             t.half_closed, t.size = True, t.size - size
             self._record("half closed", reference=t.reference, deal_id=t.deal_id, size=size, remaining_size=t.size,
                          level=level, profit=profit, how=how)
+            new = self._residual(t, t.size)
+            if new is None:
+                self._record("rest not found", reference=t.reference, deal_id=t.deal_id, remaining_size=t.size)
+                self.alerts.problem("part-close-rest", f"After half closing {t.strategy} trade {t.deal_id}, the rest "
+                                                       f"({t.size}) could not be found among IG's open positions.")
+            elif new != t.deal_id:
+                self._record("deal id changed", reference=t.reference, old_deal_id=t.deal_id, deal_id=new,
+                             note="IG left the rest of the part close as a new position")
+                t.deal_id = new
         else:
             t.status = CLOSED
             self._record("closed", reference=t.reference, deal_id=t.deal_id, size=size, level=level, profit=profit, how=how)
@@ -443,6 +475,8 @@ class OrderSender:
                                         headers=_headers("2"))
             except IGRequestError as e:
                 if e.status == 404:
+                    if half and self._residual(t, t.size - size) not in (None, t.deal_id):
+                        return self._closed(t, True, size, None, None, "the rest is a new position at IG")
                     return self._closed(t, False, t.size, None, None, "the position is gone at IG")
                 continue
             now_size = Decimal(str(((r.json() or {}).get("position") or {}).get("size")))

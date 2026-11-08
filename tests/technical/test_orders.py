@@ -137,12 +137,14 @@ class PretendIG:
                                   "dealReference": ref}
 
     def _close(self, body):
+        """As IG (AutoBot 161's close report): a part close leaves the rest as a position with a NEW deal ID."""
         p = next(p for p in self.positions if p["position"]["dealId"] == body["dealId"])
         left = p["position"]["size"] - body["size"]
-        if left <= 0:
-            self.positions.remove(p)
-        else:
-            p["position"]["size"] = left
+        self.positions.remove(p)
+        if left > 0:
+            rest = {"position": dict(p["position"], dealId=f"DIREST{self.next_deal}", size=left), "market": p["market"]}
+            self.next_deal += 1
+            self.positions.append(rest)
 
     def orders_sent(self):
         return [c for c in self.calls if c[0] == "POST" and c[1] == "/positions/otc" and "_method" not in c[4]]
@@ -448,9 +450,10 @@ def test_the_open_trades_are_rebuilt_from_the_record(S):
     sender, ig, *_ = make(S)
     r = sender.place(idea(RANGE_TRADE), calendar=[])
     sender.close(r.reference, half=True)
-    again, *_ = make(S, ig)
+    again, ig, alerts, *_ = make(S, ig)
     (t,) = [t for t in again.trades.values() if t.status == "open"]
     assert t.half_closed and t.size == D("5.0") and again.open_trades()[0].size_gbp_per_pip == D(5)
+    assert t.deal_id.startswith("DIREST") and "found at IG" in events(again) and "not ours" not in events(again)
 
 
 # ---- closing -----------------------------------------------------------------------------------------
@@ -463,18 +466,58 @@ def test_a_full_close_confirmed_with_ig(S):
     (m, path, version, body, headers), = closes(ig)
     assert (path, version, headers) == ("/positions/otc", "1",
                                         {"VERSION": "1", "Content-Type": "application/json", "_method": "DELETE"})
-    assert body == {"dealId": r.deal_id, "direction": "SELL", "size": 10.0, "orderType": "MARKET", "expiry": "DFB"}
+    assert body == {"dealId": r.deal_id, "direction": "SELL", "orderType": "MARKET", "size": 10.0}
+    assert list(body) == ["dealId", "direction", "orderType", "size"] and "epic" not in body and "expiry" not in body
     closed = [x for x in records(sender) if x["event"] == "closed"][0]
     assert (closed["level"], closed["profit"], closed["how"]) == ("13390.0", 100.0, "confirmed")
 
 
-def test_the_range_trade_closes_by_half_once(S):
+def test_the_range_trade_closes_by_half_once_and_the_rest_is_followed_to_its_new_deal_id(S):
     sender, ig, *_ = make(S)
     r = sender.place(idea(RANGE_TRADE), calendar=[])
     h = sender.close(r.reference, half=True, why="the opposite band")
-    assert (h.ok, h.what) == (True, "half closed") and closes(ig)[-1][3]["size"] == 5.0
+    assert (h.ok, h.what) == (True, "half closed")
+    assert closes(ig)[-1][3] == {"dealId": r.deal_id, "direction": "BUY", "orderType": "MARKET", "size": 5.0}
+    rest = [p["position"]["dealId"] for p in ig.positions][0]
+    assert rest.startswith("DIREST") and sender.trades[r.reference].deal_id == rest
+    changed = [x for x in records(sender) if x["event"] == "deal id changed"][0]
+    assert (changed["old_deal_id"], changed["deal_id"]) == (r.deal_id, rest)
     assert not sender.close(r.reference, half=True).ok                  # only once
-    assert sender.close(r.reference).ok and closes(ig)[-1][3]["size"] == 5.0
+    assert sender.close(r.reference).ok
+    assert closes(ig)[-1][3] == {"dealId": rest, "direction": "BUY", "orderType": "MARKET", "size": 5.0}
+    assert ig.positions == []
+
+
+def test_if_ig_keeps_the_deal_id_after_a_part_close_nothing_changes(S):
+    sender, ig, *_ = make(S)
+    r = sender.place(idea(RANGE_TRADE), calendar=[])
+
+    def keep_id(body):
+        p = next(p for p in ig.positions if p["position"]["dealId"] == body["dealId"])
+        p["position"]["size"] -= body["size"]
+    ig._close = keep_id
+    sender.close(r.reference, half=True)
+    assert sender.trades[r.reference].deal_id == r.deal_id and "deal id changed" not in events(sender)
+
+
+def test_the_rest_of_a_part_close_not_found_is_reported(S):
+    sender, ig, alerts, *_ = make(S)
+    r = sender.place(idea(RANGE_TRADE), calendar=[])
+
+    def vanish(body):
+        ig.positions = []
+    ig._close = vanish
+    sender.close(r.reference, half=True)
+    assert "rest not found" in events(sender) and alerts.sent[-1][0] == "part-close-rest"
+
+
+def test_an_unclear_half_close_finds_the_rest_under_its_new_deal_id(S):
+    sender, ig, *_ = make(S)
+    r = sender.place(idea(RANGE_TRADE), calendar=[])
+    ig.close_answer = "timeout-done"
+    h = sender.close(r.reference, half=True)
+    assert (h.ok, h.what) == (True, "half closed") and sender.trades[r.reference].deal_id.startswith("DIREST")
+    assert sender.trades[r.reference].status == "open"
 
 
 def test_only_the_range_trade_closes_by_half(S):
