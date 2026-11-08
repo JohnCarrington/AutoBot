@@ -186,3 +186,169 @@ def test_a_gap_in_the_samples_counts_against_it(S):
 def test_not_enough_samples_yet_waits(S):
     test, ig, alerts, folder = run_night(S, lambda t: 1.5, start=(22, 25), end=(22, 31))
     assert ig.orders_sent() == [] and "not enough spread samples" in test.checks[0]
+
+
+# ---- the owner's extras (8 November 2026) and the queue ---------------------------------------------
+
+from orders.test_order import QUEUE, RECOVERING, RESTART  # noqa: E402
+
+AT = WED + timedelta(minutes=30)
+
+
+def result_of(folder, extra):
+    return json.loads((folder / f"test_result_{extra}.json").read_text())
+
+
+def test_half_close_closes_half_then_the_rest_and_follows_the_new_deal_id(S):
+    req = dict(REQ, strategy="range trade", extra="half_close")
+    test, ig, alerts, sleeps, clock, folder = make(S, req, t=AT)
+    test.tick()
+    cl = [c for c in ig.calls if len(c) == 5 and (c[4] or {}).get("_method")]
+    assert [c[3]["size"] for c in cl] == [5.0, 5.0] and sleeps[-2:] == [60, 60]
+    assert cl[1][3]["dealId"].startswith("DIREST")                           # the rest, by its new deal ID
+    r = result_of(folder, "half_close")
+    assert (r["placed"], r["half_closed"], r["closed"], r["open_trades_after"]) == ("opened", "half closed", "closed", 0)
+    assert r["remaining_size"] == "5.0" and r["deal_id_of_the_rest"].startswith("DIREST")
+    assert ig.positions == [] and (folder / "test_request.half_close.done.json").exists()
+    assert not (folder / RESULT).exists()                                    # the first test's result is left alone
+
+
+def test_half_close_is_for_the_range_trade_only(S):
+    test, ig, alerts, sleeps, clock, folder = make(S, dict(REQ, extra="half_close"), t=AT)
+    test.tick()
+    assert ig.orders_sent() == [] and "range trade only" in result_of(folder, "half_close")["refused"]
+
+
+def test_stop_refusal_sends_half_of_igs_minimum_and_reports_igs_reason(S):
+    ig = PretendIG()
+    ig.post_open = {"dealStatus": "REJECTED", "reason": "ATTACHED_ORDER_LEVEL_ERROR"}
+    test, ig, alerts, sleeps, clock, folder = make(S, dict(REQ, extra="stop_refusal"), t=AT, ig=ig)
+    test.tick()
+    (o,) = ig.orders_sent()
+    assert o[3]["stopDistance"] == 4.0                                       # the pretend IG's minimum is 8 points
+    r = result_of(folder, "stop_refusal")
+    assert r["placed"] == "refused" and r["ig_refused_it"] is True and "ATTACHED_ORDER_LEVEL_ERROR" in r["reasons"][0]
+    assert r["ig_min_stop_points"] == "8.0" and r["stop_sent_points"] == "4.0"
+    assert any(k.startswith("ig-stop-refused") for k, _ in alerts.sent)      # the refusal alert
+    assert [c[1] for c in ig.calls if c[0] == "GET" and str(c[1]).startswith("/markets/")].__len__() == 2   # before, after
+
+
+def test_stop_refusal_accepted_anyway_is_closed(S):
+    test, ig, alerts, sleeps, clock, folder = make(S, dict(REQ, extra="stop_refusal"), t=AT)
+    test.tick()
+    r = result_of(folder, "stop_refusal")
+    assert (r["placed"], r["ig_refused_it"], r["closed"]) == ("opened", False, "closed") and ig.positions == []
+
+
+def test_restart_recovery_restarts_then_finds_the_trade_by_its_reference_and_closes_it(S):
+    test, ig, alerts, sleeps, clock, folder = make(S, dict(REQ, extra="restart_recovery"), t=AT)
+    asked = []
+    test.request_restart = asked.append
+    test.tick()
+    assert asked and (folder / RESTART).exists() and len(ig.positions) == 1 and closes_sent(ig) == []
+    assert not (folder / "test_result_restart_recovery.json").exists()
+    test.tick()                                   # the dying service never ticks again; nothing more here anyway
+    # the restarted service: a new TestOrder on the same files and the same IG
+    after = TestOrder(S, ig, alerts, lambda: (D("13400.0"), D("13401.5")), now=lambda: clock["t"], sleep=sleeps.append,
+                      threaded=False)
+    after.tick()
+    r = result_of(folder, "restart_recovery")
+    assert r["found_by_reference"] is True and r["found_before_ready"] is True and r["open_trades_at_start"] == 1
+    assert r["closed"] == "closed" and r["open_trades_after"] == 0 and ig.positions == []
+    assert r["before_the_restart"]["reference"] == ig.orders_sent()[0][3]["dealReference"]
+    assert (folder / "test_request.restart_recovery.done.json").exists() and not (folder / RECOVERING).exists()
+    n = len(ig.calls)
+    after.tick()
+    assert len(ig.calls) == n                                                # never twice
+
+
+def test_restart_recovery_when_the_trade_went_while_the_service_was_down(S):
+    test, ig, alerts, sleeps, clock, folder = make(S, dict(REQ, extra="restart_recovery"), t=AT)
+    test.request_restart = lambda why: None
+    test.tick()
+    ig.positions.clear()                                                     # stopped out at IG meanwhile
+    after = TestOrder(S, ig, alerts, lambda: (D("13400.0"), D("13401.5")), now=lambda: clock["t"], sleep=sleeps.append,
+                      threaded=False)
+    after.tick()
+    r = result_of(folder, "restart_recovery")
+    assert r["found_by_reference"] is False and r["closed"].startswith("nothing to close") and closes_sent(ig) == []
+
+
+def test_restart_recovery_without_a_service_recovers_in_place(S):
+    test, ig, alerts, sleeps, clock, folder = make(S, dict(REQ, extra="restart_recovery"), t=AT)
+    test.tick()
+    r = result_of(folder, "restart_recovery")
+    assert r["found_by_reference"] is True and r["closed"] == "closed"
+
+
+def closes_sent(ig):
+    return [c for c in ig.calls if len(c) == 5 and (c[4] or {}).get("_method")]
+
+
+def test_the_queue_runs_one_at_a_time_with_a_gap(S):
+    test, ig, alerts, sleeps, clock, folder = make(S, None, t=AT)
+    (folder / QUEUE).write_text(json.dumps([dict(REQ, extra="stop_refusal"), dict(REQ, strategy="range trade",
+                                                                                   extra="half_close")]))
+    test.tick()
+    assert len(ig.orders_sent()) == 1 and result_of(folder, "stop_refusal")["placed"] == "opened"
+    test.tick()                                                              # taken off the queue, but 5 minutes later
+    assert len(ig.orders_sent()) == 1
+    assert json.loads((folder / REQUEST).read_text())["not_before_utc"] == "2026-11-04T10:35:00Z"
+    assert not (folder / QUEUE).exists()
+    clock["t"] = AT + timedelta(minutes=5)
+    test.tick()
+    assert len(ig.orders_sent()) == 2 and result_of(folder, "half_close")["closed"] == "closed"
+
+
+def test_the_queue_waits_for_the_spread_rule_again(S):
+    test, ig, alerts, sleeps, clock, folder = make(S, None, t=AT)
+    (folder / QUEUE).write_text(json.dumps([dict(TONIGHT, not_before_utc="2026-11-04T10:30:00Z", extra="stop_refusal")]))
+    test.tick()
+    assert ig.calls == [] and "not enough spread samples" in test.checks[0]
+
+
+def test_an_unreadable_queue_sends_nothing_and_alerts(S):
+    test, ig, alerts, sleeps, clock, folder = make(S, None, t=AT)
+    (folder / QUEUE).write_text("{not a list")
+    test.tick()
+    assert ig.calls == [] and alerts.sent[-1][0] == "test-order" and (folder / (QUEUE + ".bad")).exists()
+
+
+# ---- the check of IG's records (read-only) ----------------------------------------------------------
+
+from orders.ig_records import DONE as CHECK_DONE, REQUEST as CHECK_REQUEST, RESULT as CHECK_RESULT, IGRecordsCheck  # noqa: E402
+from tests.technical.test_orders import Reply  # noqa: E402
+
+
+class HistoryIG(PretendIG):
+    def request(self, method, path, version, body=None, *, what, headers=None):
+        if method == "GET" and path.startswith("/history/activity"):
+            self.calls.append((method, path, version, body, headers))
+            return Reply({"activities": [
+                {"epic": "CS.D.GBPUSD.TODAY.IP", "dealId": "DIAAAAYS9LEACBT", "type": "POSITION",
+                 "details": {"dealReference": "AB1", "stopLevel": 13345.1, "limitLevel": 13387.1, "actions": []}},
+                {"epic": "IX.D.FTSE.DAILY.IP", "dealId": "DIOTHER", "details": {"actions": []}}]})
+        if method == "GET" and path.startswith("/history/transactions"):
+            self.calls.append((method, path, version, body, headers))
+            return Reply({"transactions": [{"instrumentName": "GBP/USD", "profitAndLoss": "£-11.00"}]})
+        return super().request(method, path, version, body, what=what, headers=headers)
+
+
+def test_the_ig_records_check_reads_only_and_writes_its_result(S):
+    ig = HistoryIG()
+    folder = S.orders.folder
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / CHECK_REQUEST).write_text(json.dumps({"from_utc": "2026-11-08T23:00:00Z", "to_utc": "2026-11-08T23:45:00Z",
+                                                    "deal_ids": ["DIAAAAYS9LEACBT"]}))
+    alerts = Alerts()
+    check = IGRecordsCheck(S, ig, alerts, now=lambda: AT, threaded=False)
+    check.tick()
+    assert all(c[0] == "GET" for c in ig.calls)
+    assert any("from=2026-11-08T23:00:00&to=2026-11-08T23:45:00&detailed=true" in c[1] for c in ig.calls)
+    r = json.loads((folder / CHECK_RESULT).read_text())
+    assert [a["dealId"] for a in r["activity"]] == ["DIAAAAYS9LEACBT"] and r["transactions"][0]["profitAndLoss"] == "£-11.00"
+    assert r["open_positions"] == [] and r["funds"]["available"] == 20000.0
+    assert (folder / CHECK_DONE).exists() and not (folder / CHECK_REQUEST).exists() and "0 open positions" in alerts.infos[-1]
+    n = len(ig.calls)
+    check.tick()
+    assert len(ig.calls) == n                                                # never twice

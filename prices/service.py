@@ -29,12 +29,16 @@ What it does:
      the safety rules, the order sender and the trade manager; every second the trade manager on the latest
      price. The master switch TRADING in .env: while off, paper trades only, nothing sent to IG.
   3d. The owner's one test order (orders/test_order.py): nothing unless its request file is there; then
-     one order on the demo account, on this service's IG login, closed after its hold time.
+     one order on the demo account, on this service's IG login, closed after its hold time. The owner's
+     extra (a) asks for a restart: the service stops as on SIGTERM (stream stopped, logged out) and exits
+     with code 75, so systemd starts it again after 30 seconds. The owner's check of IG's records
+     (orders/ig_records.py): read-only, nothing unless its request file is there.
   4. On SIGTERM or SIGINT (systemctl stop): stops the stream, logs out of IG
      and exits with code 0.
 
 Exit codes: 0 stopped normally; 1 settings problem or crash (systemd restarts
-it after 30 seconds); 78 IG login failure (systemd does NOT restart it).
+it after 30 seconds); 75 a restart asked for by the owner's test order extra (a)
+(systemd restarts it after 30 seconds); 78 IG login failure (systemd does NOT restart it).
 """
 
 from __future__ import annotations
@@ -120,6 +124,13 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
             settings, client, stream, {f.pair: f for f in feeds.values()}, door), now=now)
 
     test_order = None
+    ig_check = None
+    restart = {"why": None}                     # the owner's test order extra (a): exit 75, systemd restarts
+
+    def request_restart(why: str) -> None:
+        log.info("Restart asked for (%s): stopping, logging out, exit code 75.", why)
+        restart["why"] = why
+        stop.set()
     first = settings.pairs_on()[0]
     feed = feeds[first.market.epic]
     if hasattr(settings, "orders"):
@@ -131,7 +142,10 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
                 return None
             return t.sell, t.buy
         test_order = TestOrder(first, client, alerts, quote, now=now,       # the owner's one test order
-                               trading_on=bool(getattr(getattr(settings, "switches", None), "trading", False)))
+                               trading_on=bool(getattr(getattr(settings, "switches", None), "trading", False)),
+                               request_restart=request_restart)
+        from orders.ig_records import IGRecordsCheck
+        ig_check = IGRecordsCheck(first, client, alerts, now=now)          # read-only check of IG's records
 
     keeper = None
     if hasattr(settings, "news"):
@@ -143,8 +157,10 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
             ready.tick()
         if keeper is not None:
             keeper.tick()            # the economic calendar: fetched a few times a day, never in a loop
-        if test_order is not None and stream is not None and client.account_active:
+        if test_order is not None and stream is not None and client.account_active and not stop.is_set():
             test_order.tick()        # nothing unless the owner's test order request file is there
+        if ig_check is not None and stream is not None and client.account_active and not stop.is_set():
+            ig_check.tick()          # nothing unless the owner's IG records check request file is there
         engine = trading["engine"]
         if engine is not None:
             try:
@@ -208,6 +224,9 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
     log.info("AutoBot price service stopped at %s.", uk(now()))
     for f in feeds.values():
         f.log.info("%d ticks and %d five-minute candles stored since start.", f.ticks, len(f.stored))
+    if restart["why"]:
+        log.info("Exiting with code 75 so systemd restarts the service (%s).", restart["why"])
+        return 75
     return 0
 
 

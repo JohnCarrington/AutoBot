@@ -187,3 +187,35 @@ def test_a_stop_request_ends_a_reconnect_wait_at_once(tmp_path):
     stream.request_stop()
     th.join(2)
     assert not th.is_alive()
+
+
+def test_a_restart_asked_for_by_the_owners_test_extra_logs_out_and_exits_75(tmp_path, monkeypatch):
+    """Extra (a): the test order asks for a restart; the service stops the stream, logs out once and exits with
+    code 75, which systemd's Restart=on-failure restarts (75 is not the login failure's 78)."""
+    import orders.test_order as test_order
+    asked = []
+
+    class AsksForRestart:
+        def __init__(self, *a, request_restart=None, **k):
+            self.request_restart = request_restart
+
+        def tick(self):
+            if not asked:
+                asked.append(1)
+                self.request_restart("a test")
+
+    monkeypatch.setattr(test_order, "TestOrder", AsksForRestart)
+    s = _settings(tmp_path)
+    s.orders = SimpleNamespace(folder=tmp_path / "orders")
+    ig = FakeIG(login_ok(), accounts_ok(), switch_ok(), logout_ok())
+    client = IGClient(SETTINGS.ig, CREDS, http=ig, sleep=lambda x: None)
+    result = {}
+    th = threading.Thread(target=lambda: result.setdefault(
+        "code", serve(s, client=client, transport_factory=new_transport, stop=threading.Event(),
+                      now=Clock(T(2026, 11, 4, 12, 0, 20)), logs=False, signals=False)))
+    th.start()
+    assert _wait_for(lambda: FakeTransport.opened)
+    FakeTransport.opened[-1].connect()
+    th.join(10)
+    assert not th.is_alive() and result["code"] == 75 and asked == [1]
+    assert ig.calls()[-1] == ("DELETE", "/session") and "75" not in unit()["RestartPreventExitStatus"]

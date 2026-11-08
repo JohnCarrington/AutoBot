@@ -124,4 +124,5 @@ Sends one Telegram message and prints whether Telegram accepted it (never the to
 |---|---|
 | 0 | Finished normally. |
 | 1 | Problem in the settings file. IG was not contacted. |
+| 75 | Restart asked for by the owner's test order extra (a) (restart recovery): the service stopped the stream and logged out; systemd starts it again after 30 seconds. |
 | **78** | **IG login failure** (including IG refusing the price stream again after its one controlled re-login). Reserved for this alone. The bot must **not** be restarted automatically: the service file must contain `RestartPreventExitStatus=78`. See `docs/IG_CONNECTION.md`. |
