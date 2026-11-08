@@ -4,4 +4,6 @@
 
 **What it must never do:** Never send an order without a stop loss and a take profit. Never change or close a trade the bot did not open (for example, a trade placed by hand). Never send an order that has not passed the safety rules. Never send the same trade twice. Never log in to IG itself.
 
-**Not connected yet:** nothing calls it while the bot runs; the trade manager (next) will, inside the price service.
+Its open and confirm requests match AutoBot 161's `open_sb_now.py` field by field (owner, 8 November 2026); the stop is always sent as `stopDistance`.
+
+**Not connected yet:** the strategies do not call it while the bot runs; the trade manager (next) will, inside the price service. `test_order.py`: the owner's one test order on the demo account, run inside the price service from a request file (`data/orders/test_request.json`), never twice.

@@ -93,7 +93,7 @@ class PretendIG:
             if p is None:
                 raise IGRequestError(what, 404, "error.positions.generic.position.not.found")
             return Reply(p)
-        if method == "POST" and path == "/positions/otc" and headers is None:     # an order
+        if method == "POST" and path == "/positions/otc" and "_method" not in headers:     # an order
             self.journal_at_post = self.journal.read_text() if self.journal and self.journal.exists() else ""
             ref = body["dealReference"]
             act = self.post_open or "accept"
@@ -112,7 +112,7 @@ class PretendIG:
                 return Reply({"dealReference": ref})
             self._fill(ref, body)
             return Reply({"dealReference": ref})
-        if method == "POST" and path == "/positions/otc" and headers == {"_method": "DELETE"}:   # a close
+        if method == "POST" and path == "/positions/otc" and headers.get("_method") == "DELETE":   # a close
             if self.close_answer == "timeout":
                 raise IGRequestError(what, None, "ReadTimeout")
             if self.close_answer == "timeout-done":
@@ -145,7 +145,7 @@ class PretendIG:
             p["position"]["size"] = left
 
     def orders_sent(self):
-        return [c for c in self.calls if c[0] == "POST" and c[1] == "/positions/otc" and c[4] is None]
+        return [c for c in self.calls if c[0] == "POST" and c[1] == "/positions/otc" and "_method" not in c[4]]
 
 
 class FakeAlerts:
@@ -161,12 +161,12 @@ def idea(strategy, direction=SELL, t=WED, price="13400.0", context=None):
     return Idea("GBPUSD", strategy, direction, t, D(price), "trend", "down", None, "sell side", ["made up"], True, "", ctx)
 
 
-def make(S, ig=None, t=WED, start=True):
+def make(S, ig=None, t=WED, start=True, quote=(D("13400.0"), D("13401.5"))):
     ig = ig or PretendIG()
     alerts = FakeAlerts()
     clock = {"t": t}
     sleeps = []
-    sender = OrderSender(S, ig, alerts, now=lambda: clock["t"], sleep=sleeps.append)
+    sender = OrderSender(S, ig, alerts, now=lambda: clock["t"], sleep=sleeps.append, quote=lambda: quote)
     ig.journal = sender.journal
     if start:
         sender.start()
@@ -174,7 +174,7 @@ def make(S, ig=None, t=WED, start=True):
 
 
 def closes(ig):
-    return [c for c in ig.calls if len(c) == 5 and c[4]]
+    return [c for c in ig.calls if len(c) == 5 and (c[4] or {}).get("_method")]
 
 
 def records(sender):
@@ -214,18 +214,42 @@ def test_a_market_order_with_its_strategys_stop_and_take_profit_and_force_open(S
     r = sender.place(idea(strategy), calendar=[])
     assert r.ok and r.what == "opened"
     (_, path, version, body, headers), = ig.orders_sent()
-    assert (path, version, headers) == ("/positions/otc", "2", None)
-    assert body == {"epic": EPIC, "expiry": "DFB", "direction": "SELL", "size": 10.0, "orderType": "MARKET",
-                    "currencyCode": "GBP", "forceOpen": True, "guaranteedStop": False,
-                    "dealReference": r.reference, "limitDistance": float(limit), "stopDistance": float(stop)}
+    assert (path, version, headers) == ("/positions/otc", "2", {"VERSION": "2", "Content-Type": "application/json"})
+    assert body == {"currencyCode": "GBP", "direction": "SELL", "epic": EPIC, "expiry": "DFB", "forceOpen": True,
+                    "guaranteedStop": False, "level": None, "limitDistance": float(limit), "limitLevel": None,
+                    "orderType": "MARKET", "quoteId": None, "size": 10.0, "stopDistance": float(stop),
+                    "stopLevel": None, "trailingStop": False, "trailingStopIncrement": None,
+                    "dealReference": r.reference}
+    assert list(body) == ["currencyCode", "direction", "epic", "expiry", "forceOpen", "guaranteedStop", "level",
+                          "limitDistance", "limitLevel", "orderType", "quoteId", "size", "stopDistance", "stopLevel",
+                          "trailingStop", "trailingStopIncrement", "dealReference"]           # AutoBot 161's 17
 
 
-def test_the_level_reversals_stop_is_a_level(S):
-    sender, ig, *_ = make(S)
+def test_the_level_reversals_stop_price_becomes_a_distance_when_sent(S):
+    sender, ig, *_ = make(S, quote=(D("13400.0"), D("13401.5")))
     sender.place(idea(LEVEL_REVERSAL, BUY, context={"stop_price": D("13387.5")}), calendar=[])
-    body = ig.orders_sent()[0][3]
-    assert body["stopLevel"] == 13387.5 and "stopDistance" not in body and body["limitDistance"] == 20.0
-    assert body["direction"] == "BUY" and body["forceOpen"] is True
+    body = ig.orders_sent()[0][3]                              # a buy opens on the offer, 13401.5
+    assert body["stopDistance"] == 14.0 and body["stopLevel"] is None and body["limitDistance"] == 20.0
+    sender, ig, *_ = make(S, quote=(D("13400.0"), D("13401.5")))
+    sender.place(idea(LEVEL_REVERSAL, SELL, context={"stop_price": D("13410.0")}), calendar=[])
+    assert ig.orders_sent()[0][3]["stopDistance"] == 10.0      # a sell opens on the bid, 13400.0
+
+
+def test_the_level_reversal_needs_a_current_price_on_the_right_side_of_its_stop(S):
+    sender, ig, *_ = make(S, quote=None)
+    r = sender.place(idea(LEVEL_REVERSAL), calendar=[])
+    assert r.reasons == ["no current price to turn the level reversal's stop price into a distance"] and not ig.orders_sent()
+    sender, ig, *_ = make(S, quote=(D("13412.0"), D("13413.5")))
+    r = sender.place(idea(LEVEL_REVERSAL, SELL, context={"stop_price": D("13410.0")}), calendar=[])
+    assert "already past the level reversal's stop price" in r.reasons[0] and not ig.orders_sent()
+
+
+def test_the_stop_is_never_sent_as_a_level_and_force_open_is_always_true(S):
+    sender, ig, *_ = make(S)
+    for n in (EMA_PULLBACK, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL, RANGE_TRADE):
+        sender.place(idea(n), calendar=[])
+    for _, _, _, body, _ in ig.orders_sent():
+        assert body["stopLevel"] is None and body["stopDistance"] > 0 and body["forceOpen"] is True
 
 
 def test_the_big_news_and_trend_day_take_profit(S):
@@ -242,7 +266,7 @@ def test_every_order_has_a_stop_and_a_take_profit(S):
     for n in (EMA_PULLBACK, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL, RANGE_TRADE):
         sender.place(idea(n), calendar=[])
     for _, _, _, body, _ in ig.orders_sent():
-        assert ("stopDistance" in body or "stopLevel" in body) and body["limitDistance"] > 0 and body["forceOpen"]
+        assert body["stopDistance"] > 0 and body["limitDistance"] > 0 and body["forceOpen"]
 
 
 # ---- the deal reference and IG's confirmation --------------------------------------------------------
@@ -437,7 +461,8 @@ def test_a_full_close_confirmed_with_ig(S):
     c = sender.close(r.reference, why="20:30 close")
     assert (c.ok, c.what) == (True, "closed") and sender.open_trades() == []
     (m, path, version, body, headers), = closes(ig)
-    assert (path, version, headers) == ("/positions/otc", "1", {"_method": "DELETE"})
+    assert (path, version, headers) == ("/positions/otc", "1",
+                                        {"VERSION": "1", "Content-Type": "application/json", "_method": "DELETE"})
     assert body == {"dealId": r.deal_id, "direction": "SELL", "size": 10.0, "orderType": "MARKET", "expiry": "DFB"}
     closed = [x for x in records(sender) if x["event"] == "closed"][0]
     assert (closed["level"], closed["profit"], closed["how"]) == ("13390.0", 100.0, "confirmed")
@@ -529,6 +554,43 @@ def test_with_the_real_ig_client_the_close_sends_the_delete_header_and_no_login(
     fake.replies += [R(200, {"dealReference": "C1"}), R(200, {"dealStatus": "ACCEPTED", "level": 13390.0}),
                      R(200, {"accounts": [{"accountId": CREDS.account_id, "balance": {"available": 20100.0}}]})]
     assert sender.close(r.reference).ok
-    close = [s for s in fake.sent if s.method == "POST" and s.path == "/positions/otc"][-1]
-    assert close.headers["_method"] == "DELETE" and close.headers["Version"] == "1"
+    order, close = [s for s in fake.sent if s.method == "POST" and s.path == "/positions/otc"]
+    assert order.headers["VERSION"] == "2" and "Version" not in order.headers
+    assert order.headers["Content-Type"] == "application/json" and order.headers["Accept"] == "application/json; charset=UTF-8"
+    assert {"X-IG-API-KEY", "CST", "X-SECURITY-TOKEN"} <= set(order.headers)
+    assert order.url == "https://demo-api.ig.com/gateway/deal/positions/otc"
+    confirm = [s for s in fake.sent if s.path.startswith("/confirms/")][0]
+    assert confirm.method == "GET" and confirm.headers["VERSION"] == "1" and confirm.json is None
+    assert close.headers["_method"] == "DELETE" and close.headers["VERSION"] == "1"
     assert not any(s.path == "/session" for s in fake.sent) and fake.all_used()
+
+
+def test_the_confirmation_is_asked_for_as_161_does(S):
+    """GET /confirms/{reference}, VERSION 1, up to 5 times, 1 second apart, while IG answers 404."""
+    sender, ig, alerts, sleeps, _ = make(S)
+    real_fill = ig._fill
+
+    def late(ref, body, confirm=True):
+        real_fill(ref, body)
+        ig.confirms[ref] = [None, None, None, None, ig.confirms[ref]]          # 404 four times, then there
+    ig._fill = late
+    r = sender.place(idea(BREAKOUT), calendar=[])
+    confirms = [c for c in ig.calls if c[1].startswith("/confirms/")]
+    assert r.ok and len(confirms) == 5 and sleeps == [1, 1, 1, 1]
+    assert all(c[2] == "1" and c[4] == {"VERSION": "1", "Content-Type": "application/json"} for c in confirms)
+
+
+def test_the_reference_ig_echoes_is_the_one_confirmed(S):
+    sender, ig, *_ = make(S)
+    real = ig.request
+
+    def echo_other(method, path, version, body=None, *, what, headers=None):
+        r = real(method, path, version, body, what=what, headers=headers)
+        if method == "POST" and "_method" not in headers:
+            ig.confirms["IGECHO1"] = ig.confirms[body["dealReference"]]
+            return Reply({"dealReference": "IGECHO1"})
+        return r
+    ig.request = echo_other
+    r = sender.place(idea(BREAKOUT), calendar=[])
+    assert r.ok and any(c[1] == "/confirms/IGECHO1" for c in ig.calls)
+    assert [x for x in records(sender) if x["event"] == "reference echoed"][0]["ig_reference"] == "IGECHO1"

@@ -166,7 +166,9 @@ class IGClient:
                 raise RuntimeError("Not logged in to IG.")
             h["CST"] = self._cst  # type: ignore[assignment]
             h["X-SECURITY-TOKEN"] = self._security_token  # type: ignore[assignment]
-        if extra:
+        if extra:                       # an extra header replaces one of the same name, whatever its case
+            for k in [k for k in h if k.lower() in {e.lower() for e in extra}]:
+                del h[k]
             h.update(extra)
         return h
 

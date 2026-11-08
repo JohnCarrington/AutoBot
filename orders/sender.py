@@ -4,8 +4,13 @@
     NEVER logs in itself (the IG login rules allow one login). It refuses to start otherwise, and on
     anything but IG's demo address.
   * Market orders for the pair on the demo account, at trade.size_gbp_per_pip, each with its strategy's
-    stop (a distance; the level reversal's a level) and take profit (a distance) attached, and FORCE OPEN
-    on every order, so it can never close or reduce another position.
+    stop and take profit attached as DISTANCES (stopDistance, limitDistance; the level reversal's stop
+    price is turned into a distance from the current price at the moment the order is sent), and FORCE
+    OPEN on every order, so it can never close or reduce another position. The request matches AutoBot
+    161's open_sb_now.py exactly (owner, 8 November 2026): POST /positions/otc with VERSION 2 and
+    Content-Type application/json, the same 17 body fields; the confirmation GET /confirms/{reference}
+    with VERSION 1, tried up to orders.confirm_attempts times, orders.confirm_wait_seconds apart, while
+    IG answers 404.
   * Before sending, it records its own unique deal reference. A trade counts only once IG confirms it
     (GET /confirms/{reference}); IG's deal ID and fill price are recorded with the reference.
   * If IG times out or its answer is unclear, it checks with IG (the reference's confirmation, then the
@@ -42,6 +47,11 @@ from safety.rules import AccountFunds, OpenTrade, decide, order_for
 from strategies.common import RANGE_TRADE, stop_price, take_profit_pips
 
 log = logging.getLogger("autobot.orders")
+
+
+def _headers(version: str, **more: str) -> dict:
+    """The headers AutoBot 161 sends (besides the API key and the session tokens, which the IG client adds)."""
+    return {"VERSION": version, "Content-Type": "application/json", **more}
 UTC = timezone.utc
 OPEN, CLOSED = "open", "closed"
 
@@ -91,8 +101,11 @@ def _dec(x: Any) -> Decimal | None:
 
 class OrderSender:
     def __init__(self, settings: Any, client: Any, alerts: Any, *, now: Callable[[], datetime] = lambda: datetime.now(UTC),
-                 sleep: Callable[[float], None] = _time.sleep):
+                 sleep: Callable[[float], None] = _time.sleep,
+                 quote: Callable[[], tuple[Decimal, Decimal] | None] = lambda: None):
+        """`quote`: the current (bid, offer) from the price stream, for the level reversal's stop distance."""
         self.s, self.client, self.alerts, self.now, self.sleep = settings, client, alerts, now, sleep
+        self.quote = quote
         self.o = settings.orders
         self.pair, self.epic = settings.market.pair, settings.market.epic
         self.ppp = Decimal(settings.market.points_per_pip)
@@ -158,7 +171,7 @@ class OrderSender:
             self._record("ready", open_trades=len(self.open_trades()))
 
     def _positions(self) -> list[dict]:
-        r = self.client.request("GET", "/positions", "2", what="reading the open positions")
+        r = self.client.request("GET", "/positions", "2", what="reading the open positions", headers=_headers("2"))
         return list((r.json() or {}).get("positions") or [])
 
     def _recover(self) -> None:
@@ -228,13 +241,38 @@ class OrderSender:
         assert len(ref) <= 30 and ref not in self.trades and ref not in self.unresolved
         return ref
 
-    def _confirmation(self, ref: str) -> dict | None:
-        """IG's confirmation of a deal reference, or None if IG does not have it (yet) or did not answer."""
-        try:
-            r = self.client.request("GET", f"/confirms/{ref}", "1", what="checking a deal confirmation")
-            return r.json()
-        except IGRequestError:
-            return None
+    def _confirmation(self, ref: str, attempts: int = 1) -> dict | None:
+        """IG's confirmation of a deal reference (GET /confirms/{reference}, VERSION 1), tried up to `attempts`
+        times, orders.confirm_wait_seconds apart, while IG answers 404 (not there yet). None if IG does not
+        have it or did not answer."""
+        for k in range(attempts):
+            if k:
+                self.sleep(self.o.confirm_wait_seconds)
+            try:
+                r = self.client.request("GET", f"/confirms/{ref}", "1", what="checking a deal confirmation",
+                                        headers=_headers("1"))
+                return r.json()
+            except IGRequestError as e:
+                if e.status != 404:
+                    return None
+        return None
+
+    def _stop_distance(self, idea: Any, order: Any) -> tuple[Decimal | None, str]:
+        """The stop as a distance in IG's points. The level reversal's stop price becomes the distance from the
+        current price (the bid for a sell, the offer for a buy: the price it opens at) at the moment of sending."""
+        sp = stop_price(self.s, idea)
+        if sp is None:
+            return (order.stop_pips * self.ppp), ""
+        q = self.quote()
+        if not q:
+            return None, "no current price to turn the level reversal's stop price into a distance"
+        bid, offer = (Decimal(str(x)) for x in q)
+        dist = (Decimal(sp) - bid) if idea.direction == "sell" else (offer - Decimal(sp))
+        dist = dist.quantize(Decimal("0.1"))
+        if dist <= 0:
+            return None, (f"the price ({bid if idea.direction == 'sell' else offer}) is already past the level "
+                          f"reversal's stop price ({sp})")
+        return dist, ""
 
     def place(self, idea: Any, *, paused: bool = False, trend_day: str | None = None,
               calendar: list | None = None) -> Result:
@@ -249,31 +287,53 @@ class OrderSender:
             if not d.allowed:
                 self._record("safety refused", strategy=idea.strategy, direction=idea.direction, reasons=d.reasons)
                 return Result(False, "safety refused", reasons=d.reasons)
+            stop_points, why = self._stop_distance(idea, order)
+            if stop_points is None:
+                self._record("safety refused", strategy=idea.strategy, direction=idea.direction, reasons=[why])
+                return Result(False, "safety refused", reasons=[why])
             ref = self._reference()
             tp = take_profit_pips(self.s, idea.strategy, now, self.pair, calendar, direction=idea.direction,
                                   trend_day=trend_day)
-            body = {"epic": self.epic, "expiry": self.o.expiry, "direction": idea.direction.upper(),
-                    "size": float(order.size_gbp_per_pip / self.ppp), "orderType": "MARKET",
-                    "currencyCode": self.o.currency, "forceOpen": True, "guaranteedStop": False,
-                    "dealReference": ref, "limitDistance": float(Decimal(tp) * self.ppp)}
-            sp = stop_price(self.s, idea)
-            if sp is not None:
-                body["stopLevel"] = float(sp)
-            else:
-                body["stopDistance"] = float(order.stop_pips * self.ppp)
+            body = {                                                # exactly AutoBot 161's 17 fields
+                "currencyCode": self.o.currency,
+                "direction": idea.direction.upper(),
+                "epic": self.epic,
+                "expiry": self.o.expiry,
+                "forceOpen": True,                                  # always
+                "guaranteedStop": False,
+                "level": None,
+                "limitDistance": float(Decimal(tp) * self.ppp),
+                "limitLevel": None,
+                "orderType": "MARKET",
+                "quoteId": None,
+                "size": float(order.size_gbp_per_pip / self.ppp),
+                "stopDistance": float(stop_points),                 # always a distance, never stopLevel
+                "stopLevel": None,
+                "trailingStop": False,
+                "trailingStopIncrement": None,
+                "dealReference": ref,
+            }
             self._record("sending", reference=ref, strategy=idea.strategy, direction=idea.direction,
-                         size=Decimal(str(body["size"])), stop_pips=order.stop_pips, take_profit_pips=tp,
-                         idea_time=idea.time, idea_price=idea.entry_price, body=body)
+                         size=Decimal(str(body["size"])), stop_pips=order.stop_pips, stop_distance=stop_points,
+                         take_profit_pips=tp, idea_time=idea.time, idea_price=idea.entry_price, body=body)
             self.unresolved[ref] = {"strategy": idea.strategy, "direction": idea.direction, "size": str(body["size"]),
                                     "stop_pips": str(order.stop_pips)}
             try:
-                self.client.request("POST", "/positions/otc", "2", body, what="placing an order")
+                r = self.client.request("POST", "/positions/otc", "2", body, what="placing an order",
+                                        headers=_headers("2"))
             except IGRequestError as e:
                 if e.status is not None and 400 <= e.status < 500:
                     return self._refused(ref, idea, order, e.error_code or f"HTTP {e.status}")
                 self._record("unclear", reference=ref, error=str(e))
                 return self._settle_unclear(ref, idea, order)
-            c = self._confirmation(ref)
+            try:
+                echoed = (r.json() or {}).get("dealReference")
+            except Exception:                                       # noqa: BLE001
+                echoed = None
+            confirm_ref = echoed or ref                             # as 161: IG's echo if it sends one
+            if confirm_ref != ref:
+                self._record("reference echoed", reference=ref, ig_reference=confirm_ref)
+            c = self._confirmation(confirm_ref, self.o.confirm_attempts)
             if c is None:
                 self._record("unclear", reference=ref, error="no confirmation")
                 return self._settle_unclear(ref, idea, order)
@@ -344,9 +404,9 @@ class OrderSender:
             self._record("close sending", reference=reference, deal_id=t.deal_id, size=size, half=half, why=why, body=body)
             try:
                 r = self.client.request("POST", "/positions/otc", "1", body, what="closing a position",
-                                        headers={"_method": "DELETE"})
+                                        headers=_headers("1", _method="DELETE"))
                 close_ref = (r.json() or {}).get("dealReference")
-                c = self._confirmation(close_ref) if close_ref else None
+                c = self._confirmation(close_ref, self.o.confirm_attempts) if close_ref else None
             except IGRequestError as e:
                 if e.status is not None and 400 <= e.status < 500:
                     return self._close_refused(t, e.error_code or f"HTTP {e.status}")
@@ -379,7 +439,8 @@ class OrderSender:
             if k:
                 self.sleep(self.o.unclear_check_wait_seconds)
             try:
-                r = self.client.request("GET", f"/positions/{t.deal_id}", "2", what="checking a position")
+                r = self.client.request("GET", f"/positions/{t.deal_id}", "2", what="checking a position",
+                                        headers=_headers("2"))
             except IGRequestError as e:
                 if e.status == 404:
                     return self._closed(t, False, t.size, None, None, "the position is gone at IG")

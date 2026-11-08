@@ -25,6 +25,8 @@ What it does:
   3a. Telegram (alerts/): the Sunday and daily "ready" messages (alerts/ready.py),
      and a problem alert for an IG login failure that stops it, the stream going
      quiet while the market is open, any candle store problem, and a crash.
+  3d. The owner's one test order (orders/test_order.py): nothing unless its request file is there; then
+     one order on the demo account, on this service's IG login, closed after its hold time.
   4. On SIGTERM or SIGINT (systemctl stop): stops the stream, logs out of IG
      and exits with code 0.
 
@@ -99,6 +101,19 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
         ready = ReadyAlerts(settings, alerts, lambda: ReadyContext(
             settings, client, stream, {f.pair: f for f in feeds.values()}, door), now=now)
 
+    test_order = None
+    if hasattr(settings, "orders"):
+        from orders.test_order import TestOrder
+        first = settings.pairs_on()[0]
+        feed = feeds[first.market.epic]
+
+        def quote():
+            t = feed.last_tick
+            if t is None or now() - t.time > timedelta(seconds=60):
+                return None
+            return t.sell, t.buy
+        test_order = TestOrder(first, client, alerts, quote, now=now)   # the owner's one test order (orders/test_order.py)
+
     keeper = None
     if hasattr(settings, "news"):
         from news.keeper import NewsKeeper
@@ -109,6 +124,8 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
             ready.tick()
         if keeper is not None:
             keeper.tick()            # the economic calendar: fetched a few times a day, never in a loop
+        if test_order is not None and stream is not None and client.account_active:
+            test_order.tick()        # nothing unless the owner's test order request file is there
         if stop.is_set() and stream is not None:
             stream.request_stop()
         if now() >= next_status[0]:

@@ -81,6 +81,10 @@ deal_reference_prefix = "AB"
 # order is never sent again. STARTING VALUES.
 unclear_checks = 3
 unclear_check_wait_seconds = 2
+# IG's confirmation of a new order or a close (GET /confirms/{reference}) is asked for up to this
+# many times, this many seconds apart, while IG answers 404 (not there yet): as AutoBot 161.
+confirm_attempts = 5
+confirm_wait_seconds = 1
 
 [safety]
 # Total risk across all open trades (each trade's stop distance x its size), at most this
