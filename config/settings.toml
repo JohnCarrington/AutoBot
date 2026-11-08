@@ -109,9 +109,24 @@ reversal_candle_within_candles_of_pierce = 3
 confirmation_candle_within_candles_of_reversal = 3
 
 [slow_grind]
-min_pause_candles = 3
+# Design 3.1 (owner, 8 November 2026: result 13 of the slow grind research, holding rule 2).
+min_pause_candles = 2
 # The EMA a pause must stay under (over, for a buy); a close beyond it cancels (design 3.1).
 ema_periods = 21
+# Its own stop loss and take profit, sent to IG (design 4). On a UK day with big news for the
+# pair the take profit is TAKE_PROFIT_PIPS (100) in .env instead.
+stop_loss_pips = 15
+take_profit_pips = 20
+# Profit lock (design 4): once a trade has been lock_from_pips in profit, it is closed if price
+# comes back to lock_at_pips in profit.
+lock_from_pips = 15
+lock_at_pips = 10
+# No new slow grind trade in the first this many minutes after the week opens (Sunday), nor
+# from rollover_no_new_trades_from to rollover_no_new_trades_until UK (design 6). Also none from
+# hours.close_all_trades_at (20:30) to midnight UK.
+week_open_no_new_trades_minutes = 15
+rollover_no_new_trades_from = "21:55"
+rollover_no_new_trades_until = "22:15"
 
 [ema_pullback]
 # The EMA pullback's own take profit, sent to IG (owner, 7 November 2026; every other

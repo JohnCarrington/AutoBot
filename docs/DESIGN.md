@@ -15,7 +15,7 @@ One program, made of separate parts, each with one job:
 3. **Levels** (`levels/`): pivots, round numbers, highs and lows, turning levels, and which levels line up.
 4. **Rejection** (`rejection/`): one shared part that works out whether price has been rejected at a level or band. The analyser, the strategies and the trade manager all read the same answer.
 5. **Market analyser** (`analyser/`): decides the market state and direction, and which strategies are allowed.
-6. **Strategies** (`strategies/`): slow grind (switched off), EMA pullback, Bollinger band bounce, range trade, breakout (switched off until its stop and take profit are chosen). Each checks its own entry rules.
+6. **Strategies** (`strategies/`): slow grind, EMA pullback, Bollinger band bounce, range trade, breakout (switched off until its stop and take profit are chosen). Each checks its own entry rules.
 7. **Safety rules** (`safety/`): size, number of trades, trading hours, news, total risk, pause switch.
 8. **Order sender** (`orders/`): the only part that places, changes or closes trades at IG.
 9. **Trade manager** (`trade_manager/`): looks after every open trade until it closes.
@@ -38,8 +38,8 @@ Every result gives: the market state, the direction (up, down or none), the type
 | State | Strategies allowed |
 | --- | --- |
 | Ranging | Range trade |
-| Emerging trend | Slow grind, EMA pullback, breakout (3.5), in the trend's direction only |
-| Trend | Slow grind, EMA pullback, breakout (3.5), in the trend's direction only; Bollinger band bounce against the trend's direction only (owner, 7 November 2026) |
+| Emerging trend | EMA pullback, breakout (3.5), in the trend's direction only. Not the slow grind (owner, 8 November 2026) |
+| Trend | Slow grind (either type of trend, slow grind or strong push; owner, 8 November 2026), EMA pullback, breakout (3.5), in the trend's direction only; Bollinger band bounce against the trend's direction only (owner, 7 November 2026) |
 | Possible reversal | Bollinger band bounce |
 | Consolidation | None. Watch and wait for a break |
 
@@ -49,12 +49,12 @@ Every result gives: the market state, the direction (up, down or none), the type
 - **Possible reversal:** after a trend has been running and price has moved at least 30 pips since it started, a strong reversal candle appears, recognised by the shared rejection part with no extra size rule.
 - **Consolidation** (this includes a trend running out of steam): narrow Bollinger bands, price between them touching neither band, small candles with green and red roughly the same size, no direction. Unlike ranging, price stays in the middle. No trading. When price breaks out, the analyser moves to emerging trend.
 
-### 2.3 Direction rule (applies to every strategy except the range trade, the Bollinger band bounce and the breakout)
+### 2.3 Direction rule (applies to every strategy except the range trade, the Bollinger band bounce, the breakout and the slow grind)
 
 - **Buy side:** price above the daily pivot and above the 5-minute 100 EMA.
 - **Sell side:** price below the daily pivot and below the 5-minute 100 EMA.
 - If they disagree, there is no clear direction.
-- This applies to every strategy except the range trade, the Bollinger band bounce and the breakout, which it does not apply to in any state (owner, 7 November 2026). The breakout has its own direction filter instead: the day's move so far (section 3.5).
+- This applies to every strategy except the range trade, the Bollinger band bounce and the breakout (owner, 7 November 2026) and the slow grind (owner, 8 November 2026), which it does not apply to in any state. The breakout has its own direction filter instead: the day's move so far (section 3.5). The slow grind has no direction filter: only the trend's direction (2.2).
 
 Functional test: on 6 November 2026 at 13:00 the signs of a reversal up appeared, but price was below the pivot and the 100 EMA, and carried on down through S2 to S3. Expected answer: no buy at 13:00, and the sell side stays allowed all the way down to S3.
 
@@ -119,13 +119,16 @@ The analyser decides which are allowed. Each strategy then has its own entry rul
 
 ### 3.1 Slow grind (sell)
 
-**Switched off** (owner, 7 November 2026): `STRATEGY_SLOW_GRIND=off`. Its rules stay exactly as written below.
+**Switched on** (owner, 8 November 2026): `STRATEGY_SLOW_GRIND=on`, with result 13 of the slow grind research (`docs/research/slow_grind_variations_20261107.md`) and holding rule 2. Rule 1, the two-candle start, was removed on 7 November 2026; the others keep their numbers.
 
 Price moves in a staircase: it pauses rather than bouncing back to the middle of the band.
 
-2. It counts as a pause once at least 3 candles in a row have failed to make a new low while staying below the 21 EMA.
+2. It counts as a pause once at least 2 candles in a row (`slow_grind.min_pause_candles`) have failed to make a new low while staying below the 21 EMA.
 3. The sell opens as soon as the live price breaks below the lowest point of the pause.
 4. If a candle closes above the 21 EMA, the setup is cancelled. No time limit: a long pause becomes consolidation in the analyser.
+5. Only in a trend (either type, slow grind or strong push), in the trend's direction (2.2); not in an emerging trend. The direction rule (2.3) does not apply, and there is no other direction filter.
+6. Stop loss 15 pips (`slow_grind.stop_loss_pips`); take profit 20 pips (`slow_grind.take_profit_pips`), or 100 pips (`TAKE_PROFIT_PIPS`) for a trade opened on a UK day with big news for the pair; the profit lock 15/10; no close on a rejection at a level (section 4).
+7. New trades at any time the market is open, big-news windows included, except from 20:30 UK to midnight every day, in the first 15 minutes after the Sunday open, and from 21:55 to 22:15 UK. Any slow grind trade still open at 20:30 UK is closed, every day; not closed before big news. One slow grind trade open at a time (section 6).
 
 ### 3.2 EMA pullback (buy)
 
@@ -176,10 +179,11 @@ Spread spikes are ignored in the same way as for the bounce (3.3).
 
 One shared trade manager for every trade.
 
-- **Stop loss:** a fixed 6 pips for every strategy except the EMA pullback, sent to IG. A switch in `.env` (`STOP_LOSS_PIPS`). The EMA pullback's stop is 12 pips (owner, 7 November 2026), its own switch in `.env` (`STOP_LOSS_PIPS_EMA_PULLBACK`).
-- **Take profit:** a fixed 100 pips sent to IG as a safety net, for every strategy except the EMA pullback. A switch in `.env` (`TAKE_PROFIT_PIPS`). The EMA pullback's take profit is 30 pips (owner, 7 November 2026; `ema_pullback.take_profit_pips` in `config/settings.toml`), except that an EMA pullback trade opened on a day with big news for the pair gets the 100 pips of `TAKE_PROFIT_PIPS`. Both are the bot's own rule, not an IG requirement.
+- **Stop loss:** a fixed 6 pips for every strategy except the EMA pullback, the breakout and the slow grind, sent to IG. A switch in `.env` (`STOP_LOSS_PIPS`). The EMA pullback's stop is 12 pips (owner, 7 November 2026), its own switch in `.env` (`STOP_LOSS_PIPS_EMA_PULLBACK`). The breakout's is 6 pips (`breakout.stop_loss_pips`) and the slow grind's 15 pips (owner, 8 November 2026; `slow_grind.stop_loss_pips`), in `config/settings.toml`.
+- **Take profit:** a fixed 100 pips sent to IG as a safety net, for every strategy except the EMA pullback, the breakout and the slow grind. A switch in `.env` (`TAKE_PROFIT_PIPS`). The EMA pullback's take profit is 30 pips (owner, 7 November 2026; `ema_pullback.take_profit_pips` in `config/settings.toml`) and the slow grind's 20 pips (owner, 8 November 2026; `slow_grind.take_profit_pips`), except that an EMA pullback or slow grind trade opened on a day with big news for the pair gets the 100 pips of `TAKE_PROFIT_PIPS`. The breakout's is 50 pips (`breakout.take_profit_pips`). All are the bot's own rule, not an IG requirement.
 - **Breakout exits** (owner, 7 November 2026): a breakout trade runs until its 6-pip stop or 50-pip take profit at IG (`breakout.stop_loss_pips`, `breakout.take_profit_pips`), or 20:30 UK on Friday, when any breakout trade still open is closed. It is not closed at 20:30 on other days (it may be held overnight), not closed before big news, and the close on a rejection at a level does not apply to it.
-- **Holding:** there is no profit lock, and no close when the analyser's state changes (owner, 7 November 2026): a trade (except the EMA pullback, below) runs until one of the exits in this section closes it: the 6-pip stop or the 100-pip take profit at IG, the 20:30 close, the close 15 minutes before big news, the range trade's half close at the opposite band, or the close on a confirmed rejection at a level against the trade.
+- **Slow grind exits** (owner, 8 November 2026): a slow grind trade runs until its 15-pip stop or its take profit at IG (20 pips; 100 pips, `TAKE_PROFIT_PIPS`, for a trade opened on a UK calendar day with a big release for the pair), the profit lock, or 20:30 UK, when any slow grind trade still open is closed, every day. **Profit lock 15/10:** once the trade has been 15 pips in profit (`slow_grind.lock_from_pips`), it is closed if price comes back to 10 pips in profit (`slow_grind.lock_at_pips`); the lock applies from the candle after the one that reached 15 pips. It is not closed before big news, and the close on a rejection at a level does not apply to it. It never opens from 20:30 UK to midnight, so it is never held overnight.
+- **Holding:** there is no profit lock except the slow grind's (above), and no close when the analyser's state changes (owner, 7 November 2026): a trade (except the EMA pullback, the breakout and the slow grind, which have their own exits) runs until one of the exits in this section closes it: the 6-pip stop or the 100-pip take profit at IG, the 20:30 close, the close 15 minutes before big news, the range trade's half close at the opposite band, or the close on a confirmed rejection at a level against the trade.
 - **EMA pullback exits** (owner, 7 November 2026): an EMA pullback trade runs until its 12-pip stop or its take profit at IG (30 pips; 100 pips, `TAKE_PROFIT_PIPS`, for a trade opened on a UK calendar day with a big release for the pair, owner's decision of 7 November 2026), or 20:30 UK on Friday, when any EMA pullback trade still open is closed. It is not closed at 20:30 on other days (it may be held overnight), not closed before big news, and the close on a rejection at a level does not apply to it. It may open at any time the market is open except after 20:30 UK on Friday, and during a big-news window (section 6).
 - **At a level:** the trade stays open while price is only wobbling. If price is rejected at the level against the trade, the trade closes at the same moment a bounce the other way would open: when the live price breaks past the confirmation candle. This never depends on a trade the other way being allowed.
 - **Distance travelled** does not force a close on its own.
@@ -214,13 +218,14 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 ## 6. Limits
 
 - Size: £10 per pip.
-- Trades open at once: 1 per strategy; the bounce may also have 1 in the opposite direction. The EMA pullback is not limited to one trade at a time: it may have several trades open at once, each managed on its own (owner, 7 November 2026). Most at once: 5. EMA pullback trades do not count towards that limit (owner, 7 November 2026).
+- Trades open at once: 1 per strategy (the slow grind too: one slow grind trade at a time, owner, 8 November 2026); the bounce may also have 1 in the opposite direction. The EMA pullback is not limited to one trade at a time: it may have several trades open at once, each managed on its own (owner, 7 November 2026). Most at once: 5. EMA pullback trades do not count towards that limit (owner, 7 November 2026).
 - Total risk across all open trades and available funds are also checked.
 - Trading hours (UK clock time): new trades from 06:00 to 20:30 (switches in `.env`, section 13). Any trade open at 20:30 is closed. Nothing held overnight. A trade opened just before 20:30 is simply closed at 20:30.
 - **EMA pullback hours** (owner, 7 November 2026): the EMA pullback may open at any time the market is open, not only 06:00 to 20:30, except after 20:30 UK on Friday: no new EMA pullback trade opens then, so none is ever held over the weekend. It may be held overnight: it is not closed at 20:30, except on Friday, when any EMA pullback trade still open at 20:30 UK is closed. All other strategies keep the hours above.
+- **Slow grind hours** (owner, 8 November 2026): the slow grind may open at any time the market is open, not only 06:00 to 20:30, except: from 20:30 UK to midnight every day (`hours.close_all_trades_at` to midnight); in the first 15 minutes after the market opens on Sunday (`slow_grind.week_open_no_new_trades_minutes`); and from 21:55 to 22:15 UK (`slow_grind.rollover_no_new_trades_from`, `slow_grind.rollover_no_new_trades_until`). With today's market hours (open Sunday 21:00 UK) the last two fall inside 20:30 to midnight; they are kept so they still hold if either changes. Any slow grind trade still open at 20:30 UK is closed, every day, so none is held overnight. It may open during a big-news window and is not closed before big news.
 - **Breakout hours** (owner, 7 November 2026): new breakout trades only from 06:00 to 20:30 UK, like the other strategies; it may open during a big-news window, may be held overnight, and any breakout trade still open at 20:30 UK on Friday is closed. One breakout trade open at a time (it counts towards "most at once: 5").
 - **Per pair and in total (to be built with the safety rules):** every limit above will apply to each pair on its own, plus a total across all pairs switched on (for example the most trades open at once, and the total risk, across all pairs). Nothing is built for this yet.
-- Big news: no new trades from 15 minutes before to 30 minutes after. Open trades closed 15 minutes before. This does not apply to the EMA pullback or the breakout (owner, 7 November 2026): they may open during the window, and their open trades are not closed before big news. Medium and small news ignored. Which releases count as big comes from AutoBot's own small, medium and big table (built: the owner's table from AutoBot 161, copied as data into `config/news_table.toml`, plus a GBP "Interest Rate" row for the Bank of England decision; `docs/NEWS.md`). News times and figures from Finnhub (built: `news/`, fetched a few times a day by the price service). If the news data is missing or out of date, alert Johnny rather than block trading indefinitely (built: a Telegram problem alert; trading is not blocked by it).
+- Big news: no new trades from 15 minutes before to 30 minutes after. Open trades closed 15 minutes before. This does not apply to the EMA pullback or the breakout (owner, 7 November 2026), or the slow grind (owner, 8 November 2026): they may open during the window, and their open trades are not closed before big news. Medium and small news ignored. Which releases count as big comes from AutoBot's own small, medium and big table (built: the owner's table from AutoBot 161, copied as data into `config/news_table.toml`, plus a GBP "Interest Rate" row for the Bank of England decision; `docs/NEWS.md`). News times and figures from Finnhub (built: `news/`, fetched a few times a day by the price service). If the news data is missing or out of date, alert Johnny rather than block trading indefinitely (built: a Telegram problem alert; trading is not blocked by it).
 
 ---
 
@@ -308,5 +313,5 @@ Remaining, in three rounds:
 - **Shared:** one IG login and one price stream connection for all pairs switched on; one history door, with one weekly budget and IG's one allowance (section 8).
 - **A newly switched-on pair is never filled from IG's history automatically.** Its one-off fill needs Johnny's go-ahead (`python -m prices.history_fill plan|go --pair <PAIR>`), like GBPUSD's first fill.
 - **Limits** will be per pair plus a total across all pairs (section 6). Not built yet.
-- **Switches in `.env`**, checked at start-up and documented in `docs/SETTINGS.md`: the pairs switched on (`PAIRS_ON`, GBPUSD only for now), the trading hours (`NEW_TRADES_FROM` 06:00, `NEW_TRADES_UNTIL` 20:30) each strategy on or off (`STRATEGY_SLOW_GRIND` off, `STRATEGY_EMA_PULLBACK`, `STRATEGY_BOLLINGER_BOUNCE`, `STRATEGY_RANGE_TRADE`, `STRATEGY_BREAKOUT` off), and the stop loss and take profit sent to IG (`STOP_LOSS_PIPS` 6, the EMA pullback's own `STOP_LOSS_PIPS_EMA_PULLBACK` 12, `TAKE_PROFIT_PIPS` 100). Everything else stays in `config/settings.toml`.
+- **Switches in `.env`**, checked at start-up and documented in `docs/SETTINGS.md`: the pairs switched on (`PAIRS_ON`, GBPUSD only for now), the trading hours (`NEW_TRADES_FROM` 06:00, `NEW_TRADES_UNTIL` 20:30) each strategy on or off (`STRATEGY_SLOW_GRIND` on, `STRATEGY_EMA_PULLBACK`, `STRATEGY_BOLLINGER_BOUNCE`, `STRATEGY_RANGE_TRADE`, `STRATEGY_BREAKOUT` off), and the stop loss and take profit sent to IG (`STOP_LOSS_PIPS` 6, the EMA pullback's own `STOP_LOSS_PIPS_EMA_PULLBACK` 12, `TAKE_PROFIT_PIPS` 100). Everything else stays in `config/settings.toml`.
 - More detail: `docs/PAIRS.md`.

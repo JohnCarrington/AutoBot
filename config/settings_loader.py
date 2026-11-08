@@ -317,6 +317,13 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "slow_grind": {
         "min_pause_candles": _whole_number(1, 100),
         "ema_periods": _whole_number(2, 200),
+        "stop_loss_pips": _whole_number(1, 100),
+        "take_profit_pips": _whole_number(1, 1000),
+        "lock_from_pips": _whole_number(1, 1000),
+        "lock_at_pips": _whole_number(0, 1000),
+        "week_open_no_new_trades_minutes": _whole_number(0, 1440),
+        "rollover_no_new_trades_from": _clock_time,
+        "rollover_no_new_trades_until": _clock_time,
     },
     "ema_pullback": {
         "setup_expires_after_minutes": _whole_number(1, 1440),
@@ -578,6 +585,12 @@ def _check_switches(sw: dict[str, Any], v: dict[str, dict[str, Any]], pairs: dic
 
 def _check_together(v: dict[str, dict[str, Any]]) -> None:
     """Checks that involve more than one setting (the hours checks are with the switches)."""
+    sg = v["slow_grind"]
+    if sg["lock_at_pips"] >= sg["lock_from_pips"]:
+        raise SettingsError("Setting [slow_grind] lock_at_pips must be smaller than lock_from_pips.")
+    if sg["rollover_no_new_trades_from"] >= sg["rollover_no_new_trades_until"]:
+        raise SettingsError("Setting [slow_grind] rollover_no_new_trades_from must be earlier than "
+                            "rollover_no_new_trades_until.")
 
 
 def _check_levels_together(v: dict[str, dict[str, Any]]) -> None:

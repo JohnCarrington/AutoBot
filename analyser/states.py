@@ -3,8 +3,9 @@ at a time, on the sell price. Rules in full: docs/ANALYSER.md.
 
 States and the strategies they allow (section 2.2):
   ranging            range trade
-  emerging trend     slow grind, EMA pullback, Bollinger bounce in the trend's direction only
-  trend              the same; with the type of trend: slow grind or strong push
+  emerging trend     EMA pullback, breakout, in the trend's direction only
+  trend              slow grind, EMA pullback, breakout, in the trend's direction only;
+                     Bollinger bounce against it; with the type of trend: slow grind or strong push
   possible reversal  Bollinger bounce
   consolidation      none: watch and wait for a break
 
@@ -62,7 +63,7 @@ UP, DOWN, NONE = "up", "down", "none"
 SLOW_GRIND, STRONG_PUSH = "slow grind", "strong push"
 ALLOWED = {
     RANGING: ("range trade",),
-    EMERGING: ("slow grind", "EMA pullback", "breakout"),
+    EMERGING: ("EMA pullback", "breakout"),
     TREND: ("slow grind", "EMA pullback", "breakout", "Bollinger band bounce (against the trend's direction only)"),
     POSSIBLE_REVERSAL: ("Bollinger band bounce",),
     CONSOLIDATION: (),

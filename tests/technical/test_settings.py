@@ -82,7 +82,9 @@ EXPECTED = {
         "reversal_candle_within_candles_of_pierce": 3,
         "confirmation_candle_within_candles_of_reversal": 3,
     },
-    "slow_grind": {"min_pause_candles": 3, "ema_periods": 21},
+    "slow_grind": {"min_pause_candles": 2, "ema_periods": 21, "stop_loss_pips": 15, "take_profit_pips": 20,
+                   "lock_from_pips": 15, "lock_at_pips": 10, "week_open_no_new_trades_minutes": 15,
+                   "rollover_no_new_trades_from": time(21, 55), "rollover_no_new_trades_until": time(22, 15)},
     "ema_pullback": {
         "setup_expires_after_minutes": 20,
         "entry_beyond_pips": 3,
@@ -452,6 +454,28 @@ def test_the_breakout_switch_is_required_and_cannot_be_on_before_its_stop_and_ta
                                                 "breakout.take_profit_pips are not both chosen"):
             load_settings(_write(tmp_path, data), switches_from=on)
         load_settings(_write(tmp_path, data), switches_from=_env(tmp_path, SWITCHES_OK))   # off: fine
+
+
+def test_the_slow_grind_settings_load_with_the_owners_values():
+    sg = load_settings().slow_grind
+    assert (sg.min_pause_candles, sg.stop_loss_pips, sg.take_profit_pips, sg.lock_from_pips, sg.lock_at_pips) == (2, 15, 20, 15, 10)
+    assert (sg.week_open_no_new_trades_minutes, sg.rollover_no_new_trades_from, sg.rollover_no_new_trades_until) == (
+        15, time(21, 55), time(22, 15))
+
+
+def test_the_slow_grind_lock_and_rollover_window_must_make_sense(tmp_path):
+    data = _raw()
+    data["slow_grind"]["lock_at_pips"] = 15
+    with pytest.raises(SettingsError, match=r"\[slow_grind\] lock_at_pips must be smaller than lock_from_pips"):
+        load_settings(_write(tmp_path, data))
+    data = _raw()
+    data["slow_grind"]["rollover_no_new_trades_until"] = "21:55"
+    with pytest.raises(SettingsError, match="rollover_no_new_trades_from must be earlier"):
+        load_settings(_write(tmp_path, data))
+    data = _raw()
+    data["slow_grind"]["stop_loss_pips"] = 0
+    with pytest.raises(SettingsError, match="stop_loss_pips"):
+        load_settings(_write(tmp_path, data))
 
 
 def test_the_ema_pullback_stop_loss_switch_is_required(tmp_path):

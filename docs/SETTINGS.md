@@ -56,8 +56,15 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `reversal_watch.minutes_after` | The watch ends this many minutes after each time. | 20 minutes |
 | `bounce.reversal_candle_within_candles_of_pierce` | A bounce needs a reversal candle within this many candles of the candle that pierced the band or reached a level. | 3 candles |
 | `bounce.confirmation_candle_within_candles_of_reversal` | A bounce needs a confirmation candle within this many candles of the reversal candle. | 3 candles |
-| `slow_grind.min_pause_candles` | A slow grind's pause must last at least this many candles. | 3 candles |
+| `slow_grind.min_pause_candles` | A slow grind's pause must last at least this many candles. **Owner's value, 8 November 2026.** | 2 candles |
 | `slow_grind.ema_periods` | The EMA a slow grind's pause must stay below (above, for a buy); a candle closing beyond it cancels the setup (design 3.1). | 21 |
+| `slow_grind.stop_loss_pips` | The slow grind's own stop loss, sent to IG with each of its trades (design 4). **Owner's value, 8 November 2026.** | 15 pips |
+| `slow_grind.take_profit_pips` | The slow grind's own take profit, sent to IG with each of its trades; a trade opened on a UK day with big news for the pair gets `TAKE_PROFIT_PIPS` instead (design 4). **Owner's value, 8 November 2026.** | 20 pips |
+| `slow_grind.lock_from_pips` | The slow grind's profit lock (design 4): once a trade has been this many pips in profit... | 15 pips |
+| `slow_grind.lock_at_pips` | ...it is closed if price comes back to this many pips in profit. Must be smaller than `lock_from_pips`. **Owner's values, 8 November 2026.** | 10 pips |
+| `slow_grind.week_open_no_new_trades_minutes` | No new slow grind trade in the first this many minutes after the market opens on Sunday (design 6). **Owner's value, 8 November 2026.** | 15 minutes |
+| `slow_grind.rollover_no_new_trades_from` | No new slow grind trade from this UK time... | 21:55 |
+| `slow_grind.rollover_no_new_trades_until` | ...until this UK time (the 22:00 rollover; design 6). It also opens none from `hours.close_all_trades_at` (20:30) to midnight UK. **Owner's values, 8 November 2026.** | 22:15 |
 | `ema_pullback.setup_expires_after_minutes` | An EMA pullback setup that has not triggered is dropped after this long. | 20 minutes |
 | `ema_pullback.entry_beyond_pips` | Entry is this many pips beyond the high (for a buy) or low (for a sell) of the candles before the pullback. | 3 pips |
 | `ema_pullback.entry_lookback_candles` | How many candles before the pullback are used to find that high or low. | 5 candles |
@@ -354,11 +361,11 @@ These live in `.env` (not in `config/settings.toml`), next to the IG secrets, so
 | `PAIRS_ON` | The pairs switched on, comma-separated. The price service streams each one, into its own candle store. Each must have a `[pairs.<PAIR>]` section in `config/settings.toml`. A newly switched-on pair starts with an empty store and is **never** filled from IG's history automatically: that needs the owner's go-ahead (`python -m prices.history_fill plan|go --pair <PAIR>`). | `GBPUSD` |
 | `NEW_TRADES_FROM` | Trading hours: the earliest UK time a new trade may be opened, `HH:MM`. Must be earlier than `NEW_TRADES_UNTIL`. | 06:00 |
 | `NEW_TRADES_UNTIL` | Trading hours: the latest UK time a new trade may be opened, `HH:MM`. Must not be later than `hours.close_all_trades_at`. | 20:30 |
-| `STRATEGY_SLOW_GRIND` | The slow grind strategy, `on` or `off`. **Switched off** by the owner, 7 November 2026. | off |
+| `STRATEGY_SLOW_GRIND` | The slow grind strategy (design 3.1), `on` or `off`. Switched off by the owner on 7 November 2026; **switched on** on 8 November 2026. | on |
 | `STRATEGY_EMA_PULLBACK` | The EMA pullback strategy, `on` or `off`. | on |
 | `STRATEGY_BOLLINGER_BOUNCE` | The Bollinger band bounce strategy, `on` or `off`. | on |
 | `STRATEGY_RANGE_TRADE` | The range trade strategy, `on` or `off`. | on |
 | `STRATEGY_BREAKOUT` | The breakout strategy (design 3.5), `on` or `off`. The bot refuses to start with it on while `breakout.stop_loss_pips` or `breakout.take_profit_pips` is 0. Switched on by the owner, 7 November 2026. | on |
-| `STOP_LOSS_PIPS` | The stop loss sent with every trade, for every strategy except the EMA pullback (which has `STOP_LOSS_PIPS_EMA_PULLBACK`), in pips: a whole number from 1 to 100. Turned into IG's points per pair (`pairs.PAIR.pip_size` x `pairs.PAIR.price_scale`). Moved from `trade.stop_loss_pips` in `config/settings.toml` on 7 November 2026. | 6 |
+| `STOP_LOSS_PIPS` | The stop loss sent with every trade, for every strategy except the EMA pullback (which has `STOP_LOSS_PIPS_EMA_PULLBACK`), the breakout (`breakout.stop_loss_pips`) and the slow grind (`slow_grind.stop_loss_pips`), in pips: a whole number from 1 to 100. Turned into IG's points per pair (`pairs.PAIR.pip_size` x `pairs.PAIR.price_scale`). Moved from `trade.stop_loss_pips` in `config/settings.toml` on 7 November 2026. | 6 |
 | `STOP_LOSS_PIPS_EMA_PULLBACK` | The EMA pullback's stop loss, sent with each of its trades, in pips: a whole number from 1 to 100. Turned into IG's points per pair like `STOP_LOSS_PIPS`. **Owner's value, 7 November 2026.** | 12 |
 | `TAKE_PROFIT_PIPS` | The take profit sent to IG with every trade, in pips: a whole number from 1 to 1000. The bot may close earlier itself; this is the backstop. Moved from `trade.take_profit_pips` on 7 November 2026. | 100 |

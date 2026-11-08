@@ -6,15 +6,16 @@ reached, all of these allow it (design sections 2.2 and 2.3; checked at entry
 only, owner 7 November 2026):
   1. its switch in .env is on (STRATEGY_SLOW_GRIND, ...);
   2. the analyser's current state allows the strategy (section 2.2): ranging ->
-     range trade; emerging trend and trend -> slow grind, EMA pullback IN THE
-     TREND'S DIRECTION ONLY; trend -> also Bollinger bounce, AGAINST THE TREND'S
-     DIRECTION ONLY (owner, 7 November 2026); possible reversal -> Bollinger
-     bounce, either way; consolidation -> none;
+     range trade; emerging trend and trend -> EMA pullback and breakout IN THE
+     TREND'S DIRECTION ONLY; trend only -> slow grind, IN THE TREND'S DIRECTION
+     ONLY (owner, 8 November 2026); trend -> also Bollinger bounce, AGAINST THE
+     TREND'S DIRECTION ONLY (owner, 7 November 2026); possible reversal ->
+     Bollinger bounce, either way; consolidation -> none;
   3. the direction rule allows that direction (section 2.3): a buy needs buy
      side (price above the daily pivot and the 5-minute 100 EMA), a sell needs
-     sell side. It does not apply to the range trade, the Bollinger bounce or
-     the breakout, in any state (owner, 7 November 2026); the rule's answer is
-     still recorded.
+     sell side. It does not apply to the range trade, the Bollinger bounce, the
+     breakout (owner, 7 November 2026) or the slow grind (owner, 8 November
+     2026), in any state; the rule's answer is still recorded.
 "The current state" is the analyser's state after the last finished 5-minute
 candle, and the direction rule uses the entry price. A candidate that fails a
 check is kept as BLOCKED with the reason, never as an idea.
@@ -36,13 +37,20 @@ SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE, BREAKOUT = (
     "slow grind", "EMA pullback", "Bollinger bounce", "range trade", "breakout")
 SWITCH = {SLOW_GRIND: "slow_grind", EMA_PULLBACK: "ema_pullback", BOLLINGER_BOUNCE: "bollinger_bounce",
           RANGE_TRADE: "range_trade", BREAKOUT: "breakout"}
-# Held overnight, not closed before big news, closed at 20:30 UK on Friday (owner, 7 November 2026).
+# Held overnight and closed at 20:30 UK on Friday only (owner, 7 November 2026); every other
+# strategy is closed at 20:30 UK every day.
 OWN_HOURS = (EMA_PULLBACK, BREAKOUT)
+# May open in a big-news window and not closed before big news (owner, 7 and 8 November 2026).
+NEWS_ALLOWED = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND)
+# Not closed on a rejection at a level (owner, 7 and 8 November 2026).
+NO_LEVEL_CLOSE = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND)
+# The direction rule (section 2.3) does not apply to these (owner, 7 and 8 November 2026).
+NO_DIRECTION_RULE = (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND)
 BUY, SELL = "buy", "sell"
 # Section 2.2: which states allow which strategy: "any" direction, only in the trend's direction
 # ("trend"), or only against it ("against").
 ALLOWED_IN = {
-    SLOW_GRIND: {EMERGING: "trend", TREND: "trend"},
+    SLOW_GRIND: {TREND: "trend"},                      # trend only (owner, 8 November 2026)
     EMA_PULLBACK: {EMERGING: "trend", TREND: "trend"},
     BOLLINGER_BOUNCE: {TREND: "against", POSSIBLE_REVERSAL: "any"},
     RANGE_TRADE: {RANGING: "any"},
@@ -100,6 +108,10 @@ def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: lis
     EMA pullback: any time the market is open, big-news windows included, except after
     hours.close_all_trades_at (20:30) UK on Friday, so none is held over the weekend (owner,
     7 November 2026).
+    Slow grind (owner, 8 November 2026): any time the market is open, big-news windows included,
+    except from hours.close_all_trades_at (20:30) to midnight UK every day, in the first
+    slow_grind.week_open_no_new_trades_minutes (15) after the week opens, and from
+    slow_grind.rollover_no_new_trades_from (21:55) to slow_grind.rollover_no_new_trades_until (22:15) UK.
     Breakout: UK time from NEW_TRADES_FROM to NEW_TRADES_UNTIL; big-news windows allowed.
     Every other strategy: UK time from NEW_TRADES_FROM to NEW_TRADES_UNTIL, and not in a big-news
     no-new-trades window."""
@@ -107,9 +119,25 @@ def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: lis
     from news.calendar import no_new_trades
     from prices.calendar import MarketHours
     reasons = []
-    if not MarketHours(settings.market_hours).is_open(t):
+    hours = MarketHours(settings.market_hours)
+    if not hours.is_open(t):
         reasons.append("the market is closed")
     tz = settings.hours.timezone
+    if strategy == SLOW_GRIND:
+        from datetime import timedelta
+        sg = settings.slow_grind
+        lt = t.astimezone(ZoneInfo(tz) if isinstance(tz, str) else tz).time()
+        if lt >= settings.hours.close_all_trades_at:
+            reasons.append(f"from {settings.hours.close_all_trades_at:%H:%M} UK to midnight: no new {strategy} trade")
+        if sg.rollover_no_new_trades_from <= lt < sg.rollover_no_new_trades_until:
+            reasons.append(f"from {sg.rollover_no_new_trades_from:%H:%M} to {sg.rollover_no_new_trades_until:%H:%M} UK "
+                           f"(the rollover): no new {strategy} trade")
+        if hours.is_open(t):
+            opened = hours.session(t)[0]
+            if t < opened + timedelta(minutes=sg.week_open_no_new_trades_minutes):
+                reasons.append(f"in the first {sg.week_open_no_new_trades_minutes} minutes after the week opened: "
+                               f"no new {strategy} trade")
+        return reasons
     if strategy == EMA_PULLBACK:
         lt = t.astimezone(ZoneInfo(tz) if isinstance(tz, str) else tz)
         if lt.weekday() == 4 and lt.time() >= settings.hours.close_all_trades_at:
@@ -130,7 +158,9 @@ def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: lis
 
 def forced_close_at(settings: Any, strategy: str, opened: datetime) -> datetime:
     """When a trade opened at `opened` is closed by the clock: hours.close_all_trades_at (20:30) UK,
-    the first one after it opened; for the EMA pullback, the first FRIDAY 20:30 UK after it opened."""
+    the first one after it opened; for the EMA pullback and the breakout, the first FRIDAY 20:30 UK
+    after it opened. (A slow grind trade never opens between 20:30 and midnight UK, so it is
+    always closed at 20:30 the day it opened.)"""
     from datetime import datetime as dt, timedelta, timezone
     from zoneinfo import ZoneInfo
     tz = settings.hours.timezone
@@ -145,14 +175,24 @@ def forced_close_at(settings: Any, strategy: str, opened: datetime) -> datetime:
 
 
 def closed_before_big_news(strategy: str) -> bool:
-    """Open trades are closed 15 minutes before big news, except the EMA pullback's and the breakout's."""
-    return strategy not in OWN_HOURS
+    """Open trades are closed 15 minutes before big news, except the EMA pullback's, the breakout's
+    and the slow grind's."""
+    return strategy not in NEWS_ALLOWED
 
 
 def closed_on_level_rejection(strategy: str) -> bool:
-    """Section 4's close on a confirmed rejection at a level, for every strategy except the EMA pullback
-    and the breakout."""
-    return strategy not in (EMA_PULLBACK, BREAKOUT)
+    """Section 4's close on a confirmed rejection at a level, for every strategy except the EMA pullback,
+    the breakout and the slow grind."""
+    return strategy not in NO_LEVEL_CLOSE
+
+
+def profit_lock(settings: Any, strategy: str) -> tuple[int, int] | None:
+    """Section 4's profit lock as (from, at) in pips: once a trade has been `from` pips in profit it is
+    closed if price comes back to `at` pips in profit. Only the slow grind has one (15, 10; owner,
+    8 November 2026); None for every other strategy."""
+    if strategy != SLOW_GRIND:
+        return None
+    return settings.slow_grind.lock_from_pips, settings.slow_grind.lock_at_pips
 
 
 def big_news_day(settings: Any, pair: str, t: datetime, calendar: list | None = None) -> bool:
@@ -170,17 +210,19 @@ def big_news_day(settings: Any, pair: str, t: datetime, calendar: list | None = 
 
 def take_profit_pips(settings: Any, strategy: str, opened: datetime | None = None, pair: str | None = None,
                      calendar: list | None = None) -> int:
-    """Design section 4: every strategy uses TAKE_PROFIT_PIPS (100), except the EMA pullback: its own
-    ema_pullback.take_profit_pips (30), or TAKE_PROFIT_PIPS for a trade opened on a UK day with big news
-    for the pair (owner, 7 November 2026). Give `opened` and `pair` for an EMA pullback trade; without
-    them its normal take profit (30) is returned."""
+    """Design section 4: every strategy uses TAKE_PROFIT_PIPS (100), except
+    - the EMA pullback: its own ema_pullback.take_profit_pips (30) (owner, 7 November 2026);
+    - the slow grind: its own slow_grind.take_profit_pips (20) (owner, 8 November 2026);
+      each of these two gets TAKE_PROFIT_PIPS instead for a trade opened on a UK day with big news
+      for the pair. Give `opened` and `pair`; without them the normal take profit is returned;
+    - the breakout: breakout.take_profit_pips (50) on any day."""
     if strategy == BREAKOUT:
-        return settings.breakout.take_profit_pips          # 0: not chosen yet
-    if strategy != EMA_PULLBACK:
+        return settings.breakout.take_profit_pips
+    if strategy not in (EMA_PULLBACK, SLOW_GRIND):
         return settings.switches.take_profit_pips
     if opened is not None and pair is not None and big_news_day(settings, pair, opened, calendar):
         return settings.switches.take_profit_pips
-    return settings.ema_pullback.take_profit_pips
+    return settings.ema_pullback.take_profit_pips if strategy == EMA_PULLBACK else settings.slow_grind.take_profit_pips
 
 
 def counts_towards_most_at_once(strategy: str) -> bool:
@@ -189,11 +231,14 @@ def counts_towards_most_at_once(strategy: str) -> bool:
 
 
 def stop_loss_pips(settings: Any, strategy: str) -> int:
-    """Design section 4: the EMA pullback's own stop (STOP_LOSS_PIPS_EMA_PULLBACK); every other
+    """Design section 4: the EMA pullback's own stop (STOP_LOSS_PIPS_EMA_PULLBACK), the breakout's
+    (breakout.stop_loss_pips) and the slow grind's (slow_grind.stop_loss_pips, 15); every other
     strategy uses STOP_LOSS_PIPS."""
     sw = settings.switches
     if strategy == BREAKOUT:
-        return settings.breakout.stop_loss_pips            # 0: not chosen yet
+        return settings.breakout.stop_loss_pips
+    if strategy == SLOW_GRIND:
+        return settings.slow_grind.stop_loss_pips
     return sw.stop_loss_pips_ema_pullback if strategy == EMA_PULLBACK else sw.stop_loss_pips
 
 
@@ -216,7 +261,7 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
             how = "in" if ok_in[state.state] == "trend" else "against"
             reasons.append(f"the {state.state} is {state.direction}: {strategy} only {how} the trend's direction")
     need = BUY_SIDE if direction == BUY else SELL_SIDE
-    if rule.side != need and strategy not in (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT):
+    if rule.side != need and strategy not in NO_DIRECTION_RULE:
         reasons.append(f"the direction rule says {rule.side} ({rule.reason})")
     return reasons, rule
 
@@ -230,7 +275,7 @@ def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | N
     if reasons:
         idea.allowed, idea.blocked_by = False, "; ".join(reasons)
     else:
-        exempt = c.strategy in (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT)
+        exempt = c.strategy in NO_DIRECTION_RULE
         idea.steps.append(f"allowed at entry: {c.strategy} in a {state.state} {state.direction}; direction rule "
                           f"{rule.side} ({rule.reason.replace('the price', 'the entry price')})"
                           + (f"; the direction rule does not apply to {c.strategy}" if exempt else ""))

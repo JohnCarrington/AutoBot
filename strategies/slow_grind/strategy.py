@@ -3,7 +3,7 @@ Sell (bid) price, 5-minute candles. Only the rules written in 3.1 (rule 1, the
 two-candle start, was removed by the owner on 7 November 2026; the others keep
 their numbers):
 
-  2. It counts as a pause once at least slow_grind.min_pause_candles (3)
+  2. It counts as a pause once at least slow_grind.min_pause_candles (2)
      candles in a row have failed to make a new low while staying below the
      slow_grind.ema_periods (21) EMA.
   3. The sell opens as soon as price breaks below the lowest point of the pause.
@@ -26,6 +26,12 @@ Choices section 3.1 does not make (the simplest, adding no rule; listed for the 
   * so in each direction there is one row at a time, by the meaning of
     "in a row", not by a limit.
 With stored candles the break is found from a candle's low. Ideas only.
+
+Switched on by the owner on 8 November 2026. Its other rules (3.1 rules 5 to 7) are shared
+checks in strategies/common.py: trend only, in the trend's direction, no direction rule;
+its own stop (15), take profit (20, or 100 on a big-news day) and profit lock (15/10); new
+trades any time except 20:30 to midnight UK, the first 15 minutes after the Sunday open and
+21:55 to 22:15 UK; big news allowed; closed at 20:30 UK every day; no level close.
 """
 
 from __future__ import annotations

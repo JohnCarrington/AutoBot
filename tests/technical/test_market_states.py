@@ -123,7 +123,7 @@ def test_a_close_beyond_a_band_breaks_out_of_consolidation_at_once(st):
     (ch,) = run(m, [(0, F(0, c=11640, lower=11645))])
     assert (ch.state, ch.direction, ch.previous_state) == (EMERGING, DOWN, CONSOLIDATION)
     assert ch.reason.startswith("broke out of the consolidation: close 11640.0 below the lower band 11645.0")
-    assert m.now.strategies_allowed[0] == "slow grind"
+    assert m.now.strategies_allowed[0] == "EMA pullback"
 
 
 def test_a_level_rejection_starts_an_emerging_trend_but_a_band_only_rejection_does_not(st):

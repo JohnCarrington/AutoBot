@@ -33,6 +33,17 @@ def S(pretend_switches):
     return load_settings(switches_from=pretend_switches).for_pair("GBPUSD")
 
 
+class over:
+    """The real settings with some values of one section changed (everything else read through)."""
+    def __init__(self, base, section, **values):
+        self._base, self._section = base, section
+        items = {k: v for k, v in vars(getattr(base, section)).items() if not k.startswith("_")}
+        self._values = SimpleNamespace(**(items | values))
+
+    def __getattr__(self, name):
+        return self._values if name == self._section else getattr(self._base, name)
+
+
 def changed(s, section, **values):
     """The settings with some values of one section changed."""
     base = {k: v for k, v in vars(getattr(s, section)).items() if not k.startswith("_")}
@@ -83,7 +94,7 @@ def test_a_strategy_switched_off_has_no_ideas(S):
 # Section 2.2, every state against every strategy (a sell, with the state's direction down)
 @pytest.mark.parametrize("st,allowed", [
     (RANGING, {RANGE_TRADE}),
-    (EMERGING, {SLOW_GRIND, EMA_PULLBACK}),
+    (EMERGING, {EMA_PULLBACK}),                    # the slow grind: trend only (owner, 8 November 2026)
     (TREND, {SLOW_GRIND, EMA_PULLBACK}),           # a sell in a down trend: the bounce only against it
     (POSSIBLE_REVERSAL, {BOLLINGER_BOUNCE}),
     (CONSOLIDATION, set()),
@@ -94,8 +105,7 @@ def test_which_states_allow_which_strategies(S, st, allowed):
         assert i.allowed == (name in allowed), (st, name, i.blocked_by)
 
 
-@pytest.mark.parametrize("st", [EMERGING, TREND])
-@pytest.mark.parametrize("name", [SLOW_GRIND, EMA_PULLBACK])
+@pytest.mark.parametrize("name,st", [(EMA_PULLBACK, EMERGING), (EMA_PULLBACK, TREND), (SLOW_GRIND, TREND)])
 def test_in_a_trend_only_the_trends_direction(S, name, st):
     assert check(S, "GBPUSD", cand(name, SELL), state(st, DOWN), PIVOT, EMA100).allowed
     against = check(S, "GBPUSD", cand(name, BUY, 120), state(st, DOWN), PIVOT, EMA100)
@@ -132,7 +142,7 @@ def test_a_bounce_in_consolidation_is_still_not_allowed(S):
 def test_the_ema_pullback_has_its_own_stop_loss(S):
     from strategies.common import stop_loss_pips
     assert stop_loss_pips(S, EMA_PULLBACK) == 12
-    for name in (SLOW_GRIND, BOLLINGER_BOUNCE, RANGE_TRADE):
+    for name in (BOLLINGER_BOUNCE, RANGE_TRADE):
         assert stop_loss_pips(S, name) == 6
 
 
@@ -155,7 +165,7 @@ def test_range_trade_both_ways_when_ranging(S):
     (100, None, 110, False, False, "no clear direction"),    # no pivot
     (100, 110, None, False, False, "no clear direction"),    # no 100 EMA
 ])
-@pytest.mark.parametrize("name", [SLOW_GRIND, EMA_PULLBACK])
+@pytest.mark.parametrize("name", [EMA_PULLBACK])        # not the slow grind since 8 November 2026
 def test_the_direction_rule_uses_the_entry_price(S, name, price, pivot, ema100, buy_ok, sell_ok, said):
     piv = D(pivot) if pivot is not None else None
     e = D(ema100) if ema100 is not None else None
@@ -208,6 +218,13 @@ def test_every_reason_for_blocking_is_given(S):
 EMA21 = D(120)          # above every made-up price: closes stay below it
 
 
+@pytest.fixture
+def S3(S):
+    """The mechanism tests below are written with a 3-candle pause (the owner's value is 2 since
+    8 November 2026: test_slow_grind_the_owners_pause_is_2_candles)."""
+    return over(S, "slow_grind", min_pause_candles=3)
+
+
 def grind(s, candles, ema=EMA21):
     g = SlowGrind(s)
     return [(c, x) for c in candles for x in g.on_candle(c, ema)]
@@ -220,76 +237,83 @@ PAUSE = [C(0, 105, 106, 100, 101),         # the first candle watched: the refer
 BREAK = C(4, 102, 102, 100.1, 100.5)       # goes below 100.2 (not below the reference 100)
 
 
-def test_slow_grind_sell_opens_below_the_lowest_point_of_the_pause(S):
-    (c, x), = grind(S, PAUSE + [BREAK])
+def test_slow_grind_sell_opens_below_the_lowest_point_of_the_pause(S3):
+    (c, x), = grind(S3, PAUSE + [BREAK])
     assert (x.strategy, x.direction, x.entry_price, x.time) == (SLOW_GRIND, SELL, D("100.2"), BREAK.start)
     assert "the last low made: 100" in x.steps[0] and "a pause: 3 candles in a row" in x.steps[1]
     assert "its lowest point 100.2" in x.steps[1] and "broke below" in x.steps[2]
 
 
-def test_slow_grind_a_candle_opening_below_it_enters_at_its_open(S):
-    (_, x), = grind(S, PAUSE + [C(4, 99, 99.5, 98, 98.5)])
+def test_slow_grind_a_candle_opening_below_it_enters_at_its_open(S3):
+    (_, x), = grind(S3, PAUSE + [C(4, 99, 99.5, 98, 98.5)])
     assert x.entry_price == D(99)
 
 
-def test_slow_grind_needs_three_candles_in_a_row(S):
-    assert grind(S, PAUSE[:3] + [C(3, 101.5, 102, 99, 99.5)]) == []        # a new low after 2: no pause
+def test_slow_grind_needs_the_pause_length_in_a_row(S3):
+    assert grind(S3, PAUSE[:3] + [C(3, 101.5, 102, 99, 99.5)]) == []        # a new low after 2: no pause
 
 
-def test_slow_grind_the_pause_length_is_a_setting(S):
-    s = changed(S, "slow_grind", min_pause_candles=4)
+def test_slow_grind_the_pause_length_is_a_setting(S3):
+    s = changed(S3, "slow_grind", min_pause_candles=4)
     assert grind(s, PAUSE + [C(4, 102, 102, 100.3, 101)]) == []
     assert [x.entry_price for _, x in grind(s, PAUSE + [C(4, 102, 102, 100.3, 101), BREAK])] == [D("100.2")]
 
 
-def test_slow_grind_no_colour_or_size_test(S):
+def test_slow_grind_no_colour_or_size_test(S3):
     greens = [C(0, 99, 106, 100, 101), C(1, "100.3", "100.7", "100.2", "100.6"),    # every candle green, tiny
               C(2, "100.4", "100.8", "100.3", "100.7"), C(3, "100.5", "100.9", "100.4", "100.8"),
               C(4, "100.5", "100.5", "99.9", "100")]
-    assert [x.entry_price for _, x in grind(S, greens)] == [D("100.2")]
+    assert [x.entry_price for _, x in grind(S3, greens)] == [D("100.2")]
 
 
-def test_slow_grind_a_close_above_the_21_ema_cancels_and_the_next_candle_is_the_reference(S):
-    g, out = SlowGrind(S), []
+def test_slow_grind_a_close_above_the_21_ema_cancels_and_the_next_candle_is_the_reference(S3):
+    g, out = SlowGrind(S3), []
     for c, e in zip(PAUSE + [BREAK], [EMA21] * 3 + [D(101), EMA21]):       # candle 3 closes 102, above 101
         out += g.on_candle(c, e)
     assert out == [] and g.watch[SELL].ref is BREAK and g.watch[SELL].row == []
 
 
-def test_slow_grind_a_new_low_before_the_pause_counts_is_the_next_reference(S):
+def test_slow_grind_a_new_low_before_the_pause_counts_is_the_next_reference(S3):
     candles = PAUSE[:2] + [C(2, 102, 102.5, 99.5, 101),     # a new low 99.5: the row starts again from here
                            C(3, 101, 102, 100, 101.5), C(4, 101.5, 102, 100.5, 101), C(5, 101, 101.8, 99.8, 101.2),
                            C(6, 101.2, 101.2, 99.6, 99.7)]
-    assert [x.entry_price for _, x in grind(S, candles)] == [D("99.8")]
+    assert [x.entry_price for _, x in grind(S3, candles)] == [D("99.8")]
 
 
-def test_slow_grind_a_close_exactly_on_the_ema_starts_the_row_again(S):
-    g, out = SlowGrind(S), []
+def test_slow_grind_a_close_exactly_on_the_ema_starts_the_row_again(S3):
+    g, out = SlowGrind(S3), []
     for c, e in zip(PAUSE + [BREAK], [EMA21, EMA21, D("101.5"), EMA21, EMA21]):   # candle 2 closes on it
         out += g.on_candle(c, e)
     assert out == []
 
 
-def test_slow_grind_one_row_at_a_time_so_one_idea(S):
-    assert len(grind(S, PAUSE + [BREAK])) == 1
+def test_slow_grind_one_row_at_a_time_so_one_idea(S3):
+    assert len(grind(S3, PAUSE + [BREAK])) == 1
 
 
-def test_slow_grind_the_breaking_candle_is_the_next_reference(S):
+def test_slow_grind_the_breaking_candle_is_the_next_reference(S3):
     after = [C(5 + k, 100.5, 101, 100.2, 100.6) for k in range(3)] + [C(8, 100.6, 100.6, 100, 100.1)]
-    assert [x.entry_price for _, x in grind(S, PAUSE + [BREAK] + after)] == [D("100.2"), D("100.2")]
+    assert [x.entry_price for _, x in grind(S3, PAUSE + [BREAK] + after)] == [D("100.2"), D("100.2")]
 
 
-def test_slow_grind_no_time_limit(S):
+def test_slow_grind_no_time_limit(S3):
     waiting = [C(4 + k, 101, 102, 100.3, 101.5) for k in range(30)]
-    assert [x.entry_price for _, x in grind(S, PAUSE + waiting + [C(34, 101, 101, 99, 99.5)])] == [D("100.2")]
+    assert [x.entry_price for _, x in grind(S3, PAUSE + waiting + [C(34, 101, 101, 99, 99.5)])] == [D("100.2")]
 
 
-def test_slow_grind_buy_is_the_mirror_image(S):
+def test_slow_grind_buy_is_the_mirror_image(S3):
     m = lambda x: 200 - x  # noqa: E731     (a mirror: highs become lows)
     mirrored = [C(i, m(c.sell_open), m(c.sell_low), m(c.sell_high), m(c.sell_close))
                 for i, c in enumerate(PAUSE + [BREAK])]
-    (_, x), = grind(S, mirrored, ema=D(80))
+    (_, x), = grind(S3, mirrored, ema=D(80))
     assert (x.direction, x.entry_price) == (BUY, D("99.8"))
+
+
+def test_slow_grind_the_owners_pause_is_2_candles(S):
+    assert S.slow_grind.min_pause_candles == 2
+    (_, x), = grind(S, PAUSE[:3] + [C(3, 101.5, 102.5, 100.2, 102)])   # 2 in a row (lowest 100.5), then below it
+    assert x.entry_price == D("100.5") and "a pause: 2 candles in a row" in x.steps[1]
+    assert grind(S, PAUSE[:2] + [C(2, 102, 103, 100.2, 101.5)]) == []    # 1 candle in a row is not a pause
 
 
 # ---- 3.2 EMA pullback -----------------------------------------------------------------------
@@ -521,6 +545,7 @@ def fake_replay(monkeypatch, S, states):
     """A slow grind sell: the pause counts at candle 3 and price breaks it on candle 4.
     `states`: {candle number: (state, direction) from that candle on}."""
     candles = PAUSE + [BREAK]
+    S = over(S, "slow_grind", min_pause_candles=3)
     hist = [(SimpleNamespace(candle=c, upper=None, middle=None, lower=None), None, None, [], None, None)
             for c in candles]
     tracker = SimpleNamespace(history=hist, week_open=START, watcher=None, replay=lambda end: None,
@@ -560,7 +585,7 @@ from strategies.common import closed_before_big_news, closed_on_level_rejection,
 U = lambda *a: datetime(*a, tzinfo=timezone.utc)  # noqa: E731
 BOE_CAL = [{"time_utc": "2026-11-05T12:00:00Z", "country": "GB", "event": "BoE Interest Rate Decision",
             "estimate": 4.0, "prev": 4.0, "actual": None, "impact": "high", "unit": "%"}]
-OTHERS = (SLOW_GRIND, BOLLINGER_BOUNCE, RANGE_TRADE)
+OTHERS = (BOLLINGER_BOUNCE, RANGE_TRADE)      # the slow grind has its own rules since 8 November 2026
 
 
 @pytest.mark.parametrize("t", [U(2026, 11, 3, 3, 0), U(2026, 11, 3, 23, 0), U(2026, 11, 1, 21, 5), U(2026, 11, 5, 21, 30)])
@@ -590,7 +615,7 @@ def test_the_big_news_window_stops_every_strategy_but_the_ema_pullback(S):
     assert may_open(S, "GBPUSD", EMA_PULLBACK, t, BOE_CAL) == []
     for name in OTHERS:
         assert any("big-news window" in r for r in may_open(S, "GBPUSD", name, t, BOE_CAL))
-    assert closed_before_big_news(EMA_PULLBACK) is False
+    assert closed_before_big_news(EMA_PULLBACK) is False and closed_before_big_news(SLOW_GRIND) is False
     assert all(closed_before_big_news(n) for n in OTHERS)
 
 
@@ -827,3 +852,83 @@ def test_the_replay_gives_the_breakout_the_analysers_breakout(monkeypatch, S):
     assert (i.direction, i.entry_price, i.state) == (BUY, D(106), EMERGING)
     assert not i.allowed and i.blocked_by == "its switch STRATEGY_BREAKOUT is off"      # the pretend switches: off
     assert (i.context["base_low"], i.context["base_high"], i.context["day_open"]) == (D(98), D(103), D(100))
+
+
+# ---- the slow grind switched on (owner, 8 November 2026: design 2.2, 2.3, 3.1, 4, 6) ----------
+
+from datetime import time as _time  # noqa: E402
+
+from strategies.common import (counts_towards_most_at_once, profit_lock, stop_loss_pips,  # noqa: E402
+                               take_profit_pips)
+
+
+def test_slow_grind_only_in_a_trend_in_the_trends_direction(S):
+    for kind in ("slow grind", "strong push"):
+        assert check(S, "GBPUSD", cand(SLOW_GRIND, SELL, 100), state(TREND, DOWN, kind), PIVOT, EMA100).allowed
+        assert check(S, "GBPUSD", cand(SLOW_GRIND, BUY, 120), state(TREND, UP, kind), PIVOT, EMA100).allowed
+    assert "only in the trend's direction" in check(S, "GBPUSD", cand(SLOW_GRIND, BUY, 120), state(TREND, DOWN),
+                                                     PIVOT, EMA100).blocked_by
+    for st in (EMERGING, RANGING, CONSOLIDATION, POSSIBLE_REVERSAL):
+        assert "does not allow slow grind" in check(S, "GBPUSD", cand(SLOW_GRIND, SELL, 100), state(st, DOWN),
+                                                    PIVOT, EMA100).blocked_by
+    from analyser.states import ALLOWED
+    assert "slow grind" in ALLOWED[TREND] and "slow grind" not in ALLOWED[EMERGING]
+
+
+def test_slow_grind_has_no_direction_rule(S):
+    for price in (100, 120):                               # sell side and buy side: the rule does not apply
+        i = check(S, "GBPUSD", cand(SLOW_GRIND, SELL, price), state(TREND, DOWN), PIVOT, EMA100)
+        assert i.allowed and "the direction rule does not apply to slow grind" in i.steps[-1]
+    i = check(S, "GBPUSD", cand(SLOW_GRIND, BUY, 100), state(TREND, UP), PIVOT, EMA100)
+    assert i.allowed and i.direction_rule == "sell side"   # still recorded
+
+
+def test_slow_grind_its_own_stop_take_profit_and_lock(S):
+    cal = [_ev("2026-11-05T12:00:00Z", "GB", "BoE Interest Rate Decision")]
+    assert stop_loss_pips(S, SLOW_GRIND) == 15
+    assert take_profit_pips(S, SLOW_GRIND) == 20
+    assert take_profit_pips(S, SLOW_GRIND, U(2026, 11, 4, 9, 0), "GBPUSD", cal) == 20
+    assert take_profit_pips(S, SLOW_GRIND, U(2026, 11, 5, 1, 55), "GBPUSD", cal) == 100     # big-news day
+    assert profit_lock(S, SLOW_GRIND) == (15, 10)
+    for name in (EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE, BREAKOUT):
+        assert profit_lock(S, name) is None
+
+
+def test_slow_grind_values_are_settings(S):
+    s = over(S, "slow_grind", stop_loss_pips=9, take_profit_pips=40, lock_from_pips=20, lock_at_pips=5)
+    assert (stop_loss_pips(s, SLOW_GRIND), take_profit_pips(s, SLOW_GRIND), profit_lock(s, SLOW_GRIND)) == (9, 40, (20, 5))
+
+
+@pytest.mark.parametrize("t", [U(2026, 11, 3, 0, 0), U(2026, 11, 3, 3, 0), U(2026, 11, 3, 5, 55), U(2026, 11, 3, 20, 25),
+                               U(2026, 10, 21, 19, 25), U(2026, 11, 2, 0, 5), U(2026, 11, 6, 20, 25)])
+def test_slow_grind_may_open_at_any_time_but_20_30_to_midnight(S, t):
+    assert may_open(S, "GBPUSD", SLOW_GRIND, t, []) == []
+
+
+@pytest.mark.parametrize("t", [U(2026, 11, 3, 20, 30), U(2026, 11, 3, 22, 45), U(2026, 11, 3, 23, 55),
+                               U(2026, 10, 21, 19, 30), U(2026, 10, 21, 22, 50), U(2026, 11, 6, 20, 30)])  # GMT, BST, Friday
+def test_no_slow_grind_from_20_30_to_midnight_uk(S, t):
+    assert any("from 20:30 UK to midnight" in r for r in may_open(S, "GBPUSD", SLOW_GRIND, t, []))
+
+
+def test_no_slow_grind_in_the_first_15_minutes_of_the_week_or_at_the_rollover(S):
+    late = over(S, "hours", close_all_trades_at=_time(23, 59))   # so the 20:30-midnight rule does not hide them
+    for t in (U(2026, 11, 1, 21, 0), U(2026, 11, 1, 21, 10)):    # the market opens Sunday 21:00 UK
+        assert any("first 15 minutes after the week opened" in r for r in may_open(late, "GBPUSD", SLOW_GRIND, t, []))
+        assert any("from 20:30 UK to midnight" in r for r in may_open(S, "GBPUSD", SLOW_GRIND, t, []))
+    assert may_open(late, "GBPUSD", SLOW_GRIND, U(2026, 11, 1, 21, 15), []) == []
+    for t in (U(2026, 11, 3, 21, 55), U(2026, 11, 3, 22, 10)):
+        assert any("21:55 to 22:15 UK (the rollover)" in r for r in may_open(late, "GBPUSD", SLOW_GRIND, t, []))
+    for t in (U(2026, 11, 3, 21, 50), U(2026, 11, 3, 22, 15)):
+        assert may_open(late, "GBPUSD", SLOW_GRIND, t, []) == []
+    assert "the market is closed" in may_open(S, "GBPUSD", SLOW_GRIND, U(2026, 11, 7, 12, 0), [])
+
+
+def test_slow_grind_big_news_closes_and_holding(S):
+    assert may_open(S, "GBPUSD", SLOW_GRIND, U(2026, 11, 5, 11, 50), BOE_CAL) == []       # may open in big news
+    assert closed_before_big_news(SLOW_GRIND) is False
+    assert closed_on_level_rejection(SLOW_GRIND) is False
+    assert counts_towards_most_at_once(SLOW_GRIND) is True
+    assert forced_close_at(S, SLOW_GRIND, U(2026, 11, 3, 0, 15)) == U(2026, 11, 3, 20, 30)    # the same day
+    assert forced_close_at(S, SLOW_GRIND, U(2026, 11, 3, 19, 40)) == U(2026, 11, 3, 20, 30)
+    assert forced_close_at(S, SLOW_GRIND, U(2026, 10, 21, 10, 0)) == U(2026, 10, 21, 19, 30)  # BST
