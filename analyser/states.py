@@ -2,11 +2,11 @@
 at a time, on the sell price. Rules in full: docs/ANALYSER.md.
 
 States and the strategies they allow (section 2.2):
-  ranging            range trade
-  emerging trend     EMA pullback, breakout, in the trend's direction only
+  ranging            range trade; level reversal
+  emerging trend     EMA pullback, breakout, in the trend's direction only; level reversal
   trend              slow grind, EMA pullback, breakout, in the trend's direction only;
-                     Bollinger bounce against it; with the type of trend: slow grind or strong push
-  possible reversal  Bollinger bounce
+                     Bollinger bounce against it; level reversal; with the type of trend: slow grind or strong push
+  possible reversal  Bollinger bounce; level reversal
   consolidation      none: watch and wait for a break
 
 How it moves (sections 2.5 to 2.7). Changes caused by something price DID on
@@ -62,10 +62,11 @@ STATES = (RANGING, EMERGING, TREND, POSSIBLE_REVERSAL, CONSOLIDATION)
 UP, DOWN, NONE = "up", "down", "none"
 SLOW_GRIND, STRONG_PUSH = "slow grind", "strong push"
 ALLOWED = {
-    RANGING: ("range trade",),
-    EMERGING: ("EMA pullback", "breakout"),
-    TREND: ("slow grind", "EMA pullback", "breakout", "Bollinger band bounce (against the trend's direction only)"),
-    POSSIBLE_REVERSAL: ("Bollinger band bounce",),
+    RANGING: ("range trade", "level reversal"),
+    EMERGING: ("EMA pullback", "breakout", "level reversal"),
+    TREND: ("slow grind", "EMA pullback", "breakout", "Bollinger band bounce (against the trend's direction only)",
+            "level reversal"),
+    POSSIBLE_REVERSAL: ("Bollinger band bounce", "level reversal"),
     CONSOLIDATION: (),
 }
 TRENDING = (EMERGING, TREND)

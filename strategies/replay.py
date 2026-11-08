@@ -1,4 +1,4 @@
-"""Runs the four strategies over stored candles, as they would have run live,
+"""Runs the strategies over stored candles, as they would have run live,
 and turns what they find into ideas (or blocked candidates, with the reason).
 Reads the candle store only; never contacts IG; places nothing.
 
@@ -38,6 +38,7 @@ from strategies.ema_pullback.strategy import EmaPullback, HourlyTrendReader
 from strategies.range_trade.strategy import candidates as range_candidates
 from strategies.slow_grind.strategy import SlowGrind
 from strategies.breakout.strategy import Breakout
+from strategies.level_reversal.strategy import LevelReversal
 
 @dataclass
 class Replay:
@@ -87,6 +88,7 @@ def run(settings: Any, store: CandleStore, start: datetime, end: datetime) -> Re
     pullback = EmaPullback(settings, hourly)
     watcher = RejectionWatcher(settings, design_only=True)
     breakout = Breakout(settings)
+    reversal = LevelReversal(settings)
     change_at = {ch.time: (k, ch) for k, ch in enumerate(changes)}
     for i, (f, _state, _direction, _events, _moved, _sp) in enumerate(hist):
         c = f.candle
@@ -97,7 +99,8 @@ def run(settings: Any, store: CandleStore, start: datetime, end: datetime) -> Re
         cands = (breakout.on_candle(c, kc[1] if kc else None, since)
                  + grind.on_candle(c, sg_ema.get(c.start))
                  + pullback.on_candle(c, fast.get(c.start), slow.get(c.start))
-                 + bounce_candidates(watcher, events) + range_candidates(watcher, events))
+                 + bounce_candidates(watcher, events) + range_candidates(watcher, events)
+                 + reversal.on_candle(c, watcher, events))
         if cands and start <= c.start < end:
             st = state_after(i - 1)
             e100 = ema100.get(week[i - 1].start) if i > 0 else None

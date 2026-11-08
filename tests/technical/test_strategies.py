@@ -131,7 +131,7 @@ def test_the_analysers_list_for_the_bounce_matches(S):
     from analyser.states import ALLOWED
     assert not any("bounce" in x for x in ALLOWED[RANGING] + ALLOWED[EMERGING])
     assert "Bollinger band bounce (against the trend's direction only)" in ALLOWED[TREND]
-    assert ALLOWED[POSSIBLE_REVERSAL] == ("Bollinger band bounce",)
+    assert ALLOWED[POSSIBLE_REVERSAL] == ("Bollinger band bounce", "level reversal")
 
 
 def test_a_bounce_in_consolidation_is_still_not_allowed(S):
@@ -932,3 +932,146 @@ def test_slow_grind_big_news_closes_and_holding(S):
     assert forced_close_at(S, SLOW_GRIND, U(2026, 11, 3, 0, 15)) == U(2026, 11, 3, 20, 30)    # the same day
     assert forced_close_at(S, SLOW_GRIND, U(2026, 11, 3, 19, 40)) == U(2026, 11, 3, 20, 30)
     assert forced_close_at(S, SLOW_GRIND, U(2026, 10, 21, 10, 0)) == U(2026, 10, 21, 19, 30)  # BST
+
+
+# ---- 3.6 level reversal (owner, 8 November 2026) ----------------------------------------------
+
+from decimal import Decimal  # noqa: E402
+
+from rejection.watch import Setup  # noqa: E402
+from strategies.common import LEVEL_REVERSAL, stop_price  # noqa: E402
+from strategies.level_reversal.strategy import LevelReversal  # noqa: E402
+
+LR0 = C(0, 99, 99.5, 98, 99)                # a candle before the setup
+
+
+def lr_setup(pierced, highs, direction=SELL):
+    """A finished bounce setup: the pierce candle, the reversal candle, the confirmation candle
+    (sell highs as given), then a trigger at 96 on the next candle. Returns (strategy, watcher, events, candles)."""
+    if direction == SELL:
+        cs = [C(1 + k, h - 1, h, h - 3, h - 2) for k, h in enumerate(highs)]
+        price = D(96)
+    else:
+        cs = [C(1 + k, l + 1, l + 3, l, l + 2) for k, l in enumerate(highs)]
+        price = D(104)
+    trig = C(1 + len(highs), 97, 97, 95, 95.5) if direction == SELL else C(1 + len(highs), 103, 105, 103, 104.5)
+    st = Setup(1, "bounce", direction, cs[0], [{"what": w, "price": D(str(p)), "how": "through"} for w, p in pierced])
+    st.reversal, st.confirmation = cs[1], cs[-1]
+    ev = SimpleNamespace(setup=1, version="bounce", kind="trigger", direction=direction, time=trig.start, price=price,
+                         describe=lambda: "made-up trigger")
+    watcher = SimpleNamespace(setups=[st], events=[ev])
+    return watcher, [ev], [LR0] + cs + [trig]
+
+
+def run_lr(s, watcher, events, candles):
+    g, out = LevelReversal(s), []
+    for c in candles:
+        out += g.on_candle(c, watcher, events if c is candles[-1] else [])
+    return out
+
+
+def test_level_reversal_at_r2_within_the_allowance(S):
+    w, ev, cs = lr_setup([("R2", 100)], [104, 103, 102])          # furthest high 104: 4 pips past R2
+    (x,) = run_lr(S, w, ev, cs)
+    assert (x.strategy, x.direction, x.entry_price) == (LEVEL_REVERSAL, SELL, D(96))
+    assert x.context["level"] == D(100) and x.context["furthest"] == D(104) and x.context["past_level_pips"] == 4
+    assert x.context["stop_price"] == D(110)                     # 6 pips above the furthest point
+    assert "R2 100" in x.steps[-2] and "4.0 pips past the level" in x.steps[-2] and "to 09:15 GMT" in x.steps[-2]
+
+
+def test_level_reversal_allowance_is_5_pips_and_a_setting(S):
+    w, ev, cs = lr_setup([("S2", 100)], [105, 103, 102])          # exactly 5 past: counts
+    assert len(run_lr(S, w, ev, cs)) == 1
+    w, ev, cs = lr_setup([("S2", 100)], [103, 105.1, 102])        # 5.1 past (the reversal candle): does not
+    assert run_lr(S, w, ev, cs) == []
+    assert len(run_lr(over(S, "level_reversal", allowance_pips=6), w, ev, cs)) == 1
+
+
+def test_level_reversal_short_of_the_level_counts(S):
+    w, ev, cs = lr_setup([("round_number", 100)], [98, 97.5, 97])  # stopped 2 pips short of the 00 round number
+    (x,) = run_lr(S, w, ev, cs)
+    assert x.context["past_level_pips"] == -2 and x.context["stop_price"] == D(104)
+
+
+def test_level_reversal_only_s2_r2_and_00_round_numbers(S):
+    for what, price in (("R1", 100), ("S1", 100), ("S3", 100), ("R3", 100), ("pivot", 100), ("turning_high", 100),
+                        ("upper Bollinger band", 100), ("round_number", 150)):       # 150: a 50, not a 00
+        w, ev, cs = lr_setup([(what, price)], [101, 100, 99])
+        assert run_lr(S, w, ev, cs) == [], what
+    w, ev, cs = lr_setup([("round_number", 200)], [201, 200, 199])
+    assert len(run_lr(S, w, ev, cs)) == 1
+
+
+def test_level_reversal_round_numbers_are_00s_in_pips(S):
+    lr = LevelReversal(S)
+    assert lr.kind("round_number", D("13400.0")) and not lr.kind("round_number", D("13450.0"))
+    assert LevelReversal(over(S, "level_reversal", round_numbers_every_pips=50)).kind("round_number", D("13450.0"))
+    assert not LevelReversal(over(S, "level_reversal", level_types=("S2",))).kind("R2", D("13400.0"))
+
+
+def test_level_reversal_s2_or_r2_before_a_round_number(S):
+    w, ev, cs = lr_setup([("round_number", 200), ("R2", 199)], [202, 201, 200])
+    (x,) = run_lr(S, w, ev, cs)
+    assert x.context["level"] == D(199) and x.context["level_name"].startswith("R2")
+    w, ev, cs = lr_setup([("R2", 190), ("round_number", 200)], [202, 201, 200])    # R2 12 past: the 00 is the level
+    (x,) = run_lr(S, w, ev, cs)
+    assert x.context["level"] == D(200)
+
+
+def test_level_reversal_buy_is_the_mirror_image(S):
+    w, ev, cs = lr_setup([("S2", 100)], [96, 97, 98], direction=BUY)      # lows: furthest 96, 4 past S2
+    (x,) = run_lr(S, w, ev, cs)
+    assert (x.direction, x.context["past_level_pips"], x.context["stop_price"]) == (BUY, 4, D(90))
+
+
+def test_level_reversal_one_idea_per_candle_and_direction(S):
+    w, ev, cs = lr_setup([("R2", 100)], [104, 103, 102])
+    w.setups.append(w.setups[0]); twin = SimpleNamespace(**{**vars(ev[0]), "setup": 2})
+    assert len(run_lr(S, w, ev + [twin], cs)) == 1
+
+
+def test_level_reversal_states_and_no_direction_rule(S):
+    for st in (RANGING, EMERGING, TREND, POSSIBLE_REVERSAL):
+        for d, price in ((BUY, 100), (SELL, 120)):            # either way, against the direction rule too
+            i = check(S, "GBPUSD", cand(LEVEL_REVERSAL, d, price), state(st, UP), PIVOT, EMA100)
+            assert i.allowed and "the direction rule does not apply to level reversal" in i.steps[-1], (st, d)
+    assert "does not allow level reversal" in check(S, "GBPUSD", cand(LEVEL_REVERSAL, SELL), state(CONSOLIDATION), PIVOT,
+                                                    EMA100).blocked_by
+    off = changed(S, "switches", level_reversal=False)
+    assert "STRATEGY_LEVEL_REVERSAL is off" in check(off, "GBPUSD", cand(LEVEL_REVERSAL, SELL), state(TREND, UP), PIVOT,
+                                                     EMA100).blocked_by
+    from analyser.states import ALLOWED
+    assert all("level reversal" in ALLOWED[x] for x in (RANGING, EMERGING, TREND, POSSIBLE_REVERSAL))
+    assert ALLOWED[CONSOLIDATION] == ()
+
+
+def test_level_reversal_exits_hours_and_news(S):
+    from strategies.common import counts_towards_most_at_once, profit_lock, stop_loss_pips, take_profit_pips
+    assert take_profit_pips(S, LEVEL_REVERSAL, U(2026, 11, 5, 9, 0), "GBPUSD", BOE_CAL) == 20     # 20 on any day
+    assert stop_loss_pips(S, LEVEL_REVERSAL) == 6 and profit_lock(S, LEVEL_REVERSAL) is None
+    i = check(S, "GBPUSD", Candidate(LEVEL_REVERSAL, SELL, START, D(96), ["made up"], context={"stop_price": D(110)}),
+              state(TREND, UP), PIVOT, EMA100)
+    assert stop_price(S, i) == D(110) and i.context["stop_price"] == D(110)
+    assert stop_price(S, check(S, "GBPUSD", cand(EMA_PULLBACK, SELL), state(TREND, DOWN), PIVOT, EMA100)) is None
+    assert may_open(S, "GBPUSD", LEVEL_REVERSAL, U(2026, 11, 3, 6, 0), []) == []
+    for t in (U(2026, 11, 3, 5, 55), U(2026, 11, 3, 20, 30), U(2026, 11, 3, 23, 0)):
+        assert "outside the trading hours 06:00 to 20:30 UK" in may_open(S, "GBPUSD", LEVEL_REVERSAL, t, [])
+    assert any("big-news window" in r for r in may_open(S, "GBPUSD", LEVEL_REVERSAL, U(2026, 11, 5, 11, 50), BOE_CAL))
+    assert closed_before_big_news(LEVEL_REVERSAL) is True
+    assert closed_on_level_rejection(LEVEL_REVERSAL) is False
+    assert forced_close_at(S, LEVEL_REVERSAL, U(2026, 11, 3, 10, 0)) == U(2026, 11, 3, 20, 30)
+    assert counts_towards_most_at_once(LEVEL_REVERSAL) is True
+
+
+def test_the_replay_runs_the_level_reversal(monkeypatch, S):
+    """The replay gives the level reversal the strategies' own rejection watcher and its events."""
+    seen = []
+
+    class Spy(LevelReversal):
+        def on_candle(self, c, watcher, events):
+            seen.append((c.start, watcher, list(events)))
+            return []
+    monkeypatch.setattr(replay_mod, "LevelReversal", Spy)
+    fake_replay(monkeypatch, S, {0: (TREND, DOWN)})
+    assert len(seen) == len(PAUSE) + 1 and all(w is seen[0][1] for _, w, _ in seen)
+    assert isinstance(seen[0][1], RejectionWatcher)

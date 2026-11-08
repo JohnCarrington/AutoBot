@@ -14,8 +14,9 @@ only, owner 7 November 2026):
   3. the direction rule allows that direction (section 2.3): a buy needs buy
      side (price above the daily pivot and the 5-minute 100 EMA), a sell needs
      sell side. It does not apply to the range trade, the Bollinger bounce, the
-     breakout (owner, 7 November 2026) or the slow grind (owner, 8 November
-     2026), in any state; the rule's answer is still recorded.
+     breakout (owner, 7 November 2026), the slow grind or the level reversal
+     (owner, 8 November 2026), in any state; the rule's answer is still recorded.
+     The level reversal is allowed in every state except consolidation, either way.
 "The current state" is the analyser's state after the last finished 5-minute
 candle, and the direction rule uses the entry price. A candidate that fails a
 check is kept as BLOCKED with the reason, never as an idea.
@@ -33,19 +34,19 @@ from typing import Any
 from analyser.direction import BUY_SIDE, SELL_SIDE, decide
 from analyser.states import DOWN, EMERGING, POSSIBLE_REVERSAL, RANGING, TREND, UP
 
-SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE, BREAKOUT = (
-    "slow grind", "EMA pullback", "Bollinger bounce", "range trade", "breakout")
+SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE, BREAKOUT, LEVEL_REVERSAL = (
+    "slow grind", "EMA pullback", "Bollinger bounce", "range trade", "breakout", "level reversal")
 SWITCH = {SLOW_GRIND: "slow_grind", EMA_PULLBACK: "ema_pullback", BOLLINGER_BOUNCE: "bollinger_bounce",
-          RANGE_TRADE: "range_trade", BREAKOUT: "breakout"}
+          RANGE_TRADE: "range_trade", BREAKOUT: "breakout", LEVEL_REVERSAL: "level_reversal"}
 # Held overnight and closed at 20:30 UK on Friday only (owner, 7 November 2026); every other
 # strategy is closed at 20:30 UK every day.
 OWN_HOURS = (EMA_PULLBACK, BREAKOUT)
 # May open in a big-news window and not closed before big news (owner, 7 and 8 November 2026).
 NEWS_ALLOWED = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND)
 # Not closed on a rejection at a level (owner, 7 and 8 November 2026).
-NO_LEVEL_CLOSE = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND)
+NO_LEVEL_CLOSE = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL)
 # The direction rule (section 2.3) does not apply to these (owner, 7 and 8 November 2026).
-NO_DIRECTION_RULE = (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND)
+NO_DIRECTION_RULE = (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL)
 BUY, SELL = "buy", "sell"
 # Section 2.2: which states allow which strategy: "any" direction, only in the trend's direction
 # ("trend"), or only against it ("against").
@@ -55,6 +56,8 @@ ALLOWED_IN = {
     BOLLINGER_BOUNCE: {TREND: "against", POSSIBLE_REVERSAL: "any"},
     RANGE_TRADE: {RANGING: "any"},
     BREAKOUT: {EMERGING: "trend", TREND: "trend"},
+    # every state except consolidation, either way (owner, 8 November 2026)
+    LEVEL_REVERSAL: {RANGING: "any", EMERGING: "any", TREND: "any", POSSIBLE_REVERSAL: "any"},
 }
 
 
@@ -215,9 +218,12 @@ def take_profit_pips(settings: Any, strategy: str, opened: datetime | None = Non
     - the slow grind: its own slow_grind.take_profit_pips (20) (owner, 8 November 2026);
       each of these two gets TAKE_PROFIT_PIPS instead for a trade opened on a UK day with big news
       for the pair. Give `opened` and `pair`; without them the normal take profit is returned;
-    - the breakout: breakout.take_profit_pips (50) on any day."""
+    - the breakout: breakout.take_profit_pips (50) on any day;
+    - the level reversal: level_reversal.take_profit_pips (20) on any day (owner, 8 November 2026)."""
     if strategy == BREAKOUT:
         return settings.breakout.take_profit_pips
+    if strategy == LEVEL_REVERSAL:
+        return settings.level_reversal.take_profit_pips
     if strategy not in (EMA_PULLBACK, SLOW_GRIND):
         return settings.switches.take_profit_pips
     if opened is not None and pair is not None and big_news_day(settings, pair, opened, calendar):
@@ -233,13 +239,27 @@ def counts_towards_most_at_once(strategy: str) -> bool:
 def stop_loss_pips(settings: Any, strategy: str) -> int:
     """Design section 4: the EMA pullback's own stop (STOP_LOSS_PIPS_EMA_PULLBACK), the breakout's
     (breakout.stop_loss_pips) and the slow grind's (slow_grind.stop_loss_pips, 15); every other
-    strategy uses STOP_LOSS_PIPS."""
+    strategy uses STOP_LOSS_PIPS. The level reversal's stop is not a distance from the entry but
+    level_reversal.stop_beyond_furthest_pips (6) beyond the furthest point price reached: see
+    stop_price(); this returns that 6."""
     sw = settings.switches
+    if strategy == LEVEL_REVERSAL:
+        return settings.level_reversal.stop_beyond_furthest_pips
     if strategy == BREAKOUT:
         return settings.breakout.stop_loss_pips
     if strategy == SLOW_GRIND:
         return settings.slow_grind.stop_loss_pips
     return sw.stop_loss_pips_ema_pullback if strategy == EMA_PULLBACK else sw.stop_loss_pips
+
+
+def stop_price(settings: Any, idea: Any) -> Decimal | None:
+    """Design section 4: the stop as a price (chart price) when a strategy sets it from its setup:
+    the level reversal's, level_reversal.stop_beyond_furthest_pips beyond the furthest point price
+    reached past (or short of) the level (the idea's context). None for every other strategy,
+    whose stop is stop_loss_pips() from the entry."""
+    if idea.strategy != LEVEL_REVERSAL:
+        return None
+    return idea.context["stop_price"]
 
 
 def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state: Any, pivot: Decimal | None,

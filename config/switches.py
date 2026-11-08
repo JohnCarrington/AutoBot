@@ -11,6 +11,7 @@
   STRATEGY_RANGE_TRADE        on or off
   STRATEGY_BREAKOUT           on or off (never on while breakout.stop_loss_pips or
                               breakout.take_profit_pips is 0)
+  STRATEGY_LEVEL_REVERSAL     on or off
   STOP_LOSS_PIPS              the stop loss sent with every trade, in pips (whole, 1 to 100),
                               for every strategy except the EMA pullback
   STOP_LOSS_PIPS_EMA_PULLBACK the EMA pullback's stop loss, in pips (whole, 1 to 100)
@@ -80,6 +81,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "STRATEGY_BOLLINGER_BOUNCE": ("bollinger_bounce", _on_off),
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
     "STRATEGY_BREAKOUT": ("breakout", _on_off),
+    "STRATEGY_LEVEL_REVERSAL": ("level_reversal", _on_off),
     "STOP_LOSS_PIPS": ("stop_loss_pips", _pips(1, 100)),
     "STOP_LOSS_PIPS_EMA_PULLBACK": ("stop_loss_pips_ema_pullback", _pips(1, 100)),
     "TAKE_PROFIT_PIPS": ("take_profit_pips", _pips(1, 1000)),

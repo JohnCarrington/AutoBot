@@ -157,6 +157,14 @@ def _utc_time(v: Any) -> time:
     return time(int(hours), int(minutes))
 
 
+def _level_reversal_types(v: Any) -> tuple[str, ...]:
+    """The level types the level reversal trades (design 3.6): a non-empty list of S2, R2 and round_number."""
+    known = ("S2", "R2", "round_number")
+    if not isinstance(v, list) or not v or any(x not in known for x in v) or len(set(v)) != len(v):
+        raise ValueError(f"must be a non-empty list of {', '.join(known)} with no repeats, got {v!r}")
+    return tuple(v)
+
+
 def _clock_times(v: Any) -> tuple[time, ...]:
     if not isinstance(v, list) or not v:
         raise ValueError(f"must be a non-empty list of times, got {v!r}")
@@ -349,6 +357,13 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "trigger_within_candles": _whole_number(1, 50),
         "stop_loss_pips": _whole_number(0, 100),
         "take_profit_pips": _whole_number(0, 1000),
+    },
+    "level_reversal": {
+        "level_types": _level_reversal_types,
+        "round_numbers_every_pips": _whole_number(1, 1000),
+        "allowance_pips": _whole_number(0, 100),
+        "stop_beyond_furthest_pips": _whole_number(1, 100),
+        "take_profit_pips": _whole_number(1, 1000),
     },
     "range_trade": {
         "close_percent_at_opposite_band": _whole_number(1, 100),

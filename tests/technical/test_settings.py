@@ -98,6 +98,8 @@ EXPECTED = {
     },
     "possible_reversal": {"min_trend_move_pips": 30},
     "breakout": {"trigger_within_candles": 3, "stop_loss_pips": 6, "take_profit_pips": 50},
+    "level_reversal": {"level_types": ("S2", "R2", "round_number"), "round_numbers_every_pips": 100, "allowance_pips": 5,
+                       "stop_beyond_furthest_pips": 6, "take_profit_pips": 20},
     "range_trade": {"close_percent_at_opposite_band": 50, "rejection_candle_within_candles": 1,
                     "trigger_within_candles": 1},
     "indicators": {"bollinger_periods": 20, "bollinger_std_devs": 2, "ema_periods": (7, 13, 21, 100, 200),
@@ -418,7 +420,8 @@ def test_all_problems_reported_together(tmp_path):
 SWITCHES_OK = {"PAIRS_ON": "GBPUSD", "NEW_TRADES_FROM": "06:00", "NEW_TRADES_UNTIL": "20:30",
                "STRATEGY_SLOW_GRIND": "on", "STRATEGY_EMA_PULLBACK": "on",
                "STRATEGY_BOLLINGER_BOUNCE": "off", "STRATEGY_RANGE_TRADE": "on",
-               "STOP_LOSS_PIPS": "6", "STOP_LOSS_PIPS_EMA_PULLBACK": "12", "TAKE_PROFIT_PIPS": "100", "STRATEGY_BREAKOUT": "off"}
+               "STOP_LOSS_PIPS": "6", "STOP_LOSS_PIPS_EMA_PULLBACK": "12", "TAKE_PROFIT_PIPS": "100", "STRATEGY_BREAKOUT": "off",
+               "STRATEGY_LEVEL_REVERSAL": "on"}
 
 
 def _env(tmp_path, values, secrets=True):
@@ -478,6 +481,22 @@ def test_the_slow_grind_lock_and_rollover_window_must_make_sense(tmp_path):
         load_settings(_write(tmp_path, data))
 
 
+def test_the_level_reversal_switch_is_required_and_loads(tmp_path):
+    values = {k: v for k, v in SWITCHES_OK.items() if k != "STRATEGY_LEVEL_REVERSAL"}
+    with pytest.raises(SettingsError, match="Missing switch STRATEGY_LEVEL_REVERSAL"):
+        load_settings(switches_from=_env(tmp_path, values))
+    assert load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches.level_reversal is True
+    assert load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "STRATEGY_LEVEL_REVERSAL": "off"})).switches.level_reversal is False
+
+
+@pytest.mark.parametrize("bad", [[], ["S1"], ["S2", "S2"], "S2"])
+def test_the_level_reversal_level_types_are_checked(tmp_path, bad):
+    data = _raw()
+    data["level_reversal"]["level_types"] = bad
+    with pytest.raises(SettingsError, match="level_types"):
+        load_settings(_write(tmp_path, data))
+
+
 def test_the_ema_pullback_stop_loss_switch_is_required(tmp_path):
     values = {k: v for k, v in SWITCHES_OK.items() if k != "STOP_LOSS_PIPS_EMA_PULLBACK"}
     with pytest.raises(SettingsError, match="Missing switch STOP_LOSS_PIPS_EMA_PULLBACK"):
@@ -507,6 +526,7 @@ def test_the_settings_alone_have_no_switches_and_no_market():
     ("NEW_TRADES_UNTIL", "24:00", 'written "HH:MM"'),
     ("STRATEGY_SLOW_GRIND", "yes", "must be on or off"),
     ("STRATEGY_RANGE_TRADE", "", "must be on or off"),
+    ("STRATEGY_LEVEL_REVERSAL", "yes", "must be on or off"),
     ("STOP_LOSS_PIPS", "0", "must be between 1 and 100 pips"),
     ("STOP_LOSS_PIPS", "6.5", "must be a whole number of pips"),
     ("STOP_LOSS_PIPS", "six", "must be a whole number of pips"),
@@ -560,7 +580,7 @@ def test_load_or_exit_reads_the_switches(tmp_path, monkeypatch):
     monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {**SWITCHES_OK, "NEW_TRADES_FROM": "07:15"})))
     assert load_or_exit().switches.new_trades_from == time(7, 15)
     monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {"PAIRS_ON": "GBPUSD"})))
-    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 10 problem"):
+    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 11 problem"):
         load_or_exit()
 
 

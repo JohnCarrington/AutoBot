@@ -168,6 +168,20 @@ trigger_within_candles = 3
 stop_loss_pips = 6
 take_profit_pips = 50
 
+[level_reversal]
+# Design 3.6 (owner, 8 November 2026). Rejections at these levels only (the bot's level
+# types): S2, R2 and round numbers, the round numbers only on a multiple of
+# round_numbers_every_pips (100: the 00s, not the 50s).
+level_types = ["S2", "R2", "round_number"]
+round_numbers_every_pips = 100
+# A rejection counts only if price went no more than this far past the level, from the
+# piercing candle to the confirmation candle.
+allowance_pips = 5
+# The stop: this many pips beyond the furthest point price reached; the take profit, in
+# pips from the entry.
+stop_beyond_furthest_pips = 6
+take_profit_pips = 20
+
 [range_trade]
 close_percent_at_opposite_band = 50
 # The rejection candle must be the candle straight after the one that pierced
