@@ -132,12 +132,14 @@ class Book:
 
 
 def daily_text(pair: str, day: date, s: Summary, week: Summary, paper: bool) -> str:
-    """The daily summary for Telegram."""
-    money = lambda x: f"{'+' if x > 0 else '-' if x < 0 else ''}£{abs(Decimal(x)):,.2f}"  # noqa: E731
-    lines = [f"AutoBot DAILY SUMMARY {pair} {day:%a %d %b %Y}" + (" (paper trades: TRADING is off)" if paper else ""),
-             f"Trades closed today: {s.trades} ({s.wins} won, {s.losses} lost)",
-             f"Pips: {s.pips:+.1f}; {money(s.gbp)}"]
+    """The daily summary for Telegram, in the trade messages' format (Telegram's HTML: bold labels)."""
+    from alerts.trades import item, items, money, pips
+    lines = ["[AutoBot] 📊 DAILY SUMMARY", item("Date", f"{day:%a %d %b %Y}"), item("Pair", pair)]
+    if paper:
+        lines.append(item("Mode", "paper trades (TRADING is off)"))
+    lines += [items(("Trades", s.trades), ("Won", s.wins), ("Lost", s.losses)),
+              item("PnL", f"{pips(s.pips)} | {money(s.gbp)}")]
     for name, b in sorted(s.by_strategy.items()):
-        lines.append(f"  {name}: {b['trades']} trade(s), {b['pips']:+.1f} pips, {money(b['gbp'])}")
-    lines.append(f"This week so far: {week.trades} trades, {week.pips:+.1f} pips, {money(week.gbp)}")
+        lines.append(item(name, f"{b['trades']} trade{'s' if b['trades'] != 1 else ''} | {pips(b['pips'])} | {money(b['gbp'])}"))
+    lines.append(item("Week so far", f"{week.trades} trade{'s' if week.trades != 1 else ''} | {pips(week.pips)} | {money(week.gbp)}"))
     return "\n".join(lines)

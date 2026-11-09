@@ -99,7 +99,7 @@ def make(S, monkeypatch, candles, ideas, trading_on=False, ig=None, clock=None, 
     clock = clock or {"t": WED}
     quote = {"q": (D("100.0"), D("101.5"))}
     alerts = SimpleNamespace(sent=[], infos=[], opened=[], closed=[], problem=lambda k, t: alerts.sent.append((k, t)),
-                             info=lambda t, key=None: alerts.infos.append(t),
+                             info=lambda t, key=None, html=False: alerts.infos.append(t),
                              trade_opened=lambda t: alerts.opened.append(t), trade_closed=lambda c: alerts.closed.append(c))
     e_alerts = alerts
     e = eng.Trading(S, None, ig, alerts, trading_on=trading_on, now=lambda: clock["t"], quote=lambda: quote["q"],

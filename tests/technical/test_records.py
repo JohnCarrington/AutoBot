@@ -86,38 +86,49 @@ def opened(**kw):
 
 
 def test_the_trade_opened_message_has_everything():
-    lines = opened_text(opened()).splitlines()
-    assert lines == ["AutoBot TRADE OPENED: GBPUSD SELL",
-                     "Time: Wed 04 Nov 10:20 GMT",
-                     "Deal reference: AB261104102005-1a2b3c4d",
-                     "Size: £10 per pip",
-                     "Strategy: Bollinger bounce",
-                     "Market state: trend up",
-                     "Open price: 13394.5 (1.33945) at Wed 04 Nov 10:20 GMT",
-                     "Stop loss: 6.0 pips, 13400.5 (1.34005); £60.00 at risk",
-                     "Take profit: 100 pips, 13294.5 (1.32945) (normal)",
-                     "Reason: bounce: pierced S2 13398.1 at 10:05, reversal 10:10, confirmed 10:15, broke it 10:20"]
+    lines = opened_text(opened(epic="CS.D.GBPUSD.TODAY.IP")).splitlines()
+    assert lines == ["[AutoBot] 🎯 TRADE OPENED",
+                     "<b>Time:</b> Wed 04 Nov 10:20 GMT",
+                     "<b>Deal ref:</b> AB261104102005-1a2b3c4d",
+                     "<b>Epic:</b> CS.D.GBPUSD.TODAY.IP",
+                     "<b>Strategy:</b> Bollinger bounce",
+                     "<b>Dir:</b> SELL | <b>Size:</b> £10/pip",
+                     "<b>Market state:</b> trend up",
+                     "<b>Entry:</b> 13394.5 (1.33945)",
+                     "<b>SL:</b> 6 pips @ 13400.5 (1.34005) | <b>Risk:</b> £60.00",
+                     "<b>TP:</b> 100 pips @ 13294.5 (1.32945) | <b>TP kind:</b> normal",
+                     "<b>Reason:</b> bounce: pierced S2 13398.1 at 10:05, reversal 10:10, confirmed 10:15, broke it 10:20"]
 
 
 def test_the_level_reversal_and_a_big_news_take_profit_in_the_message():
     text = opened_text(opened(strategy="level reversal", level_note="R2 13398.1; price went 4.4 pips past it",
                               take_profit_pips=D("20"), take_profit_kind="normal"))
-    assert "Level: R2 13398.1; price went 4.4 pips past it" in text
+    assert text.splitlines()[-1] == "<b>Level:</b> R2 13398.1; price went 4.4 pips past it"
     text = opened_text(opened(strategy="EMA pullback", take_profit_kind="100 for a big-news day"))
-    assert "Take profit: 100 pips, 13294.5 (1.32945) (100 for a big-news day)" in text
+    assert "<b>TP:</b> 100 pips @ 13294.5 (1.32945) | <b>TP kind:</b> 100 for a big-news day" in text.splitlines()
 
 
 def test_the_trade_closed_message_has_everything():
     c = TradeClosed(opened(), D("13383.2"), U(2026, 11, 4, 11, 55), "a confirmed rejection at a level: S2 13383.0",
                     D("113.00"), D("11.3"), D("14.2"), today_trades=3, today_pips=D("8.4"))
-    text = closed_text(c)
-    assert text.splitlines()[0] == "AutoBot TRADE CLOSED: GBPUSD SELL - WIN +£113.00"
-    for line in ("Deal reference: AB261104102005-1a2b3c4d", "Stop loss: 6.0 pips, 13400.5 (1.34005); £60.00 at risk",
-                 "Close price: 13383.2 (1.33832) at Wed 04 Nov 11:55 GMT",
-                 "Reason closed: a confirmed rejection at a level: S2 13383.0",
-                 "Profit or loss: +11.3 pips, +£113.00 (win)", "Open for: 1 h 34 min",
-                 "Best profit before closing: +14.2 pips", "Today so far: 3 trade(s), +8.4 pips"):
-        assert line in text, line
+    assert closed_text(c).splitlines() == [
+        "[AutoBot] 🟢 TRADE CLOSED",
+        "<b>Opened:</b> Wed 04 Nov 10:20 GMT",
+        "<b>Deal ref:</b> AB261104102005-1a2b3c4d",
+        "<b>Epic:</b> GBPUSD",
+        "<b>Strategy:</b> Bollinger bounce",
+        "<b>Dir:</b> SELL | <b>Size:</b> £10/pip",
+        "<b>Market state:</b> trend up",
+        "<b>Entry:</b> 13394.5 (1.33945) → <b>Exit:</b> 13383.2 (1.33832)",
+        "<b>Closed:</b> Wed 04 Nov 11:55 GMT",
+        "<b>SL:</b> 6 pips @ 13400.5 (1.34005) | <b>Risk:</b> £60.00",
+        "<b>TP:</b> 100 pips @ 13294.5 (1.32945) | <b>TP kind:</b> normal",
+        "<b>Reason opened:</b> bounce: pierced S2 13398.1 at 10:05, reversal 10:10, confirmed 10:15, broke it 10:20",
+        "<b>Reason closed:</b> a confirmed rejection at a level: S2 13383.0",
+        "<b>PnL:</b> +11.3 pips | +£113.00",
+        "<b>Duration:</b> 1 h 34 min",
+        "<b>Best:</b> +14.2 pips",
+        "<b>Today:</b> 3 trades | +8.4 pips"]
 
 
 def test_the_range_trades_half_close_and_rest_are_shown_apart():
@@ -125,14 +136,17 @@ def test_the_range_trades_half_close_and_rest_are_shown_apart():
     rest = PartClose(U(2026, 11, 4, 11, 5), D("13400.5"), D("-6"), D("-30.00"), "the stop at IG")
     c = TradeClosed(opened(strategy="range trade"), D("13400.5"), U(2026, 11, 4, 11, 5), "the stop at IG", D("12.50"),
                     D("1.25"), D("9"), half, rest, 1, D("1.25"))
-    text = closed_text(c)
-    assert "Half closed: 13386.0 (1.3386) at Wed 04 Nov 10:40 GMT, +8.5 pips, +£42.50 (the opposite Bollinger band)" in text
-    assert "Rest closed: 13400.5 (1.34005) at Wed 04 Nov 11:05 GMT, -6.0 pips, -£30.00 (the stop at IG)" in text
+    lines = closed_text(c).splitlines()
+    assert lines[-3:] == [
+        "<b>Half close:</b> 13386.0 (1.3386) at Wed 04 Nov 10:40 GMT | <b>PnL:</b> +8.5 pips / +£42.50 "
+        "(the opposite Bollinger band)",
+        "<b>Rest:</b> 13400.5 (1.34005) at Wed 04 Nov 11:05 GMT | <b>PnL:</b> -6 pips / -£30.00 (the stop at IG)",
+        "<b>Today:</b> 1 trade | +1.2 pips"]
 
 
 def test_a_long_trade_shows_days():
     c = TradeClosed(opened(), D("13383.2"), U(2026, 11, 6, 12, 30), "Friday close", D("10"), D("1"))
-    assert "Open for: 2 d 2 h 9 min" in closed_text(c)
+    assert "<b>Duration:</b> 2 d 2 h 9 min" in closed_text(c).splitlines()
 
 
 # ---- the book ------------------------------------------------------------------------------------------
@@ -173,10 +187,15 @@ def test_the_daily_and_weekly_summaries(S):
     weekly = json.loads((b.folder / "summaries" / "weekly" / "2026-W45.json").read_text())
     assert (weekly["trades"], weekly["pips"], weekly["from"], weekly["to"]) == (3, "64", "2026-11-02", "2026-11-04")
     text = daily_text("GBPUSD", date(2026, 11, 4), s, b.summary(date(2026, 11, 2), date(2026, 11, 4)), False)
-    assert text.splitlines()[0] == "AutoBot DAILY SUMMARY GBPUSD Wed 04 Nov 2026"
-    assert "Trades closed today: 2 (1 won, 1 lost)" in text and "Pips: +14.0; +£140.00" in text
-    assert "This week so far: 3 trades, +64.0 pips, +£640.00" in text
-    assert "(paper trades: TRADING is off)" in daily_text("GBPUSD", date(2026, 11, 4), s, s, True)
+    assert text.splitlines() == ["[AutoBot] 📊 DAILY SUMMARY",
+                                 "<b>Date:</b> Wed 04 Nov 2026",
+                                 "<b>Pair:</b> GBPUSD",
+                                 "<b>Trades:</b> 2 | <b>Won:</b> 1 | <b>Lost:</b> 1",
+                                 "<b>PnL:</b> +14 pips | +£140.00",
+                                 f"<b>{BREAKOUT}:</b> 1 trade | -6 pips | -£60.00",
+                                 f"<b>{SLOW_GRIND}:</b> 1 trade | +20 pips | +£200.00",
+                                 "<b>Week so far:</b> 3 trades | +64 pips | +£640.00"]
+    assert "<b>Mode:</b> paper trades (TRADING is off)" in daily_text("GBPUSD", date(2026, 11, 4), s, s, True)
 
 
 # ---- the engine: records, Telegram, the pause switch, the daily summary -------------------------------------
@@ -205,6 +224,7 @@ def test_a_real_trade_is_recorded_and_sent_on_telegram_when_it_opens_and_closes(
     assert c["minutes_open"] == 5 and c["opened_utc"] == "2026-11-04T10:10:00Z"           # live: at the market after its candle
     alerts = e.alerts
     assert len(alerts.opened) == 1 and alerts.opened[0].reference == o["reference"]
+    assert alerts.opened[0].epic == S.market.epic and "<b>Epic:</b> " + S.market.epic in opened_text(alerts.opened[0])
     (closed,) = alerts.closed
     assert closed.profit_gbp == D("-60") and closed.today_trades == 1 and closed.today_pips == D("-6")
 
@@ -267,7 +287,8 @@ def test_the_daily_summary_at_20_35_uk_once(S, monkeypatch):
     e.daily_summary(U(2026, 11, 4, 20, 35))
     e.daily_summary(U(2026, 11, 4, 20, 40))
     (text,) = e.alerts.infos
-    assert text.startswith("AutoBot DAILY SUMMARY GBPUSD Wed 04 Nov 2026 (paper trades") and "+20.0" in text
+    assert text.startswith("[AutoBot] 📊 DAILY SUMMARY\n<b>Date:</b> Wed 04 Nov 2026") and "paper trades" in text
+    assert "<b>PnL:</b> +20 pips | +£200.00" in text
     assert (e.book.folder / "summaries" / "daily" / "2026-11-04.json").exists()
     e.daily_summary(U(2026, 11, 7, 20, 40))                                  # Saturday: none
     assert len(e.alerts.infos) == 1

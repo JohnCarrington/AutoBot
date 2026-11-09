@@ -1,13 +1,16 @@
 """The "trade opened" and "trade closed" Telegram messages (design section 9), sent for every real trade by the
-trading engine (trading/engine.py). Prices are shown as IG sends them (points) and as the real exchange rate, using
-the pair's price scale.
+trading engine (trading/engine.py), in AutoBot 161's format: a first line "[AutoBot] 🎯 TRADE OPENED", or
+"[AutoBot] 🟢 TRADE CLOSED" (profit) / "[AutoBot] 🔴 TRADE CLOSED" (loss) / "[AutoBot] ⚪ TRADE CLOSED" (break even),
+then one item per line, the label in bold followed by a colon ("Dir: BUY | Size: £10/pip"). The text is Telegram's
+HTML (sent with parse_mode HTML; every value is escaped). Prices are shown as IG sends them (points) and as the real
+exchange rate, using the pair's price scale.
 
-Trade opened: the time; IG's deal reference; pair, direction, size, strategy and market state; the open price; the
-stop and take profit in pips, as prices, and the £ at risk; whether the take profit is the normal one or the 100 for
-a big-news day or a trend day; the reason in one line; for the level reversal, the level and how far past it price
-went. Trade closed: all of that, plus the close price and time, the reason it closed, pips and £, win or loss, how
-long it was open, the best profit it reached, for the range trade the half close and the rest, and today's running
-total of trades and pips.
+Trade opened: the time; IG's deal reference; the epic; strategy; direction and size; market state; the entry price;
+the stop and take profit in pips, as prices, and the £ at risk; whether the take profit is the normal one or the 100
+for a big-news day or a trend day; the reason in one line; for the level reversal, the level and how far past it price
+went. Trade closed: all of that (the entry shown as "Entry: ... → Exit: ...", with the close time after it), plus the
+reason it closed, pips and £, how long it was open, the best profit it reached, for the range trade the half close and
+the rest on separate lines, and today's running total of trades and pips.
 """
 
 from __future__ import annotations
@@ -15,6 +18,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
+from html import escape
 
 from prices.model import plain, uk_short
 
@@ -39,6 +43,7 @@ class TradeOpened:
     take_profit_kind: str = "normal"  # normal, or 100 for a big-news day / a trend day
     reason: str = ""                 # in one line
     level_note: str = ""             # the level reversal: the level and how far past it price went
+    epic: str = ""                   # IG's market (the pair's epic); the pair is shown when it is not given
 
     def __post_init__(self) -> None:
         if self.direction not in DIRECTIONS:
@@ -78,17 +83,37 @@ class TradeClosed:
         return "WIN" if self.profit_gbp > 0 else "LOSS" if self.profit_gbp < 0 else "BREAK EVEN"
 
 
+def item(label: str, value: object) -> str:
+    """One line of a Telegram message: the label in bold, a colon, then the value (Telegram's HTML; text escaped)."""
+    return f"<b>{escape(label)}:</b> {escape(str(value), quote=False)}"
+
+
+def items(*pairs: tuple[str, object]) -> str:
+    """Several items on one line, joined by " | ", e.g. "Dir: BUY | Size: £10/pip"."""
+    return " | ".join(item(k, v) for k, v in pairs)
+
+
 def _price(points: Decimal, scale: int) -> str:
     return f"{plain(points)} ({plain(Decimal(points) / scale)})"
 
 
-def _money(x: Decimal) -> str:
+def money(x: Decimal) -> str:
     sign = "+" if x > 0 else "-" if x < 0 else ""
     return f"{sign}£{abs(Decimal(x)):,.2f}"
 
 
-def _pips(x: Decimal) -> str:
-    return f"{Decimal(x):+.1f} pips"
+def _short(text: str) -> str:
+    return text[:-2] if text.endswith(".0") else text
+
+
+def pips(x: Decimal) -> str:
+    """Signed pips to one decimal place, without a trailing .0: +3 pips, -6 pips, +11.3 pips, 0 pips."""
+    x = Decimal(x).quantize(Decimal("0.1"))
+    return ("0" if x == 0 else _short(f"{x:+.1f}")) + " pips"
+
+
+def _unsigned_pips(x: Decimal) -> str:
+    return _short(f"{Decimal(x):.1f}") + " pips"
 
 
 def _duration(a: datetime, b: datetime) -> str:
@@ -96,51 +121,64 @@ def _duration(a: datetime, b: datetime) -> str:
     return f"{m // 1440} d {m % 1440 // 60} h {m % 60} min" if m >= 1440 else f"{m // 60} h {m % 60} min"
 
 
-def _opened_lines(t: TradeOpened) -> list[str]:
-    stop = f"Stop loss: {_price(t.stop_loss, t.price_scale)}"
-    if t.stop_pips is not None:
-        stop = f"Stop loss: {Decimal(t.stop_pips):.1f} pips, {_price(t.stop_loss, t.price_scale)}; {_money(t.risk_gbp)} at risk"
-        stop = stop.replace("+£", "£")
-    tp = f"Take profit: {_price(t.take_profit, t.price_scale)}"
-    if t.take_profit_pips is not None:
-        tp = f"Take profit: {Decimal(t.take_profit_pips):.0f} pips, {_price(t.take_profit, t.price_scale)} ({t.take_profit_kind})"
-    lines = [f"Time: {uk_short(t.opened_utc)}"] + ([f"Deal reference: {t.reference}"] if t.reference else []) + [
-        f"Size: £{plain(t.size_gbp_per_pip)} per pip",
-        f"Strategy: {t.strategy}",
-        f"Market state: {t.market_state}",
-        f"Open price: {_price(t.open_price, t.price_scale)} at {uk_short(t.opened_utc)}",
-        stop,
-        tp]
-    if t.reason:
-        lines.append(f"Reason: {t.reason}")
+def _head(t: TradeOpened, time_label: str) -> list[str]:
+    lines = [item(time_label, uk_short(t.opened_utc))]
+    if t.reference:
+        lines.append(item("Deal ref", t.reference))
+    lines += [item("Epic", t.epic or t.pair),
+              item("Strategy", t.strategy),
+              items(("Dir", t.direction.upper()), ("Size", f"£{plain(t.size_gbp_per_pip)}/pip")),
+              item("Market state", t.market_state)]
+    return lines
+
+
+def _stops(t: TradeOpened) -> list[str]:
+    if t.stop_pips is None:
+        sl = item("SL", _price(t.stop_loss, t.price_scale))
+    else:
+        sl = items(("SL", f"{_unsigned_pips(t.stop_pips)} @ {_price(t.stop_loss, t.price_scale)}"),
+                   ("Risk", f"£{abs(t.risk_gbp):,.2f}"))
+    tp = (_price(t.take_profit, t.price_scale) if t.take_profit_pips is None
+          else f"{_unsigned_pips(t.take_profit_pips)} @ {_price(t.take_profit, t.price_scale)}")
+    return [sl, items(("TP", tp), ("TP kind", t.take_profit_kind))]
+
+
+def _why(t: TradeOpened, label: str) -> list[str]:
+    lines = [item(label, t.reason)] if t.reason else []
     if t.level_note:
-        lines.append(f"Level: {t.level_note}")
+        lines.append(item("Level", t.level_note))
     return lines
 
 
 def opened_text(t: TradeOpened) -> str:
-    return "\n".join([f"AutoBot TRADE OPENED: {t.pair} {t.direction.upper()}"] + _opened_lines(t))
+    """Telegram's HTML: send with parse_mode HTML (Alerts.trade_opened does)."""
+    return "\n".join(["[AutoBot] 🎯 TRADE OPENED"] + _head(t, "Time")
+                     + [item("Entry", _price(t.open_price, t.price_scale))] + _stops(t) + _why(t, "Reason"))
+
+
+def _part(label: str, p: PartClose, scale: int) -> str:
+    return items((label, f"{_price(p.price, scale)} at {uk_short(p.closed_utc)}"), ("PnL", f"{pips(p.pips)} / {money(p.gbp)}")) \
+        + (f" ({escape(p.reason, quote=False)})" if p.reason else "")
 
 
 def closed_text(c: TradeClosed) -> str:
+    """Telegram's HTML: send with parse_mode HTML (Alerts.trade_closed does). 🟢 a profit, 🔴 a loss, ⚪ break even."""
     t = c.opened
-    lines = [f"AutoBot TRADE CLOSED: {t.pair} {t.direction.upper()} - {c.result} {_money(c.profit_gbp)}"]
-    lines += _opened_lines(t)
-    lines += [f"Close price: {_price(c.close_price, t.price_scale)} at {uk_short(c.closed_utc)}",
-              f"Reason: {c.reason}" if not t.reason else f"Reason closed: {c.reason}"]
-    if c.half is not None:
-        lines.append(f"Half closed: {_price(c.half.price, t.price_scale)} at {uk_short(c.half.closed_utc)}, "
-                     f"{_pips(c.half.pips)}, {_money(c.half.gbp)}" + (f" ({c.half.reason})" if c.half.reason else ""))
-    if c.rest is not None:
-        lines.append(f"Rest closed: {_price(c.rest.price, t.price_scale)} at {uk_short(c.rest.closed_utc)}, "
-                     f"{_pips(c.rest.pips)}, {_money(c.rest.gbp)}" + (f" ({c.rest.reason})" if c.rest.reason else ""))
-    result = f"Profit or loss: {_money(c.profit_gbp)} ({c.result.lower()})"
-    if c.pips is not None:
-        result = f"Profit or loss: {_pips(c.pips)}, {_money(c.profit_gbp)} ({c.result.lower()})"
-    lines.append(result)
-    lines.append(f"Open for: {_duration(t.opened_utc, c.closed_utc)}")
+    icon = "🟢" if c.profit_gbp > 0 else "🔴" if c.profit_gbp < 0 else "⚪"
+    lines = [f"[AutoBot] {icon} TRADE CLOSED"] + _head(t, "Opened")
+    lines.append(f"{item('Entry', _price(t.open_price, t.price_scale))} → "
+                 f"{item('Exit', _price(c.close_price, t.price_scale))}")
+    lines.append(item("Closed", uk_short(c.closed_utc)))
+    lines += _stops(t) + _why(t, "Reason opened")
+    lines.append(item("Reason" if not t.reason else "Reason closed", c.reason))
+    lines.append(item("PnL", money(c.profit_gbp) if c.pips is None else f"{pips(c.pips)} | {money(c.profit_gbp)}"))
+    lines.append(item("Duration", _duration(t.opened_utc, c.closed_utc)))
     if c.best_pips is not None:
-        lines.append(f"Best profit before closing: {_pips(c.best_pips)}")
+        lines.append(item("Best", pips(c.best_pips)))
+    if c.half is not None:
+        lines.append(_part("Half close", c.half, t.price_scale))
+    if c.rest is not None:
+        lines.append(_part("Rest", c.rest, t.price_scale))
     if c.today_trades is not None:
-        lines.append(f"Today so far: {c.today_trades} trade(s), {_pips(c.today_pips or 0)}")
+        lines.append(item("Today", f"{c.today_trades} trade{'s' if c.today_trades != 1 else ''} | {pips(c.today_pips or 0)}"))
     return "\n".join(lines)

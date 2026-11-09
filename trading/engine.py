@@ -240,7 +240,7 @@ class Trading:
                            rec["market_state"], Decimal(rec["open_price"]), Decimal(rec["stop_price"]),
                            Decimal(rec["take_profit_price"]), rec["opened_utc"], self.s.market.price_scale,
                            rec["reference"], Decimal(rec["stop_pips"]), Decimal(rec["take_profit_pips"]),
-                           rec["take_profit_kind"], rec["reason"], rec["level"])
+                           rec["take_profit_kind"], rec["reason"], rec["level"], self.s.market.epic)
 
     def _after_bars(self) -> None:
         """Every trade the trade manager has just finished: to the records, and Telegram (real trades)."""
@@ -304,7 +304,7 @@ class Trading:
         s = self.book.write_daily(day)
         from datetime import timedelta as td_
         week = self.book.summary(day - td_(days=day.weekday()), day)
-        self.alerts.info(daily_text(self.s.market.pair, day, s, week, self.book.paper))
+        self.alerts.info(daily_text(self.s.market.pair, day, s, week, self.book.paper), html=True)
         Path(marker).parent.mkdir(parents=True, exist_ok=True)
         marker.write_text(json.dumps({"day": day.isoformat()}) + "\n")
 
