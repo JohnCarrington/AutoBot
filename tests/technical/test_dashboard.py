@@ -288,3 +288,107 @@ def test_the_status_warns_about_a_missing_price_and_unknown_funds(S, monkeypatch
     e.sender.funds = None
     w = e.status(C[2].start)["warnings"]
     assert "No live price for over a minute" in w and any("funds are not known" in x for x in w)
+
+
+# ---- the trading history (the bot's own trade records, never IG) ------------------------------------------
+
+def closed_row(ref, strategy, closed_utc, pips, gbp, paper=False, direction="buy", half=None):
+    return {"event": "closed", "paper": paper, "reference": ref, "strategy": strategy, "direction": direction,
+            "opened_utc": closed_utc, "closed_utc": closed_utc, "open_price": "13400.0",
+            "close_price": "13420.0", "pips": pips, "gbp": gbp, "result": "win" if float(gbp) > 0 else "loss",
+            "how_closed": "take profit hit at IG", "close_reason": "the take profit at IG", "best_pips": pips,
+            "minutes_open": 30, "market_state": "trend up", "half_close": half, "steps": ["not sent to the page"]}
+
+
+def write_records(svc, real, paper=()):
+    base = Path(svc.S.records.folder) / "GBPUSD"
+    (base / "paper").mkdir(parents=True, exist_ok=True)
+    opened = {"event": "opened", "paper": False, "reference": "X", "strategy": "slow grind", "opened_utc": "2026-11-04T08:00:00Z"}
+    (base / "trades.jsonl").write_text("".join(json.dumps(r) + "\n" for r in [opened, *real]) + "not json\n")
+    (base / "paper" / "trades.jsonl").write_text("".join(json.dumps(r) + "\n" for r in paper))
+
+
+REAL = [closed_row("A1", "slow grind", "2026-08-03T09:00:00Z", "20.0", "200.00"),          # months before: no 30-day limit
+        closed_row("A2", "EMA pullback", "2026-11-02T10:00:00Z", "-12.0", "-120.00", direction="sell"),
+        closed_row("A3", "slow grind", "2026-11-04T09:00:00Z", "20.0", "200.00"),
+        closed_row("A4", "level reversal", "2026-11-04T23:30:00Z", "-6.5", "-65.00"),      # 23:30 UTC = 23:30 UK (GMT)
+        closed_row("A5", "range trade", "2026-10-26T12:00:00Z", "5.0", "50.00", half={"pips": "8"})]
+PAPER = [closed_row("P1", "breakout", "2026-11-04T12:00:00Z", "50.0", "500.00", paper=True)]
+
+
+def history(svc, cookie, query=""):
+    return call(svc, "GET", "/api/history" + (("?" + query) if query else ""), cookie=cookie)
+
+
+def test_the_history_needs_a_session(svc):
+    write_records(svc, REAL)
+    assert history(svc, None)[0] == 401
+
+
+def test_a_day_of_real_trades_with_totals_and_by_strategy(svc):
+    write_records(svc, REAL, PAPER)
+    code, h, _ = history(svc, login(svc), "from=2026-11-04&to=2026-11-04")
+    assert code == 200 and (h["from"], h["to"], h["paper"]) == ("2026-11-04", "2026-11-04", False)
+    assert [t["reference"] for t in h["trades"]] == ["A4", "A3"]                         # newest first, real only
+    assert h["totals"] == {"trades": 2, "wins": 1, "losses": 1, "pips": "13.5", "gbp": "135.00"}
+    assert h["by_strategy"] == [{"strategy": "level reversal", "trades": 1, "wins": 0, "losses": 1, "pips": "-6.5", "gbp": "-65.00"},
+                                {"strategy": "slow grind", "trades": 1, "wins": 1, "losses": 0, "pips": "20.0", "gbp": "200.00"}]
+    assert h["first_day"] == "2026-08-03" and h["paper_trades"] == 0
+    assert "steps" not in h["trades"][0] and h["trades"][0]["paper"] is False
+
+
+def test_the_paper_switch_adds_the_paper_trades_marked_as_paper(svc):
+    write_records(svc, REAL, PAPER)
+    h = history(svc, login(svc), "from=2026-11-04&to=2026-11-04&paper=1")[1]
+    assert [(t["reference"], t["paper"]) for t in h["trades"]] == [("A4", False), ("P1", True), ("A3", False)]
+    assert h["totals"]["trades"] == 3 and h["totals"]["pips"] == "63.5" and h["paper_trades"] == 1
+
+
+def test_a_period_and_every_trade_back_to_the_first(svc):
+    write_records(svc, REAL)
+    cookie = login(svc)
+    week = history(svc, cookie, "from=2026-11-02&to=2026-11-08")[1]
+    assert [t["reference"] for t in week["trades"]] == ["A4", "A3", "A2"]
+    every = history(svc, cookie)[1]
+    assert [t["reference"] for t in every["trades"]] == ["A4", "A3", "A2", "A5", "A1"]
+    assert every["totals"] == {"trades": 5, "wins": 3, "losses": 2, "pips": "26.5", "gbp": "265.00"}
+    assert every["by_strategy"][0] == {"strategy": "slow grind", "trades": 2, "wins": 2, "losses": 0, "pips": "40.0", "gbp": "400.00"}
+    assert [t["half_closed"] for t in every["trades"]] == [False, False, False, True, False]
+
+
+def test_days_are_uk_days(svc):
+    write_records(svc, [closed_row("B1", "slow grind", "2026-07-01T23:30:00Z", "20.0", "200.00")])    # 00:30 UK (BST) on 2 July
+    cookie = login(svc)
+    assert history(svc, cookie, "from=2026-07-01&to=2026-07-01")[1]["trades"] == []
+    assert [t["reference"] for t in history(svc, cookie, "from=2026-07-02&to=2026-07-02")[1]["trades"]] == ["B1"]
+
+
+def test_no_records_and_bad_dates(svc):
+    cookie = login(svc)
+    h = history(svc, cookie, "from=2026-11-04&to=2026-11-04")[1]
+    assert h["trades"] == [] and h["first_day"] is None and h["totals"]["trades"] == 0 and h["totals"]["pips"] == "0"
+    assert history(svc, cookie, "from=4-11-2026")[0] == 400
+    assert history(svc, cookie, "from=2026-11-05&to=2026-11-04")[0] == 400
+
+
+def test_the_history_never_contacts_ig_and_writes_nothing(svc):
+    write_records(svc, REAL)
+    base = Path(svc.S.records.folder) / "GBPUSD"
+    before = {p: p.read_bytes() for p in base.rglob("*") if p.is_file()}
+    history(svc, login(svc), "paper=1")
+    assert {p: p.read_bytes() for p in base.rglob("*") if p.is_file()} == before
+    src = (ROOT / "dashboard" / "server.py").read_text()
+    assert "ig." not in src.split("def history", 1)[1].split("def pause", 1)[0]
+
+
+def test_the_page_has_161s_date_picker_and_period_buttons():
+    page = (ROOT / "dashboard" / "static" / "index.html").read_text()
+    for part in ('data-period="day"', 'data-period="week"', 'data-period="month"', 'data-period="all"',
+                 ".period-bar {", ".date-picker-bar {", ".dpb-display {", ".dpb-input-hidden {", ".dp-overlay {",
+                 ".dp-cell.today", ".dp-cell.sel", ".dpb-today {", ".dpb-historical {", ".dpb-live {",
+                 "function openCustomDatePicker(", "function renderDatePicker(", "function getWeekBounds(",
+                 "(pointer: coarse)", "'● Live'", "'Historical view'", "/api/history", 'id="paperswitch"',
+                 "By strategy", "Trading history"):
+        assert part in page, part
+    assert "Outside 30-day history window" not in page and "isOutOfRange" not in page   # no IG 30-day limit
+    assert "innerHTML" not in page

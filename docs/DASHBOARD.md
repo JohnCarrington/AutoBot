@@ -13,6 +13,7 @@ address, and the dashboard's data service listens only on 127.0.0.1.
   minute in nginx). The session cookie is signed with `DASHBOARD_SECRET_KEY` (HMAC-SHA256), lasts 30 days, HttpOnly,
   SameSite=Strict. The pause switch also needs the session's csrf token and refuses another site's Origin. Without
   both secrets the service does not start (exit code 78; systemd does not restart it).
+- **Trading history** (owner, 9 November 2026): AutoBot 161's date picker, its layout, style and behaviour copied exactly: the Day / Week / Month / All period buttons; the date bar with its label, the date button that opens 161's month-grid calendar on a computer (Monday first, today outlined, later days greyed out, ‹ › for months, Today and Close; Escape or a click outside closes it) and the phone's own date picker on a touch screen; a month box for Month; "● Live" for the current period, or a Today button and "Historical view" for an earlier one. The one difference: it reads the bot's own trade records (`data/records/<PAIR>/trades.jsonl`, through the data service's `GET /api/history`), not IG, so it goes back to the very first trade with no 30-day limit. For the chosen day or period: the totals (pips, £, trades, wins and losses), a breakdown by strategy, and the trades in the same rows as the open trades (newest first). Real trades only by default; the **Show paper trades** switch adds the paper trades (`paper/trades.jsonl`), each marked paper. Today is the default view, and it refreshes every 5 seconds while it shows the current period. A trade counts on the UK day it closed (as the Today card and the daily summary); a week is Monday to Sunday and a month a calendar month, both in UK days.
 - **The status** comes from the price service (`data/trading/<PAIR>/status.json`, every 5 seconds); the dashboard
   warns when it is missing or more than 30 seconds old.
 - **nginx** (`deploy/autobot-dashboard.nginx`): `listen <Tailscale address>:3000`; the page is public, `/api/` is
@@ -38,7 +39,8 @@ address, and the dashboard's data service listens only on 127.0.0.1.
       sed "s/TAILSCALE_IP/$TSIP/" /opt/autobot/deploy/autobot-dashboard.nginx | sudo tee /etc/nginx/sites-available/autobot-dashboard > /dev/null
       sudo nginx -t && sudo systemctl reload nginx
 
-- **The data service** (`dashboard/server.py`, `dashboard/auth.py`): `sudo systemctl restart autobot-dashboard`
+- **The data service** (`dashboard/server.py`, `dashboard/auth.py`; for example a new `/api/` address such as
+  `/api/history`): `sudo systemctl restart autobot-dashboard`
   (logged-in sessions stay valid while `DASHBOARD_SECRET_KEY` is unchanged).
 
 ## Setting it up (needs sudo)

@@ -109,6 +109,7 @@
   .trade-row { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 8px;
                display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center;
                animation: fadeIn .3s ease forwards; opacity: 0; }
+  .trade-row > div:nth-child(2) { min-width: 0; }   /* long text is cut with … instead of widening the row */
   .trade-dir { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
                font-size: 10px; font-weight: 700; letter-spacing: .05em; }
   .trade-dir.buy { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-mid); }
@@ -125,6 +126,190 @@
   @media (min-width: 761px) {
     .stats-grid { grid-template-columns: repeat(4, 1fr); }
   }
+
+  /* ---- trading history: AutoBot 161's period switcher and date picker, copied exactly (its CSS as in 161's page) ---- */
+  /* PERIOD SWITCHER */
+  .period-bar {
+    display: flex;
+    gap: 0;
+    margin: 16px 16px 0;
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 3px;
+    border: 1px solid var(--border);
+  }
+
+  .period-btn {
+    flex: 1;
+    padding: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    color: var(--muted);
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .period-btn.active {
+    background: var(--surface2);
+    color: var(--accent);
+    border: 1px solid var(--border2);
+  }
+
+  /* DATE-PICKER BAR (Day / Week / Month tabs) */
+  .date-picker-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px 6px;
+    flex-wrap: wrap;
+  }
+
+  .dpb-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .dpb-input {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+
+  /* Display button that opens the custom picker on desktop; on touch
+     devices it forwards to the hidden native <input type="date"> so
+     iOS gets its full-screen month grid. */
+  .dpb-display {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    min-width: 130px;
+    text-align: left;
+  }
+  .dpb-display:hover { border-color: var(--accent-mid); color: var(--accent); }
+  .dpb-input-hidden {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px; border: 0;
+  }
+
+  /* Custom desktop month-grid picker (dp-*). */
+  .dp-overlay {
+    position: absolute;
+    z-index: 9999;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.55);
+    font-family: inherit;
+    color: var(--text);
+    user-select: none;
+    min-width: 260px;
+  }
+  .dp-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; padding: 2px 4px 8px;
+  }
+  .dp-nav {
+    background: transparent; color: var(--text);
+    border: 1px solid var(--border2); border-radius: 6px;
+    padding: 2px 10px; cursor: pointer; font-family: inherit; font-size: 14px;
+  }
+  .dp-nav:hover { border-color: var(--accent-mid); color: var(--accent); }
+  .dp-title {
+    font-family: var(--mono); font-size: 12px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+  }
+  .dp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .dp-dow {
+    text-align: center; font-family: var(--mono); font-size: 10px;
+    color: var(--muted); padding: 4px 0; letter-spacing: 0.08em;
+  }
+  .dp-cell {
+    aspect-ratio: 1; background: transparent; color: var(--text);
+    border: 1px solid transparent; border-radius: 6px; cursor: pointer;
+    font-family: inherit; font-size: 12px; padding: 0;
+  }
+  .dp-cell.dim { color: var(--muted); opacity: 0.4; }
+  .dp-cell:hover:not([disabled]) { background: var(--surface2); }
+  .dp-cell.today { border-color: var(--accent-mid); color: var(--accent); }
+  .dp-cell.sel   { background: var(--accent-dim); color: var(--accent); border-color: var(--accent-mid); }
+  .dp-cell[disabled] { cursor: not-allowed; opacity: 0.25; }
+  .dp-foot { display: flex; justify-content: space-between; gap: 8px; margin-top: 8px; }
+  .dp-btn {
+    flex: 1; background: var(--surface2); color: var(--text);
+    border: 1px solid var(--border2); border-radius: 6px;
+    padding: 6px 10px; cursor: pointer; font-family: inherit;
+    font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .dp-btn.primary { background: var(--accent-dim); color: var(--accent); border-color: var(--accent-mid); }
+  .dp-btn:hover { border-color: var(--accent-mid); }
+
+  .dpb-today {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid var(--accent-mid);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .dpb-historical {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--amber);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .dpb-live {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 600px) {
+    /* Period bar: ensure buttons wrap and are tappable (161) */
+    .period-bar { flex-wrap: wrap; gap: 4px !important; padding: 8px 10px !important; }
+    .period-btn { padding: 7px 11px !important; min-height: 36px; font-size: 11px !important; }
+    /* Native date-input: enforce touch size (161) */
+    input[type="date"] { min-height: 36px; font-size: 13px; }
+  }
+  /* Touch-friendly min-size (any pointer:coarse) (161) */
+  @media (pointer: coarse) {
+    .period-btn, .dpb-input { min-height: 40px !important; }
+  }
+  /* the paper trades switch (this bot only) */
+  .paper-switch { display: flex; align-items: center; gap: 8px; padding: 4px 16px 0; cursor: pointer; }
+  .paper-switch input { accent-color: var(--amber); width: 16px; height: 16px; }
+  .chip.paper { background: var(--amber-dim); color: var(--amber); border-color: #ffaa0040; margin-left: 6px; padding: 1px 6px; font-size: 9px; }
 </style>
 </head>
 <body>
@@ -186,6 +371,46 @@
     <div class="section-title" style="padding-top:16px">Open trades</div>
     <div class="trades" id="trades"></div>
     <div class="empty" id="notrades">No open trades.</div>
+
+    <div class="section-title" style="padding-top:24px">Trading history</div>
+    <div class="period-bar" id="periodbar">
+      <button class="period-btn active" data-period="day" type="button">Day</button>
+      <button class="period-btn" data-period="week" type="button">Week</button>
+      <button class="period-btn" data-period="month" type="button">Month</button>
+      <button class="period-btn" data-period="all" type="button">All</button>
+    </div>
+    <div id="picker"></div>
+    <label class="paper-switch"><input type="checkbox" id="paperswitch"><span class="dpb-label">Show paper trades</span></label>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Pips</div>
+        <div class="stat-value" id="hpips"></div>
+        <div class="stat-sub" id="hperiod"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">£</div>
+        <div class="stat-value" id="hgbp"></div>
+        <div class="stat-sub" id="hpaper"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Trades</div>
+        <div class="stat-value" id="htrades"></div>
+        <div class="stat-sub" id="hfirst"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Wins · Losses</div>
+        <div class="stat-value" id="hwl"></div>
+        <div class="stat-sub" id="hrate"></div>
+      </div>
+    </div>
+
+    <div class="section-title">By strategy</div>
+    <div class="trades" id="bystrategy"></div>
+
+    <div class="section-title" style="padding-top:8px">Trades</div>
+    <div class="trades" id="history"></div>
+    <div class="empty" id="nohistory" hidden>No trades closed in this period.</div>
   </main>
   <div class="stamp" id="updated"></div>
 </div>
@@ -272,7 +497,310 @@ $("pausebtn").addEventListener("click", async () => {
   load();
 });
 
-function start() { load(); clearInterval(timer); timer = setInterval(load, 5000); }
+
+// ---- trading history: AutoBot 161's period switcher and date picker (same layout, style and behaviour), reading
+// the bot's own trade records (/api/history) instead of IG, so there is no 30-day limit. Built with DOM calls, never
+// HTML strings (nothing from the records is run as HTML).
+let activePeriod = 'day';
+let dayDate = '';     // 'YYYY-MM-DD' or '' (today)
+let weekDate = '';    // 'YYYY-MM-DD' (any date in target week) or '' (current week)
+let monthDate = '';   // 'YYYY-MM' or '' (current month)
+let showPaper = false;
+let firstDay = null;
+
+function londonParts(d) {
+  const g = {};
+  for (const p of new Intl.DateTimeFormat('en-GB', {timeZone: 'Europe/London', year: 'numeric', month: '2-digit',
+                                                    day: '2-digit'}).formatToParts(d)) g[p.type] = p.value;
+  return g;
+}
+function todayStr() { const g = londonParts(new Date()); return `${g.year}-${g.month}-${g.day}`; }
+function thisMonthStr() { const g = londonParts(new Date()); return `${g.year}-${g.month}`; }
+function isoDate(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+
+function getWeekBounds(dateStr) {
+  // Monday-Sunday week containing dateStr (or today if empty).
+  const base = new Date((dateStr || todayStr()) + 'T00:00:00');
+  const start = new Date(base);
+  const dayOfWeek = (start.getDay() + 6) % 7;  // Mon=0 .. Sun=6
+  start.setDate(start.getDate() - dayOfWeek);
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 7);
+  return { start, end };
+}
+
+function isHistorical() {
+  // True when the user is viewing a non-current period (suppress auto-refresh).
+  if (activePeriod === 'day') return !!dayDate && dayDate !== todayStr();
+  if (activePeriod === 'week') {
+    if (!weekDate) return false;
+    const { start, end } = getWeekBounds(weekDate);
+    const now = new Date(todayStr() + 'T12:00:00');
+    return !(now >= start && now < end);
+  }
+  if (activePeriod === 'month') return !!monthDate && monthDate !== thisMonthStr();
+  return false;
+}
+
+function periodRange() {
+  // The UK days asked for (both included); null for All.
+  if (activePeriod === 'day') { const d = dayDate || todayStr(); return [d, d]; }
+  if (activePeriod === 'week') {
+    const { start, end } = getWeekBounds(weekDate);
+    const last = new Date(end); last.setDate(last.getDate() - 1);
+    return [isoDate(start), isoDate(last)];
+  }
+  if (activePeriod === 'month') {
+    const [y, m] = (monthDate || thisMonthStr()).split('-').map(Number);
+    return [isoDate(new Date(y, m - 1, 1)), isoDate(new Date(y, m, 0))];
+  }
+  return null;
+}
+
+function formatDisplayDate(iso) {
+  // 'YYYY-MM-DD' → '29 Jul 2026' (matches en-GB short-month format).
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+// Desktop month-grid picker. Mobile keeps the native <input type="date">
+// so iOS renders its full-screen picker.
+function openCustomDatePicker(anchor, curVal, maxVal, onPick) {
+  document.querySelectorAll('.dp-overlay').forEach(e => e.remove());
+
+  const cur   = curVal ? new Date(curVal + 'T00:00:00') : new Date();
+  const maxD  = maxVal ? new Date(maxVal + 'T00:00:00') : null;
+  const today = new Date(todayStr() + 'T00:00:00');
+  let viewY = cur.getFullYear();
+  let viewM = cur.getMonth();
+
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DOW    = ['Mo','Tu','We','Th','Fr','Sa','Su'];
+  const eq  = (a,b) => a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+
+  const overlay = el('div', 'dp-overlay');
+
+  function cell(d, cls) {
+    const b = el('button', cls, String(d.getDate()));
+    b.type = 'button'; b.dataset.iso = isoDate(d);
+    if (maxD && d > maxD) b.disabled = true;
+    else b.addEventListener('click', () => { cleanup(); onPick(b.dataset.iso); });
+    return b;
+  }
+
+  function draw() {
+    overlay.textContent = '';
+    const first     = new Date(viewY, viewM, 1);
+    const firstDow  = (first.getDay() + 6) % 7;   // Monday=0
+    const inMonth   = new Date(viewY, viewM + 1, 0).getDate();
+    const inPrev    = new Date(viewY, viewM, 0).getDate();
+
+    const head = el('div', 'dp-head');
+    const prev = el('button', 'dp-nav', '‹'); prev.type = 'button'; prev.dataset.nav = 'prev'; prev.setAttribute('aria-label', 'Previous month');
+    const next = el('button', 'dp-nav', '›'); next.type = 'button'; next.dataset.nav = 'next'; next.setAttribute('aria-label', 'Next month');
+    head.append(prev, el('div', 'dp-title', `${MONTHS[viewM]} ${viewY}`), next);
+
+    const grid = el('div', 'dp-grid');
+    DOW.forEach(d => grid.appendChild(el('div', 'dp-dow', d)));
+    for (let i = firstDow - 1; i >= 0; i--) grid.appendChild(cell(new Date(viewY, viewM - 1, inPrev - i), 'dp-cell dim'));
+    for (let day = 1; day <= inMonth; day++) {
+      const d = new Date(viewY, viewM, day);
+      const cls = ['dp-cell'];
+      if (eq(d, today)) cls.push('today');
+      if (curVal && eq(d, cur)) cls.push('sel');
+      grid.appendChild(cell(d, cls.join(' ')));
+    }
+    const totalCells = firstDow + inMonth;
+    const trail = (7 - (totalCells % 7)) % 7;
+    for (let day = 1; day <= trail; day++) grid.appendChild(cell(new Date(viewY, viewM + 1, day), 'dp-cell dim'));
+
+    const foot = el('div', 'dp-foot');
+    const tBtn = el('button', 'dp-btn primary', 'Today'); tBtn.type = 'button'; tBtn.dataset.act = 'today';
+    const cBtn = el('button', 'dp-btn', 'Close'); cBtn.type = 'button'; cBtn.dataset.act = 'close';
+    foot.append(tBtn, cBtn);
+    overlay.append(head, grid, foot);
+
+    prev.addEventListener('click', () => { viewM--; if (viewM < 0) { viewM = 11; viewY--; } draw(); });
+    next.addEventListener('click', () => { viewM++; if (viewM > 11) { viewM = 0; viewY++; } draw(); });
+    tBtn.addEventListener('click', () => { cleanup(); onPick(isoDate(today)); });
+    cBtn.addEventListener('click', cleanup);
+  }
+
+  function position() {
+    const r = anchor.getBoundingClientRect();
+    overlay.style.left = (r.left + window.scrollX) + 'px';
+    overlay.style.top  = (r.bottom + window.scrollY + 4) + 'px';
+  }
+  function cleanup() {
+    overlay.remove();
+    document.removeEventListener('click', outside, true);
+    document.removeEventListener('keydown', keys);
+    window.removeEventListener('resize', position);
+  }
+  const outside = e => { if (!overlay.contains(e.target) && e.target !== anchor) cleanup(); };
+  const keys    = e => { if (e.key === 'Escape') cleanup(); };
+
+  draw();
+  document.body.appendChild(overlay);
+  position();
+  window.addEventListener('resize', position);
+  setTimeout(() => {
+    document.addEventListener('click', outside, true);
+    document.addEventListener('keydown', keys);
+  }, 0);
+}
+
+function renderDatePicker() {
+  const box = $('picker');
+  box.textContent = '';
+  if (!['day', 'week', 'month'].includes(activePeriod)) return;
+  const today = todayStr();
+  const month = thisMonthStr();
+  // Mobile (coarse pointer): the naked <input type="date"> so iOS opens its full-screen picker on tap. Desktop:
+  // display-button + hidden input pair; the button opens the custom month-grid overlay.
+  const isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  const bar = el('div', 'date-picker-bar');
+  const input = el('input'); input.id = 'dpInput';
+  let display = null, live = false, label = '';
+  const dayWeekInput = (val) => {
+    input.type = 'date'; input.value = val; input.max = today;
+    if (isTouch) { input.className = 'dpb-input'; return; }
+    input.className = 'dpb-input-hidden'; input.tabIndex = -1; input.setAttribute('aria-hidden', 'true');
+    display = el('button', 'dpb-display', formatDisplayDate(val)); display.type = 'button'; display.id = 'dpDisplay';
+  };
+  if (activePeriod === 'day') {
+    label = 'Day';
+    live = !dayDate || dayDate === today;
+    dayWeekInput(dayDate || today);
+  } else if (activePeriod === 'week') {
+    label = 'Week';
+    live = !isHistorical();
+    dayWeekInput(weekDate || today);
+  } else {
+    label = 'Month';
+    live = !monthDate || monthDate === month;
+    input.type = 'month'; input.value = monthDate || month; input.max = month; input.className = 'dpb-input';
+  }
+  bar.appendChild(el('span', 'dpb-label', label));
+  if (display) bar.appendChild(display);
+  bar.appendChild(input);
+  if (live) bar.appendChild(el('span', 'dpb-live', '● Live'));
+  else {
+    const t = el('button', 'dpb-today', 'Today'); t.id = 'dpTodayBtn'; t.type = 'button';
+    t.addEventListener('click', () => {
+      if (activePeriod === 'day') dayDate = '';
+      else if (activePeriod === 'week') weekDate = '';
+      else if (activePeriod === 'month') monthDate = '';
+      renderHistory();
+    });
+    bar.append(t, el('span', 'dpb-historical', 'Historical view'));
+  }
+  box.appendChild(bar);
+
+  input.addEventListener('change', () => {
+    const v = input.value || '';
+    if (activePeriod === 'day') {
+      dayDate = v && v !== todayStr() ? v : '';
+    } else if (activePeriod === 'week') {
+      // The picker returns a YYYY-MM-DD inside the target week; the week bounds give its Monday to Sunday.
+      weekDate = v || '';
+    } else if (activePeriod === 'month') {
+      monthDate = v && v !== thisMonthStr() ? v : '';
+    }
+    renderHistory();
+  });
+  if (display) display.addEventListener('click', () => {
+    openCustomDatePicker(display, input.value, input.max, (picked) => {
+      input.value = picked;
+      input.dispatchEvent(new Event('change'));
+    });
+  });
+}
+
+document.querySelectorAll('#periodbar .period-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#periodbar .period-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activePeriod = btn.dataset.period;
+    renderHistory();
+  });
+});
+$('paperswitch').addEventListener('change', () => { showPaper = $('paperswitch').checked; loadHistory(); });
+
+function renderHistory() { renderDatePicker(); loadHistory(); }
+
+const ukDay = (iso) => iso ? new Date(iso).toLocaleString("en-GB", {timeZone: "Europe/London", weekday: "short", day: "2-digit",
+                                                                        month: "short", hour: "2-digit", minute: "2-digit"}) : "";
+const money = (x) => { const n = Number(x || 0); return (n < 0 ? "-£" : n > 0 ? "+£" : "£") + Math.abs(n).toFixed(2); };
+
+let historySeq = 0;
+async function loadHistory() {
+  const seq = ++historySeq;
+  const q = new URLSearchParams();
+  const range = periodRange();
+  if (range) { q.set('from', range[0]); q.set('to', range[1]); }
+  if (showPaper) q.set('paper', '1');
+  const r = await fetch('/api/history?' + q.toString(), {credentials: 'same-origin', cache: 'no-store'});
+  if (seq !== historySeq) return;                  // a newer choice has been made meanwhile
+  if (r.status === 401) return showLogin();
+  if (!r.ok) { $('hperiod').textContent = 'Could not load the trade records (' + r.status + ')'; return; }
+  const h = await r.json();
+  firstDay = h.first_day;
+  const t = h.totals;
+  $('hpips').textContent = pips(t.pips); $('hpips').className = 'stat-value ' + tone(t.pips);
+  const pounds = Math.round(Number(t.gbp || 0));       // whole pounds in the card (as Today's); pence in the rows
+  $('hgbp').textContent = (pounds < 0 ? '-£' : pounds > 0 ? '+£' : '£') + Math.abs(pounds).toLocaleString('en-GB');
+  $('hgbp').className = 'stat-value ' + tone(t.gbp); $('hgbp').title = money(t.gbp);
+  $('htrades').textContent = String(t.trades);
+  $('hwl').textContent = t.wins + ' · ' + t.losses;
+  $('hrate').textContent = t.trades ? Math.round(100 * t.wins / t.trades) + '% won' : '';
+  $('hperiod').textContent = range ? (range[0] === range[1] ? formatDisplayDate(range[0]) :
+                                      formatDisplayDate(range[0]) + ' – ' + formatDisplayDate(range[1])) : 'Every trade';
+  $('hpaper').textContent = showPaper ? (h.paper_trades + ' paper trade' + (h.paper_trades === 1 ? '' : 's') + ' included') : 'Real trades only';
+  $('hfirst').textContent = firstDay ? 'First trade ' + formatDisplayDate(firstDay) : 'No trades recorded yet';
+
+  const bs = $('bystrategy'); bs.textContent = '';
+  h.by_strategy.forEach(b => {
+    const row = el('div', 'trade-row');
+    row.appendChild(el('div', 'trade-dir buy', String(b.trades)));
+    const mid = el('div');
+    mid.appendChild(el('div', 'trade-name', b.strategy));
+    mid.appendChild(el('div', 'trade-meta', b.trades + ' trades · ' + b.wins + ' won · ' + b.losses + ' lost'));
+    row.appendChild(mid);
+    const right = el('div');
+    right.appendChild(el('div', 'trade-pips ' + tone(b.pips), pips(b.pips)));
+    right.appendChild(el('div', 'trade-best', money(b.gbp)));
+    row.appendChild(right);
+    bs.appendChild(row);
+  });
+  if (!h.by_strategy.length) bs.appendChild(el('div', 'empty', 'None'));
+
+  const box = $('history'); box.textContent = '';
+  h.trades.forEach(x => {
+    const row = el('div', 'trade-row'); row.title = x.close_reason || '';
+    row.appendChild(el('div', 'trade-dir ' + x.direction, String(x.direction).toUpperCase()));
+    const mid = el('div');
+    const name = el('div', 'trade-name', x.strategy);
+    if (x.paper) name.appendChild(el('span', 'chip paper', 'paper'));
+    mid.appendChild(name);
+    mid.appendChild(el('div', 'trade-meta', ukDay(x.opened_utc) + ' → ' + ukDay(x.closed_utc) + ' · ' + x.open_price + ' → ' +
+                                            x.close_price + ' · ' + x.how_closed + (x.half_closed ? ' · half closed first' : '')));
+    row.appendChild(mid);
+    const right = el('div');
+    right.appendChild(el('div', 'trade-pips ' + tone(x.pips), pips(x.pips)));
+    right.appendChild(el('div', 'trade-best', money(x.gbp) + ' · best ' + pips(x.best_pips)));
+    row.appendChild(right);
+    box.appendChild(row);
+  });
+  $('nohistory').hidden = h.trades.length > 0;
+}
+
+function start() {
+  renderHistory();
+  load(); clearInterval(timer);
+  timer = setInterval(() => { load(); if (!isHistorical()) loadHistory(); }, 5000);
+}
 start();
 </script>
 </body>

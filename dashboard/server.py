@@ -16,6 +16,11 @@ deploy/autobot-dashboard.nginx) and serves the page (dashboard/static/index.html
   POST /api/pause     {"paused": true|false}: the pause switch (the file trading.pause_file). Needs the session, its
                       csrf token in X-CSRF-Token, and no Origin from another site. Each change is recorded
                       (records/book.py) and sent on Telegram.
+  GET  /api/history   ?from=YYYY-MM-DD&to=YYYY-MM-DD (UK days, both included; neither: every trade) &paper=1 (also
+                      the paper trades): the bot's own trade records (records.folder/<PAIR>/trades.jsonl, and
+                      paper/trades.jsonl), never IG, so it goes back to the very first trade: the trades closed in
+                      those days (newest first), their totals (trades, wins, losses, pips, £) and the same by
+                      strategy, and the UK day of the first trade recorded. Read only. Needs the session.
 It never contacts IG and never places, changes or closes a trade.
 """
 
@@ -27,7 +32,8 @@ import sys
 import threading
 import time
 from collections import deque
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
+from decimal import Decimal, InvalidOperation
 from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -96,6 +102,76 @@ class Dashboard:
         paused = Path(self.s.trading.pause_file).exists()
         return st | {"paused": paused, "warnings": warnings + list(st.get("warnings", [])),
                      "csrf": session["csrf"], "served_utc": self.now().strftime("%Y-%m-%dT%H:%M:%SZ")}
+
+    # ---- the trading history (the bot's own trade records) -----------------------------------------------------
+
+    HISTORY_FIELDS = ("reference", "strategy", "direction", "opened_utc", "closed_utc", "open_price", "close_price",
+                      "pips", "gbp", "result", "how_closed", "close_reason", "best_pips", "minutes_open", "market_state")
+
+    def _closed_trades(self, paper: bool) -> list[dict]:
+        base = Path(self.s.records.folder) / self.s.market.pair
+        out = []
+        for path, is_paper in [(base / "trades.jsonl", False)] + ([(base / "paper" / "trades.jsonl", True)] if paper else []):
+            try:
+                lines = path.read_text().splitlines()
+            except FileNotFoundError:
+                continue
+            for line in lines:
+                try:
+                    r = json.loads(line)
+                    if r.get("event") != "closed":
+                        continue
+                    closed = datetime.fromisoformat(r["closed_utc"].replace("Z", "+00:00"))
+                    pips, gbp = Decimal(str(r["pips"])), Decimal(str(r["gbp"]))
+                except (ValueError, KeyError, TypeError, InvalidOperation, AttributeError):
+                    continue                                # a line that cannot be read is left out, never guessed
+                out.append((closed, pips, gbp, is_paper, r))
+        return out
+
+    @staticmethod
+    def _query(text: str) -> dict:
+        """name=value pairs after the "?" (plain dates and 0/1 only: nothing needs decoding)."""
+        out: dict = {}
+        for part in text.split("&"):
+            name, eq, value = part.partition("=")
+            if name and eq:
+                out.setdefault(name, []).append(value)
+        return out
+
+    def history(self, query: str) -> tuple[int, dict]:
+        from zoneinfo import ZoneInfo
+        q = self._query(query)
+        tz = self.s.hours.timezone
+        uk = ZoneInfo(tz) if isinstance(tz, str) else tz
+        try:
+            first = date.fromisoformat(q["from"][0]) if "from" in q else None
+            last = date.fromisoformat(q["to"][0]) if "to" in q else None
+        except ValueError:
+            return 400, {"ok": False, "error": "from and to must be dates (YYYY-MM-DD)"}
+        if first and last and first > last:
+            return 400, {"ok": False, "error": "from is after to"}
+        paper = q.get("paper", ["0"])[0] == "1"
+        rows = self._closed_trades(paper)
+        days = [c.astimezone(uk).date() for c, *_ in rows]
+        chosen = [(c, p, g, pp, r) for (c, p, g, pp, r), d in zip(rows, days)
+                  if (first is None or d >= first) and (last is None or d <= last)]
+        chosen.sort(key=lambda x: x[0], reverse=True)
+
+        def totals(items):
+            return {"trades": len(items), "wins": sum(g > 0 for _, _, g, _, _ in items),
+                    "losses": sum(g < 0 for _, _, g, _, _ in items),
+                    "pips": str(sum((p for _, p, _, _, _ in items), Decimal(0))),
+                    "gbp": str(sum((g for _, _, g, _, _ in items), Decimal(0)))}
+        by: dict = {}
+        for x in chosen:
+            by.setdefault(x[4].get("strategy", "?"), []).append(x)
+        strategies = sorted(({"strategy": k} | totals(v) for k, v in by.items()), key=lambda b: (-b["trades"], b["strategy"]))
+        trades = [{k: r.get(k) for k in self.HISTORY_FIELDS} | {"paper": pp, "half_closed": bool(r.get("half_close"))}
+                  for _, _, _, pp, r in chosen]
+        return 200, {"ok": True, "from": first.isoformat() if first else None, "to": last.isoformat() if last else None,
+                     "paper": paper, "first_day": min(days).isoformat() if days else None,
+                     "paper_trades": sum(1 for x in chosen if x[3]),
+                     "totals": totals(chosen), "by_strategy": strategies, "trades": trades}
 
     # ---- the pause switch -------------------------------------------------------------------------------
 
@@ -166,6 +242,12 @@ def handler_for(app: Dashboard):
                 return self._send(200 if sess else 401)
             if self.path == "/api/status":
                 return self._send(200, app.status(sess)) if sess else self._send(401, {"ok": False})
+            path, _, query = self.path.partition("?")
+            if path == "/api/history":
+                if not sess:
+                    return self._send(401, {"ok": False})
+                code, data = app.history(query)
+                return self._send(code, data)
             return self._send(404, {"ok": False})
 
         def do_POST(self):
