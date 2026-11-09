@@ -354,3 +354,162 @@ def test_the_accounts_balance_read_from_ig(monkeypatch):
     c._creds = SimpleNamespace(account_id="NOPE")
     with pytest.raises(IGRequestError, match="account-not-in-reply"):
         c.account_balance()
+
+
+# ---- 9. one view at a time (owner, 9 November 2026; docs/research/one_view_20261109.md rank 1) -------------
+
+from analyser.day_direction import DayDirections, day_directions, friday_move_pips  # noqa: E402
+from safety.rules import is_reversal, trend_direction  # noqa: E402
+
+
+def seen(strategy, direction, state="trend", state_direction="down", trend_type=None, t=WED):
+    i = idea(strategy, direction, t)
+    i.state, i.state_direction, i.trend_type = state, state_direction, trend_type
+    return i
+
+
+def go_day(S, i, day):
+    return decide(S, order_for(S, i), [], funds(t=i.time), i.time, False, [], day)
+
+
+@pytest.mark.parametrize("state,sd,want", [("trend", "down", SELL), ("trend", "up", BUY), ("emerging trend", "up", BUY),
+                                           ("possible reversal", "up", SELL), ("possible reversal", "down", BUY),
+                                           ("ranging", "none", None), ("consolidation", "none", None)])
+def test_the_analysers_trend_direction(state, sd, want):
+    assert trend_direction(seen(LEVEL_REVERSAL, BUY, state, sd)) == want
+
+
+@pytest.mark.parametrize("state,sd", [("trend", "down"), ("possible reversal", "up"), ("possible reversal", "down"),
+                                      ("ranging", "none")])
+@pytest.mark.parametrize("direction", [BUY, SELL])
+def test_every_bollinger_bounce_is_a_reversal(state, sd, direction):
+    assert is_reversal(seen(BOLLINGER_BOUNCE, direction, state, sd))
+
+
+@pytest.mark.parametrize("state,sd,direction,want", [
+    ("trend", "down", BUY, True), ("trend", "down", SELL, False),
+    ("emerging trend", "up", SELL, True), ("emerging trend", "up", BUY, False),
+    ("possible reversal", "up", BUY, True),          # a possible reversal up: against the down trend being reversed
+    ("possible reversal", "up", SELL, False),
+    ("ranging", "none", BUY, False), ("ranging", "none", SELL, False)])
+def test_a_level_reversal_is_a_reversal_only_against_the_trend(state, sd, direction, want):
+    assert is_reversal(seen(LEVEL_REVERSAL, direction, state, sd)) is want
+
+
+@pytest.mark.parametrize("strategy", [EMA_PULLBACK, SLOW_GRIND, BREAKOUT, RANGE_TRADE])
+@pytest.mark.parametrize("direction", [BUY, SELL])
+def test_the_other_strategies_are_never_reversals(strategy, direction):
+    assert not is_reversal(seen(strategy, direction, "trend", "down", "strong push"))
+
+
+def test_no_reversal_trade_against_a_strong_push(S):
+    for strategy in (BOLLINGER_BOUNCE, LEVEL_REVERSAL):
+        d = go(S, seen(strategy, BUY, "trend", "down", "strong push"))
+        assert not d.allowed and d.reasons == ["a reversal trade against a strong push (down)"], strategy
+
+
+def test_a_reversal_against_a_slow_grind_trend_and_trades_with_a_strong_push_are_allowed(S):
+    assert go(S, seen(BOLLINGER_BOUNCE, BUY, "trend", "down", "slow grind")).allowed
+    assert go(S, seen(LEVEL_REVERSAL, SELL, "trend", "down", "strong push")).allowed      # with the push
+    for strategy in (EMA_PULLBACK, SLOW_GRIND, BREAKOUT):
+        assert go(S, seen(strategy, SELL, "trend", "down", "strong push")).allowed, strategy
+
+
+def test_a_possible_reversal_is_not_a_strong_push(S):
+    assert go(S, seen(BOLLINGER_BOUNCE, BUY, "possible reversal", "up")).allowed
+
+
+@pytest.mark.parametrize("day,why", [
+    (DayDirections(news=SELL), "a big-news day, expected news direction sell"),
+    (DayDirections(trend_day=SELL), "a trend day, direction sell"),
+    (DayDirections(monday=SELL, friday_move_pips=D("85.0")),
+     "the Monday after a Friday that moved +85.0 pips, direction sell")])
+def test_no_reversal_trade_against_the_days_direction(S, day, why):
+    for i in (seen(BOLLINGER_BOUNCE, BUY, "possible reversal", "up"), seen(LEVEL_REVERSAL, BUY, "trend", "down")):
+        d = go_day(S, i, day)
+        assert not d.allowed and d.reasons == [f"a reversal trade against the day's direction: {why}"], i.strategy
+    assert go_day(S, seen(BOLLINGER_BOUNCE, SELL, "trend", "up"), day).allowed          # in the day's direction
+
+
+def test_every_day_direction_it_goes_against_is_given(S):
+    day = DayDirections(news=SELL, trend_day=SELL, monday=BUY, friday_move_pips=D("-90.0"))
+    d = go_day(S, seen(BOLLINGER_BOUNCE, BUY, "trend", "down", "strong push"), day)
+    assert d.reasons == ["a reversal trade against a strong push (down)",
+                         "a reversal trade against the day's direction: a big-news day, expected news direction sell",
+                         "a reversal trade against the day's direction: a trend day, direction sell"]
+    d = go_day(S, seen(BOLLINGER_BOUNCE, SELL, "trend", "up"), day)
+    assert d.reasons == ["a reversal trade against the day's direction: the Monday after a Friday that moved "
+                         "-90.0 pips, direction buy"]
+
+
+@pytest.mark.parametrize("strategy", [EMA_PULLBACK, SLOW_GRIND, BREAKOUT, RANGE_TRADE])
+def test_the_days_direction_does_not_change_the_other_strategies(S, strategy):
+    day = DayDirections(news=SELL, trend_day=SELL, monday=SELL, friday_move_pips=D("100"))
+    assert go_day(S, seen(strategy, BUY, "trend", "up"), day).allowed
+    assert go_day(S, seen(strategy, BUY, "ranging", "none"), day).allowed
+
+
+def test_a_level_reversal_in_ranging_is_not_refused_on_an_exception_day(S):
+    assert go_day(S, seen(LEVEL_REVERSAL, BUY, "ranging", "none"), DayDirections(news=SELL)).allowed
+
+
+def test_no_day_directions_and_an_ordinary_day_change_nothing(S):
+    i = seen(BOLLINGER_BOUNCE, BUY, "possible reversal", "up")
+    assert go_day(S, i, None).allowed and go_day(S, i, DayDirections()).allowed
+
+
+# ---- the day's directions (analyser/day_direction.py) -------------------------------------------------
+
+class DailyStore:
+    """Daily candles only: {UTC start: (sell open, sell close)}."""
+    def __init__(self, days):
+        self.days = days
+
+    def read_range(self, tf, a, b):
+        assert tf == "1d"
+        return [SimpleNamespace(start=t, sell_open=D(o), sell_close=D(c), buy_open=D(o) + 1, buy_close=D(c) + 1)
+                for t, (o, c) in self.days.items() if a <= t < b]
+
+
+FRI_6 = U(2026, 11, 6, 0, 0)                        # Friday 6 November 00:00 UK (GMT)
+MON_9 = U(2026, 11, 9, 9, 0)
+
+
+def test_the_fridays_move_is_its_daily_candles_sell_open_to_close(S):
+    assert friday_move_pips(S, DailyStore({FRI_6: ("13500.0", "13392.4")}), MON_9.date()) == D("-107.6")
+    assert friday_move_pips(S, DailyStore({}), MON_9.date()) is None
+
+
+@pytest.mark.parametrize("close,want", [("13420.0", BUY), ("13420.1", None), ("13580.0", SELL), ("13579.9", None)])
+def test_the_monday_after_a_friday_that_moved_80_pips_or_more(S, close, want):
+    got = day_directions(S, DailyStore({FRI_6: ("13500.0", close)}), MON_9, [], None)
+    assert got.monday == want and got.news is None and got.trend_day is None
+
+
+def test_the_80_pips_is_a_setting(S):
+    s = Over(S, safety={"big_friday_move_pips": 120})
+    store = DailyStore({FRI_6: ("13500.0", "13392.4")})
+    assert day_directions(s, store, MON_9, [], None).monday is None
+    assert day_directions(S, store, MON_9, [], None).monday == BUY
+
+
+def test_only_a_monday_looks_at_friday(S):
+    store = DailyStore({FRI_6: ("13500.0", "13300.0"), U(2026, 11, 9, 0, 0): ("13300.0", "13100.0")})
+    assert day_directions(S, store, U(2026, 11, 10, 9, 0), [], None).monday is None      # Tuesday
+
+
+def test_the_trend_day_gives_its_direction(S):
+    store = DailyStore({})
+    assert day_directions(S, store, WED, [], "down").trend_day == SELL
+    assert day_directions(S, store, WED, [], "up").trend_day == BUY
+    assert day_directions(S, store, WED, [], None).trend_day is None
+
+
+def test_the_big_news_days_expected_direction(S):
+    cal = [{"time_utc": "2026-11-05T12:00:00Z", "country": "GB", "event": "BoE Interest Rate Decision",
+            "estimate": 3.75, "prev": 4.0, "actual": None, "impact": "high", "unit": "%"}]
+    from trade_manager.manager import day_news_direction
+    want = day_news_direction(S, "GBPUSD", U(2026, 11, 5, 8, 0), cal)
+    assert want in (BUY, SELL)
+    assert day_directions(S, DailyStore({}), U(2026, 11, 5, 8, 0), cal, None).news == want
+    assert day_directions(S, DailyStore({}), U(2026, 11, 4, 8, 0), cal, None).news is None

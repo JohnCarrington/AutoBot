@@ -17,7 +17,14 @@ It gives EVERY reason it refuses (an empty list: the order may go out):
   7. total risk: every open trade's risk (its stop distance x its size) plus the new trade's, at most
      safety.max_total_risk_gbp (£100,000; owner, 8 November 2026: set so it is never reached);
   8. available funds: the account's available funds at least safety.margin_per_trade_gbp (£5,000, the
-     margin for one trade at £10 a pip); unknown funds refuse (never let a trade through when unsure).
+     margin for one trade at £10 a pip); unknown funds refuse (never let a trade through when unsure);
+  9. one view at a time (owner, 9 November 2026; the best combination of docs/research/one_view_20261109.md,
+     exactly as tested): no REVERSAL trade (every Bollinger bounce; a level reversal against the analyser's
+     trend direction, see trend_direction) (a) against a strong push: the analyser's state at the idea is a
+     trend of the strong-push type in the other direction; (b) against the day's direction on an exception day
+     (analyser/day_direction.py: a big-news day's expected news direction, a trend day's direction, the Monday
+     after a Friday that moved safety.big_friday_move_pips (80) or more, in the direction that reclaims it).
+     Every other trade is unchanged.
 IG's minimum stop distance is NOT checked before a trade (owner, 8 November 2026): the bot assumes each
 strategy's own stop meets it; safety/refusals.py deals with IG refusing a trade.
 """
@@ -29,7 +36,8 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Any
 
-from strategies.common import (BOLLINGER_BOUNCE, EMA_PULLBACK, SWITCH, counts_towards_most_at_once, may_open,
+from analyser.states import EMERGING, POSSIBLE_REVERSAL, STRONG_PUSH, TREND
+from strategies.common import (BOLLINGER_BOUNCE, EMA_PULLBACK, LEVEL_REVERSAL, SWITCH, counts_towards_most_at_once, may_open,
                                stop_loss_pips, stop_price)
 
 
@@ -137,9 +145,48 @@ def _funds(settings: Any, funds: AccountFunds | None) -> list[str]:
     return []
 
 
+def trend_direction(idea: Any) -> str | None:
+    """The analyser's trend direction at the idea, as buy or sell: the trend's in an emerging trend or a trend;
+    in a possible reversal, the trend being reversed (the opposite of the state's direction); None otherwise
+    (ranging has no trend to go against)."""
+    d = idea.state_direction
+    if d not in ("up", "down"):
+        return None
+    if idea.state in (EMERGING, TREND):
+        return "buy" if d == "up" else "sell"
+    if idea.state == POSSIBLE_REVERSAL:
+        return "sell" if d == "up" else "buy"
+    return None
+
+
+def is_reversal(idea: Any) -> bool:
+    """A reversal trade: every Bollinger bounce, and a level reversal against the analyser's trend direction.
+    The EMA pullback, slow grind, breakout and range trade never are."""
+    if idea.strategy == BOLLINGER_BOUNCE:
+        return True
+    if idea.strategy == LEVEL_REVERSAL:
+        td = trend_direction(idea)
+        return td is not None and td != idea.direction
+    return False
+
+
+def _one_view(idea: Any, day: Any) -> list[str]:
+    """Rule 9: one view at a time. `day`: the day's directions (analyser.day_direction.DayDirections), or None."""
+    if not is_reversal(idea):
+        return []
+    out = []
+    td = trend_direction(idea)
+    if idea.state == TREND and idea.trend_type == STRONG_PUSH and td != idea.direction:
+        out.append(f"a reversal trade against a strong push ({idea.state_direction})")
+    for what in (day.against(idea.direction) if day is not None else []):
+        out.append(f"a reversal trade against the day's direction: {what}")
+    return out
+
+
 def decide(settings: Any, order: Order, open_trades: list[OpenTrade], funds: AccountFunds | None,
-           now: datetime, paused: bool, calendar: list | None = None) -> Decision:
-    """Whether `order` may go out at `now`, with every reason it may not."""
+           now: datetime, paused: bool, calendar: list | None = None, day: Any = None) -> Decision:
+    """Whether `order` may go out at `now`, with every reason it may not. `day`: the directions of the idea's UK
+    day (analyser.day_direction.day_directions), for rule 9."""
     idea = order.idea
     reasons: list[str] = []
     if paused:
@@ -155,4 +202,5 @@ def decide(settings: Any, order: Order, open_trades: list[OpenTrade], funds: Acc
         reasons.append(f"the size is £{order.size_gbp_per_pip} a pip, not £{want}")
     reasons += _risk(settings, order, open_trades)
     reasons += _funds(settings, funds)
+    reasons += _one_view(idea, day)
     return Decision(not reasons, reasons)

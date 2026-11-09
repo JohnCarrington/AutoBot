@@ -290,7 +290,7 @@ class OrderSender:
         return dist, ""
 
     def place(self, idea: Any, *, paused: bool = False, trend_day: str | None = None,
-              calendar: list | None = None) -> Result:
+              calendar: list | None = None, day: Any = None) -> Result:
         """Send one market order for an idea, after the safety rules. Never sent twice."""
         with self._lock:
             now = self.now()
@@ -298,7 +298,7 @@ class OrderSender:
                 self._record("safety refused", strategy=idea.strategy, reasons=["the order sender's start-up is not done"])
                 return Result(False, "safety refused", reasons=["the order sender's start-up is not done"])
             order = order_for(self.s, idea)
-            d = decide(self.s, order, self.open_trades(), self.funds, now, paused, calendar)
+            d = decide(self.s, order, self.open_trades(), self.funds, now, paused, calendar, day)
             if not d.allowed:
                 self._record("safety refused", strategy=idea.strategy, direction=idea.direction, reasons=d.reasons)
                 return Result(False, "safety refused", reasons=d.reasons)

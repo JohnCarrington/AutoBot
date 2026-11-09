@@ -456,3 +456,33 @@ def test_the_half_close_is_restored_too(S, monkeypatch):
     back = plan(S, "R1", RANGE_TRADE, SELL, WED, D(100), D(100), D(6), [])
     assert m.restore(back, m.load_state())
     assert (back.best, back.half_done, back.half_pips, back.state) == (D("9"), True, D("8.5"), "half close")
+
+
+# ---- one view at a time (design 6; owner, 9 November 2026) -------------------------------------------------
+
+def test_the_engine_gives_the_safety_rules_the_days_direction(S, monkeypatch):
+    ideas = {C[1].start: [idea(BOLLINGER_BOUNCE, C[1].start), idea(BREAKOUT, C[1].start)]}
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, ideas, trading_on=True)
+    monkeypatch.setattr(eng, "trend_day_at", lambda s, store, t: SimpleNamespace(direction="up"))
+    e.start(WED)
+    feed(e, clock, C[:3])
+    assert [t.strategy for t in e.manager.trades.values()] == [BREAKOUT]       # not a reversal: unchanged
+    (r,) = [r for r in journal(e) if r["event"] == "safety refused"]
+    assert r["strategy"] == BOLLINGER_BOUNCE and r["reasons"] == [
+        "a reversal trade against the day's direction: a trend day, direction buy"]
+
+
+def test_a_live_reversal_against_a_strong_push_is_not_sent(S, monkeypatch):
+    t0 = C[1].start
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {}, trading_on=True,
+                                        live={t0: [(BOLLINGER_BOUNCE, BUY, D("100.4"))]})
+    pushed = idea(BOLLINGER_BOUNCE, t0, BUY, "100.4")
+    pushed.trend_type = "strong push"
+    monkeypatch.setattr(e.runner, "peek", lambda partial, levels=None: [pushed] if partial.start == t0 else [])
+    e.start(WED)
+    feed(e, clock, C[:1])
+    clock["t"] = t0 + timedelta(seconds=30)
+    e.on_price(SimpleNamespace(time=clock["t"], sell=D("100.5"), buy=D("102.0")))
+    assert ig.orders_sent() == [] and e.manager.trades == {}
+    assert any(r["event"] == "safety refused" and r["reasons"] == ["a reversal trade against a strong push (down)"]
+               for r in journal(e))

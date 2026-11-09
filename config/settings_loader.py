@@ -342,6 +342,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "ig_stop_refusal_reasons": _names,
         "ig_funds_refusal_reasons": _names,
         "folder": _absolute_folder,
+        "big_friday_move_pips": _whole_number(1, 1000),
     },
     "chart": {
         "price": _one_of("sell", "buy"),

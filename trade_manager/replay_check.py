@@ -1,6 +1,9 @@
 """Replay check for the trade manager: over Monday 26 October to Friday 6 November 2026, through the bot's own
 code (the strategies' replay, the safety rules' hours and limits, the trade manager's exits), every trade must
 close at the same time and price as in docs/research/all_strategies_together_20261108.md ("Every trade").
+It checks the trade manager against that earlier research, so it keeps the safety rules as they were then
+(its own copy of the hours and limits): the one view at a time rules (design 6, 9 November 2026) are checked by
+`python -m trading.replay_check` instead.
 Reads the candle store and the calendar; contacts nobody; places nothing; writes nothing.
 
     .venv/bin/python -m trade_manager.replay_check

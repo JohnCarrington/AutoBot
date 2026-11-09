@@ -41,6 +41,7 @@ from decimal import Decimal
 from typing import Any, Callable
 
 from analyser.market_state import MemoStore, StateTracker
+from analyser.day_direction import day_directions
 from analyser.trend_day import trend_day_at
 from orders.sender import OrderSender
 from records.book import Book, daily_text
@@ -205,7 +206,8 @@ class Trading:
         return paused
 
     def _place(self, idea: Any, td: str | None) -> Any:
-        r = self.sender.place(idea, paused=self._paused(), trend_day=td, calendar=self.calendar)
+        day = day_directions(self.s, self.store, idea.time, self.calendar, td)
+        r = self.sender.place(idea, paused=self._paused(), trend_day=td, calendar=self.calendar, day=day)
         self.book.decision("order", self.now(), strategy=idea.strategy, direction=idea.direction, result=r.what,
                            reference=r.reference, reasons=r.reasons, level=r.level)
         return r

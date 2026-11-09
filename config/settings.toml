@@ -130,6 +130,10 @@ ig_stop_refusal_reasons = ["ATTACHED_ORDER_LEVEL_ERROR"]
 ig_funds_refusal_reasons = ["INSUFFICIENT_FUNDS"]
 # Where the bot records IG's minimum stop distance each time IG refuses a trade because of its stop.
 folder = "/opt/autobot/data/safety"
+# One view at a time (design 6; owner, 9 November 2026): on the Monday after a Friday whose daily
+# candle (sell price, open to close) moved at least this many pips, no reversal trade against the
+# direction that reclaims Friday's move. 80 is the value tested in docs/research/one_view_20261109.md.
+big_friday_move_pips = 80
 
 [chart]
 # The price every level and indicator is worked out from, to match the owner's
