@@ -219,6 +219,8 @@ Typical / 90% (points), from the bot's 5-minute IG candles, Sunday 25 October to
 
 ## 6. Dukascopy: waiting for the export
 
+**Dropped on 10 November 2026 (owner's instruction).** No Dukascopy data was exported or downloaded. AutoBot 161's 2026 IG mid candles were used instead: see `ig161_mid_2026_20261110.md`. The Dukascopy reader stays in `research/candles_convert.py` in case it is wanted later. What follows is kept as it was written.
+
 The folder `data/research/dukascopy/GBPUSD/` is ready and empty. **What to export** from Dukascopy's Historical Data Export page (`dukascopy.com/swiss/english/marketwatch/historical/`):
 
 - Instrument **GBP/USD**, timeframe **1 minute**, **both BID and ASK** (one file each).

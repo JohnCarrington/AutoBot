@@ -245,3 +245,77 @@ def test_spread_table_in_uk_time_of_a_normal_week():
     assert chk.half_hour_of_normal_week(T("2026-11-04T22:10")) == "Wed 22:00"   # normal week
     assert chk.half_hour_of_normal_week(T("2026-10-25T21:10")) == "Sun 21:00"   # the open follows UK time
     assert chk.hour_of_normal_day(T("2026-10-28T21:10")) == "22:00"
+
+
+# ---- 161's 2026 mid candles to buy and sell -------------------------------------------------
+
+from research import mid_to_bidask as mb
+
+
+def mid(t, o, h, l, c):
+    return cc.RCandle(t, t + FIVE, None, tuple(D(x) for x in (o, h, l, c)))
+
+
+def test_mid_snapped_to_a_twentieth_and_refused_otherwise():
+    assert mb.snap_mid("13376.150000000001") == D("13376.15")
+    assert mb.snap_mid("13373.349999999999") == D("13373.35")
+    for bad in ("13376.17", "nan", "-1"):
+        with pytest.raises(ValueError):
+            mb.snap_mid(bad)
+
+
+def test_read_161_mid_skips_nan_rows_and_moves_jan_feb(tmp_path):
+    (tmp_path / "2026-02-27.csv").write_text(
+        "timestamp,open,high,low,close\n2026-02-27T16:55:00+00:00,13500.05,13501.0,13499.5,13500.0\n")
+    (tmp_path / "2026-04-19.csv").write_text(
+        "timestamp,open,high,low,close\n2026-04-19T20:15:00+00:00,13491.85,nan,nan,13491.75\n"
+        "2026-04-19T20:20:00+00:00,13491.85,13492.0,13491.5,13491.75\n")
+    r = mb.read_161_mid(tmp_path, mb.jan_feb_five_hours_late)
+    assert [c.start for c in r.candles] == [T("2026-02-27T21:55"), T("2026-04-19T20:20")]
+    assert r.moved == 1 and len(r.skipped) == 1 and "nan" in r.skipped[0][1]
+    # 161's January "Sunday 17:00" open lands on 22:00 UK, inside IG's hours
+    assert B.hours.is_open(T("2026-01-04T17:00") + mb.jan_feb_five_hours_late(T("2026-01-04T17:00")))
+    assert mb.jan_feb_five_hours_late(T("2026-03-23T00:00")) == timedelta(0)
+
+
+def test_sell_is_mid_minus_half_buy_is_mid_plus_half_rounded_outward():
+    m = mid(T("2026-10-26T10:00"), "13377.55", "13380.65", "13374.6", "13375.45")
+    c = mb.to_buy_sell(m, D("0.9"))
+    assert c.sell == (D("13377.1"), D("13380.2"), D("13374.1"), D("13375.0"))
+    assert c.buy == (D("13378.0"), D("13381.1"), D("13375.1"), D("13375.9"))
+    assert all(b - s >= D("0.9") for b, s in zip(c.buy, c.sell))      # never narrower than the spread used
+    o = mb.to_buy_sell(m, D("1.0"))                  # 13377.05 / 13378.05: on a twentieth
+    assert o.sell[0] == D("13377.0") and o.buy[0] == D("13378.1")
+    i = mb.to_buy_sell(m, D("1.0"), "inward")
+    assert i.sell[0] == D("13377.1") and i.buy[0] == D("13378.0")
+    n = mb.to_buy_sell(m, D("0.9"), "none")
+    assert n.sell[0] == D("13377.10") and n.buy[0] == D("13378.00")
+    # an IG-exact case: real sell 13366.6 / buy 13385.7 on the Sunday open -> mid 13376.15, spread 19.1
+    assert mb.to_buy_sell(mid(T("2026-10-25T21:10"), "13376.15", "13376.15", "13376.15", "13376.15"),
+                          D("19.1")).sell[0] == D("13366.6")
+
+
+def test_spread_table_lookup_uses_uk_time_of_a_normal_week(tmp_path):
+    p = tmp_path / "t.csv"
+    p.write_text("uk_half_hour_normal_week,samples,typical_points,p90_points,largest_points,smallest_points\n"
+                 "Wed 22:00,24,16.9,16.9,24.6,1.8\nWed 21:00,24,0.9,1.5,1.5,0.9\n")
+    f = mb.spread_from_table(mb.read_spread_table(p))
+    assert f(T("2026-11-04T22:10")) == D("16.9")          # normal week: rollover at 22:00 UK
+    assert f(T("2026-10-28T21:10")) == D("16.9")          # out-of-step week: rollover at 21:00 UK
+    assert f(T("2026-11-04T21:10")) == D("0.9")
+    with pytest.raises(KeyError):
+        f(T("2026-11-04T10:00"))
+
+
+def test_spread_table_built_from_real_ig_candles():
+    t = mb.build_spread_table([both(T("2025-11-03T10:00"), spread="0.9"), both(T("2025-11-03T10:05"), spread="1.5"),
+                               both(T("2025-11-03T10:10"), spread="0.9")])
+    assert t == {"Mon 10:00": D("0.9")}
+
+
+def test_converted_mids_build_like_the_bot_and_read_in_the_live_store(out):
+    mids = [mid(T("2026-11-02T10:00") + i * FIVE, "13000.05", "13001.05", "12999.05", "13000.55") for i in range(12)]
+    cc.convert(mb.convert_mids(mids, lambda t: D("0.9")), B, out, "test")
+    [h] = CandleStore(out, 30).read_day("1h", date(2026, 11, 2))
+    assert (h.parts, h.expected_parts) == (12, 12)
+    assert (h.sell_open, h.buy_open) == (D("12999.6"), D("13000.5"))
