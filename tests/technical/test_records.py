@@ -201,7 +201,7 @@ def test_the_daily_and_weekly_summaries(S):
 # ---- the engine: records, Telegram, the pause switch, the daily summary -------------------------------------
 
 def test_a_real_trade_is_recorded_and_sent_on_telegram_when_it_opens_and_closes(S, monkeypatch):
-    stop = candle(WED + timedelta(minutes=15), 100, 110, 99.5, 109)
+    stop = candle(WED + timedelta(minutes=15), 100, 113, 99.5, 112)          # past the breakout's 12-pip stop
     cs = C[:3] + [stop] + C[4:]
     e, ig, tracker, clock, quote = make(S, monkeypatch, cs, {C[1].start: [idea(BREAKOUT, C[1].start)]}, trading_on=True)
     real_fill = ig._fill
@@ -219,14 +219,14 @@ def test_a_real_trade_is_recorded_and_sent_on_telegram_when_it_opens_and_closes(
     assert [r["event"] for r in trades] == ["opened", "closed"]
     o, c = trades
     assert (o["strategy"], o["direction"], o["stop_pips"], o["take_profit_pips"], o["take_profit_kind"]) == \
-        (BREAKOUT, "sell", "6", "50", "normal")
-    assert c["how_closed"] == "stopped by IG" and D(c["pips"]) == D("-6") and D(c["gbp"]) == D("-60") and c["result"] == "loss"
+        (BREAKOUT, "sell", "12", "50", "normal")
+    assert c["how_closed"] == "stopped by IG" and D(c["pips"]) == D("-12") and D(c["gbp"]) == D("-120") and c["result"] == "loss"
     assert c["minutes_open"] == 5 and c["opened_utc"] == "2026-11-04T10:10:00Z"           # live: at the market after its candle
     alerts = e.alerts
     assert len(alerts.opened) == 1 and alerts.opened[0].reference == o["reference"]
     assert alerts.opened[0].epic == S.market.epic and "<b>Epic:</b> " + S.market.epic in opened_text(alerts.opened[0])
     (closed,) = alerts.closed
-    assert closed.profit_gbp == D("-60") and closed.today_trades == 1 and closed.today_pips == D("-6")
+    assert closed.profit_gbp == D("-120") and closed.today_trades == 1 and closed.today_pips == D("-12")
 
 
 def test_paper_trades_are_recorded_but_send_no_trade_messages(S, monkeypatch):

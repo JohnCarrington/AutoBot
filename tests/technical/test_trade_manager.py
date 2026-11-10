@@ -74,8 +74,8 @@ def test_the_stop_at_ig_is_recorded_not_sent(S):
 
 def test_a_bar_opening_past_the_stop_fills_at_its_open(S):
     tr = trade(S, BREAKOUT, SELL)                                # fill 100 (sell); closes on the buy price
-    (d,) = run(S, tr, [(100, 100.5, 99, 99.5), (108, 109, 107, 108)])
-    assert d.kind == STOPPED_BY_IG and d.price == D("109.5") and d.pips == D("-9.5")
+    (d,) = run(S, tr, [(100, 100.5, 99, 99.5), (111, 112, 110, 111)])   # stop 12 (owner, 10 November 2026)
+    assert d.kind == STOPPED_BY_IG and d.price == D("112.5") and d.pips == D("-12.5")
 
 
 def test_the_entry_bar_counts_the_stop_only_if_it_opened_past_the_entry_or_closed_beyond_the_stop(S):

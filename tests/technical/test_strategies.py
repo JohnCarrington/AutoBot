@@ -143,7 +143,22 @@ def test_the_ema_pullback_has_its_own_stop_loss(S):
     from strategies.common import stop_loss_pips
     assert stop_loss_pips(S, EMA_PULLBACK) == 12
     for name in (BOLLINGER_BOUNCE, RANGE_TRADE):
-        assert stop_loss_pips(S, name) == 6
+        assert stop_loss_pips(S, name) == 6                    # the pretend .env's STOP_LOSS_PIPS
+
+
+def test_owners_12_pip_stop_is_for_the_bounce_range_trade_and_breakout_only(S):
+    """Owner, 10 November 2026: STOP_LOSS_PIPS=12 in .env and breakout.stop_loss_pips = 12 give exactly the
+    Bollinger bounce, the range trade and the breakout a 12-pip stop; every other strategy keeps its own."""
+    from strategies.common import stop_loss_pips
+    assert S.breakout.stop_loss_pips == 12                     # config/settings.toml
+    s = over(S, "switches", stop_loss_pips=12)                 # the owner's .env line
+    assert {n: stop_loss_pips(s, n) for n in (BOLLINGER_BOUNCE, RANGE_TRADE, BREAKOUT)} == \
+        {BOLLINGER_BOUNCE: 12, RANGE_TRADE: 12, BREAKOUT: 12}
+    assert stop_loss_pips(s, EMA_PULLBACK) == S.switches.stop_loss_pips_ema_pullback == 12   # its own switch
+    assert stop_loss_pips(s, SLOW_GRIND) == 15                 # slow_grind.stop_loss_pips
+    assert stop_loss_pips(s, LEVEL_REVERSAL) == 6              # 6 pips beyond the furthest point, not from the entry
+    s6 = over(S, "switches", stop_loss_pips=6)                 # STOP_LOSS_PIPS reaches only the bounce and range trade
+    assert stop_loss_pips(s6, BREAKOUT) == 12 and stop_loss_pips(s6, SLOW_GRIND) == 15
 
 
 def test_a_bounce_in_a_possible_reversal_may_go_either_way(S):
@@ -830,7 +845,7 @@ def test_breakout_hours_news_friday_and_exits(S):
     assert closed_before_big_news(BREAKOUT) is False
     assert closed_on_level_rejection(BREAKOUT) is False                                       # no level close
     assert counts_towards_most_at_once(BREAKOUT) is True
-    assert (stop_loss_pips(S, BREAKOUT), take_profit_pips(S, BREAKOUT, U(2026, 11, 5, 9, 0), "GBPUSD", BOE_CAL)) == (6, 50)
+    assert (stop_loss_pips(S, BREAKOUT), take_profit_pips(S, BREAKOUT, U(2026, 11, 5, 9, 0), "GBPUSD", BOE_CAL)) == (12, 50)
 
 
 def test_the_replay_gives_the_breakout_the_analysers_breakout(monkeypatch, S):

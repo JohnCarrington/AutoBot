@@ -109,7 +109,7 @@ EXPECTED = {
         "hourly_history_candles": 600,
     },
     "possible_reversal": {"min_trend_move_pips": 30},
-    "breakout": {"trigger_within_candles": 3, "stop_loss_pips": 6, "take_profit_pips": 50},
+    "breakout": {"trigger_within_candles": 3, "stop_loss_pips": 12, "take_profit_pips": 50},
     "trend_day": {"level_above": "R2", "level_below": "S2", "rsi_periods": 14, "rsi_above": 70, "rsi_below": 30,
                   "rsi_history_candles": 1000},
     "level_reversal": {"level_types": ("S2", "R2", "round_number"), "round_numbers_every_pips": 100, "allowance_pips_r2": 12,
@@ -462,8 +462,8 @@ def test_the_breakout_switch_is_required_and_cannot_be_on_before_its_stop_and_ta
     with pytest.raises(SettingsError, match="Missing switch STRATEGY_BREAKOUT"):
         load_settings(switches_from=_env(tmp_path, values))
     on = _env(tmp_path, {**SWITCHES_OK, "STRATEGY_BREAKOUT": "on"})
-    st = load_settings(switches_from=on)                       # the owner's values: 6 and 50
-    assert st.switches.breakout is True and (st.breakout.stop_loss_pips, st.breakout.take_profit_pips) == (6, 50)
+    st = load_settings(switches_from=on)                       # the owner's values: 12 (10 November 2026) and 50
+    assert st.switches.breakout is True and (st.breakout.stop_loss_pips, st.breakout.take_profit_pips) == (12, 50)
     for key in ("stop_loss_pips", "take_profit_pips"):
         data = _raw()
         data["breakout"][key] = 0                              # 0: not chosen

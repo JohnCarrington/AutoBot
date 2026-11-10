@@ -141,7 +141,7 @@ def test_trading_on_sends_the_order_through_the_order_sender(S, monkeypatch):
     e.start(WED)
     feed(e, clock, C[:3])
     (o,) = ig.orders_sent()
-    assert o[3]["direction"] == "SELL" and o[3]["forceOpen"] is True and o[3]["stopDistance"] == 6.0
+    assert o[3]["direction"] == "SELL" and o[3]["forceOpen"] is True and o[3]["stopDistance"] == 12.0
     assert e.sender.journal.name == "orders.jsonl" and [t.strategy for t in e.manager.trades.values()] == [BREAKOUT]
 
 
@@ -170,7 +170,7 @@ def test_nothing_happens_before_the_start_up(S, monkeypatch):
 # ---- the trade manager on each candle and each price -------------------------------------------------------
 
 def test_open_trades_are_run_on_each_candle_before_new_ideas(S, monkeypatch):
-    stop = candle(WED + timedelta(minutes=15), 100, 110, 99.5, 109)          # stops the first sell
+    stop = candle(WED + timedelta(minutes=15), 100, 113, 99.5, 112)          # stops the first sell (12 pips)
     cs = C[:3] + [stop] + C[4:]
     ideas = {C[1].start: [idea(BREAKOUT, C[1].start)], stop.start: [idea(BREAKOUT, stop.start)]}
     e, ig, tracker, clock, quote = make(S, monkeypatch, cs, ideas)

@@ -210,7 +210,7 @@ def test_no_order_before_the_start_up_is_done(S):
 # ---- the order -----------------------------------------------------------------------------------
 
 @pytest.mark.parametrize("strategy,stop,limit", [(EMA_PULLBACK, 12, 30), (BOLLINGER_BOUNCE, 6, 100), (RANGE_TRADE, 6, 100),
-                                                 (BREAKOUT, 6, 50), (SLOW_GRIND, 15, 20)])
+                                                 (BREAKOUT, 12, 50), (SLOW_GRIND, 15, 20)])
 def test_a_market_order_with_its_strategys_stop_and_take_profit_and_force_open(S, strategy, stop, limit):
     sender, ig, *_ = make(S)
     r = sender.place(idea(strategy), calendar=[])

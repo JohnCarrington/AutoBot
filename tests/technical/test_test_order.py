@@ -54,7 +54,7 @@ def test_one_order_opened_held_and_closed_then_never_again(S):
     test.tick()
     assert [c[3]["direction"] for c in ig.orders_sent()] == ["BUY"]
     body = ig.orders_sent()[0][3]
-    assert (body["size"], body["stopDistance"], body["limitDistance"], body["forceOpen"]) == (10.0, 6.0, 50.0, True)
+    assert (body["size"], body["stopDistance"], body["limitDistance"], body["forceOpen"]) == (10.0, 12.0, 50.0, True)
     assert sleeps[-1] == 60 and len([c for c in ig.calls if len(c) == 5 and (c[4] or {}).get("_method")]) == 1
     result = json.loads((folder / RESULT).read_text())
     assert (result["placed"], result["closed"], result["open_trades_after"]) == ("opened", "closed", 0)

@@ -181,7 +181,7 @@ def test_the_size_is_10_pounds_a_pip(S):
 
 
 def test_each_strategys_stop_in_its_order(S):
-    assert [order_for(S, idea(n)).stop_pips for n in ALL] == [D(12), D(6), D(6), D(6), D(15), D(10)]
+    assert [order_for(S, idea(n)).stop_pips for n in ALL] == [D(12), D(6), D(6), D(12), D(15), D(10)]   # pretend .env STOP_LOSS_PIPS 6; breakout 12
     lr = idea(LEVEL_REVERSAL, BUY, price="13400.0", context={"stop_price": D("13387.5")})
     assert order_for(S, lr).stop_pips == D("12.5")                       # from the entry to its stop price
 
@@ -199,11 +199,11 @@ def test_igs_minimum_stop_is_not_checked_before_a_trade(S):
 def test_total_risk_is_every_open_trades_stop_times_size_plus_the_new_one(S):
     s = Over(S, safety=vars(S.safety) | {"max_total_risk_gbp": 300})
     two = [opened(EMA_PULLBACK, stop="12"), opened(SLOW_GRIND, stop="15")]        # £120 + £150
-    assert go(s, idea(BREAKOUT), two).allowed is False                           # + £60 = £330
+    assert go(s, idea(BREAKOUT), two).allowed is False                           # + £120 (its 12-pip stop) = £390
     assert go(s, idea(BREAKOUT), two).reasons == \
-        ["total risk £330.00 with this trade (its stop x its size, every open trade) is over £300.00"]
-    assert go(s, idea(BREAKOUT), two[:1]).allowed                               # £180
-    assert go(s, idea(BREAKOUT), [opened(EMA_PULLBACK, stop="12"), opened(SLOW_GRIND, stop="12.0")]).allowed  # £300 exactly
+        ["total risk £390.00 with this trade (its stop x its size, every open trade) is over £300.00"]
+    assert go(s, idea(BREAKOUT), two[:1]).allowed                               # £240
+    assert go(s, idea(BREAKOUT), [opened(EMA_PULLBACK, stop="12"), opened(SLOW_GRIND, stop="6.0")]).allowed  # £300 exactly
 
 
 def test_the_owners_total_risk_limit_is_never_reached(S):

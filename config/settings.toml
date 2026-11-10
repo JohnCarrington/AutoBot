@@ -233,9 +233,10 @@ min_trend_move_pips = 30
 # Design 3.5 (owner, 7 November 2026). The breakout candle's high (buy) or low
 # (sell) must be broken within this many candles after it, or the setup expires.
 trigger_within_candles = 3
-# Its stop loss and take profit in pips (owner, 7 November 2026). 0 would mean
+# Its stop loss and take profit in pips (owner, 7 November 2026; the stop 12 from
+# 10 November 2026, with the bounce and range trade's STOP_LOSS_PIPS). 0 would mean
 # "not chosen": the bot refuses to start with STRATEGY_BREAKOUT on while either is 0.
-stop_loss_pips = 6
+stop_loss_pips = 12
 take_profit_pips = 50
 
 [level_reversal]
