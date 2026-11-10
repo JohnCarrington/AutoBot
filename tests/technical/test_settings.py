@@ -59,7 +59,7 @@ EXPECTED = {
     },
     "orders": {"folder": Path("/opt/autobot/data/orders"), "expiry": "DFB", "currency": "GBP",
                "deal_reference_prefix": "AB", "unclear_checks": 3, "unclear_check_wait_seconds": 2,
-               "confirm_attempts": 5, "confirm_wait_seconds": 1},
+               "confirm_attempts": 5, "confirm_wait_seconds": 1, "close_retry_seconds": 30},
     "trade_manager": {"folder": Path("/opt/autobot/data/trade_manager")},
     "records": {"folder": Path("/opt/autobot/data/records")},
     "dashboard": {"port": 8766, "session_days": 30, "login_failures_per_minute": 5,

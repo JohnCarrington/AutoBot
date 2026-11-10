@@ -351,3 +351,103 @@ def test_only_some_trades_can_be_stepped(S):
     m.add(b)
     m.on_bar(bar(WED, 100, 100.5, 99, 99.5), only=["B"])
     assert (a.bars, b.bars) == (0, 1)
+
+
+# ---- live: a close is never recorded unless IG confirms it (owner, 10 November 2026) -------------------
+
+from trade_manager.manager import CLOSE_NOT_DONE, CLOSED_AT_IG  # noqa: E402
+
+
+class AnswerSender(PretendSender):
+    """Answers each close from a script: "refused", "closed", or a gone-at-IG result."""
+    def __init__(self, answers):
+        super().__init__()
+        self.answers = list(answers)
+
+    def close(self, reference, *, half=False, why="", price=None):
+        self.closes.append((reference, half, why))
+        a = self.answers.pop(0)
+        if a == "refused":
+            return SimpleNamespace(ok=False, what="close refused",
+                                   reasons=["error.service.marketdata.position.notional.details.null.error"])
+        if a == "closed":
+            return SimpleNamespace(ok=True, what="half closed" if half else "closed", reasons=[])
+        return a
+
+
+def tm_rows(S):
+    return [json.loads(x) for x in (S.trade_manager.folder / "GBPUSD" / "decisions.jsonl").read_text().splitlines()]
+
+
+def test_live_a_close_ig_refuses_leaves_the_trade_open_and_is_tried_again(S):
+    clock = {"t": U(2026, 11, 10, 20, 30)}
+    sender = AnswerSender(["refused", "closed"])
+    m = TradeManager(S, sender, now=lambda: clock["t"], ig_confirms=True)
+    tr = trade(S, BOLLINGER_BOUNCE, BUY, t=U(2026, 11, 10, 20, 25), stop="30")
+    tr.bars = 1
+    m.add(tr)
+    m.on_bar(bar(U(2026, 11, 10, 20, 30), 100, 100.5, 99.5, 100))          # 20:30: the forced close
+    assert tr.open and tr.state == HOLD and tr.decisions == [] and tr.close_attempts == 1
+    (row,) = tm_rows(S)
+    assert row["decision"] == CLOSE_NOT_DONE and "notional.details.null" in row["why"] and "stays open" in row["why"]
+    clock["t"] = U(2026, 11, 10, 20, 30, 10)                                 # 10 seconds later: not yet again
+    m.on_bar(bar(clock["t"], 100, 100, 100, 100))
+    assert len(sender.closes) == 1 and tr.open
+    clock["t"] = U(2026, 11, 10, 20, 30, 31)                                 # after close_retry_seconds (30)
+    m.on_bar(bar(clock["t"], 100, 100, 100, 100))
+    assert len(sender.closes) == 2 and not tr.open and tr.state == FORCED_CLOSE
+    assert [r["decision"] for r in tm_rows(S)] == [CLOSE_NOT_DONE, FORCED_CLOSE]
+
+
+def test_live_a_refused_half_close_is_undone_and_tried_again(S):
+    clock = {"t": WED}
+    sender = AnswerSender(["refused", "closed"])
+    m = TradeManager(S, sender, now=lambda: clock["t"], ig_confirms=True)
+    tr = trade(S, RANGE_TRADE, SELL)
+    tr.bars = 1
+    m.add(tr)
+    band = (D("110"), D("90"))
+    m.on_bar(bar(WED + timedelta(minutes=5), 96, 96, 89, 90), band)
+    assert not tr.half_done and tr.half_pips is None and tr.state == HOLD and tr.decisions == []
+    clock["t"] = WED + timedelta(minutes=10)
+    m.on_bar(bar(clock["t"], 90, 91, 89, 90), band)
+    assert tr.half_done and tr.state == HALF_CLOSE and [d.kind for d in tr.decisions] == [HALF_CLOSE]
+
+
+def test_live_a_trade_ig_already_closed_is_finished_at_igs_level_and_time(S):
+    gone = SimpleNamespace(ok=True, what="gone at IG", reference="REF1", level=D("13335.2"),
+                           closed_utc=U(2026, 11, 10, 17, 56, 27), reasons=["IG refused the close because it had already closed it"])
+    sender = AnswerSender([gone])
+    m = TradeManager(S, sender, now=lambda: U(2026, 11, 10, 20, 30), ig_confirms=True)
+    tr = plan(S, "REF1", SLOW_GRIND, SELL, U(2026, 11, 10, 15, 19), D("13373.2"), D("13373.0"), D("15"), [])
+    tr.bars = 1
+    m.add(tr)
+    m.on_bar(bar(U(2026, 11, 10, 20, 30), 13346, 13346, 13346, 13346))
+    assert not tr.open and tr.state == CLOSED_AT_IG
+    d = tr.decisions[-1]
+    assert (d.price, d.pips, d.at) == (D("13335.2"), D("37.8"), U(2026, 11, 10, 17, 56, 27))
+    assert tr.total_pips() == D("37.8") and tm_rows(S)[-1]["order_sender"] == "gone at IG"
+
+
+def test_the_regular_check_finishes_a_trade_ig_closed(S):
+    m = TradeManager(S, PretendSender(), now=lambda: WED, ig_confirms=True)
+    tr = trade(S, EMA_PULLBACK, BUY)
+    m.add(tr)
+    found = SimpleNamespace(what="gone at IG", reference="REF1", level=tr.fill - D("4"), closed_utc=WED, reasons=["x"])
+    assert m.gone_at_ig(found) and not tr.open and tr.total_pips() == D("-4")
+    assert not m.gone_at_ig(found)                                           # only once
+
+
+def test_live_igs_stop_is_recorded_at_igs_level(S):
+    class Confirmed(IGSender):
+        def closed_at_ig(self, reference, kind, price=None):
+            self.asked.append((reference, kind))
+            return SimpleNamespace(ok=True, what="closed at IG", level=D("94.0"), closed_utc=WED + timedelta(minutes=7))
+    m = TradeManager(S, Confirmed(True), now=lambda: WED, ig_confirms=True)
+    tr = trade(S, BOLLINGER_BOUNCE, BUY)                                    # fill 101.5
+    m.add(tr)
+    for b in bars_from(WED, [(100.5, 101, 100, 100.5), (100.5, 100.5, 95, 96)]):
+        m.on_bar(b)
+    d = tr.decisions[-1]
+    assert not tr.open and (d.kind, d.price, d.pips, d.at) == (STOPPED_BY_IG, D("94.0"), D("-7.5"), WED + timedelta(minutes=7))
+    assert tm_rows(S)[-1]["price"] == "94.0"

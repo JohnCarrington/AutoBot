@@ -113,6 +113,7 @@ class Trading:
         with self._lock:
             now = now or self.now()
             self.sender.start()
+            self._rebuild_meta()
             saved = self.manager.load_state()
             for t in [t for t in self.sender.trades.values() if t.status == "open"]:
                 mt = plan(self.s, t.reference, t.strategy, t.direction, t.opened_at, t.level, t.level, t.stop_pips,
@@ -123,6 +124,8 @@ class Trading:
                 if self.manager.restore(mt, saved):         # its best pips so far, half close, watching
                     log.info("Trade %s: its saved best (%s pips) restored.", t.reference, mt.best)
                 self.manager.add(mt)
+            self._take_gone()                               # trades IG closed while the bot was away
+            self._after_bars()
             if not self.replay:
                 self.tracker.replay(now)
                 self.runner.step()                          # the week so far: nothing is sent for the past
@@ -152,6 +155,9 @@ class Trading:
             self._changes_seen = len(self.tracker.changes)
             self._take_new_candles()
             self._sync_ig()
+            if self.trading_on:
+                self.sender.reconcile("after the candle")   # the bot's open trades against IG's open positions
+            self._take_gone()
             self._after_bars()
 
     def _take_new_candles(self) -> None:
@@ -254,6 +260,12 @@ class Trading:
                 continue
             last = mt.decisions[-1]
             pips = mt.total_pips()
+            if pips is None:                                # closed at IG at a level IG's activity did not give
+                rec |= {"closed": True}
+                self.book.closed({k: v for k, v in rec.items() if k not in ("closed", "steps")} | {
+                    "closed_utc": last.at or self.now(), "close_price": None, "how_closed": last.kind,
+                    "close_reason": last.why, "pips": None, "gbp": None, "result": "unknown"})
+                continue
             gbp = (pips * size).quantize(Decimal("0.01"))
             half = rest = None
             if mt.half_pips is not None:
@@ -276,6 +288,48 @@ class Trading:
                 today = self.book.today(closed_at)
                 self.alerts.trade_closed(TradeClosed(self._opened_message(rec), last.price, closed_at, last.why, gbp,
                                                      pips, best, half, rest, today.trades, today.pips))
+
+    def _rebuild_meta(self) -> None:
+        """After a restart: what the records and messages need for each trade opened before it and not yet
+        closed in the records (otherwise its close could never be recorded)."""
+        opened, closed = {}, set()
+        if self.book.trades_file.exists():
+            import json
+            for line in self.book.trades_file.read_text().splitlines():
+                r = json.loads(line)
+                if r.get("event") == "opened":
+                    opened[r["reference"]] = r
+                elif r.get("event") == "closed":
+                    closed.add(r["reference"])
+        for ref, r in opened.items():
+            if ref in closed or ref in self.meta:
+                continue
+            rec = {k: v for k, v in r.items() if k not in ("event", "paper")}
+            rec["opened_utc"] = datetime.fromisoformat(str(r["opened_utc"]).replace("Z", "+00:00"))
+            self.meta[ref] = rec
+        self._closed_before = closed
+
+    def _take_gone(self) -> None:
+        """Trades the order sender found closed at IG without the bot (start-up, a refused close, the regular
+        check): finished by the trade manager at IG's level, then recorded once."""
+        for f in self.sender.take_gone():
+            ref = f.reference
+            if ref not in self.manager.trades:
+                t = self.sender.trades.get(ref)
+                if t is None:
+                    continue
+                mt = plan(self.s, ref, t.strategy, t.direction, t.opened_at, t.level, t.level, t.stop_pips,
+                          self.calendar, self._trend_day(t.opened_at))
+                mt.bars = 1
+                self.manager.add(mt)
+            if ref in getattr(self, "_closed_before", set()) and ref not in self.meta:
+                # already closed in the records before this start (by the bot's own reading): IG's close is
+                # recorded as a decision, the record is not written twice
+                self.book.decision("closed at IG", self.now(), reference=ref, level=f.level,
+                                   ig_time_utc=f.closed_utc, note="; ".join(f.reasons))
+                self.manager.trades[ref].state = "closed at IG"
+                continue
+            self.manager.gone_at_ig(f)
 
     def _sync_ig(self) -> None:
         """Live: a trade whose stop or take profit the trade manager expected IG to have closed, but IG had not yet,

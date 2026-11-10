@@ -24,7 +24,12 @@ a bar whose open, high, low and close are the same), in this order (as the resea
 Prices: a buy closes on the sell price, a sell on the buy price; pips are from the price the trade opened at.
 The stop and take profit are IG's: the manager records them (in a replay or a paper trade it fills them as IG
 would); it never sends a close for them. Live, it asks the order sender to confirm with IG that IG closed the
-trade, and the trade stays open until IG has.
+trade, and the trade stays open until IG has; the record then has IG's own level and time.
+Live, a close the bot sends counts only once IG confirms it (owner, 10 November 2026): if the order sender reports
+it refused or unclear, the trade is put back exactly as it was before that bar (a close not done is recorded, never
+a close), and the close is tried again after orders.close_retry_seconds. If IG had already closed the position
+(the order sender's "gone at IG", also from its regular check of IG's open positions), the trade is finished as
+"closed at IG" at IG's own level and time.
 "Watching a level" (design 4): a trade the close on a rejection applies to is watching a level while the
 analyser's rejection part has a setup running against it at a level that counts (after its pierce, before it
 triggers, is cancelled or expires). It goes back to hold when there is none.
@@ -37,7 +42,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
@@ -49,6 +54,9 @@ UTC = timezone.utc
 # The decisions (design 4: hold, half close, close, forced close, stopped by IG, take profit hit at IG).
 HOLD, HALF_CLOSE, CLOSE, FORCED_CLOSE, STOPPED_BY_IG, TAKE_PROFIT_AT_IG, WATCHING = (
     "hold", "half close", "close", "forced close", "stopped by IG", "take profit hit at IG", "watching a level")
+# Live only: IG closed the position without the bot (found by the order sender: IG's level and time), and a
+# close the bot sent that IG did not confirm (the trade stays open; recorded, never a close).
+CLOSED_AT_IG, CLOSE_NOT_DONE = "closed at IG", "close not done"
 BOT_CLOSES = (HALF_CLOSE, CLOSE, FORCED_CLOSE)
 IG_CLOSES = (STOPPED_BY_IG, TAKE_PROFIT_AT_IG)
 
@@ -115,6 +123,8 @@ class ManagedTrade:
     state: str = HOLD
     watching: bool = False
     expected_at_ig: tuple | None = None     # live: IG's stop or take profit expected, not yet confirmed
+    retry_close_at: datetime | None = None  # live: a close IG did not confirm is tried again from this time
+    close_attempts: int = 0                 # live: closes sent that IG did not confirm
     decisions: list[Decision] = field(default_factory=list)
 
     @property
@@ -317,12 +327,39 @@ class TradeManager:
         the analyser's rejection setups running at levels that count, after this bar."""
         done = []
         for t in [t for t in self.trades.values() if t.open and (only is None or t.reference in only)]:
+            before = self._before(t)
+            kept: list[Decision] = []                   # bot closes IG confirmed in this bar (a half close)
             for d in step(self.s, t, bar, band, rejections):
                 sent = None
+                if d.kind in BOT_CLOSES and self.ig_confirms and t.retry_close_at is not None \
+                        and self.now() < t.retry_close_at:
+                    self._put_back(t, before, kept)     # a close IG did not confirm: not tried again yet
+                    break
                 if d.kind in BOT_CLOSES:
                     sent = self.sender.close(t.reference, half=d.kind == HALF_CLOSE, why=d.why, price=d.price)
+                    if self.ig_confirms and getattr(sent, "what", "") == "gone at IG":
+                        self._put_back(t, before, kept)
+                        self._closed_at_ig(t, sent)
+                        done.append((t, t.decisions[-1]))
+                        break
+                    if self.ig_confirms and not getattr(sent, "ok", False):
+                        # never closed unless IG confirms it: the trade stays as it was, the close is tried again
+                        self._put_back(t, before, kept)
+                        t.close_attempts += 1
+                        t.retry_close_at = self.now() + timedelta(seconds=self.s.orders.close_retry_seconds)
+                        why = "; ".join(getattr(sent, "reasons", None) or [getattr(sent, "what", "no answer")])
+                        self._record(t, Decision(CLOSE_NOT_DONE, d.price, None,
+                                                 f"{d.kind} ({d.why}) not done: IG did not confirm it ({why}); the trade "
+                                                 f"stays open and the close is tried again in "
+                                                 f"{self.s.orders.close_retry_seconds} seconds", d.part), sent)
+                        break
+                    t.retry_close_at = None
+                    if d.kind == HALF_CLOSE:
+                        kept.append(d)
                 elif d.kind in IG_CLOSES and hasattr(self.sender, "closed_at_ig"):
                     sent = self.sender.closed_at_ig(t.reference, d.kind, d.price)
+                    if self.ig_confirms and getattr(sent, "ok", False):
+                        d = self._at_igs_level(t, d, sent)
                     if self.ig_confirms and not getattr(sent, "ok", False):
                         t.expected_at_ig = (d.kind, d.price, d)
                         t.state, t.decisions = HOLD if not t.half_done else HALF_CLOSE, t.decisions[:-1]
@@ -338,6 +375,55 @@ class TradeManager:
                                              + ("running against it at a level" if now_watching else "is over")))
         self.save_state()
         return done
+
+    _KEEP = ("state", "best", "bars", "half_done", "half_pips", "half_share", "expected_at_ig")
+
+    @classmethod
+    def _before(cls, t: ManagedTrade) -> dict:
+        return {k: getattr(t, k) for k in cls._KEEP} | {"decisions": len(t.decisions)}
+
+    @classmethod
+    def _put_back(cls, t: ManagedTrade, before: dict, kept: list[Decision]) -> None:
+        """The trade as it was before this bar, plus the half close IG confirmed in it (if any)."""
+        for k in cls._KEEP:
+            setattr(t, k, before[k])
+        del t.decisions[before["decisions"]:]
+        for d in kept:
+            t.half_done, t.half_pips, t.half_share, t.state = True, d.pips, d.part, HALF_CLOSE
+            t.decisions.append(d)
+
+    def _closed_at_ig(self, t: ManagedTrade, found: Any) -> None:
+        """IG closed the position without the bot (the order sender's "gone at IG"): finished at IG's own level
+        and time when IG's activity gives them."""
+        ppp = Decimal(self.s.market.points_per_pip)
+        level = getattr(found, "level", None)
+        pips = None if level is None else (((t.fill - level) if t.direction == SELL else (level - t.fill)) / ppp)
+        why = "; ".join(getattr(found, "reasons", None) or []) or "closed at IG without the bot"
+        d = Decision(CLOSED_AT_IG, level, pips, why, (1 - t.half_share) if t.half_done else Decimal(1),
+                     getattr(found, "closed_utc", None) or self.now())
+        t.decisions.append(d)
+        t.state = CLOSED_AT_IG
+        self._record(t, d, found)
+        self.save_state()
+
+    def gone_at_ig(self, found: Any) -> bool:
+        """The order sender found this trade gone at IG (regular check or start-up): finish it here too."""
+        t = self.trades.get(getattr(found, "reference", ""))
+        if t is None or not t.open:
+            return False
+        self._closed_at_ig(t, found)
+        return True
+
+    def _at_igs_level(self, t: ManagedTrade, d: Decision, sent: Any) -> Decision:
+        """Live: IG's own close level and time (from IG's activity, via the order sender) replace the manager's."""
+        level = getattr(sent, "level", None)
+        if not isinstance(level, Decimal) or level == d.price:
+            return d
+        ppp = Decimal(self.s.market.points_per_pip)
+        pips = ((t.fill - level) if t.direction == SELL else (level - t.fill)) / ppp
+        new = Decision(d.kind, level, pips, d.why + " (IG's level)", d.part, getattr(sent, "closed_utc", None) or d.at)
+        t.decisions[-1] = new
+        return new
 
     def closed_at_ig(self, reference: str) -> None:
         """The order sender found the trade closed at IG (its stop or take profit): stop managing it."""

@@ -45,6 +45,7 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `orders.unclear_check_wait_seconds` | The wait between those checks. **Starting value.** | 2 seconds |
 | `orders.confirm_attempts` | IG's confirmation of a new order or a close (`GET /confirms/{reference}`) is asked for up to this many times while IG answers 404 (not there yet), as AutoBot 161's `open_sb_now.py`. | 5 |
 | `orders.confirm_wait_seconds` | The wait between those attempts, as AutoBot 161. | 1 second |
+| `orders.close_retry_seconds` | A close that IG refuses, or does not answer clearly, never closes the trade in the records: the trade stays open and the trade manager tries the close again after this many seconds, for as long as the position is open at IG (each refusal is a Telegram alert with IG's error). **Starting value.** | 30 seconds |
 | `trade_manager.folder` | Where the trade manager records every decision it makes: `<folder>/<PAIR>/decisions.jsonl` (design 4). | /opt/autobot/data/trade_manager |
 | `records.folder` | The bot's records, kept for good (design 9): `<folder>/<PAIR>/trades.jsonl` (every trade, opened and closed), `decisions.jsonl` (every decision), `summaries/daily/` and `summaries/weekly/`; paper trades (while `TRADING` is off) in `<folder>/<PAIR>/paper/`. | /opt/autobot/data/records |
 | `trading.daily_summary_at` | The daily summary is written and sent on Telegram each weekday at this UK time. **Owner's value, 8 November 2026.** | 20:35 |

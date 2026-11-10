@@ -85,6 +85,9 @@ unclear_check_wait_seconds = 2
 # many times, this many seconds apart, while IG answers 404 (not there yet): as AutoBot 161.
 confirm_attempts = 5
 confirm_wait_seconds = 1
+# A close IG refuses (or does not answer clearly) leaves the trade open; the trade manager tries the
+# close again after this many seconds, for as long as the position is open at IG.
+close_retry_seconds = 30
 
 [trade_manager]
 # Where the trade manager records every decision it makes (design 4).

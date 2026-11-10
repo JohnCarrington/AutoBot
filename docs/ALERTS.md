@@ -28,6 +28,10 @@ The same problem never sends more than one message every 10 minutes (`alerts.sam
 | Any candle store problem: a check problem, or a gap (including a gap since the last candle at start-up) | each pair's price feed |
 | A history block marker being written | the history door, in the fill tools (`prices.history_fill`, `prices.long_history`) |
 | The price service crashing | the price service (systemd restarts it after 30 seconds) |
+| IG refused to close a trade (with IG's error). The trade stays open and the close is tried again every `orders.close_retry_seconds`. Each trade has its own alert, so a second trade's refusal is never held back by the first | the order sender (`close-refused-<deal ID>`) |
+| A trade the bot did not close is no longer open at IG (IG's stop or limit not expected, IG's own system, or a close IG refused because it had already closed it), with IG's own close level and time from IG's activity; the trade is then closed in the records at IG's level | the order sender, at start-up, after a refused close, and in the regular check after every 5-minute candle (`gone-at-ig-<deal ID>`) |
+| An open position at IG the bot did not open, or a trade whose size at IG differs from the bot's records (once each) | the order sender's check of its open trades against IG's open positions, at start-up and after every 5-minute candle |
+| IG's open positions could not be read for that check | the order sender (`positions-not-read`) |
 
 ## Trade messages and the daily summary (`alerts/trades.py`, `records/book.py`)
 

@@ -61,6 +61,8 @@ class PretendIG:
         self.journal_at_post = None
         self.journal = None
         self.next_deal = 1
+        self.activity = []                                  # IG's activity history (GET /history/activity)
+        self.positions_fail = False
 
     def login(self):
         raise AssertionError("the order sender must never log in")
@@ -76,7 +78,11 @@ class PretendIG:
     def request(self, method, path, version, body=None, *, what, headers=None):
         self.calls.append((method, path, version, body, headers))
         if method == "GET" and path == "/positions":
+            if self.positions_fail:
+                raise IGRequestError(what, 500, "error.public-api.failure")
             return Reply({"positions": self.positions})
+        if method == "GET" and path.startswith("/history/activity"):
+            return Reply({"activities": self.activity})
         if method == "GET" and path.startswith("/confirms/"):
             ref = path.split("/")[-1]
             got = self.confirms.get(ref)
@@ -115,6 +121,8 @@ class PretendIG:
         if method == "POST" and path == "/positions/otc" and headers.get("_method") == "DELETE":   # a close
             if self.close_answer == "timeout":
                 raise IGRequestError(what, None, "ReadTimeout")
+            if self.close_answer == "notional":                 # IG's answer at 20:30 UK on 10 November 2026
+                raise IGRequestError(what, 400, "error.service.marketdata.position.notional.details.null.error")
             if self.close_answer == "timeout-done":
                 self._close(body)
                 raise IGRequestError(what, None, "ReadTimeout")
@@ -145,6 +153,15 @@ class PretendIG:
             rest = {"position": dict(p["position"], dealId=f"DIREST{self.next_deal}", size=left), "market": p["market"]}
             self.next_deal += 1
             self.positions.append(rest)
+
+    def system_close(self, deal, level, when):
+        """IG's own system closes a position (channel SYSTEM, not its stop or limit), as on 9 and 10 November."""
+        p = next(p for p in self.positions if p["position"]["dealId"] == deal)
+        self.positions.remove(p)
+        self.activity.append({"date": when, "epic": EPIC, "dealId": "DISYS" + deal[-4:], "channel": "SYSTEM",
+                              "type": "POSITION", "status": "ACCEPTED", "description": f"Position/s closed: {deal[-8:]}",
+                              "details": {"actions": [{"actionType": "POSITION_CLOSED", "affectedDealId": deal}],
+                                          "direction": "BUY", "level": level, "size": 10}})
 
     def orders_sent(self):
         return [c for c in self.calls if c[0] == "POST" and c[1] == "/positions/otc" and "_method" not in c[4]]
@@ -539,7 +556,10 @@ def test_a_refused_close_is_recorded_and_alerted(S):
     r = sender.place(idea(BREAKOUT), calendar=[])
     ig.close_answer = "reject"
     c = sender.close(r.reference)
-    assert c.what == "close refused" and alerts.sent[-1][0] == "close-refused" and len(sender.open_trades()) == 1
+    assert c.what == "close refused" and len(sender.open_trades()) == 1
+    key, text = alerts.sent[-1]
+    assert key == f"close-refused-{r.deal_id}"             # each trade its own alert: never held back by another's
+    assert "still open at IG" in text and "tried again" in text
 
 
 def test_an_unclear_close_is_checked_on_the_position(S):
@@ -637,3 +657,108 @@ def test_the_reference_ig_echoes_is_the_one_confirmed(S):
     r = sender.place(idea(BREAKOUT), calendar=[])
     assert r.ok and any(c[1] == "/confirms/IGECHO1" for c in ig.calls)
     assert [x for x in records(sender) if x["event"] == "reference echoed"][0]["ig_reference"] == "IGECHO1"
+
+
+# ---- IG refused the closes of positions it had already closed (10 November 2026) -----------------------
+
+def test_a_close_of_a_position_ig_already_closed_is_recorded_with_igs_own_close(S):
+    sender, ig, alerts, *_ = make(S)
+    r = sender.place(idea(SLOW_GRIND), calendar=[])
+    ig.system_close(r.deal_id, 13335.2, "2026-11-04T09:56:27")             # IG's system closed it
+    ig.close_answer = "notional"
+    c = sender.close(r.reference, why="20:30 UK close")
+    assert (c.ok, c.what, c.level) == (True, "gone at IG", D("13335.2"))
+    assert c.closed_utc == U(2026, 11, 4, 9, 56, 27) and "already closed" in c.reasons[0]
+    gone = [x for x in records(sender) if x["event"] == "gone at IG"][0]
+    assert gone["ig_level"] == "13335.2" and gone["ig_channel"] == "SYSTEM" and gone["ig_time_utc"] == "2026-11-04T09:56:27Z"
+    assert "close refused" in events(sender) and sender.open_trades() == []
+    key, text = alerts.sent[-1]
+    assert key == f"gone-at-ig-{r.deal_id}" and "13335.2" in text and "did not close it" in text
+    n = len(closes(ig))
+    assert sender.close(r.reference) is c and len(closes(ig)) == n       # never sent again
+    again, *_ = make(S, ig)                                                 # and after a restart
+    assert again.close(r.reference).level == D("13335.2")
+
+
+def test_a_refused_close_of_a_position_still_open_keeps_the_trade_open_and_alerts_igs_error(S):
+    sender, ig, alerts, *_ = make(S)
+    a = sender.place(idea(SLOW_GRIND), calendar=[])
+    b = sender.place(idea(BOLLINGER_BOUNCE, BUY), calendar=[])
+    ig.close_answer = "notional"
+    for t in (a, b):
+        c = sender.close(t.reference)
+        assert (c.ok, c.what) == (False, "close refused")
+    assert len(sender.open_trades()) == 2 and "closed" not in events(sender)
+    assert [k for k, _ in alerts.sent[-2:]] == [f"close-refused-{a.deal_id}", f"close-refused-{b.deal_id}"]
+    assert all("error.service.marketdata.position.notional.details.null.error" in t for _, t in alerts.sent[-2:])
+    ig.close_answer = "accept"                                              # tried again: IG confirms it
+    assert sender.close(a.reference).what == "closed"
+
+
+def test_the_regular_check_finds_every_difference_with_igs_open_positions(S):
+    sender, ig, alerts, *_ = make(S)
+    a = sender.place(idea(SLOW_GRIND), calendar=[])
+    b = sender.place(idea(BREAKOUT), calendar=[])
+    c = sender.place(idea(RANGE_TRADE, BUY), calendar=[])
+    assert sender.reconcile() == [] and alerts.sent == []                  # all the same: nothing said
+    ig.system_close(a.deal_id, 13390.0, "2026-11-04T10:30:00")
+    ig.positions.append(theirs())
+    next(p for p in ig.positions if p["position"]["dealId"] == c.deal_id)["position"]["size"] = 5.0
+    gone = sender.reconcile()
+    assert [(g.reference, g.level) for g in gone] == [(a.reference, D("13390.0"))]
+    assert sender.take_gone() == gone and sender.take_gone() == []
+    keys = [k for k, _ in alerts.sent]
+    assert keys == [f"gone-at-ig-{a.deal_id}", f"size-differs-{c.deal_id}", "position-not-ours"]
+    assert {t.deal_id for t in sender.trades.values() if t.status == "open"} == {b.deal_id, c.deal_id}
+    assert sender.reconcile() == [] and len(alerts.sent) == 3              # each difference alerted once
+
+
+def test_the_regular_check_never_closes_anything_on_a_guess(S):
+    sender, ig, alerts, *_ = make(S)
+    a = sender.place(idea(SLOW_GRIND), calendar=[])
+    ig.positions_fail = True                                                # IG's list cannot be read
+    assert sender.reconcile() == [] and alerts.sent[-1][0] == "positions-not-read"
+    assert len(sender.open_trades()) == 1
+    ig.positions_fail = False
+    real = list(ig.positions)
+    ig.positions.clear()                                                    # missing from the list only...
+    orig = ig.request
+
+    def single_still_there(method, path, version, body=None, *, what, headers=None):
+        if method == "GET" and path == f"/positions/{a.deal_id}":          # ...IG still has it
+            return orig(method, "/positions", version, what=what, headers=headers)
+        return orig(method, path, version, body, what=what, headers=headers)
+    ig.request = single_still_there
+    assert sender.reconcile() == [] and len(sender.open_trades()) == 1
+    ig.request, ig.positions = orig, real
+    assert not any(c[0] == "POST" for c in ig.calls if c[1] == "/positions/otc" and (c[4] or {}).get("_method"))
+
+
+def test_at_start_up_a_trade_ig_closed_while_the_bot_was_away_is_alerted_with_igs_close(S):
+    sender, ig, *_ = make(S)
+    a = sender.place(idea(SLOW_GRIND), calendar=[])
+    ig.system_close(a.deal_id, 13404.1, "2026-11-04T15:21:00")
+    again, ig, alerts, *_ = make(S, ig)
+    assert again.open_trades() == []
+    (g,) = again.take_gone()
+    assert (g.reference, g.level) == (a.reference, D("13404.1"))
+    assert alerts.sent[0][0] == f"gone-at-ig-{a.deal_id}" and "15:21" in alerts.sent[0][1]
+
+
+def test_the_regular_check_is_live_only(S):
+    ig = PretendIG()
+    sender = OrderSender(S, ig, FakeAlerts(), now=lambda: WED, paper=True)
+    sender.start()
+    sender.place(idea(SLOW_GRIND), calendar=[])
+    before = list(ig.calls)
+    assert sender.reconcile() == [] and ig.calls == before                 # nothing asked of IG
+
+
+def test_a_stop_at_ig_is_recorded_at_igs_own_level_not_the_bots(S):
+    sender, ig, *_ = make(S)
+    r = sender.place(idea(SLOW_GRIND), calendar=[])
+    ig.system_close(r.deal_id, 13411.5, "2026-11-04T13:30:03")             # IG's stop filled at 13411.5
+    c = sender.closed_at_ig(r.reference, "stopped by IG", D("13418.8"))     # the bot's own price said 13418.8
+    assert (c.ok, c.level, c.closed_utc) == (True, D("13411.5"), U(2026, 11, 4, 13, 30, 3))
+    rec = [x for x in records(sender) if x["event"] == "closed at IG"][0]
+    assert rec["level"] == "13411.5" and rec["ig_level"] == "13411.5"

@@ -486,3 +486,77 @@ def test_a_live_reversal_against_a_strong_push_is_not_sent(S, monkeypatch):
     assert ig.orders_sent() == [] and e.manager.trades == {}
     assert any(r["event"] == "safety refused" and r["reasons"] == ["a reversal trade against a strong push (down)"]
                for r in journal(e))
+
+
+# ---- a close only once IG confirms it, and the bot's trades against IG's positions (10 November 2026) ----
+
+def trades_rows(e):
+    f = e.book.trades_file
+    return [json.loads(x) for x in f.read_text().splitlines()] if f.exists() else []
+
+
+def at_2015(S, monkeypatch, ig=None):
+    t0 = U(2026, 11, 4, 20, 15)
+    cs = [candle(t0 + timedelta(minutes=5 * k), 13400, 13400.5, 13399.5, 13400) for k in range(4)]
+    e, ig, tracker, clock, quote = make(S, monkeypatch, cs, {cs[0].start: [idea(SLOW_GRIND, cs[0].start, price="13400")]},
+                                        trading_on=True, ig=ig, clock={"t": t0})
+    e.start(t0)
+    feed(e, clock, cs[:1])
+    return e, ig, clock, cs
+
+
+def test_tonights_refused_20_30_close_keeps_the_trade_open_alerts_and_is_tried_again(S, monkeypatch):
+    e, ig, clock, cs = at_2015(S, monkeypatch)
+    (t,) = e.manager.trades.values()
+    deal = e.sender.trades[t.reference].deal_id
+    ig.close_answer = "notional"                                            # IG refuses; the position is still open
+    tick = SimpleNamespace(time=U(2026, 11, 4, 20, 30, 2), buy=D("13401.0"), sell=D("13399.5"))
+    clock["t"] = tick.time
+    e.on_price(tick)
+    assert t.open and [r["event"] for r in trades_rows(e)] == ["opened"]   # never recorded closed
+    assert e.alerts.closed == []                                            # no "TRADE CLOSED" message
+    assert e.alerts.sent[-1][0] == f"close-refused-{deal}"
+    assert "error.service.marketdata.position.notional.details.null.error" in e.alerts.sent[-1][1]
+    ig.close_answer = "accept"
+    tick2 = SimpleNamespace(time=U(2026, 11, 4, 20, 30, 33), buy=D("13401.0"), sell=D("13399.5"))
+    clock["t"] = tick2.time
+    e.on_price(tick2)                                                       # tried again after 30 seconds
+    assert not t.open and [r["event"] for r in trades_rows(e)] == ["opened", "closed"] and len(e.alerts.closed) == 1
+
+
+def test_a_trade_ig_closed_by_itself_is_found_after_the_next_candle_and_recorded_at_igs_level(S, monkeypatch):
+    e, ig, clock, cs = at_2015(S, monkeypatch)
+    (t,) = e.manager.trades.values()
+    deal = e.sender.trades[t.reference].deal_id
+    ig.system_close(deal, 13398.7, "2026-11-04T20:22:10")
+    feed(e, clock, cs[1:2])                                                 # the next candle: the regular check
+    assert not t.open and t.state == "closed at IG"
+    closed = [r for r in trades_rows(e) if r["event"] == "closed"]
+    assert len(closed) == 1 and closed[0]["close_price"] == "13398.7" and closed[0]["how_closed"] == "closed at IG"
+    assert closed[0]["closed_utc"] == "2026-11-04T20:22:10Z" and closed[0]["pips"] == "1.8"   # a sell from 13400.5
+    assert any(k == f"gone-at-ig-{deal}" for k, _ in e.alerts.sent) and len(e.alerts.closed) == 1
+
+
+def test_after_a_restart_a_trade_ig_closed_meanwhile_is_recorded_once(S, monkeypatch):
+    e, ig, clock, cs = at_2015(S, monkeypatch)
+    (t,) = e.manager.trades.values()
+    ig.system_close(e.sender.trades[t.reference].deal_id, 13399.0, "2026-11-04T20:21:00")
+    again, *_ = make(S, monkeypatch, cs[1:], {}, trading_on=True, ig=ig, clock=clock)
+    again.start(U(2026, 11, 4, 20, 22))
+    closed = [r for r in trades_rows(again) if r["event"] == "closed"]
+    assert len(closed) == 1 and closed[0]["close_price"] == "13399.0" and closed[0]["how_closed"] == "closed at IG"
+    third, *_ = make(S, monkeypatch, cs[1:], {}, trading_on=True, ig=ig, clock=clock)
+    third.start(U(2026, 11, 4, 20, 23))
+    assert len([r for r in trades_rows(third) if r["event"] == "closed"]) == 1      # never twice
+
+
+def test_after_a_restart_a_trade_taken_over_gets_its_close_recorded(S, monkeypatch):
+    e, ig, clock, cs = at_2015(S, monkeypatch)
+    (t,) = e.manager.trades.values()
+    again, *_ = make(S, monkeypatch, cs[1:], {}, trading_on=True, ig=ig, clock=clock)
+    again.start(U(2026, 11, 4, 20, 22))
+    tick = SimpleNamespace(time=U(2026, 11, 4, 20, 30, 2), buy=D("13401.0"), sell=D("13399.5"))
+    clock["t"] = tick.time
+    again.on_price(tick)                                                    # the 20:30 close, confirmed by IG
+    closed = [r for r in trades_rows(again) if r["event"] == "closed"]
+    assert len(closed) == 1 and closed[0]["reference"] == t.reference and closed[0]["how_closed"] == "forced close"

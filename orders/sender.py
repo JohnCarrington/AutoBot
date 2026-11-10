@@ -21,6 +21,17 @@
     IG refusing a trade for its stop or for lack of funds is handled by safety/refusals.py.
   * At start-up it finds its own open trades at IG by their recorded deal references (and deal IDs) before
     any new trade is allowed. Positions it did not open are left alone and reported.
+  * A trade is closed in the record only once IG confirms the close (owner, 10 November 2026). If IG refuses a
+    close, IG is asked at once whether the position still exists (GET /positions/{dealId}): if IG says it does
+    not, IG had already closed it ("gone at IG"); otherwise the trade stays open, the owner gets a Telegram alert
+    straight away with IG's error (each trade its own alert), and the trade manager tries again every
+    orders.close_retry_seconds. A trade "gone at IG" is recorded with IG's own close level and time, read from
+    IG's activity (GET /history/activity, VERSION 3); so is a stop or take profit IG confirms.
+  * reconcile(): at start-up and after every 5-minute candle, the bot's open trades are compared with IG's open
+    positions. A trade IG no longer has (confirmed by GET /positions/{dealId} answering 404; nothing is marked
+    closed on a failed read) is closed in the record at IG's level and alerted; a size that differs and a position
+    the bot did not open are recorded and alerted, once each. IG's 9 and 10 November 2026 closes of the bot's
+    positions by its own system (channel SYSTEM, not the stop or limit) were missed before this.
   * It closes trades when the trade manager says so, in full, or by half for the range trade, and confirms
     each close with IG. The close matches AutoBot 161's close_sb_now.py exactly: POST /positions/otc with
     VERSION 1 and _method DELETE, the body dealId, direction (the opposite), orderType MARKET and size only
@@ -43,7 +54,7 @@ import secrets
 import threading
 import time as _time
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from pathlib import Path
 from typing import Any, Callable
@@ -96,6 +107,7 @@ class Result:
     deal_id: str = ""
     level: Decimal | None = None
     reasons: list[str] = field(default_factory=list)
+    closed_utc: datetime | None = None      # "gone at IG": when IG closed it (from IG's activity), if known
 
 
 def _iso(t: datetime) -> str:
@@ -123,6 +135,9 @@ class OrderSender:
         self.journal = self.folder / ("paper_orders.jsonl" if paper else "orders.jsonl")
         self.trades: dict[str, Trade] = {}
         self.unresolved: dict[str, dict] = {}          # references sent but never accounted for by IG
+        self.gone: dict[str, Result] = {}              # trades IG closed without the bot (IG's level and time)
+        self.gone_new: list[Result] = []               # found since the engine last asked (reconcile / start-up)
+        self._reported: set[str] = set()               # differences already alerted (once each)
         self.funds: AccountFunds | None = None
         self.ready = False
         self._lock = threading.RLock()
@@ -144,7 +159,7 @@ class OrderSender:
 
     def _read_record(self) -> None:
         """Rebuild the trades and the unresolved references from the record."""
-        self.trades, self.unresolved = {}, {}
+        self.trades, self.unresolved, self.gone = {}, {}, {}
         if not self.journal.exists():
             return
         for line in self.journal.read_text().splitlines():
@@ -166,6 +181,8 @@ class OrderSender:
                 self.trades[ref].size = Decimal(r["remaining_size"])
             elif ev in ("closed", "gone at IG", "closed at IG") and ref in self.trades:
                 self.trades[ref].status = CLOSED
+                if ev == "gone at IG":
+                    self.gone[ref] = self._gone_result(self.trades[ref], r)
 
     # ---- start-up ----------------------------------------------------------------------------
 
@@ -197,10 +214,10 @@ class OrderSender:
         for t in [t for t in self.trades.values() if t.status == OPEN]:
             p = by_ref.get(t.reference) or by_id.get(t.deal_id)
             if p is None:
-                t.status = CLOSED
-                self._record("gone at IG", reference=t.reference, deal_id=t.deal_id, strategy=t.strategy,
-                             note="not among IG's open positions at start-up (closed at IG while the bot was away)")
-                continue
+                if not self._still_open_at_ig(t):
+                    self._gone(t, "not among IG's open positions at start-up (closed at IG while the bot was away)")
+                    continue
+                p = {"position": {"dealId": t.deal_id, "size": t.size}}
             ours.add(p["position"]["dealId"])
             t.deal_id, t.size = p["position"]["dealId"], Decimal(str(p["position"]["size"]))
             self._record("found at IG", reference=t.reference, deal_id=t.deal_id, size=t.size)
@@ -221,11 +238,125 @@ class OrderSender:
         for p in positions:
             pos, mk = p["position"], p.get("market", {})
             if pos["dealId"] not in ours:
-                self._record("not ours", deal_id=pos["dealId"], deal_reference=pos.get("dealReference"),
-                             epic=mk.get("epic"), direction=pos.get("direction"), size=pos.get("size"))
-                self.alerts.problem("position-not-ours",
-                                    f"IG has an open position the bot did not open ({mk.get('epic')}, "
-                                    f"{pos.get('direction')} {pos.get('size')}, deal {pos['dealId']}): left alone.")
+                self._not_ours(pos, mk)
+
+    def _not_ours(self, pos: dict, mk: dict) -> None:
+        """An open position at IG the bot did not open: recorded and alerted once, left alone."""
+        if pos["dealId"] in self._reported:
+            return
+        self._reported.add(pos["dealId"])
+        self._record("not ours", deal_id=pos["dealId"], deal_reference=pos.get("dealReference"),
+                     epic=mk.get("epic"), direction=pos.get("direction"), size=pos.get("size"))
+        self.alerts.problem("position-not-ours",
+                            f"IG has an open position the bot did not open ({mk.get('epic')}, "
+                            f"{pos.get('direction')} {pos.get('size')}, deal {pos['dealId']}): left alone.")
+
+    # ---- the bot's open trades against IG's open positions ----------------------------------------
+
+    def _still_open_at_ig(self, t: Trade) -> bool:
+        """IG's answer for one position (GET /positions/{dealId}): False only when IG says it does not exist
+        (404). Any other failure counts as still open: nothing is marked closed on a guess."""
+        try:
+            self.client.request("GET", f"/positions/{t.deal_id}", "2", what="checking a position", headers=_headers("2"))
+            return True
+        except IGRequestError as e:
+            return e.status != 404
+
+    def _ig_close_of(self, t: Trade) -> dict | None:
+        """IG's own record of how a position closed (GET /history/activity, VERSION 3, with details): the
+        activity whose actions close this deal ID. None if IG's activity does not show it (or cannot be read)."""
+        frm = (t.opened_at - timedelta(minutes=5)).astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%S")
+        to = (self.now() + timedelta(minutes=1)).astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%S")
+        try:
+            r = self.client.request("GET", f"/history/activity?from={frm}&to={to}&detailed=true&pageSize=50", "3",
+                                    what="reading IG's activity", headers=_headers("3"))
+            rows = (r.json() or {}).get("activities") or []
+        except Exception:                                           # noqa: BLE001
+            return None
+        for a in rows:
+            d = a.get("details") or {}
+            if any(x.get("affectedDealId") == t.deal_id and str(x.get("actionType", "")).startswith(("POSITION_CLOSED",
+                                                                                                    "POSITION_DELETED"))
+                   for x in d.get("actions") or []):
+                return {"ig_level": _dec(d.get("level")), "ig_time_utc": a.get("date", "") + "Z" if a.get("date") else None,
+                        "ig_channel": a.get("channel"), "ig_close_deal_id": a.get("dealId"),
+                        "ig_description": a.get("description")}
+        return None
+
+    def _gone_result(self, t: Trade, row: dict) -> Result:
+        when = row.get("ig_time_utc")
+        return Result(True, "gone at IG", t.reference, t.deal_id, _dec(row.get("ig_level")),
+                      [row.get("note", "")], datetime.fromisoformat(when.replace("Z", "+00:00")) if when else None)
+
+    def _gone(self, t: Trade, why: str) -> Result:
+        """IG says the position no longer exists although the bot did not close it: closed in the records with
+        IG's own level and time (IG's activity), and an alert straight away."""
+        info = self._ig_close_of(t) or {}
+        t.status = CLOSED
+        row = {"note": why} | {k: v for k, v in info.items() if v is not None}
+        self._record("gone at IG", reference=t.reference, deal_id=t.deal_id, strategy=t.strategy, **row)
+        r = self._gone_result(t, {k: (str(v) if isinstance(v, Decimal) else v) for k, v in row.items()})
+        self.gone[t.reference] = r
+        self.gone_new.append(r)
+        how = (f"IG closed it at {info['ig_level']} at {info['ig_time_utc']} ({info.get('ig_channel')}: "
+               f"{info.get('ig_description')})") if info.get("ig_level") is not None else "IG's activity does not show the close yet"
+        self.alerts.problem(f"gone-at-ig-{t.deal_id}",
+                            f"The bot's {t.strategy} {t.direction} trade {t.deal_id} is no longer open at IG, but the "
+                            f"bot did not close it: {why}. {how}. It is now closed in the bot's records.")
+        if not self.paper:
+            self._read_funds("a trade closed at IG")
+        return r
+
+    def reconcile(self, why: str = "regular check") -> list[Result]:
+        """The bot's open trades against IG's open positions (GET /positions), at start-up (_recover) and
+        regularly: a trade IG no longer has is closed in the records with IG's level (an alert); a size that
+        differs, or a position the bot did not open, is recorded and alerted (once each). Returns the trades
+        found gone at IG. Live only."""
+        if self.paper or not self.ready:
+            return []
+        with self._lock:
+            try:
+                positions = self._positions()
+            except IGRequestError as e:
+                self._record("not checked at IG", why=why, error=str(e))
+                self.alerts.problem("positions-not-read", f"IG's open positions could not be read ({why}): {e}. "
+                                                          "The bot's open trades were not checked against them.")
+                return []
+            by_ref = {p["position"].get("dealReference"): p for p in positions}
+            by_id = {p["position"].get("dealId"): p for p in positions}
+            ours, gone = set(), []
+            for t in [t for t in self.trades.values() if t.status == OPEN]:
+                p = by_ref.get(t.reference) or by_id.get(t.deal_id)
+                if p is None:
+                    if self._still_open_at_ig(t):
+                        ours.add(t.deal_id)
+                        continue
+                    gone.append(self._gone(t, f"not among IG's open positions ({why})"))
+                    continue
+                pos = p["position"]
+                ours.add(pos["dealId"])
+                if pos["dealId"] != t.deal_id:
+                    self._record("deal id changed", reference=t.reference, old_deal_id=t.deal_id, deal_id=pos["dealId"],
+                                 note=f"IG's open positions ({why})")
+                    t.deal_id = pos["dealId"]
+                size = Decimal(str(pos.get("size")))
+                key = f"{t.reference}:{size}"
+                if size != t.size and key not in self._reported:
+                    self._reported.add(key)
+                    self._record("size differs at IG", reference=t.reference, deal_id=t.deal_id, size=t.size, ig_size=size)
+                    self.alerts.problem(f"size-differs-{t.deal_id}",
+                                        f"The bot's {t.strategy} trade {t.deal_id} is {t.size} in its records but "
+                                        f"{size} at IG ({why}). Nothing was changed.")
+            for p in positions:
+                if p["position"]["dealId"] not in ours:
+                    self._not_ours(p["position"], p.get("market", {}))
+            return gone
+
+    def take_gone(self) -> list[Result]:
+        """The trades found gone at IG since the last call (for the trade manager and the records)."""
+        with self._lock:
+            out, self.gone_new = self.gone_new, []
+            return out
 
     def _adopt(self, ref: str, sent: dict, pos: dict, note: str) -> Trade:
         t = Trade(ref, sent["strategy"], sent["direction"], Decimal(str(pos.get("size") or sent["size"])),
@@ -439,15 +570,23 @@ class OrderSender:
                         self._record("not checked at IG", reference=reference, deal_id=t.deal_id, error=str(e))
                         return Result(False, "not checked", reference, t.deal_id)
             t.status = CLOSED
-            self._record("closed at IG", reference=reference, deal_id=t.deal_id, how=kind, level=price, size=t.size)
+            info = {} if self.paper else (self._ig_close_of(t) or {})
+            if info.get("ig_level") is not None:                    # IG's own close, not the bot's price
+                price = info["ig_level"]
+            self._record("closed at IG", reference=reference, deal_id=t.deal_id, how=kind, level=price, size=t.size,
+                         **{k: v for k, v in info.items() if v is not None})
             if not self.paper:
                 self._read_funds("a trade closed")
-            return Result(True, "closed at IG", reference, t.deal_id, price)
+            when = info.get("ig_time_utc")
+            return Result(True, "closed at IG", reference, t.deal_id, price, [],
+                          datetime.fromisoformat(when.replace("Z", "+00:00")) if when else None)
 
     def close(self, reference: str, *, half: bool = False, why: str = "", price: Decimal | None = None) -> Result:
         """Close one of the bot's trades in full, or by half (the range trade only), when the trade manager says so.
         `price`: the trade manager's price (a paper close is recorded at it)."""
         with self._lock:
+            if reference in self.gone:
+                return self.gone[reference]
             t = self.trades.get(reference)
             if t is None or t.status != OPEN:
                 return Result(False, "not open", reference, reasons=["not one of the bot's open trades"])
@@ -518,8 +657,16 @@ class OrderSender:
         return Result(True, "half closed" if half else "closed", t.reference, t.deal_id, level)
 
     def _close_refused(self, t: Trade, reason: str) -> Result:
+        """IG refused a close. First IG is asked whether the position still exists: if IG says it does not, IG had
+        already closed it (gone at IG, with IG's own level). Otherwise the trade stays open (the trade manager
+        tries again) and the owner is alerted straight away with IG's error (each trade its own alert)."""
         self._record("close refused", reference=t.reference, deal_id=t.deal_id, reason=reason)
-        self.alerts.problem("close-refused", f"IG refused to close {t.strategy} trade {t.deal_id}: {reason}.")
+        if not self._still_open_at_ig(t):
+            return self._gone(t, f"IG refused the close ({reason}) because it had already closed the position")
+        self.alerts.problem(f"close-refused-{t.deal_id}",
+                            f"IG refused to close {t.strategy} {t.direction} trade {t.deal_id}: {reason}. The trade "
+                            f"is still open at IG and in the bot's records; the close is tried again every "
+                            f"{self.o.close_retry_seconds} seconds.")
         return Result(False, "close refused", t.reference, t.deal_id, reasons=[reason])
 
     def _settle_unclear_close(self, t: Trade, half: bool, size: Decimal) -> Result:
