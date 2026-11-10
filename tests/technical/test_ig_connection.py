@@ -82,6 +82,7 @@ def test_requests_version_is_pinned():
 
 TELEGRAM_SENDER = Path("alerts/telegram.py")   # the other files that may make web requests: to Telegram ...
 FINNHUB_FETCHER = Path("news/finnhub.py")      # ... and to Finnhub, only
+FINNHUB_HISTORY = Path("research/news_history.py")  # research only: Finnhub's past calendar, never run by the bot
 
 
 def test_ig_is_the_only_part_that_talks_to_ig():
@@ -97,7 +98,7 @@ def test_ig_is_the_only_part_that_talks_to_ig():
         if rel == TELEGRAM_SENDER:
             assert "ig.com" not in text and "telegram_url" in text, rel
             continue
-        if rel == FINNHUB_FETCHER:
+        if rel in (FINNHUB_FETCHER, FINNHUB_HISTORY):
             assert "ig.com" not in text and "finnhub_url" in text, rel
             continue
         for http_library in ("import requests", "from requests", "urllib", "http.client", "socket",
