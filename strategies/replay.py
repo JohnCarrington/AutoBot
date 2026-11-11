@@ -65,12 +65,22 @@ class StrategyRunner:
     candles, step() runs the strategies on each of them and returns their ideas (checked: switch, state,
     direction rule), with the candle each came from. A new week starts everything again from its open.
     `hourly_end`: build the hourly trend reader once from the hourly candles up to it (a replay); otherwise it
-    is read again for each candle (live)."""
+    is read again for each candle (live).
 
-    def __init__(self, settings: Any, memo: Any, tracker: Any, hourly_end: datetime | None = None):
-        self.s, self.memo, self.tracker, self.hourly_end = settings, memo, tracker, hourly_end
+    `store`: the candle store. Like the analyser (StateTracker.advance), every step() and peek() reads it afresh
+    through a new MemoStore, so the strategies always see the latest candles and levels: never a copy kept from
+    an earlier call (owner, 11 November 2026: the live strategies had kept the store as it was at start-up, so
+    after a restart they never saw a new day's file, nor new candles in a day's file already read)."""
+
+    def __init__(self, settings: Any, store: Any, tracker: Any, hourly_end: datetime | None = None):
+        self.s, self.store, self.tracker, self.hourly_end = settings, store, tracker, hourly_end
+        self.memo = MemoStore(store)                        # this call's view of the store (renewed every call)
         self.week_open = None
         self.done = 0
+
+    def _fresh(self) -> None:
+        """A new view of the candle store for this call, as the analyser takes for each of its calls."""
+        self.memo = MemoStore(self.store)
 
     def _new_week(self) -> None:
         s = self.s
@@ -95,11 +105,16 @@ class StrategyRunner:
         return (SimpleNamespace(state=before[-1].state, direction=before[-1].direction, trend_type=before[-1].trend_type)
                 if before else SimpleNamespace(state=CONSOLIDATION, direction=NONE, trend_type=None))
 
-    def pivot_at(self, t: datetime):
-        if t not in self.pivots:
-            got = [lv.price for lv in build(self.s, self.memo, t).levels if lv.type == PIVOT]
-            self.pivots[t] = got[0] if got else None
-        return self.pivots[t]
+    def pivot_at(self, t: datetime, keep: bool = True):
+        """The pivot at t. Kept for a finished candle (step); the live check (keep=False) only reads one already
+        kept, so a pivot worked out before that candle's data was all stored is never kept."""
+        if t in self.pivots:
+            return self.pivots[t]
+        got = [lv.price for lv in build(self.s, self.memo, t).levels if lv.type == PIVOT]
+        p = got[0] if got else None
+        if keep:
+            self.pivots[t] = p
+        return p
 
     def peek(self, partial: Any, levels: Any = None) -> list[Idea]:
         """The live check (design 3: a trade opens as soon as the live price reaches its trigger): the strategies'
@@ -112,6 +127,7 @@ class StrategyRunner:
             return []
         if partial.start <= self.week[-1].start:
             return []
+        self._fresh()
         allc = self.warm + self.week + [partial]
         sg_ema = ema(allc, side, s.slow_grind.ema_periods)
         fast, slow = ema(allc, side, s.ema_pullback.fast_ema_periods), ema(allc, side, s.ema_pullback.slow_ema_periods)
@@ -128,11 +144,12 @@ class StrategyRunner:
                  + reversal.on_candle(partial, watcher, events))
         st = self.state_after(len(self.week) - 1)
         e100 = ema100.get(self.week[-1].start)
-        return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start), e100) for cand in cands]
+        return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100) for cand in cands]
 
     def step(self) -> list[tuple[Any, Idea]]:
         """Run the strategies on every candle the tracker has taken since the last call: [(candle, idea)]."""
         s, side = self.s, self.s.chart.price
+        self._fresh()
         if self.tracker.week_open != self.week_open:
             self._new_week()
         hist = self.tracker.history

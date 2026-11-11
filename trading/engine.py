@@ -85,9 +85,10 @@ class Trading:
         the candle it opened in, as the research. `calendar`: the economic calendar (None: the one on disk)."""
         self.s, self.store, self.alerts, self.now = settings, store, alerts, now
         self.trading_on, self.calendar, self.replay = trading_on, calendar, replay_end is not None
-        self.memo = MemoStore(store)
-        self.tracker = StateTracker(settings, self.memo)
-        self.runner = StrategyRunner(settings, self.memo, self.tracker, hourly_end=replay_end)
+        # The analyser and the strategies each read the store afresh on every call (never a copy kept from
+        # start-up; owner, 11 November 2026)
+        self.tracker = StateTracker(settings, store)
+        self.runner = StrategyRunner(settings, store, self.tracker, hourly_end=replay_end)
         self.quote = quote
         kw = {"sleep": sleep} if sleep is not None else {}
         self.sender = OrderSender(settings, client, alerts, now=now, quote=quote, paper=not trading_on, **kw)
@@ -154,6 +155,7 @@ class Trading:
                                    trend_type=ch.trend_type, line=ch.line() if hasattr(ch, "line") else str(ch))
             self._changes_seen = len(self.tracker.changes)
             self._take_new_candles()
+            self._levels = None                             # the forming candle's levels again, with this candle stored
             self._sync_ig()
             if self.trading_on:
                 self.sender.reconcile("after the candle")   # the bot's open trades against IG's open positions
@@ -409,7 +411,7 @@ class Trading:
         import dataclasses
         p = self._forming(tick)
         if self._levels is None or self._levels[0] != p.start:
-            self._levels = (p.start, build(self.s, self.memo, p.start))
+            self._levels = (p.start, build(self.s, MemoStore(self.store), p.start))
         for idea in self.runner.peek(p, self._levels[1]):
             key = (idea.strategy, idea.direction, p.start)
             if not idea.allowed or key in self.fired:

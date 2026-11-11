@@ -57,6 +57,17 @@ Wednesday 11 November 2026, UK. Read-only research: **nothing in the bot was cha
   - The replay covers 2½ weeks. Every difference above is a handful of trades, and the biggest gains of rule 1 (S2/S3/R2/R3) and of the best combination each come from one trade that only opened because a close freed a place.
   - Rule 3 is the owner's description, given no numbers. All 27 versions are shown and none is picked.
   - The replay and the live trades disagree on the same days: on Tuesday 10 November the replay makes +123.4 in 11 trades, while the bot's own live exits made −21.1 in 12 trades. See `strategies_by_market_20261110.md`.
+- **Rule 1 with reopening** (added in the afternoon; see its own section). The owner's words: "I would have closed them and then watched and reopened if it turned back down."
+  - Closing on every bounce and reopening **every** closed trade when price goes back beyond the bounce: **+1,052.0, −139.8** against the current rules and −106.0 against closing without reopening.
+  - Reopening **just one** (the oldest closed trade the safety limits accept): **+1,156.0, −35.8**, which is −2.0 against closing without reopening.
+  - **The 24 reopens of "every" won 6 and lost 18, −111.0 in all.** Price going back beyond the bounce often came just before the next bounce the same way, which closed the reopens again, or just before they were stopped.
+  - Only at S2, S3, R2 or R3: nothing is ever reopened (price never went back beyond either bounce), so it is the same as closing without reopening, +22.7.
+- **Rule 1 only at a significant level, with the owner's MACD check** (see its own section). The owner's words: "it reaches a significant level like 00, or the weekly pivot; I am looking at MACD to check that theory."
+  - **Within 3 pips of a 00, the weekly pivot, S2, S3, R2 or R3: +12.0.** That is again the one knock-on level reversal of 26 October: the 6 trades it closed made 2.4 less than they would have.
+  - **Within 5 and 8 pips: −44.3 and −78.1.** The 00s start to count, and the closes take trend trades off their way to their targets: the 27 October breakout sell (+50) and two 26 October EMA pullbacks (+30).
+  - **With the hourly MACD histogram on the bounce's side:** +9.3, +9.3 and −19.8 at 3, 5 and 8 pips. **With it moving the bounce's way for 2 hours:** 0, 0 and +1.7; it lets through one bounce in the whole period.
+  - **Today, none of the three bounces was near a significant level**, so every version trades exactly as the current rules: the sells were held.
+  - **The weekly pivot is the standard one**, 13397.1 for this week from 2 to 6 November (high 13503.1, low 13341.4, close 13346.9, sell price). PIA First's 13295 for this week is not a weekly pivot in that sense: it is below that week's lowest price, so no (high + low + close) ÷ 3 can give it. PIA First's "pivot" is the analyst's turning level for the trade idea. 13295 sits just under 13300 and 2 to 4 pips from the standard weekly S1 (13291.1 sell, 13297.1 mid).
 
 ## How it was done
 
@@ -3066,3 +3077,460 @@ Trades that opened in only one of the two runs:
 | Wed 28 Oct 15:50 | Bollinger bounce sell | opened only under the current rules | -7.7 (rejection at a level) |
 | Fri 30 Oct 16:25 | Bollinger bounce sell | opened only under the current rules | +6.4 (rejection at a level (half at the band +7.3)) |
 | Tue 10 Nov 08:45 | Bollinger bounce sell | opened only under the current rules | +12.5 (rejection at a level (half at the band +3.2)) |
+
+## Rule 1 with reopening: close on a bounce, reopen if price goes back beyond it
+
+Added Wednesday 11 November, afternoon UK. Same replay, code, candles, switches and prices as above. Nothing in the bot was changed.
+
+**The rule.** When a Bollinger bounce opens (all of the bot's own rules passed), every open trade in the opposite direction is closed at that moment, as rule 1. If price then goes back beyond the bounce, those trades are reopened at market with their normal stop and take profit. "Beyond the bounce" means beyond the low a bounce buy turned from, or the high a bounce sell turned from. Two versions: reopen **every** closed trade, or **just one**. Each is run for every bounce and for bounces at S2, S3, R2 or R3 only.
+
+**How it was replayed:**
+- **The low (or high) the bounce turned from:** the furthest chart (sell) price from the bounce's piercing candle to its confirmation candle.
+- **"Beyond" and the fill:** one point (0.1) past it on the chart price. The reopen fills at that price, or at the candle's open if the candle opened past it. A buy pays the buy price: that price plus the candle's spread.
+- **When:** from the candle after the bounce opened until 20:30 UK that day, the end of new-trade hours. A reopen is tried once.
+- **Through the bot's own rules:** each reopen is a new order through the paper order sender, so the safety limits apply. Refusals are listed below; most are "slow grind already has 1 trade open". A trade past its own scheduled close is not reopened.
+- **Normal stop and take profit:** the strategy's own. A level reversal keeps its original stop price, which the order sender turns into a distance from the new price. On Friday 30 October that stop was 39 pips away and the reopen lost −39.2.
+- **Just one:** the oldest of the closed trades that the safety limits accept. The owner's words do not say which one; this is my choice.
+- A reopened trade is an ordinary trade: a later bounce the other way can close it again, and it can be reopened again.
+- **Reused runs:** the current rules and rule 1 without reopening are the runs above. The reopen script is the same research script with only the reopen added.
+- The runs are in `data/research/replay/owner_rules_20261111/reopen/`.
+
+### Trades, wins, losses and pips
+
+| Run | Trades | Won | Lost | Pips | Against current | Against closing without reopening | Trades closed by a bounce | Trades reopened |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Current rules | 169 | 84 | 84 | **+1,191.8** | +0.0 | – | 0 | – |
+| Close, no reopening | 176 | 88 | 88 | **+1,158.0** | -33.8 | +0.0 | 38 | – |
+| Close, reopen every closed trade | 197 | 93 | 104 | **+1,052.0** | -139.8 | -106.0 | 48 | 24 |
+| Close, reopen just one | 184 | 91 | 93 | **+1,156.0** | -35.8 | -2.0 | 42 | 10 |
+| S2/S3/R2/R3 only: close, no reopening | 169 | 85 | 83 | **+1,214.4** | +22.7 | +0.0 | 6 | – |
+| S2/S3/R2/R3 only: reopen every closed trade | 169 | 85 | 83 | **+1,214.4** | +22.7 | +0.0 | 6 | 0 |
+| S2/S3/R2/R3 only: reopen just one | 169 | 85 | 83 | **+1,214.4** | +22.7 | +0.0 | 6 | 0 |
+
+No candle reached both a stop and a target in any of these runs, so the target first is the same.
+
+### By week: trades (won–lost) and pips
+
+| Run | w/c 25 Oct | w/c 1 Nov | w/c 8 Nov (to Wed 08:35 UTC) |
+|---|---:|---:|---:|
+| Current rules | 59 (30–28) +224.9 | 82 (42–40) +811.0 | 28 (12–16) +155.8 |
+| Close, no reopening | 64 (33–31) +112.1 | 84 (43–41) +844.4 | 28 (12–16) +201.5 |
+| Close, reopen every closed trade | 80 (37–43) +14.2 | 86 (44–42) +853.6 | 31 (12–19) +184.1 |
+| Close, reopen just one | 69 (35–34) +106.6 | 86 (44–42) +853.6 | 29 (12–17) +195.7 |
+| S2/S3/R2/R3 only: close, no reopening | 59 (31–27) +239.6 | 82 (42–40) +819.0 | 28 (12–16) +155.8 |
+| S2/S3/R2/R3 only: reopen every closed trade | 59 (31–27) +239.6 | 82 (42–40) +819.0 | 28 (12–16) +155.8 |
+| S2/S3/R2/R3 only: reopen just one | 59 (31–27) +239.6 | 82 (42–40) +819.0 | 28 (12–16) +155.8 |
+
+- **Reopen every:** −210.7 in the first week, +42.6 in the second, +28.3 in the third, against the current rules.
+- **Reopen just one:** −118.3, +42.6 and +39.9.
+- **Closing without reopening:** −112.8, +33.4 and +45.7.
+
+### Every trade closed, and what happened next: every bounce, reopen every
+
+"Total" is the closed trade plus every reopen that followed from it. "Current rules: same trade" is the same entry under the current rules.
+
+| Entry (UK) | Strategy | Way | Closed by the bounce | Closed at | Then | Total | Current rules: same trade | Current pips | Difference |
+|---|---|---|---|---:|---|---:|---|---:|---:|
+| Mon 26 Oct 08:25 | slow grind | sell | buy 09:05 | +3.5 | reopen refused: slow grind already has 1 trade(s) open (at most 1) | +3.5 | take profit 13:55 | +20.0 | -16.5 |
+| Mon 26 Oct 08:35 | EMA pullback | sell | buy 09:05 | -2.7 | reopened 09:55 at 13343.5: stop 11:40 -12.0 | -14.7 | take profit Tue 27 Oct 07:05 | +30.0 | -44.7 |
+| Mon 26 Oct 08:35 | EMA pullback | sell | buy 09:05 | -2.7 | reopened 09:55 at 13343.5: stop 11:40 -12.0 | -14.7 | take profit Tue 27 Oct 07:05 | +30.0 | -44.7 |
+| Mon 26 Oct 13:55 | EMA pullback | sell | buy at S2 14:10 | -4.8 | price did not go back beyond the bounce's low (13327.1) before 20:30 UK | -4.8 | stop 14:30 | -12.0 | +7.2 |
+| Mon 26 Oct 13:55 | EMA pullback | sell | buy at S2 14:10 | -4.8 | price did not go back beyond the bounce's low (13327.1) before 20:30 UK | -4.8 | stop 14:30 | -12.0 | +7.2 |
+| Mon 26 Oct 13:55 | level reversal | sell | buy at S2 14:10 | -1.0 | price did not go back beyond the bounce's low (13327.1) before 20:30 UK | -1.0 | stop 14:45 | -12.7 | +11.7 |
+| Tue 27 Oct 05:45 | slow grind | sell | buy 07:20 | +6.1 | reopened 09:15 at 13315.7: closed by the bounce buy 09:55 -1.5; then reopen refused: slow grind already has 1 trade(s) open (at most 1) | +4.6 | take profit 09:30 | +20.0 | -15.4 |
+| Tue 27 Oct 07:00 | breakout | sell | buy 07:20 | +0.6 | reopened 09:15 at 13315.7: closed by the bounce buy 09:55 -1.5; then reopened 16:10 at 13307.1: closed by the bounce buy 16:40 -3.7; then price did not go back beyond the bounce's low (13304.6) before 20:30 UK | -4.6 | take profit Wed 28 Oct 07:10 | +50.0 | -54.6 |
+| Tue 27 Oct 16:05 | slow grind | sell | buy 16:40 | -0.6 | price did not go back beyond the bounce's low (13304.6) before 20:30 UK | -0.6 | 20:30 close 20:30 | +0.0 | -0.6 |
+| Tue 27 Oct 16:15 | EMA pullback | sell | buy 16:40 | -5.3 | price did not go back beyond the bounce's low (13304.6) before 20:30 UK | -5.3 | stop 17:00 | -12.0 | +6.7 |
+| Wed 28 Oct 04:45 | slow grind | sell | buy 07:25 | +14.5 | price did not go back beyond the bounce's low (13272.5) before 20:30 UK | +14.5 | profit lock 07:30 | +10.0 | +4.5 |
+| Wed 28 Oct 10:20 | slow grind | sell | buy 10:35 | -7.4 | reopened 10:40 at 13279.7: closed by the bounce buy 11:15 -2.9; then price did not go back beyond the bounce's low (13273.9) before 20:30 UK | -10.3 | stop 13:30 | -15.0 | +4.7 |
+| Wed 28 Oct 10:45 | EMA pullback | sell | buy 11:15 | -5.8 | price did not go back beyond the bounce's low (13273.9) before 20:30 UK | -5.8 | stop 11:35 | -12.0 | +6.2 |
+| Wed 28 Oct 10:45 | EMA pullback | sell | buy 11:15 | -5.8 | price did not go back beyond the bounce's low (13273.9) before 20:30 UK | -5.8 | stop 11:35 | -12.0 | +6.2 |
+| Wed 28 Oct 15:30 | slow grind | buy | sell 15:50 | -8.8 | reopened 16:05 at 13306.1: profit lock 17:00 +9.1 | +0.3 | profit lock 17:00 | +10.0 | -9.7 |
+| Wed 28 Oct 16:15 | level reversal | buy | sell 17:05 | +3.5 | reopen refused: past its own scheduled close | +3.5 | before big news 17:45 | -1.7 | +5.2 |
+| Thu 29 Oct 22:05 | EMA pullback | buy | sell Fri 30 Oct 07:45 | +16.8 | reopened Fri 30 Oct 08:00 at 13413.1: closed by the bounce sell 10:40 +12.7; then reopened 11:00 at 13431.7: stop 12:35 -12.0 | +17.5 | 20:30 close Fri 30 Oct 20:30 | +10.9 | +6.6 |
+| Fri 30 Oct 00:40 | EMA pullback | buy | sell 07:45 | +11.5 | reopened 08:00 at 13413.1: closed by the bounce sell 10:40 +12.7; then reopened 11:00 at 13431.7: stop 12:35 -12.0 | +12.2 | take profit 09:15 | +30.0 | -17.8 |
+| Fri 30 Oct 07:10 | EMA pullback | buy | sell 07:45 | +0.7 | reopened 08:00 at 13413.1: closed by the bounce sell 10:40 +12.7; then reopened 11:00 at 13431.7: stop 12:35 -12.0 | +1.4 | take profit 09:45 | +30.0 | -28.6 |
+| Fri 30 Oct 07:25 | level reversal | buy | sell 07:45 | -9.9 | reopened 08:00 at 13413.1: closed by the bounce sell 10:40 +12.7; then reopened 11:00 at 13431.7: stop 13:25 -39.2 | -36.4 | take profit 10:05 | +20.0 | -56.4 |
+| Fri 30 Oct 08:15 | slow grind | buy | sell 10:40 | +13.1 | reopened 11:00 at 13431.7: stop 12:35 -15.0 | -1.9 | take profit 11:05 | +20.0 | -21.9 |
+| Fri 30 Oct 09:15 | EMA pullback | buy | sell 10:40 | +4.5 | reopened 11:00 at 13431.7: stop 12:35 -12.0 | -7.5 | stop 12:40 | -12.0 | +4.5 |
+| Fri 30 Oct 09:15 | EMA pullback | buy | sell 10:40 | +4.5 | reopened 11:00 at 13431.7: stop 12:35 -12.0 | -7.5 | stop 12:40 | -12.0 | +4.5 |
+| Fri 30 Oct 13:25 | level reversal | sell | buy 15:25 | +0.7 | price did not go back beyond the bounce's low (13379.3) before 20:30 UK | +0.7 | 20:30 close 20:30 | -4.1 | +4.8 |
+| Fri 30 Oct 16:15 | level reversal | buy | sell 16:25 | -8.4 | price did not go back beyond the bounce's high (13406.0) before 20:30 UK | -8.4 | not opened under the current rules | – | – |
+| Mon 02 Nov 08:30 | EMA pullback | buy | sell 09:25 | +15.2 | price did not go back beyond the bounce's high (13448.0) before 20:30 UK | +15.2 | stop 10:25 | -12.0 | +27.2 |
+| Mon 02 Nov 08:30 | EMA pullback | buy | sell 09:25 | +15.2 | price did not go back beyond the bounce's high (13448.0) before 20:30 UK | +15.2 | stop 10:25 | -12.0 | +27.2 |
+| Tue 03 Nov 08:05 | EMA pullback | buy | sell 08:20 | -7.8 | reopened 13:30 at 13428.0: stop 13:50 -12.0 | -19.8 | stop 08:30 | -12.0 | -7.8 |
+| Wed 04 Nov 08:30 | slow grind | buy | sell 10:40 | -6.7 | reopened 12:25 at 13497.6: closed by the bounce sell 13:25 -3.7; then price did not go back beyond the bounce's high (13503.1) before 20:30 UK | -10.4 | stop 11:05 | -15.0 | +4.6 |
+| Wed 04 Nov 15:35 | slow grind | sell | buy 15:40 | -7.5 | reopen refused: slow grind already has 1 trade(s) open (at most 1) | -7.5 | stop 17:25 | -15.0 | +7.5 |
+| Wed 04 Nov 16:10 | slow grind | sell | buy at R2 17:10 | -5.5 | price did not go back beyond the bounce's low (13453.3) before 20:30 UK | -5.5 | not opened under the current rules | – | – |
+| Thu 05 Nov 08:00 | slow grind | sell | buy 08:15 | -10.9 | reopened 09:45 at 13464.3: profit lock 11:55 +10.0 | -0.9 | profit lock 12:00 | +9.7 | -10.6 |
+| Tue 10 Nov 05:00 | EMA pullback | buy | sell 07:55 | -0.4 | reopened 08:30 at 13459.5: closed by the bounce sell 08:45 -5.8; then price did not go back beyond the bounce's high (13458.6) before 20:30 UK | -6.2 | stop 09:00 | -12.0 | +5.8 |
+| Tue 10 Nov 06:10 | EMA pullback | buy | sell 07:55 | -2.3 | reopened 08:30 at 13459.5: closed by the bounce sell 08:45 -5.8; then price did not go back beyond the bounce's high (13458.6) before 20:30 UK | -8.1 | stop 09:00 | -12.0 | +3.9 |
+| Tue 10 Nov 07:20 | EMA pullback | buy | sell 07:55 | -5.7 | reopened 08:30 at 13459.5: closed by the bounce sell 08:45 -5.8; then price did not go back beyond the bounce's high (13458.6) before 20:30 UK | -11.5 | stop 09:00 | -12.0 | +0.5 |
+| Tue 10 Nov 16:25 | level reversal | sell | buy 17:00 | -1.9 | price did not go back beyond the bounce's low (13312.2) before 20:30 UK | -1.9 | stop 18:35 | -20.0 | +18.1 |
+| **Total (36)** | | | | | | **-117.3** | | **+51.1** | **-168.4** |
+
+The 36 closed trades and their reopens made 168.4 less than the same trades under the current rules. Other trades that changed because places under the safety limits were freed make up +28.6, which gives the run's −139.8.
+
+### Every trade closed, and what happened next: every bounce, reopen just one
+
+| Entry (UK) | Strategy | Way | Closed by the bounce | Closed at | Then | Total | Current rules: same trade | Current pips | Difference |
+|---|---|---|---|---:|---|---:|---|---:|---:|
+| Mon 26 Oct 08:25 | slow grind | sell | buy 09:05 | +3.5 | reopen refused: slow grind already has 1 trade(s) open (at most 1) | +3.5 | take profit 13:55 | +20.0 | -16.5 |
+| Mon 26 Oct 08:35 | EMA pullback | sell | buy 09:05 | -2.7 | reopened 09:55 at 13343.5: stop 11:40 -12.0 | -14.7 | take profit Tue 27 Oct 07:05 | +30.0 | -44.7 |
+| Mon 26 Oct 08:35 | EMA pullback | sell | buy 09:05 | -2.7 | not reopened: only one is reopened | -2.7 | take profit Tue 27 Oct 07:05 | +30.0 | -32.7 |
+| Mon 26 Oct 13:55 | EMA pullback | sell | buy at S2 14:10 | -4.8 | price did not go back beyond the bounce's low (13327.1) before 20:30 UK | -4.8 | stop 14:30 | -12.0 | +7.2 |
+| Mon 26 Oct 13:55 | EMA pullback | sell | buy at S2 14:10 | -4.8 | price did not go back beyond the bounce's low (13327.1) before 20:30 UK | -4.8 | stop 14:30 | -12.0 | +7.2 |
+| Mon 26 Oct 13:55 | level reversal | sell | buy at S2 14:10 | -1.0 | price did not go back beyond the bounce's low (13327.1) before 20:30 UK | -1.0 | stop 14:45 | -12.7 | +11.7 |
+| Tue 27 Oct 05:45 | slow grind | sell | buy 07:20 | +6.1 | reopened 09:15 at 13315.7: closed by the bounce buy 09:55 -1.5; then reopen refused: slow grind already has 1 trade(s) open (at most 1) | +4.6 | take profit 09:30 | +20.0 | -15.4 |
+| Tue 27 Oct 07:00 | breakout | sell | buy 07:20 | +0.6 | not reopened: only one is reopened | +0.6 | take profit Wed 28 Oct 07:10 | +50.0 | -49.4 |
+| Tue 27 Oct 16:05 | slow grind | sell | buy 16:40 | -0.6 | price did not go back beyond the bounce's low (13304.6) before 20:30 UK | -0.6 | 20:30 close 20:30 | +0.0 | -0.6 |
+| Tue 27 Oct 16:15 | EMA pullback | sell | buy 16:40 | -5.3 | price did not go back beyond the bounce's low (13304.6) before 20:30 UK | -5.3 | stop 17:00 | -12.0 | +6.7 |
+| Wed 28 Oct 04:45 | slow grind | sell | buy 07:25 | +14.5 | price did not go back beyond the bounce's low (13272.5) before 20:30 UK | +14.5 | profit lock 07:30 | +10.0 | +4.5 |
+| Wed 28 Oct 10:20 | slow grind | sell | buy 10:35 | -7.4 | reopened 10:40 at 13279.7: closed by the bounce buy 11:15 -2.9; then price did not go back beyond the bounce's low (13273.9) before 20:30 UK | -10.3 | stop 13:30 | -15.0 | +4.7 |
+| Wed 28 Oct 10:45 | EMA pullback | sell | buy 11:15 | -5.8 | price did not go back beyond the bounce's low (13273.9) before 20:30 UK | -5.8 | stop 11:35 | -12.0 | +6.2 |
+| Wed 28 Oct 10:45 | EMA pullback | sell | buy 11:15 | -5.8 | price did not go back beyond the bounce's low (13273.9) before 20:30 UK | -5.8 | stop 11:35 | -12.0 | +6.2 |
+| Wed 28 Oct 15:30 | slow grind | buy | sell 15:50 | -8.8 | reopened 16:05 at 13306.1: profit lock 17:00 +9.1 | +0.3 | profit lock 17:00 | +10.0 | -9.7 |
+| Wed 28 Oct 16:15 | level reversal | buy | sell 17:05 | +3.5 | reopen refused: past its own scheduled close | +3.5 | before big news 17:45 | -1.7 | +5.2 |
+| Thu 29 Oct 22:05 | EMA pullback | buy | sell Fri 30 Oct 07:45 | +16.8 | reopened Fri 30 Oct 08:00 at 13413.1: closed by the bounce sell 10:40 +12.7; then reopened 11:00 at 13431.7: stop 12:35 -12.0 | +17.5 | 20:30 close Fri 30 Oct 20:30 | +10.9 | +6.6 |
+| Fri 30 Oct 00:40 | EMA pullback | buy | sell 07:45 | +11.5 | not reopened: only one is reopened | +11.5 | take profit 09:15 | +30.0 | -18.5 |
+| Fri 30 Oct 07:10 | EMA pullback | buy | sell 07:45 | +0.7 | not reopened: only one is reopened | +0.7 | take profit 09:45 | +30.0 | -29.3 |
+| Fri 30 Oct 07:25 | level reversal | buy | sell 07:45 | -9.9 | not reopened: only one is reopened | -9.9 | take profit 10:05 | +20.0 | -29.9 |
+| Fri 30 Oct 08:15 | level reversal | buy | sell 10:40 | +11.1 | not reopened: only one is reopened | +11.1 | not opened under the current rules | – | – |
+| Fri 30 Oct 08:15 | slow grind | buy | sell 10:40 | +13.1 | not reopened: only one is reopened | +13.1 | take profit 11:05 | +20.0 | -6.9 |
+| Fri 30 Oct 09:15 | EMA pullback | buy | sell 10:40 | +4.5 | not reopened: only one is reopened | +4.5 | stop 12:40 | -12.0 | +16.5 |
+| Fri 30 Oct 09:15 | EMA pullback | buy | sell 10:40 | +4.5 | not reopened: only one is reopened | +4.5 | stop 12:40 | -12.0 | +16.5 |
+| Fri 30 Oct 13:25 | level reversal | sell | buy 15:25 | +0.7 | price did not go back beyond the bounce's low (13379.3) before 20:30 UK | +0.7 | 20:30 close 20:30 | -4.1 | +4.8 |
+| Fri 30 Oct 16:15 | level reversal | buy | sell 16:25 | -8.4 | price did not go back beyond the bounce's high (13406.0) before 20:30 UK | -8.4 | not opened under the current rules | – | – |
+| Mon 02 Nov 08:30 | EMA pullback | buy | sell 09:25 | +15.2 | price did not go back beyond the bounce's high (13448.0) before 20:30 UK | +15.2 | stop 10:25 | -12.0 | +27.2 |
+| Mon 02 Nov 08:30 | EMA pullback | buy | sell 09:25 | +15.2 | price did not go back beyond the bounce's high (13448.0) before 20:30 UK | +15.2 | stop 10:25 | -12.0 | +27.2 |
+| Tue 03 Nov 08:05 | EMA pullback | buy | sell 08:20 | -7.8 | reopened 13:30 at 13428.0: stop 13:50 -12.0 | -19.8 | stop 08:30 | -12.0 | -7.8 |
+| Wed 04 Nov 08:30 | slow grind | buy | sell 10:40 | -6.7 | reopened 12:25 at 13497.6: closed by the bounce sell 13:25 -3.7; then price did not go back beyond the bounce's high (13503.1) before 20:30 UK | -10.4 | stop 11:05 | -15.0 | +4.6 |
+| Wed 04 Nov 15:35 | slow grind | sell | buy 15:40 | -7.5 | reopen refused: slow grind already has 1 trade(s) open (at most 1) | -7.5 | stop 17:25 | -15.0 | +7.5 |
+| Wed 04 Nov 16:10 | slow grind | sell | buy at R2 17:10 | -5.5 | price did not go back beyond the bounce's low (13453.3) before 20:30 UK | -5.5 | not opened under the current rules | – | – |
+| Thu 05 Nov 08:00 | slow grind | sell | buy 08:15 | -10.9 | reopened 09:45 at 13464.3: profit lock 11:55 +10.0 | -0.9 | profit lock 12:00 | +9.7 | -10.6 |
+| Tue 10 Nov 05:00 | EMA pullback | buy | sell 07:55 | -0.4 | reopened 08:30 at 13459.5: closed by the bounce sell 08:45 -5.8; then price did not go back beyond the bounce's high (13458.6) before 20:30 UK | -6.2 | stop 09:00 | -12.0 | +5.8 |
+| Tue 10 Nov 06:10 | EMA pullback | buy | sell 07:55 | -2.3 | not reopened: only one is reopened | -2.3 | stop 09:00 | -12.0 | +9.7 |
+| Tue 10 Nov 07:20 | EMA pullback | buy | sell 07:55 | -5.7 | not reopened: only one is reopened | -5.7 | stop 09:00 | -12.0 | +6.3 |
+| Tue 10 Nov 16:25 | level reversal | sell | buy 17:00 | -1.9 | price did not go back beyond the bounce's low (13312.2) before 20:30 UK | -1.9 | stop 18:35 | -20.0 | +18.1 |
+| **Total (37)** | | | | | | **-13.3** | | **+51.1** | **-64.4** |
+
+### Every trade closed: S2, S3, R2 or R3 only (reopen every and just one are the same)
+
+| Entry (UK) | Strategy | Way | Closed by the bounce | Closed at | Then | Total | Current rules: same trade | Current pips | Difference |
+|---|---|---|---|---:|---|---:|---|---:|---:|
+| Mon 26 Oct 08:35 | EMA pullback | sell | buy at S2 14:10 | +12.0 | price did not go back beyond the bounce's low (13327.1) before 20:30 UK | +12.0 | take profit Tue 27 Oct 07:05 | +30.0 | -18.0 |
+| Mon 26 Oct 08:35 | EMA pullback | sell | buy at S2 14:10 | +12.0 | price did not go back beyond the bounce's low (13327.1) before 20:30 UK | +12.0 | take profit Tue 27 Oct 07:05 | +30.0 | -18.0 |
+| Mon 26 Oct 13:55 | EMA pullback | sell | buy at S2 14:10 | -4.8 | price did not go back beyond the bounce's low (13327.1) before 20:30 UK | -4.8 | stop 14:30 | -12.0 | +7.2 |
+| Mon 26 Oct 13:55 | EMA pullback | sell | buy at S2 14:10 | -4.8 | price did not go back beyond the bounce's low (13327.1) before 20:30 UK | -4.8 | stop 14:30 | -12.0 | +7.2 |
+| Mon 26 Oct 13:55 | level reversal | sell | buy at S2 14:10 | -1.0 | price did not go back beyond the bounce's low (13327.1) before 20:30 UK | -1.0 | stop 14:45 | -12.7 | +11.7 |
+| Wed 04 Nov 15:35 | slow grind | sell | buy at R2 17:10 | -7.0 | price did not go back beyond the bounce's low (13453.3) before 20:30 UK | -7.0 | stop 17:25 | -15.0 | +8.0 |
+| **Total (6)** | | | | | | **+6.4** | | **+8.3** | **-1.9** |
+
+### Today, Wednesday 11 November, trade by trade
+
+The replay's candles end at 08:35. For today, this week was replayed again on a fresh read-only copy of the bot's candles, taken at 10:38 UTC (`data/research/replay_stores/live_copy_20261111_1038/`). It is identical to the 08:37 copy up to 08:35 and runs on to the candle that finished at 10:35. Trades still open are counted at the 10:30 candle's close. The runs are in `data/research/replay/owner_rules_20261111/reopen_today_1035/`.
+
+This week, Sunday 8 November to Wednesday 10:35 UTC:
+
+| Run | Trades | Won | Lost | Pips | Against current | Against closing without reopening | Trades closed by a bounce | Trades reopened |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Current rules | 30 | 12 | 18 | **+133.2** | +0.0 | – | 0 | – |
+| Close, no reopening | 31 | 13 | 18 | **+176.4** | +43.3 | +0.0 | 9 | – |
+| Close, reopen every closed trade | 37 | 13 | 24 | **+136.8** | +3.7 | -39.6 | 15 | 6 |
+| Close, reopen just one | 33 | 13 | 20 | **+163.2** | +30.1 | -13.2 | 11 | 2 |
+| S2/S3/R2/R3 only: close, no reopening | 30 | 12 | 18 | **+133.2** | +0.0 | +0.0 | 0 | – |
+| S2/S3/R2/R3 only: reopen every closed trade | 30 | 12 | 18 | **+133.2** | +0.0 | +0.0 | 0 | 0 |
+| S2/S3/R2/R3 only: reopen just one | 30 | 12 | 18 | **+133.2** | +0.0 | +0.0 | 0 | 0 |
+
+| Entry (UK) | Strategy | Way | Current rules | Close, no reopening | Close, reopen every closed trade | Close, reopen just one | S2/S3/R2/R3 only: close, no reopening | S2/S3/R2/R3 only: reopen every closed trade | S2/S3/R2/R3 only: reopen just one |
+|---|---|---|---|---|---|---|---|---|---|
+| Wed 11 Nov 06:55 | Bollinger bounce | buy | rejection at london_session_high 13341, turning_low 13341.4 07:30 +0.4 | rejection at london_session_high 13341, turning_low 13341.4 07:30 +0.4 | rejection at london_session_high 13341, turning_low 13341.4 07:30 +0.4 | rejection at london_session_high 13341, turning_low 13341.4 07:30 +0.4 | rejection at london_session_high 13341, turning_low 13341.4 07:30 +0.4 | rejection at london_session_high 13341, turning_low 13341.4 07:30 +0.4 | rejection at london_session_high 13341, turning_low 13341.4 07:30 +0.4 |
+| Wed 11 Nov 07:30 | EMA pullback | sell | still open at the last candle 10:30 +4.0 | closed by the bounce buy 08:35 +4.9 | closed by the bounce buy 08:35 +4.9 | closed by the bounce buy 08:35 +4.9 | still open at the last candle 10:30 +4.0 | still open at the last candle 10:30 +4.0 | still open at the last candle 10:30 +4.0 |
+| Wed 11 Nov 08:10 | slow grind | sell | still open at the last candle 10:30 -0.2 | closed by the bounce buy 08:35 +0.7 | closed by the bounce buy 08:35 +0.7 | closed by the bounce buy 08:35 +0.7 | still open at the last candle 10:30 -0.2 | still open at the last candle 10:30 -0.2 | still open at the last candle 10:30 -0.2 |
+| Wed 11 Nov 08:15 | EMA pullback | sell | still open at the last candle 10:30 -3.8 | closed by the bounce buy 08:35 -2.9 | closed by the bounce buy 08:35 -2.9 | closed by the bounce buy 08:35 -2.9 | still open at the last candle 10:30 -3.8 | still open at the last candle 10:30 -3.8 | still open at the last candle 10:30 -3.8 |
+| Wed 11 Nov 08:15 | EMA pullback | sell | still open at the last candle 10:30 -3.8 | closed by the bounce buy 08:35 -2.9 | closed by the bounce buy 08:35 -2.9 | closed by the bounce buy 08:35 -2.9 | still open at the last candle 10:30 -3.8 | still open at the last candle 10:30 -3.8 | still open at the last candle 10:30 -3.8 |
+| Wed 11 Nov 08:35 | Bollinger bounce | buy | stop 09:30 -12.0 | stop 09:30 -12.0 | stop 09:30 -12.0 | stop 09:30 -12.0 | stop 09:30 -12.0 | stop 09:30 -12.0 | stop 09:30 -12.0 |
+| Wed 11 Nov 09:05 | slow grind | sell | – | closed by the bounce buy 09:50 -6.0 | closed by the bounce buy 09:50 -6.0 | closed by the bounce buy 09:50 -6.0 | – | – | – |
+| Wed 11 Nov 09:30 | EMA pullback | sell | – | – | closed by the bounce buy 09:50 -7.4 (a reopen) | closed by the bounce buy 09:50 -7.4 (a reopen) | – | – | – |
+| Wed 11 Nov 09:30 | EMA pullback | sell | – | – | closed by the bounce buy 09:50 -7.4 (a reopen) | – | – | – | – |
+| Wed 11 Nov 09:30 | EMA pullback | sell | – | – | closed by the bounce buy 09:50 -7.4 (a reopen) | – | – | – | – |
+| Wed 11 Nov 09:50 | Bollinger bounce | buy | half at the band +2.0, then still open at the last candle 10:30 +3.0 | half at the band +2.0, then still open at the last candle 10:30 +3.0 | half at the band +2.0, then still open at the last candle 10:30 +3.0 | half at the band +2.0, then still open at the last candle 10:30 +3.0 | half at the band +2.0, then still open at the last candle 10:30 +3.0 | half at the band +2.0, then still open at the last candle 10:30 +3.0 | half at the band +2.0, then still open at the last candle 10:30 +3.0 |
+| **Total** | | | **-12.4** | **-14.8** | **-37.0** | **-22.2** | **-12.4** | **-12.4** | **-12.4** |
+
+- **At 08:35 the bounce buy closed the four sells.** It was stopped at 09:30, and price went back below the low it turned from. The three EMA pullback sells were reopened at 13314.1; the slow grind could not reopen, because the 09:05 slow grind sell was open.
+- **At 09:50 the next bounce buy closed the reopens again, at −7.4 each.** The day: current rules −12.4, closing without reopening −14.8, reopen every −37.0, reopen just one −22.2.
+- **The 09:50 bounce's watch was still running at the end of the data.** If price goes below 13313.5 before 20:30, its four closed sells reopen.
+
+Today's closes, reopen every:
+
+| Entry (UK) | Strategy | Way | Closed by the bounce | Closed at | Then | Total | Current rules: same trade | Current pips | Difference |
+|---|---|---|---|---:|---|---:|---|---:|---:|
+| Wed 11 Nov 07:30 | EMA pullback | sell | buy 08:35 | +4.9 | reopened 09:30 at 13314.1: closed by the bounce buy 09:50 -7.4; then watch still running at the end of the data | -2.5 | still open at the last candle 10:30 | +4.0 | -6.5 |
+| Wed 11 Nov 08:10 | slow grind | sell | buy 08:35 | +0.7 | reopen refused: slow grind already has 1 trade(s) open (at most 1) | +0.7 | still open at the last candle 10:30 | -0.2 | +0.9 |
+| Wed 11 Nov 08:15 | EMA pullback | sell | buy 08:35 | -2.9 | reopened 09:30 at 13314.1: closed by the bounce buy 09:50 -7.4; then watch still running at the end of the data | -10.3 | still open at the last candle 10:30 | -3.8 | -6.5 |
+| Wed 11 Nov 08:15 | EMA pullback | sell | buy 08:35 | -2.9 | reopened 09:30 at 13314.1: closed by the bounce buy 09:50 -7.4; then watch still running at the end of the data | -10.3 | still open at the last candle 10:30 | -3.8 | -6.5 |
+| Wed 11 Nov 09:05 | slow grind | sell | buy 09:50 | -6.0 | watch still running at the end of the data | -6.0 | not opened under the current rules | – | – |
+
+Today's closes, reopen just one:
+
+| Entry (UK) | Strategy | Way | Closed by the bounce | Closed at | Then | Total | Current rules: same trade | Current pips | Difference |
+|---|---|---|---|---:|---|---:|---|---:|---:|
+| Wed 11 Nov 07:30 | EMA pullback | sell | buy 08:35 | +4.9 | reopened 09:30 at 13314.1: closed by the bounce buy 09:50 -7.4; then watch still running at the end of the data | -2.5 | still open at the last candle 10:30 | +4.0 | -6.5 |
+| Wed 11 Nov 08:10 | slow grind | sell | buy 08:35 | +0.7 | not reopened: only one is reopened | +0.7 | still open at the last candle 10:30 | -0.2 | +0.9 |
+| Wed 11 Nov 08:15 | EMA pullback | sell | buy 08:35 | -2.9 | not reopened: only one is reopened | -2.9 | still open at the last candle 10:30 | -3.8 | +0.9 |
+| Wed 11 Nov 08:15 | EMA pullback | sell | buy 08:35 | -2.9 | not reopened: only one is reopened | -2.9 | still open at the last candle 10:30 | -3.8 | +0.9 |
+| Wed 11 Nov 09:05 | slow grind | sell | buy 09:50 | -6.0 | watch still running at the end of the data | -6.0 | not opened under the current rules | – | – |
+
+## Rule 1 only at a significant level, with the owner's MACD check
+
+Added Wednesday 11 November, afternoon UK. Same replay, code, candles, switches and prices as above. Nothing in the bot was changed.
+
+**The rule.** The owner's words: "it reaches a significant level like 00, or the weekly pivot; I am looking at MACD to check that theory, so I would have held until 00 based on the proximity of the 00 and MACD."
+- A bounce only counts as valid if it opens at a significant level: a 00, the weekly pivot, S2, S3, R2 or R3. Only a valid bounce closes the open trades in the opposite direction, at the moment it opens, as rule 1. There is no reopening.
+- A bounce anywhere else closes nothing, and the trend trades are held, as under the current rules.
+- The owner has not said how close counts as "at", so **3, 5 and 8 pips** are shown.
+- Each is also shown with the owner's MACD check, the hourly MACD (35, 45, 30) turned the bounce's way, in two readings: **the histogram on the bounce's side** of zero, and **the histogram moving the bounce's way for 2 hours in a row**.
+
+**How it was replayed:**
+- **"At" the level:** the low a bounce buy turned from (the high for a sell) is within 3, 5 or 8 pips of the level, on the chart (sell) price. The turning point is the furthest price from the bounce's piercing candle to its confirmation candle, as in the reopen section. This differs from the "at S2, S3, R2 or R3" of rule 1 above, which uses the levels the bounce's setup pierced. So on Monday 26 October the 14:10 bounce counts here as at S3 (1.5 pips from its turn), not at S2.
+- **The levels:**
+  - **00:** every 100 pips (13300, 13400, ...), the bot's own round numbers at `round_numbers_every_pips = 100`.
+  - **The weekly pivot:** (high + low + close) ÷ 3 of the previous week's weekly candle in the bot's store, sell price. The bot's weekly candle runs from the Sunday open to the Friday close. For this week it is 13397.1 (see below).
+  - **S2, S3, R2, R3:** the bot's own daily levels at the moment the bounce opened.
+- **MACD:** `prices.indicators.macd` on the bot's hourly candles, sell price, with 35, 45, 30 read as fast, slow and signal. Only hours finished before the bounce's 5-minute candle count.
+  - *On its side:* the last hourly histogram is above 0 for a bounce buy, below 0 for a sell.
+  - *2 hours its way:* the histogram rose in each of the last 2 hours for a buy (fell for a sell): h₃ > h₂ > h₁ for a buy.
+- The runs are in `data/research/replay/owner_rules_20261111/significant/`. The current rules and rule 1 for every bounce are the runs above.
+
+### Trades, wins, losses and pips
+
+| Run | Trades | Won | Lost | Pips | Against current | Valid bounces | Trades closed by a bounce |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Current rules | 169 | 84 | 84 | **+1,191.8** | +0.0 | – | 0 |
+| Every bounce closes (for reference) | 176 | 88 | 88 | **+1,158.0** | -33.8 | – | 38 |
+| Within 3 pips, no MACD check | 170 | 85 | 84 | **+1,203.8** | +12.0 | 4 | 6 |
+| Within 3 pips, MACD histogram on the bounce's side | 170 | 85 | 84 | **+1,201.0** | +9.3 | 3 | 2 |
+| Within 3 pips, MACD histogram 2 hours the bounce's way | 169 | 84 | 84 | **+1,191.8** | +0.0 | 0 | 0 |
+| Within 5 pips, no MACD check | 171 | 84 | 87 | **+1,147.4** | -44.3 | 10 | 11 |
+| Within 5 pips, MACD histogram on the bounce's side | 170 | 85 | 84 | **+1,201.0** | +9.3 | 5 | 2 |
+| Within 5 pips, MACD histogram 2 hours the bounce's way | 169 | 84 | 84 | **+1,191.8** | +0.0 | 0 | 0 |
+| Within 8 pips, no MACD check | 172 | 83 | 89 | **+1,113.6** | -78.1 | 14 | 14 |
+| Within 8 pips, MACD histogram on the bounce's side | 171 | 84 | 86 | **+1,172.0** | -19.8 | 7 | 4 |
+| Within 8 pips, MACD histogram 2 hours the bounce's way | 169 | 84 | 84 | **+1,193.4** | +1.7 | 1 | 1 |
+
+No candle reached both a stop and a target in any of these runs, so the target first is the same.
+
+**Where the difference comes from.** Each row: the run against the current rules; the closed trades against what they would have made; and the other trades that changed because places under the safety limits were freed.
+
+| Version | Against current | The closed trades | Knock-on |
+|---|---:|---:|---:|
+| Within 3 pips | +12.0 | −2.4 (6) | +14.4 |
+| Within 3 or 5 pips, MACD on its side | +9.3 | +19.5 (2) | −10.2 |
+| Within 5 pips | −44.3 | −68.7 (11) | +24.4 |
+| Within 8 pips | −78.1 | −97.7 (14) | +19.6 |
+| Within 8 pips, MACD on its side | −19.8 | −4.8 (4) | −15.0 |
+| Within 8 pips, MACD 2 hours its way | +1.7 | +1.7 (1) | 0 |
+| Within 3 or 5 pips, MACD 2 hours its way | 0 | none | 0 |
+
+### By week: trades (won–lost) and pips
+
+| Run | w/c 25 Oct | w/c 1 Nov | w/c 8 Nov (to Wed 08:35 UTC) |
+|---|---:|---:|---:|
+| Current rules | 59 (30–28) +224.9 | 82 (42–40) +811.0 | 28 (12–16) +155.8 |
+| Every bounce closes (for reference) | 64 (33–31) +112.1 | 84 (43–41) +844.4 | 28 (12–16) +201.5 |
+| Within 3 pips, no MACD check | 59 (31–27) +239.6 | 83 (42–41) +808.4 | 28 (12–16) +155.8 |
+| Within 3 pips, MACD histogram on the bounce's side | 59 (31–27) +236.9 | 83 (42–41) +808.4 | 28 (12–16) +155.8 |
+| Within 3 pips, MACD histogram 2 hours the bounce's way | 59 (30–28) +224.9 | 82 (42–40) +811.0 | 28 (12–16) +155.8 |
+| Within 5 pips, no MACD check | 60 (30–30) +175.0 | 83 (42–41) +816.6 | 28 (12–16) +155.8 |
+| Within 5 pips, MACD histogram on the bounce's side | 59 (31–27) +236.9 | 83 (42–41) +808.4 | 28 (12–16) +155.8 |
+| Within 5 pips, MACD histogram 2 hours the bounce's way | 59 (30–28) +224.9 | 82 (42–40) +811.0 | 28 (12–16) +155.8 |
+| Within 8 pips, no MACD check | 61 (29–32) +136.5 | 83 (42–41) +821.4 | 28 (12–16) +155.8 |
+| Within 8 pips, MACD histogram on the bounce's side | 60 (30–29) +203.1 | 83 (42–41) +813.0 | 28 (12–16) +155.8 |
+| Within 8 pips, MACD histogram 2 hours the bounce's way | 59 (30–28) +226.6 | 82 (42–40) +811.0 | 28 (12–16) +155.8 |
+
+The week of 8 November is the same for every version: none of its bounces was near a significant level.
+
+### Every bounce that opened
+
+The 8-pip runs' list: every bounce, the price it turned from, the significant levels within 8 pips of it, and which versions count it. The MACD values are shown for the bounces near a level; they are the histogram at the last three finished hours, oldest first.
+
+| Bounce (UK) | Way | Turned from | Significant levels within 8 pips | Hourly MACD histogram (last 3 hours) | Valid: 3 / 5 / 8 pips | With MACD on its side (8) | With MACD 2 hours its way (8) |
+|---|---|---:|---|---|---|---|---|
+| Mon 26 Oct 06:00 | buy | 13369.9 | – | – | no/no/no | no | no |
+| Mon 26 Oct 09:05 | buy | 13343.6 | S2 13338.6 (5.0 pips) | -1.30, -1.44, -1.67 | no/yes/yes | no | no |
+| Mon 26 Oct 14:10 | buy | 13327.1 | S3 13328.6 (1.5 pips) | -2.09, -2.07, -2.32 | yes/yes/yes | no | no |
+| Mon 26 Oct 17:50 | sell | 13359.1 | weekly pivot 13359.7 (0.6 pips) | -2.34, -2.32, -2.28 | yes/yes/yes | yes | no |
+| Tue 27 Oct 07:20 | buy | 13315.8 | – | – | no/no/no | no | no |
+| Tue 27 Oct 09:55 | buy | 13307.2 | 00 13300 (7.2 pips) | -1.55, -1.60, -1.63 | no/no/yes | no | no |
+| Tue 27 Oct 12:35 | sell | 13334.5 | – | – | no/no/no | no | no |
+| Tue 27 Oct 16:40 | buy | 13304.6 | 00 13300 (4.6 pips) | -1.56, -1.48, -1.51 | no/yes/yes | no | no |
+| Wed 28 Oct 07:25 | buy | 13272.5 | – | – | no/no/no | no | no |
+| Wed 28 Oct 10:35 | buy | 13279.8 | – | – | no/no/no | no | no |
+| Wed 28 Oct 11:15 | buy | 13273.9 | – | – | no/no/no | no | no |
+| Wed 28 Oct 13:55 | sell | 13303.8 | 00 13300 (3.8 pips) | -1.34, -1.26, -1.15 | no/yes/yes | yes | no |
+| Wed 28 Oct 15:20 | sell | 13304.4 | 00 13300 (4.4 pips) | -1.15, -0.97, -0.75 | no/yes/yes | yes | no |
+| Wed 28 Oct 15:50 | sell | 13305.1 | 00 13300 (5.1 pips) | -1.15, -0.97, -0.75 | no/no/yes | yes | no |
+| Wed 28 Oct 17:05 | sell | 13321.1 | – | – | no/no/no | no | no |
+| Thu 29 Oct 08:15 | sell | 13329.9 | – | – | no/no/no | no | no |
+| Fri 30 Oct 07:45 | sell | 13412.1 | – | – | no/no/no | no | no |
+| Fri 30 Oct 10:40 | sell | 13430.6 | – | – | no/no/no | no | no |
+| Fri 30 Oct 15:25 | buy | 13379.3 | – | – | no/no/no | no | no |
+| Fri 30 Oct 16:25 | sell | 13406.0 | 00 13400 (6.0 pips) | 4.00, 3.65, 3.33 | no/no/yes | no | yes |
+| Mon 02 Nov 09:25 | sell | 13448.0 | – | – | no/no/no | no | no |
+| Mon 02 Nov 18:55 | buy | 13402.5 | 00 13400 (2.5 pips), R2 13399.1 (3.4 pips), R3 13405.9 (3.4 pips) | 0.25, 0.23, 0.15 | yes/yes/yes | yes | no |
+| Tue 03 Nov 06:45 | sell | 13416.2 | – | – | no/no/no | no | no |
+| Tue 03 Nov 08:20 | sell | 13426.4 | – | – | no/no/no | no | no |
+| Wed 04 Nov 10:40 | sell | 13496.0 | 00 13500 (4.0 pips) | 1.35, 1.61, 1.90 | no/yes/yes | no | no |
+| Wed 04 Nov 13:25 | sell | 13503.1 | 00 13500 (3.1 pips) | 2.02, 2.13, 2.33 | no/yes/yes | no | no |
+| Wed 04 Nov 15:40 | buy | 13461.1 | R2 13458.8 (2.3 pips) | 2.33, 2.37, 2.23 | yes/yes/yes | yes | no |
+| Wed 04 Nov 17:10 | buy | 13453.3 | R2 13458.8 (5.5 pips) | 2.23, 2.04, 1.68 | no/no/yes | yes | no |
+| Thu 05 Nov 08:15 | buy | 13464.4 | – | – | no/no/no | no | no |
+| Thu 05 Nov 08:50 | buy | 13468.6 | – | – | no/no/no | no | no |
+| Tue 10 Nov 07:55 | sell | 13457.9 | – | – | no/no/no | no | no |
+| Tue 10 Nov 08:45 | sell | 13458.6 | – | – | no/no/no | no | no |
+| Tue 10 Nov 17:00 | buy | 13312.2 | – | – | no/no/no | no | no |
+| Wed 11 Nov 06:55 | buy | 13331 | – | – | no/no/no | no | no |
+
+### Every trade closed, and what that trade would otherwise have made
+
+The versions with the MACD 2-hour check at 3 and 5 pips close nothing.
+
+**Within 3 pips:**
+
+| Entry (UK) | Strategy | Way | Closed (UK) | By the bounce | Closed at | Current rules: same trade | Would have made | Difference |
+|---|---|---|---|---|---:|---|---:|---:|
+| Mon 26 Oct 08:35 | EMA pullback | sell | 14:10 | buy at S3 13328.6 | +12.0 | take profit Tue 27 Oct 07:05 | +30.0 | -18.0 |
+| Mon 26 Oct 08:35 | EMA pullback | sell | 14:10 | buy at S3 13328.6 | +12.0 | take profit Tue 27 Oct 07:05 | +30.0 | -18.0 |
+| Mon 26 Oct 13:55 | EMA pullback | sell | 14:10 | buy at S3 13328.6 | -4.8 | stop 14:30 | -12.0 | +7.2 |
+| Mon 26 Oct 13:55 | EMA pullback | sell | 14:10 | buy at S3 13328.6 | -4.8 | stop 14:30 | -12.0 | +7.2 |
+| Mon 26 Oct 13:55 | level reversal | sell | 14:10 | buy at S3 13328.6 | -1.0 | stop 14:45 | -12.7 | +11.7 |
+| Wed 04 Nov 15:35 | slow grind | sell | 15:40 | buy at R2 13458.8 | -7.5 | stop 17:25 | -15.0 | +7.5 |
+| **Total (6)** | | | | | **+5.9** | | **+8.3** | **-2.4** |
+
+**Within 3 pips, MACD on its side** (within 5 pips, MACD on its side, is the same):
+
+| Entry (UK) | Strategy | Way | Closed (UK) | By the bounce | Closed at | Current rules: same trade | Would have made | Difference |
+|---|---|---|---|---|---:|---|---:|---:|
+| Mon 26 Oct 14:45 | level reversal | buy | 17:50 | sell at weekly pivot 13359.7 | +7.4 | 20:30 close 20:30 | -4.6 | +12.0 |
+| Wed 04 Nov 15:35 | slow grind | sell | 15:40 | buy at R2 13458.8 | -7.5 | stop 17:25 | -15.0 | +7.5 |
+| **Total (2)** | | | | | **-0.1** | | **-19.6** | **+19.5** |
+
+**Within 5 pips:**
+
+| Entry (UK) | Strategy | Way | Closed (UK) | By the bounce | Closed at | Current rules: same trade | Would have made | Difference |
+|---|---|---|---|---|---:|---|---:|---:|
+| Mon 26 Oct 08:25 | slow grind | sell | 09:05 | buy at S2 13338.6 | +3.5 | take profit 13:55 | +20.0 | -16.5 |
+| Mon 26 Oct 08:35 | EMA pullback | sell | 09:05 | buy at S2 13338.6 | -2.7 | take profit Tue 27 Oct 07:05 | +30.0 | -32.7 |
+| Mon 26 Oct 08:35 | EMA pullback | sell | 09:05 | buy at S2 13338.6 | -2.7 | take profit Tue 27 Oct 07:05 | +30.0 | -32.7 |
+| Mon 26 Oct 13:55 | EMA pullback | sell | 14:10 | buy at S3 13328.6 | -4.8 | stop 14:30 | -12.0 | +7.2 |
+| Mon 26 Oct 13:55 | EMA pullback | sell | 14:10 | buy at S3 13328.6 | -4.8 | stop 14:30 | -12.0 | +7.2 |
+| Mon 26 Oct 13:55 | level reversal | sell | 14:10 | buy at S3 13328.6 | -1.0 | stop 14:45 | -12.7 | +11.7 |
+| Tue 27 Oct 07:00 | breakout | sell | 16:40 | buy at 00 13300 | +15.2 | take profit Wed 28 Oct 07:10 | +50.0 | -34.8 |
+| Tue 27 Oct 16:05 | slow grind | sell | 16:40 | buy at 00 13300 | -0.6 | 20:30 close 20:30 | +0.0 | -0.6 |
+| Tue 27 Oct 16:15 | EMA pullback | sell | 16:40 | buy at 00 13300 | -5.3 | stop 17:00 | -12.0 | +6.7 |
+| Wed 04 Nov 08:30 | slow grind | buy | 10:40 | sell at 00 13500 | -6.7 | stop 11:05 | -15.0 | +8.3 |
+| Wed 04 Nov 15:35 | slow grind | sell | 15:40 | buy at R2 13458.8 | -7.5 | stop 17:25 | -15.0 | +7.5 |
+| **Total (11)** | | | | | **-17.4** | | **+51.3** | **-68.7** |
+
+**Within 8 pips:**
+
+| Entry (UK) | Strategy | Way | Closed (UK) | By the bounce | Closed at | Current rules: same trade | Would have made | Difference |
+|---|---|---|---|---|---:|---|---:|---:|
+| Mon 26 Oct 08:25 | slow grind | sell | 09:05 | buy at S2 13338.6 | +3.5 | take profit 13:55 | +20.0 | -16.5 |
+| Mon 26 Oct 08:35 | EMA pullback | sell | 09:05 | buy at S2 13338.6 | -2.7 | take profit Tue 27 Oct 07:05 | +30.0 | -32.7 |
+| Mon 26 Oct 08:35 | EMA pullback | sell | 09:05 | buy at S2 13338.6 | -2.7 | take profit Tue 27 Oct 07:05 | +30.0 | -32.7 |
+| Mon 26 Oct 13:55 | EMA pullback | sell | 14:10 | buy at S3 13328.6 | -4.8 | stop 14:30 | -12.0 | +7.2 |
+| Mon 26 Oct 13:55 | EMA pullback | sell | 14:10 | buy at S3 13328.6 | -4.8 | stop 14:30 | -12.0 | +7.2 |
+| Mon 26 Oct 13:55 | level reversal | sell | 14:10 | buy at S3 13328.6 | -1.0 | stop 14:45 | -12.7 | +11.7 |
+| Tue 27 Oct 07:00 | breakout | sell | 09:55 | buy at 00 13300 | +8.8 | take profit Wed 28 Oct 07:10 | +50.0 | -41.2 |
+| Tue 27 Oct 16:05 | slow grind | sell | 16:40 | buy at 00 13300 | -0.6 | 20:30 close 20:30 | +0.0 | -0.6 |
+| Tue 27 Oct 16:15 | EMA pullback | sell | 16:40 | buy at 00 13300 | -5.3 | stop 17:00 | -12.0 | +6.7 |
+| Wed 28 Oct 15:30 | slow grind | buy | 15:50 | sell at 00 13300 | -8.8 | profit lock 17:00 | +10.0 | -18.8 |
+| Thu 29 Oct 22:05 | EMA pullback | buy | Fri 30 Oct 16:25 | sell at 00 13400 | +12.6 | 20:30 close Fri 30 Oct 20:30 | +10.9 | +1.7 |
+| Wed 04 Nov 08:30 | slow grind | buy | 10:40 | sell at 00 13500 | -6.7 | stop 11:05 | -15.0 | +8.3 |
+| Wed 04 Nov 15:35 | slow grind | sell | 15:40 | buy at R2 13458.8 | -7.5 | stop 17:25 | -15.0 | +7.5 |
+| Wed 04 Nov 16:10 | slow grind | sell | 17:10 | buy at R2 13458.8 | -5.5 | not opened under the current rules | – | – |
+| **Total (14)** | | | | | **-25.5** | | **+72.2** | **-97.7** |
+
+**Within 8 pips, MACD on its side:**
+
+| Entry (UK) | Strategy | Way | Closed (UK) | By the bounce | Closed at | Current rules: same trade | Would have made | Difference |
+|---|---|---|---|---|---:|---|---:|---:|
+| Mon 26 Oct 14:45 | level reversal | buy | 17:50 | sell at weekly pivot 13359.7 | +7.4 | 20:30 close 20:30 | -4.6 | +12.0 |
+| Wed 28 Oct 15:30 | slow grind | buy | 15:50 | sell at 00 13300 | -8.8 | profit lock 17:00 | +10.0 | -18.8 |
+| Wed 04 Nov 15:35 | slow grind | sell | 15:40 | buy at R2 13458.8 | -7.5 | stop 17:25 | -15.0 | +7.5 |
+| Wed 04 Nov 16:10 | slow grind | sell | 17:10 | buy at R2 13458.8 | -5.5 | not opened under the current rules | – | – |
+| **Total (4)** | | | | | **-14.4** | | **-9.6** | **-4.8** |
+
+**Within 8 pips, MACD 2 hours its way:**
+
+| Entry (UK) | Strategy | Way | Closed (UK) | By the bounce | Closed at | Current rules: same trade | Would have made | Difference |
+|---|---|---|---|---|---:|---|---:|---:|
+| Thu 29 Oct 22:05 | EMA pullback | buy | Fri 30 Oct 16:25 | sell at 00 13400 | +12.6 | 20:30 close Fri 30 Oct 20:30 | +10.9 | +1.7 |
+| **Total (1)** | | | | | **+12.6** | | **+10.9** | **+1.7** |
+
+### Today, Wednesday 11 November, trade by trade
+
+This week was replayed again on a fresh read-only copy of the bot's candles taken at 11:23 UTC (`data/research/replay_stores/live_copy_20261111_1123/`), identical to the 08:37 copy up to 08:35 and running on to the candle that finished at 11:20. Trades still open are counted at the 11:15 candle's close. The runs are in `data/research/replay/owner_rules_20261111/significant_today_1120/`.
+
+| Run | Trades | Won | Lost | Pips | Against current | Valid bounces | Trades closed by a bounce |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Current rules | 32 | 16 | 16 | **+173.6** | +0.0 | – | 0 |
+| Within 3 pips, no MACD check | 32 | 16 | 16 | **+173.6** | +0.0 | 0 | 0 |
+| Within 3 pips, MACD histogram on the bounce's side | 32 | 16 | 16 | **+173.6** | +0.0 | 0 | 0 |
+| Within 3 pips, MACD histogram 2 hours the bounce's way | 32 | 16 | 16 | **+173.6** | +0.0 | 0 | 0 |
+| Within 5 pips, no MACD check | 32 | 16 | 16 | **+173.6** | +0.0 | 0 | 0 |
+| Within 5 pips, MACD histogram on the bounce's side | 32 | 16 | 16 | **+173.6** | +0.0 | 0 | 0 |
+| Within 5 pips, MACD histogram 2 hours the bounce's way | 32 | 16 | 16 | **+173.6** | +0.0 | 0 | 0 |
+| Within 8 pips, no MACD check | 32 | 16 | 16 | **+173.6** | +0.0 | 0 | 0 |
+| Within 8 pips, MACD histogram on the bounce's side | 32 | 16 | 16 | **+173.6** | +0.0 | 0 | 0 |
+| Within 8 pips, MACD histogram 2 hours the bounce's way | 32 | 16 | 16 | **+173.6** | +0.0 | 0 | 0 |
+
+Today's bounces, none near a significant level:
+
+| Bounce (UK) | Way | Turned from | Significant levels within 8 pips | Hourly MACD histogram (last 3 hours) | Valid: 3 / 5 / 8 pips | With MACD on its side (8) | With MACD 2 hours its way (8) |
+|---|---|---:|---|---|---|---|---|
+| Wed 11 Nov 06:55 | buy | 13331 | – | – | no/no/no | no | no |
+| Wed 11 Nov 08:35 | buy | 13314.2 | – | – | no/no/no | no | no |
+| Wed 11 Nov 09:50 | buy | 13313.5 | – | – | no/no/no | no | no |
+
+| Bounce | Turned from | Nearest 00 | Weekly pivot | S2 |
+|---|---:|---|---|---|
+| 06:55 buy | 13331.0 | 13300, 31.0 pips | 13397.1, 66.1 pips | 13226.1, 104.9 pips |
+| 08:35 buy | 13314.2 | 13300, 14.2 pips | 13397.1, 82.9 pips | 13226.1, 88.1 pips |
+| 09:50 buy | 13313.5 | 13300, 13.5 pips | 13397.1, 83.6 pips | 13226.1, 87.4 pips |
+
+So no bounce closed anything, and all nine versions trade exactly as the current rules:
+
+| Entry (UK) | Strategy | Way | Exit (UK) | Pips |
+|---|---|---|---|---:|
+| Wed 11 Nov 06:55 | Bollinger bounce | buy | rejection at london_session_high 13341, turning_low 13341.4 07:30 | +0.4 |
+| Wed 11 Nov 07:30 | EMA pullback | sell | still open at the last candle 11:15 | +15.1 |
+| Wed 11 Nov 08:10 | slow grind | sell | still open at the last candle 11:15 | +10.9 |
+| Wed 11 Nov 08:15 | EMA pullback | sell | still open at the last candle 11:15 | +7.3 |
+| Wed 11 Nov 08:15 | EMA pullback | sell | still open at the last candle 11:15 | +7.3 |
+| Wed 11 Nov 08:35 | Bollinger bounce | buy | stop 09:30 | -12.0 |
+| Wed 11 Nov 09:50 | Bollinger bounce | buy | half at the band +2.0, then rejection at turning_low 13327.5 10:45 | +1.2 |
+| Wed 11 Nov 10:50 | EMA pullback | sell | still open at the last candle 11:15 | +1.6 |
+| Wed 11 Nov 11:10 | range trade | buy | still open at the last candle 11:15 | -3.9 |
+| **Total** | | | | **+28.0** |
+
+Holding is what the owner describes. If every bounce closed the opposite trades (rule 1), the 08:35 bounce would have closed the four sells at +4.9, +0.7, −2.9 and −2.9. Held, they were at +15.1, +10.9, +7.3 and +7.3 at 11:15.
+
+### The weekly pivot: 13397.1, not PIA First's 13295
+
+The standard weekly pivot for this week is (high + low + close) ÷ 3 of the previous Monday-to-Friday week, 2 to 6 November. From the bot's own IG candles:
+
+| Week taken as | Price | High | Low | Close | Pivot |
+|---|---|---:|---:|---:|---:|
+| Sun 1 Nov 21:00 to Fri 6 Nov 22:00 UTC (the bot's weekly candle) | sell (chart) | 13503.1 (Wed 4 Nov 13:10) | 13341.4 (Fri 6 Nov 14:15) | 13346.9 | **13397.1** |
+| Mon 2 Nov 00:00 to Fri 22:00 | sell | 13503.1 | 13341.4 | 13346.9 | 13397.1 |
+| Mon 2 Nov 00:00 to Fri 21:00 | sell | 13503.1 | 13341.4 | 13349.8 | 13398.1 |
+| Sun 21:00 to Fri 22:00 | mid | 13503.95 | 13342.15 | 13355.35 | 13400.5 |
+
+- **13295 cannot be that week's standard pivot.** A pivot always lies between the week's low and high, and 13295 is 46 pips below the week's lowest price (13341.4).
+- **It is not another period's standard pivot either.** The week of 26 October gives 13364.2, this week so far 13361.7, and today's daily pivot is about 13372.5.
+- **PIA First's "pivot" is the analyst's turning level for the trade idea.** The preferred direction holds on one side of it and the other scenario on the other side; it is a chosen support or resistance level, not the formula.
+  - 13295 sits just under the 13300 round number and 2 to 4 pips from the standard weekly S1: 13291.1 on the sell price, 13297.1 on the mid.
+  - This comes from the format of PIA First's published notes (examples on MQL5 from 2019–2020). How it arrives at this week's figure could not be checked, because IG shows its signals only inside its platform.
+- **The replay uses 13397.1.** Even with 13295 as a level, today's 08:35 and 09:50 bounces turned 19 pips from it, outside the widest 8-pip test, so today would not change.
