@@ -310,6 +310,7 @@
   .paper-switch { display: flex; align-items: center; gap: 8px; padding: 4px 16px 0; cursor: pointer; }
   .paper-switch input { accent-color: var(--amber); width: 16px; height: 16px; }
   .chip.paper { background: var(--amber-dim); color: var(--amber); border-color: #ffaa0040; margin-left: 6px; padding: 1px 6px; font-size: 9px; }
+  .chip.owner { background: var(--surface2); color: var(--muted); border-color: var(--border2); margin-left: 6px; padding: 1px 6px; font-size: 9px; }
 </style>
 </head>
 <body>
@@ -757,7 +758,9 @@ async function loadHistory() {
   $('hrate').textContent = t.trades ? Math.round(100 * t.wins / t.trades) + '% won' : '';
   $('hperiod').textContent = range ? (range[0] === range[1] ? formatDisplayDate(range[0]) :
                                       formatDisplayDate(range[0]) + ' – ' + formatDisplayDate(range[1])) : 'Every trade';
-  $('hpaper').textContent = showPaper ? (h.paper_trades + ' paper trade' + (h.paper_trades === 1 ? '' : 's') + ' included') : 'Real trades only';
+  const o = h.closed_by_owner || {trades: 0};
+  $('hpaper').textContent = (showPaper ? (h.paper_trades + ' paper trade' + (h.paper_trades === 1 ? '' : 's') + ' included') : 'Real trades only') +
+    (o.trades ? ' · ' + o.trades + ' closed by you, not counted (' + pips(o.pips) + ')' : '');
   $('hfirst').textContent = firstDay ? 'First trade ' + formatDisplayDate(firstDay) : 'No trades recorded yet';
 
   const bs = $('bystrategy'); bs.textContent = '';
@@ -783,6 +786,7 @@ async function loadHistory() {
     const mid = el('div');
     const name = el('div', 'trade-name', x.strategy);
     if (x.paper) name.appendChild(el('span', 'chip paper', 'paper'));
+    if (x.closed_by === 'owner') name.appendChild(el('span', 'chip owner', 'closed by you · not counted'));
     mid.appendChild(name);
     mid.appendChild(el('div', 'trade-meta', ukDay(x.opened_utc) + ' → ' + ukDay(x.closed_utc) + ' · ' + x.open_price + ' → ' +
                                             x.close_price + ' · ' + x.how_closed + (x.half_closed ? ' · half closed first' : '')));

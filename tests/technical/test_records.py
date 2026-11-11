@@ -299,3 +299,22 @@ def test_the_daily_summary_comes_from_the_latest_price(S, monkeypatch):
     e.start(WED)
     e.on_price(tick(U(2026, 11, 4, 20, 36), 100))
     assert len(e.alerts.infos) == 1
+
+
+def test_the_owners_closes_are_never_counted_for_the_bot_but_shown_apart(S):
+    b = Book(S)
+    b.closed(closed_row(BREAKOUT, "2026-11-04T10:30:00Z", D("-6"), D("-60")))
+    b.closed(closed_row(SLOW_GRIND, "2026-11-04T17:56:27Z", D("37.8"), D("378")) | {"closed_by": "owner",
+                                                                                    "how_closed": "closed by owner"})
+    b.closed({"strategy": SLOW_GRIND, "closed_utc": "2026-11-04T18:00:00Z", "pips": None, "gbp": None,
+              "result": "unknown"})                                                       # IG's level not known
+    s = b.write_daily(date(2026, 11, 4))
+    assert (s.trades, s.wins, s.losses, s.pips, s.gbp) == (1, 0, 1, D("-6"), D("-60"))
+    assert (s.owner_trades, s.owner_pips, s.owner_gbp) == (1, D("37.8"), D("378"))
+    assert SLOW_GRIND not in s.by_strategy
+    daily = json.loads((b.folder / "summaries" / "daily" / "2026-11-04.json").read_text())
+    assert daily["closed_by_owner"] == {"trades": 1, "pips": "37.8", "gbp": "378"} and daily["trades"] == 1
+    text = daily_text("GBPUSD", date(2026, 11, 4), s, s, False)
+    assert "<b>Closed by you (not counted):</b> 1 trade | +37.8 pips | +£378.00" in text.splitlines()
+    assert "Closed by you" not in daily_text("GBPUSD", date(2026, 11, 3), b.summary(date(2026, 11, 3), date(2026, 11, 3)),
+                                             s, False)

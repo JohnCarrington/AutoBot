@@ -11,6 +11,12 @@ In records.folder/<PAIR>/ (paper trades, while TRADING is off, in records.folder
     answers (sent, refused and why), the analyser's state changes, the trade manager's decisions, the pause switch;
   * summaries/daily/<UK date>.json and summaries/weekly/<year>-W<week>.json: trades, wins, losses, pips and £,
     by strategy, of the trades closed that day or week.
+A trade the owner closed by hand at IG ("closed_by": "owner", how_closed "closed by owner"; owner, 11 November
+2026) is kept apart: it is never counted in the bot's trades, wins, losses, pips or £, only in its own
+"closed by owner" figures, so the bot is judged on its own exits. A close whose result is unknown (pips None) is
+counted in neither.
+The one correction made by hand (owner, 11 November 2026): six trades the owner closed on 9 and 10 November were
+rewritten or added at IG's figures; the file as it was is kept as trades.jsonl.before-2026-11-11-correction.
 """
 
 from __future__ import annotations
@@ -49,10 +55,15 @@ class Summary:
     pips: Decimal
     gbp: Decimal
     by_strategy: dict
+    owner_trades: int = 0                   # closed by the owner by hand: never in the figures above
+    owner_pips: Decimal = Decimal(0)
+    owner_gbp: Decimal = Decimal(0)
 
     def as_dict(self) -> dict:
         return {"trades": self.trades, "wins": self.wins, "losses": self.losses, "pips": str(self.pips),
-                "gbp": str(self.gbp), "by_strategy": {k: {kk: str(vv) if isinstance(vv, Decimal) else vv
+                "gbp": str(self.gbp),
+                "closed_by_owner": {"trades": self.owner_trades, "pips": str(self.owner_pips), "gbp": str(self.owner_gbp)},
+                "by_strategy": {k: {kk: str(vv) if isinstance(vv, Decimal) else vv
                                                           for kk, vv in v.items()} for k, v in self.by_strategy.items()}}
 
 
@@ -97,7 +108,10 @@ class Book:
 
     def summary(self, first: date, last: date) -> Summary:
         """The trades closed from UK day `first` to `last` (both included)."""
-        rows = [r for r in self.closed_trades() if first <= self._uk_day(r["closed_utc"]) <= last]
+        chosen = [r for r in self.closed_trades() if first <= self._uk_day(r["closed_utc"]) <= last]
+        known = [r for r in chosen if r.get("pips") is not None and r.get("gbp") is not None]
+        owner = [r for r in known if is_owner_close(r)]
+        rows = [r for r in known if not is_owner_close(r)]
         by: dict = {}
         for r in rows:
             b = by.setdefault(r["strategy"], {"trades": 0, "wins": 0, "losses": 0, "pips": Decimal(0), "gbp": Decimal(0)})
@@ -108,7 +122,8 @@ class Book:
             b["gbp"] += Decimal(r["gbp"])
         return Summary(len(rows), sum(Decimal(r["gbp"]) > 0 for r in rows), sum(Decimal(r["gbp"]) < 0 for r in rows),
                        sum((Decimal(r["pips"]) for r in rows), Decimal(0)), sum((Decimal(r["gbp"]) for r in rows), Decimal(0)),
-                       by)
+                       by, len(owner), sum((Decimal(r["pips"]) for r in owner), Decimal(0)),
+                       sum((Decimal(r["gbp"]) for r in owner), Decimal(0)))
 
     def today(self, now: datetime) -> Summary:
         d = now.astimezone(self.uk).date()
@@ -131,6 +146,11 @@ class Book:
         tmp.replace(path)
 
 
+def is_owner_close(r: dict) -> bool:
+    """A trade the owner closed by hand (kept apart from the bot's own exits everywhere)."""
+    return r.get("closed_by") == "owner" or r.get("how_closed") == "closed by owner"
+
+
 def daily_text(pair: str, day: date, s: Summary, week: Summary, paper: bool) -> str:
     """The daily summary for Telegram, in the trade messages' format (Telegram's HTML: bold labels)."""
     from alerts.trades import item, items, money, pips
@@ -142,4 +162,7 @@ def daily_text(pair: str, day: date, s: Summary, week: Summary, paper: bool) -> 
     for name, b in sorted(s.by_strategy.items()):
         lines.append(item(name, f"{b['trades']} trade{'s' if b['trades'] != 1 else ''} | {pips(b['pips'])} | {money(b['gbp'])}"))
     lines.append(item("Week so far", f"{week.trades} trade{'s' if week.trades != 1 else ''} | {pips(week.pips)} | {money(week.gbp)}"))
+    if s.owner_trades:
+        lines.append(item("Closed by you (not counted)",
+                          f"{s.owner_trades} trade{'s' if s.owner_trades != 1 else ''} | {pips(s.owner_pips)} | {money(s.owner_gbp)}"))
     return "\n".join(lines)

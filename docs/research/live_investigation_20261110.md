@@ -2,6 +2,12 @@
 
 Read-only investigation. **Nothing in the bot was changed.** Written Tuesday 10 November 2026, about 13:40 UK.
 
+
+> **Correction, 11 November 2026.** The three Monday 15:21 closes described here as "closed by IG's system" were
+> **closed by the owner by hand**. The owner closed these trades by hand (owner, 11 November 2026). IG shows the owner's closes on channel SYSTEM, the same channel as its stops and limits, which is why this report took them for IG's own system. From now on these trades are kept out of the bot's results.
+> Without them, the live result here is **17 trades: 3 won, 14 lost, -50.7 pips (-£507.00)** at IG's prices,
+> instead of 20 trades and -62.9. The detailed splits below still include the three; leave them out to judge the bot.
+
 ## Summary
 
 **The live result.** 20 trades at IG: 4 won, 16 lost, **-62.9 pips (-£629.00)**. Monday made -25.7 and Tuesday -37.2. Over 26 October to 6 November the same code made +1056.1 pips in 152 trades. But 676.0 of those pips came from one day, Friday 6 November, a big-news day with an expected direction, when the EMA pullback alone made +566.4 in 13 trades. Without that Friday the replay makes +380.1 in 136 trades (+2.8 a trade). Neither live day was like it. Monday followed a big Friday and went up, then sideways, then down and up again. Tuesday was a big-news day with no expected direction, and its strong push down started at 13:35 UK, after the last trade.

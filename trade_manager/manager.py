@@ -57,6 +57,10 @@ HOLD, HALF_CLOSE, CLOSE, FORCED_CLOSE, STOPPED_BY_IG, TAKE_PROFIT_AT_IG, WATCHIN
 # Live only: IG closed the position without the bot (found by the order sender: IG's level and time), and a
 # close the bot sent that IG did not confirm (the trade stays open; recorded, never a close).
 CLOSED_AT_IG, CLOSE_NOT_DONE = "closed at IG", "close not done"
+# Live only: the owner closed it by hand at IG (IG's channel SYSTEM, not at the stop or take profit; owner,
+# 11 November 2026). Kept apart from the bot's own exits in the records, the dashboard and the summaries.
+CLOSED_BY_OWNER = "closed by owner"
+GONE = ("gone at IG", CLOSED_BY_OWNER)
 BOT_CLOSES = (HALF_CLOSE, CLOSE, FORCED_CLOSE)
 IG_CLOSES = (STOPPED_BY_IG, TAKE_PROFIT_AT_IG)
 
@@ -337,7 +341,7 @@ class TradeManager:
                     break
                 if d.kind in BOT_CLOSES:
                     sent = self.sender.close(t.reference, half=d.kind == HALF_CLOSE, why=d.why, price=d.price)
-                    if self.ig_confirms and getattr(sent, "what", "") == "gone at IG":
+                    if self.ig_confirms and getattr(sent, "what", "") in GONE:
                         self._put_back(t, before, kept)
                         self._closed_at_ig(t, sent)
                         done.append((t, t.decisions[-1]))
@@ -358,6 +362,11 @@ class TradeManager:
                         kept.append(d)
                 elif d.kind in IG_CLOSES and hasattr(self.sender, "closed_at_ig"):
                     sent = self.sender.closed_at_ig(t.reference, d.kind, d.price)
+                    if self.ig_confirms and getattr(sent, "what", "") in GONE:
+                        self._put_back(t, before, kept)     # not IG's stop or limit: the owner closed it
+                        self._closed_at_ig(t, sent)
+                        done.append((t, t.decisions[-1]))
+                        break
                     if self.ig_confirms and getattr(sent, "ok", False):
                         d = self._at_igs_level(t, d, sent)
                     if self.ig_confirms and not getattr(sent, "ok", False):
@@ -399,10 +408,11 @@ class TradeManager:
         level = getattr(found, "level", None)
         pips = None if level is None else (((t.fill - level) if t.direction == SELL else (level - t.fill)) / ppp)
         why = "; ".join(getattr(found, "reasons", None) or []) or "closed at IG without the bot"
-        d = Decision(CLOSED_AT_IG, level, pips, why, (1 - t.half_share) if t.half_done else Decimal(1),
+        kind = CLOSED_BY_OWNER if getattr(found, "what", "") == CLOSED_BY_OWNER else CLOSED_AT_IG
+        d = Decision(kind, level, pips, why, (1 - t.half_share) if t.half_done else Decimal(1),
                      getattr(found, "closed_utc", None) or self.now())
         t.decisions.append(d)
-        t.state = CLOSED_AT_IG
+        t.state = kind
         self._record(t, d, found)
         self.save_state()
 

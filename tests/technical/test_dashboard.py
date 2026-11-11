@@ -392,3 +392,14 @@ def test_the_page_has_161s_date_picker_and_period_buttons():
         assert part in page, part
     assert "Outside 30-day history window" not in page and "isOutOfRange" not in page   # no IG 30-day limit
     assert "innerHTML" not in page
+
+
+def test_the_owners_closes_are_listed_marked_but_never_in_the_bots_totals(svc):
+    owner = closed_row("O1", "slow grind", "2026-11-04T17:56:27Z", "37.8", "378.00", direction="sell") | {
+        "closed_by": "owner", "how_closed": "closed by owner"}
+    write_records(svc, REAL + [owner])
+    h = history(svc, login(svc), "from=2026-11-04&to=2026-11-04")[1]
+    assert [(t["reference"], t["closed_by"]) for t in h["trades"]] == [("A4", "bot"), ("O1", "owner"), ("A3", "bot")]
+    assert h["totals"] == {"trades": 2, "wins": 1, "losses": 1, "pips": "13.5", "gbp": "135.00"}
+    assert h["closed_by_owner"] == {"trades": 1, "wins": 1, "losses": 0, "pips": "37.8", "gbp": "378.00"}
+    assert [b["trades"] for b in h["by_strategy"] if b["strategy"] == "slow grind"] == [1]

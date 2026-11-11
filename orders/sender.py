@@ -30,8 +30,11 @@
   * reconcile(): at start-up and after every 5-minute candle, the bot's open trades are compared with IG's open
     positions. A trade IG no longer has (confirmed by GET /positions/{dealId} answering 404; nothing is marked
     closed on a failed read) is closed in the record at IG's level and alerted; a size that differs and a position
-    the bot did not open are recorded and alerted, once each. IG's 9 and 10 November 2026 closes of the bot's
-    positions by its own system (channel SYSTEM, not the stop or limit) were missed before this.
+    the bot did not open are recorded and alerted, once each. The owner's 9 and 10 November 2026 closes by hand
+    (IG's channel SYSTEM, not the stop or limit) were missed before this.
+  * A trade found gone at IG whose close IG shows on channel SYSTEM but not at its stop or take profit (at or beyond
+    either) was closed by the owner by hand (owner, 11 November 2026): "closed by owner" at IG's price and time, a
+    short Telegram message (not a warning), and kept apart from the bot's own exits (closed_by_owner()).
   * It closes trades when the trade manager says so, in full, or by half for the range trade, and confirms
     each close with IG. The close matches AutoBot 161's close_sb_now.py exactly: POST /positions/otc with
     VERSION 1 and _method DELETE, the body dealId, direction (the opposite), orderType MARKET and size only
@@ -114,6 +117,22 @@ def _iso(t: datetime) -> str:
     return t.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+CLOSED_BY_OWNER = "closed by owner"
+
+
+def closed_by_owner(direction: str, info: dict) -> bool:
+    """The owner's rule (11 November 2026): a close IG shows on channel SYSTEM that is not at the position's stop
+    or take profit is one the owner made by hand. At the stop means at it or beyond it (a stop can fill worse); at
+    the take profit means at it or beyond it. `info` is _ig_close_of's answer (IG's own stop and limit levels)."""
+    if info.get("ig_channel") != "SYSTEM" or info.get("ig_level") is None:
+        return False
+    level, stop, limit = info["ig_level"], info.get("ig_stop_level"), info.get("ig_limit_level")
+    buy = direction == "buy"
+    at_stop = stop is not None and (level <= stop if buy else level >= stop)
+    at_limit = limit is not None and (level >= limit if buy else level <= limit)
+    return not (at_stop or at_limit)
+
+
 def _dec(x: Any) -> Decimal | None:
     return None if x is None else Decimal(str(x))
 
@@ -179,10 +198,10 @@ class OrderSender:
             elif ev == "half closed" and ref in self.trades:
                 self.trades[ref].half_closed = True
                 self.trades[ref].size = Decimal(r["remaining_size"])
-            elif ev in ("closed", "gone at IG", "closed at IG") and ref in self.trades:
+            elif ev in ("closed", "gone at IG", "closed at IG", CLOSED_BY_OWNER) and ref in self.trades:
                 self.trades[ref].status = CLOSED
-                if ev == "gone at IG":
-                    self.gone[ref] = self._gone_result(self.trades[ref], r)
+                if ev in ("gone at IG", CLOSED_BY_OWNER):
+                    self.gone[ref] = self._gone_result(self.trades[ref], r, ev)
 
     # ---- start-up ----------------------------------------------------------------------------
 
@@ -280,12 +299,13 @@ class OrderSender:
                    for x in d.get("actions") or []):
                 return {"ig_level": _dec(d.get("level")), "ig_time_utc": a.get("date", "") + "Z" if a.get("date") else None,
                         "ig_channel": a.get("channel"), "ig_close_deal_id": a.get("dealId"),
-                        "ig_description": a.get("description")}
+                        "ig_description": a.get("description"), "ig_stop_level": _dec(d.get("stopLevel")),
+                        "ig_limit_level": _dec(d.get("limitLevel"))}
         return None
 
-    def _gone_result(self, t: Trade, row: dict) -> Result:
+    def _gone_result(self, t: Trade, row: dict, what: str = "gone at IG") -> Result:
         when = row.get("ig_time_utc")
-        return Result(True, "gone at IG", t.reference, t.deal_id, _dec(row.get("ig_level")),
+        return Result(True, what, t.reference, t.deal_id, _dec(row.get("ig_level")),
                       [row.get("note", "")], datetime.fromisoformat(when.replace("Z", "+00:00")) if when else None)
 
     def _gone(self, t: Trade, why: str) -> Result:
@@ -293,19 +313,40 @@ class OrderSender:
         IG's own level and time (IG's activity), and an alert straight away."""
         info = self._ig_close_of(t) or {}
         t.status = CLOSED
-        row = {"note": why} | {k: v for k, v in info.items() if v is not None}
-        self._record("gone at IG", reference=t.reference, deal_id=t.deal_id, strategy=t.strategy, **row)
-        r = self._gone_result(t, {k: (str(v) if isinstance(v, Decimal) else v) for k, v in row.items()})
+        owner = closed_by_owner(t.direction, info)
+        what = CLOSED_BY_OWNER if owner else "gone at IG"
+        row = {"note": "closed by the owner at IG (IG's channel SYSTEM, not at the stop or take profit)" if owner
+               else why} | {k: v for k, v in info.items() if v is not None}
+        self._record(what, reference=t.reference, deal_id=t.deal_id, strategy=t.strategy, **row)
+        r = self._gone_result(t, {k: (str(v) if isinstance(v, Decimal) else v) for k, v in row.items()}, what)
         self.gone[t.reference] = r
         self.gone_new.append(r)
+        if not self.paper:
+            self._read_funds("a trade closed at IG")
+        if owner:
+            self._tell_owner(t, info)
+            return r
         how = (f"IG closed it at {info['ig_level']} at {info['ig_time_utc']} ({info.get('ig_channel')}: "
                f"{info.get('ig_description')})") if info.get("ig_level") is not None else "IG's activity does not show the close yet"
         self.alerts.problem(f"gone-at-ig-{t.deal_id}",
                             f"The bot's {t.strategy} {t.direction} trade {t.deal_id} is no longer open at IG, but the "
                             f"bot did not close it: {why}. {how}. It is now closed in the bot's records.")
-        if not self.paper:
-            self._read_funds("a trade closed at IG")
         return r
+
+    def _tell_owner(self, t: Trade, info: dict) -> None:
+        """A short Telegram message (not a warning) for a trade the owner closed by hand."""
+        level, when = info["ig_level"], info.get("ig_time_utc")
+        pips = None if t.level is None else ((level - t.level) if t.direction == "buy" else (t.level - level)) / self.ppp
+        try:
+            from zoneinfo import ZoneInfo
+            tz = self.s.hours.timezone
+            uk = datetime.fromisoformat(when.replace("Z", "+00:00")).astimezone(ZoneInfo(tz) if isinstance(tz, str) else tz)
+            at = f" at {uk:%H:%M} UK on {uk:%a %d %b}"
+        except Exception:                                           # noqa: BLE001
+            at = ""
+        result = "" if pips is None else f": {pips:+.1f} pips (£{pips * t.size:,.2f})"
+        self.alerts.info(f"AutoBot: you closed the {t.strategy} {t.direction} (deal {t.deal_id}) at {level}{at}"
+                         f"{result}. Recorded as closed by you, not counted in the bot's results.")
 
     def reconcile(self, why: str = "regular check") -> list[Result]:
         """The bot's open trades against IG's open positions (GET /positions), at start-up (_recover) and
@@ -569,8 +610,10 @@ class OrderSender:
                     if e.status != 404:
                         self._record("not checked at IG", reference=reference, deal_id=t.deal_id, error=str(e))
                         return Result(False, "not checked", reference, t.deal_id)
-            t.status = CLOSED
             info = {} if self.paper else (self._ig_close_of(t) or {})
+            if closed_by_owner(t.direction, info):                  # not IG's stop or limit: the owner closed it
+                return self._gone(t, "closed by the owner at IG")
+            t.status = CLOSED
             if info.get("ig_level") is not None:                    # IG's own close, not the bot's price
                 price = info["ig_level"]
             self._record("closed at IG", reference=reference, deal_id=t.deal_id, how=kind, level=price, size=t.size,

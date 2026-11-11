@@ -260,11 +260,13 @@ class Trading:
                 continue
             last = mt.decisions[-1]
             pips = mt.total_pips()
+            # the owner's closes by hand are kept apart from the bot's own exits (owner, 11 November 2026)
+            by = "owner" if last.kind == "closed by owner" else "bot"
             if pips is None:                                # closed at IG at a level IG's activity did not give
                 rec |= {"closed": True}
                 self.book.closed({k: v for k, v in rec.items() if k not in ("closed", "steps")} | {
                     "closed_utc": last.at or self.now(), "close_price": None, "how_closed": last.kind,
-                    "close_reason": last.why, "pips": None, "gbp": None, "result": "unknown"})
+                    "close_reason": last.why, "pips": None, "gbp": None, "result": "unknown", "closed_by": by})
                 continue
             gbp = (pips * size).quantize(Decimal("0.01"))
             half = rest = None
@@ -282,9 +284,10 @@ class Trading:
                 "pips": pips, "gbp": gbp, "result": "win" if gbp > 0 else "loss" if gbp < 0 else "break even",
                 "minutes_open": int((closed_at - rec["opened_utc"]).total_seconds() // 60), "best_pips": best,
                 "levels_lined_up": lined,
-                "half_close": None if half is None else vars(half), "rest": None if rest is None else vars(rest)}
+                "half_close": None if half is None else vars(half), "rest": None if rest is None else vars(rest),
+                "closed_by": by}
             self.book.closed(row)
-            if self.trading_on:
+            if self.trading_on and by == "bot":            # the owner's close: the order sender's short message
                 today = self.book.today(closed_at)
                 self.alerts.trade_closed(TradeClosed(self._opened_message(rec), last.price, closed_at, last.why, gbp,
                                                      pips, best, half, rest, today.trades, today.pips))
@@ -325,9 +328,10 @@ class Trading:
             if ref in getattr(self, "_closed_before", set()) and ref not in self.meta:
                 # already closed in the records before this start (by the bot's own reading): IG's close is
                 # recorded as a decision, the record is not written twice
-                self.book.decision("closed at IG", self.now(), reference=ref, level=f.level,
+                kind = "closed by owner" if f.what == "closed by owner" else "closed at IG"
+                self.book.decision(kind, self.now(), reference=ref, level=f.level,
                                    ig_time_utc=f.closed_utc, note="; ".join(f.reasons))
-                self.manager.trades[ref].state = "closed at IG"
+                self.manager.trades[ref].state = kind
                 continue
             self.manager.gone_at_ig(f)
 
@@ -339,7 +343,9 @@ class Trading:
         for ref, mt in self.manager.trades.items():
             if mt.open and getattr(mt, "expected_at_ig", None):
                 r = self.sender.closed_at_ig(ref, mt.expected_at_ig[0], mt.expected_at_ig[1])
-                if r.ok:
+                if r.ok and r.what == "closed by owner":     # not IG's stop or limit: the owner closed it
+                    self.manager.gone_at_ig(r)              # (found again in _take_gone: already finished)
+                elif r.ok:
                     self.manager.closed_at_ig(ref)
 
     def daily_summary(self, now: datetime) -> None:

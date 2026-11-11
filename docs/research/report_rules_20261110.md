@@ -2,6 +2,10 @@
 
 Read-only replay of all six strategies on the stored GBPUSD candles (IG's prices), through the bot's own code, from Sunday 25 October 21:00 UK to the latest stored candle, Tuesday 10 November 14:40 UTC. It compares the current rules with five rules taken from `live_investigation_20261110.md`, used together, and then, with those rules, the stop for the bounce, range trade and breakout at 6, 8, 10 and 12 pips, and an exhaustion-at-a-level check off, closing the trade, or moving its stop. **Nothing in the bot was changed.** Written Tuesday 10 November 2026.
 
+
+> **Correction, 11 November 2026.** The three Monday trades said here to be "closed by IG's own system" were **closed
+> by the owner by hand**. The owner closed these trades by hand (owner, 11 November 2026). IG shows the owner's closes on channel SYSTEM, the same channel as its stops and limits, which is why this report took them for IG's own system. Without them, the 20 live trades become 17, for -50.7 pips at IG's prices.
+
 ## Summary
 
 - **The five rules together lose almost all of the replay's profit.** The current rules make **+1071.0 pips** in 176 trades from 25 October to Tuesday 10 November 14:40 UTC. The five rules together make +65.0 in 69 trades. With them, the best of the twelve stop and exhaustion versions is **stop 12 for the bounce, range trade and breakout, with exhaustion moving the stop to the last swing: +110.6 pips** in 65 trades, 960.4 fewer than now. Every one of the twelve is between +27.9 and +110.6.

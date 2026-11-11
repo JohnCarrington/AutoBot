@@ -162,16 +162,22 @@ class Dashboard:
                     "losses": sum(g < 0 for _, _, g, _, _ in items),
                     "pips": str(sum((p for _, p, _, _, _ in items), Decimal(0))),
                     "gbp": str(sum((g for _, _, g, _, _ in items), Decimal(0)))}
+        # the owner's closes by hand are kept apart: never in the bot's totals (owner, 11 November 2026)
+        from records.book import is_owner_close
+        owner = [x for x in chosen if is_owner_close(x[4])]
+        bot = [x for x in chosen if not is_owner_close(x[4])]
         by: dict = {}
-        for x in chosen:
+        for x in bot:
             by.setdefault(x[4].get("strategy", "?"), []).append(x)
         strategies = sorted(({"strategy": k} | totals(v) for k, v in by.items()), key=lambda b: (-b["trades"], b["strategy"]))
-        trades = [{k: r.get(k) for k in self.HISTORY_FIELDS} | {"paper": pp, "half_closed": bool(r.get("half_close"))}
+        trades = [{k: r.get(k) for k in self.HISTORY_FIELDS} | {"paper": pp, "half_closed": bool(r.get("half_close")),
+                                                                 "closed_by": "owner" if is_owner_close(r) else "bot"}
                   for _, _, _, pp, r in chosen]
         return 200, {"ok": True, "from": first.isoformat() if first else None, "to": last.isoformat() if last else None,
                      "paper": paper, "first_day": min(days).isoformat() if days else None,
                      "paper_trades": sum(1 for x in chosen if x[3]),
-                     "totals": totals(chosen), "by_strategy": strategies, "trades": trades}
+                     "totals": totals(bot), "closed_by_owner": totals(owner), "by_strategy": strategies,
+                     "trades": trades}
 
     # ---- the pause switch -------------------------------------------------------------------------------
 

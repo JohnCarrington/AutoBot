@@ -528,7 +528,7 @@ def test_a_trade_ig_closed_by_itself_is_found_after_the_next_candle_and_recorded
     e, ig, clock, cs = at_2015(S, monkeypatch)
     (t,) = e.manager.trades.values()
     deal = e.sender.trades[t.reference].deal_id
-    ig.system_close(deal, 13398.7, "2026-11-04T20:22:10")
+    ig.system_close(deal, 13398.7, "2026-11-04T20:22:10", "WEB")
     feed(e, clock, cs[1:2])                                                 # the next candle: the regular check
     assert not t.open and t.state == "closed at IG"
     closed = [r for r in trades_rows(e) if r["event"] == "closed"]
@@ -540,7 +540,7 @@ def test_a_trade_ig_closed_by_itself_is_found_after_the_next_candle_and_recorded
 def test_after_a_restart_a_trade_ig_closed_meanwhile_is_recorded_once(S, monkeypatch):
     e, ig, clock, cs = at_2015(S, monkeypatch)
     (t,) = e.manager.trades.values()
-    ig.system_close(e.sender.trades[t.reference].deal_id, 13399.0, "2026-11-04T20:21:00")
+    ig.system_close(e.sender.trades[t.reference].deal_id, 13399.0, "2026-11-04T20:21:00", "WEB")
     again, *_ = make(S, monkeypatch, cs[1:], {}, trading_on=True, ig=ig, clock=clock)
     again.start(U(2026, 11, 4, 20, 22))
     closed = [r for r in trades_rows(again) if r["event"] == "closed"]
@@ -560,3 +560,19 @@ def test_after_a_restart_a_trade_taken_over_gets_its_close_recorded(S, monkeypat
     again.on_price(tick)                                                    # the 20:30 close, confirmed by IG
     closed = [r for r in trades_rows(again) if r["event"] == "closed"]
     assert len(closed) == 1 and closed[0]["reference"] == t.reference and closed[0]["how_closed"] == "forced close"
+
+
+def test_a_trade_the_owner_closed_by_hand_is_recorded_apart_and_never_counted_for_the_bot(S, monkeypatch):
+    e, ig, clock, cs = at_2015(S, monkeypatch)
+    (t,) = e.manager.trades.values()
+    deal = e.sender.trades[t.reference].deal_id
+    ig.system_close(deal, 13398.7, "2026-11-04T20:22:10")                  # SYSTEM, not at the stop or limit
+    feed(e, clock, cs[1:2])
+    assert not t.open and t.state == "closed by owner"
+    (closed,) = [r for r in trades_rows(e) if r["event"] == "closed"]
+    assert closed["closed_by"] == "owner" and closed["how_closed"] == "closed by owner"
+    assert closed["close_price"] == "13398.7" and closed["closed_utc"] == "2026-11-04T20:22:10Z"
+    assert e.alerts.closed == [] and e.alerts.sent == []                    # no trade-closed message, no warning
+    assert any("you closed" in m for m in e.alerts.infos)
+    today = e.book.today(U(2026, 11, 4, 20, 25))
+    assert (today.trades, today.pips) == (0, D(0)) and (today.owner_trades, today.owner_pips) == (1, D("1.8"))
