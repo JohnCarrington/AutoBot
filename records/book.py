@@ -16,7 +16,10 @@ A trade the owner closed by hand at IG ("closed_by": "owner", how_closed "closed
 "closed by owner" figures, so the bot is judged on its own exits. A close whose result is unknown (pips None) is
 counted in neither.
 The one correction made by hand (owner, 11 November 2026): six trades the owner closed on 9 and 10 November were
-rewritten or added at IG's figures; the file as it was is kept as trades.jsonl.before-2026-11-11-correction.
+rewritten or added at IG's figures; the file as it was is kept as trades.jsonl.before-2026-11-11-correction. Then
+the bot's own 19 closes of 9 to 11 November whose price or time differed from IG's were corrected to IG's close
+time, level and booked £ (each with its "before_correction"); the file before that is
+trades.jsonl.before-2026-11-11-ig-prices. Since then every live close is recorded at IG's price and time.
 """
 
 from __future__ import annotations

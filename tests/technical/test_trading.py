@@ -576,3 +576,14 @@ def test_a_trade_the_owner_closed_by_hand_is_recorded_apart_and_never_counted_fo
     assert any("you closed" in m for m in e.alerts.infos)
     today = e.book.today(U(2026, 11, 4, 20, 25))
     assert (today.trades, today.pips) == (0, D(0)) and (today.owner_trades, today.owner_pips) == (1, D("1.8"))
+
+
+def test_the_bots_own_close_is_recorded_at_igs_confirmed_price_and_time(S, monkeypatch):
+    e, ig, clock, cs = at_2015(S, monkeypatch)
+    (t,) = e.manager.trades.values()                                        # a sell from 13400.5
+    tick = SimpleNamespace(time=U(2026, 11, 4, 20, 30, 2), buy=D("13401.0"), sell=D("13399.5"))
+    clock["t"] = tick.time
+    e.on_price(tick)                                                        # the 20:30 close: IG confirms 13390.0
+    (closed,) = [r for r in trades_rows(e) if r["event"] == "closed"]
+    assert closed["close_price"] == "13390.0" and closed["pips"] == "10.5" and closed["gbp"] == "105.00"
+    assert closed["closed_utc"] == "2026-11-04T20:30:02Z" and closed["closed_by"] == "bot"

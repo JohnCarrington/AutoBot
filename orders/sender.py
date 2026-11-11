@@ -697,7 +697,8 @@ class OrderSender:
             self._record("closed", reference=t.reference, deal_id=t.deal_id, size=size, level=level, profit=profit, how=how)
         if not self.paper:
             self._read_funds("a trade closed")
-        return Result(True, "half closed" if half else "closed", t.reference, t.deal_id, level)
+        return Result(True, "half closed" if half else "closed", t.reference, t.deal_id, level, [],
+                      None if self.paper else self.now())      # live: when IG confirmed the close
 
     def _close_refused(self, t: Trade, reason: str) -> Result:
         """IG refused a close. First IG is asked whether the position still exists: if IG says it does not, IG had

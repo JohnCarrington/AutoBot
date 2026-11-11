@@ -5,10 +5,10 @@ Tuesday 10 November 2026, about 22:00 UK. Read-only: **nothing in the bot was ch
 
 > **Correction, 11 November 2026.** Four of the live trades here were **closed by the owner by hand**: Monday's
 > breakout, level reversal and slow grind buys at 15:21 (+11.7, -11.2, -12.7), and Tuesday's 16:26 level reversal
-> sell at 17:56 (-14.6, not stopped by IG as the bot recorded). The two trades in "First" below were also closed by the
+> sell at 17:56 (-14.6 at IG; the table below has it at -20.2, the bot's wrong "stopped by IG" record). The two trades in "First" below were also closed by the
 > owner (17:12 at 13324.3, +0.6; 17:56 at 13335.2, +37.8), so neither was still open, and IG refused the 20:30 closes
 > because both positions were already closed. The owner closed these trades by hand (owner, 11 November 2026). IG shows the owner's closes on channel SYSTEM, the same channel as its stops and limits, which is why this report took them for IG's own system. Without the owner's closes, the live result is **21 trades:
-> 5 won, 16 lost, -40.2 pips** at IG's prices, instead of 25 trades and -67.0. The splits below still include the four.
+> 5 won, 16 lost, -34.6 pips (-£346.00)** at IG's prices, instead of 25 trades and -67.0. The splits below still include the four.
 
 ## First: two live trades may still be open at IG
 

@@ -358,6 +358,10 @@ class TradeManager:
                                                  f"{self.s.orders.close_retry_seconds} seconds", d.part), sent)
                         break
                     t.retry_close_at = None
+                    if self.ig_confirms:                    # IG's confirmed price and time, not the bot's own
+                        d = self._at_igs_level(t, d, sent)
+                        if d.kind == HALF_CLOSE:
+                            t.half_pips = d.pips
                     if d.kind == HALF_CLOSE:
                         kept.append(d)
                 elif d.kind in IG_CLOSES and hasattr(self.sender, "closed_at_ig"):
@@ -426,12 +430,12 @@ class TradeManager:
 
     def _at_igs_level(self, t: ManagedTrade, d: Decision, sent: Any) -> Decision:
         """Live: IG's own close level and time (from IG's activity, via the order sender) replace the manager's."""
-        level = getattr(sent, "level", None)
-        if not isinstance(level, Decimal) or level == d.price:
+        level, when = getattr(sent, "level", None), getattr(sent, "closed_utc", None)
+        if not isinstance(level, Decimal) or (level == d.price and (when is None or when == d.at)):
             return d
         ppp = Decimal(self.s.market.points_per_pip)
         pips = ((t.fill - level) if t.direction == SELL else (level - t.fill)) / ppp
-        new = Decision(d.kind, level, pips, d.why + " (IG's level)", d.part, getattr(sent, "closed_utc", None) or d.at)
+        new = Decision(d.kind, level, pips, d.why + (" (IG's level)" if level != d.price else ""), d.part, when or d.at)
         t.decisions[-1] = new
         return new
 
