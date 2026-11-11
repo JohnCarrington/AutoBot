@@ -184,6 +184,16 @@ confirmation_candle_within_candles_of_reversal = 3
 # normal exits (owner, 11 November 2026: 50, as tested in docs/research/management_and_targets_20261111.md).
 # 0 (no close at the band), 50 or 100: the order sender closes in full or by half only.
 close_percent_at_opposite_band = 50
+# The pace and target rule (owner, 11 November 2026, as tested in docs/research/pace_and_target_20261111.md:
+# "within 5 pips, under 5 pips an hour over the last 2 hours"). While the bot has open trend trades (EMA pullback,
+# slow grind, breakout), a Bollinger bounce against them opens only at a significant level in their direction
+# (a 00, the weekly pivot, S2, S3, R2 or R3), with the high or low it turned from within
+# against_trend_level_within_pips of it, and only if price has moved under against_trend_max_pips_per_hour on
+# average over the last against_trend_pace_hours. It then closes every open trade in the opposite direction.
+# Otherwise it is refused and the trend trades are held.
+against_trend_level_within_pips = 5
+against_trend_max_pips_per_hour = 5
+against_trend_pace_hours = 2
 
 [slow_grind]
 # Design 3.1 (owner, 8 November 2026: result 13 of the slow grind research, holding rule 2).

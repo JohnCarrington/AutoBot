@@ -382,6 +382,10 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "confirmation_candle_within_candles_of_reversal": _whole_number(1, 50),
         # the order sender closes a trade in full or by half: nothing else can be sent
         "close_percent_at_opposite_band": _whole_number_of(0, 50, 100),
+        # the pace and target rule (trading/against_trend.py)
+        "against_trend_level_within_pips": _decimal_number("0", "100"),
+        "against_trend_max_pips_per_hour": _decimal_number("0", "1000"),
+        "against_trend_pace_hours": _whole_number(1, 24),
     },
     "slow_grind": {
         "min_pause_candles": _whole_number(1, 100),

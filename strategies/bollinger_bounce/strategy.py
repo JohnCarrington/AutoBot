@@ -27,14 +27,28 @@ Ideas only.
 
 from __future__ import annotations
 
+from decimal import Decimal
 from typing import Any
 
 from strategies.common import BOLLINGER_BOUNCE, BUY, SELL, Candidate
 
 
+def setup_context(setup: Any) -> dict:
+    """What a bounce idea carries for the pace and target rule (trading/against_trend.py): the span of its setup's
+    candles, from the pierce to the confirmation (or the reversal, or the pierce, whichever is last), and their own
+    extremes (so a setup candle not yet in the store, live, still counts)."""
+    last = setup.confirmation or setup.reversal or setup.pierce
+    own = [c for c in (setup.pierce, setup.reversal, setup.confirmation) if c is not None]
+    return {"setup_from": setup.pierce.start, "setup_last": last.start,
+            "setup_high": max(Decimal(c.sell_high) for c in own), "setup_low": min(Decimal(c.sell_low) for c in own)}
+
+
 def from_rejection(watcher: Any, events: list, version: str, strategy: str) -> list[Candidate]:
-    """A candidate for each trigger of this version, with every step of its setup as the reason."""
+    """A candidate for each trigger of this version, with every step of its setup as the reason. Bounce setups
+    that trigger the same way in the same candle are one bounce: each carries the FIRST one's setup_context (live,
+    only the first is sent; as tested in docs/research/pace_and_target_20261111.md)."""
     out = []
+    first: dict = {}
     for e in events:
         if e.version != version or e.kind != "trigger":
             continue
@@ -46,7 +60,8 @@ def from_rejection(watcher: Any, events: list, version: str, strategy: str) -> l
         if version == "bounce":
             steps.append(f"reversal watch window: {'inside' if st.in_watch_window else 'outside'}; the setup "
                          f"{'counts' if st.counts else 'does not count'} (a mark for the trade manager, not a filter)")
-        out.append(Candidate(strategy, SELL if e.direction == "sell" else BUY, e.time, e.price, steps))
+        ctx = dict(first.setdefault((e.time, e.direction), setup_context(st))) if version == "bounce" else {}
+        out.append(Candidate(strategy, SELL if e.direction == "sell" else BUY, e.time, e.price, steps, ctx))
     return out
 
 

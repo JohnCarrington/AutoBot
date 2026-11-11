@@ -35,6 +35,9 @@ it refused or unclear, the trade is put back exactly as it was before that bar (
 a close), and the close is tried again after orders.close_retry_seconds. If IG had already closed the position
 (the order sender's "gone at IG", also from its regular check of IG's open positions), the trade is finished as
 "closed at IG" at IG's own level and time.
+A trade can also be closed at once outside a bar (close_now): a Bollinger bounce opening against it at a significant
+level with price moving slowly (the pace and target rule, trading/against_trend.py); live, as above, only once IG
+confirms it, and a close IG does not confirm is tried again (its scheduled close is brought forward to now).
 "Watching a level" (design 4): a trade the close on a rejection applies to is watching a level while the
 analyser's rejection part has a setup running against it at a level that counts (after its pierce, before it
 triggers, is cancelled or expires). It goes back to hold when there is none.
@@ -409,6 +412,43 @@ class TradeManager:
                                              + ("running against it at a level" if now_watching else "is over")))
         self.save_state()
         return done
+
+    def close_now(self, reference: str, price: Decimal, why: str, at: datetime) -> Decision | None:
+        """Close one open trade in full at once, outside a bar (the pace and target rule: a Bollinger bounce at a
+        level, price moving slowly, closes every trade open the other way; trading/engine.py). `price`: the bot's
+        closing-side price (a paper close is recorded at it). Live, it counts only once IG confirms it: if IG had
+        already closed the position it is finished as closed at IG; if IG does not confirm, the trade stays open,
+        a close not done is recorded, and its scheduled close is brought forward to now so the close is tried
+        again on the next price after orders.close_retry_seconds."""
+        t = self.trades.get(reference)
+        if t is None or not t.open:
+            return None
+        ppp = Decimal(self.s.market.points_per_pip)
+        pips = ((t.fill - price) if t.direction == SELL else (price - t.fill)) / ppp
+        d = Decision(CLOSE, price, pips, why, (1 - t.half_share) if t.half_done else Decimal(1), at)
+        sent = self.sender.close(reference, half=False, why=why, price=price)
+        if self.ig_confirms and getattr(sent, "what", "") in GONE:
+            self._closed_at_ig(t, sent)
+            return t.decisions[-1]
+        if self.ig_confirms and not getattr(sent, "ok", False):
+            t.close_attempts += 1
+            t.retry_close_at = self.now() + timedelta(seconds=self.s.orders.close_retry_seconds)
+            t.close_at, t.close_why = min(t.close_at, self.now()), why
+            reason = "; ".join(getattr(sent, "reasons", None) or [getattr(sent, "what", "no answer")])
+            self._record(t, Decision(CLOSE_NOT_DONE, price, None,
+                                     f"close ({why}) not done: IG did not confirm it ({reason}); the trade stays open "
+                                     f"and the close is tried again in {self.s.orders.close_retry_seconds} seconds",
+                                     d.part), sent)
+            self.save_state()
+            return None
+        t.retry_close_at = None
+        t.decisions.append(d)
+        t.state = CLOSE
+        if self.ig_confirms:
+            d = self._at_igs_level(t, d, sent)
+        self._record(t, d, sent)
+        self.save_state()
+        return d
 
     _KEEP = ("state", "best", "bars", "half_done", "half_pips", "half_share", "expected_at_ig")
 
