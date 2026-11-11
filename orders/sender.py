@@ -35,11 +35,12 @@
   * A trade found gone at IG whose close IG shows on channel SYSTEM but not at its stop or take profit (at or beyond
     either) was closed by the owner by hand (owner, 11 November 2026): "closed by owner" at IG's price and time, a
     short Telegram message (not a warning), and kept apart from the bot's own exits (closed_by_owner()).
-  * It closes trades when the trade manager says so, in full, or by half for the range trade, and confirms
-    each close with IG. The close matches AutoBot 161's close_sb_now.py exactly: POST /positions/otc with
-    VERSION 1 and _method DELETE, the body dealId, direction (the opposite), orderType MARKET and size only
-    (never the epic or expiry: IG refuses dealId with either). After a part close IG leaves the rest as a
-    position with a new deal ID: it is found among the open positions and recorded.
+  * It closes trades when the trade manager says so, in full, or by half (a Bollinger bounce at the opposite
+    band, or a range trade if set to half), and confirms each close with IG. The close matches AutoBot 161's
+    close_sb_now.py exactly: POST /positions/otc with VERSION 1 and _method DELETE, the body dealId, direction
+    (the opposite), orderType MARKET and size only (never the epic or expiry: IG refuses dealId with either).
+    After a part close IG leaves the rest as a position with a new deal ID: it is found among the open
+    positions and recorded.
   * Every order, confirmation, refusal and close is recorded in orders.folder/<PAIR>/orders.jsonl (one JSON
     line per event, written and flushed before the next step). The open trades are rebuilt from it.
   * PAPER mode (the master switch TRADING=off, design 13): everything runs and is recorded, in
@@ -65,7 +66,7 @@ from typing import Any, Callable
 from ig.errors import IGRequestError
 from safety.refusals import on_refusal
 from safety.rules import AccountFunds, OpenTrade, decide, order_for
-from strategies.common import RANGE_TRADE, stop_price, take_profit_pips
+from strategies.common import BOLLINGER_BOUNCE, RANGE_TRADE, stop_price, take_profit_pips
 
 log = logging.getLogger("autobot.orders")
 
@@ -74,6 +75,8 @@ def _headers(version: str, **more: str) -> dict:
     """The headers AutoBot 161 sends (besides the API key and the session tokens, which the IG client adds)."""
     return {"VERSION": version, "Content-Type": "application/json", **more}
 UTC = timezone.utc
+# The strategies the trade manager may close by half at the opposite band (owner, 11 November 2026).
+HALF_CLOSED = (RANGE_TRADE, BOLLINGER_BOUNCE)
 OPEN, CLOSED = "open", "closed"
 
 
@@ -625,7 +628,8 @@ class OrderSender:
                           datetime.fromisoformat(when.replace("Z", "+00:00")) if when else None)
 
     def close(self, reference: str, *, half: bool = False, why: str = "", price: Decimal | None = None) -> Result:
-        """Close one of the bot's trades in full, or by half (the range trade only), when the trade manager says so.
+        """Close one of the bot's trades in full, or by half (the range trade or the Bollinger bounce, at the opposite
+        band: trade_manager.manager.band_close_share), when the trade manager says so.
         `price`: the trade manager's price (a paper close is recorded at it)."""
         with self._lock:
             if reference in self.gone:
@@ -633,9 +637,9 @@ class OrderSender:
             t = self.trades.get(reference)
             if t is None or t.status != OPEN:
                 return Result(False, "not open", reference, reasons=["not one of the bot's open trades"])
-            if half and (t.strategy != RANGE_TRADE or t.half_closed):
+            if half and (t.strategy not in HALF_CLOSED or t.half_closed):
                 return Result(False, "refused", reference, t.deal_id,
-                              reasons=["only a range trade is closed by half, and only once"])
+                              reasons=["only a range trade or a Bollinger bounce is closed by half, and only once"])
             size = (t.size / 2) if half else t.size
             if self.paper:
                 q = self.quote()

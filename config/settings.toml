@@ -180,6 +180,10 @@ minutes_after = 20
 [bounce]
 reversal_candle_within_candles_of_pierce = 3
 confirmation_candle_within_candles_of_reversal = 3
+# The share of a Bollinger bounce trade closed when price reaches the opposite band; the rest goes on to its
+# normal exits (owner, 11 November 2026: 50, as tested in docs/research/management_and_targets_20261111.md).
+# 0 (no close at the band), 50 or 100: the order sender closes in full or by half only.
+close_percent_at_opposite_band = 50
 
 [slow_grind]
 # Design 3.1 (owner, 8 November 2026: result 13 of the slow grind research, holding rule 2).
@@ -260,7 +264,9 @@ stop_beyond_furthest_pips = 6
 take_profit_pips = 20
 
 [range_trade]
-close_percent_at_opposite_band = 50
+# The share of a range trade closed when price reaches the opposite band (owner, 11 November 2026: 100, in
+# full, as tested in docs/research/management_and_targets_20261111.md; 50 before). 50 or 100.
+close_percent_at_opposite_band = 100
 # The rejection candle must be the candle straight after the one that pierced
 # the band (1 = the next candle) ...
 rejection_candle_within_candles = 1

@@ -6,7 +6,7 @@ In records.folder/<PAIR>/ (paper trades, while TRADING is off, in records.folder
     strategy, direction, size, market state at the open, open and close times and prices, stop and take profit in
     pips and as prices, the kind of take profit, the reason it opened in one line, how it closed, pips and £, win or
     loss, how long it was open, the best profit it reached, the levels that lined up for a close at a level, and
-    for the range trade the half close and the rest);
+    for a half close at the opposite band (the Bollinger bounce) the half close and the rest);
   * decisions.jsonl: every decision the bot made: ideas (allowed, or blocked with the reasons), the order sender's
     answers (sent, refused and why), the analyser's state changes, the trade manager's decisions, the pause switch;
   * summaries/daily/<UK date>.json and summaries/weekly/<year>-W<week>.json: trades, wins, losses, pips and £,

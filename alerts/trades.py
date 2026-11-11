@@ -9,7 +9,7 @@ Trade opened: the time; IG's deal reference; the epic; strategy; direction and s
 the stop and take profit in pips, as prices, and the £ at risk; whether the take profit is the normal one or the 100
 for a big-news day or a trend day; the reason in one line; for the level reversal, the level and how far past it price
 went. Trade closed: all of that (the entry shown as "Entry: ... → Exit: ...", with the close time after it), plus the
-reason it closed, pips and £, how long it was open, the best profit it reached, for the range trade the half close and
+reason it closed, pips and £, how long it was open, the best profit it reached, for a half close at the opposite band (the Bollinger bounce) the half close and
 the rest on separate lines, and today's running total of trades and pips.
 """
 
@@ -56,7 +56,7 @@ class TradeOpened:
 
 @dataclass(frozen=True)
 class PartClose:
-    """The range trade's half close, or its rest."""
+    """A half close at the opposite band (the Bollinger bounce), or its rest."""
     closed_utc: datetime
     price: Decimal
     pips: Decimal
@@ -73,7 +73,7 @@ class TradeClosed:
     profit_gbp: Decimal              # profit (+) or loss (-) in pounds
     pips: Decimal | None = None
     best_pips: Decimal | None = None
-    half: PartClose | None = None    # the range trade's half close
+    half: PartClose | None = None    # a half close at the opposite band (the Bollinger bounce)
     rest: PartClose | None = None    # and its rest
     today_trades: int | None = None
     today_pips: Decimal | None = None

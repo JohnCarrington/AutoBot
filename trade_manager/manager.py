@@ -12,8 +12,13 @@ a bar whose open, high, low and close are the same), in this order (as the resea
      counts only if the bar opened past the entry price or closed beyond the stop (a candle does not say
      which came first). The slow grind's lock (strategies.common.profit_lock, 15/10): once the trade has been
      lock_from pips up (in an earlier bar), the bot closes it if price comes back to lock_at pips up;
-  3. the range trade's half close at the opposite band (range_trade.close_percent_at_opposite_band, 50%),
-     the band as it stood at the last finished candle; the bot closes that part;
+  3. the close at the opposite Bollinger band (owner, 11 November 2026, as tested in
+     docs/research/management_and_targets_20261111.md): the range trade closes in full there
+     (range_trade.close_percent_at_opposite_band, 100), the Bollinger bounce closes half there and the rest
+     goes on to its normal exits (bounce.close_percent_at_opposite_band, 50); the band as it stood at the last
+     finished candle. The bot closes that part. Its price: the bar's open if the bar opened past the band,
+     otherwise the band (on the closing side: a sell's band plus the bar's spread), rounded to IG's tenth of a
+     pip against the trade;
   4. the take profit at IG (strategies.common.take_profit_pips: 100 on a big-news day or in a trend day's
      direction where the design gives it);
   5. the close on a confirmed rejection at a level against the trade (the analyser's rejection part: a bounce
@@ -43,11 +48,11 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
-from decimal import Decimal
+from decimal import ROUND_CEILING, ROUND_FLOOR, Decimal
 from pathlib import Path
 from typing import Any
 
-from strategies.common import (BUY, RANGE_TRADE, SELL, closed_before_big_news, closed_on_level_rejection,
+from strategies.common import (BOLLINGER_BOUNCE, BUY, RANGE_TRADE, SELL, closed_before_big_news, closed_on_level_rejection,
                                forced_close_at, profit_lock, take_profit_pips)
 
 UTC = timezone.utc
@@ -117,7 +122,7 @@ class ManagedTrade:
     close_why: str
     lock: tuple[int, int] | None
     level_close: bool
-    half_close: bool
+    band_close: Decimal                 # the share closed at the opposite band (0: none, 1: all of it)
     news_direction: str | None          # the day's expected news direction (buy or sell), if any
     best: Decimal | None = None         # the best pips reached in earlier bars
     bars: int = 0
@@ -183,7 +188,18 @@ def plan(settings: Any, reference: str, strategy: str, direction: str, opened_at
             close_at, why = min(news), "closed 15 minutes before big news"
     return ManagedTrade(reference, strategy, direction, opened_at, Decimal(entry_price), Decimal(fill), Decimal(stop_pips),
                         Decimal(tp), close_at, why, profit_lock(settings, strategy), closed_on_level_rejection(strategy),
-                        strategy == RANGE_TRADE, day_news_direction(settings, pair, opened_at, calendar))
+                        band_close_share(settings, strategy), day_news_direction(settings, pair, opened_at, calendar))
+
+
+def band_close_share(settings: Any, strategy: str) -> Decimal:
+    """The share of a trade closed at the opposite Bollinger band (owner, 11 November 2026): the range trade's
+    range_trade.close_percent_at_opposite_band (100: in full), the bounce's bounce.close_percent_at_opposite_band
+    (50: half, the rest to its normal exits); 0 for every other strategy."""
+    if strategy == RANGE_TRADE:
+        return Decimal(settings.range_trade.close_percent_at_opposite_band) / 100
+    if strategy == BOLLINGER_BOUNCE:
+        return Decimal(settings.bounce.close_percent_at_opposite_band) / 100
+    return Decimal(0)
 
 
 def step(settings: Any, t: ManagedTrade, bar: Bar, band: tuple[Decimal, Decimal] | None = None,
@@ -228,15 +244,20 @@ def step(settings: Any, t: ManagedTrade, bar: Bar, band: tuple[Decimal, Decimal]
         if locked and level > 0:
             return finish(CLOSE, price, f"the profit lock: back to {t.lock[1]} pips up after {t.lock[0]} up")
         return finish(STOPPED_BY_IG, price, "the stop at IG")
-    if t.half_close and not t.half_done and band is not None:          # 3. the range trade's half close
+    if t.band_close > 0 and not t.half_done and band is not None:      # 3. the close at the opposite band
         upper, lower = (Decimal(x) for x in band)
-        reached = (bar.sell_low <= lower) if sell else (bar.sell_high >= upper)
+        b = lower if sell else upper
+        reached = (bar.sell_low <= b) if sell else (bar.sell_high >= b)
         if reached:
-            b = lower if sell else upper
-            price = b + (bar.buy_open - bar.sell_open) if sell else b   # the band is a sell price
-            if first and ((bar.sell_open <= lower) if sell else (bar.sell_open >= upper)):
-                price = g("open")
-            share = Decimal(settings.range_trade.close_percent_at_opposite_band) / 100
+            if (bar.sell_open <= b) if sell else (bar.sell_open >= b):
+                price = g("open")                                       # opened past it: closed at the open
+            else:
+                step_ = ppp / 10                                        # IG quotes a tenth of a pip
+                raw = (b + (bar.buy_open - bar.sell_open)) if sell else b   # the band is a sell price
+                price = (raw / step_).to_integral_value(ROUND_CEILING if sell else ROUND_FLOOR) * step_
+            if t.band_close >= 1:
+                return finish(CLOSE, price, "the opposite Bollinger band")
+            share = t.band_close
             d = Decision(HALF_CLOSE, price, pips(price), "the opposite Bollinger band", share, bar.start)
             t.half_done, t.half_pips, t.half_share, t.state = True, d.pips, share, HALF_CLOSE
             t.decisions.append(d)

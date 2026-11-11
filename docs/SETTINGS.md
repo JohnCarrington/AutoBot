@@ -82,6 +82,7 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `reversal_watch.minutes_after` | The watch ends this many minutes after each time. | 20 minutes |
 | `bounce.reversal_candle_within_candles_of_pierce` | A bounce needs a reversal candle within this many candles of the candle that pierced the band or reached a level. | 3 candles |
 | `bounce.confirmation_candle_within_candles_of_reversal` | A bounce needs a confirmation candle within this many candles of the reversal candle. | 3 candles |
+| `bounce.close_percent_at_opposite_band` | Share of a Bollinger bounce trade closed when price reaches the opposite band (the band at the last finished candle); the rest goes on to its normal exits (the stop, the take profit, the close on a rejection at a level, the close before big news, 20:30). 0 (none), 50 or 100. **Owner's value 50, 11 November 2026**, as tested in `docs/research/management_and_targets_20261111.md`. | 50% |
 | `slow_grind.min_pause_candles` | A slow grind's pause must last at least this many candles. **Owner's value, 8 November 2026.** | 2 candles |
 | `slow_grind.ema_periods` | The EMA a slow grind's pause must stay below (above, for a buy); a candle closing beyond it cancels the setup (design 3.1). | 21 |
 | `slow_grind.stop_loss_pips` | The slow grind's own stop loss, sent to IG with each of its trades (design 4). **Owner's value, 8 November 2026.** | 15 pips |
@@ -107,7 +108,7 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `ema_pullback.hourly_min_gap_mid_slow_pips` | The hourly 13 and 20 EMAs must be at least this far apart. 161's value. | 0.20 pips |
 | `ema_pullback.hourly_history_candles` | Stored hourly candles read to work out the hourly EMAs (enough for them to settle). | 600 hourly candles |
 | `possible_reversal.min_trend_move_pips` | A possible reversal only counts if the trend before it moved at least this far. | 30 pips |
-| `range_trade.close_percent_at_opposite_band` | Share of a range trade closed when price reaches the opposite band. | 50% |
+| `range_trade.close_percent_at_opposite_band` | Share of a range trade closed when price reaches the opposite band (the band at the last finished candle): 50 or 100 (the order sender closes in full or by half only). **Owner's value 100, in full, 11 November 2026** (50 before), as tested in `docs/research/management_and_targets_20261111.md`. | 100% |
 | `range_trade.rejection_candle_within_candles` | Range trade (and the shared rejection part's range version): the red rejection candle must come within this many candles after the candle that pierced the band. 1 means the very next candle, as the design says. | 1 candle |
 | `range_trade.trigger_within_candles` | Range trade: the live price must go below the rejection candle's low within this many candles after the rejection candle. 1 means during the candle after it, as the design says; otherwise the setup expires. | 1 candle |
 | `trend_day.level_above` | The trend-day check (design 2.4): a trend day downwards needs the day's open at or above this level of the previous month (R1, R2 or R3). **Owner's choice, 8 November 2026.** | R2 |

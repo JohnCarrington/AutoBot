@@ -126,31 +126,67 @@ def test_only_the_slow_grind_has_a_lock(S):
         assert run(S, tr, [(100, 100, 98, 99), (99, 99, 83, 84), (84, 92, 84, 91)]) == [], name
 
 
-# ---- the range trade's half close ------------------------------------------------------------------------
+# ---- the close at the opposite band (owner, 11 November 2026: range trade in full, bounce half) ---------------
 
-def test_the_range_trade_closes_half_at_the_opposite_band(S):
+def test_the_range_trade_closes_in_full_at_the_opposite_band(S):
     tr = trade(S, RANGE_TRADE, SELL)                             # sell at 100
     band = (D("110"), D("90"))                                   # the lower band 90 (sell price)
-    ds = run(S, tr, [(100, 100.5, 95, 96), (96, 96, 89, 90)], band=band)
-    (h,) = ds
-    assert (h.kind, h.price, h.pips, h.part) == (HALF_CLOSE, D("91.5"), D("8.5"), D("0.5")) and tr.open
-    run(S, tr, [(90, 90, 70, 71)], t0=WED + timedelta(minutes=10), band=band)
-    assert tr.state == TAKE_PROFIT_AT_IG or tr.open             # the rest goes on to its own exits
+    (d,) = run(S, tr, [(100, 100.5, 95, 96), (96, 96, 89, 90)], band=band)
+    assert (d.kind, d.price, d.pips, d.part, d.why) == (CLOSE, D("91.5"), D("8.5"), D("1"), "the opposite Bollinger band")
+    assert not tr.open and tr.total_pips() == D("8.5") and not tr.half_done
 
 
-def test_the_rest_of_the_range_trade_and_its_total(S):
-    tr = trade(S, RANGE_TRADE, SELL)
+def test_the_bounce_closes_half_at_the_opposite_band_and_the_rest_goes_on(S):
+    tr = trade(S, BOLLINGER_BOUNCE, SELL)                        # sell at 100
     band = (D("110"), D("90"))
-    run(S, tr, [(100, 100.5, 95, 96), (96, 96, 89, 90)], band=band)
-    (d,) = run(S, tr, [(90, 107, 90, 106)], t0=WED + timedelta(minutes=10), band=band)    # stopped at 106
+    (h,) = run(S, tr, [(100, 100.5, 95, 96), (96, 96, 89, 90)], band=band)
+    assert (h.kind, h.price, h.pips, h.part) == (HALF_CLOSE, D("91.5"), D("8.5"), D("0.5")) and tr.open
+    assert run(S, tr, [(90, 91, 88, 89)], t0=WED + timedelta(minutes=10), band=band) == []   # only once
+    (d,) = run(S, tr, [(89, 107, 89, 106)], t0=WED + timedelta(minutes=15), band=band)    # the rest: its stop
     assert d.kind == STOPPED_BY_IG and d.part == D("0.5") and tr.total_pips() == D("8.5") * D("0.5") + D("-6") * D("0.5")
 
 
-def test_only_the_range_trade_closes_by_half(S):
-    for name in (BOLLINGER_BOUNCE, BREAKOUT, EMA_PULLBACK):
+def test_the_rest_of_the_bounce_keeps_its_close_on_a_rejection_at_a_level(S):
+    tr = trade(S, BOLLINGER_BOUNCE, SELL)
+    band = (D("110"), D("90"))
+    run(S, tr, [(100, 100.5, 95, 96), (96, 96, 89, 90)], band=band)
+    (d,) = run(S, tr, [(90, 92, 89.5, 91)], t0=WED + timedelta(minutes=10), band=band,
+               rejections={0: [Rejection(BUY, D("90.5"), "S2 90.2")]})
+    assert (d.kind, d.price, d.part) == (CLOSE, D("92.0"), D("0.5")) and "S2 90.2" in d.why
+
+
+def test_no_other_strategy_closes_at_the_opposite_band(S):
+    for name in (BREAKOUT, EMA_PULLBACK, SLOW_GRIND, LEVEL_REVERSAL):
         tr = trade(S, name, SELL, stop="20")
-        assert all(d.kind != HALF_CLOSE for d in run(S, tr, [(100, 100.5, 95, 96), (96, 96, 89, 90)],
-                                                     band=(D("110"), D("90"))))
+        assert all(d.why != "the opposite Bollinger band"
+                   for d in run(S, tr, [(100, 100.5, 95, 96), (96, 96, 89, 90)], band=(D("110"), D("90"))))
+
+
+def test_a_band_close_is_priced_at_igs_tenth_of_a_pip_against_the_trade(S):
+    sell = trade(S, RANGE_TRADE, SELL)
+    (d,) = run(S, sell, [(100, 100.5, 95, 96), (96, 96, 89, 90)], band=(D("110"), D("90.04")))
+    assert d.price == D("91.6")                                  # 90.04 + 1.5 = 91.54: up, on the buy price
+    buy = trade(S, RANGE_TRADE, BUY)                             # buy at 101.5 (100 + the spread)
+    (d,) = run(S, buy, [(100, 100.5, 99.5, 100), (100, 111, 100, 110)], band=(D("109.96"), D("90")))
+    assert d.price == D("109.9")                                 # down, on the sell price
+
+
+def test_a_bar_that_opens_past_the_band_closes_at_its_open(S):
+    tr = trade(S, RANGE_TRADE, SELL)
+    (d,) = run(S, tr, [(100, 100.5, 95, 96), (88, 89, 87, 88)], band=(D("110"), D("90")))
+    assert d.price == D("89.5")                                  # the open 88 on the buy price, not the band
+
+
+def test_the_shares_come_from_the_settings(S):
+    from trade_manager.manager import band_close_share
+    assert (band_close_share(S, RANGE_TRADE), band_close_share(S, BOLLINGER_BOUNCE)) == (D(1), D("0.5"))
+    assert all(band_close_share(S, n) == 0 for n in (BREAKOUT, EMA_PULLBACK, SLOW_GRIND, LEVEL_REVERSAL))
+    half = Over(S, range_trade={"close_percent_at_opposite_band": 50}, bounce={"close_percent_at_opposite_band": 0})
+    tr = trade(half, RANGE_TRADE, SELL)
+    (h,) = run(half, tr, [(100, 100.5, 95, 96), (96, 96, 89, 90)], band=(D("110"), D("90")))
+    assert h.kind == HALF_CLOSE and tr.open
+    bo = trade(half, BOLLINGER_BOUNCE, SELL)
+    assert run(half, bo, [(100, 100.5, 95, 96), (96, 96, 89, 90)], band=(D("110"), D("90"))) == []
 
 
 # ---- the close on a rejection at a level ---------------------------------------------------------------------
@@ -249,11 +285,23 @@ def test_the_manager_tells_the_order_sender_only_its_own_closes_and_records_ever
     m.add(bo)
     for b in bars_from(WED, [(100, 100.5, 95, 96), (96, 96, 89, 90), (90, 92, 48, 50), (50, 107, 50, 106)]):
         m.on_bar(b, band)
-    assert sender.closes == [("RANGE1", True, "the opposite Bollinger band")]   # the take profit and stop are IG's
+    assert sender.closes == [("RANGE1", False, "the opposite Bollinger band")]  # the take profit and stop are IG's
     rows = [json.loads(x) for x in (S.trade_manager.folder / "GBPUSD" / "decisions.jsonl").read_text().splitlines()]
-    assert [(r["reference"], r["decision"]) for r in rows] == [("RANGE1", HALF_CLOSE), ("BREAK1", TAKE_PROFIT_AT_IG),
-                                                               ("RANGE1", STOPPED_BY_IG)]
-    assert rows[0]["order_sender"] == "half closed"
+    assert [(r["reference"], r["decision"]) for r in rows] == [("RANGE1", CLOSE), ("BREAK1", TAKE_PROFIT_AT_IG)]
+    assert rows[0]["order_sender"] == "closed"
+
+
+def test_the_manager_asks_the_order_sender_for_the_bounces_half_close(S):
+    sender = PretendSender()
+    m = TradeManager(S, sender, now=lambda: WED)
+    bo = trade(S, BOLLINGER_BOUNCE, SELL)
+    m.add(bo)
+    for b in bars_from(WED, [(100, 100.5, 95, 96), (96, 96, 89, 90), (90, 107, 90, 106)]):
+        m.on_bar(b, (D("110"), D("90")))
+    assert sender.closes == [("REF1", True, "the opposite Bollinger band")]     # its stop is IG's
+    rows = [json.loads(x) for x in (S.trade_manager.folder / "GBPUSD" / "decisions.jsonl").read_text().splitlines()]
+    assert [(r["decision"], r["order_sender"] if "order_sender" in r else None) for r in rows] == [
+        (HALF_CLOSE, "half closed"), (STOPPED_BY_IG, None)]
 
 
 def test_forced_closes_and_the_lock_go_to_the_order_sender(S):
@@ -403,7 +451,7 @@ def test_live_a_refused_half_close_is_undone_and_tried_again(S):
     clock = {"t": WED}
     sender = AnswerSender(["refused", "closed"])
     m = TradeManager(S, sender, now=lambda: clock["t"], ig_confirms=True)
-    tr = trade(S, RANGE_TRADE, SELL)
+    tr = trade(S, BOLLINGER_BOUNCE, SELL)                        # closed by half at the opposite band
     tr.bars = 1
     m.add(tr)
     band = (D("110"), D("90"))

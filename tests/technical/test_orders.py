@@ -543,11 +543,24 @@ def test_an_unclear_half_close_finds_the_rest_under_its_new_deal_id(S):
     assert sender.trades[r.reference].status == "open"
 
 
-def test_only_the_range_trade_closes_by_half(S):
+def test_only_the_range_trade_and_the_bounce_close_by_half(S):
     sender, ig, *_ = make(S)
     r = sender.place(idea(BREAKOUT), calendar=[])
     c = sender.close(r.reference, half=True)
-    assert not c.ok and "only a range trade" in c.reasons[0] and not closes(ig)
+    assert not c.ok and "only a range trade or a Bollinger bounce" in c.reasons[0] and not closes(ig)
+
+
+def test_the_bounce_closes_by_half_once_at_the_opposite_band(S):
+    """Owner, 11 November 2026: the bounce closes half at the opposite band, the rest goes on."""
+    sender, ig, *_ = make(S)
+    r = sender.place(idea(BOLLINGER_BOUNCE), calendar=[])
+    h = sender.close(r.reference, half=True, why="the opposite Bollinger band")
+    assert (h.ok, h.what) == (True, "half closed")
+    assert closes(ig)[-1][3] == {"dealId": r.deal_id, "direction": "BUY", "orderType": "MARKET", "size": 5.0}
+    t = sender.trades[r.reference]
+    assert t.half_closed and t.size == D("5.0") and t.status == "open"
+    assert not sender.close(r.reference, half=True).ok                  # only once
+    assert sender.close(r.reference).ok and ig.positions == []
 
 
 def test_it_never_closes_a_position_it_did_not_open(S):

@@ -125,6 +125,14 @@ def _one_of(*allowed: str) -> Callable[[Any], str]:
     return check
 
 
+def _whole_number_of(*allowed: int) -> Callable[[Any], int]:
+    def check(v: Any) -> int:
+        if isinstance(v, bool) or not isinstance(v, int) or v not in allowed:
+            raise ValueError(f"must be one of {', '.join(str(x) for x in allowed)}, got {v!r}")
+        return v
+    return check
+
+
 def _yes_no(v: Any) -> bool:
     if not isinstance(v, bool):
         raise ValueError(f"must be true or false, got {v!r}")
@@ -372,6 +380,8 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "bounce": {
         "reversal_candle_within_candles_of_pierce": _whole_number(1, 50),
         "confirmation_candle_within_candles_of_reversal": _whole_number(1, 50),
+        # the order sender closes a trade in full or by half: nothing else can be sent
+        "close_percent_at_opposite_band": _whole_number_of(0, 50, 100),
     },
     "slow_grind": {
         "min_pause_candles": _whole_number(1, 100),
@@ -427,7 +437,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "rsi_history_candles": _whole_number(50, 5000),
     },
     "range_trade": {
-        "close_percent_at_opposite_band": _whole_number(1, 100),
+        "close_percent_at_opposite_band": _whole_number_of(50, 100),
         "rejection_candle_within_candles": _whole_number(1, 10),
         "trigger_within_candles": _whole_number(1, 10),
     },
