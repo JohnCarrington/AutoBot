@@ -1079,3 +1079,268 @@ Pace is measured on the candles finished when the bounce's candle began (sell pr
 | 13:40 | level reversal | sell | 13294.3 | 14:20 | the take profit at IG (20 pips) | +20.0 |
 | 14:45 | slow grind | sell | 13269.6 | 15:05 | still open at 15:10 (counted at the close) | -9.3 |
 
+
+## More significant levels: previous days' highs and lows, and turning levels (added in the evening)
+
+The rule as built (commit `6ffa36f`: within 5 pips, under 5 pips an hour over the last 2 hours) was replayed again, adding any previous high or low from the last week as a significant level. There are two versions:
+
+- **Daily highs and lows:** the high and the low of each of the previous 5 trading days. These are the bot's own daily candles (midnight to midnight UK, sell price), counted back with its own "previous trading day", so a Monday's previous day is the short Sunday candle.
+- **Turning levels:** the bot's own turning highs and lows (`levels.current.build`: hourly candles, 3 each side, a 20-pip move within 6 hours, sell price) whose hourly candle started in the last 5 trading days, today's included.
+
+Everything else is the rule exactly as built, including "in their direction", within 5 pips, and under 5 pips an hour over 2 hours. Read-only again: nothing in the bot was changed.
+
+### Summary
+
+- **Both are worse than the rule as built.** Daily highs and lows lose **30.6 pips** and turning levels lose **94.9 pips** (25 October to 17:35 today).
+- **Today costs both versions 80.9 pips.**
+  - The 09:50 bounce buy turned from 13313.5. That is 1.3 pips from Tuesday's low, 13312.2, which is both Tuesday's daily low and a turning low at Tuesday 16:00. Price had moved 3.4 pips an hour, so the bounce was valid.
+  - It opened and closed the four sells: two EMA pullbacks at +1.6 each, one at +9.4, and the slow grind at +5.2 (+17.8 in all). As built, the four were held and went on to +30, +30, +30 and the slow grind's lock at +10 (+100 in all). The bounce itself made +1.2.
+  - The morning was slow, as the owner said. Price paused at Tuesday's low, then ground on down through 13300 in the afternoon.
+- **Tuesday 10 November is better in both** (+50.3 with daily highs and lows, +33.3 with turning levels).
+  - Three EMA pullback buys from 05:00, 06:10 and 07:20 all hit their stops at 09:00 (−36.0) as built.
+  - With daily highs and lows, the 08:45 bounce sell at Friday 6 November's high (13463.3) closed them at +3.0, +1.1 and −2.3. The bounce made +12.5.
+  - With turning levels, the 07:55 bounce sell at the turning low of 4 November 16:00 (13453.3) closed them at −0.4, −2.3 and −5.7. That bounce made −6.8, and the 08:45 bounce sell then made +12.5.
+- **Turning levels also lose 54.7 pips in the week of 25 October.** They are far more common, and they let through bounces that closed trend trades on their way to their targets:
+  - the 27 October 07:00 breakout sell closed at +12.4 at 16:45 instead of reaching its +50 take profit;
+  - the 28 October 11:25 bounce closed a slow grind and two EMA pullback sells at −4.1, −7.6 and −7.6.
+  
+  Those trades did worse still as built (−15.0, −12.0, −12.0), so the 28 October closes were a gain. The 27 October one was the big loss.
+- **The first two weeks are unchanged with daily highs and lows.**
+  - In those weeks the daily levels put 16 more bounces "at a level", but 13 of them were refused as moving fast.
+  - The 3 that were valid (29 October 22:30 and 23:45, 6 November 13:20) were not opened by the order sender and its safety limits, so nothing closed.
+  - Across the whole period, 21 bounces are decided differently. Only 2 of them opened and closed trades: Tuesday 08:45 and today 09:50.
+- **How far to trust it:** the whole difference comes from the bounces that opened and closed trades: 2 with daily highs and lows, and 6 with turning levels (27 and 28 October twice, 3 November, 10 November, and today), plus what followed from them. Today alone is −80.9 in both.
+
+### How it was done
+
+- **Candles:** a new read-only copy of the bot's own IG candle store, taken at 17:38 UTC (`data/research/replay_stores/live_copy_20261111_1738/`). It ends with the candle that finished at 17:35 UTC.
+  - The run goes from Sunday 25 October 21:00 UTC to 17:35 UTC today.
+  - The rule as built was run again on the same candles, so all three are compared over the same period. It gives the same 158 trades as at 15:10, but the trades still open then are now counted later. Today's 14:45 slow grind sell was stopped at 15:10 (−15.0 instead of −9.3), and the 13:10 breakout sell is at +30.8 instead of +26.8. That makes +1,377.8 instead of +1,379.5.
+- **Code:** a frozen copy of the committed code, `6ffa36f`, run with `research.long_replay.replay_week`: the bot's own engine, strategies, safety rules, paper order sender and trade manager.
+  - The one change is a research-only patch, made in the research process: `trading.against_trend.levels_at` also returns the extra levels.
+  - Every bounce decision below is the bot's own decision log ("bounce refused" or "bounce against trend trades"). Every close is the trade manager's own record.
+  - The script and the runs are in `data/research/replay/pace_levels_20261111/`.
+- **Settings, prices and news rules:** as in the rest of this report. No candle reached both a trade's stop and its target.
+
+### Results
+
+#### Trades, wins, losses and pips
+
+| Version | Trades | Won | Lost | Pips | Against as built |
+|---|---:|---:|---:|---:|---:|
+| As built | 158 | 84 | 73 | +1,377.8 |  |
+| + daily highs and lows, previous 5 days | 160 | 88 | 71 | +1,347.2 | -30.6 |
+| + turning levels, last 5 days | 164 | 86 | 78 | +1,282.9 | -94.9 |
+
+#### By week: trades (won–lost) and pips
+
+| Version | 25 to 30 Oct | 1 to 6 Nov | 8 to 11 Nov 17:35 |
+|---|---:|---:|---:|
+| As built | 49 (28–20) +267.1 | 78 (40–38) +814.1 | 31 (16–15) +296.6 |
+| + daily highs and lows, previous 5 days | 49 (28–20) +267.1 | 78 (40–38) +814.1 | 33 (20–13) +266.0 |
+| + turning levels, last 5 days | 52 (28–24) +212.4 | 78 (40–38) +821.5 | 34 (18–16) +249.0 |
+
+#### Every bounce that changes: + daily highs and lows, previous 5 days, 24 bounces decided differently
+
+| Bounce (UK) | Turned from | As built | + daily highs and lows, previous 5 days |
+|---|---:|---|---|
+| Thu 29 Oct 20:50 sell | 13384.4 | refused, not at a significant level (nearest R2 13377.1 (7.3 pips)) | refused, moving fast at daily high Mon 26 Oct 13387.3 (10.6 pips/h) |
+| Thu 29 Oct 20:55 sell | 13384.4 | refused, not at a significant level (nearest R2 13377.1 (7.3 pips)) | refused, moving fast at daily high Mon 26 Oct 13387.3 (8.2 pips/h) |
+| Thu 29 Oct 21:00 sell | 13383.2 | refused, not at a significant level (nearest R2 13377.1 (6.1 pips)) | refused, moving fast at daily high Mon 26 Oct 13387.3 (5.0 pips/h) |
+| Thu 29 Oct 22:30 sell | 13389.0 | refused, not at a significant level (nearest 00 13400 (11.0 pips)) | **valid at daily high Mon 26 Oct 13387.3** (0.6 pips/h); not opened by the order sender (its safety limits), so nothing closed |
+| Thu 29 Oct 23:10 sell | 13387.8 | refused, not at a significant level (nearest R2 13377.1 (10.7 pips)) | refused, moving fast at daily high Mon 26 Oct 13387.3 (8.5 pips/h) |
+| Thu 29 Oct 23:20 sell | 13387.8 | refused, not at a significant level (nearest R2 13377.1 (10.7 pips)) | refused, moving fast at daily high Mon 26 Oct 13387.3 (7.4 pips/h) |
+| Thu 29 Oct 23:30 sell | 13385.9 | refused, not at a significant level (nearest R2 13377.1 (8.8 pips)) | refused, moving fast at daily high Mon 26 Oct 13387.3 (6.7 pips/h) |
+| Thu 29 Oct 23:40 sell | 13384.9 | refused, not at a significant level (nearest R2 13377.1 (7.8 pips)) | refused, moving fast at daily high Mon 26 Oct 13387.3 (6.7 pips/h) |
+| Thu 29 Oct 23:45 sell | 13383.4 | refused, not at a significant level (nearest R2 13377.1 (6.3 pips)) | **valid at daily high Mon 26 Oct 13387.3** (4.0 pips/h); not opened by the order sender (its safety limits), so nothing closed |
+| Wed 04 Nov 00:40 sell | 13443.3 | refused, not at a significant level (nearest R2 13458.8 (15.5 pips)) | refused, moving fast at daily high Mon 02 Nov 13448.0 (14.8 pips/h) |
+| Wed 04 Nov 00:50 sell | 13443.3 | refused, not at a significant level (nearest R2 13458.8 (15.5 pips)) | refused, moving fast at daily high Mon 02 Nov 13448.0 (12.6 pips/h) |
+| Fri 06 Nov 03:55 buy | 13428.7 | refused, not at a significant level (nearest 00 13400 (28.7 pips)) | refused, moving fast at daily low Wed 04 Nov 13425.5 (7.6 pips/h) |
+| Fri 06 Nov 04:35 buy | 13425.2 | refused, not at a significant level (nearest 00 13400 (25.2 pips)) | refused, moving fast at daily low Wed 04 Nov 13425.5 (8.3 pips/h) |
+| Fri 06 Nov 04:50 buy | 13425.8 | refused, not at a significant level (nearest 00 13400 (25.8 pips)) | refused, moving fast at daily low Wed 04 Nov 13425.5 (6.6 pips/h) |
+| Fri 06 Nov 10:35 buy | 13380.7 | refused, not at a significant level (nearest weekly pivot 13364.2 (16.5 pips)) | refused, moving fast at daily low Mon 02 Nov 13379.1 (7.0 pips/h) |
+| Fri 06 Nov 13:20 buy | 13380.5 | refused, not at a significant level (nearest weekly pivot 13364.2 (16.3 pips)) | **valid at daily low Mon 02 Nov 13379.1** (4.5 pips/h); not opened by the order sender (its safety limits), so nothing closed |
+| Mon 09 Nov 10:55 sell | 13422.9 | refused, not at a significant level (nearest 00 13400 (22.9 pips)) | **valid at daily low Wed 04 Nov 13425.5** (3.8 pips/h); not opened by the order sender (its safety limits), so nothing closed |
+| Mon 09 Nov 20:30 sell | 13440.6 | refused, not at a significant level (nearest 00 13400 (40.6 pips)) | refused, moving fast at daily low Thu 05 Nov 13435.7 (5.6 pips/h) |
+| Tue 10 Nov 08:45 sell | 13458.6 | refused, not at a significant level (nearest R2 13498.9 (40.3 pips)) | **valid at daily high Fri 06 Nov 13463.3** (2.8 pips/h); the bounce made +12.5; closed 3: EMA pullback +3.0, EMA pullback +1.1, EMA pullback -2.3 |
+| Tue 10 Nov 08:55 sell | 13457.5 | refused, not at a significant level (nearest R2 13498.9 (41.4 pips)) | no such bounce (the trades before it differ) |
+| Wed 11 Nov 08:35 buy | 13314.2 | refused, not at a significant level (nearest 00 13300 (14.2 pips)) | refused, moving fast at daily low Tue 10 Nov 13312.2 (5.9 pips/h) |
+| Wed 11 Nov 09:50 buy | 13313.5 | refused, not at a significant level (nearest 00 13300 (13.5 pips)) | **valid at daily low Tue 10 Nov 13312.2** (3.4 pips/h); the bounce made +1.2; closed 4: EMA pullback +9.4, slow grind +5.2, EMA pullback +1.6, EMA pullback +1.6 |
+| Wed 11 Nov 09:55 buy | 13314.9 | refused, not at a significant level (nearest 00 13300 (14.9 pips)) | no such bounce (the trades before it differ) |
+| Wed 11 Nov 10:00 buy | 13316.4 | refused, not at a significant level (nearest 00 13300 (16.4 pips)) | no such bounce (the trades before it differ) |
+
+Trades that differ (7 only as built, 9 only in this version):
+
+| | Opened (UK) | Strategy | Dir | Closed | Pips |
+|---|---|---|---|---|---:|
+| as built | Tue 10 Nov 05:00 | EMA pullback | buy | Tue 09:00 | -12.0 |
+| as built | Tue 10 Nov 06:10 | EMA pullback | buy | Tue 09:00 | -12.0 |
+| as built | Tue 10 Nov 07:20 | EMA pullback | buy | Tue 09:00 | -12.0 |
+| as built | Wed 11 Nov 07:30 | EMA pullback | sell | Wed 13:20 | +30.0 |
+| as built | Wed 11 Nov 08:10 | slow grind | sell | Wed 12:45 | +10.0 |
+| as built | Wed 11 Nov 08:15 | EMA pullback | sell | Wed 13:50 | +30.0 |
+| as built | Wed 11 Nov 08:15 | EMA pullback | sell | Wed 13:50 | +30.0 |
+| this version | Tue 10 Nov 05:00 | EMA pullback | buy | Tue 08:45 | +3.0 |
+| this version | Tue 10 Nov 06:10 | EMA pullback | buy | Tue 08:45 | +1.1 |
+| this version | Tue 10 Nov 07:20 | EMA pullback | buy | Tue 08:45 | -2.3 |
+| this version | Tue 10 Nov 08:45 | Bollinger bounce | sell | Tue 10:40 | +12.5 |
+| this version | Wed 11 Nov 07:30 | EMA pullback | sell | Wed 09:50 | +9.4 |
+| this version | Wed 11 Nov 08:10 | slow grind | sell | Wed 09:50 | +5.2 |
+| this version | Wed 11 Nov 08:15 | EMA pullback | sell | Wed 09:50 | +1.6 |
+| this version | Wed 11 Nov 08:15 | EMA pullback | sell | Wed 09:50 | +1.6 |
+| this version | Wed 11 Nov 09:50 | Bollinger bounce | buy | Wed 10:45 | +1.2 |
+| | | | | **Net** | **-30.6** |
+
+#### Every bounce that changes: + turning levels, last 5 days, 47 bounces decided differently
+
+| Bounce (UK) | Turned from | As built | + turning levels, last 5 days |
+|---|---:|---|---|
+| Tue 27 Oct 16:45 buy | 13305.9 | refused, not at a significant level (nearest 00 13300 (5.9 pips)) | **valid at turning low Tue 27 Oct 09:00 13307.2** (4.7 pips/h); the bounce made +3.0; closed 3: breakout +12.4, slow grind -3.4, EMA pullback -8.1 |
+| Tue 27 Oct 16:55 buy | 13306.2 | refused, not at a significant level (nearest 00 13300 (6.2 pips)) | no such bounce (the trades before it differ) |
+| Tue 27 Oct 17:00 buy | 13308.1 | refused, not at a significant level (nearest 00 13300 (8.1 pips)) | no such bounce (the trades before it differ) |
+| Tue 27 Oct 17:10 buy | 13310.9 | refused, not at a significant level (nearest 00 13300 (10.9 pips)) | no such bounce (the trades before it differ) |
+| Wed 28 Oct 11:15 buy | 13273.9 | refused, not at a significant level (nearest S2 13263.6 (10.3 pips)) | refused, moving fast at turning low Wed 28 Oct 07:00 13272.5 (5.8 pips/h) |
+| Wed 28 Oct 11:25 buy | 13273.9 | refused, not at a significant level (nearest S2 13263.6 (10.3 pips)) | **valid at turning low Wed 28 Oct 07:00 13272.5** (4.8 pips/h); the bounce made +5.6; closed 3: slow grind -4.1, EMA pullback -7.6, EMA pullback -7.6 |
+| Wed 28 Oct 11:30 buy | 13278.5 | refused, not at a significant level (nearest S2 13263.6 (14.9 pips)) | no such bounce (the trades before it differ) |
+| Wed 28 Oct 11:35 buy | 13279.5 | refused, not at a significant level (nearest S2 13263.6 (15.9 pips)) | no such bounce (the trades before it differ) |
+| Wed 28 Oct 11:45 buy | 13281.8 | refused, not at a significant level (nearest S2 13263.6 (18.2 pips)) | no such bounce (the trades before it differ) |
+| Wed 28 Oct 15:50 sell | 13305.1 | refused, not at a significant level (nearest weekly pivot 13359.7 (54.6 pips)) | **valid at turning low Tue 27 Oct 09:00 13307.2** (1.4 pips/h); the bounce made -7.7; closed 1: slow grind -8.8 |
+| Wed 28 Oct 17:05 sell | 13321.1 | no such bounce (the trades before it differ) | refused, not at a significant level (nearest turning low Mon 26 Oct 13:00 13327.1 (6.0 pips)) |
+| Wed 28 Oct 17:20 sell | 13321.1 | no such bounce (the trades before it differ) | refused, not at a significant level (nearest turning low Mon 26 Oct 13:00 13327.1 (6.0 pips)) |
+| Wed 28 Oct 17:25 sell | 13315.2 | no such bounce (the trades before it differ) | refused, not at a significant level (nearest turning low Mon 26 Oct 13:00 13327.1 (11.9 pips)) |
+| Wed 28 Oct 17:35 sell | 13313.8 | no such bounce (the trades before it differ) | refused, not at a significant level (nearest turning low Mon 26 Oct 13:00 13327.1 (13.3 pips)) |
+| Wed 28 Oct 17:45 sell | 13312.7 | no such bounce (the trades before it differ) | refused, not at a significant level (nearest turning low Mon 26 Oct 13:00 13327.1 (14.4 pips)) |
+| Thu 29 Oct 20:50 sell | 13384.4 | refused, not at a significant level (nearest R2 13377.1 (7.3 pips)) | refused, moving fast at turning high Mon 26 Oct 01:00 13387.3 (10.6 pips/h) |
+| Thu 29 Oct 20:55 sell | 13384.4 | refused, not at a significant level (nearest R2 13377.1 (7.3 pips)) | refused, moving fast at turning high Mon 26 Oct 01:00 13387.3 (8.2 pips/h) |
+| Thu 29 Oct 21:00 sell | 13383.2 | refused, not at a significant level (nearest R2 13377.1 (6.1 pips)) | refused, moving fast at turning high Mon 26 Oct 01:00 13387.3 (5.0 pips/h) |
+| Thu 29 Oct 22:30 sell | 13389.0 | refused, not at a significant level (nearest 00 13400 (11.0 pips)) | **valid at turning high Fri 23 Oct 16:00 13388.0** (0.6 pips/h); not opened by the order sender (its safety limits), so nothing closed |
+| Thu 29 Oct 23:10 sell | 13387.8 | refused, not at a significant level (nearest R2 13377.1 (10.7 pips)) | refused, moving fast at turning high Fri 23 Oct 16:00 13388.0 (8.5 pips/h) |
+| Thu 29 Oct 23:20 sell | 13387.8 | refused, not at a significant level (nearest R2 13377.1 (10.7 pips)) | refused, moving fast at turning high Fri 23 Oct 16:00 13388.0 (7.4 pips/h) |
+| Thu 29 Oct 23:30 sell | 13385.9 | refused, not at a significant level (nearest R2 13377.1 (8.8 pips)) | refused, moving fast at turning high Mon 26 Oct 01:00 13387.3 (6.7 pips/h) |
+| Thu 29 Oct 23:40 sell | 13384.9 | refused, not at a significant level (nearest R2 13377.1 (7.8 pips)) | refused, moving fast at turning high Mon 26 Oct 01:00 13387.3 (6.7 pips/h) |
+| Thu 29 Oct 23:45 sell | 13383.4 | refused, not at a significant level (nearest R2 13377.1 (6.3 pips)) | **valid at turning high Mon 26 Oct 01:00 13387.3** (4.0 pips/h); not opened by the order sender (its safety limits), so nothing closed |
+| Fri 30 Oct 16:25 sell | 13406.0 | refused, not at a significant level (nearest 00 13400 (6.0 pips)) | refused, moving fast at turning high Fri 30 Oct 01:00 13406.5 (7.0 pips/h) |
+| Tue 03 Nov 08:20 sell | 13426.4 | refused, not at a significant level (nearest R2 13480.5 (54.1 pips)) | **valid at turning high Mon 02 Nov 13:00 13430.3** (3.2 pips/h); the bounce made +3.8; closed 1: EMA pullback -7.8 |
+| Tue 03 Nov 08:25 sell | 13426.3 | refused, not at a significant level (nearest R2 13480.5 (54.2 pips)) | no such bounce (the trades before it differ) |
+| Wed 04 Nov 00:40 sell | 13443.3 | refused, not at a significant level (nearest R2 13458.8 (15.5 pips)) | refused, moving fast at turning high Mon 02 Nov 09:00 13448.0 (14.8 pips/h) |
+| Wed 04 Nov 00:50 sell | 13443.3 | refused, not at a significant level (nearest R2 13458.8 (15.5 pips)) | refused, moving fast at turning high Mon 02 Nov 09:00 13448.0 (12.6 pips/h) |
+| Thu 05 Nov 08:15 buy | 13464.4 | refused, not at a significant level (nearest 00 13400 (64.4 pips)) | refused, moving fast at turning low Wed 04 Nov 11:00 13468.2 (5.5 pips/h) |
+| Thu 05 Nov 08:20 buy | 13467.2 | refused, not at a significant level (nearest 00 13400 (67.2 pips)) | refused, moving fast at turning low Wed 04 Nov 11:00 13468.2 (5.2 pips/h) |
+| Thu 05 Nov 08:50 buy | 13468.6 | refused, not at a significant level (nearest 00 13400 (68.6 pips)) | refused, moving fast at turning low Wed 04 Nov 11:00 13468.2 (8.6 pips/h) |
+| Fri 06 Nov 03:55 buy | 13428.7 | refused, not at a significant level (nearest 00 13400 (28.7 pips)) | refused, moving fast at turning high Mon 02 Nov 13:00 13430.3 (7.6 pips/h) |
+| Fri 06 Nov 04:35 buy | 13425.2 | refused, not at a significant level (nearest 00 13400 (25.2 pips)) | refused, moving fast at turning high Tue 03 Nov 08:00 13426.4 (8.3 pips/h) |
+| Fri 06 Nov 04:50 buy | 13425.8 | refused, not at a significant level (nearest 00 13400 (25.8 pips)) | refused, moving fast at turning high Tue 03 Nov 08:00 13426.4 (6.6 pips/h) |
+| Fri 06 Nov 10:35 buy | 13380.7 | refused, not at a significant level (nearest weekly pivot 13364.2 (16.5 pips)) | refused, moving fast at turning low Sun 01 Nov 23:00 13378.4 (7.0 pips/h) |
+| Fri 06 Nov 13:20 buy | 13380.5 | refused, not at a significant level (nearest weekly pivot 13364.2 (16.3 pips)) | **valid at turning low Sun 01 Nov 23:00 13378.4** (4.5 pips/h); not opened by the order sender (its safety limits), so nothing closed |
+| Mon 09 Nov 10:55 sell | 13422.9 | refused, not at a significant level (nearest 00 13400 (22.9 pips)) | **valid at turning high Tue 03 Nov 08:00 13426.4** (3.8 pips/h); not opened by the order sender (its safety limits), so nothing closed |
+| Mon 09 Nov 20:30 sell | 13440.6 | refused, not at a significant level (nearest 00 13400 (40.6 pips)) | refused, moving fast at turning low Thu 05 Nov 12:00 13445.2 (5.6 pips/h) |
+| Tue 10 Nov 07:55 sell | 13457.9 | refused, not at a significant level (nearest R2 13498.9 (41.0 pips)) | **valid at turning low Wed 04 Nov 16:00 13453.3** (3.4 pips/h); the bounce made -6.8; closed 3: EMA pullback -0.4, EMA pullback -2.3, EMA pullback -5.7 |
+| Tue 10 Nov 08:20 sell | 13457.1 | refused, not at a significant level (nearest R2 13498.9 (41.8 pips)) | no such bounce (the trades before it differ) |
+| Tue 10 Nov 08:45 sell | 13458.6 | refused, not at a significant level (nearest R2 13498.9 (40.3 pips)) | no such bounce (the trades before it differ) |
+| Tue 10 Nov 08:55 sell | 13457.5 | refused, not at a significant level (nearest R2 13498.9 (41.4 pips)) | no such bounce (the trades before it differ) |
+| Wed 11 Nov 08:35 buy | 13314.2 | refused, not at a significant level (nearest 00 13300 (14.2 pips)) | refused, moving fast at turning low Tue 10 Nov 16:00 13312.2 (5.9 pips/h) |
+| Wed 11 Nov 09:50 buy | 13313.5 | refused, not at a significant level (nearest 00 13300 (13.5 pips)) | **valid at turning low Tue 10 Nov 16:00 13312.2** (3.4 pips/h); the bounce made +1.2; closed 4: EMA pullback +9.4, slow grind +5.2, EMA pullback +1.6, EMA pullback +1.6 |
+| Wed 11 Nov 09:55 buy | 13314.9 | refused, not at a significant level (nearest 00 13300 (14.9 pips)) | no such bounce (the trades before it differ) |
+| Wed 11 Nov 10:00 buy | 13316.4 | refused, not at a significant level (nearest 00 13300 (16.4 pips)) | no such bounce (the trades before it differ) |
+
+Trades that differ (17 only as built, 23 only in this version):
+
+| | Opened (UK) | Strategy | Dir | Closed | Pips |
+|---|---|---|---|---|---:|
+| as built | Tue 27 Oct 07:00 | breakout | sell | Wed 07:10 | +50.0 |
+| as built | Tue 27 Oct 16:05 | slow grind | sell | Tue 20:30 | +0.0 |
+| as built | Tue 27 Oct 16:15 | EMA pullback | sell | Tue 17:00 | -12.0 |
+| as built | Wed 28 Oct 10:20 | slow grind | sell | Wed 13:30 | -15.0 |
+| as built | Wed 28 Oct 10:45 | EMA pullback | sell | Wed 11:35 | -12.0 |
+| as built | Wed 28 Oct 10:45 | EMA pullback | sell | Wed 11:35 | -12.0 |
+| as built | Wed 28 Oct 15:30 | slow grind | buy | Wed 17:00 | +10.0 |
+| as built | Wed 28 Oct 17:05 | Bollinger bounce | sell | Wed 17:45 | +4.3 |
+| as built | Tue 03 Nov 08:05 | EMA pullback | buy | Tue 08:30 | -12.0 |
+| as built | Tue 03 Nov 08:30 | Bollinger bounce | sell | Tue 09:25 | +0.6 |
+| as built | Tue 10 Nov 05:00 | EMA pullback | buy | Tue 09:00 | -12.0 |
+| as built | Tue 10 Nov 06:10 | EMA pullback | buy | Tue 09:00 | -12.0 |
+| as built | Tue 10 Nov 07:20 | EMA pullback | buy | Tue 09:00 | -12.0 |
+| as built | Wed 11 Nov 07:30 | EMA pullback | sell | Wed 13:20 | +30.0 |
+| as built | Wed 11 Nov 08:10 | slow grind | sell | Wed 12:45 | +10.0 |
+| as built | Wed 11 Nov 08:15 | EMA pullback | sell | Wed 13:50 | +30.0 |
+| as built | Wed 11 Nov 08:15 | EMA pullback | sell | Wed 13:50 | +30.0 |
+| this version | Tue 27 Oct 07:00 | breakout | sell | Tue 16:45 | +12.4 |
+| this version | Tue 27 Oct 16:05 | slow grind | sell | Tue 16:45 | -3.4 |
+| this version | Tue 27 Oct 16:15 | EMA pullback | sell | Tue 16:45 | -8.1 |
+| this version | Tue 27 Oct 16:45 | Bollinger bounce | buy | Tue 17:35 | +3.0 |
+| this version | Wed 28 Oct 10:20 | slow grind | sell | Wed 11:25 | -4.1 |
+| this version | Wed 28 Oct 10:45 | EMA pullback | sell | Wed 11:25 | -7.6 |
+| this version | Wed 28 Oct 10:45 | EMA pullback | sell | Wed 11:25 | -7.6 |
+| this version | Wed 28 Oct 11:25 | Bollinger bounce | buy | Wed 12:30 | +5.6 |
+| this version | Wed 28 Oct 15:30 | slow grind | buy | Wed 15:50 | -8.8 |
+| this version | Wed 28 Oct 15:50 | Bollinger bounce | sell | Wed 16:00 | -7.7 |
+| this version | Wed 28 Oct 16:50 | slow grind | buy | Wed 17:50 | -15.0 |
+| this version | Tue 03 Nov 08:05 | EMA pullback | buy | Tue 08:20 | -7.8 |
+| this version | Tue 03 Nov 08:20 | Bollinger bounce | sell | Tue 09:25 | +3.8 |
+| this version | Tue 10 Nov 05:00 | EMA pullback | buy | Tue 07:55 | -0.4 |
+| this version | Tue 10 Nov 06:10 | EMA pullback | buy | Tue 07:55 | -2.3 |
+| this version | Tue 10 Nov 07:20 | EMA pullback | buy | Tue 07:55 | -5.7 |
+| this version | Tue 10 Nov 07:55 | Bollinger bounce | sell | Tue 08:30 | -6.8 |
+| this version | Tue 10 Nov 08:45 | Bollinger bounce | sell | Tue 10:40 | +12.5 |
+| this version | Wed 11 Nov 07:30 | EMA pullback | sell | Wed 09:50 | +9.4 |
+| this version | Wed 11 Nov 08:10 | slow grind | sell | Wed 09:50 | +5.2 |
+| this version | Wed 11 Nov 08:15 | EMA pullback | sell | Wed 09:50 | +1.6 |
+| this version | Wed 11 Nov 08:15 | EMA pullback | sell | Wed 09:50 | +1.6 |
+| this version | Wed 11 Nov 09:50 | Bollinger bounce | buy | Wed 10:45 | +1.2 |
+| | | | | **Net** | **-94.9** |
+
+#### Today, Wednesday 11 November
+
+**As built:** 10 trades, 8 won, 2 lost, +156.7
+
+| Opened (UK) | Strategy | Dir | Fill | Closed | How | Pips |
+|---|---|---|---:|---|---|---:|
+| 06:55 | Bollinger bounce | buy | 13335.8 | 07:30 | a confirmed rejection at a level: london_session_high 13341, turning_low 13341.4 | +0.4 |
+| 07:30 | EMA pullback | sell | 13330.9 | 13:20 | the take profit at IG (30 pips) | +30.0 |
+| 08:10 | slow grind | sell | 13326.7 | 12:45 | the profit lock: back to 10 pips up after 15 up | +10.0 |
+| 08:15 | EMA pullback | sell | 13323.1 | 13:50 | the take profit at IG (30 pips) | +30.0 |
+| 08:15 | EMA pullback | sell | 13323.1 | 13:50 | the take profit at IG (30 pips) | +30.0 |
+| 10:50 | EMA pullback | sell | 13317.4 | 13:55 | the take profit at IG (30 pips) | +30.0 |
+| 11:10 | range trade | buy | 13318.2 | 11:55 | a confirmed rejection at a level: previous_day_low 13312.2, new_york_session_low 13312.2, turning_low 13312.2 | -9.5 |
+| 13:10 | breakout | sell | 13305.7 | 17:30 | still open at 17:35 (counted at the close) | +30.8 |
+| 13:40 | level reversal | sell | 13294.3 | 14:20 | the take profit at IG (20 pips) | +20.0 |
+| 14:45 | slow grind | sell | 13269.6 | 15:10 | the stop at IG | -15.0 |
+
+**+ daily highs and lows, previous 5 days:** 11 trades, 9 won, 2 lost, +75.8
+
+| Opened (UK) | Strategy | Dir | Fill | Closed | How | Pips |
+|---|---|---|---:|---|---|---:|
+| 06:55 | Bollinger bounce | buy | 13335.8 | 07:30 | a confirmed rejection at a level: london_session_high 13341, turning_low 13341.4 | +0.4 |
+| 07:30 | EMA pullback | sell | 13330.9 | 09:50 | a Bollinger bounce buy opened at daily low Tue 10 Nov 13312.2, price moving slowly (3.4 pips an hour) | +9.4 |
+| 08:10 | slow grind | sell | 13326.7 | 09:50 | a Bollinger bounce buy opened at daily low Tue 10 Nov 13312.2, price moving slowly (3.4 pips an hour) | +5.2 |
+| 08:15 | EMA pullback | sell | 13323.1 | 09:50 | a Bollinger bounce buy opened at daily low Tue 10 Nov 13312.2, price moving slowly (3.4 pips an hour) | +1.6 |
+| 08:15 | EMA pullback | sell | 13323.1 | 09:50 | a Bollinger bounce buy opened at daily low Tue 10 Nov 13312.2, price moving slowly (3.4 pips an hour) | +1.6 |
+| 09:50 | Bollinger bounce | buy | 13321.5 | 10:45 | a confirmed rejection at a level: turning_low 13327.5 | +1.2 |
+| 10:50 | EMA pullback | sell | 13317.4 | 13:55 | the take profit at IG (30 pips) | +30.0 |
+| 11:10 | range trade | buy | 13318.2 | 11:55 | a confirmed rejection at a level: previous_day_low 13312.2, new_york_session_low 13312.2, turning_low 13312.2 | -9.5 |
+| 13:10 | breakout | sell | 13305.7 | 17:30 | still open at 17:35 (counted at the close) | +30.8 |
+| 13:40 | level reversal | sell | 13294.3 | 14:20 | the take profit at IG (20 pips) | +20.0 |
+| 14:45 | slow grind | sell | 13269.6 | 15:10 | the stop at IG | -15.0 |
+
+**+ turning levels, last 5 days:** 11 trades, 9 won, 2 lost, +75.8
+
+| Opened (UK) | Strategy | Dir | Fill | Closed | How | Pips |
+|---|---|---|---:|---|---|---:|
+| 06:55 | Bollinger bounce | buy | 13335.8 | 07:30 | a confirmed rejection at a level: london_session_high 13341, turning_low 13341.4 | +0.4 |
+| 07:30 | EMA pullback | sell | 13330.9 | 09:50 | a Bollinger bounce buy opened at turning low Tue 10 Nov 16:00 13312.2, price moving slowly (3.4 pips an hour) | +9.4 |
+| 08:10 | slow grind | sell | 13326.7 | 09:50 | a Bollinger bounce buy opened at turning low Tue 10 Nov 16:00 13312.2, price moving slowly (3.4 pips an hour) | +5.2 |
+| 08:15 | EMA pullback | sell | 13323.1 | 09:50 | a Bollinger bounce buy opened at turning low Tue 10 Nov 16:00 13312.2, price moving slowly (3.4 pips an hour) | +1.6 |
+| 08:15 | EMA pullback | sell | 13323.1 | 09:50 | a Bollinger bounce buy opened at turning low Tue 10 Nov 16:00 13312.2, price moving slowly (3.4 pips an hour) | +1.6 |
+| 09:50 | Bollinger bounce | buy | 13321.5 | 10:45 | a confirmed rejection at a level: turning_low 13327.5 | +1.2 |
+| 10:50 | EMA pullback | sell | 13317.4 | 13:55 | the take profit at IG (30 pips) | +30.0 |
+| 11:10 | range trade | buy | 13318.2 | 11:55 | a confirmed rejection at a level: previous_day_low 13312.2, new_york_session_low 13312.2, turning_low 13312.2 | -9.5 |
+| 13:10 | breakout | sell | 13305.7 | 17:30 | still open at 17:35 (counted at the close) | +30.8 |
+| 13:40 | level reversal | sell | 13294.3 | 14:20 | the take profit at IG (20 pips) | +20.0 |
+| 14:45 | slow grind | sell | 13269.6 | 15:10 | the stop at IG | -15.0 |
+
+Today's bounces against trend trades, as built: 08:35 buy refused, not at a significant level (nearest 00 13300 (14.2 pips)); 09:50 buy refused, not at a significant level (nearest 00 13300 (13.5 pips)); 09:55 buy refused, not at a significant level (nearest 00 13300 (14.9 pips)); 10:00 buy refused, not at a significant level (nearest 00 13300 (16.4 pips)); 15:10 buy refused, not at a significant level (nearest 00 13300 (34.4 pips))
+
+Today's bounces against trend trades, + daily highs and lows, previous 5 days: 08:35 buy refused, moving fast at daily low Tue 10 Nov 13312.2 (5.9 pips/h); 09:50 buy **valid at daily low Tue 10 Nov 13312.2** (3.4 pips/h); the bounce made +1.2; closed 4: EMA pullback +9.4, slow grind +5.2, EMA pullback +1.6, EMA pullback +1.6; 15:10 buy refused, not at a significant level (nearest 00 13300 (34.4 pips))
+
+Today's bounces against trend trades, + turning levels, last 5 days: 08:35 buy refused, moving fast at turning low Tue 10 Nov 16:00 13312.2 (5.9 pips/h); 09:50 buy **valid at turning low Tue 10 Nov 16:00 13312.2** (3.4 pips/h); the bounce made +1.2; closed 4: EMA pullback +9.4, slow grind +5.2, EMA pullback +1.6, EMA pullback +1.6; 15:10 buy refused, not at a significant level (nearest 00 13300 (34.4 pips))
+
