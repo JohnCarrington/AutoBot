@@ -201,13 +201,14 @@ class StateMachine:
         c, cwhy = self.consolidation(f)
         return CONSOLIDATION, (cwhy if c else "no direction any more: watch and wait")
 
-    def proof(self, f: Features, d: str, new_extreme: bool) -> tuple[bool, str]:
+    def proof(self, f: Features, d: str, new_extreme: bool, bounce_failed_before: bool) -> tuple[bool, str]:
+        """`bounce_failed_before`: a bounce failed on an earlier candle, after the last new extreme."""
         m = self.m
         beyond = (lambda a, b: a < b) if d == DOWN else (lambda a, b: a > b)
         band = f.lower if d == DOWN else f.upper
         band_slope = f.lower_slope if d == DOWN else f.upper_slope
         on_band = f.reached_lower if d == DOWN else f.reached_upper
-        ok = (new_extreme and self.failed_bounce and on_band and f.stack == d
+        ok = (new_extreme and bounce_failed_before and on_band and f.stack == d
               and f.stacked_for >= m.ema_stacked_candles
               and None not in (f.ema7, f.ema13, f.ema21, f.ema100, band_slope)
               and all(beyond(f.c, e) for e in (f.ema7, f.ema13, f.ema21, f.ema100))
@@ -252,6 +253,9 @@ class StateMachine:
 
         # the trend's extreme (also kept while a possible reversal watches it)
         new_extreme = False
+        # design 2.5: the bounce fails first, on an EARLIER candle, then a new extreme; a candle that is
+        # both a failed bounce and the new extreme does not prove the trend (owner, 12 November 2026)
+        bounce_failed_before = self.failed_bounce
         watched = d if st in TRENDING else (self.before[1] if st == POSSIBLE_REVERSAL and self.before else NONE)
         if watched in (UP, DOWN) and self.extreme is not None:
             further = f.l < self.extreme if watched == DOWN else f.h > self.extreme
@@ -324,7 +328,7 @@ class StateMachine:
                     self.last_news = self.n
                     self.now.evidence.append(f"{uk_short(f.candle.start)} level rejection with the trend: {e.note}")
             if new_extreme:
-                ok, why = self.proof(f, d, True) if st == EMERGING else (False, "")
+                ok, why = self.proof(f, d, True, bounce_failed_before) if st == EMERGING else (False, "")
                 self._after_extreme(f, d)
                 if ok:
                     return self._change(f, TREND, d, STRONG_PUSH if self.push(f, d) else SLOW_GRIND,

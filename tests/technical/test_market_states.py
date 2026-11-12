@@ -209,6 +209,20 @@ def test_no_trend_without_a_failed_bounce_first(st):
     assert run(m, [(d, drop)]) == [] and m.now.state == EMERGING
 
 
+def test_the_failed_bounce_must_come_on_an_earlier_candle_than_the_new_low(st):
+    """Design 2.5 (line 85): "the first bounce fails under the EMAs and middle band and price makes a
+    new low": first the bounce, then the new low, never both on one candle (owner, 12 November 2026)."""
+    m = downtrend(st, 11650)                                   # its low so far 11649
+    both = F(1, o=11645, c=11646, h=11647, l=11644, ema7=11648, ema13=11649, ema21=11650, middle=11651,
+             ema100=11670, lower=11644, reached_lower=True, lower_slope=-1, stack="down", stacked_for=4)
+    assert both.green and both.l < 11649                       # a failed bounce AND a new low on one candle
+    assert run(m, [(1, both)]) == [] and m.now.state == EMERGING
+    # a bounce failing on a later candle, then a new low: the proof
+    (ch,) = run(m, proof_candles(2, 11644))
+    assert (ch.state, ch.direction) == (TREND, DOWN)
+    assert ch.time == OPEN + 3 * FIVE
+
+
 def test_evidence_fades_after_24_candles_with_nothing_new(st):
     m = downtrend(st, 11650)
     quiet = [(i, F(i, c=11650, l=11649)) for i in range(1, 24)]       # no new low (the low is 11649)

@@ -7,9 +7,17 @@ What Johnny saw on his chart (design section 12), with the times allowed:
   a. the pivot rejection around midnight: an emerging trend down by Friday
      6 November 00:20, becoming a trend down by 02:00;
   b. consolidation at some point between 05:00 and 06:40;
-  c. a strong push down at some point between 06:45 and 07:30, and again
-     between 13:30 and 14:30;
-  d. a possible reversal up between 10:15 and 10:45;
+  c. a strong push down at some point between 13:30 and 14:30. The drop at
+     07:00 was a UK news spike (Finnhub's GB releases at 07:00 UK: "House Price
+     Index MoM" -0.6% against +0.1% expected, "Lloyds House Price Index YoY"
+     -1.2% against -0.3%), not the
+     start of a real trend (owner, 12 November 2026): its 07:05 candle is both
+     the failed bounce and the new low, so no trend is called on it (design
+     2.5: the bounce fails first, the new low after); the trend down comes at
+     09:50;
+  d. no possible reversal up between 10:15 and 10:45: the trend down started
+     at 08:20 (13399.0) and had moved 18.3 pips, under the 30 pips needed; the
+     possible reversal up comes at 14:30, after the 13:30 news;
   e. at 13:00 the direction is sell side, so no buy is allowed;
   f. stopping and restarting the analyser at 09:00 gives exactly the same
      states afterwards as one that never stopped.
@@ -94,18 +102,30 @@ def test_b_consolidation_between_05_00_and_06_40(run):
     print(f"\n  consolidation from {uk_short(when[0])} to {uk_short(when[-1])} ({len(when)} candles)")
 
 
-@pytest.mark.parametrize("a,b", [(T(6, 6, 45), T(6, 7, 30)), (T(6, 13, 30), T(6, 14, 30))],
-                         ids=["06:45-07:30", "13:30-14:30"])
+@pytest.mark.parametrize("a,b", [(T(6, 13, 30), T(6, 14, 30))], ids=["13:30-14:30"])
 def test_c_a_strong_push_down(run, a, b):
     when = [t for t in candles_between(a, b) if state_at(run.changes, t) == (TREND, DOWN, STRONG_PUSH)]
     assert when, f"no strong push down between {uk_short(a)} and {uk_short(b)}"
     print(f"\n  strong push down from {uk_short(when[0])} to {uk_short(when[-1])} ({len(when)} candles)")
 
 
-def test_d_a_possible_reversal_up_between_10_15_and_10_45(run):
-    found = [ch for ch in run.changes if T(6, 10, 15) <= ch.time <= T(6, 10, 45)
+def test_c_no_trend_on_the_07_00_uk_news_spike_the_trend_down_comes_at_09_50(run):
+    """Owner, 12 November 2026: the 07:00 drop was a UK news spike, not a real trend."""
+    spike = [t for t in candles_between(T(6, 6, 45), T(6, 7, 30)) if state_at(run.changes, t)[0] == TREND]
+    assert spike == [], "a trend was called on the 07:00 news spike"
+    trend = [ch for ch in run.changes if T(6, 6, 45) <= ch.time <= T(6, 12) and ch.state == TREND]
+    assert trend and trend[0].time == T(6, 9, 50) and trend[0].direction == DOWN
+    assert trend[0].reason.startswith("the rejection became a trend")
+    print(f"\n  {trend[0].line()[:170]}")
+
+
+def test_d_no_possible_reversal_up_between_10_15_and_10_45_it_comes_at_14_30(run):
+    early = [ch for ch in run.changes if T(6, 10, 15) <= ch.time <= T(6, 10, 45)]
+    assert early == [], "the analyser changed state between 10:15 and 10:45"
+    assert state_at(run.changes, T(6, 10, 45))[:2] == (TREND, DOWN)
+    found = [ch for ch in run.changes if T(6, 13, 30) <= ch.time <= T(6, 15)
              and (ch.state, ch.direction) == (POSSIBLE_REVERSAL, UP)]
-    assert found, "no possible reversal up between 10:15 and 10:45"
+    assert found and found[0].time == T(6, 14, 30)
     print(f"\n  {found[0].line()[:170]}")
 
 
@@ -136,7 +156,7 @@ def test_f_a_restart_at_09_00_gives_exactly_the_states_of_one_that_never_stopped
     after = [x for x in a if x["time_utc"] >= "2026-11-06T09:00:00Z"]
     print(f"\n  {len(after)} state changes after 09:00, identical in both; now: "
           f"{never_stopped.machine.now.state} {never_stopped.machine.now.direction}")
-    assert b == a and len(after) >= 5
+    assert b == a and len(after) >= 4
     assert vars(restarted.machine.now) == vars(never_stopped.machine.now)
     assert [(f.candle.start, s, d) for f, s, d, *_ in restarted.history] == \
         [(f.candle.start, s, d) for f, s, d, *_ in never_stopped.history]
