@@ -11,7 +11,10 @@ LIVE: advance(now) takes each new finished 5-minute candle in turn.
 RECORDS: with record=True, every state change is appended to
 <market_states.folder>/<PAIR>/state_changes.jsonl (time, state, direction,
 type of trend, reason and evidence), each change once, even after a restart,
-and the current state is written to current.json.
+and the current state is written to current.json. The journal stays the live
+record in time order: a restart's replay adds only changes newer than its last
+line; where the replay calls earlier candles differently (a rule changed), the
+differences go to replay_differences_<date>.jsonl, never into the journal.
 
 Reads the candle store only; never contacts IG.
 """
@@ -19,6 +22,7 @@ Reads the candle store only; never contacts IG.
 from __future__ import annotations
 
 import json
+import logging
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -36,6 +40,9 @@ from rejection.watch import RejectionWatcher
 UTC = timezone.utc
 JOURNAL = "state_changes.jsonl"
 CURRENT = "current.json"
+DIFFERENCES = "replay_differences_{date}.jsonl"
+REPLAY_ONLY = "replayed, not in the live record"
+RECORD_ONLY = "in the live record, not replayed"
 
 
 class MemoStore(CandleStore):
@@ -106,7 +113,7 @@ class StateTracker:
                 self._step(memo, f)
             self.done = len(week)
         if self.record:
-            self._write()
+            self._write(as_of)
         return self.machine.now
 
     def _step(self, store: CandleStore, f: Features) -> StateChange | None:
@@ -134,21 +141,57 @@ class StateTracker:
             return []
         return [json.loads(x) for x in p.read_text().splitlines() if x.strip()]
 
-    def _write(self) -> None:
+    def _write(self, as_of: datetime) -> None:
+        """The journal is the live record, kept in time order: only changes newer than its last line are appended.
+        A change at or before that time which the record does not have (a restart's replay calling the week
+        differently, after a rule changed) goes to replay_differences_<date of the restart>.jsonl instead, with
+        each recorded change of the replayed span that the replay no longer makes; each difference once."""
         self.folder.mkdir(parents=True, exist_ok=True)
-        have = {(r["time_utc"], r["state"], r["direction"], r.get("trend_type")) for r in self.recorded()}
-        new = [ch.as_dict() for ch in self.changes]
-        new = [r for r in new if (r["time_utc"], r["state"], r["direction"], r.get("trend_type")) not in have]
+        rows = self.recorded()
+        have = {_key(r) for r in rows}
+        last = max((r["time_utc"] for r in rows), default="")
+        made = [ch.as_dict() for ch in self.changes]
+        new = [r for r in made if _key(r) not in have and r["time_utc"] > last]
         if new:
             with (self.folder / JOURNAL).open("a") as fh:
                 for r in new:
                     fh.write(json.dumps(r) + "\n")
                 fh.flush()
+        self._differences(as_of, rows, made, last)
         now = self.machine.now
         safe_write(self.folder / CURRENT, (json.dumps({
             "state": now.state, "direction": now.direction, "trend_type": now.trend_type,
             "since_utc": now.since.strftime("%Y-%m-%dT%H:%M:%SZ"), "evidence": now.evidence,
             "strategies_allowed": list(now.strategies_allowed)}, indent=1) + "\n").encode())
+
+    def _differences(self, as_of: datetime, rows: list[dict], made: list[dict], last: str) -> None:
+        week_from = self.week_open.strftime("%Y-%m-%dT%H:%M:%SZ")
+        made_keys = {_key(r) for r in made}
+        rec_keys = {_key(r) for r in rows}
+        diff = [{"difference": REPLAY_ONLY, **r} for r in made if r["time_utc"] <= last and _key(r) not in rec_keys]
+        diff += [{"difference": RECORD_ONLY, **r} for r in rows
+                 if week_from <= r["time_utc"] <= last and _key(r) not in made_keys]
+        if not diff:
+            return
+        seen = set()
+        for p in self.folder.glob(DIFFERENCES.format(date="*")):
+            seen |= {(x.get("difference"), *_key(x)) for x in
+                     (json.loads(y) for y in p.read_text().splitlines() if y.strip())}
+        diff = sorted((d for d in diff if (d["difference"], *_key(d)) not in seen),
+                      key=lambda d: (d["time_utc"], d["difference"]))
+        if not diff:
+            return
+        p = self.folder / DIFFERENCES.format(date=as_of.astimezone(UTC).strftime("%Y-%m-%d"))
+        with p.open("a") as fh:
+            for d in diff:
+                fh.write(json.dumps(d) + "\n")
+        logging.getLogger("autobot.analyser").warning(
+            "[%s] The week's replay differs from the live record in %d state change(s) at or before %s (a rule "
+            "changed?); not added to %s, written to %s.", self.s.market.pair, len(diff), last, JOURNAL, p)
+
+
+def _key(r: dict) -> tuple:
+    return (r["time_utc"], r["state"], r["direction"], r.get("trend_type"))
 
 
 class StatesUpdater:

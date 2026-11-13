@@ -41,7 +41,9 @@ from prices.model import UK, iso, parse_iso
 UTC = timezone.utc
 RESEARCH = Path("/opt/autobot/data/research")
 LIVE_FOLDERS = ("/opt/autobot/data/candles", "/opt/autobot/data/orders", "/opt/autobot/data/records",
-                "/opt/autobot/data/trade_manager", "/opt/autobot/data/news", "/opt/autobot/data/safety")
+                "/opt/autobot/data/trade_manager", "/opt/autobot/data/news", "/opt/autobot/data/safety",
+                "/opt/autobot/data/analyser", "/opt/autobot/data/levels", "/opt/autobot/data/trading",
+                "/opt/autobot/data/alerts")
 
 
 def check_research_folder(p: Path, allow: Path | None = None) -> Path:

@@ -421,6 +421,66 @@ def test_every_state_change_is_recorded_once_even_after_a_restart(st):
     assert current["state"] == a.machine.now.state and "strategies_allowed" in current
 
 
+def test_a_restart_after_a_rule_change_keeps_the_journal_in_time_order_and_puts_the_differences_aside(st, caplog):
+    import logging
+    from analyser.market_state import JOURNAL, RECORD_ONLY, REPLAY_ONLY
+    store, end = _make_store(st)
+    live = StateTracker(st, store, record=True)
+    live.replay(end)
+    path = live.folder / JOURNAL
+    rows = live.recorded()
+    assert len(rows) >= 3
+    # the live run (under an older rule) called the second change differently from today's rule
+    old = dict(rows[1], state="ranging", direction="none", trend_type=None, reason="the older rule's call")
+    rows[1] = old
+    path.write_text("".join(json.dumps(r) + "\n" for r in rows))
+    caplog.set_level(logging.WARNING)
+    restarted = StateTracker(st, store, record=True)
+    restarted.replay(end)                                         # the restart's replay, under today's rule
+    assert restarted.recorded() == rows                           # nothing appended out of time order
+    side = live.folder / f"replay_differences_{end:%Y-%m-%d}.jsonl"
+    got = [json.loads(x) for x in side.read_text().splitlines()]
+    real = restarted.changes[1].as_dict()
+    assert got == sorted([{"difference": REPLAY_ONLY, **real}, {"difference": RECORD_ONLY, **old}],
+                         key=lambda d: (d["time_utc"], d["difference"]))
+    assert "differs from the live record in 2 state change(s)" in caplog.text
+    StateTracker(st, store, record=True).replay(end + timedelta(days=1))   # another restart, another day
+    assert restarted.recorded() == rows and sorted(live.folder.glob("replay_differences_*")) == [side]
+    assert [json.loads(x) for x in side.read_text().splitlines()] == got  # each difference written once
+
+
+def test_a_journal_cleaned_while_running_is_not_refilled_and_the_lines_put_aside_are_not_written_twice(st):
+    from analyser.market_state import JOURNAL, REPLAY_ONLY
+    store, end = _make_store(st)
+    running = StateTracker(st, store, record=True)
+    running.replay(end)
+    rows = running.recorded()
+    taken = rows[1]                                               # a line cleaned out of the journal by hand ...
+    kept = rows[:1] + rows[2:]
+    (running.folder / JOURNAL).write_text("".join(json.dumps(r) + "\n" for r in kept))
+    aside = running.folder / "replay_differences_2026-11-02_by_hand.jsonl"
+    aside.write_text(json.dumps({"difference": REPLAY_ONLY, **taken}) + "\n")   # ... and kept aside
+    running.advance(end + FIVE)                                   # the running analyser's next write
+    assert running.recorded() == kept                             # not put back, out of time order
+    assert sorted(running.folder.glob("replay_differences_*")) == [aside]
+    aside.write_text(json.dumps(taken) + "\n")                    # a line put aside without its mark
+    running.advance(end + 2 * FIVE)
+    assert running.recorded() == kept                             # still written, never a crash
+
+
+def test_a_restart_after_a_stop_appends_the_changes_it_missed_in_time_order(st):
+    store, end = _make_store(st)
+    first = StateTracker(st, store, record=True)
+    first.replay(OPEN + timedelta(hours=20))                      # ran, then stopped part-way
+    n = len(first.recorded())
+    later = StateTracker(st, store, record=True)
+    later.replay(end)                                             # started again later
+    rows = later.recorded()
+    times = [r["time_utc"] for r in rows]
+    assert len(rows) > n and times == sorted(times) == [c.as_dict()["time_utc"] for c in later.changes]
+    assert not list(later.folder.glob("replay_differences_*"))    # the same rule: no differences
+
+
 def test_a_new_week_starts_fresh(st):
     store, end = _make_store(st)
     t = StateTracker(st, store)

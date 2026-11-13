@@ -333,8 +333,9 @@ from research import replay_store as rs
 
 def test_replay_writes_only_under_research_never_a_live_folder(tmp_path):
     for live in ("/opt/autobot/data/candles/GBPUSD", "/opt/autobot/data/orders", "/opt/autobot/data/records/x",
-                 "/opt/autobot/data/news", "/opt/autobot/data/trade_manager"):
-        with pytest.raises(PermissionError):
+                 "/opt/autobot/data/news", "/opt/autobot/data/trade_manager", "/opt/autobot/data/analyser/GBPUSD",
+                 "/opt/autobot/data/levels", "/opt/autobot/data/trading/GBPUSD", "/opt/autobot/data/alerts"):
+        with pytest.raises(PermissionError, match="refusing a live folder"):     # named as live, not only outside
             lr.check_research_folder(live)
     with pytest.raises(PermissionError):
         lr.check_research_folder(tmp_path / "x")
