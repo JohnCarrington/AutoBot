@@ -35,6 +35,15 @@
   * A trade found gone at IG whose close IG shows on channel SYSTEM but not at its stop or take profit (at or beyond
     either) was closed by the owner by hand (owner, 11 November 2026): "closed by owner" at IG's price and time, a
     short Telegram message (not a warning), and kept apart from the bot's own exits (closed_by_owner()).
+  * It moves a Bollinger bounce's stop to break-even when the trade manager says so (owner, 13 November 2026, change 4
+    of the bounce changes replay): the position's stop at IG becomes the price the trade opened at (IG's level).
+    IG's open position is read first (GET /positions/{dealId}, VERSION 2) for its take profit, then the position is
+    updated (PUT /positions/otc/{dealId}, VERSION 2, the body stopLevel, limitLevel as IG has it, trailingStop false,
+    trailingStopDistance and trailingStopIncrement null, guaranteedStop false; a stop moved on an open position is a
+    level, unlike an order's stop, which is always a distance) and the move is confirmed (GET /confirms/{reference}).
+    The move counts only once IG confirms it ("stop moved"); if IG refuses it, or the answer is unclear and IG's
+    position still shows the old stop, the old stop stays ("stop not moved"), the owner gets a Telegram alert with
+    IG's error, and the trade manager tries again after orders.close_retry_seconds. Paper: recorded, nothing sent.
   * It closes trades when the trade manager says so, in full, or by half (a Bollinger bounce at the opposite
     band, or a range trade if set to half), and confirms each close with IG. The close matches AutoBot 161's
     close_sb_now.py exactly: POST /positions/otc with VERSION 1 and _method DELETE, the body dealId, direction
@@ -97,6 +106,7 @@ class Trade:
     level: Decimal | None = None        # IG's fill price
     status: str = OPEN
     half_closed: bool = False
+    stop_level: Decimal | None = None   # the stop as moved at IG and confirmed (break-even); None: not moved
 
     def as_open_trade(self, size_gbp_per_pip: Decimal) -> OpenTrade:
         part = Decimal("0.5") if self.half_closed else Decimal(1)
@@ -198,6 +208,8 @@ class OrderSender:
                 self.unresolved.pop(ref, None)
             elif ev == "deal id changed" and ref in self.trades:
                 self.trades[ref].deal_id = r["deal_id"]
+            elif ev == "stop moved" and ref in self.trades:
+                self.trades[ref].stop_level = Decimal(r["stop_level"])
             elif ev == "half closed" and ref in self.trades:
                 self.trades[ref].half_closed = True
                 self.trades[ref].size = Decimal(r["remaining_size"])
@@ -665,6 +677,74 @@ class OrderSender:
             if c is not None and c.get("dealStatus") == "REJECTED":
                 return self._close_refused(t, c.get("reason") or "no reason given")
             return self._settle_unclear_close(t, half, size)
+
+    # ---- moving a stop (the Bollinger bounce's break-even) -------------------------------------------
+
+    def move_stop(self, reference: str, level: Decimal, why: str = "") -> Result:
+        """Move one open trade's stop at IG to `level` (the Bollinger bounce's break-even: the price it opened at).
+        Counts only once IG confirms it. Result.ok False: the old stop stays at IG and in the records; the owner was
+        alerted (except when IG no longer has the position: the regular check of IG's open positions finds that)."""
+        with self._lock:
+            t = self.trades.get(reference)
+            if t is None or t.status != OPEN:
+                return Result(False, "not open", reference, reasons=["not one of the bot's open trades"])
+            level = Decimal(level)
+            if self.paper:
+                self._record("stop move sending", reference=reference, deal_id=t.deal_id, stop_level=level, why=why)
+                return self._stop_moved(t, level, "paper")
+            try:
+                r = self.client.request("GET", f"/positions/{t.deal_id}", "2", what="checking a position",
+                                        headers=_headers("2"))
+                pos = (r.json() or {}).get("position") or {}
+            except IGRequestError as e:
+                if e.status == 404:
+                    self._record("stop not moved", reference=reference, deal_id=t.deal_id, stop_level=level,
+                                 reason="IG has no open position with this deal ID")
+                    return Result(False, "stop not moved", reference, t.deal_id,
+                                  reasons=["IG has no open position with this deal ID"])
+                return self._stop_refused(t, level, f"IG's position could not be read ({e.error_code or e.status})")
+            if _dec(pos.get("stopLevel")) == level:                 # already there (an earlier unclear answer)
+                return self._stop_moved(t, level, "already at IG")
+            body = {"stopLevel": float(level),
+                    "limitLevel": pos.get("limitLevel"),            # the take profit as IG has it: never removed
+                    "trailingStop": False, "trailingStopDistance": None, "trailingStopIncrement": None,
+                    "guaranteedStop": False}
+            self._record("stop move sending", reference=reference, deal_id=t.deal_id, stop_level=level,
+                         old_stop_level=_dec(pos.get("stopLevel")), why=why, body=body)
+            try:
+                r = self.client.request("PUT", f"/positions/otc/{t.deal_id}", "2", body, what="moving a stop",
+                                        headers=_headers("2"))
+                ref = (r.json() or {}).get("dealReference")
+                c = self._confirmation(ref, self.o.confirm_attempts) if ref else None
+            except IGRequestError as e:
+                if e.status is not None and 400 <= e.status < 500:
+                    return self._stop_refused(t, level, e.error_code or f"HTTP {e.status}")
+                c = None
+            if c is not None and c.get("dealStatus") == "ACCEPTED":
+                return self._stop_moved(t, _dec(c.get("stopLevel")) or level, "confirmed")
+            if c is not None and c.get("dealStatus") == "REJECTED":
+                return self._stop_refused(t, level, c.get("reason") or "no reason given")
+            try:                                                    # no clear answer: look at the position
+                r = self.client.request("GET", f"/positions/{t.deal_id}", "2", what="checking a position",
+                                        headers=_headers("2"))
+                if _dec(((r.json() or {}).get("position") or {}).get("stopLevel")) == level:
+                    return self._stop_moved(t, level, "IG's position shows the new stop")
+            except IGRequestError:
+                pass
+            return self._stop_refused(t, level, "no clear answer from IG, and its position does not show the new stop")
+
+    def _stop_moved(self, t: Trade, level: Decimal, how: str) -> Result:
+        t.stop_level = level
+        self._record("stop moved", reference=t.reference, deal_id=t.deal_id, stop_level=level, how=how)
+        return Result(True, "stop moved", t.reference, t.deal_id, level)
+
+    def _stop_refused(self, t: Trade, level: Decimal, reason: str) -> Result:
+        self._record("stop not moved", reference=t.reference, deal_id=t.deal_id, stop_level=level, reason=reason)
+        self.alerts.problem(f"stop-move-refused-{t.deal_id}",
+                            f"IG did not move the stop of {t.strategy} {t.direction} trade {t.deal_id} to break-even "
+                            f"({level}): {reason}. The old stop stays at IG and in the bot's records; the move is "
+                            f"tried again every {self.o.close_retry_seconds} seconds.")
+        return Result(False, "stop not moved", t.reference, t.deal_id, reasons=[reason])
 
     def _residual(self, t: Trade, remaining: Decimal) -> str | None:
         """After a part close IG leaves the rest as a position with a NEW deal ID (AutoBot 161's close report):

@@ -11,8 +11,8 @@ import pytest
 from config.settings_loader import load_settings
 from strategies.common import (BOLLINGER_BOUNCE, BREAKOUT, BUY, EMA_PULLBACK, LEVEL_REVERSAL, RANGE_TRADE, SELL,
                                SLOW_GRIND)
-from trade_manager.manager import (CLOSE, FORCED_CLOSE, HALF_CLOSE, STOPPED_BY_IG, TAKE_PROFIT_AT_IG, Bar, Rejection,
-                                   TradeManager, plan, step)
+from trade_manager.manager import (CLOSE, FORCED_CLOSE, HALF_CLOSE, STOP_MOVED, STOP_NOT_MOVED, STOPPED_BY_IG,
+                                   TAKE_PROFIT_AT_IG, Bar, Rejection, TradeManager, plan, step)
 
 U = lambda *a: datetime(*a, tzinfo=timezone.utc)  # noqa: E731
 WED = U(2026, 11, 4, 10, 0)
@@ -301,7 +301,7 @@ def test_the_manager_asks_the_order_sender_for_the_bounces_half_close(S):
     assert sender.closes == [("REF1", True, "the opposite Bollinger band")]     # its stop is IG's
     rows = [json.loads(x) for x in (S.trade_manager.folder / "GBPUSD" / "decisions.jsonl").read_text().splitlines()]
     assert [(r["decision"], r["order_sender"] if "order_sender" in r else None) for r in rows] == [
-        (HALF_CLOSE, "half closed"), (STOPPED_BY_IG, None)]
+        (HALF_CLOSE, "half closed"), (STOP_MOVED, None), (STOPPED_BY_IG, None)]   # 9.5 up: its stop at break-even
 
 
 def test_forced_closes_and_the_lock_go_to_the_order_sender(S):
@@ -499,3 +499,106 @@ def test_live_igs_stop_is_recorded_at_igs_level(S):
     d = tr.decisions[-1]
     assert not tr.open and (d.kind, d.price, d.pips, d.at) == (STOPPED_BY_IG, D("94.0"), D("-7.5"), WED + timedelta(minutes=7))
     assert tm_rows(S)[-1]["price"] == "94.0"
+
+
+# ---- the Bollinger bounce's break-even (owner, 13 November 2026) ----------------------------------------------
+
+class MovingSender(PretendSender):
+    """Moves a stop at IG: answers from a list (True: IG confirms; False: IG refuses), then confirms."""
+    def __init__(self, answers=()):
+        super().__init__()
+        self.answers, self.moves = list(answers), []
+        self.alerts = SimpleNamespace(infos=[], info=lambda text, key=None, html=False: self.alerts.infos.append(text))
+
+    def move_stop(self, reference, level, why=""):
+        self.moves.append((reference, level))
+        ok = self.answers.pop(0) if self.answers else True
+        return SimpleNamespace(ok=ok, what="stop moved" if ok else "stop not moved",
+                               reasons=[] if ok else ["error.service.otc.invalid.stop"])
+
+
+def decisions(S):
+    return [json.loads(x) for x in (S.trade_manager.folder / "GBPUSD" / "decisions.jsonl").read_text().splitlines()]
+
+
+def test_the_bounces_break_even_comes_from_the_settings_and_only_for_the_bounce(S):
+    assert trade(S, BOLLINGER_BOUNCE, BUY).break_even_after == D("6")
+    for strategy in (EMA_PULLBACK, SLOW_GRIND, BREAKOUT, RANGE_TRADE, LEVEL_REVERSAL):
+        assert trade(S, strategy, BUY).break_even_after is None
+    off = Over(S, bounce={"break_even_after_pips": D("0")})
+    assert trade(off, BOLLINGER_BOUNCE, BUY).break_even_after is None
+
+
+def test_a_bounce_6_pips_up_has_its_stop_moved_to_its_open_price_and_is_stopped_there_at_0(S):
+    sender = MovingSender()
+    m = TradeManager(S, sender, now=lambda: WED)
+    tr = trade(S, BOLLINGER_BOUNCE, BUY)                         # fill 101.5; closes on the sell price
+    m.add(tr)
+    for b in bars_from(WED, [(100.5, 101, 100, 100.5), (100.5, 107.5, 100.5, 107), (107, 107, 101, 101)]):
+        m.on_bar(b)
+    assert sender.moves == [("REF1", D("101.5"))]                # the open price (IG's level)
+    assert tr.stop_moved and not tr.open
+    last = tr.decisions[-1]
+    assert (last.kind, last.price, last.pips) == (STOPPED_BY_IG, D("101.5"), D("0"))
+    assert [r["decision"] for r in decisions(S)] == [STOP_MOVED, STOPPED_BY_IG]
+
+
+def test_the_break_even_needs_6_up_in_an_earlier_bar(S):
+    sender = MovingSender()
+    m = TradeManager(S, sender, now=lambda: WED)
+    tr = trade(S, BOLLINGER_BOUNCE, BUY)
+    m.add(tr)
+    for b in bars_from(WED, [(100.5, 101, 100, 100.5), (100.5, 107.5, 95, 96)]):   # 6 up and the old stop, one bar
+        m.on_bar(b)
+    assert sender.moves == [] and tr.decisions[-1].pips == D("-6")
+
+
+def test_under_6_up_the_stop_is_not_moved(S):
+    sender = MovingSender()
+    m = TradeManager(S, sender, now=lambda: WED)
+    tr = trade(S, BOLLINGER_BOUNCE, BUY)
+    m.add(tr)
+    for b in bars_from(WED, [(100.5, 101, 100, 100.5), (100.5, 107.4, 100.5, 107), (107, 107, 95, 96)]):
+        m.on_bar(b)
+    assert sender.moves == [] and tr.decisions[-1].pips == D("-6")
+
+
+def test_the_stop_is_moved_once(S):
+    sender = MovingSender()
+    m = TradeManager(S, sender, now=lambda: WED)
+    tr = trade(S, BOLLINGER_BOUNCE, SELL)                        # fill 100; closes on the buy price
+    m.add(tr)
+    for b in bars_from(WED, [(100, 100.5, 99, 99.5), (99.5, 99.5, 91, 92), (92, 93, 90, 91), (91, 92, 89, 90)]):
+        m.on_bar(b)
+    assert sender.moves == [("REF1", D("100"))] and tr.open
+
+
+def test_live_a_refused_move_keeps_the_old_stop_and_is_tried_again_after_the_wait(S):
+    clock = {"t": WED}
+    sender = MovingSender([False, True])
+    m = TradeManager(S, sender, now=lambda: clock["t"], ig_confirms=True)
+    tr = trade(S, BOLLINGER_BOUNCE, BUY)
+    m.add(tr)
+    m.on_bar(bar(WED, 100.5, 108, 100.5, 107))                  # 6.5 up
+    clock["t"] = WED + timedelta(seconds=5)
+    m.on_bar(bar(WED, 107, 107, 102, 102))                      # IG refuses: the old stop stays
+    assert not tr.stop_moved and tr.open and len(sender.moves) == 1
+    clock["t"] = WED + timedelta(seconds=10)
+    m.on_bar(bar(WED, 102, 103, 101, 102))                      # before orders.close_retry_seconds: not tried
+    assert len(sender.moves) == 1 and tr.open                   # 101 is under the open price, over the old stop
+    clock["t"] = WED + timedelta(seconds=5 + S.orders.close_retry_seconds)
+    m.on_bar(bar(WED, 102, 103, 102, 102))                      # tried again: IG confirms
+    assert len(sender.moves) == 2 and tr.stop_moved
+    assert [r["decision"] for r in decisions(S)] == [STOP_NOT_MOVED, STOP_MOVED]
+    assert "error.service.otc.invalid.stop" in decisions(S)[0]["why"]
+    assert sender.alerts.infos and "break-even" in sender.alerts.infos[0]
+
+
+def test_a_refused_move_leaves_the_trade_to_its_old_stop(S):
+    sender = MovingSender([False, False, False])
+    m = TradeManager(S, sender, now=lambda: WED, ig_confirms=True)
+    tr = trade(S, BOLLINGER_BOUNCE, BUY)
+    m.add(tr)
+    for b in bars_from(WED, [(100.5, 108, 100.5, 107), (107, 107, 100, 100.5)]):    # back under the open price
+        m.on_bar(b)
+    assert tr.open and not tr.stop_moved                         # at break-even it would have been stopped

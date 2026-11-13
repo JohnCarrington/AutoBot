@@ -94,6 +94,8 @@ def test_ig_is_the_only_part_that_talks_to_ig():
         rel = f.relative_to(ROOT)
         if rel.parts[0] in ("ig", "tests", ".venv"):
             continue
+        if rel.parts[:2] == ("data", "research"):      # frozen research copies of the bot's code, never run by it
+            continue
         text = f.read_text()
         if rel == TELEGRAM_SENDER:
             assert "ig.com" not in text and "telegram_url" in text, rel

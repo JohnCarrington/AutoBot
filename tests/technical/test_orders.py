@@ -63,6 +63,7 @@ class PretendIG:
         self.next_deal = 1
         self.activity = []                                  # IG's activity history (GET /history/activity)
         self.positions_fail = False
+        self.move_answer = "accept"                         # PUT /positions/otc/{dealId}: accept, reject, http-400, ...
 
     def login(self):
         raise AssertionError("the order sender must never log in")
@@ -132,6 +133,23 @@ class PretendIG:
             else:
                 self._close(body)
                 self.confirms[ref] = {"dealStatus": "ACCEPTED", "level": 13390.0, "profit": 100.0}
+            return Reply({"dealReference": ref})
+        if method == "PUT" and path.startswith("/positions/otc/"):      # moving a stop
+            deal = path.split("/")[-1]
+            p = next(p for p in self.positions if p["position"]["dealId"] == deal)
+            if self.move_answer == "http-400":
+                raise IGRequestError(what, 400, "error.service.otc.invalid.stop")
+            if self.move_answer in ("timeout", "timeout-done"):
+                if self.move_answer == "timeout-done":
+                    p["position"]["stopLevel"] = body["stopLevel"]
+                raise IGRequestError(what, None, "ReadTimeout")
+            ref = f"MOVE{len(self.calls)}"
+            if self.move_answer == "reject":
+                self.confirms[ref] = {"dealStatus": "REJECTED", "reason": "ATTACHED_ORDER_LEVEL_ERROR"}
+            else:
+                p["position"]["stopLevel"], p["position"]["limitLevel"] = body["stopLevel"], body["limitLevel"]
+                self.confirms[ref] = {"dealStatus": "ACCEPTED", "stopLevel": body["stopLevel"],
+                                      "limitLevel": body["limitLevel"], "dealReference": ref}
             return Reply({"dealReference": ref})
         raise AssertionError(f"unexpected call {method} {path}")
 
@@ -836,3 +854,87 @@ def test_a_refused_close_of_a_position_the_owner_had_closed_is_the_owners(S):
     ig.close_answer = "notional"
     c = sender.close(r.reference, why="20:30 UK close")
     assert (c.ok, c.what) == (True, "closed by owner") and alerts.sent == [] and len(alerts.infos) == 1
+
+
+# ---- moving the Bollinger bounce's stop to break-even (owner, 13 November 2026) ----------------------------------
+
+def moves(ig):
+    return [c for c in ig.calls if c[0] == "PUT"]
+
+
+def bounce_at_ig(S, **kw):
+    """A bounce buy filled at 13400.5, with its stop (12 below) and take profit (100 above) as IG holds them."""
+    sender, ig, alerts, sleeps, clock = make(S, **kw)
+    r = sender.place(idea(BOLLINGER_BOUNCE, BUY), calendar=[])
+    pos = next(p for p in ig.positions if p["position"]["dealId"] == r.deal_id)["position"]
+    pos["stopLevel"], pos["limitLevel"] = 13388.5, 13500.5
+    return sender, ig, alerts, r
+
+
+def test_the_stop_is_moved_at_ig_with_the_take_profit_kept_and_counts_once_ig_confirms_it(S):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    m = sender.move_stop(r.reference, D("13400.5"), why="6 pips up")
+    assert (m.ok, m.what, m.level) == (True, "stop moved", D("13400.5"))
+    (method, path, version, body, headers), = moves(ig)
+    assert (path, version, headers) == (f"/positions/otc/{r.deal_id}", "2",
+                                        {"VERSION": "2", "Content-Type": "application/json"})
+    assert body == {"stopLevel": 13400.5, "limitLevel": 13500.5, "trailingStop": False, "trailingStopDistance": None,
+                    "trailingStopIncrement": None, "guaranteedStop": False}       # the take profit is never removed
+    assert ("GET", f"/positions/{r.deal_id}") in [c[:2] for c in ig.calls]      # IG's position read first
+    assert events(sender)[-2:] == ["stop move sending", "stop moved"]
+    moved = records(sender)[-1]
+    assert (moved["stop_level"], moved["how"]) == ("13400.5", "confirmed")
+    assert sender.trades[r.reference].stop_level == D("13400.5") and alerts.sent == []
+
+
+def test_a_moved_stop_is_known_again_after_a_restart(S):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    sender.move_stop(r.reference, D("13400.5"))
+    again, *_ = make(S, ig)
+    assert again.trades[r.reference].stop_level == D("13400.5")
+
+
+@pytest.mark.parametrize("answer, reason", [("reject", "ATTACHED_ORDER_LEVEL_ERROR"),
+                                            ("http-400", "error.service.otc.invalid.stop"),
+                                            ("timeout", "no clear answer")])
+def test_a_move_ig_does_not_confirm_keeps_the_old_stop_and_alerts_the_owner(S, answer, reason):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    ig.move_answer = answer
+    m = sender.move_stop(r.reference, D("13400.5"))
+    assert (m.ok, m.what) == (False, "stop not moved") and reason in m.reasons[0]
+    assert sender.trades[r.reference].stop_level is None
+    assert next(p for p in ig.positions if p["position"]["dealId"] == r.deal_id)["position"]["stopLevel"] == 13388.5
+    (key, text), = alerts.sent
+    assert key == f"stop-move-refused-{r.deal_id}" and reason in text and "tried again" in text
+    assert events(sender)[-1] == "stop not moved"
+
+
+def test_an_unclear_answer_with_the_new_stop_at_ig_counts_as_moved(S):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    ig.move_answer = "timeout-done"
+    m = sender.move_stop(r.reference, D("13400.5"))
+    assert m.ok and records(sender)[-1]["how"] == "IG's position shows the new stop" and alerts.sent == []
+
+
+def test_a_stop_already_there_is_not_sent_again(S):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    next(p for p in ig.positions if p["position"]["dealId"] == r.deal_id)["position"]["stopLevel"] = 13400.5
+    m = sender.move_stop(r.reference, D("13400.5"))
+    assert m.ok and moves(ig) == [] and records(sender)[-1]["how"] == "already at IG"
+
+
+def test_no_move_for_a_position_ig_no_longer_has_and_no_alert(S):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    ig.positions = []
+    m = sender.move_stop(r.reference, D("13400.5"))
+    assert not m.ok and moves(ig) == [] and alerts.sent == [] and events(sender)[-1] == "stop not moved"
+
+
+def test_paper_records_the_move_and_sends_nothing(S):
+    ig = PretendIG()
+    sender = OrderSender(S, ig, FakeAlerts(), now=lambda: WED, sleep=lambda s: None,
+                         quote=lambda: (D("13400.0"), D("13401.5")), paper=True)
+    sender.start()
+    r = sender.place(idea(BOLLINGER_BOUNCE, BUY), calendar=[])
+    m = sender.move_stop(r.reference, D("13401.5"))
+    assert m.ok and moves(ig) == [] and records(sender)[-1]["how"] == "paper"

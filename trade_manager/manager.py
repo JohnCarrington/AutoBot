@@ -11,7 +11,13 @@ a bar whose open, high, low and close are the same), in this order (as the resea
      furthest point), filled at the stop or at the bar's open if it opened past it. In the entry bar the stop
      counts only if the bar opened past the entry price or closed beyond the stop (a candle does not say
      which came first). The slow grind's lock (strategies.common.profit_lock, 15/10): once the trade has been
-     lock_from pips up (in an earlier bar), the bot closes it if price comes back to lock_at pips up;
+     lock_from pips up (in an earlier bar), the bot closes it if price comes back to lock_at pips up. The
+     Bollinger bounce's break-even (owner, 13 November 2026, change 4 of the bounce changes replay): once the
+     trade has been bounce.break_even_after_pips up (6; in an earlier bar, or live an earlier price), its stop is
+     moved at IG to the price it opened at, before this bar is looked at (TradeManager.on_bar); from then on the
+     stop at IG is at 0 pips. Live, the move counts only once IG confirms it ("stop moved"); if IG does not
+     confirm it the old stop stays ("stop not moved", the owner alerted by the order sender) and the move is tried
+     again after orders.close_retry_seconds;
   3. the close at the opposite Bollinger band (owner, 11 November 2026, as tested in
      docs/research/management_and_targets_20261111.md): the range trade closes in full there
      (range_trade.close_percent_at_opposite_band, 100), the Bollinger bounce closes half there and the rest
@@ -65,6 +71,8 @@ HOLD, HALF_CLOSE, CLOSE, FORCED_CLOSE, STOPPED_BY_IG, TAKE_PROFIT_AT_IG, WATCHIN
 # Live only: IG closed the position without the bot (found by the order sender: IG's level and time), and a
 # close the bot sent that IG did not confirm (the trade stays open; recorded, never a close).
 CLOSED_AT_IG, CLOSE_NOT_DONE = "closed at IG", "close not done"
+# The Bollinger bounce's stop moved to break-even at IG, and a move IG did not confirm (owner, 13 November 2026).
+STOP_MOVED, STOP_NOT_MOVED = "stop moved", "stop not moved"
 # Live only: the owner closed it by hand at IG (IG's channel SYSTEM, not at the stop or take profit; owner,
 # 11 November 2026). Kept apart from the bot's own exits in the records, the dashboard and the summaries.
 CLOSED_BY_OWNER = "closed by owner"
@@ -137,6 +145,10 @@ class ManagedTrade:
     expected_at_ig: tuple | None = None     # live: IG's stop or take profit expected, not yet confirmed
     retry_close_at: datetime | None = None  # live: a close IG did not confirm is tried again from this time
     close_attempts: int = 0                 # live: closes sent that IG did not confirm
+    break_even_after: Decimal | None = None  # the bounce: its stop moves to break-even once this many pips up
+    stop_moved: bool = False                # its stop is at break-even at IG (confirmed)
+    retry_move_at: datetime | None = None   # live: a stop move IG did not confirm is tried again from this time
+    move_attempts: int = 0                  # live: stop moves IG did not confirm
     decisions: list[Decision] = field(default_factory=list)
 
     @property
@@ -191,7 +203,17 @@ def plan(settings: Any, reference: str, strategy: str, direction: str, opened_at
             close_at, why = min(news), "closed 15 minutes before big news"
     return ManagedTrade(reference, strategy, direction, opened_at, Decimal(entry_price), Decimal(fill), Decimal(stop_pips),
                         Decimal(tp), close_at, why, profit_lock(settings, strategy), closed_on_level_rejection(strategy),
-                        band_close_share(settings, strategy), day_news_direction(settings, pair, opened_at, calendar))
+                        band_close_share(settings, strategy), day_news_direction(settings, pair, opened_at, calendar),
+                        break_even_after=break_even_after(settings, strategy))
+
+
+def break_even_after(settings: Any, strategy: str) -> Decimal | None:
+    """The pips in profit after which a trade's stop moves to break-even at IG: bounce.break_even_after_pips for the
+    Bollinger bounce (owner, 13 November 2026: 6); None for every other strategy, or when the setting is 0."""
+    if strategy != BOLLINGER_BOUNCE:
+        return None
+    pips = Decimal(str(settings.bounce.break_even_after_pips))
+    return pips if pips > 0 else None
 
 
 def band_close_share(settings: Any, strategy: str) -> Decimal:
@@ -231,6 +253,8 @@ def step(settings: Any, t: ManagedTrade, bar: Bar, band: tuple[Decimal, Decimal]
     if not first and bar.start >= t.close_at:                          # 1. the scheduled close
         return finish(FORCED_CLOSE, g("open"), t.close_why)
     level = -t.stop_pips                                               # 2. the stop at IG, or the lock
+    if t.stop_moved:                                                   # the bounce's stop moved to break-even
+        level = max(level, Decimal(0))
     locked = t.lock is not None and t.best is not None and t.best >= t.lock[0]
     if locked:
         level = max(level, Decimal(t.lock[1]))
@@ -246,7 +270,8 @@ def step(settings: Any, t: ManagedTrade, bar: Bar, band: tuple[Decimal, Decimal]
         price = (t.fill - fill_pips * ppp) if sell else (t.fill + fill_pips * ppp)
         if locked and level > 0:
             return finish(CLOSE, price, f"the profit lock: back to {t.lock[1]} pips up after {t.lock[0]} up")
-        return finish(STOPPED_BY_IG, price, "the stop at IG")
+        return finish(STOPPED_BY_IG, price, "the stop at IG (moved to break-even)" if t.stop_moved and level == 0
+                      else "the stop at IG")
     if t.band_close > 0 and not t.half_done and band is not None:      # 3. the close at the opposite band
         upper, lower = (Decimal(x) for x in band)
         b = lower if sell else upper
@@ -355,6 +380,7 @@ class TradeManager:
         the analyser's rejection setups running at levels that count, after this bar."""
         done = []
         for t in [t for t in self.trades.values() if t.open and (only is None or t.reference in only)]:
+            self._break_even(t)
             before = self._before(t)
             kept: list[Decision] = []                   # bot closes IG confirmed in this bar (a half close)
             for d in step(self.s, t, bar, band, rejections):
@@ -412,6 +438,31 @@ class TradeManager:
                                              + ("running against it at a level" if now_watching else "is over")))
         self.save_state()
         return done
+
+    def _break_even(self, t: ManagedTrade) -> None:
+        """The Bollinger bounce's break-even: once the trade has been break_even_after pips up (its best, from earlier
+        bars or prices), the order sender moves its stop at IG to the price it opened at. The stop counts as moved
+        only once IG confirms it; otherwise the old stop stays and the move is tried again after
+        orders.close_retry_seconds (live; in a replay or a paper trade the move is recorded at once)."""
+        if t.break_even_after is None or t.stop_moved or t.best is None or t.best < t.break_even_after:
+            return
+        if self.ig_confirms and t.retry_move_at is not None and self.now() < t.retry_move_at:
+            return
+        why = f"{t.best} pips up (break-even from {t.break_even_after}): the stop moves to the open price {t.fill}"
+        sent = self.sender.move_stop(t.reference, t.fill, why=why) if hasattr(self.sender, "move_stop") else None
+        if sent is None or getattr(sent, "ok", False) or not self.ig_confirms:
+            if t.move_attempts and hasattr(self.sender, "alerts"):
+                self.sender.alerts.info(f"AutoBot: the stop of {t.strategy} {t.direction} trade {t.reference} is now at "
+                                        f"break-even ({t.fill}) at IG, after {t.move_attempts} move(s) IG did not confirm.")
+            t.stop_moved, t.retry_move_at = True, None
+            self._record(t, Decision(STOP_MOVED, t.fill, Decimal(0), why), sent)
+            return
+        t.move_attempts += 1
+        t.retry_move_at = self.now() + timedelta(seconds=self.s.orders.close_retry_seconds)
+        reason = "; ".join(getattr(sent, "reasons", None) or [getattr(sent, "what", "no answer")])
+        self._record(t, Decision(STOP_NOT_MOVED, t.fill, None,
+                                 f"{why}: not done, IG did not confirm it ({reason}); the old stop stays and the move "
+                                 f"is tried again in {self.s.orders.close_retry_seconds} seconds"), sent)
 
     def close_now(self, reference: str, price: Decimal, why: str, at: datetime) -> Decision | None:
         """Close one open trade in full at once, outside a bar (the pace and target rule: a Bollinger bounce at a

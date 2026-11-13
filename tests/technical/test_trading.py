@@ -438,6 +438,27 @@ def test_the_best_pips_so_far_are_restored_after_a_restart_so_the_lock_carries_o
     assert not t2.open and t2.state == "close" and "profit lock" in t2.decisions[-1].why
 
 
+def test_a_bounces_stop_moved_to_break_even_at_ig_is_known_after_a_restart(S, monkeypatch):
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {C[1].start: [idea(BOLLINGER_BOUNCE, C[1].start)]},
+                                        trading_on=True)
+    e.start(WED)
+    feed(e, clock, C[:2])
+    (t,) = e.manager.trades.values()                            # IG filled the sell at 13400.5
+    for k in (5, 6):                                            # 7 up on one price (buy 13393.5), the move on the next
+        clock["t"] = C[2].start + timedelta(seconds=k)
+        e.on_price(tick(clock["t"], 13392.0))
+    (put,) = [c for c in ig.calls if c[0] == "PUT"]
+    assert put[3]["stopLevel"] == float(t.fill) and t.stop_moved
+    again, *_ = make(S, monkeypatch, C[2:], {}, trading_on=True, ig=ig)    # a restart
+    again.start(clock["t"])
+    (t2,) = again.manager.trades.values()
+    assert t2.stop_moved
+    clock2 = {"t": C[2].start + timedelta(seconds=20)}
+    again.now = lambda: clock2["t"]
+    again.on_price(tick(clock2["t"], 13392.0))
+    assert len([c for c in ig.calls if c[0] == "PUT"]) == 1      # not moved again
+
+
 def test_without_saved_state_a_trade_starts_from_nothing(S, monkeypatch):
     from trade_manager.manager import TradeManager, plan
     m = TradeManager(S, None)

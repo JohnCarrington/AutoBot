@@ -34,6 +34,8 @@ def _project_python_files():
     for p in ROOT.rglob("*.py"):
         if ".venv" in p.parts or p.resolve() == THIS:
             continue
+        if p.relative_to(ROOT).parts[:2] == ("data", "research"):     # frozen research copies of the bot's code
+            continue                                                  # (never run by the service)
         yield p
 
 

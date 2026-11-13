@@ -125,6 +125,8 @@ class Trading:
                           self.calendar, self._trend_day(t.opened_at))
                 if t.half_closed:
                     mt.half_done, mt.state = True, "half close"
+                if t.stop_level is not None:                # the bounce's stop already moved to break-even at IG
+                    mt.stop_moved = True
                 mt.bars = 1                                 # already open: no entry-candle rule
                 if self.manager.restore(mt, saved):         # its best pips so far, half close, watching
                     log.info("Trade %s: its saved best (%s pips) restored.", t.reference, mt.best)

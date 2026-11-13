@@ -184,6 +184,11 @@ confirmation_candle_within_candles_of_reversal = 3
 # normal exits (owner, 11 November 2026: 50, as tested in docs/research/management_and_targets_20261111.md).
 # 0 (no close at the band), 50 or 100: the order sender closes in full or by half only.
 close_percent_at_opposite_band = 50
+# The break-even (owner, 13 November 2026, change 4 of docs/research/bounce_changes_20261113.md): once a Bollinger
+# bounce has been this many pips in profit, its stop is moved at IG to the price it opened at. The move counts only
+# once IG confirms it; if IG refuses, the old stop stays, the owner is alerted and the move is tried again after
+# orders.close_retry_seconds. 0: never moved.
+break_even_after_pips = 6
 # The pace and target rule (owner, 11 November 2026, as tested in docs/research/pace_and_target_20261111.md:
 # "within 5 pips, under 5 pips an hour over the last 2 hours"). While the bot has open trend trades (EMA pullback,
 # slow grind, breakout), a Bollinger bounce against them opens only at a significant level in their direction
