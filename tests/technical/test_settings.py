@@ -111,6 +111,7 @@ EXPECTED = {
         "hourly_slope_candles": 3, "hourly_min_slope_pips_per_hour": Decimal("0.16"),
         "hourly_min_gap_fast_mid_pips": Decimal("0.25"), "hourly_min_gap_mid_slow_pips": Decimal("0.20"),
         "hourly_history_candles": 600,
+        "rollover_no_new_trades_from": time(21, 55), "rollover_no_new_trades_until": time(22, 15),
     },
     "possible_reversal": {"min_trend_move_pips": 30},
     "breakout": {"trigger_within_candles": 3, "stop_loss_pips": 12, "take_profit_pips": 50},
@@ -485,6 +486,15 @@ def test_the_slow_grind_settings_load_with_the_owners_values():
     assert (sg.min_pause_candles, sg.stop_loss_pips, sg.take_profit_pips, sg.lock_from_pips, sg.lock_at_pips) == (2, 15, 20, 15, 10)
     assert (sg.week_open_no_new_trades_minutes, sg.rollover_no_new_trades_from, sg.rollover_no_new_trades_until) == (
         15, time(21, 55), time(22, 15))
+
+
+def test_the_ema_pullback_rollover_window_loads_and_must_make_sense(tmp_path):
+    ep = load_settings().ema_pullback
+    assert (ep.rollover_no_new_trades_from, ep.rollover_no_new_trades_until) == (time(21, 55), time(22, 15))
+    data = _raw()
+    data["ema_pullback"]["rollover_no_new_trades_until"] = "21:55"
+    with pytest.raises(SettingsError, match=r"\[ema_pullback\] rollover_no_new_trades_from must be earlier"):
+        load_settings(_write(tmp_path, data))
 
 
 def test_the_slow_grind_lock_and_rollover_window_must_make_sense(tmp_path):

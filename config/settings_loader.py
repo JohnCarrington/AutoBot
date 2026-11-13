@@ -414,6 +414,8 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "hourly_min_gap_fast_mid_pips": _decimal_number("0", "100"),
         "hourly_min_gap_mid_slow_pips": _decimal_number("0", "100"),
         "hourly_history_candles": _whole_number(50, 5000),
+        "rollover_no_new_trades_from": _clock_time,
+        "rollover_no_new_trades_until": _clock_time,
     },
     "possible_reversal": {
         "min_trend_move_pips": _whole_number(1, 1000),
@@ -680,6 +682,10 @@ def _check_together(v: dict[str, dict[str, Any]]) -> None:
         raise SettingsError("Setting [slow_grind] lock_at_pips must be smaller than lock_from_pips.")
     if sg["rollover_no_new_trades_from"] >= sg["rollover_no_new_trades_until"]:
         raise SettingsError("Setting [slow_grind] rollover_no_new_trades_from must be earlier than "
+                            "rollover_no_new_trades_until.")
+    ep = v["ema_pullback"]
+    if ep["rollover_no_new_trades_from"] >= ep["rollover_no_new_trades_until"]:
+        raise SettingsError("Setting [ema_pullback] rollover_no_new_trades_from must be earlier than "
                             "rollover_no_new_trades_until.")
 
 

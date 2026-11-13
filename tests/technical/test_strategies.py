@@ -634,6 +634,14 @@ def test_the_ema_pullback_may_open_at_any_time_the_market_is_open(S, t):
         assert "outside the trading hours 06:00 to 20:30 UK" in may_open(S, "GBPUSD", name, t, [])
 
 
+def test_the_ema_pullback_does_not_open_in_the_rollover(S):
+    # 21:55 to 22:15 UK (GMT here, and BST on 21 October): no new EMA pullback (owner, 13 November 2026)
+    for t in (U(2026, 11, 5, 21, 55), U(2026, 11, 5, 22, 0), U(2026, 11, 12, 22, 14), U(2026, 10, 21, 21, 0)):
+        assert any("(the rollover)" in r for r in may_open(S, "GBPUSD", EMA_PULLBACK, t, [])), t
+    for t in (U(2026, 11, 5, 21, 50), U(2026, 11, 5, 22, 15), U(2026, 10, 21, 21, 15)):
+        assert may_open(S, "GBPUSD", EMA_PULLBACK, t, []) == [], t
+
+
 @pytest.mark.parametrize("t", [U(2026, 11, 7, 12, 0), U(2026, 11, 1, 20, 0), U(2026, 11, 6, 22, 0)])
 def test_nothing_opens_while_the_market_is_closed(S, t):
     for name in (EMA_PULLBACK,) + OTHERS:
@@ -708,7 +716,7 @@ def test_no_ema_pullback_opens_after_20_30_uk_on_friday(S, t):
 def test_the_ema_pullback_still_opens_on_friday_before_20_30_uk_and_thursday_night(S):
     assert may_open(S, "GBPUSD", EMA_PULLBACK, U(2026, 10, 23, 19, 25), []) == []      # 20:25 BST
     assert may_open(S, "GBPUSD", EMA_PULLBACK, U(2026, 11, 6, 20, 25), []) == []      # 20:25 GMT
-    assert may_open(S, "GBPUSD", EMA_PULLBACK, U(2026, 11, 5, 22, 0), []) == []       # Thursday 22:00
+    assert may_open(S, "GBPUSD", EMA_PULLBACK, U(2026, 11, 5, 22, 15), []) == []      # Thursday 22:15, after the rollover
 
 
 # ---- the EMA pullback's take profit on big-news days (design section 4) ----------------------

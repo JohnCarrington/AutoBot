@@ -243,6 +243,11 @@ hourly_min_gap_fast_mid_pips = 0.25
 hourly_min_gap_mid_slow_pips = 0.20
 # Stored hourly candles read to work out the hourly EMAs.
 hourly_history_candles = 600
+# No new EMA pullback trade from rollover_no_new_trades_from to rollover_no_new_trades_until UK:
+# IG's spread jumps to about 17 pips at the 22:00 rollover, so a trade opened then is stopped at
+# once (owner, 13 November 2026; the slow grind's window, design 6).
+rollover_no_new_trades_from = "21:55"
+rollover_no_new_trades_until = "22:15"
 
 [possible_reversal]
 min_trend_move_pips = 30

@@ -110,6 +110,8 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `ema_pullback.hourly_min_gap_fast_mid_pips` | The hourly 8 and 13 EMAs must be at least this far apart. 161's value. | 0.25 pips |
 | `ema_pullback.hourly_min_gap_mid_slow_pips` | The hourly 13 and 20 EMAs must be at least this far apart. 161's value. | 0.20 pips |
 | `ema_pullback.hourly_history_candles` | Stored hourly candles read to work out the hourly EMAs (enough for them to settle). | 600 hourly candles |
+| `ema_pullback.rollover_no_new_trades_from` | No new EMA pullback trade from this UK time... | 21:55 |
+| `ema_pullback.rollover_no_new_trades_until` | ...until this UK time (the 22:00 rollover, when IG's spread jumps to about 17 pips). **Owner's decision, 13 November 2026.** | 22:15 |
 | `possible_reversal.min_trend_move_pips` | A possible reversal only counts if the trend before it moved at least this far. | 30 pips |
 | `range_trade.close_percent_at_opposite_band` | Share of a range trade closed when price reaches the opposite band (the band at the last finished candle): 50 or 100 (the order sender closes in full or by half only). **Owner's value 100, in full, 11 November 2026** (50 before), as tested in `docs/research/management_and_targets_20261111.md`. | 100% |
 | `range_trade.rejection_candle_within_candles` | Range trade (and the shared rejection part's range version): the red rejection candle must come within this many candles after the candle that pierced the band. 1 means the very next candle, as the design says. | 1 candle |

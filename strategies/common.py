@@ -110,7 +110,8 @@ def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: lis
     """Every reason a new trade of this strategy may not open at t (empty: hours and news allow it).
     EMA pullback: any time the market is open, big-news windows included, except after
     hours.close_all_trades_at (20:30) UK on Friday, so none is held over the weekend (owner,
-    7 November 2026).
+    7 November 2026), and from ema_pullback.rollover_no_new_trades_from (21:55) to
+    ema_pullback.rollover_no_new_trades_until (22:15) UK, the rollover (owner, 13 November 2026).
     Slow grind (owner, 8 November 2026): any time the market is open, big-news windows included,
     except from hours.close_all_trades_at (20:30) to midnight UK every day, in the first
     slow_grind.week_open_no_new_trades_minutes (15) after the week opens, and from
@@ -146,6 +147,10 @@ def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: lis
         if lt.weekday() == 4 and lt.time() >= settings.hours.close_all_trades_at:
             reasons.append(f"after {settings.hours.close_all_trades_at:%H:%M} UK on Friday: "
                            f"no {strategy} trade is held over the weekend")
+        ep = settings.ema_pullback
+        if ep.rollover_no_new_trades_from <= lt.time() < ep.rollover_no_new_trades_until:
+            reasons.append(f"from {ep.rollover_no_new_trades_from:%H:%M} to {ep.rollover_no_new_trades_until:%H:%M} UK "
+                           f"(the rollover): no new {strategy} trade")
         return reasons
     lt = t.astimezone(ZoneInfo(tz) if isinstance(tz, str) else tz).time()
     sw = settings.switches
