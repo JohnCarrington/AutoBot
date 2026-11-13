@@ -54,6 +54,7 @@ from levels.current import build
 from prices.calendar import floor_5m
 from prices.model import Candle
 from strategies.replay import StrategyRunner
+from strategies.common import LEVEL_REVERSAL, take_profit_pips_to, take_profit_price
 from trade_manager.manager import Bar, Rejection, TradeManager, plan
 
 log = logging.getLogger("autobot.trading")
@@ -123,6 +124,9 @@ class Trading:
             for t in [t for t in self.sender.trades.values() if t.status == "open"]:
                 mt = plan(self.s, t.reference, t.strategy, t.direction, t.opened_at, t.level, t.level, t.stop_pips,
                           self.calendar, self._trend_day(t.opened_at))
+                rec = self.meta.get(t.reference) or {}
+                if t.strategy == LEVEL_REVERSAL and rec.get("take_profit_pips") not in (None, ""):
+                    mt.take_profit_pips = Decimal(str(rec["take_profit_pips"]))   # its next level, as recorded
                 if t.half_closed:
                     mt.half_done, mt.state = True, "half close"
                 if t.stop_level is not None:                # the bounce's stop already moved to break-even at IG
@@ -275,6 +279,9 @@ class Trading:
         t = self.sender.trades[r.reference]
         mt = plan(self.s, r.reference, idea.strategy, idea.direction, opened_at, idea.entry_price, r.level,
                   t.stop_pips, self.calendar, td)
+        tpp = take_profit_price(self.s, idea)
+        if tpp is not None:                                 # the level reversal: to the next daily pivot level
+            mt.take_profit_pips = take_profit_pips_to(tpp, idea.direction, r.level, self.s.market.points_per_pip)
         if not self.replay:
             mt.bars = 1                                     # opened at the market: every later price is after it
         self.manager.add(mt)

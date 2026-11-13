@@ -1020,11 +1020,46 @@ def lr_setup(pierced, highs, direction=SELL):
     return watcher, [ev], [LR0] + cs + [trig]
 
 
-def run_lr(s, watcher, events, candles):
+def run_lr(s, watcher, events, candles, levels=None):
     g, out = LevelReversal(s), []
     for c in candles:
-        out += g.on_candle(c, watcher, events if c is candles[-1] else [])
+        out += g.on_candle(c, watcher, events if c is candles[-1] else [], levels)
     return out
+
+
+def lr_levels(*pairs):
+    return SimpleNamespace(levels=[SimpleNamespace(type=t, price=D(str(p))) for t, p in pairs])
+
+
+def test_level_reversal_take_profit_is_the_next_daily_pivot_level(S):
+    # owner, 13 November 2026: run to the next daily pivot level (pivot, R1-R3, S1-S3) beyond the entry, exactly there
+    lv = lr_levels(("pivot", 100), ("previous_day_low", 94), ("round_number", 93), ("turning_low", 92.5),
+                   ("S1", 90), ("S2", 80), ("R1", 110))
+    w, ev, cs = lr_setup([("pivot", 100)], [104, 103, 102])                 # a sell triggered at 96
+    (x,) = run_lr(S, w, ev, cs, lv)
+    assert x.context["take_profit_price"] == D(90) and x.context["take_profit_level"] == "S1 90"
+    assert "take profit at the next daily pivot level, S1 90" in x.steps[-1]
+    w, ev, cs = lr_setup([("pivot", 100)], [96, 97, 98], direction=BUY)      # a buy triggered at 104
+    (x,) = run_lr(S, w, ev, cs, lv)
+    assert x.context["take_profit_level"] == "R1 110"
+
+
+def test_level_reversal_with_no_daily_pivot_level_beyond_keeps_20_pips(S):
+    w, ev, cs = lr_setup([("S2", 100)], [104, 103, 102])
+    (x,) = run_lr(S, w, ev, cs, lr_levels(("S2", 100), ("round_number", 90), ("R1", 120)))
+    assert "take_profit_price" not in x.context and "take profit 20 pips (no daily pivot level below the entry)" in x.steps[-1]
+    (x,) = run_lr(S, w, ev, cs)                                            # no levels given
+    assert "take_profit_price" not in x.context
+
+
+def test_take_profit_price_is_only_the_level_reversals(S):
+    from strategies.common import take_profit_price, take_profit_pips_to
+    i = check(S, "GBPUSD", cand(LEVEL_REVERSAL, SELL), state(TREND, DOWN), PIVOT, EMA100)
+    i.context["take_profit_price"] = D("13206.0")
+    assert take_profit_price(S, i) == D("13206.0")
+    assert take_profit_price(S, check(S, "GBPUSD", cand(EMA_PULLBACK, SELL), state(TREND, DOWN), PIVOT, EMA100)) is None
+    assert take_profit_pips_to(D("13206.0"), SELL, D("13241.1"), 1) == D("35.1")
+    assert take_profit_pips_to(D("13430.2"), BUY, D("13401.5"), 1) == D("28.7")
 
 
 def test_level_reversal_at_r2_within_the_allowance(S):
@@ -1143,8 +1178,9 @@ def test_the_replay_runs_the_level_reversal(monkeypatch, S):
     seen = []
 
     class Spy(LevelReversal):
-        def on_candle(self, c, watcher, events):
+        def on_candle(self, c, watcher, events, levels=None):
             seen.append((c.start, watcher, list(events)))
+            assert levels is not None                        # the levels, for its take profit
             return []
     monkeypatch.setattr(replay_mod, "LevelReversal", Spy)
     fake_replay(monkeypatch, S, {0: (TREND, DOWN)})

@@ -75,7 +75,7 @@ from typing import Any, Callable
 from ig.errors import IGRequestError
 from safety.refusals import on_refusal
 from safety.rules import AccountFunds, OpenTrade, decide, order_for
-from strategies.common import BOLLINGER_BOUNCE, RANGE_TRADE, stop_price, take_profit_pips
+from strategies.common import BOLLINGER_BOUNCE, RANGE_TRADE, stop_price, take_profit_pips, take_profit_price
 
 log = logging.getLogger("autobot.orders")
 
@@ -476,6 +476,21 @@ class OrderSender:
                           f"reversal's stop price ({sp})")
         return dist, ""
 
+    def _limit_distance(self, idea: Any, price: Any) -> tuple[Decimal | None, str]:
+        """The level reversal's take profit price (the next daily pivot level; owner, 13 November 2026) as a
+        distance in IG's points from the current price (the bid for a sell, the offer for a buy: the price it
+        opens at) at the moment of sending, as for its stop: IG then closes the trade exactly at that level."""
+        q = self.quote()
+        if not q:
+            return None, "no current price to turn the level reversal's take profit price into a distance"
+        bid, offer = (Decimal(str(x)) for x in q)
+        dist = (bid - Decimal(price)) if idea.direction == "sell" else (Decimal(price) - offer)
+        dist = dist.quantize(Decimal("0.1"))
+        if dist <= 0:
+            return None, (f"the price ({bid if idea.direction == 'sell' else offer}) is already past the level "
+                          f"reversal's take profit price ({price})")
+        return dist, ""
+
     def place(self, idea: Any, *, paused: bool = False, trend_day: str | None = None,
               calendar: list | None = None, day: Any = None) -> Result:
         """Send one market order for an idea, after the safety rules. Never sent twice."""
@@ -493,9 +508,16 @@ class OrderSender:
             if stop_points is None:
                 self._record("safety refused", strategy=idea.strategy, direction=idea.direction, reasons=[why])
                 return Result(False, "safety refused", reasons=[why])
-            ref = self._reference()
             tp = take_profit_pips(self.s, idea.strategy, now, self.pair, calendar, direction=idea.direction,
                                   trend_day=trend_day)
+            tpp = take_profit_price(self.s, idea)
+            if tpp is not None:                                 # the level reversal's next level, as a distance
+                tp_points, why = self._limit_distance(idea, tpp)
+                if tp_points is None:
+                    self._record("safety refused", strategy=idea.strategy, direction=idea.direction, reasons=[why])
+                    return Result(False, "safety refused", reasons=[why])
+                tp = tp_points / self.ppp
+            ref = self._reference()
             body = {                                                # exactly AutoBot 161's 17 fields
                 "currencyCode": self.o.currency,
                 "direction": idea.direction.upper(),

@@ -136,12 +136,13 @@ class StrategyRunner:
         band = Band(partial.start, f.middle, f.upper, f.lower) if f.upper is not None else None
         watcher = fork(self.watcher)
         breakout, grind, pullback, reversal = fork(self.breakout), fork(self.grind), fork(self.pullback), fork(self.reversal)
-        events = watcher.on_candle(partial, band, levels if levels is not None else build(s, self.memo, partial.start))
+        lv = levels if levels is not None else build(s, self.memo, partial.start)
+        events = watcher.on_candle(partial, band, lv)
         cands = (breakout.on_candle(partial, None, None)
                  + grind.on_candle(partial, sg_ema.get(partial.start))
                  + pullback.on_candle(partial, fast.get(partial.start), slow.get(partial.start))
                  + bounce_candidates(watcher, events) + range_candidates(watcher, events)
-                 + reversal.on_candle(partial, watcher, events))
+                 + reversal.on_candle(partial, watcher, events, lv))
         st = self.state_after(len(self.week) - 1)
         e100 = ema100.get(self.week[-1].start)
         return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100) for cand in cands]
@@ -167,14 +168,15 @@ class StrategyRunner:
             changes = self.tracker.changes
             change_at = {ch.time: (k, ch) for k, ch in enumerate(changes)}
             band = Band(c.start, f.middle, f.upper, f.lower) if f.upper is not None else None
-            events = self.watcher.on_candle(c, band, build(s, self.memo, c.start))
+            lv = build(s, self.memo, c.start)
+            events = self.watcher.on_candle(c, band, lv)
             kc = change_at.get(c.start)
             since = changes[kc[0] - 1].time if kc and kc[0] > 0 else None
             cands = (self.breakout.on_candle(c, kc[1] if kc else None, since)
                      + self.grind.on_candle(c, sg_ema.get(c.start))
                      + self.pullback.on_candle(c, fast.get(c.start), slow.get(c.start))
                      + bounce_candidates(self.watcher, events) + range_candidates(self.watcher, events)
-                     + self.reversal.on_candle(c, self.watcher, events))
+                     + self.reversal.on_candle(c, self.watcher, events, lv))
             if cands:
                 st = self.state_after(i - 1)
                 e100 = ema100.get(self.week[i - 1].start) if i > 0 else None

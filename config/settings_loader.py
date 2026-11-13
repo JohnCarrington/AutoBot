@@ -437,6 +437,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "allowance_pips_round_number": _whole_number(0, 100),
         "stop_beyond_furthest_pips": _whole_number(1, 100),
         "take_profit_pips": _whole_number(1, 1000),
+        "max_open_trades": _whole_number(1, 10),
     },
     "trend_day": {
         "level_above": _one_of("R1", "R2", "R3"),

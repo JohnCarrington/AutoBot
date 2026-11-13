@@ -121,7 +121,7 @@ EXPECTED = {
     "level_reversal": {"level_types": ("S2", "R2", "pivot", "round_number"), "round_numbers_every_pips": 100,
                        "allowance_pips_r2": 12, "allowance_pips_s2": 12, "allowance_pips_pivot": 12,
                        "allowance_pips_round_number": 5,
-                       "stop_beyond_furthest_pips": 6, "take_profit_pips": 20},
+                       "stop_beyond_furthest_pips": 6, "take_profit_pips": 20, "max_open_trades": 2},
     "range_trade": {"close_percent_at_opposite_band": 100, "rejection_candle_within_candles": 1,
                     "trigger_within_candles": 1},
     "indicators": {"bollinger_periods": 20, "bollinger_std_devs": 2, "ema_periods": (7, 13, 21, 100, 200),

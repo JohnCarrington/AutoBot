@@ -226,7 +226,9 @@ def take_profit_pips(settings: Any, strategy: str, opened: datetime | None = Non
       each of these two gets TAKE_PROFIT_PIPS instead for a trade opened on a UK day with big news
       for the pair. Give `opened` and `pair`; without them the normal take profit is returned;
     - the breakout: breakout.take_profit_pips (50) on any day;
-    - the level reversal: level_reversal.take_profit_pips (20) on any day (owner, 8 November 2026).
+    - the level reversal: level_reversal.take_profit_pips (20) on any day (owner, 8 November 2026), used only
+      when there is no daily pivot level beyond its entry: its take profit is that next level (owner,
+      13 November 2026; take_profit_price).
     On a trend day (analyser/trend_day.py, design 2.4; owner, 8 November 2026), an EMA pullback or slow
     grind trade in the trend day's direction gets TAKE_PROFIT_PIPS too: give `direction` (buy or sell)
     and `trend_day` (the day's check: "down", "up" or None)."""
@@ -272,6 +274,22 @@ def stop_price(settings: Any, idea: Any) -> Decimal | None:
     if idea.strategy != LEVEL_REVERSAL:
         return None
     return idea.context["stop_price"]
+
+
+def take_profit_price(settings: Any, idea: Any) -> Decimal | None:
+    """The take profit as a price (chart price) when a strategy sets it from the levels: the level reversal's,
+    the next daily pivot level beyond the entry (owner, 13 November 2026; the idea's context). None for every
+    other strategy, and for a level reversal with no daily pivot level beyond the entry: their take profit is
+    take_profit_pips() from the entry."""
+    if idea.strategy != LEVEL_REVERSAL:
+        return None
+    return idea.context.get("take_profit_price")
+
+
+def take_profit_pips_to(price: Decimal, direction: str, fill: Decimal, points_per_pip: Any) -> Decimal:
+    """The pips from a trade's open price to its take profit price, to a tenth of a pip (at least 0.1)."""
+    d = (Decimal(fill) - Decimal(price)) if direction == SELL else (Decimal(price) - Decimal(fill))
+    return max(Decimal("0.1"), (d / Decimal(points_per_pip)).quantize(Decimal("0.1")))
 
 
 def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state: Any, pivot: Decimal | None,

@@ -34,7 +34,7 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `news.lower_is_better` | Expected direction (design section 2.4): for most releases a higher forecast than the previous figure is good for the currency; for releases whose name contains one of these, a lower one is. | Unemployment Rate, Jobless Claims, Claimant Count Change |
 | `news.country_currencies` | Finnhub's country code for each currency, so a release can be matched to the currencies of each pair switched on. | GB and UK = GBP, US = USD, EU and EMU = EUR, JP = JPY, CH = CHF, CA = CAD, AU = AUD, NZ = NZD |
 | `news.table_impacts` | Big, medium and small news come from AutoBot's news table, `config/news_table.toml` (see "News table" below). As on AutoBot 161, the table is applied only to releases Finnhub marks with one of these impacts; every other release is small. | high |
-| `limits.max_open_trades_per_strategy` | How many trades each strategy may have open at once. | 1 |
+| `limits.max_open_trades_per_strategy` | How many trades each strategy may have open at once (the level reversal has its own, `level_reversal.max_open_trades`; the EMA pullback none). | 1 |
 | `limits.bollinger_bounce_extra_opposite_direction_trades` | The Bollinger band bounce may also have this many trades open in the opposite direction (so up to 1 buy and 1 sell). | 1 |
 | `limits.max_open_trades` | The most trades open at once, not counting the EMA pullback's (design 6). The safety part refuses a new trade that would go over it. | 5 |
 | `orders.folder` | The order sender's record: every order, confirmation, refusal and close in `<folder>/<PAIR>/orders.jsonl`, from which the open trades are rebuilt after a restart (design 7). | /opt/autobot/data/orders |
@@ -130,7 +130,8 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `level_reversal.allowance_pips_pivot` | The same at the daily pivot. **Owner's value, 13 November 2026** (as at R2 and S2). | 12 pips |
 | `level_reversal.allowance_pips_round_number` | The same at a round number ending in 00. **Owner's value, 8 November 2026.** | 5 pips |
 | `level_reversal.stop_beyond_furthest_pips` | Its stop: this many pips beyond the furthest point price reached (so the distance from the entry varies). **Owner's value, 8 November 2026.** | 6 pips |
-| `level_reversal.take_profit_pips` | Its take profit, in pips from the entry, sent to IG. **Owner's value, 8 November 2026.** | 20 pips |
+| `level_reversal.take_profit_pips` | Its take profit, in pips from the entry, used only when there is no daily pivot level (pivot, R1 to R3, S1 to S3) beyond the entry; otherwise the take profit is that next level, exactly (owner, 13 November 2026). **Owner's value, 8 November 2026.** | 20 pips |
+| `level_reversal.max_open_trades` | Level reversal trades open at once (each still counts towards `limits.max_open_trades`). **Owner's value, 13 November 2026** (1 before, as `limits.max_open_trades_per_strategy`). | 2 |
 | `breakout.trigger_within_candles` | Breakout (design 3.5): the breakout candle's high (buy) or low (sell) must be broken within this many candles after it, or the setup expires. **Owner's value, 7 November 2026.** | 3 candles |
 | `breakout.stop_loss_pips` | The breakout's stop loss, in pips. **Owner's value, 10 November 2026** (6 from 7 November). 0 means not chosen: `STRATEGY_BREAKOUT` cannot be switched on while it is 0. | 12 pips |
 | `breakout.take_profit_pips` | The breakout's take profit, in pips. **Owner's value, 7 November 2026.** 0 means not chosen: `STRATEGY_BREAKOUT` cannot be switched on while it is 0. | 50 pips |

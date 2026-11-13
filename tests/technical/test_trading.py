@@ -9,7 +9,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from strategies.common import BOLLINGER_BOUNCE, BREAKOUT, BUY, EMA_PULLBACK, RANGE_TRADE, SELL, SLOW_GRIND, Idea
+from strategies.common import BOLLINGER_BOUNCE, BREAKOUT, BUY, EMA_PULLBACK, LEVEL_REVERSAL, RANGE_TRADE, SELL, SLOW_GRIND, Idea
 from tests.technical.test_orders import Over, PretendIG  # noqa: F401
 from trading import engine as eng
 
@@ -244,6 +244,23 @@ def test_after_a_restart_the_open_trades_are_taken_over(S, monkeypatch):
     again.start(WED + timedelta(minutes=10))
     (t,) = again.manager.trades.values()
     assert t.strategy == EMA_PULLBACK and t.open and t.take_profit_pips == 30
+
+
+def test_a_level_reversal_runs_to_its_next_level_and_keeps_it_after_a_restart(S, monkeypatch):
+    # owner, 13 November 2026: the take profit is the next daily pivot level, exactly at it
+    lr = idea(LEVEL_REVERSAL, C[1].start)
+    lr.context.update({"stop_price": D("110.0"), "take_profit_price": D("65.0"), "take_profit_level": "S1 65"})
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {C[1].start: [lr]})
+    e.start(WED)
+    feed(e, clock, C[:2])
+    (t,) = e.manager.trades.values()
+    assert t.strategy == LEVEL_REVERSAL and t.fill == D("100.0") and t.take_profit_pips == D("35.0")   # a sell at the bid
+    (rec,) = e.meta.values()
+    assert D(str(rec["take_profit_price"])) == D("65.0") and rec["take_profit_kind"] == "the next level, S1 65"
+    again, *_ = make(S, monkeypatch, C[2:], {})
+    again.start(WED + timedelta(minutes=10))
+    (t,) = again.manager.trades.values()
+    assert t.open and t.take_profit_pips == D("35.0")
 
 
 # ---- the price service ------------------------------------------------------------------------------------

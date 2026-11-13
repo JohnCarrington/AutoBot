@@ -47,7 +47,10 @@ def level_note(idea: Any) -> str:
 
 
 def take_profit_kind(settings: Any, idea: Any, tp: Any, trend_day: str | None) -> str:
-    """normal, or the 100 for a big-news day or a trend day (the EMA pullback and the slow grind)."""
+    """normal, or the 100 for a big-news day or a trend day (the EMA pullback and the slow grind), or the level
+    reversal's next daily pivot level (owner, 13 November 2026)."""
+    if idea.strategy == LEVEL_REVERSAL and idea.context.get("take_profit_level"):
+        return f"the next level, {idea.context['take_profit_level']}"
     normal = take_profit_pips(settings, idea.strategy)
     if Decimal(tp) == Decimal(normal) or idea.strategy not in (EMA_PULLBACK, SLOW_GRIND):
         return "normal"

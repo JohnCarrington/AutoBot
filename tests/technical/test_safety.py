@@ -128,12 +128,21 @@ def test_nothing_opens_while_the_market_is_closed(S):
 
 # ---- trades open at once (design 6) ----------------------------------------------------------------
 
-@pytest.mark.parametrize("strategy", (RANGE_TRADE, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL))
+@pytest.mark.parametrize("strategy", (RANGE_TRADE, BREAKOUT, SLOW_GRIND))
 def test_one_trade_at_a_time_for_each_strategy(S, strategy):
     d = go(S, idea(strategy), [opened(strategy)])
     assert d.reasons == [f"{strategy} already has 1 trade(s) open (at most 1)"]
     assert go(S, idea(strategy), [opened(s) for s in (RANGE_TRADE, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL)
                                   if s != strategy]).allowed
+
+
+def test_the_level_reversal_may_have_two_at_once(S):
+    # owner, 13 November 2026: level_reversal.max_open_trades, 2
+    assert S.level_reversal.max_open_trades == 2
+    assert go(S, idea(LEVEL_REVERSAL), [opened(LEVEL_REVERSAL)]).allowed
+    d = go(S, idea(LEVEL_REVERSAL), [opened(LEVEL_REVERSAL), opened(LEVEL_REVERSAL)])
+    assert d.reasons == ["level reversal already has 2 trade(s) open (at most 2)"]
+    assert go(S, idea(RANGE_TRADE), [opened(RANGE_TRADE)]).reasons == ["range trade already has 1 trade(s) open (at most 1)"]
 
 
 def test_the_bounce_may_have_one_each_way(S):

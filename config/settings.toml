@@ -281,10 +281,15 @@ allowance_pips_r2 = 12
 allowance_pips_s2 = 12
 allowance_pips_pivot = 12
 allowance_pips_round_number = 5
-# The stop: this many pips beyond the furthest point price reached; the take profit, in
-# pips from the entry.
+# The stop: this many pips beyond the furthest point price reached. The take profit is the
+# next daily pivot level (pivot, R1-R3, S1-S3) beyond the entry, exactly at it (owner,
+# 13 November 2026); take_profit_pips, from the entry, only when there is none (a sell
+# below S3, a buy above R3).
 stop_beyond_furthest_pips = 6
 take_profit_pips = 20
+# Level reversal trades open at once (owner, 13 November 2026: 2; every other strategy
+# but the EMA pullback and the bounce: limits.max_open_trades_per_strategy, 1).
+max_open_trades = 2
 
 [range_trade]
 # The share of a range trade closed when price reaches the opposite band (owner, 11 November 2026: 100, in

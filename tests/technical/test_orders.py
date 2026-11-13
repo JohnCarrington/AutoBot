@@ -278,6 +278,23 @@ def test_the_level_reversals_stop_price_becomes_a_distance_when_sent(S):
     assert ig.orders_sent()[0][3]["stopDistance"] == 10.0      # a sell opens on the bid, 13400.0
 
 
+def test_the_level_reversals_next_level_becomes_the_limit_distance_when_sent(S):
+    # owner, 13 November 2026: the take profit is the next daily pivot level, closed exactly at it
+    sender, ig, *_ = make(S, quote=(D("13400.0"), D("13401.5")))
+    sender.place(idea(LEVEL_REVERSAL, SELL, context={"stop_price": D("13410.0"), "take_profit_price": D("13365.0")}),
+                 calendar=[])
+    body = ig.orders_sent()[0][3]                              # a sell opens on the bid, 13400.0: 35 to S1
+    assert body["limitDistance"] == 35.0 and body["limitLevel"] is None
+    sender, ig, *_ = make(S, quote=(D("13400.0"), D("13401.5")))
+    sender.place(idea(LEVEL_REVERSAL, BUY, context={"stop_price": D("13387.5"), "take_profit_price": D("13430.2")}),
+                 calendar=[])
+    assert ig.orders_sent()[0][3]["limitDistance"] == 28.7     # a buy opens on the offer, 13401.5
+    sender, ig, *_ = make(S, quote=(D("13400.0"), D("13401.5")))
+    r = sender.place(idea(LEVEL_REVERSAL, SELL, context={"stop_price": D("13410.0"), "take_profit_price": D("13400.0")}),
+                     calendar=[])
+    assert "already past the level reversal's take profit price" in r.reasons[0] and not ig.orders_sent()
+
+
 def test_the_level_reversal_needs_a_current_price_on_the_right_side_of_its_stop(S):
     sender, ig, *_ = make(S, quote=None)
     r = sender.place(idea(LEVEL_REVERSAL), calendar=[])

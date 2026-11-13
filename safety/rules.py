@@ -11,7 +11,8 @@ It gives EVERY reason it refuses (an empty list: the order may go out):
   4. the strategy's own hours, news rules and Friday rules (strategies.common.may_open);
   5. trades open at once: the strategy's own limit (limits.max_open_trades_per_strategy, 1; the
      Bollinger bounce limits.bollinger_bounce_extra_opposite_direction_trades more in the opposite
-     direction; the EMA pullback no limit), and at most limits.max_open_trades (5) in total not counting
+     direction; the level reversal level_reversal.max_open_trades, 2, owner, 13 November 2026; the
+     EMA pullback no limit), and at most limits.max_open_trades (5) in total not counting
      the EMA pullback's (strategies.common.counts_towards_most_at_once);
   6. the size is trade.size_gbp_per_pip (£10 a pip);
   7. total risk: every open trade's risk (its stop distance x its size) plus the new trade's, at most
@@ -111,9 +112,11 @@ def _limits(settings: Any, order: Order, open_trades: list[OpenTrade]) -> list[s
                            f"(at most {lim.max_open_trades_per_strategy} each way)")
             elif len(mine) >= most:
                 out.append(f"{idea.strategy} already has {len(mine)} trade(s) open (at most {most})")
-        elif len(mine) >= lim.max_open_trades_per_strategy:
-            out.append(f"{idea.strategy} already has {len(mine)} trade(s) open "
-                       f"(at most {lim.max_open_trades_per_strategy})")
+        else:
+            most = (settings.level_reversal.max_open_trades if idea.strategy == LEVEL_REVERSAL
+                    else lim.max_open_trades_per_strategy)
+            if len(mine) >= most:
+                out.append(f"{idea.strategy} already has {len(mine)} trade(s) open (at most {most})")
     if counts_towards_most_at_once(idea.strategy):
         counted = [t for t in open_trades if counts_towards_most_at_once(t.strategy)]
         if len(counted) >= lim.max_open_trades:
