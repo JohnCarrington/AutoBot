@@ -508,7 +508,7 @@ def watch(s, candles, bands=None):
     w, out = RejectionWatcher(s, design_only=True), []
     for k, c in enumerate(candles):
         ev = w.on_candle(c, band(c, upper=bands[k]) if bands else band(c), None)
-        out += bounce_candidates(w, ev) + range_candidates(w, ev)
+        out += bounce_candidates(w, ev)
     return out
 
 
@@ -577,15 +577,40 @@ def test_the_analysers_watcher_keeps_its_rules(S):
     assert len(sells) == 1 and sells[0].pierce.start == START + timedelta(minutes=5)   # restarted
 
 
-def test_range_trade_takes_the_trigger(S):
-    candles = [C(0, 106, 112, 105, 108), C(1, 108, 109, 103, 104), C(2, 104, 104.5, 102, 102.5)]
-    got = [x for x in watch(S, candles) if x.strategy == RANGE_TRADE]
-    assert [(x.direction, x.entry_price, x.time) for x in got] == [(SELL, D(103), candles[2].start)]
+# ---- 3.4 the range trade: open right at the band (owner, 13 November 2026) -------------------------
+
+def rt(s, c, upper=110, lower=90, spike=False):
+    w = SimpleNamespace(spike=lambda candle: spike)
+    return [(x.direction, x.entry_price, x.time) for x in range_candidates(s, w, c, band(c, upper, lower))]
 
 
-def test_range_trade_cancelled_above_the_rejection_high_has_no_idea(S):
-    candles = [C(0, 106, 112, 105, 108), C(1, 108, 109, 103, 104), C(2, 104, 110, 103.5, 109.5)]
-    assert [x for x in watch(S, candles) if x.strategy == RANGE_TRADE] == []
+def test_range_trade_sells_as_soon_as_price_reaches_the_upper_band(S):
+    c = C(0, 104, 107.5, 103, 105)                     # high 107.5: within 3 pips of the band 110
+    assert rt(S, c) == [(SELL, D(107), c.start)]       # sold at the band minus 3 pips, no turn candle, no trigger
+    c = C(0, 108, 109, 106, 107)                       # opened already within 3 pips: sold at the open
+    assert rt(S, c) == [(SELL, D(108), c.start)]
+    assert rt(S, C(0, 104, 106.9, 103, 105)) == []     # 3.1 pips short: not reached
+
+
+def test_range_trade_buys_as_soon_as_price_reaches_the_lower_band(S):
+    c = C(0, 96, 97, 92.5, 95)
+    assert rt(S, c) == [(BUY, D(93), c.start)]         # the band plus 3 pips
+    c = C(0, 91, 94, 89, 92)
+    assert rt(S, c) == [(BUY, D(91), c.start)]         # opened past it: bought at the open
+    assert rt(S, C(0, 96, 97, 93.1, 95)) == []
+
+
+def test_range_trade_uses_the_3_pip_setting_ignores_spread_spikes_and_needs_a_band(S):
+    s = changed(S, "rejection", near_level_within_pips=1)
+    assert rt(s, C(0, 104, 108.5, 103, 105)) == []
+    assert rt(S, C(0, 104, 107.5, 103, 105), spike=True) == []
+    assert range_candidates(S, SimpleNamespace(spike=lambda c: False), C(0, 104, 112, 103, 105), None) == []
+
+
+def test_range_trade_is_not_closed_on_a_rejection_at_a_level(S):
+    from strategies.common import closed_on_level_rejection
+    assert not closed_on_level_rejection(RANGE_TRADE)
+    assert closed_on_level_rejection(BOLLINGER_BOUNCE)
 
 
 # ---- the replay: the checks at entry only ----------------------------------------------------
@@ -694,7 +719,7 @@ def test_the_ema_pullback_is_held_overnight_and_closed_only_on_friday_at_20_30_u
 
 def test_the_ema_pullback_is_not_closed_on_a_rejection_at_a_level(S):
     assert closed_on_level_rejection(EMA_PULLBACK) is False
-    assert all(closed_on_level_rejection(n) for n in OTHERS)
+    assert all(closed_on_level_rejection(n) for n in OTHERS if n != RANGE_TRADE)     # the range trade: 13 November 2026
 
 
 def test_the_ema_pullback_trades_in_a_trend_and_an_emerging_trend(S):

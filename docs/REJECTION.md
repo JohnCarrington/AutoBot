@@ -36,7 +36,9 @@ There is **one** rejection part (`rejection/`), shared by the analyser, the stra
 4. **Trigger:** the live price goes below the confirmation candle's low. There is no time limit for this.
 5. **Cancelled:** if price goes above the reversal candle's high at any point after the reversal candle.
 
-## Version 2: the quicker range-trade version (design 3.4)
+## Version 2: the quicker range-trade version
+
+**Not used by the range trade since 13 November 2026** (owner: the range trade opens right at the band, with no turn candle and no trigger; `strategies/range_trade/strategy.py`, design 3.4). The watcher still runs this version and records its events; nothing trades on them.
 
 1. **Pierce:** a candle reaches the upper Bollinger band: its high goes past it or comes within 3 pips of it (above; owner, 13 November 2026). Levels play no part in this version.
 2. **Rejection candle:** the very next candle is red (`range_trade.rejection_candle_within_candles`, 1). Otherwise the setup **expires**.

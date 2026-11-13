@@ -44,8 +44,8 @@ SWITCH = {SLOW_GRIND: "slow_grind", EMA_PULLBACK: "ema_pullback", BOLLINGER_BOUN
 OWN_HOURS = (EMA_PULLBACK, BREAKOUT)
 # May open in a big-news window and not closed before big news (owner, 7 and 8 November 2026).
 NEWS_ALLOWED = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND)
-# Not closed on a rejection at a level (owner, 7 and 8 November 2026).
-NO_LEVEL_CLOSE = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL)
+# Not closed on a rejection at a level (owner, 7 and 8 November 2026; the range trade, 13 November 2026).
+NO_LEVEL_CLOSE = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL, RANGE_TRADE)
 # The direction rule (section 2.3) does not apply to these (owner, 7 and 8 November 2026).
 NO_DIRECTION_RULE = (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL)
 BUY, SELL = "buy", "sell"
@@ -192,7 +192,8 @@ def closed_before_big_news(strategy: str) -> bool:
 
 def closed_on_level_rejection(strategy: str) -> bool:
     """Section 4's close on a confirmed rejection at a level, for every strategy except the EMA pullback,
-    the breakout and the slow grind."""
+    the breakout, the slow grind, the level reversal and the range trade (owner, 13 November 2026: it closes
+    only at the opposite band, besides its stop, 20:30 and the close before big news)."""
     return strategy not in NO_LEVEL_CLOSE
 
 

@@ -141,11 +141,18 @@ class StrategyRunner:
         cands = (breakout.on_candle(partial, None, None)
                  + grind.on_candle(partial, sg_ema.get(partial.start))
                  + pullback.on_candle(partial, fast.get(partial.start), slow.get(partial.start))
-                 + bounce_candidates(watcher, events) + range_candidates(watcher, events)
+                 + bounce_candidates(watcher, events) + range_candidates(s, watcher, partial, band)
                  + reversal.on_candle(partial, watcher, events, lv))
         st = self.state_after(len(self.week) - 1)
         e100 = ema100.get(self.week[-1].start)
         return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100) for cand in cands]
+
+    def _band_before(self, i: int) -> Any:
+        """The band as it stood at the last finished candle before the week's candle i (the range trade)."""
+        if i <= 0:
+            return None
+        f = self.tracker.history[i - 1][0]
+        return Band(f.candle.start, f.middle, f.upper, f.lower) if f.upper is not None else None
 
     def step(self) -> list[tuple[Any, Idea]]:
         """Run the strategies on every candle the tracker has taken since the last call: [(candle, idea)]."""
@@ -175,7 +182,8 @@ class StrategyRunner:
             cands = (self.breakout.on_candle(c, kc[1] if kc else None, since)
                      + self.grind.on_candle(c, sg_ema.get(c.start))
                      + self.pullback.on_candle(c, fast.get(c.start), slow.get(c.start))
-                     + bounce_candidates(self.watcher, events) + range_candidates(self.watcher, events)
+                     + bounce_candidates(self.watcher, events)
+                     + range_candidates(s, self.watcher, c, self._band_before(i))
                      + self.reversal.on_candle(c, self.watcher, events, lv))
             if cands:
                 st = self.state_after(i - 1)

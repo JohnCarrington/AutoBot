@@ -205,7 +205,8 @@ def test_not_in_the_entry_bar_and_not_one_in_the_trades_direction(S):
     assert run(S, tr, [(100, 100.5, 98, 99), (99, 99.5, 97, 98)], rejections={1: [Rejection(SELL, D("98"))]}) == []
 
 
-@pytest.mark.parametrize("strategy,closes", [(BOLLINGER_BOUNCE, True), (RANGE_TRADE, True), (EMA_PULLBACK, False),
+# the range trade closes only at the opposite band, its stop, 20:30 and before big news (owner, 13 November 2026)
+@pytest.mark.parametrize("strategy,closes", [(BOLLINGER_BOUNCE, True), (RANGE_TRADE, False), (EMA_PULLBACK, False),
                                              (BREAKOUT, False), (SLOW_GRIND, False), (LEVEL_REVERSAL, False)])
 def test_only_the_strategies_the_design_says(S, strategy, closes):
     tr = trade(S, strategy, SELL, stop="10")
