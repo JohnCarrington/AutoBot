@@ -33,8 +33,8 @@ def c5(t, h, l, close=None, tf="5m", minutes=5):
 
 class Store:
     """read_range as the real store: candles with start in [start, end), in time order."""
-    def __init__(self, m5=(), w1=()):
-        self.c = {"5m": sorted(m5, key=lambda c: c.start), "1w": list(w1)}
+    def __init__(self, m5=(), d1=()):
+        self.c = {"5m": sorted(m5, key=lambda c: c.start), "1d": sorted(d1, key=lambda c: c.start)}
 
     def read_range(self, tf, start, end):
         return [c for c in self.c.get(tf, []) if start <= c.start < end]
@@ -50,8 +50,24 @@ def flat_hours(close_now, close_2h_ago, *, extra=()):
     return out + list(extra)
 
 
-def week(high, low, close):
-    return c5(U(2026, 11, 1, 22, 0), high, low, close, tf="1w", minutes=5 * 24 * 60)   # ends before T
+def day(d, high, low, close):
+    """A daily candle, midnight to midnight UK (UTC in November)."""
+    return c5(U(2026, 11, d, 0, 0), high, low, close, tf="1d", minutes=24 * 60)
+
+
+def week(high, low, close, *, sunday=None, this_week=None):
+    """The daily candles of Monday 2 to Friday 6 November (the previous Monday-to-Friday week at T): the week's high
+    on Monday, its low on Tuesday, its close on Friday. `sunday`: a Sunday 1 November candle (high, low, close);
+    `this_week`: candles for Monday 9 and Tuesday 10 November (before T, in the current week)."""
+    h, l, c = D(high), D(low), D(close)
+    mid = (h + l) / 2
+    out = [day(2, h, mid - 1, mid), day(3, mid + 1, l, mid), day(4, mid + 1, mid - 1, mid),
+           day(5, mid + 1, mid - 1, mid), day(6, mid + 1, mid - 1, c)]
+    if sunday:
+        out.append(day(1, *sunday))
+    for d in ((9, 10) if this_week else ()):
+        out.append(day(d, *this_week))
+    return out
 
 
 @pytest.fixture
@@ -132,10 +148,24 @@ def test_a_level_not_in_the_trend_trades_direction_does_not_count(S, levels):
     assert v.valid and v.level == "00 13300"
 
 
-def test_the_weekly_pivot_is_from_the_previous_weeks_candle(S, levels):
-    st = Store(flat_hours(13346, 13345), [week("13503.1", "13341.4", "13346.9")])      # pivot 13397.1
+def test_the_weekly_pivot_is_from_the_previous_monday_to_friday_week(S, levels):
+    st = Store(flat_hours(13346, 13345), week("13503.1", "13341.4", "13346.9"))      # pivot 13397.1
     v = at.check(S, st, bounce(SELL, high="13394"), T, [trade(direction=BUY, fill="13380")])
     assert v.valid and v.level == "weekly pivot 13397.1"
+
+
+def test_the_weekly_pivot_leaves_out_sundays_prices_and_the_current_week(S):
+    """Owner, 13 November 2026: "the standard weekly pivot from the previous Monday-to-Friday week", not including
+    Sunday's prices."""
+    days = week("13503.1", "13341.4", "13346.9", sunday=("13600", "13200", "13400"), this_week=("13700", "13100", "13650"))
+    assert at.weekly_pivot(S, Store(d1=days), T) == D("13397.1")
+
+
+def test_on_a_sunday_evening_the_previous_week_is_the_one_just_ended(S):
+    days = week("13503.1", "13341.4", "13346.9")
+    sunday_evening = U(2026, 11, 8, 23, 0)
+    assert at.weekly_pivot(S, Store(d1=days), sunday_evening) == D("13397.1")
+    assert at.weekly_pivot(S, Store(d1=days), U(2026, 11, 6, 21, 0)) is None     # that week not finished yet
 
 
 @pytest.mark.parametrize("kind", ["S2", "S3", "R2", "R3"])

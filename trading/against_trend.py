@@ -13,8 +13,8 @@ Everything is read as at the start of the 5-minute candle the bounce opens in, o
   * the high or low the bounce turned from: the highest high (a sell) or lowest low (a buy) of its setup's
     candles, from the pierce to the confirmation (or the reversal, or the pierce, whichever is last), as the idea
     carries them (strategies/bollinger_bounce/strategy.py, setup_context);
-  * the levels: the 00 either side of that price; the weekly pivot, (high + low + close) / 3 of the last finished
-    weekly candle, to a tenth; S2, S3, R2 and R3 of the bot's own levels (levels.current.build) at that time;
+  * the levels: the 00 either side of that price; the weekly pivot, (high + low + close) / 3 of the previous
+    Monday-to-Friday week's daily candles (Sunday's prices not included), to a tenth; S2, S3, R2 and R3 of the bot's own levels (levels.current.build) at that time;
   * "in their direction": beyond the price at least one of the open trend trades opened at (below it for a bounce
     buy against sells, above it for a bounce sell against buys);
   * the pace: the net move from the close of the last 5-minute candle finished at least `hours` before to the
@@ -76,17 +76,43 @@ def turned_from(store: Any, idea: Any) -> Decimal:
     return min(prices) if buy else max(prices)
 
 
+def weekly_pivot(settings: Any, store: Any, t: datetime) -> Decimal | None:
+    """The standard weekly pivot from the previous Monday-to-Friday week (owner, 11 November 2026: "the standard
+    weekly pivot from the previous Monday-to-Friday week"): (high + low + close) / 3 of that week's daily candles
+    (midnight to midnight UK) from Monday to Friday, on the sell price, to a tenth. Sunday's prices (the hours
+    after the Sunday open) are not included. The previous week is the latest whose Friday is before t's UK date;
+    a week with no Friday candle closes on its last weekday candle. None if no such candles are stored."""
+    from zoneinfo import ZoneInfo
+    tz = settings.hours.timezone
+    uk = ZoneInfo(tz) if isinstance(tz, str) else tz
+    today = t.astimezone(uk).date()
+    days = []
+    for c in store.read_range("1d", t - timedelta(days=21), t):
+        d = c.start.astimezone(uk).date()
+        if c.end <= t and d.weekday() < 5:
+            days.append((d, c))
+    if not days:
+        return None
+    friday = lambda d: d + timedelta(days=4 - d.weekday())          # noqa: E731
+    weeks = sorted({friday(d) for d, _ in days if friday(d) < today})
+    if not weeks:
+        return None
+    week = sorted([(d, c) for d, c in days if friday(d) == weeks[-1]], key=lambda x: x[0])
+    high = max(Decimal(c.sell_high) for _, c in week)
+    low = min(Decimal(c.sell_low) for _, c in week)
+    close = Decimal(week[-1][1].sell_close)
+    return ((high + low + close) / 3).quantize(Decimal("0.1"))
+
+
 def levels_at(settings: Any, store: Any, price: Decimal, t: datetime) -> list[tuple[str, Decimal]]:
     from levels.current import build
     ppp = Decimal(settings.market.points_per_pip)
     hundred = 100 * ppp
     lo = (price / hundred).to_integral_value(ROUND_FLOOR) * hundred
     out = [("00", lo), ("00", lo + hundred)]
-    wk = [c for c in store.read_range("1w", t - timedelta(days=21), t) if c.end <= t]
-    if wk:
-        w = wk[-1]
-        out.append(("weekly pivot", ((Decimal(w.sell_high) + Decimal(w.sell_low) + Decimal(w.sell_close)) / 3)
-                    .quantize(Decimal("0.1"))))
+    wp = weekly_pivot(settings, store, t)
+    if wp is not None:
+        out.append(("weekly pivot", wp))
     for lv in build(settings, store, t).levels:
         if lv.type in LEVEL_TYPES:
             out.append((lv.type, Decimal(lv.price)))

@@ -4,7 +4,8 @@ Sell (bid) price for every indicator. Only the rules written in 3.2:
   0. The trend must be established on the hourly chart: hourly 8, 13 and 20
      EMAs in order and all rising, with the slope and gap minimums from AutoBot
      161's service (ema_pullback.hourly_*: each EMA rising since the hourly
-     candle before; slope over the last 3 hourly candles at least 0.16 pips an
+     candle before; slope over the last 3 hourly candles in the trend's
+     direction (rising for a buy, falling for a sell) and at least 0.16 pips an
      hour; gaps at least 0.25 and 0.20 pips).
   1. While a 5-minute candle is forming, the live price drops to the 5-minute
      8 EMA. Price may cross the 8 and even the 13 EMA.
@@ -82,7 +83,10 @@ class HourlyTrendReader:
             return HourlyTrend(None, False, f"hourly EMAs not in order and all moving one way "
                                             f"(8 {plain(f.quantize(Decimal('0.1')))}, 13 {plain(m.quantize(Decimal('0.1')))}, "
                                             f"20 {plain(s.quantize(Decimal('0.1')))})")
-        slopes = [abs(x - y) / n / self.ppp for x, y in ((f, fb), (m, mb), (s, sb))]
+        # each EMA's slope over the last n hourly candles, signed in the trend's direction: AutoBot 161's rule, "the
+        # right sign and absolute magnitude >= 0.16 pips/hour" (owner, 13 November 2026)
+        sign = 1 if d == BUY else -1
+        slopes = [sign * (x - y) / n / self.ppp for x, y in ((f, fb), (m, mb), (s, sb))]
         gaps = (abs(f - m) / self.ppp, abs(m - s) / self.ppp)
         ok = (min(slopes) >= self.e.hourly_min_slope_pips_per_hour
               and gaps[0] >= self.e.hourly_min_gap_fast_mid_pips and gaps[1] >= self.e.hourly_min_gap_mid_slow_pips)

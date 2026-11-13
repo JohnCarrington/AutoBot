@@ -449,6 +449,30 @@ def test_hourly_trend_minimums_are_settings(S):
     assert HourlyTrendReader(s, hourly_candles(D("0.1"))).at(START).qualified
 
 
+def _reader_with(S, f, m, s):
+    """A reader whose hourly 8/13/20 EMAs are given at the candles 3 back, 1 back and now: (back, prev, now)."""
+    candles = hourly_candles(D(2))
+    r = HourlyTrendReader(S, candles)
+    done = [c for c in candles if c.end <= START]
+    back, prev, now = done[-4].start, done[-2].start, done[-1].start
+    for attr, vals in (("f", f), ("m", m), ("sl", s)):
+        getattr(r, attr).update(dict(zip((back, prev, now), (D(str(v)) for v in vals))))
+    return r
+
+
+def test_hourly_trend_slope_must_point_the_trends_way(S):
+    """AutoBot 161's rule, the slope of each hourly EMA over 3 candles "must have the right sign and absolute
+    magnitude >= 0.16 pips/hour" (owner, 13 November 2026): an 8 EMA in order and rising on the last candle, but
+    lower than 3 hours ago, does not qualify a buy."""
+    t = _reader_with(S, (110, 104, 105), (100, 101, 102), (95, 96, 97)).at(START)
+    assert t.direction == BUY and not t.qualified and "slopes -1.67" in t.why
+    # the same with the 8 EMA higher than 3 hours ago qualifies
+    assert _reader_with(S, (102, 104, 105), (100, 101, 102), (95, 96, 97)).at(START).qualified
+    # and the mirror for a sell
+    t = _reader_with(S, (90, 96, 95), (100, 99, 98), (105, 104, 103)).at(START)
+    assert t.direction == SELL and not t.qualified
+
+
 def test_hourly_trend_flat_has_no_direction(S):
     assert HourlyTrendReader(S, hourly_candles(D(0))).at(START).direction is None
 
