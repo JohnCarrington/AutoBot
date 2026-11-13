@@ -2,7 +2,7 @@
 
 Friday 13 November 2026, UK. This is read-only: **nothing in the bot was changed**.
 
-Rechecked the same day against the owner's own typed words and his original design only: see "The recheck of 13 November" below.
+Rechecked the same day against the owner's own typed words and his original design only: see "The recheck of 13 November" below. The rules still marked changed or from a prompt were then rechecked against his words of 8 to 13 November: see "The second recheck of 13 November".
 
 For each part of the bot, every rule in the code is listed: every condition, check, time and number, including the settings and `.env` switches that part reads. Each rule gives:
 
@@ -19,18 +19,18 @@ The code is the committed code at `2185156` (the trend proof of 12 November incl
 
 ## All parts
 
-| Part | Owner's words, unchanged | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
-|---|---:|---:|---:|---:|---:|---:|
-| 1. EMA pullback | 19 | 3 | 7 | 2 | 0 | 31 |
-| 2. Slow grind | 9 | 9 | 7 | 5 | 0 | 30 |
-| 3. Breakout | 4 | 7 | 4 | 3 | 0 | 18 |
-| 4. Bollinger bounce | 23 | 4 | 9 | 5 | 0 | 41 |
-| 5. Range trade | 16 | 3 | 3 | 0 | 0 | 22 |
-| 6. Level reversal | 7 | 4 | 5 | 5 | 0 | 21 |
-| 7. The analyser's states | 27 | 7 | 28 | 7 | 0 | 69 |
-| 8. The trade manager's exits | 14 | 14 | 17 | 6 | 0 | 51 |
-| 9. The safety rules | 25 | 7 | 10 | 13 | 0 | 55 |
-| **All** | **144** | **58** | **90** | **46** | **0** | **338** |
+| Part | Owner's words, unchanged | Agreed by the owner, Claude's wording | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 1. EMA pullback | 19 | 0 | 3 | 7 | 2 | 0 | 31 |
+| 2. Slow grind | 9 | 0 | 8 | 7 | 5 | 1 | 30 |
+| 3. Breakout | 4 | 0 | 7 | 4 | 3 | 0 | 18 |
+| 4. Bollinger bounce | 25 | 2 | 4 | 9 | 0 | 1 | 41 |
+| 5. Range trade | 17 | 0 | 2 | 3 | 0 | 0 | 22 |
+| 6. Level reversal | 7 | 0 | 4 | 5 | 5 | 0 | 21 |
+| 7. The analyser's states | 27 | 0 | 7 | 28 | 7 | 0 | 69 |
+| 8. The trade manager's exits | 16 | 0 | 13 | 17 | 5 | 0 | 51 |
+| 9. The safety rules | 28 | 1 | 7 | 10 | 9 | 0 | 55 |
+| **All** | **152** | **3** | **55** | **90** | **36** | **2** | **338** |
 
 ## The recheck of 13 November: his own words only
 
@@ -59,6 +59,27 @@ What changed most:
 - **Range trade full close and bounce half close (5.22, 8.18, 8.19, 4.25):** his words were "close 50%" for ranging only.
 - **9 to 11 November:** the pace and target rule, one view at a time, `TRADING=off` and one trade per candle come from prompts after his last typed message.
 
+## The second recheck of 13 November: his words of 8 to 13 November
+
+The 104 rules marked "changed from the owner's words" (58) or "from a prompt, not the owner's words" (46) were checked again against `docs/research/owner_own_words_20261108_20261113.md`, which continues his typed words from 8 November 08:02 UTC to 13 November, as well as the first words file and the design. Lines starting "Context:" in that file were written by Claude. A short reply such as "yes" counts only as his decision on what the context line describes, and where the context says the wording was Claude's the rule is marked **agreed by the owner, Claude's wording** (a new mark). That file gives days, not times, so its quotes are dated by day. Each of the 104 rules now has a **Recheck 2** line, and every quote in those lines was checked against the files by script.
+
+What moved:
+
+- **To "the owner's words, unchanged" (8):**
+  - the pace and target rule's frame: 4.30, 4.38, 8.39 and 9.53. His "if the buy opens at the bounce and that is valid then the sell should close" (10 November), "ok so that bounce opening needs to stop" and "ok go ahead" (11 November);
+  - no reversal trade against a strong push (9.40), "yes" (9 November);
+  - what a reversal trade is (9.42): "level reversal, as the name suggests, is a reversal strategy" (9 November);
+  - the range trade closing in full (5.22, 8.18): "in range close in full" (10 November). Claude's question was about the bounce, so this reading is the one Claude Code took, not one he spelled out.
+- **To "agreed by the owner, Claude's wording" (3):** within 5 pips of the level (4.35) and under 5 pips an hour over 2 hours (4.36), "which Claude put to him as the best tested values"; and the day's-direction rule with the Monday after an 80-pip Friday (9.41), where "the Monday part came from Claude".
+- **To "changed from the owner's words" (1):** the significant levels (4.31). He also named "a previous low in the last week", which the rule leaves out.
+- **To "no source found" (2):** one row per direction for the slow grind (2.15), and which week the weekly pivot uses (4.32). In both, the only explicit source was a prompt, his own words say nothing either way, and the code at `2185156` does what no source asks. Commit `f69492c` has since changed 4.32 (and 1.3) in the code.
+- **Unchanged:** the 12-pip stops (3.12, 4.23, 5.15, 8.8, 8.10). He asked "ok is that in .env?", then said "apart from thye 12 pip stop. if price boiunces off the bollinger and runs towards the other bollingerr it doesnt need any stop at all". The bounce's half close (4.25, 8.19, 8.23) is also unchanged: his answer was "in range close in full".
+
+Outside these 104 rules, his new words bear on rules marked "unchanged" that were not rechecked here:
+- **EMA pullback:** "waits for rejection and subsequently confirmation of the continuation of the trend" (12 November) against the entry at 3 pips beyond the five candles before the touch (1.11).
+- **Analyser timeframe:** his agreement that the hourly sets the view and the 5-minute only times the entry (13 November, Claude's four points) against the analyser working on the 5-minute candles (7.1).
+- **Breakout:** "even on the 5m timeframe price didn't actually break the bollinger" (13 November).
+
 ## Sources and marks
 
 - **The owner's words:**
@@ -71,7 +92,8 @@ What changed most:
   - **Owner's words, unchanged:** the rule and its numbers match the owner's words as above.
   - **Changed from the owner's words:** an owner source exists, but the code does something different.
   - **Added without the owner asking:** no owner source asks for the rule or the number. This includes numbers the assistant chose. Where the owner had asked for a value to be chosen, that request is quoted, and the mark stays "added" unless the owner later accepted that exact value in his own words.
-  - **No source found:** used for none.
+  - **No source found:** used for none on 12 November; 2 after the second recheck (2.15, 4.32).
+  - **Agreed by the owner, Claude's wording:** added by the second recheck: he agreed with a short reply, and the context says the wording was Claude's.
 - **Shared rules** can appear in a strategy's section and again in the safety rules or the trade manager's section. For example, the level reversal's exemption from the direction rule is 6.15 and 9.26. Each section counts its own.
 - **Line numbers** are those of the current files. A quoted line whose file is not the one named at the top of its block carries its own file name. Lines shortened with "..." are marked so.
 - **The check:** every quoted code line, `DESIGN.md` line and owner quote was checked against the files and the transcripts:
@@ -82,9 +104,9 @@ What changed most:
 
 ## 1. EMA pullback
 
-| Owner's words, unchanged | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
-|---:|---:|---:|---:|---:|---:|
-| 19 | 3 | 7 | 2 | 0 | 31 |
+| Owner's words, unchanged | Agreed by the owner, Claude's wording | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
+|---:|---:|---:|---:|---:|---:|---:|
+| 19 | 0 | 3 | 7 | 2 | 0 | 31 |
 
 ### 1.1 Indicators on the sell (bid) price
 - **Code:** `strategies/ema_pullback/strategy.py:58-63`, `:108`, `:116-119`
@@ -128,6 +150,7 @@ What changed most:
   `config/settings.toml:239-240`: `hourly_slope_candles = 3` / `hourly_min_slope_pips_per_hour = 0.16`
 - **DESIGN.md:** line 139: "with the slope and gap minimums from 161's service as settings"
 - **Source:** agreed design (c803d53) line 128, "with the slope and gap minimums from 161's service as settings"; 161 (ema_pullback_audit_for_new_bot_20261106.md, "`DEFAULT_MIN_EMA8_SLOPE_PIPS_PER_HR = 0.16`", "`DEFAULT_SLOPE_LOOKBACK_BARS = 3`", "3-bar slope of each H1 EMA ... must have the right sign and absolute magnitude ≥ 0.16 pips/hour")
+- **Recheck 2 (his words of 8 to 13 November):** Still different from his words: "If the market is trending as measured by the fanning out of ema lines at a diagonal slope" (his words, Thu 12 Nov): a slope the trend's way, as 161's rule that the design points to. Commit f69492c (13 November) has since added the sign check to the code.
 - **Mark:** Changed from the owner's words. **Owner:** (161, as the agreed design directs) "must have the right sign and absolute magnitude ≥ 0.16 pips/hour" / **Code:** takes `abs(x - y)` of the 3-candle change, so only the size is checked, not its sign
 
 ### 1.4 Hourly gap minimums: 8 to 13 at least 0.25 pips, 13 to 20 at least 0.20 pips
@@ -294,6 +317,7 @@ What changed most:
 - **DESIGN.md:** line 43: "Emerging trend | EMA pullback, breakout (3.5), in the trend's direction only"; line 44: "Trend | ... EMA pullback, breakout (3.5), in the trend's direction only"
 - **Source:** owner, 2026-11-07T16:53:46.835Z, PASTED, "it trades in a trend and in an emerging trend"; agreed design (c803d53) lines 41-42, "Slow grind, EMA pullback, Bollinger band bounce in the trend's direction only"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "Emerging trend should arm the trend following strategy and the ema pullback" (his words, 6 Nov 10:25 UTC) and the design's table agree, but his last words on it were "ema pullback in trend only" (his words, 7 Nov 16:12 UTC). His later "whole combination" (his words, 7 Nov 16:53 UTC) accepts a tested combination without saying which states it used; that is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Still different from his words: on 12 November he described the EMA pullback as "If the market is trending as measured by the fanning out of ema lines at a diagonal slope and then price pulls back at the 5m bollinger to the ema stack and then the bot waits for rejection and subsequently confirmation of the continuation of the trend" (his words, Thu 12 Nov); it does not say which analyser states.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 1.19 The direction rule (daily pivot and 5-minute 100 EMA) applies
@@ -320,6 +344,7 @@ What changed most:
 - **DESIGN.md:** line 259: "the EMA pullback may open at any time the market is open, not only 06:00 to 20:30, except after 20:30 UK on Friday"
 - **Source:** owner, 2026-11-07T16:53:46.835Z, PASTED, "it may open at any time the market is open"; owner, 2026-11-07T17:03:03.382Z, PASTED, "No new EMA pullback trade opens after 20:30 UK on Friday, so none is ever held over the weekend."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: he first said "it looks like ema pullback needs to work outside of news block and all hours from those results" (his words, 7 Nov 15:52 UTC), then "And put it back to only opening in hours" (his words, 7 Nov 16:12 UTC). His later "whole combination" (his words, 7 Nov 16:53 UTC) does not say which hours; opening at any time the market is open is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 1.21 May open during a big-news window
@@ -433,6 +458,7 @@ What changed most:
 - **DESIGN.md:** line 70: "on a trend day, an EMA pullback or slow grind trade in the trend day's direction ... gets the 100-pip take profit of `TAKE_PROFIT_PIPS`"
 - **Source:** owner, 2026-11-08T06:31:08.541Z, PASTED, "On a trend day, any EMA pullback or slow grind trade going in the trend day's direction (back towards the monthly pivot) gets the 100-pip take profit from TAKE_PROFIT_PIPS instead of its usual take profit."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: His words on trend days ask for research only: "The trend day idea needs refining" (his words, 8 Nov 05:36 UTC), "can you research different levels and conditions using this basic idea though?" (his words, 8 Nov 06:20 UTC) and "go with your suggestion" (his words, 8 Nov 06:30 UTC). The 100-pip take profit for trades in the trend day's direction is not in his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 1.31 Does not count towards "most at once: 5"
@@ -444,13 +470,14 @@ What changed most:
 - **DESIGN.md:** line 250: "EMA pullback trades do not count towards that limit (owner, 7 November 2026)."
 - **Source:** owner, 2026-11-07T16:53:46.835Z, PASTED, "it does not count towards the \"most at once: 5\" limit"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: his words say "ema pullback is not limited to one trade at a time" (his words, 7 Nov 15:37 UTC), which is about its own trades, not the limit of 5 for all trades; leaving it out of that limit is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ## 2. Slow grind
 
-| Owner's words, unchanged | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
-|---:|---:|---:|---:|---:|---:|
-| 9 | 9 | 7 | 5 | 0 | 30 |
+| Owner's words, unchanged | Agreed by the owner, Claude's wording | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
+|---:|---:|---:|---:|---:|---:|---:|
+| 9 | 0 | 8 | 7 | 5 | 1 | 30 |
 
 ### 2.1 Candles and EMA on the sell (bid) price
 - **Code:** `strategies/slow_grind/strategy.py:57`, `:62-65`; `strategies/replay.py:132`
@@ -477,6 +504,7 @@ What changed most:
 - **DESIGN.md:** line 130: "It counts as a pause once at least 2 candles in a row (`slow_grind.min_pause_candles`) have failed to make a new low while staying below the 21 EMA."
 - **Source:** owner, 2026-11-07T19:58:43.524Z, PASTED, "Entry: a pause of 2 candles that fail to make a new low (or high) while closing below (or above) the 21 EMA"; confirmed owner, 2026-11-08T05:01:05.500Z, TYPED, "switch the slow grind on with result 13's settings". (Agreed design (c803d53) line 122 had "at least 3 candles"; replaced by the owner's later words.)
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "It counts as a pause once at least 3 candles in a row have failed to make a new low while staying below the 21 EMA." (design, line 122) The 2 candles come from the tested config. His only words on the slow grind's final settings are "same treatment for slow grind" (his words, 7 Nov 19:36 UTC) and "no thats fine switch it on with that config" (his words, 7 Nov 19:56 UTC); the config itself is in the prompt, not his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 2.3 No two-candle start (rule 1 removed)
@@ -522,6 +550,7 @@ What changed most:
 - **DESIGN.md:** none in 3.1 rule 2 ("staying below the 21 EMA")
 - **Source:** owner, 2026-11-07T13:10:22.319Z, PASTED, "and \"below the 21 EMA\" is judged on closes"; owner, 2026-11-07T19:58:43.524Z, PASTED, "while closing below (or above) the 21 EMA"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: the design says "while staying below the 21 EMA" (design, line 122) without saying it is judged on the close; his typed words say nothing on it.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 2.7 A candle closing exactly on the EMA neither counts nor cancels; the row starts again
@@ -617,7 +646,8 @@ What changed most:
   ```
 - **DESIGN.md:** none (docstring lines 26-27: "so in each direction there is one row at a time, by the meaning of \"in a row\", not by a limit")
 - **Source:** owner, 2026-11-07T13:35:04.230Z, PASTED, "Remove every rule in the strategies that is not written in section 3, including any limit of one setup or pause per direction."
-- **Mark:** Changed from the owner's words. **Owner:** "including any limit of one setup or pause per direction" / **Code:** keeps a single watch (one reference, one row) per direction
+- **Recheck 2 (his words of 8 to 13 November):** No source either way: the only explicit source was a prompt that said the opposite ("including any limit of one setup or pause per direction"). His own words and the design neither ask for one row per direction nor forbid it: the design says only "at least 3 candles in a row" (design, line 122). If one row per direction is an addition, it goes against "No fucking stupid additioins" (his words, 7 Nov 13:33 UTC).
+- **Mark:** No source found (was: Changed from the owner's words. **Owner:** "including any limit of one setup or pause per direction" / **Code:** keeps a single watch (one reference, one row) per direction)
 
 ### 2.16 States: trend only (either type), in the trend's direction only
 - **Code:** `strategies/common.py:54`, `:281-287`
@@ -628,6 +658,7 @@ What changed most:
 - **DESIGN.md:** line 133: "Only in a trend (either type, slow grind or strong push), in the trend's direction (2.2); not in an emerging trend."
 - **Source:** owner, 2026-11-07T19:58:43.524Z, PASTED, "Trend only, in the trend's direction."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "Emerging trend | Slow grind, EMA pullback, Bollinger band bounce in the trend's direction only" (design, line 41); "Emerging trend should arm the trend following strategy and the ema pullback" (his words, 6 Nov 10:25 UTC). Trend only is in the prompt. His only words on the slow grind's final settings are "same treatment for slow grind" (his words, 7 Nov 19:36 UTC) and "no thats fine switch it on with that config" (his words, 7 Nov 19:56 UTC); the config itself is in the prompt, not his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 2.17 No direction rule, no other direction filter
@@ -639,6 +670,7 @@ What changed most:
 - **DESIGN.md:** line 133: "The direction rule (2.3) does not apply, and there is no other direction filter."
 - **Source:** owner, 2026-11-07T19:58:43.524Z, PASTED, "No direction filter, and regardless of open EMA pullback trades."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "Direction rule (applies to every strategy)" (design, line 52); his exemptions name only the range trade and the bounce: "it shouldnt apply to ranging strategy" (his words, 7 Nov 14:40 UTC) and "and it shouldnt apply to the bounce reversal either obviously" (his words, 7 Nov 14:40 UTC).
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 2.18 Stop loss 15 pips
@@ -651,6 +683,7 @@ What changed most:
 - **DESIGN.md:** line 134: "Stop loss 15 pips (`slow_grind.stop_loss_pips`)"
 - **Source:** owner, 2026-11-07T19:58:43.524Z, PASTED, "Stop 15 pips"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: his own .env, typed "STOP_LOSS_PIPS=6" (his words, 7 Nov 17:49 UTC), and "a fixed 6 pips for every strategy" (design, line 162). For the slow grind his only other number was "those entries were ok but maybe the sl needs moving to 12" (his words, 7 Nov 14:09 UTC). 15 pips is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 2.19 Take profit 20 pips
@@ -662,6 +695,7 @@ What changed most:
 - **DESIGN.md:** line 134: "take profit 20 pips (`slow_grind.take_profit_pips`)"
 - **Source:** owner, 2026-11-07T19:58:43.524Z, PASTED, "take profit 20 pips, or 100 on a big-news day"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "a fixed 100 pips sent to IG as a safety net" (design, line 163); his own .env, "TAKE_PROFIT_PIPS=100" (his words, 7 Nov 17:49 UTC); "what slow grind should do is open at the top and leave it to run all day" (his words, 7 Nov 14:05 UTC). 20 pips is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 2.20 Take profit 100 pips (TAKE_PROFIT_PIPS) on a big-news day for the pair
@@ -674,6 +708,7 @@ What changed most:
 - **DESIGN.md:** line 134: "or 100 pips (`TAKE_PROFIT_PIPS`) for a trade opened on a UK day with big news for the pair"
 - **Source:** owner, 2026-11-07T19:58:43.524Z, PASTED, "take profit 20 pips, or 100 on a big-news day"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: his request for 100 pips on big-news days was about the EMA pullback ("whole combination and then on a big news day can there either be a version which runs to tp = 100" (his words, 7 Nov 16:53 UTC)); for the slow grind it is in the prompt only. His only words on the slow grind's final settings are "same treatment for slow grind" (his words, 7 Nov 19:36 UTC) and "no thats fine switch it on with that config" (his words, 7 Nov 19:56 UTC); the config itself is in the prompt, not his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 2.21 "Big-news day" is the UK calendar day of the opening, with a BIG release for the pair
@@ -696,6 +731,7 @@ What changed most:
 - **DESIGN.md:** line 134: "or in the trend day's direction on a trend day (2.4)"
 - **Source:** owner, 2026-11-08T06:31:08.541Z, PASTED, "On a trend day, any EMA pullback or slow grind trade going in the trend day's direction (back towards the monthly pivot) gets the 100-pip take profit from TAKE_PROFIT_PIPS"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: His words on trend days ask for research only: "The trend day idea needs refining" (his words, 8 Nov 05:36 UTC), "can you research different levels and conditions using this basic idea though?" (his words, 8 Nov 06:20 UTC) and "go with your suggestion" (his words, 8 Nov 06:30 UTC). The 100-pip take profit for trades in the trend day's direction is not in his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 2.23 Profit lock 15/10: once 15 pips in profit, closed if price comes back to 10 pips in profit
@@ -733,6 +769,7 @@ What changed most:
 - **DESIGN.md:** line 260: "in the first 15 minutes after the market opens on Sunday (`slow_grind.week_open_no_new_trades_minutes`)"
 - **Source:** owner, 2026-11-07T19:58:43.524Z, PASTED, "Opens at any time the market is open, except the first 15 minutes after the Sunday open, 21:55 to 22:15 UK"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: under his hours ("06:00 - 20:30 GMT" (his words, 6 Nov 10:57 UTC)) no trade opens on Sunday evening at all; the 15-minute rule is in the prompt only. His only words on the slow grind's final settings are "same treatment for slow grind" (his words, 7 Nov 19:36 UTC) and "no thats fine switch it on with that config" (his words, 7 Nov 19:56 UTC); the config itself is in the prompt, not his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 2.26 No new trade from 21:55 to 22:15 UK
@@ -744,6 +781,7 @@ What changed most:
 - **DESIGN.md:** line 260: "and from 21:55 to 22:15 UK (`slow_grind.rollover_no_new_trades_from`, `slow_grind.rollover_no_new_trades_until`)"
 - **Source:** owner, 2026-11-07T19:58:43.524Z, PASTED, "except the first 15 minutes after the Sunday open, 21:55 to 22:15 UK"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: under his hours ("06:00 - 20:30 GMT" (his words, 6 Nov 10:57 UTC)) no trade opens at 21:55 at all; the rollover rule is in the prompt only. His only words on the slow grind's final settings are "same treatment for slow grind" (his words, 7 Nov 19:36 UTC) and "no thats fine switch it on with that config" (his words, 7 Nov 19:56 UTC); the config itself is in the prompt, not his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 2.27 Otherwise new trades any time the market is open (not only 06:00 to 20:30), big-news windows included
@@ -757,6 +795,7 @@ What changed most:
 - **DESIGN.md:** line 135: "New trades at any time the market is open, big-news windows included"
 - **Source:** owner, 2026-11-07T19:58:43.524Z, PASTED, "Opens at any time the market is open" and "News as the EMA pullback: may open during the window, not closed before big news."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "06:00 - 20:30 GMT. Trades should be closed at 20:30. no trades held overnight" (his words, 6 Nov 10:57 UTC); "new trades from 06:00 to 20:30" (design, line 199). Opening at any time is in the prompt only. His only words on the slow grind's final settings are "same treatment for slow grind" (his words, 7 Nov 19:36 UTC) and "no thats fine switch it on with that config" (his words, 7 Nov 19:56 UTC); the config itself is in the prompt, not his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 2.28 Closed at 20:30 UK every day
@@ -779,6 +818,7 @@ What changed most:
 - **DESIGN.md:** line 135: "not closed before big news"
 - **Source:** owner, 2026-11-07T19:58:43.524Z, PASTED, "News as the EMA pullback: may open during the window, not closed before big news."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "it should not open a trade 15 minutes before big news and it should close any open trades before big news" (his words, 6 Nov 11:00 UTC); "Open trades closed 15 minutes before." (design, line 200) His "leave it to run all day" (his words, 7 Nov 14:05 UTC) does not mention news.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 2.30 Not closed on a rejection at a level
@@ -790,13 +830,14 @@ What changed most:
 - **DESIGN.md:** line 134: "no close on a rejection at a level (section 4)"
 - **Source:** owner, 2026-11-07T19:58:43.524Z, PASTED, "No close on a rejection at a level."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "If price is rejected at the level against the trade, the trade closes at the same moment a bounce the other way would open" (design, line 165); "all share the same trade management with the exception of ranging which has the 50% close at the bollinger band" (his words, 6 Nov 10:45 UTC). His "leave it to run all day" (his words, 7 Nov 14:05 UTC) leans that way but does not say it.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ## 3. Breakout
 
-| Owner's words, unchanged | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
-|---:|---:|---:|---:|---:|---:|
-| 4 | 7 | 4 | 3 | 0 | 18 |
+| Owner's words, unchanged | Agreed by the owner, Claude's wording | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
+|---:|---:|---:|---:|---:|---:|---:|
+| 4 | 0 | 7 | 4 | 3 | 0 | 18 |
 
 Note: "one breakout trade open at a time" (DESIGN.md line 187) is enforced in the safety rules, not in the files of this section, so it is not listed here.
 
@@ -824,6 +865,7 @@ Note: "one breakout trade open at a time" (DESIGN.md line 187) is enforced in th
 - **DESIGN.md:** line 183: "A buy (breakout up) opens as soon as price breaks above the breakout candle's high; a sell (breakout down) as soon as price breaks below its low."
 - **Source:** owner, 2026-11-07T17:48:56Z, PASTED, "A buy opens when price breaks above that breakout candle's high; a sell when it breaks below its low."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: his words ask for "a breakout after a range" (his words, 7 Nov 14:19 UTC) but do not say where it enters.
+- **Recheck 2 (his words of 8 to 13 November):** Still from a prompt only: on 12 November he said "Maybe the breakout needs confirmation rather than opening on the first instance" (his words, Thu 12 Nov), which is not a decision.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 3.3 Setup expires if not broken within 3 candles
@@ -839,6 +881,7 @@ Note: "one breakout trade open at a time" (DESIGN.md line 187) is enforced in th
 - **DESIGN.md:** line 184: "If price does not break it within 3 candles after the breakout candle (`breakout.trigger_within_candles`), the setup expires."
 - **Source:** owner, 2026-11-07T17:48:56Z, PASTED, "If price does not break it within 3 candles, the setup expires."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: his words do not give an expiry.
+- **Recheck 2 (his words of 8 to 13 November):** Still from a prompt only: on 12 November he said "Maybe the breakout needs confirmation rather than opening on the first instance" (his words, Thu 12 Nov), which is not a decision.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 3.4 A candle that opened past the trigger enters at its open (stored candles)
@@ -867,6 +910,7 @@ Note: "one breakout trade open at a time" (DESIGN.md line 187) is enforced in th
 - **DESIGN.md:** line 185: "a buy only when the entry price is above that day's 00:00 UK open, a sell only when it is below (the open of the 5-minute candle starting at 00:00 UK, sell price)."
 - **Source:** owner, 2026-11-07T19:24:52Z, PASTED, "It only takes a breakout in the direction of the day's move so far: a buy only when price is above that day's 00:00 UK open, a sell only when it is below." (tested as filter 5 in owner, 2026-11-07T19:20:22Z, PASTED, "The day's move so far: price on the trade's side of that day's open.")
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: he asked "what about if breakout is only aligned to the daily direction" (his words, 7 Nov 19:19 UTC) and said "switch it on in that config" (his words, 7 Nov 19:24 UTC), but he does not say the day's direction is the 00:00 UK open; that definition is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 3.6 No trade on a day whose 00:00 UK candle was not seen
@@ -920,6 +964,7 @@ Note: "one breakout trade open at a time" (DESIGN.md line 187) is enforced in th
 - **DESIGN.md:** line 185: "The direction rule (2.3) does not apply to it."; line 59.
 - **Source:** owner, 2026-11-07T19:24:52Z, PASTED, "The direction rule does not apply to it."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "Direction rule (applies to every strategy)" (design, line 52); his exemptions name only the range trade and the bounce ("it shouldnt apply to ranging strategy" (his words, 7 Nov 14:40 UTC), "and it shouldnt apply to the bounce reversal either obviously" (his words, 7 Nov 14:40 UTC)), and he asked for the breakout to be "only aligned to the daily direction" (his words, 7 Nov 19:19 UTC).
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 3.10 Its switch STRATEGY_BREAKOUT
@@ -958,6 +1003,7 @@ Note: "one breakout trade open at a time" (DESIGN.md line 187) is enforced in th
 - **DESIGN.md:** line 186: "Stop loss 12 pips (`breakout.stop_loss_pips`; owner, 10 November 2026)"; line 207, 209.
 - **Source:** owner, 2026-11-11T08:05:29Z, TYPED, "Put changes 1, 2 and 3 live exactly as tested: the 12-pip stop for the bounce, range trade and breakout". (DESIGN.md's "owner, 10 November 2026" comes from commit 0e1492b, 2026-11-10 15:36; no owner message of 10 November asking for it was found in owner_messages.txt. First value: owner, 2026-11-07T19:24:52Z, PASTED, "Stop loss 6 pips".)
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: his own .env, typed "STOP_LOSS_PIPS=6" (his words, 7 Nov 17:49 UTC), and "a fixed 6 pips for every strategy" (design, line 162). The words file ends at 8 November 08:02 UTC; the 12 pips come from an 11 November prompt.
+- **Recheck 2 (his words of 8 to 13 November):** Still different from his words: "ok is that in .env?" (his words, Tue 10 Nov) (a question about the 12-pip stop) and, on Claude's list of changes, "apart from thye 12 pip stop. if price boiunces off the bollinger and runs towards the other bollingerr it doesnt need any stop at all." (his words, Tue 10 Nov) Neither agrees to a 12-pip stop.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 3.13 Take profit 50 pips, on any day
@@ -970,6 +1016,7 @@ Note: "one breakout trade open at a time" (DESIGN.md line 187) is enforced in th
 - **DESIGN.md:** line 186: "take profit 50 pips (`breakout.take_profit_pips`)"; line 208: "The breakout's is 50 pips (`breakout.take_profit_pips`) ... on any day."
 - **Source:** owner, 2026-11-07T19:24:52Z, PASTED, "Stop loss 6 pips, take profit 50 pips (breakout.stop_loss_pips = 6, breakout.take_profit_pips = 50)."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "a fixed 100 pips sent to IG as a safety net" (design, line 163); his own .env, "TAKE_PROFIT_PIPS=100" (his words, 7 Nov 17:49 UTC). 50 pips is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 3.14 New trades only from 06:00 to 20:30 UK
@@ -998,6 +1045,7 @@ Note: "one breakout trade open at a time" (DESIGN.md line 187) is enforced in th
 - **DESIGN.md:** line 187: "it may open during a big-news window"; line 264.
 - **Source:** owner, 2026-11-07T17:48:56Z, PASTED, "Hours, news and the Friday rules as for the EMA pullback." (the EMA pullback may open in a big-news window); not repealed by owner, 2026-11-07T19:24:52Z, PASTED, which kept "It may be held overnight and through news".
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "it should not open a trade 15 minutes before big news and it should close any open trades before big news" (his words, 6 Nov 11:00 UTC).
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 3.16 Not closed before big news
@@ -1011,6 +1059,7 @@ Note: "one breakout trade open at a time" (DESIGN.md line 187) is enforced in th
 - **DESIGN.md:** line 209: "not closed before big news"
 - **Source:** owner, 2026-11-07T19:24:52Z, PASTED, "It may be held overnight and through news"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "it should not open a trade 15 minutes before big news and it should close any open trades before big news" (his words, 6 Nov 11:00 UTC); "Open trades closed 15 minutes before." (design, line 200).
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 3.17 Held overnight; closed at 20:30 UK on Friday only
@@ -1025,6 +1074,7 @@ Note: "one breakout trade open at a time" (DESIGN.md line 187) is enforced in th
 - **DESIGN.md:** line 209: "or 20:30 UK on Friday, when any breakout trade still open is closed. It is not closed at 20:30 on other days (it may be held overnight)"
 - **Source:** owner, 2026-11-07T19:24:52Z, PASTED, "It may be held overnight and through news, and is closed at 20:30 UK on Friday."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "06:00 - 20:30 GMT. Trades should be closed at 20:30. no trades held overnight" (his words, 6 Nov 10:57 UTC); "Any trade open at 20:30 is closed. Nothing held overnight." (design, line 199).
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 3.18 No close on a rejection at a level
@@ -1038,13 +1088,14 @@ Note: "one breakout trade open at a time" (DESIGN.md line 187) is enforced in th
 - **DESIGN.md:** line 186: "No close on a rejection at a level."
 - **Source:** owner, 2026-11-07T19:24:52Z, PASTED, "No close on a rejection at a level."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "If price is rejected at the level against the trade, the trade closes at the same moment a bounce the other way would open" (design, line 165); "all share the same trade management with the exception of ranging which has the 50% close at the bollinger band" (his words, 6 Nov 10:45 UTC). His "what about without the closes on rejection at a level?" (his words, 7 Nov 18:06 UTC) was a question for a test, not a decision.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ## 4. Bollinger bounce
 
-| Owner's words, unchanged | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
-|---:|---:|---:|---:|---:|---:|
-| 23 | 4 | 9 | 5 | 0 | 41 |
+| Owner's words, unchanged | Agreed by the owner, Claude's wording | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
+|---:|---:|---:|---:|---:|---:|---:|
+| 25 | 2 | 4 | 9 | 0 | 1 | 41 |
 
 Note: the bounce's limit of one trade per direction (settings `[limits] bollinger_bounce_extra_opposite_direction_trades = 1`) and the trade manager's mechanics of the band close are in the safety and trade-manager sections, not listed here.
 
@@ -1296,6 +1347,7 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 167: "Spread spikes are ignored: when IG's spread on a candle is abnormally wide ... that candle's sell-price highs and lows cannot start a setup or cancel one."
 - **Source:** owner, 2026-11-06T21:48:50Z, TYPED, "Decision on spread spikes: ignore them. When IG's spread on a candle is abnormally wide, that candle's sell-price highs and lows must not start a setup or cancel one."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: on 7 November he asked about "the 3 pip spread limit" (his words, 7 Nov 17:24 UTC), then said "3 pip spread limit - no" (his words, 7 Nov 17:25 UTC), "the spikes will be blocked by the news block so get rid of it" (his words, 7 Nov 17:27 UTC) and "ok leave it but dont connect the strategies to it" (his words, 7 Nov 17:27 UTC). His only earlier word on spikes was "ignote" (his words, 6 Nov 21:48 UTC). The rule connects the strategies to the spread check, which he said not to do.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 4.19 The spread limit: 3 pips
@@ -1360,6 +1412,7 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 207: "a fixed 12 pips for every strategy except ... that is the Bollinger bounce and the range trade ... (`STOP_LOSS_PIPS=12`)"
 - **Source:** owner, 2026-11-11T08:05:29Z, TYPED, "Put changes 1, 2 and 3 live exactly as tested: the 12-pip stop for the bounce, range trade and breakout". (Agreed "a fixed 6 pips for every strategy" (design, line 162); changed by the owner.)
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: his own .env, typed "STOP_LOSS_PIPS=6" (his words, 7 Nov 17:49 UTC), and "a fixed 6 pips for every strategy" (design, line 162). The words file ends at 8 November 08:02 UTC; the 12 pips come from an 11 November prompt.
+- **Recheck 2 (his words of 8 to 13 November):** Still different from his words: "ok is that in .env?" (his words, Tue 10 Nov) (a question about the 12-pip stop) and, on Claude's list of changes, "apart from thye 12 pip stop. if price boiunces off the bollinger and runs towards the other bollingerr it doesnt need any stop at all." (his words, Tue 10 Nov) Neither agrees to a 12-pip stop.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 4.24 Take profit 100 pips (TAKE_PROFIT_PIPS)
@@ -1384,6 +1437,7 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 156: "Half the trade closes when price reaches the opposite Bollinger band; the rest goes on to the bounce's normal exits"; line 219.
 - **Source:** owner, 2026-11-11T08:05:29Z, TYPED, "the bounce closed half at the opposite band with the rest left to its normal exits."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "all share the same trade management with the exception of ranging which has the 50% close at the bollinger band" (his words, 6 Nov 10:45 UTC); "Range trade: closes 50% at the opposite band" (design, line 170). Only the range trade half closes in his words; the bounce's half close comes from an 11 November prompt.
+- **Recheck 2 (his words of 8 to 13 November):** Still different from his words: "in range close in full" (his words, Tue 10 Nov) answered Claude's context line: "should the bounce close in full, or close half and let the rest run, as the range trade does?"; he did not ask for the bounce to close half.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 4.26 Closed on a confirmed rejection at a level against it
@@ -1447,7 +1501,8 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 160: "While the bot has open trend trades (EMA pullback, slow grind, breakout), no bounce may open against them unless ..."; line 163 "A bounce with no open trend trade against it is not affected."
 - **Source:** owner, 2026-11-11T16:53:52Z, PASTED, "While the bot has open trend trades (EMA pullback, slow grind, breakout), no Bollinger bounce may open against them, unless ..."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: The words file ends at 8 November 08:02 UTC, so it has nothing from 11 November; the pace and target rule is in the prompt only.
-- **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
+- **Recheck 2 (his words of 8 to 13 November):** His own words support it: "ok go ahead" (his words, Wed 11 Nov) (on building step 1, no bounce against open trend trades unless at a significant level, and step 2, a valid bounce only if price has been moving slowly, which then closes the opposite trades); "if the buy opens at the bounce and that is valid then the sell should close" (his words, Tue 10 Nov); "ok so that bounce opening needs to stop. if the bot has decided the trade is continuing then by definition it doesnt need to be opening reversals" (his words, Wed 11 Nov).
+- **Mark:** Owner's words, unchanged (was: From a prompt, not the owner's words)
 
 ### 4.31 Significant levels: a 00, the weekly pivot, S2, S3, R2, R3
 - **Code:** `trading/against_trend.py:36, 81-84, 90-92`
@@ -1462,7 +1517,8 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 160: "a 00, the weekly pivot ..., S2, S3, R2 or R3"
 - **Source:** owner, 2026-11-11T16:53:52Z, PASTED, "a significant level in their direction: a 00, the weekly pivot (from the previous week's candle), S2, S3, R2 or R3"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: The words file ends at 8 November 08:02 UTC, so it has nothing from 11 November; the pace and target rule is in the prompt only.
-- **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
+- **Recheck 2 (his words of 8 to 13 November):** Still different from his words: his significant levels were "it reaches a significant level like 00 in this case or weekly pivot" (his words, Wed 11 Nov), "when it gets to the extremes s2, s3, r2, r3 the more likely it is to bounce" (his words, Tue 10 Nov) and "it should be a significant level because it was a previous low in the last week" (his words, Wed 11 Nov). The rule has the 00, weekly pivot, S2, S3, R2 and R3 but leaves out the previous week's lows and highs.
+- **Mark:** Changed from the owner's words (was: From a prompt, not the owner's words)
 
 ### 4.32 Weekly pivot: (high + low + close) / 3 of the last finished weekly candle (week starting Sunday), sell price, to a tenth
 - **Code:** `trading/against_trend.py:85-89`
@@ -1476,7 +1532,8 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
   `config/settings.toml:486`: `week_starts_day = "Sunday"`
 - **DESIGN.md:** line 160: "the weekly pivot (the standard one from the previous week's candle, (high + low + close) ÷ 3)"
 - **Source:** owner, 2026-11-11T11:51:55Z, TYPED, "use whichever matches the standard weekly pivot from the previous Monday-to-Friday week."; owner, 2026-11-11T16:53:52Z, PASTED, "the weekly pivot (from the previous week's candle)".
-- **Mark:** Changed from the owner's words  **Owner:** "the standard weekly pivot from the previous Monday-to-Friday week" / **Code:** uses the stored weekly candle that starts on Sunday (settings line 486), so the prices from the Sunday 21:00 UK open are included.
+- **Recheck 2 (his words of 8 to 13 November):** No source either way: his words name "weekly pivot" (his words, Wed 11 Nov) but never say which week; the Monday-to-Friday week came from a prompt, and the Sunday-start weekly candle in the audited code from neither. Commit f69492c (13 November) has since changed the code to the prompt's Monday-to-Friday week.
+- **Mark:** No source found (was: Changed from the owner's words  **Owner:** "the standard weekly pivot from the previous Monday-to-Friday week" / **Code:** uses the stored weekly candle that starts on Sunday (settings line 486), so the prices from the Sunday 21:00 UK open are included.)
 
 ### 4.33 "In their direction": beyond the price at least one of the open trend trades opened at
 - **Code:** `trading/against_trend.py:118-119`
@@ -1514,7 +1571,8 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 160: "within 5 pips of it (`bounce.against_trend_level_within_pips`)"
 - **Source:** owner, 2026-11-11T16:53:52Z, PASTED, "within 5 pips of it ... Make the 5 pips, the 5 pips an hour and the 2 hours settings."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: The words file ends at 8 November 08:02 UTC, so it has nothing from 11 November; the pace and target rule is in the prompt only.
-- **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
+- **Recheck 2 (his words of 8 to 13 November):** Agreed by the owner, in Claude's wording: "ok go ahead" (his words, Wed 11 Nov) (on building step 1, no bounce against open trend trades unless at a significant level, and step 2, a valid bounce only if price has been moving slowly, which then closes the opposite trades); the 5 pips are Claude's context line: "which Claude put to him as the best tested values".
+- **Mark:** Agreed by the owner, Claude's wording (was: From a prompt, not the owner's words)
 
 ### 4.36 Pace: under 5 pips an hour over the last 2 hours (net close-to-close move / 2, finished candles, at the start of the bounce's candle)
 - **Code:** `trading/against_trend.py:96-102, 124, 130-131`
@@ -1530,7 +1588,8 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 161: "valid only if price has moved under 5 pips an hour on average over the last 2 hours ... the net move from the close 2 hours earlier to the last close, divided by 2."
 - **Source:** owner, 2026-11-11T16:53:52Z, PASTED, "the bounce is valid only if price has moved under 5 pips an hour on average over the last 2 hours."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: The words file ends at 8 November 08:02 UTC, so it has nothing from 11 November; the pace and target rule is in the prompt only.
-- **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
+- **Recheck 2 (his words of 8 to 13 November):** Agreed by the owner, in Claude's wording: "ok go ahead" (his words, Wed 11 Nov) (on building step 1, no bounce against open trend trades unless at a significant level, and step 2, a valid bounce only if price has been moving slowly, which then closes the opposite trades); "I decide by looking at quickly the price is moving" (his words, Wed 11 Nov). The 5 pips an hour over 2 hours are Claude's context line: "which Claude put to him as the best tested values".
+- **Mark:** Agreed by the owner, Claude's wording (was: From a prompt, not the owner's words)
 
 ### 4.37 Pace cannot be read (no candle 2 hours earlier): the bounce is refused
 - **Code:** `trading/against_trend.py:100-101, 128-129`
@@ -1559,7 +1618,8 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 161: "It then opens, and **closes every trade open in the opposite direction at that moment**, whatever its strategy, in profit or not. Otherwise it is refused and the trend trades are held."
 - **Source:** owner, 2026-11-11T16:53:52Z, PASTED, "Then it opens, and closes every open trade in the opposite direction at that moment. Otherwise it is refused and the trend trades are held."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: The words file ends at 8 November 08:02 UTC, so it has nothing from 11 November; the pace and target rule is in the prompt only.
-- **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
+- **Recheck 2 (his words of 8 to 13 November):** His own words support it: "if the buy opens at the bounce and that is valid then the sell should close" (his words, Tue 10 Nov); "ok go ahead" (his words, Wed 11 Nov) (on building step 1, no bounce against open trend trades unless at a significant level, and step 2, a valid bounce only if price has been moving slowly, which then closes the opposite trades).
+- **Mark:** Owner's words, unchanged (was: From a prompt, not the owner's words)
 
 ### 4.39 Those closes are priced like the bounce's entry (sell price for a bounce sell, buy fill for a bounce buy)
 - **Code:** `trading/engine.py:245-246`
@@ -1596,9 +1656,9 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 
 ## 5. Range trade
 
-| Owner's words, unchanged | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
-|---:|---:|---:|---:|---:|---:|
-| 16 | 3 | 3 | 0 | 0 | 22 |
+| Owner's words, unchanged | Agreed by the owner, Claude's wording | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
+|---:|---:|---:|---:|---:|---:|---:|
+| 17 | 0 | 2 | 3 | 0 | 0 | 22 |
 
 ### 5.1 Every price the watcher reads is the sell (chart) price
 - **Code:** `rejection/watch.py:139,146-149`
@@ -1729,6 +1789,7 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 178: "Spread spikes are ignored in the same way as for the bounce (3.3)."; line 167: "that candle's sell-price highs and lows cannot start a setup or cancel one."
 - **Source:** owner, 2026-11-06T21:48:50Z, TYPED, "Decision on spread spikes: ignore them. When IG's spread on a candle is abnormally wide, that candle's sell-price highs and lows must not start a setup or cancel one."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: on 7 November he asked about "the 3 pip spread limit" (his words, 7 Nov 17:24 UTC), then said "3 pip spread limit - no" (his words, 7 Nov 17:25 UTC), "the spikes will be blocked by the news block so get rid of it" (his words, 7 Nov 17:27 UTC) and "ok leave it but dont connect the strategies to it" (his words, 7 Nov 17:27 UTC). His only earlier word on spikes was "ignote" (his words, 6 Nov 21:48 UTC). The rule connects the strategies to the spread check, which he said not to do.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 5.9 The spread-spike limit: 3 pips
@@ -1815,6 +1876,7 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 207: "a fixed 12 pips for every strategy except ... that is the Bollinger bounce and the range trade"
 - **Source:** owner, 2026-11-11T08:05:29Z, TYPED, "Put changes 1, 2 and 3 live exactly as tested: the 12-pip stop for the bounce, range trade and breakout"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: his own .env, typed "STOP_LOSS_PIPS=6" (his words, 7 Nov 17:49 UTC), and "a fixed 6 pips for every strategy" (design, line 162). The words file ends at 8 November 08:02 UTC; the 12 pips come from an 11 November prompt.
+- **Recheck 2 (his words of 8 to 13 November):** Still different from his words: "ok is that in .env?" (his words, Tue 10 Nov) (a question about the 12-pip stop) and, on Claude's list of changes, "apart from thye 12 pip stop. if price boiunces off the bollinger and runs towards the other bollingerr it doesnt need any stop at all." (his words, Tue 10 Nov) Neither agrees to a 12-pip stop.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 5.16 Take profit 100 pips (TAKE_PROFIT_PIPS)
@@ -1907,13 +1969,14 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 176: "The whole trade closes when price reaches the other band (owner, 11 November 2026 ...; `range_trade.close_percent_at_opposite_band` 100)."
 - **Source:** owner, 2026-11-11T08:05:29Z, TYPED, "the range trade closed in full at the opposite band" (agreed design (c803d53) line 154 had "Half the trade closes when price reaches the other band."; the owner's later words replace it.)
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "In ranging market, it should close 50% and allow the other 50% to carry on." (his words, 6 Nov 10:42 UTC); "Half the trade closes when price reaches the other band." (design, line 154) Closing in full comes from an 11 November prompt.
-- **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
+- **Recheck 2 (his words of 8 to 13 November):** His own words support it: "in range close in full" (his words, Tue 10 Nov). Claude's question was about the bounce (Claude's context line: "should the bounce close in full, or close half and let the rest run, as the range trade does?"); his answer replaces his 6 November "close 50%" for ranging.
+- **Mark:** Owner's words, unchanged (was: Changed from the owner's words)
 
 ## 6. Level reversal
 
-| Owner's words, unchanged | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
-|---:|---:|---:|---:|---:|---:|
-| 7 | 4 | 5 | 5 | 0 | 21 |
+| Owner's words, unchanged | Agreed by the owner, Claude's wording | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
+|---:|---:|---:|---:|---:|---:|---:|
+| 7 | 0 | 4 | 5 | 5 | 0 | 21 |
 
 ### 6.1 Its .env switch (STRATEGY_LEVEL_REVERSAL, on)
 - **Code:** `strategies/common.py:276-277`
@@ -1925,6 +1988,7 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 191: "**Switched on** (`STRATEGY_LEVEL_REVERSAL=on`)."
 - **Source:** owner, 2026-11-08T05:48:07Z, PASTED, "Owner decision: add a new strategy, the level reversal, switched on ... give it its own settings and .env switch STRATEGY_LEVEL_REVERSAL"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: he asked for switches in general ("strategies on or off" (his words, 7 Nov 07:12 UTC)), but switching the level reversal on is in the prompt only. His words on the level reversal are "The level reversal will need to test a tolerance" (his words, 8 Nov 05:36 UTC), "The reversals at 00, S2 and R2  have the most historical evidence" (his words, 8 Nov 05:47 UTC) and "what tolerance is there at R2 and S2" (his words, 8 Nov 06:04 UTC); they do not give this rule.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 6.2 Setups come from the shared rejection part's bounce version: pierce, first red reversal candle within 3, a close below its low within 3, cancelled above its high, spread spikes ignored (5.8)
@@ -1946,6 +2010,7 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 193: "found by the shared rejection part exactly as for the Bollinger band bounce (3.3 steps 1 to 3 and 5)"
 - **Source:** owner, 2026-11-08T05:21:30Z, PASTED, "Level reversal: ... when price arrives at the level and a rejection confirms there"; owner, 2026-11-08T05:48:07Z, PASTED, "Entry when price breaks past the confirmation candle, as in the research."; agreed design (c803d53) lines 140-143, "If none appears within 3 candles, the setup expires ... within 3 candles of it, or the setup expires ... If price goes above the reversal candle's high at any point, the setup is cancelled."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: His words on the level reversal are "The level reversal will need to test a tolerance" (his words, 8 Nov 05:36 UTC), "The reversals at 00, S2 and R2  have the most historical evidence" (his words, 8 Nov 05:47 UTC) and "what tolerance is there at R2 and S2" (his words, 8 Nov 06:04 UTC); they do not give this rule.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 6.3 A level counts as reached when the candle comes within 3 pips of it, from either side (design_only: no rule about the side the candle opened on)
@@ -2011,6 +2076,7 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 194: "**12 pips at R2 and S2, 5 pips at round numbers**"
 - **Source:** owner, 2026-11-08T06:05:31Z, TYPED, "the level reversal's allowance past the level is 12 pips at R2 and S2, and stays 5 pips at round 00s. ... Make each allowance its own setting"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: he asked "what tolerance is there at R2 and S2" (his words, 8 Nov 06:04 UTC) and said "fix that" (his words, 8 Nov 06:05 UTC), and earlier "R2 and S2 will be fairly accurate" (his words, 8 Nov 05:36 UTC); the 12 and 5 pips are in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 6.8 "Furthest point" measured over the candles from the piercing candle to the confirmation candle
@@ -2050,6 +2116,7 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 195: "3. The sell opens as soon as price breaks below the confirmation candle's low (a buy, above its high)."
 - **Source:** owner, 2026-11-08T05:48:07Z, PASTED, "Entry when price breaks past the confirmation candle, as in the research."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: His words on the level reversal are "The level reversal will need to test a tolerance" (his words, 8 Nov 05:36 UTC), "The reversals at 00, S2 and R2  have the most historical evidence" (his words, 8 Nov 05:47 UTC) and "what tolerance is there at R2 and S2" (his words, 8 Nov 06:04 UTC); they do not give this rule.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 6.11 Stop 6 pips beyond the furthest point
@@ -2067,6 +2134,7 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 196: "**Stop 6 pips beyond the furthest point** price reached"
 - **Source:** owner, 2026-11-08T05:48:07Z, PASTED, "Stop 6 pips beyond the furthest point price reached"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "a fixed 6 pips for every strategy" (design, line 162) (a distance from the entry); "all share the same trade management with the exception of ranging which has the 50% close at the bollinger band" (his words, 6 Nov 10:45 UTC). 6 pips beyond the furthest point is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 6.12 Take profit 20 pips, on any day
@@ -2079,6 +2147,7 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 196: "**take profit 20 pips** (`level_reversal.take_profit_pips`)"; line 208: "the level reversal's 20 pips ... on any day"
 - **Source:** owner, 2026-11-08T05:48:07Z, PASTED, "take profit 20 pips."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "a fixed 100 pips sent to IG as a safety net" (design, line 163); his own .env, "TAKE_PROFIT_PIPS=100" (his words, 7 Nov 17:49 UTC); "all share the same trade management with the exception of ranging which has the 50% close at the bollinger band" (his words, 6 Nov 10:45 UTC). 20 pips is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 6.13 Several setups triggering on the same candle and direction give one idea
@@ -2101,6 +2170,7 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 197: "5. In every analyser state except consolidation, either way (2.2)"
 - **Source:** owner, 2026-11-08T05:48:07Z, PASTED, "in any analyser state except consolidation."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: His words on the level reversal are "The level reversal will need to test a tolerance" (his words, 8 Nov 05:36 UTC), "The reversals at 00, S2 and R2  have the most historical evidence" (his words, 8 Nov 05:47 UTC) and "what tolerance is there at R2 and S2" (his words, 8 Nov 06:04 UTC); they do not give this rule.
+- **Recheck 2 (his words of 8 to 13 November):** Still from a prompt only: on 9 November he said "I'm wondering whether it should only be allowed to place trades as a reversal. Just want to look into it for now." (his words, Mon 9 Nov), which is not a decision.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 6.15 The direction rule does not apply to the level reversal
@@ -2111,6 +2181,7 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
   ```
 - **DESIGN.md:** line 197: "the direction rule (2.3) does not apply."
 - **Source:** agreed design (c803d53) line 52, "### 2.3 Direction rule (applies to every strategy)"; owner, 2026-11-08T05:48:07Z, PASTED (the level reversal decision) does not mention the direction rule; no owner message exempting the level reversal found. Exemption written in commit 45628cc (2026-11-08 05:58).
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words  **Owner:** "Direction rule (applies to every strategy)" / **Code:** the level reversal is exempt from the direction rule.
 
 ### 6.16 New trades only from 06:00 to 20:30 UK
@@ -2166,6 +2237,7 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 - **DESIGN.md:** line 198: "no close on a rejection at a level (section 4)"
 - **Source:** owner, 2026-11-08T05:48:07Z, PASTED, "no close on a rejection at a level."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "If price is rejected at the level against the trade, the trade closes at the same moment a bounce the other way would open" (design, line 165); "all share the same trade management with the exception of ranging which has the 50% close at the bollinger band" (his words, 6 Nov 10:45 UTC). No close on a rejection is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 6.21 Keeps the last 300 candles to measure the furthest point
@@ -2180,9 +2252,9 @@ Note: the bounce's limit of one trade per direction (settings `[limits] bollinge
 
 ## 7. The analyser's states
 
-| Owner's words, unchanged | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
-|---:|---:|---:|---:|---:|---:|
-| 27 | 7 | 28 | 7 | 0 | 69 |
+| Owner's words, unchanged | Agreed by the owner, Claude's wording | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
+|---:|---:|---:|---:|---:|---:|---:|
+| 27 | 0 | 7 | 28 | 7 | 0 | 69 |
 
 Sources used: owner_messages.txt; agreed design `git show c803d53:docs/DESIGN.md`; 161 report
 `autobot_reports/nms_audit_for_new_bot_20261106.md` (NMS). The owner's instruction to take
@@ -2257,6 +2329,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 48: "flat is the upper band and the lower band each moving less than 0.2 pips a candle"
 - **Source:** owner, 2026-11-07T15:03:49Z, PASTED, "\"Flat\" must apply to the upper and the lower band, not only the middle"; owner, 2026-11-07T15:20:10Z, TYPED, "the upper and lower band slopes each below 0.2 pips a candle"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: his numbers were "8 pips / 10 pips" (his words, 7 Nov 15:07 UTC) and "0.5" (his words, 7 Nov 15:08 UTC), then "ok go with claudes measurements" (his words, 7 Nov 15:18 UTC), which does not give a value; 0.2 pips a candle, on each band, is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 7.7 Slope: band move per candle over 6 candles
@@ -2362,6 +2435,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 52: "narrow Bollinger bands" (no number)
 - **Source:** owner, 2026-11-07T10:24:09Z, PASTED, "replace the 8-pip band width with \"band width 14 pips or less, OR the bands have narrowed for 6 candles in a row\""
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: the design says "narrow Bollinger bands" (design, line 50) and to start from 161's values ("starting from NMS's values on 161 where they exist" (design, line 97)); 14 pips or narrowing for 6 candles replaced 161's value in a prompt.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 7.16 Consolidation: middle band flat, under 0.5 pips a candle
@@ -2389,6 +2463,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 52: "price between them touching neither band"
 - **Source:** owner, 2026-11-07T10:24:09Z, PASTED, "Replace \"neither band reached for 6 candles\" with \"no candle has closed outside the bands for 6 candles\""
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "narrow Bollinger bands, price between them touching neither band" (design, line 50); "Exhaustion is narrow bollinger bands price in between touching neither band" (his words, 6 Nov 14:28 UTC). "No close outside the bands" is looser and is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 7.18 Consolidation: average body at most 3 pips (over the same 6 candles)
@@ -2468,6 +2543,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 74: "Price pushes into a strong level, such as the daily pivot" (list not in DESIGN.md)
 - **Source:** owner, 2026-11-07T11:15:12Z, PASTED, "A turning level on its own can no longer start or replace an emerging trend. Only the pivot, R1 to R3, S1 to S3, round numbers 00 and 50, the previous day's high or low, or a turning level that lines up with one of those can"; owner, 2026-11-07T11:31:35Z, TYPED, "Keep the strong-level rule."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "The levels that matter most: S2, R2, the daily pivot, round numbers and turning levels." (design, line 188); "I pay a lot of attention to S2, R2, pivot line and anytime there are round numbers 00s or 50s or if there are previous levels that have turned on previous recent ish days" (his words, 6 Nov 13:32 UTC). The rule drops turning levels on their own and adds R1, R3, S1, S3 and the previous day's high and low; that list is in a prompt and in Claude Code's plan pasted at 7 November 11:17, not his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 7.24 Breakout from consolidation: one close beyond a band starts an emerging trend at once
@@ -2520,6 +2596,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** none
 - **Source:** owner, 2026-11-07T10:11:51Z, PASTED, "remove the 3-pip cancel. An emerging trend that started from a rejection at a level is only cancelled if two candles in a row close back beyond that level. One that started from a breakout is only cancelled if two candles in a row close back inside the Bollinger bands."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: his typed words do not say how an emerging trend is cancelled.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 7.28 The cancel level: the strong level nearest the piercing candle's edge
@@ -2584,6 +2661,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
   ```
 - **DESIGN.md:** line 81: "Small bounces fail at or below the short EMAs and the middle of the Bollinger band"; line 85: "fails under the EMAs and middle band"
 - **Source:** agreed design (c803d53) line 76, "Small bounces fail at or below the short EMAs and the middle of the Bollinger band"; line 80, "the first bounce fails under the EMAs and middle band"
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words. **Owner:** "fail at or below the short EMAs and the middle of the Bollinger band" / "fails under the EMAs and middle band". **Code:** only the 21 EMA; the bounce's high may reach the HIGHER of the 21 EMA and middle band plus 1 pip (low: the lower of them minus 1 pip).
 
 ### 7.33 Failed bounce allowance: 1 pip
@@ -2655,6 +2733,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 87: "candles mostly green"
 - **Source:** owner, 2026-11-07T10:35:17Z, TYPED, "change \"70% of candles in the trend's colour\" to \"70% of the total candle body size over the last 6 candles is in the trend's colour\" ... Keep 70% as a setting."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: the design says "candles mostly green" (design, line 82); 70% of the body size over 6 candles is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 7.39 Strong push: bands at least 150% of their width 12 candles before
@@ -2758,6 +2837,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 51: "price has moved at least 30 pips since it started, a strong reversal candle appears, recognised by the shared rejection part"
 - **Source:** agreed design (c803d53) line 49, same words; owner, 2026-11-07T10:11:51Z, PASTED, "Possible reversal: only after the 30-pip move AND a confirmed rejection at a level from the shared rejection part. A single opposite candle is not enough."; owner, 2026-11-06T15:05:45Z, PASTED, "possible reversal: trend must have moved at least 30 pips"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "after a trend has been running and price has moved at least 30 pips since it started, a strong reversal candle appears, recognised by the shared rejection part" (design, line 49); "Possible reversal after a trend has been running for a while and price has moved significant pips and a strong reversal candle shows" (his words, 6 Nov 14:28 UTC); "30" (his words, 6 Nov 14:31 UTC). The shared rejection part covers a level or the band ("works out whether price has been rejected at a level or band" (design, line 16)); "at a level, not the band" is in the prompt only. His "This will normally happen at a structural level" (his words, 6 Nov 10:35 UTC) says normally, not only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 7.48 A possible reversal can also come from an emerging trend
@@ -2792,6 +2872,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
   `config/settings.toml:297-299`: `macd_fast_periods = 35`, `macd_slow_periods = 45`, `macd_signal_periods = 30`
 - **DESIGN.md:** line 91: "at its biggest histogram bar in the old direction, or already past its biggest and shrinking"
 - **Source:** agreed design (c803d53) line 86, same words; line 105, "MACD | 35, 45, 30"
+- **Recheck 2 (his words of 8 to 13 November):** Still different from his words: nothing new; his 6 November words agree with the design: "MACD at its stronget in the other direction or has been at its strongest" (his words, 6 Nov 14:22 UTC).
 - **Mark:** Changed from the owner's words. **Owner:** "at its biggest histogram bar in the old direction, or already past its biggest and shrinking". **Code:** any histogram value on the old direction's side of zero.
 
 ### 7.51 RSI sign: below 40 (old trend down) or above 60 (up)
@@ -2803,6 +2884,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
   `config/settings.toml:302-304`: `rsi_periods = 3`, `rsi_upper_line = 70`, `rsi_lower_line = 30`
 - **DESIGN.md:** line 92: "RSI has gone beyond 30 or 70 and is turning back."
 - **Source:** agreed design (c803d53) line 87, same words
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words. **Owner:** "RSI has gone beyond 30 or 70 and is turning back". **Code:** RSI under 30+10 or over 70-10, with no turning-back check.
 
 ### 7.52 Time-of-day sign: inside a reversal watch window
@@ -2904,6 +2986,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 42: "| Ranging | Range trade; level reversal (3.6), either way |"
 - **Source:** agreed design (c803d53) line 40, "| Ranging | Range trade |"; owner, 2026-11-08T05:48:07Z, PASTED, "the level reversal ... in any analyser state except consolidation"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: the range trade part is his ("Ranging | Range trade" (design, line 40)); the level reversal part is in the prompt only. His words on the level reversal are "The level reversal will need to test a tolerance" (his words, 8 Nov 05:36 UTC), "The reversals at 00, S2 and R2  have the most historical evidence" (his words, 8 Nov 05:47 UTC) and "what tolerance is there at R2 and S2" (his words, 8 Nov 06:04 UTC); they do not give this rule.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 7.61 Strategies allowed in an emerging trend: EMA pullback, breakout, level reversal
@@ -2914,6 +2997,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 43: "| Emerging trend | EMA pullback, breakout (3.5), in the trend's direction only. Not the slow grind (owner, 8 November 2026). Level reversal (3.6), either way |"
 - **Source:** owner, 2026-11-07T16:53:46Z, PASTED, "it trades in a trend and in an emerging trend" (EMA pullback); owner, 2026-11-07T19:24:52Z, PASTED, "It looks for a trade when the analyser moves into an emerging trend because price broke out" (breakout); owner, 2026-11-07T19:58:43Z, PASTED, "Trend only, in the trend's direction" (slow grind), accepted 2026-11-08T05:01:05Z, TYPED, "switch the slow grind on with result 13's settings"; owner, 2026-11-07T17:35:26Z / 17:38:00Z, "only in trend (not emerging trend)" / TYPED "Use version 3 for the bounce"; owner, 2026-11-08T05:48:07Z, PASTED, "in any analyser state except consolidation" (level reversal)
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "Emerging trend | Slow grind, EMA pullback, Bollinger band bounce in the trend's direction only" (design, line 41); "Emerging trend should arm the trend following strategy and the ema pullback" (his words, 6 Nov 10:25 UTC) (the slow grind is left out by the rule); and for the EMA pullback "ema pullback in trend only" (his words, 7 Nov 16:12 UTC). Leaving the bounce out matches "how about possible reversal and only trends in the opposite direction" (his words, 7 Nov 17:34 UTC); the level reversal part is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 7.62 Strategies allowed in a trend: slow grind, EMA pullback, Bollinger bounce against the trend only, level reversal
@@ -2925,6 +3009,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 44: "| Trend | Slow grind (either type of trend ...), EMA pullback, breakout (3.5), in the trend's direction only; Bollinger band bounce against the trend's direction only (owner, 7 November 2026); level reversal (3.6), either way |"
 - **Source:** agreed design (c803d53) line 42, "| Trend | Slow grind, EMA pullback, Bollinger band bounce in the trend's direction only |"; owner, 2026-11-07T17:35:26Z, PASTED, "3. Possible reversal, plus emerging trend and trend but only against the trend's direction, and only in trend (not emerging trend)" + 17:38:00Z, TYPED, "Use version 3 for the bounce"; owner, 2026-11-07T16:53:46Z, PASTED, "it trades in a trend and in an emerging trend"; owner, 2026-11-07T19:58:43Z, PASTED, "Trend only, in the trend's direction"; owner, 2026-11-08T05:48:07Z, PASTED, "in any analyser state except consolidation"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: the slow grind, EMA pullback and bounce parts are his ("Trend | Slow grind, EMA pullback, Bollinger band bounce in the trend's direction only" (design, line 42); "how about possible reversal and only trends in the opposite direction" (his words, 7 Nov 17:34 UTC)); the level reversal part is in the prompt only. His words on the level reversal are "The level reversal will need to test a tolerance" (his words, 8 Nov 05:36 UTC), "The reversals at 00, S2 and R2  have the most historical evidence" (his words, 8 Nov 05:47 UTC) and "what tolerance is there at R2 and S2" (his words, 8 Nov 06:04 UTC); they do not give this rule.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 7.63 Breakout listed as allowed in a trend
@@ -2941,6 +3026,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 45: "| Possible reversal | Bollinger band bounce; level reversal (3.6), either way |"
 - **Source:** agreed design (c803d53) line 43, "| Possible reversal | Bollinger band bounce |"; owner, 2026-11-08T05:48:07Z, PASTED, "in any analyser state except consolidation"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: the bounce part is his ("Possible reversal | Bollinger band bounce" (design, line 43); "the previous state of potential reversal should allow the bounce" (his words, 6 Nov 14:30 UTC)); the level reversal part is in the prompt only. His words on the level reversal are "The level reversal will need to test a tolerance" (his words, 8 Nov 05:36 UTC), "The reversals at 00, S2 and R2  have the most historical evidence" (his words, 8 Nov 05:47 UTC) and "what tolerance is there at R2 and S2" (his words, 8 Nov 06:04 UTC); they do not give this rule.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 7.65 Strategies allowed in consolidation: none
@@ -3005,9 +3091,9 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 
 ## 8. The trade manager's exits
 
-| Owner's words, unchanged | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
-|---:|---:|---:|---:|---:|---:|
-| 14 | 14 | 17 | 6 | 0 | 51 |
+| Owner's words, unchanged | Agreed by the owner, Claude's wording | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
+|---:|---:|---:|---:|---:|---:|---:|
+| 16 | 0 | 13 | 17 | 5 | 0 | 51 |
 
 ### 8.1 The order of the steps on each bar (scheduled close, stop/lock, band, take profit, rejection)
 - **Code:** `trade_manager/manager.py:231-277`
@@ -3033,6 +3119,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** none
 - **Source:** owner, 2026-11-07T16:25:49Z, PASTED, "If a stop and a target are both reached inside one 5-minute candle, count the stop first."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: his typed words do not say which comes first when a stop and a target fall in one candle.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 8.3 A buy closes (and is stopped) on the sell price, a sell on the buy price
@@ -3046,6 +3133,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 232: "Trades still open and close at IG's real buy or sell price as normal."
 - **Source:** owner, 2026-11-07T16:20:21Z, TYPED, "At IG a sell is closed, and its stop triggered, on the buy (offer) price, and a buy on the sell (bid) price."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: his typed words do not say which price a trade closes on.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 8.4 Closed at 20:30 UK every day: Bollinger bounce, range trade, slow grind, level reversal
@@ -3071,6 +3159,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 213: "or 20:30 UK on Friday, when any EMA pullback trade still open is closed. It is not closed at 20:30 on other days (it may be held overnight)"; line 209 (breakout) same
 - **Source:** EMA pullback: owner, 2026-11-07T16:00:31Z, PASTED, "It may be held overnight. It is not closed at 20:30, except on Friday: any EMA pullback trade still open at 20:30 UK on Friday is closed then."; repeated owner, 2026-11-07T16:53:46Z, PASTED, "it may be held overnight, and any trade still open at 20:30 UK on Friday is closed". Breakout: owner, 2026-11-07T19:24:52Z, PASTED, "It may be held overnight and through news, and is closed at 20:30 UK on Friday."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: the EMA pullback part is his ("it can be held overnight" (his words, 7 Nov 15:52 UTC), "it should close at the end of trading on friday" (his words, 7 Nov 15:53 UTC)); for the breakout, "06:00 - 20:30 GMT. Trades should be closed at 20:30. no trades held overnight" (his words, 6 Nov 10:57 UTC), and holding it overnight is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 8.6 The scheduled close is made at the open of the first bar at or after its time, never in the entry bar
@@ -3100,6 +3189,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 264: "Open trades closed 15 minutes before. This does not apply to the EMA pullback or the breakout (owner, 7 November 2026), or the slow grind (owner, 8 November 2026)"
 - **Source:** agreed design (c803d53) line 200, "Open trades closed 15 minutes before."; owner, 2026-11-07T11:44:23Z, PASTED, "open trades closed 15 minutes before"; EMA pullback: owner, 2026-11-07T16:00:31Z, PASTED, "open trades are not closed before big news"; breakout: owner, 2026-11-07T19:24:52Z, PASTED, "held overnight and through news"; slow grind: owner, 2026-11-07T19:58:43Z, PASTED, "News as the EMA pullback: may open during the window, not closed before big news" (accepted owner, 2026-11-08T05:01:05Z, TYPED, "Everything else exactly as listed in your earlier reply")
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "it should not open a trade 15 minutes before big news and it should close any open trades before big news" (his words, 6 Nov 11:00 UTC). The EMA pullback's exception is his ("it looks like ema pullback needs to work outside of news block" (his words, 7 Nov 15:52 UTC)); the breakout's and slow grind's exceptions are in prompts only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 8.8 Stop 12 pips for the Bollinger bounce and range trade (STOP_LOSS_PIPS)
@@ -3111,6 +3201,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 207: "a fixed 12 pips for every strategy except the EMA pullback, the breakout, the slow grind and the level reversal ... (`STOP_LOSS_PIPS=12`)"
 - **Source:** owner, 2026-11-11T08:05:29Z, TYPED, "Put changes 1, 2 and 3 live exactly as tested: the 12-pip stop for the bounce, range trade and breakout" (was agreed design (c803d53) line 162, "a fixed 6 pips for every strategy")
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: his own .env, typed "STOP_LOSS_PIPS=6" (his words, 7 Nov 17:49 UTC), and "a fixed 6 pips for every strategy" (design, line 162). The words file ends at 8 November 08:02 UTC; the 12 pips come from an 11 November prompt.
+- **Recheck 2 (his words of 8 to 13 November):** Still different from his words: "ok is that in .env?" (his words, Tue 10 Nov) (a question about the 12-pip stop) and, on Claude's list of changes, "apart from thye 12 pip stop. if price boiunces off the bollinger and runs towards the other bollingerr it doesnt need any stop at all." (his words, Tue 10 Nov) Neither agrees to a 12-pip stop.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 8.9 EMA pullback stop 12 pips (STOP_LOSS_PIPS_EMA_PULLBACK)
@@ -3130,6 +3221,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 209: "a breakout trade runs until its 12-pip stop (owner, 10 November 2026)"
 - **Source:** owner, 2026-11-11T08:05:29Z, TYPED, "the 12-pip stop for the bounce, range trade and breakout" (earlier owner, 2026-11-07T19:24:52Z, PASTED, "Stop loss 6 pips")
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: his own .env, typed "STOP_LOSS_PIPS=6" (his words, 7 Nov 17:49 UTC), and "a fixed 6 pips for every strategy" (design, line 162). The 12 pips come from an 11 November prompt.
+- **Recheck 2 (his words of 8 to 13 November):** Still different from his words: "ok is that in .env?" (his words, Tue 10 Nov) (a question about the 12-pip stop) and, on Claude's list of changes, "apart from thye 12 pip stop. if price boiunces off the bollinger and runs towards the other bollingerr it doesnt need any stop at all." (his words, Tue 10 Nov) Neither agrees to a 12-pip stop.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 8.11 Slow grind stop 15 pips
@@ -3142,6 +3234,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 210: "a slow grind trade runs until its 15-pip stop"
 - **Source:** owner, 2026-11-07T19:58:43Z, PASTED, "Stop 15 pips; take profit 20 pips, or 100 on a big-news day"; owner, 2026-11-08T05:01:05Z, TYPED, "switch the slow grind on with result 13's settings"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: his own .env, typed "STOP_LOSS_PIPS=6" (his words, 7 Nov 17:49 UTC), and "a fixed 6 pips for every strategy" (design, line 162). 15 pips is in the prompt only. His only words on the slow grind's final settings are "same treatment for slow grind" (his words, 7 Nov 19:36 UTC) and "no thats fine switch it on with that config" (his words, 7 Nov 19:56 UTC); the config itself is in the prompt, not his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 8.12 Level reversal stop 6 pips beyond the furthest point
@@ -3157,6 +3250,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 207: "The level reversal's stop is not a distance from the entry: it is 6 pips beyond the furthest point price reached"
 - **Source:** owner, 2026-11-08T05:48:07Z, PASTED, "Stop 6 pips beyond the furthest point price reached; take profit 20 pips."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "a fixed 6 pips for every strategy" (design, line 162) (a distance from the entry); "all share the same trade management with the exception of ranging which has the 50% close at the bollinger band" (his words, 6 Nov 10:45 UTC). 6 pips beyond the furthest point is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 8.13 The stop is filled at the stop, or at the bar's open if the bar opened past it
@@ -3214,6 +3308,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 212: "there is no profit lock except the slow grind's (above)"
 - **Source:** owner, 2026-11-07T13:35:04Z, PASTED, "Profit lock: replace the 15-pip lock in DESIGN.md section 4 with: a trade runs until the analyser's state becomes consolidation"; then owner, 2026-11-07T14:50:02Z, TYPED, "Remove the consolidation exit for every strategy ... The other exits stay exactly as section 4 says"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "once a trade is 15 pips in profit, the bot locks in 10 pips" (design, line 164) (for every trade). He asked to rethink the lock for the EMA pullback ("in that case we need to revist that profit lock mechanism" (his words, 7 Nov 13:29 UTC), "just let it run all day until the analyser got to consolidation" (his words, 7 Nov 13:33 UTC)) and then said of the consolidation close "that was meant just for that strategy but I want to get rid of it across the board now" (his words, 7 Nov 14:49 UTC). Nothing in his words removes the 15/10 lock from the bounce, range trade, breakout or level reversal; that is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Still different from his words: on 10 November he said "I would have closed those first few trades early and they would have been in decent profit. question is how to teach the bot to do that" (his words, Tue 10 Nov), which is not a decision on the lock.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 8.18 Range trade closed in full at the opposite Bollinger band
@@ -3228,7 +3323,8 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 219: "the **range trade closes in full** when price reaches the opposite Bollinger band (50% before)"
 - **Source:** owner, 2026-11-11T08:05:29Z, TYPED, "the range trade closed in full at the opposite band" (was agreed design (c803d53) line 170, "closes 50% at the opposite band")
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "In ranging market, it should close 50% and allow the other 50% to carry on." (his words, 6 Nov 10:42 UTC); "Range trade: closes 50% at the opposite band" (design, line 170). Closing in full comes from an 11 November prompt.
-- **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
+- **Recheck 2 (his words of 8 to 13 November):** His own words support it: "in range close in full" (his words, Tue 10 Nov). Claude's question was about the bounce (Claude's context line: "should the bounce close in full, or close half and let the rest run, as the range trade does?"); his answer replaces his 6 November "close 50%" for ranging.
+- **Mark:** Owner's words, unchanged (was: Changed from the owner's words)
 
 ### 8.19 Bollinger bounce closes half at the opposite band; the rest to its normal exits
 - **Code:** `trade_manager/manager.py:203-204, 263-267`
@@ -3243,6 +3339,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 219: "the **Bollinger bounce closes half** there, and the rest goes on to its normal exits"
 - **Source:** owner, 2026-11-11T08:05:29Z, TYPED, "the bounce closed half at the opposite band with the rest left to its normal exits"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "all share the same trade management with the exception of ranging which has the 50% close at the bollinger band" (his words, 6 Nov 10:45 UTC); "Range trade: closes 50% at the opposite band" (design, line 170). The bounce's half close comes from an 11 November prompt.
+- **Recheck 2 (his words of 8 to 13 November):** Still different from his words: "in range close in full" (his words, Tue 10 Nov) answered Claude's context line: "should the bounce close in full, or close half and let the rest run, as the range trade does?"; he did not ask for the bounce to close half.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 8.20 The band used is the one at the last finished candle; "reached" judged on the sell price's high/low
@@ -3293,6 +3390,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 275: "closes trades in full or by half (the Bollinger bounce at the opposite band; the range trade only if set to half)"
 - **Source:** owner, 2026-11-08T07:32:34Z, PASTED, "It closes trades when the trade manager tells it to, in full or by half for the range trade"; owner, 2026-11-11T08:05:29Z, TYPED, "the bounce closed half at the opposite band"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "all share the same trade management with the exception of ranging which has the 50% close at the bollinger band" (his words, 6 Nov 10:45 UTC). Only the range trade half closes in his words; the bounce's half close comes from an 11 November prompt.
+- **Recheck 2 (his words of 8 to 13 November):** Still different from his words: "in range close in full" (his words, Tue 10 Nov) answered Claude's context line: "should the bounce close in full, or close half and let the rest run, as the range trade does?"; he did not ask for the bounce to close half, and the range trade now closes in full.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 8.24 Take profit 100 pips (TAKE_PROFIT_PIPS) for the Bollinger bounce and range trade
@@ -3323,6 +3421,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 210: "its take profit at IG (20 pips"
 - **Source:** owner, 2026-11-07T19:58:43Z, PASTED, "Stop 15 pips; take profit 20 pips, or 100 on a big-news day"; owner, 2026-11-08T05:01:05Z, TYPED, "result 13's settings"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "a fixed 100 pips sent to IG as a safety net" (design, line 163); his own .env, "TAKE_PROFIT_PIPS=100" (his words, 7 Nov 17:49 UTC). 20 pips is in the prompt only. His only words on the slow grind's final settings are "same treatment for slow grind" (his words, 7 Nov 19:36 UTC) and "no thats fine switch it on with that config" (his words, 7 Nov 19:56 UTC); the config itself is in the prompt, not his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 8.27 EMA pullback and slow grind: 100 pips for a trade opened on a UK day with big news for the pair
@@ -3336,6 +3435,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 208: "an EMA pullback or slow grind trade opened on a day with big news for the pair ... gets the 100 pips of `TAKE_PROFIT_PIPS`"
 - **Source:** EMA pullback: owner, 2026-11-07T17:09:43Z, TYPED, "Every EMA pullback trade opened on a day with big news for the pair gets the 100-pip take profit from TAKE_PROFIT_PIPS instead of 30."; slow grind: owner, 2026-11-07T19:58:43Z, PASTED, "or 100 on a big-news day"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: the EMA pullback part is his ("on a big news day can there either be a version which runs to tp = 100" (his words, 7 Nov 16:53 UTC)); the slow grind part is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 8.28 EMA pullback and slow grind: 100 pips in the trend day's direction on a trend day
@@ -3347,6 +3447,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 70: "on a trend day, an EMA pullback or slow grind trade in the trend day's direction ... gets the 100-pip take profit of `TAKE_PROFIT_PIPS`"
 - **Source:** owner, 2026-11-08T06:31:08Z, PASTED, "On a trend day, any EMA pullback or slow grind trade going in the trend day's direction (back towards the monthly pivot) gets the 100-pip take profit from TAKE_PROFIT_PIPS instead of its usual take profit."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: His words on trend days ask for research only: "The trend day idea needs refining" (his words, 8 Nov 05:36 UTC), "can you research different levels and conditions using this basic idea though?" (his words, 8 Nov 06:20 UTC) and "go with your suggestion" (his words, 8 Nov 06:30 UTC). The 100-pip take profit for trades in the trend day's direction is not in his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 8.29 Breakout take profit 50 pips on any day
@@ -3359,6 +3460,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 208: "The breakout's is 50 pips (`breakout.take_profit_pips`) ... on any day"
 - **Source:** owner, 2026-11-07T19:24:52Z, PASTED, "Stop loss 6 pips, take profit 50 pips (breakout.stop_loss_pips = 6, breakout.take_profit_pips = 50)"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "a fixed 100 pips sent to IG as a safety net" (design, line 163); his own .env, "TAKE_PROFIT_PIPS=100" (his words, 7 Nov 17:49 UTC). 50 pips is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 8.30 Level reversal take profit 20 pips on any day
@@ -3371,6 +3473,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 208: "the level reversal's 20 pips (owner, 8 November 2026; `level_reversal.take_profit_pips`), on any day"
 - **Source:** owner, 2026-11-08T05:48:07Z, PASTED, "Stop 6 pips beyond the furthest point price reached; take profit 20 pips."
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "a fixed 100 pips sent to IG as a safety net" (design, line 163); his own .env, "TAKE_PROFIT_PIPS=100" (his words, 7 Nov 17:49 UTC). 20 pips is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 8.31 Close on a confirmed rejection at a level against the trade: Bollinger bounce and range trade only
@@ -3385,6 +3488,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 214: "If price is rejected at the level against the trade, the trade closes at the same moment a bounce the other way would open"; lines 209-213 (not for EMA pullback, breakout, slow grind, level reversal)
 - **Source:** agreed design (c803d53) line 165, "If price is rejected at the level against the trade, the trade closes"; exemptions: owner, 2026-11-07T15:36:57Z, PASTED, "The close on a rejection at a level does not apply to it" (EMA pullback); owner, 2026-11-07T19:24:52Z, PASTED, "No close on a rejection at a level." (breakout); owner, 2026-11-07T19:58:43Z, PASTED, "No close on a rejection at a level." (slow grind); owner, 2026-11-08T05:48:07Z, PASTED, "no close on a rejection at a level" (level reversal)
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "If price is rejected at the level against the trade, the trade closes at the same moment a bounce the other way would open" (design, line 165) (for every trade); "all share the same trade management with the exception of ranging which has the 50% close at the bollinger band" (his words, 6 Nov 10:45 UTC). The EMA pullback's exception is his ("ema pullback should run to the 100 pips or the end of the day" (his words, 7 Nov 15:35 UTC)); the breakout's, slow grind's and level reversal's are in prompts only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 8.32 The rejection close applies only from the bar after the entry bar
@@ -3477,7 +3581,8 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 220: "a Bollinger bounce that opens against open trend trades, at a significant level with price moving slowly, closes every trade open in the opposite direction at that moment"
 - **Source:** owner, 2026-11-11T16:53:52Z, PASTED, "Then it opens, and closes every open trade in the opposite direction at that moment."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: The words file ends at 8 November 08:02 UTC, so it has nothing from 11 November; the pace and target rule is in the prompt only.
-- **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
+- **Recheck 2 (his words of 8 to 13 November):** His own words support it: "if the buy opens at the bounce and that is valid then the sell should close" (his words, Tue 10 Nov); "ok go ahead" (his words, Wed 11 Nov) (on building step 1, no bounce against open trend trades unless at a significant level, and step 2, a valid bounce only if price has been moving slowly, which then closes the opposite trades).
+- **Mark:** Owner's words, unchanged (was: From a prompt, not the owner's words)
 
 ### 8.40 A close counts only once IG confirms it; refused or unclear leaves the trade open and it is tried again
 - **Code:** `trade_manager/manager.py:373-383`
@@ -3568,6 +3673,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 24: "Each open trade's best price so far, half close and "watching a level" are saved by the trade manager and restored after a restart."
 - **Source:** owner, 2026-11-08T09:37:37Z, PASTED, "save each open trade's best price reached so far, and restore it after a restart, so the slow grind's lock and anything else that depends on it carry on correctly."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: his typed words and the design say nothing about saving the best price across a restart.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 8.47 hours.hold_overnight must be false
@@ -3627,9 +3733,9 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 
 ## 9. The safety rules
 
-| Owner's words, unchanged | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
-|---:|---:|---:|---:|---:|---:|
-| 25 | 7 | 10 | 13 | 0 | 55 |
+| Owner's words, unchanged | Agreed by the owner, Claude's wording | Changed from the owner's words | Added without the owner asking | From a prompt, not the owner's words | No source found | Rules |
+|---:|---:|---:|---:|---:|---:|---:|
+| 28 | 1 | 7 | 10 | 9 | 0 | 55 |
 
 ### 9.1 New trades only from 06:00 to 20:30 UK (bounce, range trade, level reversal, breakout)
 - **Code:** `strategies/common.py:150-153`
@@ -3675,6 +3781,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 259: "the EMA pullback may open at any time the market is open, not only 06:00 to 20:30"; line 264
 - **Source:** owner, 2026-11-07T16:53:46Z, PASTED, "it may open at any time the market is open; ... it may open during a big-news window and is not closed before big news"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: the news part is his ("it looks like ema pullback needs to work outside of news block" (his words, 7 Nov 15:52 UTC)), but on hours his last words were "And put it back to only opening in hours" (his words, 7 Nov 16:12 UTC).
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 9.5 EMA pullback: no new trade from 20:30 UK on Friday
@@ -3700,6 +3807,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 260: "the slow grind may open at any time the market is open ... except: from 20:30 UK to midnight every day"
 - **Source:** owner, 2026-11-08T05:01:05Z, TYPED, "holding rule 2: closed at 20:30 UK every day, and no new trade from 20:30 to midnight UK"; owner, 2026-11-07T19:58:43Z, PASTED, "Opens at any time the market is open ... News as the EMA pullback: may open during the window"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "06:00 - 20:30 GMT. Trades should be closed at 20:30. no trades held overnight" (his words, 6 Nov 10:57 UTC); "it should not open a trade 15 minutes before big news and it should close any open trades before big news" (his words, 6 Nov 11:00 UTC). His only words on the slow grind's final settings are "same treatment for slow grind" (his words, 7 Nov 19:36 UTC) and "no thats fine switch it on with that config" (his words, 7 Nov 19:56 UTC); the config itself is in the prompt, not his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 9.7 Slow grind: none in the first 15 minutes after the week opens
@@ -3713,6 +3821,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 260: "in the first 15 minutes after the market opens on Sunday"
 - **Source:** owner, 2026-11-07T19:58:43Z, PASTED, "except the first 15 minutes after the Sunday open, 21:55 to 22:15 UK"; accepted owner, 2026-11-08T05:01:05Z, TYPED, "Everything else exactly as listed in your earlier reply"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: under his hours ("06:00 - 20:30 GMT" (his words, 6 Nov 10:57 UTC)) no trade opens on Sunday evening at all; the 15-minute rule is in the prompt only. His only words on the slow grind's final settings are "same treatment for slow grind" (his words, 7 Nov 19:36 UTC) and "no thats fine switch it on with that config" (his words, 7 Nov 19:56 UTC); the config itself is in the prompt, not his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 9.8 Slow grind: none from 21:55 to 22:15 UK
@@ -3724,6 +3833,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 260: "and from 21:55 to 22:15 UK"
 - **Source:** owner, 2026-11-07T19:58:43Z, PASTED, "21:55 to 22:15 UK"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: under his hours ("06:00 - 20:30 GMT" (his words, 6 Nov 10:57 UTC)) no trade opens at 21:55 at all; the rollover rule is in the prompt only. His only words on the slow grind's final settings are "same treatment for slow grind" (his words, 7 Nov 19:36 UTC) and "no thats fine switch it on with that config" (his words, 7 Nov 19:56 UTC); the config itself is in the prompt, not his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 9.9 Big news: no new trade from 15 minutes before to 30 minutes after (bounce, range trade, level reversal)
@@ -3751,6 +3861,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 262: "it may open during a big-news window"
 - **Source:** owner, 2026-11-07T17:48:56Z, PASTED, "Hours, news and the Friday rules as for the EMA pullback."; owner, 2026-11-07T19:24:52Z, PASTED, "It may be held overnight and through news"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "it should not open a trade 15 minutes before big news and it should close any open trades before big news" (his words, 6 Nov 11:00 UTC).
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 9.11 Only big news counts; medium and small news ignored
@@ -3830,6 +3941,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** lines 43-44: "EMA pullback, breakout (3.5), in the trend's direction only"
 - **Source:** owner, 2026-11-07T16:53:46Z, PASTED, "it trades in a trend and in an emerging trend"; agreed design (c803d53) lines 41-42, "in the trend's direction only"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "Emerging trend should arm the trend following strategy and the ema pullback" (his words, 6 Nov 10:25 UTC) and the design's table agree, but his last words on it were "ema pullback in trend only" (his words, 7 Nov 16:12 UTC). His later "whole combination" (his words, 7 Nov 16:53 UTC) accepts a tested combination without saying which states it used; that is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Still different from his words: on 12 November he described the EMA pullback as "If the market is trending as measured by the fanning out of ema lines at a diagonal slope" (his words, Thu 12 Nov); it does not say which analyser states.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 9.19 Slow grind: trend only, in the trend's direction
@@ -3840,6 +3952,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 43: "Not the slow grind (owner, 8 November 2026)"; line 44
 - **Source:** owner, 2026-11-07T19:58:43Z, PASTED, "Trend only, in the trend's direction."; accepted owner, 2026-11-08T05:01:05Z, TYPED
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: "Emerging trend | Slow grind, EMA pullback, Bollinger band bounce in the trend's direction only" (design, line 41); "Emerging trend should arm the trend following strategy and the ema pullback" (his words, 6 Nov 10:25 UTC). Trend only is in the prompt. His only words on the slow grind's final settings are "same treatment for slow grind" (his words, 7 Nov 19:36 UTC) and "no thats fine switch it on with that config" (his words, 7 Nov 19:56 UTC); the config itself is in the prompt, not his words.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 9.20 Bollinger bounce: trend against the trend's direction only; possible reversal either way
@@ -3872,6 +3985,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** lines 42-46: "level reversal (3.6), either way"
 - **Source:** owner, 2026-11-08T05:48:07Z, PASTED, "in any analyser state except consolidation"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: His words on the level reversal are "The level reversal will need to test a tolerance" (his words, 8 Nov 05:36 UTC), "The reversals at 00, S2 and R2  have the most historical evidence" (his words, 8 Nov 05:47 UTC) and "what tolerance is there at R2 and S2" (his words, 8 Nov 06:04 UTC); they do not give this rule.
+- **Recheck 2 (his words of 8 to 13 November):** Still from a prompt only: on 9 November he said "I'm wondering whether it should only be allowed to place trades as a reversal. Just want to look into it for now." (his words, Mon 9 Nov), which is not a decision.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 9.23 Consolidation: no strategy
@@ -3906,12 +4020,14 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 59: "except the range trade, the Bollinger band bounce and the breakout (owner, 7 November 2026) and the slow grind ..."
 - **Source:** range trade: owner, 2026-11-07T14:41:12Z, TYPED, "the direction rule applies to every strategy except the range trade"; bounce: owner, 2026-11-07T17:48:56Z, PASTED, "The direction rule does not apply to the Bollinger bounce at all, in any state."; breakout: owner, 2026-11-07T19:24:52Z, PASTED, "The direction rule does not apply to it."; slow grind: owner, 2026-11-07T19:58:43Z, PASTED, "No direction filter"
 - **Recheck (his own words and the agreed design only; design = c803d53):** His own words say something different: the range trade and bounce parts are his ("it shouldnt apply to ranging strategy" (his words, 7 Nov 14:40 UTC), "and it shouldnt apply to the bounce reversal either obviously" (his words, 7 Nov 14:40 UTC)); for the breakout and slow grind, "Direction rule (applies to every strategy)" (design, line 52), and he asked for the breakout to be "only aligned to the daily direction" (his words, 7 Nov 19:19 UTC).
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words (was: Owner's words, unchanged)
 
 ### 9.26 The direction rule does not apply to the level reversal
 - **Code:** `strategies/common.py:49` (above, `LEVEL_REVERSAL` in `NO_DIRECTION_RULE`)
 - **DESIGN.md:** line 59: "and the slow grind and the level reversal (owner, 8 November 2026), which it does not apply to in any state"
 - **Source:** agreed design (c803d53) line 57, "This applies to every strategy". The level reversal decision does not mention it: owner, 2026-11-08T05:48:07Z, PASTED, "It trades rejections at round 00 numbers, S2 and R2 only, in any analyser state except consolidation ... Entry when price breaks past the confirmation candle, as in the research."
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** Changed from the owner's words. **Owner:** "This applies to every strategy" (no exemption for the level reversal) / **Code:** the level reversal is exempt.
 
 ### 9.27 Checks made at entry only: the state after the last finished candle, the direction rule at the entry price
@@ -3922,6 +4038,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** none directly (docstring `strategies/common.py:5-6`: "checked at entry only, owner 7 November 2026")
 - **Source:** owner, 2026-11-07T13:35:04Z, PASTED, "Remove the check at setup start. The switch, state and direction checks apply at entry only, as before."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: his typed words and the design do not say when the checks are made.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 9.28 The pause switch blocks every new trade; open trades still run
@@ -3947,6 +4064,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 361: "the master switch `TRADING` (off: everything runs and is recorded, but no order is sent to IG)"
 - **Source:** owner, 2026-11-08T08:50:50Z, PASTED, "Add a master switch in .env, TRADING=off ... While it is off, everything runs and is recorded, but no order is ever sent to IG."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: The words file ends at 8 November 08:02 UTC; this comes from a later prompt and nothing in his typed words gives it.
+- **Recheck 2 (his words of 8 to 13 November):** Still from a prompt only: "can I switch it on?" (his words, Sun 8 Nov) shows he knew of a switch but does not say what it does.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 9.30 One trade open at a time per strategy (range trade, slow grind, breakout, level reversal)
@@ -3997,6 +4115,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 250: "Most at once: 5. EMA pullback trades do not count towards that limit"
 - **Source:** agreed design (c803d53) line 197, "Most at once: 5."; owner, 2026-11-07T16:53:46Z, PASTED, "it does not count towards the "most at once: 5" limit"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: the 5 is the design's ("Most at once: 5." (design, line 197)); leaving the EMA pullback out of it is in the prompt only ("ema pullback is not limited to one trade at a time" (his words, 7 Nov 15:37 UTC) is about its own trades).
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 9.34 Size £10 a pip
@@ -4060,6 +4179,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 252: "The available funds come from IG's account details, read at start-up and again whenever a trade opens or closes, never as an extra call before each trade."
 - **Source:** owner, 2026-11-08T07:19:17Z, PASTED, "Take the available funds from IG's account details read at start-up and again whenever a trade opens or closes, never as an extra call before each trade."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: his typed words and the design say only that "Total risk across all open trades and available funds are also checked" (design, line 198); when the funds are read is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 9.39 Unknown funds refuse every new trade (and alert)
@@ -4083,7 +4203,8 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 255: "**No reversal trade against a strong push:** refused while the analyser's state ... is a trend of the strong-push type in the other direction."
 - **Source:** owner, 2026-11-09T11:35:32Z, PASTED, "No reversal trade against a strong push."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: The words file ends at 8 November 08:02 UTC; the 'one view at a time' rules come from a prompt of 9 November and nothing in his typed words gives them.
-- **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
+- **Recheck 2 (his words of 8 to 13 November):** His own words support it: "yes" (his words, Mon 9 Nov) to Claude's context line: "no reversal trades against a strong push".
+- **Mark:** Owner's words, unchanged (was: From a prompt, not the owner's words)
 
 ### 9.41 One view at a time (2): no reversal trade against the day's direction (big-news day, trend day, Monday after a Friday of 80 pips or more)
 - **Code:** `safety/rules.py:181-182`
@@ -4095,7 +4216,8 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 256: "on a **big-news day** ... on a **trend day** ... on the **Monday after a Friday whose daily candle moved 80 pips or more**"
 - **Source:** owner, 2026-11-09T11:35:32Z, PASTED, "No reversal trade against the day's direction on: a big-news day, in the expected news direction; a trend day, in the trend day's direction; and the Monday after a Friday whose daily candle moved 80 pips or more ... Make the 80 pips a setting"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: The words file ends at 8 November 08:02 UTC; the 'one view at a time' rules come from a prompt of 9 November and nothing in his typed words gives them.
-- **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
+- **Recheck 2 (his words of 8 to 13 November):** Agreed by the owner, in Claude's wording: "yes" (his words, Mon 9 Nov) to Claude's context line: "none against the expected direction on big-news days, trend days, and the Monday after a Friday that moved 80 pips or more"; Claude's context line: "the Monday part came from Claude turning his earlier "may continue up to reclaim" into a rule".
+- **Mark:** Agreed by the owner, Claude's wording (was: From a prompt, not the owner's words)
 
 ### 9.42 A reversal trade: every Bollinger bounce, and a level reversal against the analyser's trend direction
 - **Code:** `safety/rules.py:155-170`
@@ -4111,7 +4233,8 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 254: "A **reversal trade** is every Bollinger band bounce, and a level reversal that trades against the analyser's trend direction"
 - **Source:** owner, 2026-11-09T11:35:32Z, PASTED, "A reversal trade is a Bollinger bounce, or a level reversal going against the analyser's trend direction, as in the research."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: The words file ends at 8 November 08:02 UTC; the 'one view at a time' rules come from a prompt of 9 November and nothing in his typed words gives them.
-- **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
+- **Recheck 2 (his words of 8 to 13 November):** His own words support it: "But really, level reversal, as the name suggests, is a reversal strategy. And it's opened two trades this morning, both in the direction, albeit of a strong trend." (his words, Mon 9 Nov); the bounce: "A trade is opened in the reversal direction." (his words, 6 Nov 10:19 UTC); and his "yes" (his words, Mon 9 Nov) to no reversal trades against a strong push.
+- **Mark:** Owner's words, unchanged (was: From a prompt, not the owner's words)
 
 ### 9.43 IG's minimum stop is not checked before a trade; only after IG refuses for the stop
 - **Code:** `safety/rules.py:28-29`
@@ -4161,6 +4284,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 275: "using the price service's IG login (never a second one), on the demo account only"
 - **Source:** owner, 2026-11-08T07:32:34Z, PASTED, "It places market orders for GBPUSD on the demo account only ... It must use the price service's existing IG login and session, never a second login"
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: the demo account is his ("IG demo account and only on GBPUSD" (his words, 6 Nov 11:54 UTC)); using only the price service's IG login is in the prompt only.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 9.47 Level reversal refused if price is already past its stop price when sent
@@ -4233,6 +4357,7 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 24: "When the candle finishes the strategies take it as always and an idea already sent live is not sent again"
 - **Source:** accepted after it was built: owner, 2026-11-11T20:45:20Z, PASTED, "Behave like the live bot: entries on the tick, as live; stops, targets and band closes checked tick by tick; at most one trade per strategy and direction per candle."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: The words file ends at 8 November 08:02 UTC; this comes from a later prompt and nothing in his typed words gives it.
+- **Recheck 2 (his words of 8 to 13 November):** Nothing in them on this rule; the mark stands.
 - **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
 
 ### 9.53 The pace and target rule refuses a Bollinger bounce against open trend trades unless it is valid
@@ -4245,7 +4370,8 @@ design does not give becomes a setting. Start from AutoBot 161's NMS values in t
 - **DESIGN.md:** line 158 ("Against open trend trades: the pace and target rule"); line 220: "A bounce that is not at such a level, or comes while price is moving fast, is refused and the trend trades are held."
 - **Source:** owner, 2026-11-11T16:53:52Z, PASTED, "While the bot has open trend trades (EMA pullback, slow grind, breakout), no Bollinger bounce may open against them, unless it opens at a significant level ... Otherwise it is refused and the trend trades are held."
 - **Recheck (his own words and the agreed design only; design = c803d53):** From a prompt only: The words file ends at 8 November 08:02 UTC, so it has nothing from 11 November; the pace and target rule is in the prompt only.
-- **Mark:** From a prompt, not the owner's words (was: Owner's words, unchanged)
+- **Recheck 2 (his words of 8 to 13 November):** His own words support it: "ok so that bounce opening needs to stop. if the bot has decided the trade is continuing then by definition it doesnt need to be opening reversals" (his words, Wed 11 Nov); "ok go ahead" (his words, Wed 11 Nov) (on building step 1, no bounce against open trend trades unless at a significant level, and step 2, a valid bounce only if price has been moving slowly, which then closes the opposite trades).
+- **Mark:** Owner's words, unchanged (was: From a prompt, not the owner's words)
 
 ### 9.54 If the pace and target rule cannot be checked, a bounce against open trend trades is refused
 - **Code:** `trading/engine.py:224-231`
