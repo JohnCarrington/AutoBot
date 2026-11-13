@@ -20,7 +20,9 @@ mirror image: pierce downwards, green candles, lows and highs swapped):
           4. trigger: the live price goes below the confirmation candle's low
           5. cancelled if price goes above the reversal candle's high at any
              point after the reversal candle
-  range   1. a candle pierces the upper Bollinger band
+  range   1. a candle reaches the upper Bollinger band: its high goes past it or
+             comes within rejection.near_level_within_pips of it (owner, 13
+             November 2026: reaching the band counts, no pierce needed)
           2. the next candle (range_trade.rejection_candle_within_candles) is red:
              the rejection candle (else expired)
           3. trigger: during the candle after that (range_trade.trigger_within_candles),
@@ -210,13 +212,22 @@ class RejectionWatcher:
 
     def _pierced(self, version, direction, c, band, levels) -> list[dict]:
         out = []
-        if band is not None:
+        near = Decimal(self.s.rejection.near_level_within_pips) * Decimal(self.s.market.points_per_pip)
+        if band is not None and version == RANGE:
+            # the range trade: price REACHING the band counts, a pierce is not needed (owner, 13 November 2026):
+            # the high comes within rejection.near_level_within_pips (3) of the upper band, or goes past it
+            if direction == SELL and self._h(c) >= band.upper - near:
+                out.append({"what": "upper Bollinger band", "price": band.upper, "level": None,
+                            "how": _band_how(band.upper - self._h(c))})
+            if direction == BUY and self._l(c) <= band.lower + near:
+                out.append({"what": "lower Bollinger band", "price": band.lower, "level": None,
+                            "how": _band_how(self._l(c) - band.lower)})
+        elif band is not None:
             if direction == SELL and self._h(c) > band.upper:
                 out.append({"what": "upper Bollinger band", "price": band.upper, "level": None})
             if direction == BUY and self._l(c) < band.lower:
                 out.append({"what": "lower Bollinger band", "price": band.lower, "level": None})
         if version == BOUNCE and levels is not None:
-            near = Decimal(self.s.rejection.near_level_within_pips) * Decimal(self.s.market.points_per_pip)
             for lv in levels.levels:
                 # A level counts when the candle comes up to it from at or below it (sell) and
                 # either goes through it or gets within `near` of it; a buy is the mirror image.
@@ -405,6 +416,11 @@ def _how(gap: Decimal) -> str:
     if gap < 0:
         return "through"
     return "touched" if gap == 0 else f"within {plain(gap)} pips"
+
+
+def _band_how(gap: Decimal) -> str:
+    """As _how, for a band (its price is exact): the gap shown to a tenth of a pip."""
+    return "through" if gap < 0 else _how(gap.quantize(Decimal("0.1")))
 
 
 def _ratio(x: Decimal | None) -> str:

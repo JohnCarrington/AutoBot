@@ -2,12 +2,13 @@
 Its ideas are the triggers of the strategies' own rejection watcher (rejection/watch.py,
 design_only=True, the same setups as the Bollinger bounce, design 3.3), kept only when:
 
-  1. the setup reached one of the levels in level_reversal.level_types: S2, R2 and round numbers,
-     the round numbers only on a multiple of level_reversal.round_numbers_every_pips (100: the 00s,
-     not the 50s);
+  1. the setup reached one of the levels in level_reversal.level_types: S2, R2, the daily pivot
+     (owner, 13 November 2026) and round numbers, the round numbers only on a multiple of
+     level_reversal.round_numbers_every_pips (100: the 00s, not the 50s);
   2. the furthest price went past that level, from the piercing candle to the confirmation candle,
      is no more than that kind of level's allowance: level_reversal.allowance_pips_r2 (12),
-     allowance_pips_s2 (12), allowance_pips_round_number (5) (owner, 8 November 2026). It may also
+     allowance_pips_s2 (12), allowance_pips_round_number (5) (owner, 8 November 2026),
+     allowance_pips_pivot (12, as at R2 and S2; owner, 13 November 2026). It may also
      have stopped short of the level
      (by up to rejection.near_level_within_pips, as the rejection part allows);
   3. entry when price breaks past the confirmation candle (the watcher's trigger: at the confirmation
@@ -20,8 +21,8 @@ in strategies/common.py.
 
 Choices the owner's rules do not make (the simplest, as in the research of 8 November 2026):
   * the piercing candle is the setup's last one (a pierce again starts the count again, rejection/watch.py);
-  * if several of these levels were reached, the first that passes rule 2 is the level (S2 and R2 before
-    round numbers);
+  * if several of these levels were reached, the first that passes rule 2 is the level (S2, R2 and the pivot
+    before round numbers);
   * several setups triggering on the same candle and direction give one idea.
 Sell (bid) prices, as the chart. Ideas only.
 """
@@ -88,7 +89,7 @@ class LevelReversal:
         if not span:
             return None
         furthest = max(self._h(c) for c in span) if sell else min(self._l(c) for c in span)
-        order = sorted(st.pierced, key=lambda p: p["what"] == ROUND_NUMBER)      # S2 and R2 first
+        order = sorted(st.pierced, key=lambda p: p["what"] == ROUND_NUMBER)      # S2, R2 and the pivot first
         for p in order:
             name = self.kind(p["what"], p["price"])
             if name is None:

@@ -63,7 +63,8 @@ UP, DOWN, NONE = "up", "down", "none"
 SLOW_GRIND, STRONG_PUSH = "slow grind", "strong push"
 ALLOWED = {
     RANGING: ("range trade", "level reversal"),
-    EMERGING: ("EMA pullback", "breakout", "level reversal"),
+    EMERGING: ("EMA pullback", "breakout", "Bollinger band bounce (in the emerging trend's direction only)",
+               "level reversal"),
     TREND: ("slow grind", "EMA pullback", "breakout", "Bollinger band bounce (against the trend's direction only)",
             "level reversal"),
     POSSIBLE_REVERSAL: ("Bollinger band bounce", "level reversal"),
@@ -344,10 +345,18 @@ class StateMachine:
                                     f"{self.m.evidence_fades_after_candles} candles; {why}", [why])
             if st == EMERGING:
                 # besides its cancel rule, the proof, a replacing rejection or fading, an emerging trend
-                # ends only in consolidation (owner's rule, 7 November 2026), held for persistence_candles
+                # ends only in consolidation (owner's rule, 7 November 2026) or ranging (owner, 13 November
+                # 2026: "the same way consolidation does"), held for persistence_candles; consolidation is
+                # looked at first, as for a trend below
                 c_ok, c_why = self.consolidation(f)
-                return self._persist(f, (CONSOLIDATION, NONE, f"the emerging {d} trend settled into "
-                                                              f"consolidation: {c_why}") if c_ok else None)
+                r_ok, r_why = self.ranging(f)
+                if c_ok:
+                    target = (CONSOLIDATION, NONE, f"the emerging {d} trend settled into consolidation: {c_why}")
+                elif r_ok:
+                    target = (RANGING, NONE, f"the emerging {d} trend turned into a range: {r_why}")
+                else:
+                    target = None
+                return self._persist(f, target)
             # a trend's conditions (with persistence): price back past the 100 EMA, or ranging / consolidation
             wrong_side = f.ema100 is not None and ((d == DOWN and f.c > f.ema100) or (d == UP and f.c < f.ema100))
             r_ok, r_why = self.ranging(f)

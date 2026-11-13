@@ -94,7 +94,8 @@ def test_a_strategy_switched_off_has_no_ideas(S):
 # Section 2.2, every state against every strategy (a sell, with the state's direction down)
 @pytest.mark.parametrize("st,allowed", [
     (RANGING, {RANGE_TRADE}),
-    (EMERGING, {EMA_PULLBACK}),                    # the slow grind: trend only (owner, 8 November 2026)
+    (EMERGING, {EMA_PULLBACK, BOLLINGER_BOUNCE}),  # the slow grind: trend only (owner, 8 November 2026); the bounce
+                                                   # in the emerging trend's direction (owner, 13 November 2026)
     (TREND, {SLOW_GRIND, EMA_PULLBACK}),           # a sell in a down trend: the bounce only against it
     (POSSIBLE_REVERSAL, {BOLLINGER_BOUNCE}),
     (CONSOLIDATION, set()),
@@ -120,16 +121,25 @@ def test_a_bounce_in_a_trend_only_against_the_trends_direction(S):
     assert not with_.allowed and "Bollinger bounce only against the trend's direction" in with_.blocked_by
 
 
-@pytest.mark.parametrize("st,d", [(EMERGING, UP), (EMERGING, DOWN), (RANGING, NONE)])
-def test_no_bounce_in_an_emerging_trend_or_ranging(S, st, d):
+def test_a_bounce_in_an_emerging_trend_only_in_its_direction(S):
+    # owner, 13 November 2026: allowed in the emerging trend's direction, against it still blocked
+    assert check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, SELL, 100), state(EMERGING, DOWN), PIVOT, EMA100).allowed
+    assert check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, BUY, 120), state(EMERGING, UP), PIVOT, EMA100).allowed
+    for direction, price, d in ((BUY, 120, DOWN), (SELL, 100, UP)):
+        i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, direction, price), state(EMERGING, d), PIVOT, EMA100)
+        assert not i.allowed and "Bollinger bounce only in the trend's direction" in i.blocked_by
+
+
+def test_no_bounce_in_ranging(S):
     for direction, price in ((BUY, 120), (SELL, 100)):
-        i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, direction, price), state(st, d), PIVOT, EMA100)
-        assert not i.allowed and f"the analyser's state is {st}, which does not allow Bollinger bounce" in i.blocked_by
+        i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, direction, price), state(RANGING, NONE), PIVOT, EMA100)
+        assert not i.allowed and "the analyser's state is ranging, which does not allow Bollinger bounce" in i.blocked_by
 
 
 def test_the_analysers_list_for_the_bounce_matches(S):
     from analyser.states import ALLOWED
-    assert not any("bounce" in x for x in ALLOWED[RANGING] + ALLOWED[EMERGING])
+    assert not any("bounce" in x for x in ALLOWED[RANGING])
+    assert "Bollinger band bounce (in the emerging trend's direction only)" in ALLOWED[EMERGING]
     assert "Bollinger band bounce (against the trend's direction only)" in ALLOWED[TREND]
     assert ALLOWED[POSSIBLE_REVERSAL] == ("Bollinger band bounce", "level reversal")
 
@@ -1026,7 +1036,8 @@ def test_level_reversal_at_r2_within_the_allowance(S):
     assert "R2 100" in x.steps[-2] and "4.0 pips past the level" in x.steps[-2] and "to 09:15 GMT" in x.steps[-2]
 
 
-@pytest.mark.parametrize("what,price,allowance", [("R2", 100, 12), ("S2", 100, 12), ("round_number", 200, 5)])
+@pytest.mark.parametrize("what,price,allowance", [("R2", 100, 12), ("S2", 100, 12), ("pivot", 100, 12),
+                                                         ("round_number", 200, 5)])
 def test_level_reversal_allowance_for_each_kind_of_level(S, what, price, allowance):
     w, ev, cs = lr_setup([(what, price)], [price + allowance, price + 1, price])              # exactly the allowance: counts
     (x,) = run_lr(S, w, ev, cs)
@@ -1036,12 +1047,16 @@ def test_level_reversal_allowance_for_each_kind_of_level(S, what, price, allowan
 
 
 def test_level_reversal_each_allowance_is_its_own_setting(S):
-    assert (S.level_reversal.allowance_pips_r2, S.level_reversal.allowance_pips_s2,
-            S.level_reversal.allowance_pips_round_number) == (12, 12, 5)
+    assert (S.level_reversal.allowance_pips_r2, S.level_reversal.allowance_pips_s2, S.level_reversal.allowance_pips_pivot,
+            S.level_reversal.allowance_pips_round_number) == (12, 12, 12, 5)
     w, ev, cs = lr_setup([("S2", 100)], [113, 101, 100])                                     # 13 past S2
     assert run_lr(S, w, ev, cs) == []
     assert len(run_lr(over(S, "level_reversal", allowance_pips_s2=13), w, ev, cs)) == 1
-    assert run_lr(over(S, "level_reversal", allowance_pips_r2=13, allowance_pips_round_number=13), w, ev, cs) == []
+    assert run_lr(over(S, "level_reversal", allowance_pips_r2=13, allowance_pips_pivot=13,
+                       allowance_pips_round_number=13), w, ev, cs) == []
+    w, ev, cs = lr_setup([("pivot", 100)], [113, 101, 100])                                  # 13 past the pivot
+    assert run_lr(S, w, ev, cs) == []
+    assert len(run_lr(over(S, "level_reversal", allowance_pips_pivot=13), w, ev, cs)) == 1
     w, ev, cs = lr_setup([("round_number", 200)], [206, 201, 200])                           # 6 past a 00
     assert run_lr(S, w, ev, cs) == []
     assert len(run_lr(over(S, "level_reversal", allowance_pips_round_number=6), w, ev, cs)) == 1
@@ -1053,8 +1068,8 @@ def test_level_reversal_short_of_the_level_counts(S):
     assert x.context["past_level_pips"] == -2 and x.context["stop_price"] == D(104)
 
 
-def test_level_reversal_only_s2_r2_and_00_round_numbers(S):
-    for what, price in (("R1", 100), ("S1", 100), ("S3", 100), ("R3", 100), ("pivot", 100), ("turning_high", 100),
+def test_level_reversal_only_s2_r2_the_pivot_and_00_round_numbers(S):
+    for what, price in (("R1", 100), ("S1", 100), ("S3", 100), ("R3", 100), ("turning_high", 100), ("previous_day_high", 100),
                         ("upper Bollinger band", 100), ("round_number", 150)):       # 150: a 50, not a 00
         w, ev, cs = lr_setup([(what, price)], [101, 100, 99])
         assert run_lr(S, w, ev, cs) == [], what

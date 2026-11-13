@@ -173,8 +173,9 @@ def _ig_word(v: Any) -> str:
 
 
 def _level_reversal_types(v: Any) -> tuple[str, ...]:
-    """The level types the level reversal trades (design 3.6): a non-empty list of S2, R2 and round_number."""
-    known = ("S2", "R2", "round_number")
+    """The level types the level reversal trades (design 3.6): a non-empty list of S2, R2, pivot (the daily
+    pivot, owner, 13 November 2026) and round_number."""
+    known = ("S2", "R2", "pivot", "round_number")
     if not isinstance(v, list) or not v or any(x not in known for x in v) or len(set(v)) != len(v):
         raise ValueError(f"must be a non-empty list of {', '.join(known)} with no repeats, got {v!r}")
     return tuple(v)
@@ -432,6 +433,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "round_numbers_every_pips": _whole_number(1, 1000),
         "allowance_pips_r2": _whole_number(0, 100),
         "allowance_pips_s2": _whole_number(0, 100),
+        "allowance_pips_pivot": _whole_number(0, 100),
         "allowance_pips_round_number": _whole_number(0, 100),
         "stop_beyond_furthest_pips": _whole_number(1, 100),
         "take_profit_pips": _whole_number(1, 1000),

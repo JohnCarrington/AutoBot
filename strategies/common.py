@@ -9,7 +9,8 @@ only, owner 7 November 2026):
      range trade; emerging trend and trend -> EMA pullback and breakout IN THE
      TREND'S DIRECTION ONLY; trend only -> slow grind, IN THE TREND'S DIRECTION
      ONLY (owner, 8 November 2026); trend -> also Bollinger bounce, AGAINST THE
-     TREND'S DIRECTION ONLY (owner, 7 November 2026); possible reversal ->
+     TREND'S DIRECTION ONLY (owner, 7 November 2026); emerging trend -> also Bollinger
+     bounce, IN THE EMERGING TREND'S DIRECTION ONLY (owner, 13 November 2026); possible reversal ->
      Bollinger bounce, either way; consolidation -> none;
   3. the direction rule allows that direction (section 2.3): a buy needs buy
      side (price above the daily pivot and the 5-minute 100 EMA), a sell needs
@@ -53,7 +54,8 @@ BUY, SELL = "buy", "sell"
 ALLOWED_IN = {
     SLOW_GRIND: {TREND: "trend"},                      # trend only (owner, 8 November 2026)
     EMA_PULLBACK: {EMERGING: "trend", TREND: "trend"},
-    BOLLINGER_BOUNCE: {TREND: "against", POSSIBLE_REVERSAL: "any"},
+    # emerging trend: in its direction only (owner, 13 November 2026)
+    BOLLINGER_BOUNCE: {EMERGING: "trend", TREND: "against", POSSIBLE_REVERSAL: "any"},
     RANGE_TRADE: {RANGING: "any"},
     BREAKOUT: {EMERGING: "trend", TREND: "trend"},
     # every state except consolidation, either way (owner, 8 November 2026)

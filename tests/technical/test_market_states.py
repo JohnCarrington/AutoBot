@@ -56,7 +56,7 @@ def F(i, **kw):
 
 
 # Ranging (design 2.2, owner's values): bands 6 to 18 pips wide, upper and lower band flat
-# (under 0.2 pips a candle), both bands reached, EMAs weaving, 100 EMA flat.
+# (under 0.5 pips a candle; owner, 13 November 2026), both bands reached, EMAs weaving, 100 EMA flat.
 RANGING_OK = dict(width=10, mid_slope="0.05", upper_slope="0.1", lower_slope="-0.1", both_bands_recently=True,
                   weave=True, ema100_move=1)
 
@@ -555,15 +555,24 @@ def test_a_trend_is_not_replaced_by_one_opposite_level_rejection_before_30_pips(
     assert m.now.state == TREND
 
 
-def test_consolidation_ends_an_emerging_trend_after_2_candles_but_ranging_does_not(st):
+def test_consolidation_ends_an_emerging_trend_after_2_candles(st):
     m = level_downtrend(st)
     calm = dict(width=10, **CONSOL)
     assert run(m, [(1, F(1, c=11655, **calm))]) == []
     (ch,) = run(m, [(2, F(2, c=11655, **calm))])
     assert ch.state == CONSOLIDATION and ch.reason.startswith("the emerging down trend settled into consolidation")
+
+
+def test_ranging_ends_an_emerging_trend_after_2_candles_the_same_way(st):
+    # owner, 13 November 2026: "Let ranging end an emerging trend, the same way consolidation does"
     m = level_downtrend(st)
     ranging = dict(RANGING_OK)
-    assert run(m, [(i, F(i, c=11655, **ranging)) for i in range(1, 5)]) == [] and m.now.state == EMERGING
+    assert run(m, [(1, F(1, c=11655, **ranging))]) == [] and m.now.state == EMERGING
+    (ch,) = run(m, [(2, F(2, c=11655, **ranging))])
+    assert ch.state == RANGING and ch.direction == "none"
+    assert ch.reason.startswith("the emerging down trend turned into a range: bands 10")
+    m = level_downtrend(st)                                       # one candle is not enough
+    assert run(m, [(1, F(1, c=11655, **ranging)), (2, F(2, c=11655))]) == [] and m.now.state == EMERGING
 
 
 # ---- in the price service --------------------------------------------------------------------
@@ -656,15 +665,16 @@ def test_ranging_bands_close_together_from_6_to_18_pips(st, width, ok):
 
 
 @pytest.mark.parametrize("band", ["upper_slope", "lower_slope"])
-@pytest.mark.parametrize("slope,ok", [("0.19", True), ("-0.19", True), ("0.2", False), ("-0.2", False), ("0.5", False)])
-def test_ranging_both_outer_bands_flat_under_0_2_pips_a_candle(st, band, slope, ok):
+@pytest.mark.parametrize("slope,ok", [("0.2", True), ("0.49", True), ("-0.49", True), ("0.5", False), ("-0.5", False),
+                                      ("0.8", False)])
+def test_ranging_both_outer_bands_flat_under_0_5_pips_a_candle(st, band, slope, ok):
     assert machine(st).ranging(F(0, **{**RANGING_OK, band: slope}))[0] is ok
 
 
 def test_ranging_the_middle_band_alone_is_not_the_test(st):
     m = machine(st)
-    assert m.ranging(F(0, **{**RANGING_OK, "mid_slope": "0.05", "upper_slope": "0.3", "lower_slope": "-0.2"}))[0] is False
-    assert m.ranging(F(0, **{**RANGING_OK, "mid_slope": "0.18", "upper_slope": "0.17", "lower_slope": "0.19"}))[0] is True
+    assert m.ranging(F(0, **{**RANGING_OK, "mid_slope": "0.05", "upper_slope": "0.6", "lower_slope": "-0.2"}))[0] is False
+    assert m.ranging(F(0, **{**RANGING_OK, "mid_slope": "0.48", "upper_slope": "0.47", "lower_slope": "0.49"}))[0] is True
 
 
 @pytest.mark.parametrize("change", [dict(both_bands_recently=False), dict(weave=False), dict(ema100_move=3)])

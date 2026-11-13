@@ -40,13 +40,13 @@ Every result gives: the market state, the direction (up, down or none), the type
 | State | Strategies allowed |
 | --- | --- |
 | Ranging | Range trade; level reversal (3.6), either way |
-| Emerging trend | EMA pullback, breakout (3.5), in the trend's direction only. Not the slow grind (owner, 8 November 2026). Level reversal (3.6), either way |
+| Emerging trend | EMA pullback, breakout (3.5), in the trend's direction only. Bollinger band bounce in the emerging trend's direction only (owner, 13 November 2026). Not the slow grind (owner, 8 November 2026). Level reversal (3.6), either way |
 | Trend | Slow grind (either type of trend, slow grind or strong push; owner, 8 November 2026), EMA pullback, breakout (3.5), in the trend's direction only; Bollinger band bounce against the trend's direction only (owner, 7 November 2026); level reversal (3.6), either way |
 | Possible reversal | Bollinger band bounce; level reversal (3.6), either way |
 | Consolidation | None (not even the level reversal). Watch and wait for a break |
 
-- **Ranging:** the Bollinger bands are flat and close together, and price bounces between the upper and lower band. The EMAs weave back and forth instead of staying stacked, and the 100 EMA is flat. In numbers (owner, 7 November 2026): close together is a band width of at least 6 and at most 18 pips; flat is the upper band and the lower band each moving less than 0.2 pips a candle, measured over 6 candles; price bounces between the bands when both bands have been reached within 24 candles.
-- **Emerging trend:** a direction is starting to form. Its main job is to stop bounces against the new direction early. The Bollinger band bounce does not trade in an emerging trend (owner, 7 November 2026).
+- **Ranging:** the Bollinger bands are flat and close together, and price bounces between the upper and lower band. The EMAs weave back and forth instead of staying stacked, and the 100 EMA is flat. In numbers (owner, 7 November 2026): close together is a band width of at least 6 and at most 18 pips; flat is the upper band and the lower band each moving less than 0.5 pips a candle, measured over 6 candles (owner, 13 November 2026; 0.2 before); price bounces between the bands when both bands have been reached within 24 candles.
+- **Emerging trend:** a direction is starting to form. Its main job is to stop bounces against the new direction early. The Bollinger band bounce trades in an emerging trend only in the emerging trend's direction; a bounce against it stays blocked (owner, 13 November 2026; from 7 November it did not trade in an emerging trend at all).
 - **Trend:** an established direction, either a slow grind or a strong push. Both are recognised from price action.
 - **Possible reversal:** after a trend has been running and price has moved at least 30 pips since it started, a strong reversal candle appears, recognised by the shared rejection part with no extra size rule.
 - **Consolidation** (this includes a trend running out of steam): narrow Bollinger bands, price between them touching neither band, small candles with green and red roughly the same size, no direction. Unlike ranging, price stays in the middle. No trading. When price breaks out, the analyser moves to emerging trend.
@@ -147,7 +147,7 @@ EMAs: 8, 13 and 21 on the 5-minute chart. No fanning rule.
 
 ### 3.3 Bollinger band bounce (sell)
 
-1. Price pierces a level or the Bollinger band. For a level, a candle that comes within 3 pips of it counts the same as a pierce (a setting). The Bollinger band needs a real pierce.
+1. Price pierces a level or the Bollinger band. For a level, a candle that comes within 3 pips of it counts the same as a pierce (a setting). The Bollinger band needs a real pierce (for the bounce; the range trade, 3.4, counts price reaching the band).
 2. The reversal candle is the first red candle after the pierce, with no size rule. If none appears within 3 candles, the setup expires.
 3. A later confirmation candle closes below the reversal candle's low, within 3 candles of it, or the setup expires. A wick below without a close does not count.
 4. The sell opens as soon as the live price goes below the confirmation candle's low.
@@ -170,7 +170,7 @@ Spread spikes are ignored: when IG's spread on a candle is abnormally wide (over
 
 ### 3.4 Range trade (sell at the upper band)
 
-1. One candle pierces the upper Bollinger band.
+1. One candle reaches the upper Bollinger band: its high goes above it or comes within 3 pips of it (`rejection.near_level_within_pips`, the same 3 pips as for a level). A pierce is not needed (owner, 13 November 2026).
 2. The next candle is a red rejection candle.
 3. The sell opens as soon as the live price, during the candle after that, goes below the rejection candle's low.
 4. If price goes above the rejection candle's high first, the setup is cancelled.
@@ -192,13 +192,13 @@ Spread spikes are ignored in the same way as for the bounce (3.3).
 
 **Switched on** (`STRATEGY_LEVEL_REVERSAL=on`). From the level reversal research of 8 November 2026 (`docs/research/level_reversal_tolerance_20261108.md`).
 
-1. Only rejections at **round numbers ending in 00** (not 50), **S2** and **R2** (`level_reversal.level_types`, `level_reversal.round_numbers_every_pips`), found by the shared rejection part exactly as for the Bollinger band bounce (3.3 steps 1 to 3 and 5): price reaches the level or comes within 3 pips of it, the reversal candle, the confirmation candle.
-2. The rejection counts only if price went no further past the level than its **allowance**: **12 pips at R2 and S2, 5 pips at round numbers** (owner, 8 November 2026; `level_reversal.allowance_pips_r2`, `level_reversal.allowance_pips_s2`, `level_reversal.allowance_pips_round_number`), measured as the furthest price reached from the piercing candle to the confirmation candle.
+1. Only rejections at **round numbers ending in 00** (not 50), **S2**, **R2** and the **daily pivot** (H + L + C) / 3 (the pivot added by the owner, 13 November 2026) (`level_reversal.level_types`, `level_reversal.round_numbers_every_pips`), found by the shared rejection part exactly as for the Bollinger band bounce (3.3 steps 1 to 3 and 5): price reaches the level or comes within 3 pips of it, the reversal candle, the confirmation candle.
+2. The rejection counts only if price went no further past the level than its **allowance**: **12 pips at R2 and S2, 5 pips at round numbers** (owner, 8 November 2026), **12 pips at the daily pivot** (owner, 13 November 2026) (`level_reversal.allowance_pips_r2`, `level_reversal.allowance_pips_s2`, `level_reversal.allowance_pips_pivot`, `level_reversal.allowance_pips_round_number`), measured as the furthest price reached from the piercing candle to the confirmation candle.
 3. The sell opens as soon as price breaks below the confirmation candle's low (a buy, above its high).
 4. **Stop 6 pips beyond the furthest point** price reached (`level_reversal.stop_beyond_furthest_pips`; for a sell, 6 pips above the highest high from the piercing candle to the confirmation candle), so the stop's distance from the entry varies; **take profit 20 pips** (`level_reversal.take_profit_pips`).
 5. In every analyser state except consolidation, either way (2.2); the direction rule (2.3) does not apply.
 6. New trades from 06:00 to 20:30 UK; closed at 20:30 UK; not opened in a big-news window and closed 15 minutes before big news, like the other strategies (section 6); one level reversal trade at a time; no close on a rejection at a level (section 4).
-7. If several of these levels were reached, the first that passes rule 2 is the level (S2 and R2 before round numbers); several setups triggering on the same candle and direction give one trade.
+7. If several of these levels were reached, the first that passes rule 2 is the level (S2, R2 and the pivot before round numbers); several setups triggering on the same candle and direction give one trade.
 
 ---
 
@@ -240,7 +240,7 @@ All levels use the sell (bid) price, with daily candles running midnight to midn
 - London and New York session highs and lows (times are settings; starting values from 161 for Johnny to confirm).
 - Turning levels: hourly highs and lows where price clearly reversed, in the last 2 weeks.
 - Levels line up when within 5 pips of each other, pivot included. A setting.
-- A candle that comes within 3 pips of a level counts the same as a pierce of that level, for rejections (a setting). This applies to levels only: the Bollinger band needs a real pierce.
+- A candle that comes within 3 pips of a level counts the same as a pierce of that level, for rejections (a setting). For the bounce this applies to levels only: the Bollinger band needs a real pierce. For the range trade, a candle within 3 pips of the band counts as reaching it (3.4; owner, 13 November 2026).
 - The levels that matter most: S2, R2, the daily pivot, round numbers and turning levels.
 
 Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.3450, a round number next to an earlier level, and price shot back up at 12:00.
@@ -348,7 +348,7 @@ Remaining, in three rounds:
 - **5 November 2026:** fall from 07:00 stopping at 1.3446 to 1.3450 (round number plus earlier level), sharp reversal up at 12:00. Pivot rejection just before midnight starting the downtrend into 6 November.
 - **5 November 2026, Bank of England:** the 12:00 Bank of England rate decision was big news, so the bot must open no new trades between 11:45 and 12:30 (15 minutes before to 30 minutes after, as in section 6's news rules and settings `news.big_news_no_new_trades_before_minutes` and `news.big_news_no_new_trades_after_minutes`).
 - **6 November 2026:** slow grind down from midnight; consolidation at S1 about 06:00 to 06:45; a sharp drop at 07:00 that was a UK news spike (Finnhub's GB releases at 07:00 UK: "House Price Index MoM" −0.6% against +0.1% expected and "Lloyds House Price Index YoY" −1.2% against −0.3%, both marked medium by Finnhub, so small news for the bot's news table), not the start of a real trend (owner, 12 November 2026), so the analyser calls no trend on it; wobble at S2 07:30 to 08:30; trend down from 09:50; reversal about 10:15 (not a possible reversal for the analyser: the trend down started at 08:20 and had moved 18.3 pips, under 30); flat at S2 11:30 to 12:45; no buy at 13:00 (direction rule); 13:30 news drives the day down to S3.
-- **Market states, tested on the real candles** (`tests/functional/test_market_states_real_candles.py`): the pivot rejection around midnight gives an emerging trend down by 00:20 on 6 November, a trend down by 02:00; consolidation between 05:00 and 06:40; no trend on the 07:00 UK news spike, whose 07:05 candle is both the failed bounce and the new low (2.5: the bounce fails first, the new low after; owner, 12 November 2026), and a trend down at 09:50; no possible reversal between 10:15 and 10:45, and a possible reversal up at 14:30; a strong push down between 13:30 and 14:30; sell side at 13:00, so no buy; a restart at 09:00 gives exactly the states of a run that never stopped.
+- **Market states, tested on the real candles** (`tests/functional/test_market_states_real_candles.py`): the pivot rejection around midnight gives an emerging trend down by 00:20 on 6 November, a trend down by 02:00 (with a short range at 01:10 in between, since ranging may end an emerging trend, owner, 13 November 2026); consolidation between 05:00 and 06:40; no trend on the 07:00 UK news spike, whose 07:05 candle is both the failed bounce and the new low (2.5: the bounce fails first, the new low after; owner, 12 November 2026), and a trend down at 09:50; no possible reversal between 10:15 and 10:45, and a possible reversal up at 14:30; a strong push down between 13:30 and 14:30; sell side at 13:00, so no buy; a restart at 09:00 gives exactly the states of a run that never stopped.
 - **Known issue, to check in the no-trading run:** the market states change about 220 times a week (2 to 6 November: 220, of which 130 inside trading hours), with many short consolidation and emerging-trend spells (median 20 minutes; 70 under 15 minutes). Check whether strategies following them behave sensibly before trading.
 - **Known shortfall, to revisit with more days:** the flat spell at S2 from 11:30 to 12:45 on 6 November is not yet called consolidation. (Measured: the bands are still wide, 14 to 24 pips until 12:10, and the middle band still sloping after the 10:15 bounce; the consolidation checks pass on one candle only, 12:35. It is not tested.)
 ---

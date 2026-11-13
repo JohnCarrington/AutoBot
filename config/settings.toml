@@ -269,15 +269,17 @@ take_profit_pips = 50
 
 [level_reversal]
 # Design 3.6 (owner, 8 November 2026). Rejections at these levels only (the bot's level
-# types): S2, R2 and round numbers, the round numbers only on a multiple of
-# round_numbers_every_pips (100: the 00s, not the 50s).
-level_types = ["S2", "R2", "round_number"]
+# types): S2, R2, the daily pivot (owner, 13 November 2026) and round numbers, the round
+# numbers only on a multiple of round_numbers_every_pips (100: the 00s, not the 50s).
+level_types = ["S2", "R2", "pivot", "round_number"]
 round_numbers_every_pips = 100
 # A rejection counts only if price went no more than this far past the level, from the
 # piercing candle to the confirmation candle: one allowance for each kind of level
-# (owner, 8 November 2026: 12 at R2 and S2, 5 at round numbers).
+# (owner, 8 November 2026: 12 at R2 and S2, 5 at round numbers; 13 November 2026: 12 at the
+# daily pivot, as at R2 and S2).
 allowance_pips_r2 = 12
 allowance_pips_s2 = 12
+allowance_pips_pivot = 12
 allowance_pips_round_number = 5
 # The stop: this many pips beyond the furthest point price reached; the take profit, in
 # pips from the entry.
@@ -363,10 +365,10 @@ flat_slope_candles = 6
 # are flat and close together": the band width at least ranging_min_band_pips
 # and at most ranging_max_band_pips, and the upper and the lower band each
 # moving less than ranging_band_flat_max_pips_per_candle a candle (over
-# flat_slope_candles) ...
+# flat_slope_candles; owner, 13 November 2026: 0.5, 0.2 before) ...
 ranging_min_band_pips = 6
 ranging_max_band_pips = 18
-ranging_band_flat_max_pips_per_candle = 0.2
+ranging_band_flat_max_pips_per_candle = 0.5
 # ... price has reached both bands within this many candles (new) ...
 ranging_both_bands_candles = 24
 # ... the EMAs 7/13/21 have changed order at least once within this many candles (new) ...

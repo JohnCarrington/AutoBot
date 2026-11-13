@@ -256,10 +256,36 @@ def test_a_candle_within_3_pips_of_a_level_counts_the_same_as_a_pierce():
     assert run([C(0, 102, 106.5, 101, 103)], bands=bands, levels=lv, s=s, only=(BOUNCE, SELL))[1] == []
 
 
-def test_the_bollinger_band_still_needs_a_real_pierce():
+def test_the_bollinger_band_still_needs_a_real_pierce_for_the_bounce():
     cs = [C(0, 105, 109.9, 104, 108)]                  # 0.1 below the upper band (110): not a pierce
-    _, evs = run(cs)
+    _, evs = run(cs, only=(BOUNCE, SELL))
     assert evs == []
+
+
+def test_the_range_version_counts_price_reaching_the_band_within_3_pips():
+    # owner, 13 November 2026: reaching the band counts, no pierce needed (rejection.near_level_within_pips, 3)
+    for high, how in ((107, "within 3.0 pips"), (109.9, "within 0.1 pips"), (110, "touched"), (112, "through")):
+        _, evs = run([C(0, 105, high, 104, 106)], only=(RANGE, SELL))
+        assert [e.kind for e in evs] == [PIERCE], high
+        assert evs[0].note.startswith(f"high {high} reached upper Bollinger band 110") and (how == "through" or how in evs[0].note)
+    _, evs = run([C(0, 105, 106.9, 104, 106)], only=(RANGE, SELL))           # 3.1 pips short: not reached
+    assert evs == []
+    _, evs = run([C(0, 95, 96, 92.9, 94)], only=(RANGE, BUY))                 # a buy: the low within 3 of the lower band
+    assert [e.kind for e in evs] == [PIERCE]
+    _, evs = run([C(0, 95, 96, 93.1, 94)], only=(RANGE, BUY))
+    assert evs == []
+    s = settings(rejection={"near_level_within_pips": 1})                    # the same setting as for a level
+    _, evs = run([C(0, 105, 108.5, 104, 106)], s=s, only=(RANGE, SELL))
+    assert evs == []
+
+
+def test_the_range_version_reaching_the_band_then_rejects_and_triggers_as_before():
+    cs = [C(0, 105, 108, 104, 107.5),   # 2 pips short of the upper band (110): reached
+          C(1, 107.5, 108, 106, 107),   # next candle red: rejection (low 106)
+          C(2, 107, 107.5, 105, 105.5)] # during it, below 106: trigger
+    far = {c.start: band(c, upper=200) for c in cs[1:]}   # the later candles do not reach the band again
+    _, evs = run(cs, bands=far, only=(RANGE, SELL))
+    assert kinds(evs) == [(PIERCE, cs[0].start, D(108)), (REVERSAL, cs[1].start, D(107)), (TRIGGER, cs[2].start, D(106))]
 
 
 # ---- the range-trade version ------------------------------------------------------------------
@@ -268,12 +294,13 @@ def test_range_version_pierce_next_candle_rejects_the_candle_after_breaks_its_lo
     cs = [C(0, 105, 112, 104, 109),     # pierces the upper band
           C(1, 109, 110, 106, 107),     # next candle red: rejection (low 106)
           C(2, 107, 108, 105, 105.5)]   # during it, below 106: trigger
-    w, evs = run(cs, only=(RANGE, SELL))
+    w, evs = run(cs, bands={c.start: band(c, upper=200) for c in cs[1:]}, only=(RANGE, SELL))
     assert kinds(evs) == [(PIERCE, cs[0].start, D(112)), (REVERSAL, cs[1].start, D(107)), (TRIGGER, cs[2].start, D(106))]
 
 
 def test_range_version_expires_if_the_next_candle_is_not_red_or_the_candle_after_does_not_break():
-    _, evs = run([C(0, 105, 112, 104, 109), C(1, 109, 109.5, 108, 109.4)], only=(RANGE, SELL))
+    cs = [C(0, 105, 112, 104, 109), C(1, 109, 109.5, 108, 109.4)]
+    _, evs = run(cs, bands={cs[1].start: band(cs[1], upper=200)}, only=(RANGE, SELL))
     assert [e.kind for e in evs] == [PIERCE, EXPIRED]
     cs = [C(0, 105, 112, 104, 109), C(1, 109, 110, 106, 107), C(2, 107, 108, 106.5, 107), C(3, 107, 107, 100, 101)]
     _, evs = run(cs, bands={c.start: band(c, upper=200) for c in cs[1:]}, only=(RANGE, SELL))

@@ -32,7 +32,7 @@ import pytest
 from analyser.direction import SELL_SIDE
 from analyser.market_state import StateTracker
 from analyser.report import analyse
-from analyser.states import CONSOLIDATION, DOWN, EMERGING, POSSIBLE_REVERSAL, STRONG_PUSH, TREND, UP
+from analyser.states import CONSOLIDATION, DOWN, EMERGING, NONE, POSSIBLE_REVERSAL, RANGING, STRONG_PUSH, TREND, UP
 from config.settings_loader import load_settings
 from prices.model import uk_short
 from prices.store import CandleStore
@@ -91,8 +91,10 @@ def test_a_the_pivot_rejection_around_midnight_starts_the_downtrend(run):
     trend = [ch for ch in run.changes if start.time < ch.time <= T(6, 2)
              and (ch.state, ch.direction) == (TREND, DOWN)]
     assert trend, "the emerging trend down did not become a trend down by 02:00"
-    between = [ch for ch in run.changes if start.time < ch.time < trend[0].time]
-    assert between == [], "something else happened between the emerging trend and the trend"
+    # since ranging may end an emerging trend (owner, 13 November 2026), a short range comes in between
+    # (01:10, back to an emerging trend down on a level rejection at 01:15); nothing else does
+    between = [(ch.state, ch.direction) for ch in run.changes if start.time < ch.time < trend[0].time]
+    assert set(between) <= {(RANGING, NONE), (EMERGING, DOWN)}, between
     print(f"  trend down:    {trend[0].line()[:150]}")
 
 
