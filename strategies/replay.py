@@ -8,7 +8,8 @@ market state at each moment is the one the service would have had). At each
   * "the current state" is the analyser's state after the previous finished
     candle (the state the strategy would see while this candle forms);
   * each strategy is given the candle; when its entry price is reached, the
-    candidate is checked (strategies/common.py: switch, state, direction rule);
+    candidate is checked (strategies/common.py: switch, state, direction rule,
+    and the hourly read after the last hourly candle finished by the candle's start);
   * the bounce and range trade run their OWN rejection watcher with only the
     rules of design 3.3 and 3.4 (design_only); the analyser's watcher is not
     changed.
@@ -23,6 +24,7 @@ from datetime import datetime
 from types import SimpleNamespace
 from typing import Any
 
+from analyser.hourly_read import HourlyReader
 from analyser.indicators import last_candles
 from analyser.market_state import MemoStore, StateTracker
 from analyser.states import CONSOLIDATION, NONE
@@ -91,12 +93,17 @@ class StrategyRunner:
         self.pivots: dict = {}
         self.grind = SlowGrind(s)
         self.pullback = EmaPullback(s, self._hourly(self.hourly_end or self.week_open))
+        self.hourly_read = self._hourly_read(self.hourly_end or self.week_open)
         self.watcher = RejectionWatcher(s, design_only=True)
         self.breakout = Breakout(s)
         self.reversal = LevelReversal(s)
 
     def _hourly(self, end: datetime) -> HourlyTrendReader:
         return HourlyTrendReader(self.s, last_candles(self.memo, "1h", end, self.s.ema_pullback.hourly_history_candles))
+
+    def _hourly_read(self, end: datetime) -> HourlyReader:
+        """The hourly read (analyser/hourly_read.py) from the stored hourly candles finished by `end`."""
+        return HourlyReader(self.s, last_candles(self.memo, "1h", end, self.s.hourly_read.history_candles))
 
     def state_after(self, i: int):
         """The analyser's state after week candle i (before the week's first candle: consolidation)."""
@@ -145,7 +152,9 @@ class StrategyRunner:
                  + reversal.on_candle(partial, watcher, events, lv))
         st = self.state_after(len(self.week) - 1)
         e100 = ema100.get(self.week[-1].start)
-        return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100) for cand in cands]
+        hr = self.hourly_read.at(partial.start)
+        return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100, hr)
+                for cand in cands]
 
     def _band_before(self, i: int) -> Any:
         """The band as it stood at the last finished candle before the week's candle i (the range trade)."""
@@ -172,6 +181,7 @@ class StrategyRunner:
             ema100 = ema(allc, side, s.analyser.direction_ema_periods)
             if self.hourly_end is None:
                 self.pullback.hourly = self._hourly(c.end)
+                self.hourly_read = self._hourly_read(c.end)
             changes = self.tracker.changes
             change_at = {ch.time: (k, ch) for k, ch in enumerate(changes)}
             band = Band(c.start, f.middle, f.upper, f.lower) if f.upper is not None else None
@@ -188,8 +198,9 @@ class StrategyRunner:
             if cands:
                 st = self.state_after(i - 1)
                 e100 = ema100.get(self.week[i - 1].start) if i > 0 else None
+                hr = self.hourly_read.at(c.start)
                 for cand in cands:
-                    out.append((c, check(s, s.market.pair, cand, st, self.pivot_at(c.start), e100)))
+                    out.append((c, check(s, s.market.pair, cand, st, self.pivot_at(c.start), e100, hr)))
         self.done = len(hist)
         return out
 

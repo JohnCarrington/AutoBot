@@ -354,6 +354,19 @@ rsi_below = 30
 # Daily candles read to work out the RSI (all the store holds, up to this many).
 rsi_history_candles = 1000
 
+[hourly_read]
+# The hourly read (owner, 14 November 2026; analyser/hourly_read.py): the analyser first looks at the
+# hourly chart (sell price) to see the context. A sell-off starts when an hourly candle closes at least
+# break_beyond_pips below the lowest low of the range_candles hourly candles before it; a rally when one
+# closes at least break_beyond_pips above their highest high. It is ranging once ranging_after_candles
+# more hourly candles have closed with no new break; the hourly range is the high and low of the last
+# range_candles hourly candles. What the strategies do with it: strategies/common.py.
+range_candles = 12
+break_beyond_pips = 3
+ranging_after_candles = 12
+# Stored hourly candles read to work out the read.
+history_candles = 600
+
 [market_states]
 # The analyser's five market states (design section 2; docs/ANALYSER.md).
 # Worked out on the 5-minute candles, sell price. "161" = AutoBot 161's NMS

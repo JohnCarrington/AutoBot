@@ -45,6 +45,8 @@ Every result gives: the market state, the direction (up, down or none), the type
 | Possible reversal | Bollinger band bounce; level reversal (3.6), either way |
 | Consolidation | None (not even the level reversal). Watch and wait for a break |
 
+The EMA pullback, the slow grind and the breakout also need the hourly read to allow them (2.9): nothing while the hourly is ranging, only sells in an hourly sell-off and only buys in an hourly rally.
+
 - **Ranging:** the Bollinger bands are flat and close together, and price bounces between the upper and lower band. The EMAs weave back and forth instead of staying stacked, and the 100 EMA is flat. In numbers (owner, 7 November 2026): close together is a band width of at least 6 and at most 18 pips; flat is the upper band and the lower band each moving less than 0.5 pips a candle, measured over 6 candles (owner, 13 November 2026; 0.2 before); price bounces between the bands when both bands have been reached within 24 candles.
 - **Emerging trend:** a direction is starting to form. Its main job is to stop bounces against the new direction early. The Bollinger band bounce trades in an emerging trend only in the emerging trend's direction; a bounce against it stays blocked (owner, 13 November 2026; from 7 November it did not trade in an emerging trend at all).
 - **Trend:** an established direction, either a slow grind or a strong push. Both are recognised from price action.
@@ -115,6 +117,23 @@ Timeframes: weekly, daily, 4-hour, 1-hour, 5-minute and tick. The EMA pullback u
 
 Every indicator, for the analyser and the strategies, is worked out from the sell (bid) price, with daily candles running midnight to midnight UK, to match Johnny's IG chart, which is set to the sell price. Trades still open and close at IG's real buy or sell price as normal.
 
+### 2.9 The hourly read (owner, 14 November 2026)
+
+The analyser first looks at the hourly chart to see the context: **ranging**, a **sell-off** or a **rally**. It keeps its ability to spot a trend quickly on the 5-minute chart (2.2 to 2.7 are unchanged). Sell price, hourly candles, decided each time an hourly candle closes and held until the next one closes (`analyser/hourly_read.py`; settings `[hourly_read]`):
+
+- **Sell-off:** an hourly candle closes at least 3 pips (`hourly_read.break_beyond_pips`) below the lowest low of the 12 hourly candles before it (`hourly_read.range_candles`).
+- **Rally:** an hourly candle closes at least 3 pips above the highest high of the 12 hourly candles before it.
+- A break the other way turns a sell-off straight into a rally, or a rally into a sell-off. A new break the same way starts the count again.
+- **Ranging:** once 12 more hourly candles (`hourly_read.ranging_after_candles`) have closed with no new break. The hourly range is the high and low of the last 12 hourly candles, updated every hour. The weekend does not count towards the 12. Before the first break in the hourly candles read, the read is ranging.
+
+What it allows, for the **trend strategies only** (the EMA pullback, the slow grind and the breakout; `strategies/common.py`), on top of 2.2 and 2.3:
+
+- **Hourly ranging:** a 5-minute trend counts only once an hourly candle closes at least 3 pips beyond the hourly range, and that close is what turns the read into a sell-off or a rally. So while the read is ranging the trend strategies open nothing. Nothing else is blocked.
+- **Hourly sell-off:** the trend strategies only sell. **Hourly rally:** they only buy.
+- The level reversal and the Bollinger band bounce may trade against the hourly; they, and the range trade, are not affected by it. Open trades are not affected.
+
+Checked at entry, as 2.2 and 2.3 are, with the read after the last finished hourly candle. The owner's example: Friday 13 November 2026 from 08:40 to 13:00 UK was a textbook range, which the 5-minute read could not see; the hourly read calls it ranging (from 04:00 to 17:00 UK, range about 1.3217 to 1.3251), and a functional test holds it to that (`tests/functional/test_hourly_read_real_candles.py`).
+
 ---
 
 ## 3. Strategies
@@ -130,7 +149,7 @@ Price moves in a staircase: it pauses rather than bouncing back to the middle of
 2. It counts as a pause once at least 2 candles in a row (`slow_grind.min_pause_candles`) have failed to make a new low while staying below the 21 EMA.
 3. The sell opens as soon as the live price breaks below the lowest point of the pause.
 4. If a candle closes above the 21 EMA, the setup is cancelled. No time limit: a long pause becomes consolidation in the analyser.
-5. Only in a trend (either type, slow grind or strong push), in the trend's direction (2.2); not in an emerging trend. The direction rule (2.3) does not apply, and there is no other direction filter.
+5. Only in a trend (either type, slow grind or strong push), in the trend's direction (2.2); not in an emerging trend. The direction rule (2.3) does not apply. The hourly read must allow it (2.9): not while the hourly is ranging, and only with an hourly sell-off or rally.
 6. Stop loss 15 pips (`slow_grind.stop_loss_pips`); take profit 20 pips (`slow_grind.take_profit_pips`), or 100 pips (`TAKE_PROFIT_PIPS`) for a trade opened on a UK day with big news for the pair, or in the trend day's direction on a trend day (2.4); the profit lock 15/10; no close on a rejection at a level (section 4).
 7. New trades at any time the market is open, big-news windows included, except from 20:30 UK to midnight every day, in the first 15 minutes after the Sunday open, and from 21:55 to 22:15 UK. Any slow grind trade still open at 20:30 UK is closed, every day; not closed before big news. One slow grind trade open at a time (section 6).
 
@@ -143,7 +162,7 @@ Price moves in a staircase: it pauses rather than bouncing back to the middle of
 4. The trade opens as soon as the live price reaches the entry price.
 5. If it has not opened within 20 minutes, the setup expires.
 
-EMAs: 8, 13 and 21 on the 5-minute chart. No fanning rule.
+EMAs: 8, 13 and 21 on the 5-minute chart. No fanning rule. The hourly read must also allow it (2.9): not while the hourly is ranging, and only with an hourly sell-off or rally.
 
 ### 3.3 Bollinger band bounce (sell)
 
@@ -183,7 +202,7 @@ Spread spikes are ignored in the same way as for the bounce (3.3).
 1. It looks for a trade only at the moment the analyser moves into an emerging trend because price broke out of a range (two closes beyond the same band, section 2.5) or because a 5-minute candle closed outside the Bollinger band out of a consolidation: that candle is the breakout candle.
 2. A buy (breakout up) opens as soon as price breaks above the breakout candle's high; a sell (breakout down) as soon as price breaks below its low.
 3. If price does not break it within 3 candles after the breakout candle (`breakout.trigger_within_candles`), the setup expires.
-4. It only takes a breakout in the direction of the day's move so far: a buy only when the entry price is above that day's 00:00 UK open, a sell only when it is below (the open of the 5-minute candle starting at 00:00 UK, sell price). The direction rule (2.3) does not apply to it.
+4. It only takes a breakout in the direction of the day's move so far: a buy only when the entry price is above that day's 00:00 UK open, a sell only when it is below (the open of the 5-minute candle starting at 00:00 UK, sell price). The direction rule (2.3) does not apply to it. The hourly read must allow it (2.9): not while the hourly is ranging, and only with an hourly sell-off or rally.
 5. Stop loss 12 pips (`breakout.stop_loss_pips`; owner, 10 November 2026), take profit 50 pips (`breakout.take_profit_pips`). No close on a rejection at a level.
 6. New trades only from 06:00 to 20:30 UK; it may open during a big-news window, may be held overnight and through news, and any breakout trade still open at 20:30 UK on Friday is closed (sections 4 and 6). One breakout trade open at a time.
 

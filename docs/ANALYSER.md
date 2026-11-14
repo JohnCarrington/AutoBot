@@ -33,13 +33,29 @@ IG does not publish exactly how its chart starts an EMA or smooths the RSI. Thes
 
 Price is the live sell price when there is one. With stored candles (a replay or a test), it is the close of the latest finished 5-minute candle: at 13:00, the 12:55 candle's close. The EMA is the one at that candle. The pivot is today's daily pivot from the levels part (`docs/LEVELS.md`). It applies to every strategy, including bounces in a possible reversal.
 
+## The hourly read (design section 2.9; owner, 14 November 2026)
+
+Code: `analyser/hourly_read.py`. The analyser first looks at the hourly chart (sell price) to see the context. Decided each time an hourly candle closes, from the last 600 stored hourly candles (`hourly_read.history_candles`), and held until the next hourly candle closes:
+
+| Read | When |
+| --- | --- |
+| **Sell-off** | An hourly candle closes at least 3 pips (`hourly_read.break_beyond_pips`) below the lowest low of the 12 hourly candles before it (`hourly_read.range_candles`). |
+| **Rally** | An hourly candle closes at least 3 pips above the highest high of the 12 hourly candles before it. |
+| **Ranging** | 12 more hourly candles (`hourly_read.ranging_after_candles`) have closed with no new break (or no break yet in the candles read). The hourly range is the high and low of the last 12 hourly candles, updated every hour. |
+
+A break the other way switches a sell-off straight to a rally, or back; a new break the same way starts the count of 12 again. The candles are counted in order, so the weekend does not count.
+
+It acts on the **trend strategies only** (EMA pullback, slow grind, breakout), in the shared check at entry (`strategies/common.py`, check 4): nothing while the hourly is ranging (a 5-minute trend counts only after an hourly close at least 3 pips beyond the hourly range, which turns the read into a sell-off or a rally), only sells in a sell-off, only buys in a rally. The level reversal, the Bollinger bounce and the range trade may trade against it. The five 5-minute states below are unchanged.
+
+Functional test (`tests/functional/test_hourly_read_real_candles.py`): Friday 13 November 2026, the owner's textbook range from 08:40 to 13:00 UK, reads ranging (from 04:00 to 17:00 UK; range low about 13217 to 13222, high about 13240 to 13251); the 16:00 candle's close 6.1 pips below 13217.4 starts a sell-off; Friday 6 November is a sell-off and Monday 9 November a rally.
+
 ## Checking a time against the chart
 
 ```
 .venv/bin/python -m analyser 2026-11-06T13:00:00Z [more UTC times ...] [--pair GBPUSD]
 ```
 
-Prints the direction and why, the data status, and every indicator on the 5-minute and hourly candles (`*` marks one still warming up). Contacts nobody.
+Prints the direction and why, the data status, every indicator on the 5-minute and hourly candles (`*` marks one still warming up), and the hourly read with its reason and the hourly range. Contacts nobody.
 
 ## Functional tests (`tests/functional/test_analyser_real_candles.py`)
 

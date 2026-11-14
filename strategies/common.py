@@ -18,8 +18,17 @@ only, owner 7 November 2026):
      breakout (owner, 7 November 2026), the slow grind or the level reversal
      (owner, 8 November 2026), in any state; the rule's answer is still recorded.
      The level reversal is allowed in every state except consolidation, either way.
+  4. the hourly read (analyser/hourly_read.py; owner, 14 November 2026) allows it. It applies only to the
+     trend strategies (TREND_STRATEGIES: EMA pullback, slow grind, breakout):
+       * hourly ranging: a 5-minute trend counts only once an hourly candle closes at least
+         hourly_read.break_beyond_pips (3) beyond the hourly range, and such a close is what turns the read
+         into a sell-off or a rally; so while the read is ranging the trend strategies open nothing;
+       * hourly sell-off: the trend strategies only sell; hourly rally: they only buy;
+     the level reversal and the Bollinger bounce (and the range trade) are not affected: they may trade
+     against the hourly. Nothing else in the analyser's 5-minute read changes, and open trades are not affected.
 "The current state" is the analyser's state after the last finished 5-minute
-candle, and the direction rule uses the entry price. A candidate that fails a
+candle, the hourly read is the one after the last finished hourly candle, and
+the direction rule uses the entry price. A candidate that fails a
 check is kept as BLOCKED with the reason, never as an idea.
 
 Ideas only: nothing here places, changes or closes a trade, or contacts IG.
@@ -33,7 +42,9 @@ from decimal import Decimal
 from typing import Any
 
 from analyser.direction import BUY_SIDE, SELL_SIDE, decide
+from analyser.hourly_read import RALLY as HOURLY_RALLY, RANGING as HOURLY_RANGING, SELL_OFF as HOURLY_SELL_OFF
 from analyser.states import DOWN, EMERGING, POSSIBLE_REVERSAL, RANGING, TREND, UP
+from prices.model import plain
 
 SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE, BREAKOUT, LEVEL_REVERSAL = (
     "slow grind", "EMA pullback", "Bollinger bounce", "range trade", "breakout", "level reversal")
@@ -49,6 +60,8 @@ NO_LEVEL_CLOSE = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL, RANGE_TRAD
 # The direction rule (section 2.3) does not apply to these (owner, 7 and 8 November 2026).
 NO_DIRECTION_RULE = (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL)
 BUY, SELL = "buy", "sell"
+# The strategies the hourly read applies to (check 4 above; owner, 14 November 2026).
+TREND_STRATEGIES = (EMA_PULLBACK, SLOW_GRIND, BREAKOUT)
 # Section 2.2: which states allow which strategy: "any" direction, only in the trend's direction
 # ("trend"), or only against it ("against").
 ALLOWED_IN = {
@@ -293,10 +306,26 @@ def take_profit_pips_to(price: Decimal, direction: str, fill: Decimal, points_pe
     return max(Decimal("0.1"), (d / Decimal(points_per_pip)).quantize(Decimal("0.1")))
 
 
+def hourly_reasons(settings: Any, strategy: str, direction: str, hourly: Any) -> list[str]:
+    """Check 4: why the hourly read does not allow this trend strategy this way (empty: allowed)."""
+    if hourly is None or strategy not in TREND_STRATEGIES:
+        return []
+    rng = f" ({plain(hourly.low)} to {plain(hourly.high)})" if hourly.low is not None else ""
+    if hourly.state == HOURLY_RANGING:
+        return [f"the hourly chart is ranging{rng}: {strategy} waits for an hourly close at least "
+                f"{settings.hourly_read.break_beyond_pips} pips beyond the hourly range"]
+    if hourly.state == HOURLY_SELL_OFF and direction == BUY:
+        return [f"the hourly chart is in a sell-off: {strategy} only sells"]
+    if hourly.state == HOURLY_RALLY and direction == SELL:
+        return [f"the hourly chart is in a rally: {strategy} only buys"]
+    return []
+
+
 def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state: Any, pivot: Decimal | None,
-            ema100: Decimal | None) -> tuple[list[str], Any]:
-    """Every reason the switch, the state (2.2) or the direction rule (2.3) does not allow
-    this strategy in this direction at this price (empty: allowed), and the direction rule."""
+            ema100: Decimal | None, hourly: Any = None) -> tuple[list[str], Any]:
+    """Every reason the switch, the state (2.2), the direction rule (2.3) or the hourly read (check 4) does not
+    allow this strategy in this direction at this price (empty: allowed), and the direction rule. `hourly`: the
+    hourly read (analyser.hourly_read.HourlyRead); the strategy runner always gives it."""
     rule = decide(price, "the price", pivot, ema100, "5m 100 EMA", ema100 is not None)
     reasons = []
     if not getattr(settings.switches, SWITCH[strategy]):
@@ -314,13 +343,14 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
     need = BUY_SIDE if direction == BUY else SELL_SIDE
     if rule.side != need and strategy not in NO_DIRECTION_RULE:
         reasons.append(f"the direction rule says {rule.side} ({rule.reason})")
+    reasons += hourly_reasons(settings, strategy, direction, hourly)
     return reasons, rule
 
 
 def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | None,
-          ema100: Decimal | None) -> Idea:
-    """Turn a candidate into an idea, or a blocked one with every reason."""
-    reasons, rule = allowed(settings, c.strategy, c.direction, c.entry_price, state, pivot, ema100)
+          ema100: Decimal | None, hourly: Any = None) -> Idea:
+    """Turn a candidate into an idea, or a blocked one with every reason. `hourly`: the hourly read."""
+    reasons, rule = allowed(settings, c.strategy, c.direction, c.entry_price, state, pivot, ema100, hourly)
     idea = Idea(pair, c.strategy, c.direction, c.time, c.entry_price, state.state, state.direction,
                 state.trend_type, rule.side, list(c.steps), context=dict(c.context))
     if reasons:
@@ -329,5 +359,6 @@ def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | N
         exempt = c.strategy in NO_DIRECTION_RULE
         idea.steps.append(f"allowed at entry: {c.strategy} in a {state.state} {state.direction}; direction rule "
                           f"{rule.side} ({rule.reason.replace('the price', 'the entry price')})"
-                          + (f"; the direction rule does not apply to {c.strategy}" if exempt else ""))
+                          + (f"; the direction rule does not apply to {c.strategy}" if exempt else "")
+                          + (f"; {hourly.line()}" if hourly is not None else ""))
     return idea

@@ -615,9 +615,17 @@ def test_range_trade_is_not_closed_on_a_rejection_at_a_level(S):
 
 # ---- the replay: the checks at entry only ----------------------------------------------------
 
-def fake_replay(monkeypatch, S, states):
+def fake_hourly(monkeypatch, state):
+    """The hourly read (analyser/hourly_read.py) the replay sees, at every moment."""
+    from analyser.hourly_read import HourlyRead
+    read = HourlyRead(state, None, D(100), D(110), None, "made up")
+    monkeypatch.setattr(replay_mod, "HourlyReader", lambda s, candles: SimpleNamespace(at=lambda t: read))
+
+
+def fake_replay(monkeypatch, S, states, hourly="sell-off"):
     """A slow grind sell: the pause counts at candle 3 and price breaks it on candle 4.
-    `states`: {candle number: (state, direction) from that candle on}."""
+    `states`: {candle number: (state, direction) from that candle on}. `hourly`: the hourly read."""
+    fake_hourly(monkeypatch, hourly)
     candles = PAUSE + [BREAK]
     S = over(S, "slow_grind", min_pause_candles=3)
     hist = [(SimpleNamespace(candle=c, upper=None, middle=None, lower=None), None, None, [], None, None)
@@ -648,6 +656,15 @@ def test_replay_checks_at_entry_with_the_state_after_the_last_finished_candle(mo
 def test_replay_does_not_check_when_a_setup_starts(monkeypatch, S):
     (i,) = fake_replay(monkeypatch, S, {3: (TREND, DOWN)})   # consolidation while the pause formed
     assert i.allowed
+
+
+def test_replay_checks_the_hourly_read(monkeypatch, S):
+    (i,) = fake_replay(monkeypatch, S, {0: (TREND, DOWN)}, hourly="ranging")
+    assert not i.allowed and i.blocked_by.startswith("the hourly chart is ranging (100 to 110)")
+    (j,) = fake_replay(monkeypatch, S, {0: (TREND, DOWN)}, hourly="rally")
+    assert not j.allowed and "the hourly chart is in a rally: slow grind only buys" in j.blocked_by
+    (k,) = fake_replay(monkeypatch, S, {0: (TREND, DOWN)}, hourly="sell-off")
+    assert k.allowed and "hourly sell-off: made up" in k.steps[-1]
 
 
 # ---- hours, news and the forced close per strategy (design sections 4 and 6) ----------------
@@ -924,6 +941,7 @@ def test_the_replay_gives_the_breakout_the_analysers_breakout(monkeypatch, S):
                                previous_state=CONSOLIDATION, reason=BREAKOUT_REASONS[CONSOLIDATION] + ": close above the band")]
     tracker = SimpleNamespace(history=hist, week_open=MIDNIGHT, watcher=None, replay=lambda end: None, changes=changes)
     level = SimpleNamespace(type="pivot", price=D(90))
+    fake_hourly(monkeypatch, "rally")
     monkeypatch.setattr(replay_mod, "StateTracker", lambda s, store: tracker)
     monkeypatch.setattr(replay_mod, "MemoStore", lambda store: store)
     monkeypatch.setattr(replay_mod, "check_same_pair", lambda s, store: None)

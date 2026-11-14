@@ -1,5 +1,6 @@
-"""Show the analyser's indicators, direction and data status at one or more
-UTC times, from the stored candles. Contacts nobody.
+"""Show the analyser's indicators, direction, data status and hourly read
+(analyser/hourly_read.py) at one or more UTC times, from the stored candles.
+Contacts nobody.
 
   .venv/bin/python -m analyser 2026-11-06T13:00:00Z [more times ...] [--pair GBPUSD]
 (--pair may be left out when only one pair is switched on in .env.)
@@ -10,6 +11,8 @@ from __future__ import annotations
 import sys
 from decimal import Decimal
 
+from analyser.hourly_read import HourlyReader
+from analyser.indicators import last_candles
 from analyser.report import AnalyserReport, analyse
 from config.pairs import choose_pair, take_pair_option
 from config.settings_loader import load_or_exit
@@ -49,7 +52,10 @@ def main(argv: list[str] | None = None) -> int:
     settings = choose_pair(load_or_exit(), pair)
     store = CandleStore(settings.candles.folder, settings.candles.compress_after_days)
     for a in args:
-        print("\n".join(show(analyse(settings, store, parse_iso(a)))))
+        t = parse_iso(a)
+        print("\n".join(show(analyse(settings, store, t))))
+        hourly = last_candles(store, "1h", t, settings.hourly_read.history_candles)
+        print("  " + HourlyReader(settings, hourly).at(t).line())
     return 0
 
 

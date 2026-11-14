@@ -420,6 +420,12 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "rollover_no_new_trades_from": _clock_time,
         "rollover_no_new_trades_until": _clock_time,
     },
+    "hourly_read": {
+        "range_candles": _whole_number(1, 200),
+        "break_beyond_pips": _whole_number(0, 1000),
+        "ranging_after_candles": _whole_number(1, 200),
+        "history_candles": _whole_number(50, 5000),
+    },
     "possible_reversal": {
         "min_trend_move_pips": _whole_number(1, 1000),
     },

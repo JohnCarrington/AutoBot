@@ -123,6 +123,10 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `trend_day.rsi_above` | A trend day downwards needs that RSI above this. **Owner's value, 8 November 2026.** | 70 |
 | `trend_day.rsi_below` | A trend day upwards needs that RSI below this. **Owner's value, 8 November 2026.** | 30 |
 | `trend_day.rsi_history_candles` | Stored daily candles read to work out the RSI (all the store holds, up to this many; the RSI depends a little on where it starts). | 1000 |
+| `hourly_read.range_candles` | The hourly read (`analyser/hourly_read.py`): an hourly close beyond the high or low of this many hourly candles before it starts a rally or a sell-off; while ranging, the hourly range is the high and low of the last this many hourly candles. **Owner's value, 14 November 2026.** | 12 candles |
+| `hourly_read.break_beyond_pips` | The close must be at least this far beyond that high or low, on the sell price. While the read is ranging, the EMA pullback, slow grind and breakout open nothing until such a close. **Owner's value, 14 November 2026.** | 3 pips |
+| `hourly_read.ranging_after_candles` | A sell-off or rally turns to ranging once this many more hourly candles have closed with no new break. **Owner's value, 14 November 2026.** | 12 candles |
+| `hourly_read.history_candles` | Stored hourly candles read to work out the hourly read (before the first break in them the read is ranging). | 600 |
 | `level_reversal.level_types` | Level reversal (design 3.6): the levels it trades rejections at, from `S2`, `R2`, `pivot` (the daily pivot) and `round_number`. **Owner's choice, 8 November 2026; the pivot added 13 November 2026.** | S2, R2, pivot, round_number |
 | `level_reversal.round_numbers_every_pips` | Round numbers count only on a multiple of this many pips (100: the 00s, not the 50s). **Owner's choice, 8 November 2026.** | 100 pips |
 | `level_reversal.allowance_pips_r2` | A rejection at R2 counts only if price went no more than this far past it, from the piercing candle to the confirmation candle (design 3.6). **Owner's value, 8 November 2026.** | 12 pips |

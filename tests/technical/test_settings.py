@@ -115,6 +115,7 @@ EXPECTED = {
         "rollover_no_new_trades_from": time(21, 55), "rollover_no_new_trades_until": time(22, 15),
     },
     "possible_reversal": {"min_trend_move_pips": 30},
+    "hourly_read": {"range_candles": 12, "break_beyond_pips": 3, "ranging_after_candles": 12, "history_candles": 600},
     "breakout": {"trigger_within_candles": 3, "stop_loss_pips": 12, "take_profit_pips": 50},
     "trend_day": {"level_above": "R2", "level_below": "S2", "rsi_periods": 14, "rsi_above": 70, "rsi_below": 30,
                   "rsi_history_candles": 1000},
