@@ -33,8 +33,8 @@
   All results here use **07:00–19:00 UK**, the best hours choice in that test. The same code was checked to reproduce that test exactly for all 12 versions.
 - **The data:** the 118 complete weekdays in AutoBot 161's archive (IG's own mid, with sell and buy prices rebuilt from IG's typical spread). Signals with missing data are skipped. Costs are treated as before, with nothing added. Trend day (owner): the 17:00 UK close is at least 80 pips from the 07:00 open.
 - **Split:**
-  - **First half:** 23 March to 30 June (59 days, no trend days). This is where the losing trades were studied and the fixes were looked for.
-  - **Second half:** 1 July to 6 November (59 days, 3 trend days). This was used only as a check.
+  - **First half:** 23 March to 30 June (45 days, 1 trend day: 23 March, with no trade in 07:00–19:00). This is where the losing trades were studied and the fixes were looked for.
+  - **Second half:** 1 July to 6 November (73 days, 3 trend days). This was used only as a check.
   - A fix counts only if it adds pips on both halves.
 - **Carried over, not in the rule:** one trade at a time in each direction; no end-of-day close.
 
