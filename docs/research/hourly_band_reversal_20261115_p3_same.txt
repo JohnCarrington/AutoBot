@@ -1,0 +1,50 @@
+
+-- no filter (same trades as with the 12-pip stop only)
+   ('fixed', 12)    close past turn: false signals  -132.0 ->  -163.7 ( -31.7); of 77 false: 40 losers cut smaller, 14 winners closed early; turns   +0.0; total   +12.0 ->   -19.7
+   ('fixed', 12)    close past turn +2: false signals  -132.0 ->  -177.5 ( -45.5); of 77 false: 39 losers cut smaller, 9 winners closed early; turns   +0.0; total   +12.0 ->   -33.5
+   ('fixed', 20)    close past turn: false signals  -248.0 ->  -300.1 ( -52.1); of 58 false: 39 losers cut smaller, 10 winners closed early; turns   +0.0; total   -20.0 ->   -72.1
+   ('fixed', 20)    close past turn +2: false signals  -248.0 ->  -344.1 ( -96.1); of 58 false: 37 losers cut smaller, 8 winners closed early; turns   +0.0; total   -20.0 ->  -116.1
+   ('fixed', 30)    close past turn: false signals  -330.0 ->  -317.8 ( +12.2); of 45 false: 37 losers cut smaller, 5 winners closed early; turns  +12.7; total  -108.0 ->   -83.1
+   ('fixed', 30)    close past turn +2: false signals  -330.0 ->  -361.6 ( -31.6); of 45 false: 34 losers cut smaller, 4 winners closed early; turns   +6.7; total  -108.0 ->  -132.9
+   ('swing', 3, 12) close past turn: false signals  -201.5 ->  -203.7 (  -2.2); of 77 false: 40 losers cut smaller, 14 winners closed early; turns   +0.0; total    -7.7 ->    -9.9
+   ('swing', 3, 12) close past turn +2: false signals  -201.5 ->  -211.7 ( -10.2); of 77 false: 39 losers cut smaller, 9 winners closed early; turns   +0.0; total    -7.7 ->   -17.9
+
+-- within 0 pips (same trades as with the 12-pip stop only)
+   ('fixed', 12)    close past turn: false signals   -48.0 ->   -48.1 (  -0.1); of 18 false: 11 losers cut smaller, 3 winners closed early; turns   +0.0; total   +60.0 ->   +59.9
+   ('fixed', 12)    close past turn +2: false signals   -48.0 ->   -36.5 ( +11.5); of 18 false: 10 losers cut smaller, 1 winners closed early; turns   +0.0; total   +60.0 ->   +71.5
+   ('fixed', 20)    close past turn: false signals  -116.0 ->  -110.8 (  +5.2); of 15 false: 13 losers cut smaller, 2 winners closed early; turns   +0.0; total   +64.0 ->   +69.2
+   ('fixed', 20)    close past turn +2: false signals  -116.0 ->  -112.2 (  +3.8); of 15 false: 11 losers cut smaller, 1 winners closed early; turns   +0.0; total   +64.0 ->   +67.8
+   ('fixed', 30)    close past turn: false signals  -126.0 ->  -105.5 ( +20.5); of 14 false: 13 losers cut smaller, 1 winners closed early; turns   +7.9; total   +60.0 ->   +88.4
+   ('fixed', 30)    close past turn +2: false signals  -126.0 ->   -94.9 ( +31.1); of 14 false: 11 losers cut smaller, 0 winners closed early; turns   +3.9; total   +60.0 ->   +95.0
+   ('swing', 3, 12) close past turn: false signals   -60.7 ->   -60.5 (  +0.2); of 18 false: 11 losers cut smaller, 3 winners closed early; turns   +0.0; total  +108.9 ->  +109.1
+   ('swing', 3, 12) close past turn +2: false signals   -60.7 ->   -45.5 ( +15.2); of 18 false: 10 losers cut smaller, 1 winners closed early; turns   +0.0; total  +108.9 ->  +124.1
+
+-- within 3 pips (same trades as with the 12-pip stop only)
+   ('fixed', 12)    close past turn: false signals   -12.0 ->   -22.0 ( -10.0); of 23 false: 12 losers cut smaller, 4 winners closed early; turns   +0.0; total   +96.0 ->   +86.0
+   ('fixed', 12)    close past turn +2: false signals   -12.0 ->   -33.2 ( -21.2); of 23 false: 11 losers cut smaller, 3 winners closed early; turns   +0.0; total   +96.0 ->   +74.8
+   ('fixed', 20)    close past turn: false signals   -88.0 ->   -77.0 ( +11.0); of 18 false: 14 losers cut smaller, 2 winners closed early; turns   +0.0; total   +92.0 ->  +103.0
+   ('fixed', 20)    close past turn +2: false signals   -88.0 ->  -107.2 ( -19.2); of 18 false: 12 losers cut smaller, 2 winners closed early; turns   +0.0; total   +92.0 ->   +72.8
+   ('fixed', 30)    close past turn: false signals   -96.0 ->   -78.5 ( +17.5); of 15 false: 13 losers cut smaller, 1 winners closed early; turns   +7.9; total   +90.0 ->  +115.4
+   ('fixed', 30)    close past turn +2: false signals   -96.0 ->  -102.9 (  -6.9); of 15 false: 10 losers cut smaller, 1 winners closed early; turns   +3.9; total   +90.0 ->   +87.0
+   ('swing', 3, 12) close past turn: false signals   -38.7 ->   -42.2 (  -3.5); of 23 false: 12 losers cut smaller, 4 winners closed early; turns   +0.0; total  +130.9 ->  +127.4
+   ('swing', 3, 12) close past turn +2: false signals   -38.7 ->   -56.1 ( -17.4); of 23 false: 11 losers cut smaller, 3 winners closed early; turns   +0.0; total  +130.9 ->  +113.5
+
+-- within 5 pips (same trades as with the 12-pip stop only)
+   ('fixed', 12)    close past turn: false signals   -72.0 ->   -57.7 ( +14.3); of 28 false: 17 losers cut smaller, 4 winners closed early; turns   +0.0; total   +60.0 ->   +74.3
+   ('fixed', 12)    close past turn +2: false signals   -72.0 ->   -60.0 ( +12.0); of 28 false: 16 losers cut smaller, 2 winners closed early; turns   +0.0; total   +60.0 ->   +72.0
+   ('fixed', 20)    close past turn: false signals  -124.0 ->   -97.2 ( +26.8); of 21 false: 17 losers cut smaller, 2 winners closed early; turns   +0.0; total   +96.0 ->  +122.8
+   ('fixed', 20)    close past turn +2: false signals  -124.0 ->  -106.5 ( +17.5); of 21 false: 15 losers cut smaller, 1 winners closed early; turns   +0.0; total   +96.0 ->  +113.5
+   ('fixed', 30)    close past turn: false signals  -132.0 ->   -98.7 ( +33.3); of 18 false: 16 losers cut smaller, 1 winners closed early; turns  +12.7; total   +72.0 ->  +118.0
+   ('fixed', 30)    close past turn +2: false signals  -132.0 ->   -92.2 ( +39.8); of 18 false: 13 losers cut smaller, 0 winners closed early; turns   +6.7; total   +72.0 ->  +118.5
+   ('swing', 3, 12) close past turn: false signals   -94.9 ->   -77.9 ( +17.0); of 28 false: 17 losers cut smaller, 4 winners closed early; turns   +0.0; total  +100.8 ->  +117.8
+   ('swing', 3, 12) close past turn +2: false signals   -94.9 ->   -76.8 ( +18.1); of 28 false: 16 losers cut smaller, 2 winners closed early; turns   +0.0; total  +100.8 ->  +118.9
+
+-- within 10 pips (same trades as with the 12-pip stop only)
+   ('fixed', 12)    close past turn: false signals   -48.0 ->  -101.0 ( -53.0); of 42 false: 21 losers cut smaller, 9 winners closed early; turns   +0.0; total   +84.0 ->   +31.0
+   ('fixed', 12)    close past turn +2: false signals   -48.0 ->   -83.7 ( -35.7); of 42 false: 20 losers cut smaller, 5 winners closed early; turns   +0.0; total   +84.0 ->   +48.3
+   ('fixed', 20)    close past turn: false signals  -108.0 ->  -185.4 ( -77.4); of 33 false: 21 losers cut smaller, 7 winners closed early; turns   +0.0; total  +112.0 ->   +34.6
+   ('fixed', 20)    close past turn +2: false signals  -108.0 ->  -185.8 ( -77.8); of 33 false: 19 losers cut smaller, 5 winners closed early; turns   +0.0; total  +112.0 ->   +34.2
+   ('fixed', 30)    close past turn: false signals  -174.0 ->  -183.3 (  -9.3); of 25 false: 21 losers cut smaller, 3 winners closed early; turns  +12.7; total   +30.0 ->   +33.4
+   ('fixed', 30)    close past turn +2: false signals  -174.0 ->  -190.8 ( -16.8); of 25 false: 18 losers cut smaller, 2 winners closed early; turns   +6.7; total   +30.0 ->   +19.9
+   ('swing', 3, 12) close past turn: false signals   -74.7 ->  -107.3 ( -32.6); of 42 false: 21 losers cut smaller, 9 winners closed early; turns   +0.0; total  +121.0 ->   +88.4
+   ('swing', 3, 12) close past turn +2: false signals   -74.7 ->   -87.7 ( -13.0); of 42 false: 20 losers cut smaller, 5 winners closed early; turns   +0.0; total  +121.0 ->  +108.0

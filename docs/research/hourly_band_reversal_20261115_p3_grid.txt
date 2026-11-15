@@ -1,0 +1,94 @@
+
+##### hourly band: live
+-- at band: no filter: 135 raw
+     ('fixed', 12)    trades  89 caught 12/30 false  77 winners  45 pips   +12.0 (turns +144.0, false  -132.0)
+     ('fixed', 20)    trades  71 caught 13/30 false  58 winners  26 pips   -20.0 (turns +228.0, false  -248.0)
+     ('fixed', 30)    trades  58 caught 13/30 false  45 winners  14 pips  -108.0 (turns +222.0, false  -330.0)
+     ('swing', 3, 12) trades  89 caught 12/30 false  77 winners  42 pips    -7.7 (turns +193.8, false  -201.5)
+-- at band: beyond by 2+: 24 raw
+     ('fixed', 12)    trades  19 caught  7/30 false  12 winners  12 pips   +60.0 (turns  +84.0, false   -24.0)
+     ('fixed', 20)    trades  17 caught  7/30 false  10 winners   8 pips   +52.0 (turns +140.0, false   -88.0)
+     ('fixed', 30)    trades  16 caught  7/30 false   9 winners   5 pips   +18.0 (turns +126.0, false  -108.0)
+     ('swing', 3, 12) trades  19 caught  7/30 false  12 winners  11 pips   +72.0 (turns +111.1, false   -39.1)
+-- at band: within 0 pips (0 = touch): 40 raw
+     ('fixed', 12)    trades  27 caught  9/30 false  18 winners  16 pips   +60.0 (turns +108.0, false   -48.0)
+     ('fixed', 20)    trades  24 caught  9/30 false  15 winners  11 pips   +64.0 (turns +180.0, false  -116.0)
+     ('fixed', 30)    trades  23 caught  9/30 false  14 winners   8 pips   +60.0 (turns +186.0, false  -126.0)
+     ('swing', 3, 12) trades  27 caught  9/30 false  18 winners  15 pips  +108.9 (turns +169.6, false   -60.7)
+-- at band: within 2 pips (0 = touch): 45 raw
+     ('fixed', 12)    trades  29 caught  9/30 false  20 winners  18 pips   +84.0 (turns +108.0, false   -24.0)
+     ('fixed', 20)    trades  25 caught  9/30 false  16 winners  12 pips   +84.0 (turns +180.0, false   -96.0)
+     ('fixed', 30)    trades  22 caught  9/30 false  13 winners   8 pips   +72.0 (turns +186.0, false  -114.0)
+     ('swing', 3, 12) trades  29 caught  9/30 false  20 winners  17 pips  +127.9 (turns +169.6, false   -41.7)
+-- at band: within 3 pips (0 = touch): 48 raw
+     ('fixed', 12)    trades  32 caught  9/30 false  23 winners  20 pips   +96.0 (turns +108.0, false   -12.0)
+     ('fixed', 20)    trades  27 caught  9/30 false  18 winners  13 pips   +92.0 (turns +180.0, false   -88.0)
+     ('fixed', 30)    trades  24 caught  9/30 false  15 winners   9 pips   +90.0 (turns +186.0, false   -96.0)
+     ('swing', 3, 12) trades  32 caught  9/30 false  23 winners  19 pips  +130.9 (turns +169.6, false   -38.7)
+-- at band: within 5 pips (0 = touch): 62 raw
+     ('fixed', 12)    trades  39 caught 11/30 false  28 winners  22 pips   +60.0 (turns +132.0, false   -72.0)
+     ('fixed', 20)    trades  32 caught 11/30 false  21 winners  15 pips   +96.0 (turns +220.0, false  -124.0)
+     ('fixed', 30)    trades  29 caught 11/30 false  18 winners  10 pips   +72.0 (turns +204.0, false  -132.0)
+     ('swing', 3, 12) trades  39 caught 11/30 false  28 winners  21 pips  +100.8 (turns +195.7, false   -94.9)
+-- at band: within 8 pips (0 = touch): 77 raw
+     ('fixed', 12)    trades  49 caught 12/30 false  37 winners  28 pips   +84.0 (turns +144.0, false   -60.0)
+     ('fixed', 20)    trades  41 caught 12/30 false  29 winners  19 pips  +116.0 (turns +240.0, false  -124.0)
+     ('fixed', 30)    trades  34 caught 12/30 false  22 winners  11 pips   +54.0 (turns +234.0, false  -180.0)
+     ('swing', 3, 12) trades  49 caught 12/30 false  37 winners  27 pips  +100.7 (turns +205.3, false  -104.6)
+-- at band: within 10 pips (0 = touch): 87 raw
+     ('fixed', 12)    trades  53 caught 11/30 false  42 winners  30 pips   +84.0 (turns +132.0, false   -48.0)
+     ('fixed', 20)    trades  44 caught 11/30 false  33 winners  20 pips  +112.0 (turns +220.0, false  -108.0)
+     ('fixed', 30)    trades  36 caught 11/30 false  25 winners  11 pips   +30.0 (turns +204.0, false  -174.0)
+     ('swing', 3, 12) trades  53 caught 11/30 false  42 winners  29 pips  +121.0 (turns +195.7, false   -74.7)
+-- at band: within 15 pips (0 = touch): 98 raw
+     ('fixed', 12)    trades  59 caught 12/30 false  47 winners  34 pips  +108.0 (turns +144.0, false   -36.0)
+     ('fixed', 20)    trades  50 caught 12/30 false  38 winners  22 pips  +104.0 (turns +208.0, false  -104.0)
+     ('fixed', 30)    trades  42 caught 12/30 false  30 winners  12 pips    +0.0 (turns +192.0, false  -192.0)
+     ('swing', 3, 12) trades  59 caught 12/30 false  47 winners  32 pips  +117.6 (turns +193.8, false   -76.2)
+
+##### hourly band: finished
+-- at band: no filter: 135 raw
+     ('fixed', 12)    trades  89 caught 12/30 false  77 winners  45 pips   +12.0 (turns +144.0, false  -132.0)
+     ('fixed', 20)    trades  71 caught 13/30 false  58 winners  26 pips   -20.0 (turns +228.0, false  -248.0)
+     ('fixed', 30)    trades  58 caught 13/30 false  45 winners  14 pips  -108.0 (turns +222.0, false  -330.0)
+     ('swing', 3, 12) trades  89 caught 12/30 false  77 winners  42 pips    -7.7 (turns +193.8, false  -201.5)
+-- at band: beyond by 2+: 40 raw
+     ('fixed', 12)    trades  28 caught  9/30 false  19 winners  17 pips   +72.0 (turns +108.0, false   -36.0)
+     ('fixed', 20)    trades  25 caught  9/30 false  16 winners  12 pips   +84.0 (turns +180.0, false   -96.0)
+     ('fixed', 30)    trades  22 caught  9/30 false  13 winners   7 pips   +30.0 (turns +144.0, false  -114.0)
+     ('swing', 3, 12) trades  28 caught  9/30 false  19 winners  16 pips  +109.7 (turns +162.0, false   -52.3)
+-- at band: within 0 pips (0 = touch): 43 raw
+     ('fixed', 12)    trades  28 caught  9/30 false  19 winners  17 pips   +72.0 (turns +108.0, false   -36.0)
+     ('fixed', 20)    trades  25 caught  9/30 false  16 winners  12 pips   +84.0 (turns +180.0, false   -96.0)
+     ('fixed', 30)    trades  22 caught  9/30 false  13 winners   7 pips   +30.0 (turns +144.0, false  -114.0)
+     ('swing', 3, 12) trades  28 caught  9/30 false  19 winners  16 pips  +110.7 (turns +162.0, false   -51.3)
+-- at band: within 2 pips (0 = touch): 49 raw
+     ('fixed', 12)    trades  32 caught 10/30 false  22 winners  20 pips   +96.0 (turns +120.0, false   -24.0)
+     ('fixed', 20)    trades  27 caught 10/30 false  17 winners  13 pips   +92.0 (turns +200.0, false  -108.0)
+     ('fixed', 30)    trades  24 caught 10/30 false  14 winners   8 pips   +48.0 (turns +174.0, false  -126.0)
+     ('swing', 3, 12) trades  32 caught 10/30 false  22 winners  19 pips  +132.7 (turns +178.6, false   -45.9)
+-- at band: within 3 pips (0 = touch): 54 raw
+     ('fixed', 12)    trades  36 caught 11/30 false  25 winners  22 pips   +96.0 (turns +132.0, false   -36.0)
+     ('fixed', 20)    trades  31 caught 11/30 false  20 winners  15 pips  +108.0 (turns +220.0, false  -112.0)
+     ('fixed', 30)    trades  28 caught 11/30 false  17 winners  10 pips   +84.0 (turns +204.0, false  -120.0)
+     ('swing', 3, 12) trades  36 caught 11/30 false  25 winners  21 pips  +136.8 (turns +195.7, false   -58.9)
+-- at band: within 5 pips (0 = touch): 67 raw
+     ('fixed', 12)    trades  42 caught 11/30 false  31 winners  23 pips   +48.0 (turns +132.0, false   -84.0)
+     ('fixed', 20)    trades  35 caught 11/30 false  24 winners  16 pips   +92.0 (turns +220.0, false  -128.0)
+     ('fixed', 30)    trades  30 caught 11/30 false  19 winners  10 pips   +60.0 (turns +204.0, false  -144.0)
+     ('swing', 3, 12) trades  42 caught 11/30 false  31 winners  22 pips   +77.4 (turns +195.7, false  -118.3)
+-- at band: within 8 pips (0 = touch): 77 raw
+     ('fixed', 12)    trades  49 caught 12/30 false  37 winners  28 pips   +84.0 (turns +144.0, false   -60.0)
+     ('fixed', 20)    trades  41 caught 12/30 false  29 winners  19 pips  +116.0 (turns +240.0, false  -124.0)
+     ('fixed', 30)    trades  34 caught 12/30 false  22 winners  11 pips   +54.0 (turns +234.0, false  -180.0)
+     ('swing', 3, 12) trades  49 caught 12/30 false  37 winners  27 pips  +100.7 (turns +205.3, false  -104.6)
+-- at band: within 10 pips (0 = touch): 81 raw
+     ('fixed', 12)    trades  51 caught 12/30 false  39 winners  29 pips   +84.0 (turns +144.0, false   -60.0)
+     ('fixed', 20)    trades  43 caught 12/30 false  31 winners  20 pips  +124.0 (turns +240.0, false  -116.0)
+     ('fixed', 30)    trades  35 caught 12/30 false  23 winners  11 pips   +42.0 (turns +234.0, false  -192.0)
+     ('swing', 3, 12) trades  51 caught 12/30 false  39 winners  28 pips  +125.9 (turns +205.3, false   -79.4)
+-- at band: within 15 pips (0 = touch): 94 raw
+     ('fixed', 12)    trades  57 caught 12/30 false  45 winners  32 pips   +84.0 (turns +144.0, false   -60.0)
+     ('fixed', 20)    trades  48 caught 12/30 false  36 winners  20 pips   +64.0 (turns +208.0, false  -144.0)
+     ('fixed', 30)    trades  40 caught 12/30 false  28 winners  11 pips   -18.0 (turns +192.0, false  -210.0)
+     ('swing', 3, 12) trades  57 caught 12/30 false  45 winners  30 pips  +100.5 (turns +193.8, false   -93.3)

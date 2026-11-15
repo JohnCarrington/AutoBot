@@ -1,0 +1,127 @@
+
+-- live hourly band, no filter
+   ('fixed', 12)    12-pip stop only      trades  89 caught 12/30 false  77 winners  45 pips   +12.0 (turns +144.0, false  -132.0)
+                    + bot close past turn  trades 114 caught 15/30 false  99 winners  39 pips   -21.3 (turns +180.0, false  -201.3) | saved on false -69.3, cost on turns +36.0
+                    + bot close past turn +2  trades 103 caught 14/30 false  89 winners  42 pips   -16.5 (turns +168.0, false  -184.5) | saved on false -52.5, cost on turns +24.0
+   ('fixed', 20)    12-pip stop only      trades  71 caught 13/30 false  58 winners  26 pips   -20.0 (turns +228.0, false  -248.0)
+                    + bot close past turn  trades  99 caught 15/30 false  84 winners  22 pips   -85.0 (turns +268.0, false  -353.0) | saved on false -105.0, cost on turns +40.0
+                    + bot close past turn +2  trades  86 caught 15/30 false  71 winners  24 pips   -62.2 (turns +268.0, false  -330.2) | saved on false -82.2, cost on turns +40.0
+   ('fixed', 30)    12-pip stop only      trades  58 caught 13/30 false  45 winners  14 pips  -108.0 (turns +222.0, false  -330.0)
+                    + bot close past turn  trades  83 caught 15/30 false  68 winners  11 pips  -167.1 (turns +255.6, false  -422.7) | saved on false -92.7, cost on turns +33.6
+                    + bot close past turn +2  trades  72 caught 15/30 false  57 winners  13 pips  -129.0 (turns +247.6, false  -376.6) | saved on false -46.6, cost on turns +25.6
+   ('swing', 3, 12) 12-pip stop only      trades  89 caught 12/30 false  77 winners  42 pips    -7.7 (turns +193.8, false  -201.5)
+                    + bot close past turn  trades 114 caught 15/30 false  99 winners  36 pips   -35.7 (turns +229.6, false  -265.3) | saved on false -63.8, cost on turns +35.8
+                    + bot close past turn +2  trades 103 caught 14/30 false  89 winners  39 pips   -17.9 (turns +221.6, false  -239.5) | saved on false -38.0, cost on turns +27.8
+
+-- live hourly band, within 0 pips
+   ('fixed', 12)    12-pip stop only      trades  27 caught  9/30 false  18 winners  16 pips   +60.0 (turns +108.0, false   -48.0)
+                    + bot close past turn  trades  34 caught 10/30 false  24 winners  15 pips   +52.2 (turns +120.0, false   -67.8) | saved on false -19.8, cost on turns +12.0
+                    + bot close past turn +2  trades  29 caught  9/30 false  20 winners  16 pips   +78.3 (turns +108.0, false   -29.7) | saved on false +18.3, cost on turns +0.0
+   ('fixed', 20)    12-pip stop only      trades  24 caught  9/30 false  15 winners  11 pips   +64.0 (turns +180.0, false  -116.0)
+                    + bot close past turn  trades  32 caught 10/30 false  22 winners  10 pips   +42.5 (turns +200.0, false  -157.5) | saved on false -41.5, cost on turns +20.0
+                    + bot close past turn +2  trades  27 caught 10/30 false  17 winners  11 pips   +71.2 (turns +200.0, false  -128.8) | saved on false -12.8, cost on turns +20.0
+   ('fixed', 30)    12-pip stop only      trades  23 caught  9/30 false  14 winners   8 pips   +60.0 (turns +186.0, false  -126.0)
+                    + bot close past turn  trades  31 caught 10/30 false  21 winners   7 pips   +32.6 (turns +184.8, false  -152.2) | saved on false -26.2, cost on turns -1.2
+                    + bot close past turn +2  trades  26 caught 10/30 false  16 winners   8 pips   +67.3 (turns +178.8, false  -111.5) | saved on false +14.5, cost on turns -7.2
+   ('swing', 3, 12) 12-pip stop only      trades  27 caught  9/30 false  18 winners  15 pips  +108.9 (turns +169.6, false   -60.7)
+                    + bot close past turn  trades  34 caught 10/30 false  24 winners  14 pips   +92.8 (turns +177.6, false   -84.8) | saved on false -24.1, cost on turns +8.0
+                    + bot close past turn +2  trades  29 caught  9/30 false  20 winners  15 pips  +126.3 (turns +169.6, false   -43.3) | saved on false +17.4, cost on turns +0.0
+
+-- live hourly band, within 2 pips
+   ('fixed', 12)    12-pip stop only      trades  29 caught  9/30 false  20 winners  18 pips   +84.0 (turns +108.0, false   -24.0)
+                    + bot close past turn  trades  38 caught 10/30 false  28 winners  16 pips   +50.3 (turns +120.0, false   -69.7) | saved on false -45.7, cost on turns +12.0
+                    + bot close past turn +2  trades  33 caught  9/30 false  24 winners  17 pips   +70.4 (turns +108.0, false   -37.6) | saved on false -13.6, cost on turns +0.0
+   ('fixed', 20)    12-pip stop only      trades  25 caught  9/30 false  16 winners  12 pips   +84.0 (turns +180.0, false   -96.0)
+                    + bot close past turn  trades  34 caught 10/30 false  24 winners  11 pips   +57.2 (turns +200.0, false  -142.8) | saved on false -46.8, cost on turns +20.0
+                    + bot close past turn +2  trades  29 caught 10/30 false  19 winners  12 pips   +83.9 (turns +200.0, false  -116.1) | saved on false -20.1, cost on turns +20.0
+   ('fixed', 30)    12-pip stop only      trades  22 caught  9/30 false  13 winners   8 pips   +72.0 (turns +186.0, false  -114.0)
+                    + bot close past turn  trades  29 caught 10/30 false  19 winners   7 pips   +46.9 (turns +184.8, false  -137.9) | saved on false -23.9, cost on turns -1.2
+                    + bot close past turn +2  trades  25 caught 10/30 false  15 winners   8 pips   +77.6 (turns +178.8, false  -101.2) | saved on false +12.8, cost on turns -7.2
+   ('swing', 3, 12) 12-pip stop only      trades  29 caught  9/30 false  20 winners  17 pips  +127.9 (turns +169.6, false   -41.7)
+                    + bot close past turn  trades  38 caught 10/30 false  28 winners  15 pips   +92.1 (turns +177.6, false   -85.5) | saved on false -43.8, cost on turns +8.0
+                    + bot close past turn +2  trades  33 caught  9/30 false  24 winners  16 pips  +119.6 (turns +169.6, false   -50.0) | saved on false -8.3, cost on turns +0.0
+
+-- live hourly band, within 3 pips
+   ('fixed', 12)    12-pip stop only      trades  32 caught  9/30 false  23 winners  20 pips   +96.0 (turns +108.0, false   -12.0)
+                    + bot close past turn  trades  41 caught 10/30 false  31 winners  18 pips   +68.6 (turns +120.0, false   -51.4) | saved on false -39.4, cost on turns +12.0
+                    + bot close past turn +2  trades  36 caught  9/30 false  27 winners  19 pips   +86.7 (turns +108.0, false   -21.3) | saved on false -9.3, cost on turns +0.0
+   ('fixed', 20)    12-pip stop only      trades  27 caught  9/30 false  18 winners  13 pips   +92.0 (turns +180.0, false   -88.0)
+                    + bot close past turn  trades  36 caught 10/30 false  26 winners  12 pips   +71.5 (turns +200.0, false  -128.5) | saved on false -40.5, cost on turns +20.0
+                    + bot close past turn +2  trades  31 caught 10/30 false  21 winners  13 pips   +96.2 (turns +200.0, false  -103.8) | saved on false -15.8, cost on turns +20.0
+   ('fixed', 30)    12-pip stop only      trades  24 caught  9/30 false  15 winners   9 pips   +90.0 (turns +186.0, false   -96.0)
+                    + bot close past turn  trades  31 caught 10/30 false  21 winners   8 pips   +71.2 (turns +184.8, false  -113.6) | saved on false -17.6, cost on turns -1.2
+                    + bot close past turn +2  trades  27 caught 10/30 false  17 winners   9 pips   +99.9 (turns +178.8, false   -78.9) | saved on false +17.1, cost on turns -7.2
+   ('swing', 3, 12) 12-pip stop only      trades  32 caught  9/30 false  23 winners  19 pips  +130.9 (turns +169.6, false   -38.7)
+                    + bot close past turn  trades  41 caught 10/30 false  31 winners  17 pips  +101.4 (turns +177.6, false   -76.2) | saved on false -37.5, cost on turns +8.0
+                    + bot close past turn +2  trades  36 caught  9/30 false  27 winners  18 pips  +126.9 (turns +169.6, false   -42.7) | saved on false -4.0, cost on turns +0.0
+
+-- live hourly band, within 5 pips
+   ('fixed', 12)    12-pip stop only      trades  39 caught 11/30 false  28 winners  22 pips   +60.0 (turns +132.0, false   -72.0)
+                    + bot close past turn  trades  53 caught 12/30 false  41 winners  20 pips   +29.0 (turns +144.0, false  -115.0) | saved on false -43.0, cost on turns +12.0
+                    + bot close past turn +2  trades  45 caught 11/30 false  34 winners  21 pips   +49.9 (turns +132.0, false   -82.1) | saved on false -10.1, cost on turns +0.0
+   ('fixed', 20)    12-pip stop only      trades  32 caught 11/30 false  21 winners  15 pips   +96.0 (turns +220.0, false  -124.0)
+                    + bot close past turn  trades  47 caught 12/30 false  35 winners  14 pips   +57.5 (turns +240.0, false  -182.5) | saved on false -58.5, cost on turns +20.0
+                    + bot close past turn +2  trades  38 caught 12/30 false  26 winners  15 pips   +94.9 (turns +240.0, false  -145.1) | saved on false -21.1, cost on turns +20.0
+   ('fixed', 30)    12-pip stop only      trades  29 caught 11/30 false  18 winners  10 pips   +72.0 (turns +204.0, false  -132.0)
+                    + bot close past turn  trades  42 caught 12/30 false  30 winners   9 pips   +40.0 (turns +207.6, false  -167.6) | saved on false -35.6, cost on turns +3.6
+                    + bot close past turn +2  trades  34 caught 12/30 false  22 winners  10 pips   +79.4 (turns +199.6, false  -120.2) | saved on false +11.8, cost on turns -4.4
+   ('swing', 3, 12) 12-pip stop only      trades  39 caught 11/30 false  28 winners  21 pips  +100.8 (turns +195.7, false   -94.9)
+                    + bot close past turn  trades  53 caught 12/30 false  41 winners  19 pips   +63.9 (turns +203.7, false  -139.8) | saved on false -44.9, cost on turns +8.0
+                    + bot close past turn +2  trades  45 caught 11/30 false  34 winners  20 pips   +92.2 (turns +195.7, false  -103.5) | saved on false -8.6, cost on turns +0.0
+
+-- live hourly band, within 10 pips
+   ('fixed', 12)    12-pip stop only      trades  53 caught 11/30 false  42 winners  30 pips   +84.0 (turns +132.0, false   -48.0)
+                    + bot close past turn  trades  73 caught 13/30 false  60 winners  29 pips   +55.9 (turns +156.0, false  -100.1) | saved on false -52.1, cost on turns +24.0
+                    + bot close past turn +2  trades  63 caught 12/30 false  51 winners  30 pips   +74.2 (turns +144.0, false   -69.8) | saved on false -21.8, cost on turns +12.0
+   ('fixed', 20)    12-pip stop only      trades  44 caught 11/30 false  33 winners  20 pips  +112.0 (turns +220.0, false  -108.0)
+                    + bot close past turn  trades  65 caught 13/30 false  52 winners  19 pips   +56.6 (turns +260.0, false  -203.4) | saved on false -95.4, cost on turns +40.0
+                    + bot close past turn +2  trades  54 caught 13/30 false  41 winners  20 pips   +95.6 (turns +260.0, false  -164.4) | saved on false -56.4, cost on turns +40.0
+   ('fixed', 30)    12-pip stop only      trades  36 caught 11/30 false  25 winners  11 pips   +30.0 (turns +204.0, false  -174.0)
+                    + bot close past turn  trades  53 caught 13/30 false  40 winners  10 pips    -9.4 (turns +237.6, false  -247.0) | saved on false -73.0, cost on turns +33.6
+                    + bot close past turn +2  trades  44 caught 13/30 false  31 winners  11 pips   +30.9 (turns +229.6, false  -198.7) | saved on false -24.7, cost on turns +25.6
+   ('swing', 3, 12) 12-pip stop only      trades  53 caught 11/30 false  42 winners  29 pips  +121.0 (turns +195.7, false   -74.7)
+                    + bot close past turn  trades  73 caught 13/30 false  60 winners  28 pips   +81.9 (turns +213.3, false  -131.4) | saved on false -56.7, cost on turns +17.6
+                    + bot close past turn +2  trades  63 caught 12/30 false  51 winners  29 pips  +111.4 (turns +205.3, false   -93.9) | saved on false -19.2, cost on turns +9.6
+
+entry to turn extreme (pips), within-3 signals: median 6.3 min 2.2 max 15.9 beyond 12: 2
+Mon 26 Oct 07:20 buy  entry 07:30 exit Mon 07:40 inval    -5.6 
+Mon 26 Oct 08:55 buy  entry 09:05 exit Mon 09:55 inval    -7.5 
+Mon 26 Oct 09:55 buy  entry 10:05 exit Mon 10:05 inval    -4.9 
+Mon 26 Oct 13:35 buy  entry 13:45 exit Mon 13:55 inval    -7.6 
+Mon 26 Oct 13:55 buy  entry 14:05 exit Mon 15:00 stop     +9.0 TURN 13:55 ran 32
+Tue 27 Oct 07:05 buy  entry 07:15 exit Tue 09:15 inval    -8.3 
+Tue 27 Oct 09:40 buy  entry 09:50 exit Tue 12:30 stop    +13.8 
+Tue 27 Oct 13:35 buy  entry 13:45 exit Tue 14:25 stop     +4.0 
+Tue 27 Oct 15:15 buy  entry 15:25 exit Tue 15:40 inval    -4.4 
+Tue 27 Oct 15:50 buy  entry 16:00 exit Tue 16:05 inval    -4.9 
+Tue 27 Oct 16:05 buy  entry 16:15 exit Tue 16:15 inval    -3.2 
+Tue 27 Oct 16:15 buy  entry 16:25 exit Tue 20:45 inval    -4.0 
+Wed 28 Oct 07:15 buy  entry 07:25 exit Wed 08:35 stop    +13.0 TURN 07:15 ran 49
+Wed 28 Oct 10:00 buy  entry 10:10 exit Wed 10:20 inval    -4.2 
+Wed 28 Oct 16:55 sell entry 17:05 exit Wed 18:00 stop     +4.8 TURN 16:55 ran 33
+Wed 28 Oct 18:45 sell entry 18:55 exit Wed 19:30 stop     -3.2 TURN 18:45 ran 35
+Thu 29 Oct 09:20 buy  entry 09:30 exit Thu 10:40 stop    +16.6 TURN 09:25 ran 43
+Thu 29 Oct 12:35 sell entry 12:45 exit Thu 13:25 stop    +13.7 TURN 12:35 ran 38
+Thu 29 Oct 13:15 buy  entry 13:25 exit Thu 15:30 stop    +53.1 TURN 13:15 ran 133
+Thu 29 Oct 14:05 sell entry 14:15 exit Thu 14:20 inval    -8.3 
+Fri 30 Oct 08:30 sell entry 08:40 exit Fri 08:40 inval    -5.7 
+Fri 30 Oct 11:10 sell entry 11:20 exit Fri 14:10 stop    +41.9 TURN 11:10 ran 60
+Mon 02 Nov 13:35 sell entry 13:45 exit Mon 18:55 stop    +13.2 
+Tue 03 Nov 07:20 sell entry 07:30 exit Tue 07:30 inval    -6.1 
+Tue 03 Nov 07:30 sell entry 07:40 exit Tue 08:05 inval    -7.8 
+Tue 03 Nov 09:35 sell entry 09:45 exit Tue 11:45 stop     +7.4 
+Tue 03 Nov 11:25 buy  entry 11:35 exit Tue 13:45 stop    +11.0 
+Tue 03 Nov 13:25 sell entry 13:35 exit Tue 14:50 inval    -8.9 
+Wed 04 Nov 07:35 sell entry 07:45 exit Wed 07:45 inval    -3.7 
+Wed 04 Nov 07:45 sell entry 07:55 exit Wed 08:40 inval   -11.8 
+Wed 04 Nov 09:15 sell entry 09:25 exit Wed 09:35 inval    -8.3 
+Thu 05 Nov 11:35 buy  entry 11:45 exit Thu 11:45 inval    -5.3 
+Thu 05 Nov 11:45 buy  entry 11:55 exit Thu 12:00 inval    -4.8 
+Thu 12 Nov 15:20 buy  entry 15:30 exit Thu 15:40 inval   -10.4 
+Thu 12 Nov 15:40 buy  entry 15:50 exit Thu 16:25 stop     +5.4 
+Thu 12 Nov 17:40 buy  entry 17:50 exit Thu 21:15 stop    +10.2 
+Fri 13 Nov 10:50 buy  entry 11:00 exit Fri 12:45 inval    -6.4 
+Fri 13 Nov 12:50 buy  entry 13:00 exit Fri 13:50 stop     +8.0 TURN 12:50 ran 34
+Fri 13 Nov 13:35 sell entry 13:45 exit Fri 14:30 stop     +6.2 
+Fri 13 Nov 14:45 sell entry 14:55 exit Fri 16:20 stop    +20.7 TURN 14:50 ran 51
+Fri 13 Nov 15:55 buy  entry 16:05 exit Fri 16:10 inval    -5.3 
