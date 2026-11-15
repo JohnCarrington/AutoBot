@@ -15,8 +15,23 @@ from __future__ import annotations
 
 from typing import Any
 
-from strategies.bollinger_bounce.strategy import from_rejection
-from strategies.common import RANGE_TRADE, Candidate
+from strategies.common import BUY, RANGE_TRADE, SELL, Candidate
+
+
+def from_rejection(watcher: Any, events: list, version: str, strategy: str) -> list[Candidate]:
+    """A candidate for each trigger of this version of the strategies' rejection watcher, with every step of its
+    setup as the reason (the reversal/piercing size recorded, never a filter)."""
+    out = []
+    for e in events:
+        if e.version != version or e.kind != "trigger":
+            continue
+        steps = [x.describe() for x in watcher.events if x.setup == e.setup and x.kind not in ("ignored",)]
+        st = watcher.setups[e.setup - 1]
+        if st.size and st.size.get("body_ratio") is not None:
+            steps.append(f"recorded, not used: reversal/piercing candle body {st.size['body_ratio']:.2f}x, "
+                         f"high-low {st.size.get('range_ratio') or 0:.2f}x")
+        out.append(Candidate(strategy, SELL if e.direction == "sell" else BUY, e.time, e.price, steps, {}))
+    return out
 
 
 def candidates(watcher: Any, events: list) -> list[Candidate]:

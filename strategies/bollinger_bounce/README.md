@@ -1,9 +1,17 @@
 # bollinger_bounce
 
-**What it does:** Looks for price piercing a Bollinger band and bouncing back: a reversal candle within 3 candles of the pierce, then a confirmation candle within 3 candles of the reversal candle. It is the only strategy that may have a second trade open in the opposite direction.
+**What it does:** The bounce off the **hourly** Bollinger band, entered on the 5-minute chart (design 3.3; owner, 15 November 2026). Written for a sell; a buy is the mirror image.
 
-Its ideas are the shared rejection part's bounce triggers (`rejection/`, design 3.3): a level pierced or come within 3 pips of, or the band really pierced; the first red reversal candle within 3 candles; a confirmation close within 3 candles; the idea when price goes below the confirmation candle's low; cancelled above the reversal candle's high; spread spikes ignored. The reversal/piercing size and the watch-window mark are recorded in the reason, never used as filters.
+1. **Pierce:** a 5-minute candle's high goes more than 3 pips (`bounce.pierce_beyond_pips`) above the hourly upper Bollinger band (20, 2), the band as the IG hourly chart showed it at that moment: the forming hour's band with the high as its close (`prices/hourly_chart.py`).
+2. **Rejection candle:** that same candle, red, whatever its size.
+3. **Confirmation candle:** a later candle closes below the rejection candle's low within 3 candles (`bounce.confirmation_within_candles`), or the setup expires.
+4. **Entry:** the next candle's open (live: its first price). Never sent late.
+5. **Cancelled** if price goes above the rejection candle's high first.
 
-Each idea carries its setup's candles (`setup_context`) for the pace and target rule (`trading/against_trend.py`, design 3.3): against open trend trades, a bounce opens only at a significant level in their direction (within 5 pips) with price moving under 5 pips an hour over the last 2 hours, and then closes every trade open the other way. The engine applies it just before the order is sent.
+Spread spikes (`rejection.max_spread_pips`) cannot make a pierce or cancel a setup. With an hour missing from the hourly chart, nothing starts.
 
-**What it must never do:** Never send orders itself; its trade ideas go through the safety rules first. Never have more than 1 trade open in each direction.
+It opens without hindrance: not the analyser's state, the direction rule, the hourly read, the one-view-at-a-time rule or the most at once. Still: its switch, `TRADING`, the pause switch, the trading hours and big-news windows, one bounce at a time in each direction, and the size, risk and funds checks. Two switches of its own in `.env`, both off unless set: `BOUNCE_ONLY_WHEN_HOURLY_RANGING` (only while the hourly read says ranging) and `BOUNCE_ONLY_NEAR_TIMES` (only within 60 minutes of 10:00, 14:00 or 16:00 UK; `bounce.near_times` in `config/settings.toml`). These are checked in `strategies/common.py` (check 5). It closes nothing else when it opens.
+
+**Exits** (trade manager): the 12-pip stop; the trail once 12 pips up (`bounce.trail_from_pips`), behind the last 3 finished candles (`bounce.trail_candles`), moved at IG; the 100-pip take profit; the 20:30 close and the close before big news.
+
+**What it must never do:** Never send orders itself; its trade ideas go through the safety rules first.

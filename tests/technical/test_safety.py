@@ -136,15 +136,18 @@ def test_one_trade_at_a_time_for_each_strategy(S, strategy):
                                   if s != strategy]).allowed
 
 
-def test_the_bounce_may_have_one_each_way(S):
+def test_one_bounce_at_a_time_in_each_direction(S):
+    """Owner, 15 November 2026: one bounce at a time in each direction (the extra trade went)."""
     assert go(S, idea(BOLLINGER_BOUNCE, SELL), [opened(BOLLINGER_BOUNCE, BUY)]).allowed
     d = go(S, idea(BOLLINGER_BOUNCE, BUY), [opened(BOLLINGER_BOUNCE, BUY)])
     assert d.reasons == ["Bollinger bounce already has 1 buy trade(s) open (at most 1 each way)"]
     d = go(S, idea(BOLLINGER_BOUNCE, SELL), [opened(BOLLINGER_BOUNCE, BUY), opened(BOLLINGER_BOUNCE, SELL)])
-    assert not d.allowed
-    s = Over(S, limits=vars(S.limits) | {"bollinger_bounce_extra_opposite_direction_trades": 0})
-    assert "Bollinger bounce already has 1 trade(s) open (at most 1)" in \
-        go(s, idea(BOLLINGER_BOUNCE, SELL), [opened(BOLLINGER_BOUNCE, BUY)]).reasons
+    assert d.reasons == ["Bollinger bounce already has 1 sell trade(s) open (at most 1 each way)"]
+
+
+def test_the_bounce_is_not_held_back_by_the_most_at_once(S):
+    full = [opened(RANGE_TRADE), opened(BREAKOUT), opened(SLOW_GRIND), opened(LEVEL_REVERSAL), opened(BOLLINGER_BOUNCE, BUY)]
+    assert go(S, idea(BOLLINGER_BOUNCE, SELL), full).allowed
 
 
 def test_the_ema_pullback_has_no_limit_of_its_own(S):
@@ -382,8 +385,9 @@ def test_the_analysers_trend_direction(state, sd, want):
 @pytest.mark.parametrize("state,sd", [("trend", "down"), ("possible reversal", "up"), ("possible reversal", "down"),
                                       ("ranging", "none")])
 @pytest.mark.parametrize("direction", [BUY, SELL])
-def test_every_bollinger_bounce_is_a_reversal(state, sd, direction):
-    assert is_reversal(seen(BOLLINGER_BOUNCE, direction, state, sd))
+def test_the_bounce_is_never_held_back_as_a_reversal(state, sd, direction):
+    """Owner, 15 November 2026: the bounce opens without hindrance (not the one-view-at-a-time rule)."""
+    assert not is_reversal(seen(BOLLINGER_BOUNCE, direction, state, sd))
 
 
 @pytest.mark.parametrize("state,sd,direction,want", [
@@ -403,9 +407,9 @@ def test_the_other_strategies_are_never_reversals(strategy, direction):
 
 
 def test_no_reversal_trade_against_a_strong_push(S):
-    for strategy in (BOLLINGER_BOUNCE, LEVEL_REVERSAL):
-        d = go(S, seen(strategy, BUY, "trend", "down", "strong push"))
-        assert not d.allowed and d.reasons == ["a reversal trade against a strong push (down)"], strategy
+    d = go(S, seen(LEVEL_REVERSAL, BUY, "trend", "down", "strong push"))
+    assert not d.allowed and d.reasons == ["a reversal trade against a strong push (down)"]
+    assert go(S, seen(BOLLINGER_BOUNCE, BUY, "trend", "down", "strong push")).allowed     # owner, 15 November 2026
 
 
 def test_a_reversal_against_a_slow_grind_trend_and_trades_with_a_strong_push_are_allowed(S):
@@ -425,19 +429,19 @@ def test_a_possible_reversal_is_not_a_strong_push(S):
     (DayDirections(monday=SELL, friday_move_pips=D("85.0")),
      "the Monday after a Friday that moved +85.0 pips, direction sell")])
 def test_no_reversal_trade_against_the_days_direction(S, day, why):
-    for i in (seen(BOLLINGER_BOUNCE, BUY, "possible reversal", "up"), seen(LEVEL_REVERSAL, BUY, "trend", "down")):
-        d = go_day(S, i, day)
-        assert not d.allowed and d.reasons == [f"a reversal trade against the day's direction: {why}"], i.strategy
-    assert go_day(S, seen(BOLLINGER_BOUNCE, SELL, "trend", "up"), day).allowed          # in the day's direction
+    d = go_day(S, seen(LEVEL_REVERSAL, BUY, "trend", "down"), day)
+    assert not d.allowed and d.reasons == [f"a reversal trade against the day's direction: {why}"]
+    assert go_day(S, seen(LEVEL_REVERSAL, SELL, "trend", "up"), day).allowed            # in the day's direction
+    assert go_day(S, seen(BOLLINGER_BOUNCE, BUY, "possible reversal", "up"), day).allowed   # owner, 15 November 2026
 
 
 def test_every_day_direction_it_goes_against_is_given(S):
     day = DayDirections(news=SELL, trend_day=SELL, monday=BUY, friday_move_pips=D("-90.0"))
-    d = go_day(S, seen(BOLLINGER_BOUNCE, BUY, "trend", "down", "strong push"), day)
+    d = go_day(S, seen(LEVEL_REVERSAL, BUY, "trend", "down", "strong push"), day)
     assert d.reasons == ["a reversal trade against a strong push (down)",
                          "a reversal trade against the day's direction: a big-news day, expected news direction sell",
                          "a reversal trade against the day's direction: a trend day, direction sell"]
-    d = go_day(S, seen(BOLLINGER_BOUNCE, SELL, "trend", "up"), day)
+    d = go_day(S, seen(LEVEL_REVERSAL, SELL, "trend", "up"), day)
     assert d.reasons == ["a reversal trade against the day's direction: the Monday after a Friday that moved "
                          "-90.0 pips, direction buy"]
 

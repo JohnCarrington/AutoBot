@@ -313,7 +313,6 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     },
     "limits": {
         "max_open_trades_per_strategy": _whole_number(1, 10),
-        "bollinger_bounce_extra_opposite_direction_trades": _whole_number(0, 10),
         "max_open_trades": _whole_number(1, 50),
     },
     "orders": {
@@ -378,16 +377,12 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "minutes_after": _whole_number(0, 120),
     },
     "bounce": {
-        "reversal_candle_within_candles_of_pierce": _whole_number(1, 50),
-        "confirmation_candle_within_candles_of_reversal": _whole_number(1, 50),
-        # the order sender closes a trade in full or by half: nothing else can be sent
-        "close_percent_at_opposite_band": _whole_number_of(0, 50, 100),
-        # the break-even (trade_manager/manager.py): 0 = never moved
-        "break_even_after_pips": _decimal_number("0", "100"),
-        # the pace and target rule (trading/against_trend.py)
-        "against_trend_level_within_pips": _decimal_number("0", "100"),
-        "against_trend_max_pips_per_hour": _decimal_number("0", "1000"),
-        "against_trend_pace_hours": _whole_number(1, 24),
+        "pierce_beyond_pips": _decimal_number("0", "100"),
+        "confirmation_within_candles": _whole_number(1, 50),
+        "trail_from_pips": _decimal_number("0", "1000"),
+        "trail_candles": _whole_number(1, 50),
+        "near_times": _clock_times,
+        "near_times_within_minutes": _whole_number(0, 720),
     },
     "slow_grind": {
         "min_pause_candles": _whole_number(1, 100),
@@ -510,6 +505,8 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "candle_timeframe": _one_of("5m", "1h", "4h"),
         "near_level_within_pips": _whole_number(0, 50),
         "max_spread_pips": _whole_number(1, 100),
+        "reversal_candle_within_candles_of_pierce": _whole_number(1, 50),
+        "confirmation_candle_within_candles_of_reversal": _whole_number(1, 50),
     },
     "market_hours": {
         "opens_day": _weekday,

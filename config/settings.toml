@@ -63,7 +63,6 @@ country_currencies = ["GB=GBP", "UK=GBP", "US=USD", "EU=EUR", "EMU=EUR", "JP=JPY
 
 [limits]
 max_open_trades_per_strategy = 1
-bollinger_bounce_extra_opposite_direction_trades = 1
 # Most trades open at once (design 6: 5), not counting the EMA pullback's.
 max_open_trades = 5
 
@@ -178,27 +177,23 @@ minutes_before = 20
 minutes_after = 20
 
 [bounce]
-reversal_candle_within_candles_of_pierce = 3
-confirmation_candle_within_candles_of_reversal = 3
-# The share of a Bollinger bounce trade closed when price reaches the opposite band; the rest goes on to its
-# normal exits (owner, 11 November 2026: 50, as tested in docs/research/management_and_targets_20261111.md).
-# 0 (no close at the band), 50 or 100: the order sender closes in full or by half only.
-close_percent_at_opposite_band = 50
-# The break-even (owner, 13 November 2026, change 4 of docs/research/bounce_changes_20261113.md): once a Bollinger
-# bounce has been this many pips in profit, its stop is moved at IG to the price it opened at. The move counts only
-# once IG confirms it; if IG refuses, the old stop stays, the owner is alerted and the move is tried again after
-# orders.close_retry_seconds. 0: never moved.
-break_even_after_pips = 6
-# The pace and target rule (owner, 11 November 2026, as tested in docs/research/pace_and_target_20261111.md:
-# "within 5 pips, under 5 pips an hour over the last 2 hours"). While the bot has open trend trades (EMA pullback,
-# slow grind, breakout), a Bollinger bounce against them opens only at a significant level in their direction
-# (a 00, the weekly pivot, S2, S3, R2 or R3), with the high or low it turned from within
-# against_trend_level_within_pips of it, and only if price has moved under against_trend_max_pips_per_hour on
-# average over the last against_trend_pace_hours. It then closes every open trade in the opposite direction.
-# Otherwise it is refused and the trend trades are held.
-against_trend_level_within_pips = 5
-against_trend_max_pips_per_hour = 5
-against_trend_pace_hours = 2
+# The Bollinger band bounce (design 3.3; owner, 15 November 2026). The pierce: a 5-minute candle's high goes MORE
+# than this many pips above the hourly upper Bollinger band (20, 2; [indicators]) as the hourly chart showed it at
+# that moment (a low below the lower band for a buy); that candle, red for a sell (green for a buy), is the
+# rejection candle.
+pierce_beyond_pips = 3
+# The confirmation candle must close beyond the rejection candle's low (sell) or high (buy) within this many
+# candles of it, or the setup expires.
+confirmation_within_candles = 3
+# The trail: once a bounce has been this many pips in profit, after each finished 5-minute candle its stop is moved
+# at IG to a tenth of a pip beyond the last trail_candles candles (a sell: above their highest buy price; a buy:
+# below their lowest sell price), only ever closer. The stop before that is STOP_LOSS_PIPS (12) in .env.
+trail_from_pips = 12
+trail_candles = 3
+# While the switch BOUNCE_ONLY_NEAR_TIMES is on (.env; off by default), a bounce opens only within this many minutes
+# either side of one of these UK times, both ends included, judged at the moment it opens (owner, 15 November 2026).
+near_times = ["10:00", "14:00", "16:00"]
+near_times_within_minutes = 60
 
 [slow_grind]
 # Design 3.1 (owner, 8 November 2026: result 13 of the slow grind research, holding rule 2).
@@ -442,6 +437,10 @@ near_level_within_pips = 3
 # start or cancel a setup. Normal is 0.9 to 1.5; the 22:00 rollover and news
 # reach 4 to 26. STARTING VALUE (docs/REJECTION.md).
 max_spread_pips = 3
+# The shared rejection part's bounce setups (the level reversal and the analyser; not the Bollinger bounce): the
+# reversal candle must come within this many candles of the pierce, and the confirmation within this many of it.
+reversal_candle_within_candles_of_pierce = 3
+confirmation_candle_within_candles_of_reversal = 3
 
 [ig]
 demo_base_url = "https://demo-api.ig.com/gateway/deal"

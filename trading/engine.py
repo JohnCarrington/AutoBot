@@ -19,10 +19,11 @@ sender and the trade manager, run inside the price service on its IG login.
     candle finishes, the strategies take it as always (so their state, and the replay, are unchanged) and an idea
     already sent live is not sent again; one the live prices did not show (a gap in the stream) is sent then.
     A trade opened during a candle is not run on that candle's earlier prices.
-  * The pace and target rule (trading/against_trend.py, design 3.3): a Bollinger bounce about to be sent (on a
-    finished candle or the live price) while trend trades are open against it is refused unless it is at a
-    significant level in their direction with price moving slowly; a valid one closes every trade open the other
-    way once it opens (TradeManager.close_now). Each refusal, with its reason, goes in the decision log.
+  * The Bollinger bounce (design 3.3; owner, 15 November 2026) opens at the open of the candle after its
+    confirmation candle: live, on that candle's first price. It is never sent late: an entry the live prices did
+    not show (a gap in the stream) is recorded as not sent. It closes nothing else when it opens. Once it has
+    been 12 pips up its stop trails behind the last 3 finished candles (the trade manager, after each finished
+    candle; the last candles are seeded from the store at start-up).
   * The trade manager's saved state (each open trade's best pips so far, half close, watching a level) is restored
     at start-up.
   * Records (records/book.py, design 9): every trade (opened and closed, with everything section 9 lists) and every
@@ -53,6 +54,7 @@ from trading.reasons import level_note, one_line, take_profit_kind
 from levels.current import build
 from prices.calendar import floor_5m
 from prices.model import Candle
+from strategies.common import BOLLINGER_BOUNCE
 from strategies.replay import StrategyRunner
 from trade_manager.manager import Bar, Rejection, TradeManager, plan
 
@@ -125,8 +127,8 @@ class Trading:
                           self.calendar, self._trend_day(t.opened_at))
                 if t.half_closed:
                     mt.half_done, mt.state = True, "half close"
-                if t.stop_level is not None:                # the bounce's stop already moved to break-even at IG
-                    mt.stop_moved = True
+                if t.stop_level is not None:                # the bounce's stop already moved by its trail at IG
+                    mt.stop_level = t.stop_level
                 mt.bars = 1                                 # already open: no entry-candle rule
                 if self.manager.restore(mt, saved):         # its best pips so far, half close, watching
                     log.info("Trade %s: its saved best (%s pips) restored.", t.reference, mt.best)
@@ -136,6 +138,8 @@ class Trading:
             if not self.replay:
                 self.tracker.replay(now)
                 self.runner.step()                          # the week so far: nothing is sent for the past
+                n = self.s.bounce.trail_candles             # the last finished candles, for the bounce's trail
+                self.manager.recent = [Bar.of(h[0].candle) for h in self.tracker.history[-n:]]
             self._changes_seen = len(self.tracker.changes)
             self.ready = True
             log.info("Trading %s: %d open trade(s) taken over; the strategies are up to %s.",
@@ -182,14 +186,23 @@ class Trading:
             band = (hist[i - 1][0].upper, hist[i - 1][0].lower) if i > 0 and hist[i - 1][0].upper is not None else None
             rej = analyser_rejections(self.tracker.watcher, c.start)
             before = [ref for ref, t in self.manager.trades.items() if t.open and t.opened_at <= c.start]
-            self.manager.on_bar(Bar.of(c), band, rej, watching if k == len(new) - 1 else frozenset(), only=before)
+            self.manager.on_bar(Bar.of(c), band, rej, watching if k == len(new) - 1 else frozenset(), only=before,
+                                finished=True)
             self._after_bars()
             for idea in ideas_by_candle.get(c.start, []):
                 sent_live = (idea.strategy, idea.direction, c.start) in self.fired
                 self.book.decision("idea", idea.time, strategy=idea.strategy, direction=idea.direction,
                                    entry_price=idea.entry_price, allowed=idea.allowed, blocked_by=idea.blocked_by,
                                    state=idea.state, already_sent_live=sent_live)
-                if idea.allowed and not sent_live:
+                if idea.allowed and not sent_live and idea.strategy == BOLLINGER_BOUNCE and not self.replay:
+                    # it opens at the candle's open; the live prices did not show it: never sent late
+                    self.book.decision("bounce not sent", idea.time, strategy=idea.strategy, direction=idea.direction,
+                                       entry_price=idea.entry_price,
+                                       why="its entry is the open of this candle, which the live prices did not "
+                                           "show (a gap in the stream): not sent late")
+                    log.warning("Bollinger bounce %s at %s not sent: the live prices did not show its candle's open.",
+                                idea.direction, idea.time)
+                elif idea.allowed and not sent_live:
                     self._send(idea, c, band, rej)
         if new:
             last = new[-1].candle.start
@@ -201,57 +214,14 @@ class Trading:
             sell = idea.direction == "sell"
             fill = idea.entry_price if sell else idea.entry_price + (candle.buy_open - candle.sell_open)
             self.sender.quote = lambda: (fill, fill)        # the research's fill: the entry, plus the spread for a buy
-        verdict = self._against_trend(idea, candle.start)
-        if verdict is not None and not verdict.valid:
-            return
         r = self._place(idea, td)
         if not r.ok:
             return
         opened_at = candle.start if self.replay else self.now()
         self._opened(idea, r, opened_at, td)
-        if verdict is not None:
-            self._close_against(idea, r, opened_at, verdict)
         if self.replay:                                     # as the research: it may close in the candle it opened in
-            self.manager.on_bar(Bar.of(candle), band, rej, only=[r.reference])
+            self.manager.on_bar(Bar.of(candle), band, rej, only=[r.reference], finished=True)
             self._after_bars()
-
-    # ---- the pace and target rule (trading/against_trend.py) -----------------------------------------------
-
-    def _against_trend(self, idea: Any, candle_start: datetime) -> Any:
-        """A Bollinger bounce about to be sent while trend trades are open against it: the rule's verdict, recorded
-        in the decision log (refused, with the reason, or valid). None: the rule does not apply."""
-        from trading.against_trend import Verdict, check, trend_trades_against
-        try:
-            v = check(self.s, self.store, idea, candle_start, list(self.manager.trades.values()))
-        except Exception as e:                              # noqa: BLE001  (never open it unchecked)
-            log.exception("The pace and target rule could not be checked for a %s %s.", idea.strategy, idea.direction)
-            opp = trend_trades_against(self.manager.trades.values(), idea.direction) \
-                if idea.strategy == "Bollinger bounce" else []
-            if not opp:
-                return None
-            v = Verdict(False, f"the rule could not be checked ({e})", [f"{x.strategy} {x.direction} {x.reference}"
-                        for x in opp], Decimal(0), None)
-        if v is None:
-            return None
-        self.book.decision("bounce refused" if not v.valid else "bounce against trend trades", idea.time,
-                           strategy=idea.strategy, direction=idea.direction, entry_price=idea.entry_price,
-                           rule="pace and target", line=v.line(), **v.as_dict())
-        if not v.valid:
-            log.info("Bollinger bounce %s refused (pace and target rule): %s", idea.direction, v.line())
-        return v
-
-    def _close_against(self, idea: Any, r: Any, opened_at: datetime, verdict: Any) -> None:
-        """The bounce opened at a level, price moving slowly: every trade open in the other direction is closed now.
-        Its price: a bounce sell opens at the sell price, where a buy closes; a bounce buy opens at the buy price,
-        where a sell closes (live, IG's own close level replaces it)."""
-        fill = self.sender.trades[r.reference].level
-        price = idea.entry_price if idea.direction == "sell" else fill
-        pace = "" if verdict.pips_per_hour is None else f" ({verdict.pips_per_hour.quantize(Decimal('0.1'))} pips an hour)"
-        why = f"a Bollinger bounce {idea.direction} opened at {verdict.level}, price moving slowly{pace}"
-        for mt in list(self.manager.trades.values()):
-            if mt.open and mt.direction != idea.direction and mt.reference != r.reference:
-                self.manager.close_now(mt.reference, price, why, opened_at)
-        self._after_bars()
 
     def _paused(self) -> bool:
         """The pause switch (the dashboard): while the file trading.pause_file exists, no new trade is sent."""
@@ -472,16 +442,11 @@ class Trading:
                               f"(bid {tick.sell}, offer {tick.buy})")
             self.book.decision("idea", tick.time, strategy=idea.strategy, direction=idea.direction,
                                entry_price=idea.entry_price, allowed=True, blocked_by="", state=idea.state, live=True)
-            verdict = self._against_trend(idea, p.start)
-            if verdict is not None and not verdict.valid:
-                continue
             td = self._trend_day(idea.time)
             r = self._place(idea, td)
             if not r.ok:
                 continue
             self._opened(idea, r, tick.time, td)
-            if verdict is not None:
-                self._close_against(idea, r, tick.time, verdict)
             log.info("Live entry: %s %s at %s (entry price %s).", idea.strategy, idea.direction, r.level, idea.entry_price)
 
     # ---- the dashboard's status ----------------------------------------------------------------------
@@ -503,6 +468,7 @@ class Trading:
             if t.open and t.expected_at_ig:
                 warnings.append(f"Trade {ref}: IG's {t.expected_at_ig[0]} expected but not yet confirmed by IG")
         allowed = list(ALLOWED.get(st.state, ())) if st is not None else []
+        allowed.append("Bollinger bounce")                  # in every state (owner, 15 November 2026)
         by_name = {n.lower(): n for n in SWITCH}
         switches = {name: bool(getattr(self.s.switches, key, False)) for name, key in SWITCH.items()}
         trades = []

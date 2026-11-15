@@ -10,17 +10,17 @@ It gives EVERY reason it refuses (an empty list: the order may go out):
   3. the strategy's switch in .env is off (checked again here: a strategy cannot bypass it);
   4. the strategy's own hours, news rules and Friday rules (strategies.common.may_open);
   5. trades open at once: the strategy's own limit (limits.max_open_trades_per_strategy, 1; the
-     Bollinger bounce limits.bollinger_bounce_extra_opposite_direction_trades more in the opposite
-     direction; the EMA pullback no limit), and at most limits.max_open_trades (5) in total not counting
-     the EMA pullback's (strategies.common.counts_towards_most_at_once);
+     Bollinger bounce 1 in each direction, owner, 15 November 2026; the EMA pullback no limit), and at
+     most limits.max_open_trades (5) in total not counting the EMA pullback's
+     (strategies.common.counts_towards_most_at_once); the Bollinger bounce is not held back by that total;
   6. the size is trade.size_gbp_per_pip (£10 a pip);
   7. total risk: every open trade's risk (its stop distance x its size) plus the new trade's, at most
      safety.max_total_risk_gbp (£100,000; owner, 8 November 2026: set so it is never reached);
   8. available funds: the account's available funds at least safety.margin_per_trade_gbp (£5,000, the
      margin for one trade at £10 a pip); unknown funds refuse (never let a trade through when unsure);
   9. one view at a time (owner, 9 November 2026; the best combination of docs/research/one_view_20261109.md,
-     exactly as tested): no REVERSAL trade (every Bollinger bounce; a level reversal against the analyser's
-     trend direction, see trend_direction) (a) against a strong push: the analyser's state at the idea is a
+     exactly as tested): no REVERSAL trade (a level reversal against the analyser's trend direction, see
+     trend_direction; not the Bollinger bounce, which opens without hindrance: owner, 15 November 2026) (a) against a strong push: the analyser's state at the idea is a
      trend of the strong-push type in the other direction; (b) against the day's direction on an exception day
      (analyser/day_direction.py: a big-news day's expected news direction, a trend day's direction, the Monday
      after a Friday that moved safety.big_friday_move_pips (80) or more, in the direction that reclaims it).
@@ -103,18 +103,17 @@ def _limits(settings: Any, order: Order, open_trades: list[OpenTrade]) -> list[s
     out = []
     if idea.strategy != EMA_PULLBACK:
         mine = [t for t in open_trades if t.strategy == idea.strategy]
-        if idea.strategy == BOLLINGER_BOUNCE:
+        if idea.strategy == BOLLINGER_BOUNCE:            # one at a time in each direction (owner, 15 November 2026)
             same = [t for t in mine if t.direction == idea.direction]
-            most = lim.max_open_trades_per_strategy + lim.bollinger_bounce_extra_opposite_direction_trades
             if len(same) >= lim.max_open_trades_per_strategy:
                 out.append(f"{idea.strategy} already has {len(same)} {idea.direction} trade(s) open "
                            f"(at most {lim.max_open_trades_per_strategy} each way)")
-            elif len(mine) >= most:
-                out.append(f"{idea.strategy} already has {len(mine)} trade(s) open (at most {most})")
         elif len(mine) >= lim.max_open_trades_per_strategy:
             out.append(f"{idea.strategy} already has {len(mine)} trade(s) open "
                        f"(at most {lim.max_open_trades_per_strategy})")
-    if counts_towards_most_at_once(idea.strategy):
+    # the Bollinger bounce is not held back by the most at once (owner, 15 November 2026: nothing else blocks it);
+    # its open trades still count towards it for the other strategies
+    if counts_towards_most_at_once(idea.strategy) and idea.strategy != BOLLINGER_BOUNCE:
         counted = [t for t in open_trades if counts_towards_most_at_once(t.strategy)]
         if len(counted) >= lim.max_open_trades:
             out.append(f"{len(counted)} trades open that count towards the most at once ({lim.max_open_trades}; "
@@ -160,10 +159,9 @@ def trend_direction(idea: Any) -> str | None:
 
 
 def is_reversal(idea: Any) -> bool:
-    """A reversal trade: every Bollinger bounce, and a level reversal against the analyser's trend direction.
-    The EMA pullback, slow grind, breakout and range trade never are."""
-    if idea.strategy == BOLLINGER_BOUNCE:
-        return True
+    """A reversal trade for rule 9: a level reversal against the analyser's trend direction. The Bollinger
+    bounce is not held back by rule 9 (owner, 15 November 2026), nor are the EMA pullback, slow grind, breakout
+    and range trade."""
     if idea.strategy == LEVEL_REVERSAL:
         td = trend_direction(idea)
         return td is not None and td != idea.direction

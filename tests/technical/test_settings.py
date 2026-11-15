@@ -54,7 +54,6 @@ EXPECTED = {
     },
     "limits": {
         "max_open_trades_per_strategy": 1,
-        "bollinger_bounce_extra_opposite_direction_trades": 1,
         "max_open_trades": 5,
     },
     "orders": {"folder": Path("/opt/autobot/data/orders"), "expiry": "DFB", "currency": "GBP",
@@ -91,13 +90,12 @@ EXPECTED = {
         "minutes_after": 20,
     },
     "bounce": {
-        "reversal_candle_within_candles_of_pierce": 3,
-        "confirmation_candle_within_candles_of_reversal": 3,
-        "close_percent_at_opposite_band": 50,
-        "break_even_after_pips": Decimal("6"),
-        "against_trend_level_within_pips": Decimal("5"),
-        "against_trend_max_pips_per_hour": Decimal("5"),
-        "against_trend_pace_hours": 2,
+        "pierce_beyond_pips": Decimal("3"),         # owner, 15 November 2026
+        "confirmation_within_candles": 3,
+        "trail_from_pips": Decimal("12"),
+        "trail_candles": 3,
+        "near_times": (time(10, 0), time(14, 0), time(16, 0)),
+        "near_times_within_minutes": 60,
     },
     "slow_grind": {"min_pause_candles": 2, "ema_periods": 21, "stop_loss_pips": 15, "take_profit_pips": 20,
                    "lock_from_pips": 15, "lock_at_pips": 10, "week_open_no_new_trades_minutes": 15,
@@ -129,7 +127,8 @@ EXPECTED = {
                    "rsi_periods": 3, "rsi_upper_line": 70, "rsi_lower_line": 30, "timeframes": ("5m", "1h"),
                    "history_candles": 2000, "warm_up_seed_weight_percent": 2},
     "analyser": {"direction_ema_timeframe": "5m", "direction_ema_periods": 100, "out_of_date_after_minutes": 10},
-    "rejection": {"candle_timeframe": "5m", "near_level_within_pips": 3, "max_spread_pips": 3},
+    "rejection": {"candle_timeframe": "5m", "near_level_within_pips": 3, "max_spread_pips": 3,
+                  "reversal_candle_within_candles_of_pierce": 3, "confirmation_candle_within_candles_of_reversal": 3},
     "market_hours": {
         "opens_day": 6,              # Sunday (Monday is 0)
         "opens_at": time(21, 0),
@@ -342,14 +341,16 @@ INVALID = [
     ("reversal_watch", "times", ["11:00", "10:00"], "in order with no repeats"),
     ("reversal_watch", "times", [], "non-empty list"),
     ("reversal_watch", "minutes_before", 500, "must be between"),
-    ("bounce", "reversal_candle_within_candles_of_pierce", 0, "must be between"),
+    ("rejection", "reversal_candle_within_candles_of_pierce", 0, "must be between"),
+    ("bounce", "confirmation_within_candles", 0, "must be between"),
     ("slow_grind", "min_pause_candles", 0, "must be between"),
     ("ema_pullback", "setup_expires_after_minutes", 0, "must be between"),
     ("possible_reversal", "min_trend_move_pips", 0, "must be between"),
     ("range_trade", "close_percent_at_opposite_band", 150, "must be one of 50, 100"),
     ("range_trade", "close_percent_at_opposite_band", 30, "must be one of 50, 100"),
-    ("bounce", "close_percent_at_opposite_band", 25, "must be one of 0, 50, 100"),
-    ("bounce", "break_even_after_pips", -1, "must be between"),
+    ("bounce", "trail_from_pips", -1, "must be between"),
+    ("bounce", "near_times", ["14:00", "10:00"], "in order with no repeats"),
+    ("bounce", "near_times_within_minutes", -5, "must be between"),
     ("range_trade", "trigger_within_candles", 0, "must be between"),
     ("indicators", "bollinger_periods", 1, "must be between"),
     ("indicators", "bollinger_std_devs", 2.5, "must be a whole number"),
@@ -530,6 +531,17 @@ def test_the_hourly_read_switch_is_required_and_loads(tmp_path):
         load_settings(switches_from=_env(tmp_path, values))
     assert load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches.hourly_read is False
     assert load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "HOURLY_READ": "on"})).switches.hourly_read is True
+
+def test_the_bounces_two_switches_are_off_if_left_out_and_load(tmp_path):
+    sw = load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches
+    assert (sw.bounce_only_when_hourly_ranging, sw.bounce_only_near_times) == (False, False)
+    sw = load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "BOUNCE_ONLY_WHEN_HOURLY_RANGING": "on",
+                                                     "BOUNCE_ONLY_NEAR_TIMES": "on"})).switches
+    assert (sw.bounce_only_when_hourly_ranging, sw.bounce_only_near_times) == (True, True)
+    for key in ("BOUNCE_ONLY_WHEN_HOURLY_RANGING", "BOUNCE_ONLY_NEAR_TIMES"):
+        with pytest.raises(SettingsError, match=f"Invalid switch {key}.*must be on or off"):
+            load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, key: "yes"}))
+
 
 @pytest.mark.parametrize("key,bad", [("level_above", "S2"), ("level_above", "R4"), ("level_below", "R2"), ("rsi_above", 40),
                                      ("rsi_below", 60), ("rsi_periods", 1)])

@@ -319,7 +319,7 @@ def test_a_confirmed_level_rejection_after_a_30_pip_move_is_a_possible_reversal(
     (ch,) = possible(m)
     assert (ch.state, ch.direction, ch.previous_state) == (POSSIBLE_REVERSAL, UP, TREND)
     assert ch.reason.startswith("rejection at a level (S2 11610) confirmed after a down move of 40.0 pips")
-    assert m.now.strategies_allowed == ("Bollinger band bounce", "level reversal")
+    assert m.now.strategies_allowed == ("level reversal",)     # the bounce: every state (owner, 15 November 2026)
     assert any("MACD histogram" in e for e in ch.evidence)                  # section 2.6 signs recorded
 
 

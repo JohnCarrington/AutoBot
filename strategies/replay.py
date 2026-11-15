@@ -10,9 +10,11 @@ market state at each moment is the one the service would have had). At each
   * each strategy is given the candle; when its entry price is reached, the
     candidate is checked (strategies/common.py: switch, state, direction rule,
     and the hourly read after the last hourly candle finished by the candle's start);
-  * the bounce and range trade run their OWN rejection watcher with only the
-    rules of design 3.3 and 3.4 (design_only); the analyser's watcher is not
-    changed.
+  * the range trade and the level reversal run their OWN rejection watcher with
+    only the rules of design 3.4 and 3.6 (design_only); the analyser's watcher is
+    not changed;
+  * the Bollinger bounce keeps its own hourly chart (prices/hourly_chart.py),
+    built from the same 5-minute candles, the warm-up candles included.
 With stored candles there are no ticks, so an entry is shown at the start of
 the candle it was reached in.
 """
@@ -34,7 +36,7 @@ from levels.rules import PIVOT
 from prices.indicators import Band, ema
 from prices.store import CandleStore
 from rejection.watch import RejectionWatcher
-from strategies.bollinger_bounce.strategy import candidates as bounce_candidates
+from strategies.bollinger_bounce.strategy import BollingerBounce
 from strategies.common import Idea, check
 from strategies.ema_pullback.strategy import EmaPullback, HourlyTrendReader
 from strategies.range_trade.strategy import candidates as range_candidates
@@ -97,6 +99,8 @@ class StrategyRunner:
         self.watcher = RejectionWatcher(s, design_only=True)
         self.breakout = Breakout(s)
         self.reversal = LevelReversal(s)
+        self.bounce = BollingerBounce(s)
+        self.bounce.warm(self.warm)
 
     def _hourly(self, end: datetime) -> HourlyTrendReader:
         return HourlyTrendReader(self.s, last_candles(self.memo, "1h", end, self.s.ema_pullback.hourly_history_candles))
@@ -143,11 +147,12 @@ class StrategyRunner:
         band = Band(partial.start, f.middle, f.upper, f.lower) if f.upper is not None else None
         watcher = fork(self.watcher)
         breakout, grind, pullback, reversal = fork(self.breakout), fork(self.grind), fork(self.pullback), fork(self.reversal)
+        bounce = fork(self.bounce)
         events = watcher.on_candle(partial, band, levels if levels is not None else build(s, self.memo, partial.start))
         cands = (breakout.on_candle(partial, None, None)
                  + grind.on_candle(partial, sg_ema.get(partial.start))
                  + pullback.on_candle(partial, fast.get(partial.start), slow.get(partial.start))
-                 + bounce_candidates(watcher, events) + range_candidates(watcher, events)
+                 + bounce.on_candle(partial) + range_candidates(watcher, events)
                  + reversal.on_candle(partial, watcher, events))
         st = self.state_after(len(self.week) - 1)
         e100 = ema100.get(self.week[-1].start)
@@ -183,7 +188,7 @@ class StrategyRunner:
             cands = (self.breakout.on_candle(c, kc[1] if kc else None, since)
                      + self.grind.on_candle(c, sg_ema.get(c.start))
                      + self.pullback.on_candle(c, fast.get(c.start), slow.get(c.start))
-                     + bounce_candidates(self.watcher, events) + range_candidates(self.watcher, events)
+                     + self.bounce.on_candle(c) + range_candidates(self.watcher, events)
                      + self.reversal.on_candle(c, self.watcher, events))
             if cands:
                 st = self.state_after(i - 1)
@@ -205,7 +210,8 @@ def run(settings: Any, store: CandleStore, start: datetime, end: datetime) -> Re
     runner = StrategyRunner(settings, memo, tracker, hourly_end=end)
     ideas = [idea for c, idea in runner.step() if start <= c.start < end]
     out = Replay(ideas, states={c.start: runner.state_after(i) for i, c in enumerate(runner.week)})
-    out.notes = {"slow grind": runner.grind.notes, "EMA pullback": runner.pullback.notes, "breakout": runner.breakout.notes}
+    out.notes = {"slow grind": runner.grind.notes, "EMA pullback": runner.pullback.notes, "breakout": runner.breakout.notes,
+                 "Bollinger bounce": runner.bounce.notes}
     out.watcher = runner.watcher
     return out
 

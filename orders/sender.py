@@ -35,8 +35,8 @@
   * A trade found gone at IG whose close IG shows on channel SYSTEM but not at its stop or take profit (at or beyond
     either) was closed by the owner by hand (owner, 11 November 2026): "closed by owner" at IG's price and time, a
     short Telegram message (not a warning), and kept apart from the bot's own exits (closed_by_owner()).
-  * It moves a Bollinger bounce's stop to break-even when the trade manager says so (owner, 13 November 2026, change 4
-    of the bounce changes replay): the position's stop at IG becomes the price the trade opened at (IG's level).
+  * It moves a Bollinger bounce's stop when the trade manager's trail says so (owner, 15 November 2026): the
+    position's stop at IG becomes the level the trail gives (beyond the last 3 finished candles).
     IG's open position is read first (GET /positions/{dealId}, VERSION 2) for its take profit, then the position is
     updated (PUT /positions/otc/{dealId}, VERSION 2, the body stopLevel, limitLevel as IG has it, trailingStop false,
     trailingStopDistance and trailingStopIncrement null, guaranteedStop false; a stop moved on an open position is a
@@ -44,8 +44,8 @@
     The move counts only once IG confirms it ("stop moved"); if IG refuses it, or the answer is unclear and IG's
     position still shows the old stop, the old stop stays ("stop not moved"), the owner gets a Telegram alert with
     IG's error, and the trade manager tries again after orders.close_retry_seconds. Paper: recorded, nothing sent.
-  * It closes trades when the trade manager says so, in full, or by half (a Bollinger bounce at the opposite
-    band, or a range trade if set to half), and confirms each close with IG. The close matches AutoBot 161's
+  * It closes trades when the trade manager says so, in full, or by half (a range trade at the opposite band, if
+    set to half), and confirms each close with IG. The close matches AutoBot 161's
     close_sb_now.py exactly: POST /positions/otc with VERSION 1 and _method DELETE, the body dealId, direction
     (the opposite), orderType MARKET and size only (never the epic or expiry: IG refuses dealId with either).
     After a part close IG leaves the rest as a position with a new deal ID: it is found among the open
@@ -75,7 +75,7 @@ from typing import Any, Callable
 from ig.errors import IGRequestError
 from safety.refusals import on_refusal
 from safety.rules import AccountFunds, OpenTrade, decide, order_for
-from strategies.common import BOLLINGER_BOUNCE, RANGE_TRADE, stop_price, take_profit_pips
+from strategies.common import RANGE_TRADE, stop_price, take_profit_pips
 
 log = logging.getLogger("autobot.orders")
 
@@ -85,7 +85,7 @@ def _headers(version: str, **more: str) -> dict:
     return {"VERSION": version, "Content-Type": "application/json", **more}
 UTC = timezone.utc
 # The strategies the trade manager may close by half at the opposite band (owner, 11 November 2026).
-HALF_CLOSED = (RANGE_TRADE, BOLLINGER_BOUNCE)
+HALF_CLOSED = (RANGE_TRADE,)
 OPEN, CLOSED = "open", "closed"
 
 
@@ -106,7 +106,7 @@ class Trade:
     level: Decimal | None = None        # IG's fill price
     status: str = OPEN
     half_closed: bool = False
-    stop_level: Decimal | None = None   # the stop as moved at IG and confirmed (break-even); None: not moved
+    stop_level: Decimal | None = None   # the stop as moved at IG and confirmed (the bounce's trail); None: not moved
 
     def as_open_trade(self, size_gbp_per_pip: Decimal) -> OpenTrade:
         part = Decimal("0.5") if self.half_closed else Decimal(1)
@@ -640,7 +640,7 @@ class OrderSender:
                           datetime.fromisoformat(when.replace("Z", "+00:00")) if when else None)
 
     def close(self, reference: str, *, half: bool = False, why: str = "", price: Decimal | None = None) -> Result:
-        """Close one of the bot's trades in full, or by half (the range trade or the Bollinger bounce, at the opposite
+        """Close one of the bot's trades in full, or by half (the range trade at the opposite
         band: trade_manager.manager.band_close_share), when the trade manager says so.
         `price`: the trade manager's price (a paper close is recorded at it)."""
         with self._lock:
@@ -651,7 +651,7 @@ class OrderSender:
                 return Result(False, "not open", reference, reasons=["not one of the bot's open trades"])
             if half and (t.strategy not in HALF_CLOSED or t.half_closed):
                 return Result(False, "refused", reference, t.deal_id,
-                              reasons=["only a range trade or a Bollinger bounce is closed by half, and only once"])
+                              reasons=["only a range trade is closed by half, and only once"])
             size = (t.size / 2) if half else t.size
             if self.paper:
                 q = self.quote()
@@ -678,10 +678,10 @@ class OrderSender:
                 return self._close_refused(t, c.get("reason") or "no reason given")
             return self._settle_unclear_close(t, half, size)
 
-    # ---- moving a stop (the Bollinger bounce's break-even) -------------------------------------------
+    # ---- moving a stop (the Bollinger bounce's trail) ----------------------------------------------
 
     def move_stop(self, reference: str, level: Decimal, why: str = "") -> Result:
-        """Move one open trade's stop at IG to `level` (the Bollinger bounce's break-even: the price it opened at).
+        """Move one open trade's stop at IG to `level` (the Bollinger bounce's trail).
         Counts only once IG confirms it. Result.ok False: the old stop stays at IG and in the records; the owner was
         alerted (except when IG no longer has the position: the regular check of IG's open positions finds that)."""
         with self._lock:
@@ -741,8 +741,8 @@ class OrderSender:
     def _stop_refused(self, t: Trade, level: Decimal, reason: str) -> Result:
         self._record("stop not moved", reference=t.reference, deal_id=t.deal_id, stop_level=level, reason=reason)
         self.alerts.problem(f"stop-move-refused-{t.deal_id}",
-                            f"IG did not move the stop of {t.strategy} {t.direction} trade {t.deal_id} to break-even "
-                            f"({level}): {reason}. The old stop stays at IG and in the bot's records; the move is "
+                            f"IG did not move the stop of {t.strategy} {t.direction} trade {t.deal_id} to "
+                            f"{level} (the trail): {reason}. The old stop stays at IG and in the bot's records; the move is "
                             f"tried again every {self.o.close_retry_seconds} seconds.")
         return Result(False, "stop not moved", t.reference, t.deal_id, reasons=[reason])
 
