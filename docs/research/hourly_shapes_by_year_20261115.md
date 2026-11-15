@@ -208,7 +208,7 @@ own record: trade only if the last N signals (as if all traded) made money in to
   N=20: 2024E  17    -4.4 | 2025E  32   -45.8 | 2024D  57   -31.1 | 2025D  58   -15.4 | 2026E   8   +46.5 | 2026D  27  +129.1
 ```
 
-It helps the owner's shape in 2024 but not D, and costs pips in 2025 and 2026. A first version counted signals that hadn't closed yet. That lookahead made it look good, and it was fixed before these results.
+With N = 5 (the best on 2024) it turns the owner's shape positive in 2024 (+111.5 against −50.6). D improves a little but stays negative (−72.1 against −92.6). It costs pips for both shapes in 2025 and 2026. A first version counted signals that hadn't closed yet. That lookahead made it look good, and it was fixed before these results.
 
 ## Is 2024 different at all?
 
