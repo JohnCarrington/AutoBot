@@ -15,9 +15,9 @@
 
   None of these is a clear edge.
 - **Trend days lose in almost every version.** By the 80-pip rule there are 4 trend days in the 118. On them a pierce of the band is usually the move carrying on, not a turn.
-- **Limiting the hours always helps:** 07:00–19:00 beats the bot's own 06:00–20:30, which beats no limit, in every reading and exit.
+- **Limiting the hours helps:** no limit is the worst in every reading and exit. 07:00–19:00 beats the bot's own 06:00–20:30 in 10 of the 12 reading-and-exit pairs. The exceptions are reading C with fixed 12 (−264.0 against −252.0) and with the trail (−166.1 against −153.6).
 - **Fixed 20 is the worst exit in every case.** A 20-pip target needs 37.5% wins to break even against a 12-pip stop, and it won only about a third of the time.
-- **By month, every version swings with no steady edge.** June and October lose in all of them; September and the spring months are positive in most.
+- **By month, every version swings with no steady edge.** In the 07:00–19:00 versions, June and October lose every time; September and the spring months are positive in most.
 
 ## The rule, as given (owner, 15 November 2026)
 
