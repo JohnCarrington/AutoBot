@@ -4,6 +4,8 @@
 
 ## In short
 
+> **Note (15 November 2026, later):** D's hourly read here was taken at the reversal candle's close, which can be just after D's entry. Taken at the entry, D with the owner's times is 55 trades, 60.0% won, +242.5 (not 53 trades, +224.4). On 2024–2025 the same filters lose. See `hourly_shape_vs_d_20261115.md`.
+
 - **The rule as given loses in every version** on the 118 complete weekdays (`hourly_pierce_20261115.md`).
 - **Most of the losses come from pierces made while the hourly chart is trending.** In the first half, trades taken while the bot's hourly read said sell-off or rally lost on average. Trades while it said ranging came close to break-even.
 - **Two of the owner's own ideas, together, make it work on both halves:**
