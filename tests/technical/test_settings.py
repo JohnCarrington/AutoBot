@@ -119,10 +119,9 @@ EXPECTED = {
     "breakout": {"trigger_within_candles": 3, "stop_loss_pips": 12, "take_profit_pips": 50},
     "trend_day": {"level_above": "R2", "level_below": "S2", "rsi_periods": 14, "rsi_above": 70, "rsi_below": 30,
                   "rsi_history_candles": 1000},
-    "level_reversal": {"level_types": ("S2", "R2", "pivot", "round_number"), "round_numbers_every_pips": 100,
-                       "allowance_pips_r2": 12, "allowance_pips_s2": 12, "allowance_pips_pivot": 12,
-                       "allowance_pips_round_number": 5,
-                       "stop_beyond_furthest_pips": 6, "take_profit_pips": 20, "max_open_trades": 2},
+    "level_reversal": {"level_types": ("S2", "R2", "round_number"), "round_numbers_every_pips": 100, "allowance_pips_r2": 12,
+                       "allowance_pips_s2": 12, "allowance_pips_round_number": 5,
+                       "stop_beyond_furthest_pips": 6, "take_profit_pips": 20},
     "range_trade": {"close_percent_at_opposite_band": 100, "rejection_candle_within_candles": 1,
                     "trigger_within_candles": 1},
     "indicators": {"bollinger_periods": 20, "bollinger_std_devs": 2, "ema_periods": (7, 13, 21, 100, 200),
@@ -172,7 +171,7 @@ EXPECTED = {
     },
     "market_states": {
         "narrow_band_max_pips": 14, "narrowing_candles": 6, "flat_max_pips_per_candle": Decimal("0.5"), "flat_slope_candles": 6,
-        "ranging_min_band_pips": 6, "ranging_max_band_pips": 18, "ranging_band_flat_max_pips_per_candle": Decimal("0.5"),
+        "ranging_min_band_pips": 6, "ranging_max_band_pips": 18, "ranging_band_flat_max_pips_per_candle": Decimal("0.2"),
         "ranging_both_bands_candles": 24, "weave_candles": 12,
         "ema100_flat_max_pips": 3, "ema100_flat_candles": 12, "consolidation_quiet_candles": 6,
         "consolidation_max_body_pips": 3, "consolidation_colour_max_ratio": 2, "near_band_pips": 1,
@@ -447,7 +446,7 @@ SWITCHES_OK = {"PAIRS_ON": "GBPUSD", "NEW_TRADES_FROM": "06:00", "NEW_TRADES_UNT
                "STRATEGY_SLOW_GRIND": "on", "STRATEGY_EMA_PULLBACK": "on",
                "STRATEGY_BOLLINGER_BOUNCE": "off", "STRATEGY_RANGE_TRADE": "on",
                "STOP_LOSS_PIPS": "6", "STOP_LOSS_PIPS_EMA_PULLBACK": "12", "TAKE_PROFIT_PIPS": "100", "STRATEGY_BREAKOUT": "off",
-               "STRATEGY_LEVEL_REVERSAL": "on", "TRADING": "off"}
+               "STRATEGY_LEVEL_REVERSAL": "on", "HOURLY_READ": "off", "TRADING": "off"}
 
 
 def _env(tmp_path, values, secrets=True):
@@ -524,6 +523,14 @@ def test_the_level_reversal_switch_is_required_and_loads(tmp_path):
     assert load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "STRATEGY_LEVEL_REVERSAL": "off"})).switches.level_reversal is False
 
 
+
+def test_the_hourly_read_switch_is_required_and_loads(tmp_path):
+    values = {k: v for k, v in SWITCHES_OK.items() if k != "HOURLY_READ"}
+    with pytest.raises(SettingsError, match="Missing switch HOURLY_READ"):
+        load_settings(switches_from=_env(tmp_path, values))
+    assert load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches.hourly_read is False
+    assert load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "HOURLY_READ": "on"})).switches.hourly_read is True
+
 @pytest.mark.parametrize("key,bad", [("level_above", "S2"), ("level_above", "R4"), ("level_below", "R2"), ("rsi_above", 40),
                                      ("rsi_below", 60), ("rsi_periods", 1)])
 def test_the_trend_day_settings_are_checked(tmp_path, key, bad):
@@ -571,6 +578,7 @@ def test_the_settings_alone_have_no_switches_and_no_market():
     ("STRATEGY_SLOW_GRIND", "yes", "must be on or off"),
     ("STRATEGY_RANGE_TRADE", "", "must be on or off"),
     ("STRATEGY_LEVEL_REVERSAL", "yes", "must be on or off"),
+    ("HOURLY_READ", "yes", "must be on or off"),
     ("STOP_LOSS_PIPS", "0", "must be between 1 and 100 pips"),
     ("STOP_LOSS_PIPS", "6.5", "must be a whole number of pips"),
     ("STOP_LOSS_PIPS", "six", "must be a whole number of pips"),
@@ -624,7 +632,7 @@ def test_load_or_exit_reads_the_switches(tmp_path, monkeypatch):
     monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {**SWITCHES_OK, "NEW_TRADES_FROM": "07:15"})))
     assert load_or_exit().switches.new_trades_from == time(7, 15)
     monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {"PAIRS_ON": "GBPUSD"})))
-    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 12 problem"):
+    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 13 problem"):
         load_or_exit()
 
 

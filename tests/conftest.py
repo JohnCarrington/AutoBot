@@ -39,7 +39,7 @@ def no_real_network(monkeypatch):
 
 # The switches normally come from the real .env, next to the IG secrets. Tests
 # never read the real .env: every test uses this pretend file instead
-# (GBPUSD only, 06:00 to 20:30, every strategy on, stop 6 pips (EMA pullback 12), take profit 100), unless it sets its own.
+# (GBPUSD only, 06:00 to 20:30, every strategy on, the hourly read on, stop 6 pips (EMA pullback 12), take profit 100), unless it sets its own.
 PRETEND_SWITCHES = """\
 PAIRS_ON=GBPUSD
 NEW_TRADES_FROM=06:00
@@ -50,6 +50,7 @@ STRATEGY_BOLLINGER_BOUNCE=on
 STRATEGY_RANGE_TRADE=on
 STRATEGY_BREAKOUT=off
 STRATEGY_LEVEL_REVERSAL=on
+HOURLY_READ=on
 TRADING=off
 STOP_LOSS_PIPS=6
 STOP_LOSS_PIPS_EMA_PULLBACK=12

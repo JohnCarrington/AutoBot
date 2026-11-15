@@ -9,8 +9,7 @@ only, owner 7 November 2026):
      range trade; emerging trend and trend -> EMA pullback and breakout IN THE
      TREND'S DIRECTION ONLY; trend only -> slow grind, IN THE TREND'S DIRECTION
      ONLY (owner, 8 November 2026); trend -> also Bollinger bounce, AGAINST THE
-     TREND'S DIRECTION ONLY (owner, 7 November 2026); emerging trend -> also Bollinger
-     bounce, IN THE EMERGING TREND'S DIRECTION ONLY (owner, 13 November 2026); possible reversal ->
+     TREND'S DIRECTION ONLY (owner, 7 November 2026); possible reversal ->
      Bollinger bounce, either way; consolidation -> none;
   3. the direction rule allows that direction (section 2.3): a buy needs buy
      side (price above the daily pivot and the 5-minute 100 EMA), a sell needs
@@ -18,7 +17,8 @@ only, owner 7 November 2026):
      breakout (owner, 7 November 2026), the slow grind or the level reversal
      (owner, 8 November 2026), in any state; the rule's answer is still recorded.
      The level reversal is allowed in every state except consolidation, either way.
-  4. the hourly read (analyser/hourly_read.py; owner, 14 November 2026) allows it. It applies only to the
+  4. the hourly read (analyser/hourly_read.py; owner, 14 November 2026) allows it, only while the switch
+     HOURLY_READ is on (off: this check is skipped). It applies only to the
      trend strategies (TREND_STRATEGIES: EMA pullback, slow grind, breakout):
        * hourly ranging: a 5-minute trend counts only once an hourly candle closes at least
          hourly_read.break_beyond_pips (3) beyond the hourly range, and such a close is what turns the read
@@ -55,8 +55,8 @@ SWITCH = {SLOW_GRIND: "slow_grind", EMA_PULLBACK: "ema_pullback", BOLLINGER_BOUN
 OWN_HOURS = (EMA_PULLBACK, BREAKOUT)
 # May open in a big-news window and not closed before big news (owner, 7 and 8 November 2026).
 NEWS_ALLOWED = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND)
-# Not closed on a rejection at a level (owner, 7 and 8 November 2026; the range trade, 13 November 2026).
-NO_LEVEL_CLOSE = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL, RANGE_TRADE)
+# Not closed on a rejection at a level (owner, 7 and 8 November 2026).
+NO_LEVEL_CLOSE = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL)
 # The direction rule (section 2.3) does not apply to these (owner, 7 and 8 November 2026).
 NO_DIRECTION_RULE = (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL)
 BUY, SELL = "buy", "sell"
@@ -67,8 +67,7 @@ TREND_STRATEGIES = (EMA_PULLBACK, SLOW_GRIND, BREAKOUT)
 ALLOWED_IN = {
     SLOW_GRIND: {TREND: "trend"},                      # trend only (owner, 8 November 2026)
     EMA_PULLBACK: {EMERGING: "trend", TREND: "trend"},
-    # emerging trend: in its direction only (owner, 13 November 2026)
-    BOLLINGER_BOUNCE: {EMERGING: "trend", TREND: "against", POSSIBLE_REVERSAL: "any"},
+    BOLLINGER_BOUNCE: {TREND: "against", POSSIBLE_REVERSAL: "any"},
     RANGE_TRADE: {RANGING: "any"},
     BREAKOUT: {EMERGING: "trend", TREND: "trend"},
     # every state except consolidation, either way (owner, 8 November 2026)
@@ -205,8 +204,7 @@ def closed_before_big_news(strategy: str) -> bool:
 
 def closed_on_level_rejection(strategy: str) -> bool:
     """Section 4's close on a confirmed rejection at a level, for every strategy except the EMA pullback,
-    the breakout, the slow grind, the level reversal and the range trade (owner, 13 November 2026: it closes
-    only at the opposite band, besides its stop, 20:30 and the close before big news)."""
+    the breakout and the slow grind."""
     return strategy not in NO_LEVEL_CLOSE
 
 
@@ -240,9 +238,7 @@ def take_profit_pips(settings: Any, strategy: str, opened: datetime | None = Non
       each of these two gets TAKE_PROFIT_PIPS instead for a trade opened on a UK day with big news
       for the pair. Give `opened` and `pair`; without them the normal take profit is returned;
     - the breakout: breakout.take_profit_pips (50) on any day;
-    - the level reversal: level_reversal.take_profit_pips (20) on any day (owner, 8 November 2026), used only
-      when there is no daily pivot level beyond its entry: its take profit is that next level (owner,
-      13 November 2026; take_profit_price).
+    - the level reversal: level_reversal.take_profit_pips (20) on any day (owner, 8 November 2026).
     On a trend day (analyser/trend_day.py, design 2.4; owner, 8 November 2026), an EMA pullback or slow
     grind trade in the trend day's direction gets TAKE_PROFIT_PIPS too: give `direction` (buy or sell)
     and `trend_day` (the day's check: "down", "up" or None)."""
@@ -290,25 +286,9 @@ def stop_price(settings: Any, idea: Any) -> Decimal | None:
     return idea.context["stop_price"]
 
 
-def take_profit_price(settings: Any, idea: Any) -> Decimal | None:
-    """The take profit as a price (chart price) when a strategy sets it from the levels: the level reversal's,
-    the next daily pivot level beyond the entry (owner, 13 November 2026; the idea's context). None for every
-    other strategy, and for a level reversal with no daily pivot level beyond the entry: their take profit is
-    take_profit_pips() from the entry."""
-    if idea.strategy != LEVEL_REVERSAL:
-        return None
-    return idea.context.get("take_profit_price")
-
-
-def take_profit_pips_to(price: Decimal, direction: str, fill: Decimal, points_per_pip: Any) -> Decimal:
-    """The pips from a trade's open price to its take profit price, to a tenth of a pip (at least 0.1)."""
-    d = (Decimal(fill) - Decimal(price)) if direction == SELL else (Decimal(price) - Decimal(fill))
-    return max(Decimal("0.1"), (d / Decimal(points_per_pip)).quantize(Decimal("0.1")))
-
-
 def hourly_reasons(settings: Any, strategy: str, direction: str, hourly: Any) -> list[str]:
     """Check 4: why the hourly read does not allow this trend strategy this way (empty: allowed)."""
-    if hourly is None or strategy not in TREND_STRATEGIES:
+    if hourly is None or strategy not in TREND_STRATEGIES or not settings.switches.hourly_read:
         return []
     rng = f" ({plain(hourly.low)} to {plain(hourly.high)})" if hourly.low is not None else ""
     if hourly.state == HOURLY_RANGING:
@@ -360,5 +340,5 @@ def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | N
         idea.steps.append(f"allowed at entry: {c.strategy} in a {state.state} {state.direction}; direction rule "
                           f"{rule.side} ({rule.reason.replace('the price', 'the entry price')})"
                           + (f"; the direction rule does not apply to {c.strategy}" if exempt else "")
-                          + (f"; {hourly.line()}" if hourly is not None else ""))
+                          + (f"; {hourly.line()}" if hourly is not None and settings.switches.hourly_read else ""))
     return idea

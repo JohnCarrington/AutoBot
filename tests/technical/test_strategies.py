@@ -94,8 +94,7 @@ def test_a_strategy_switched_off_has_no_ideas(S):
 # Section 2.2, every state against every strategy (a sell, with the state's direction down)
 @pytest.mark.parametrize("st,allowed", [
     (RANGING, {RANGE_TRADE}),
-    (EMERGING, {EMA_PULLBACK, BOLLINGER_BOUNCE}),  # the slow grind: trend only (owner, 8 November 2026); the bounce
-                                                   # in the emerging trend's direction (owner, 13 November 2026)
+    (EMERGING, {EMA_PULLBACK}),                    # the slow grind: trend only (owner, 8 November 2026)
     (TREND, {SLOW_GRIND, EMA_PULLBACK}),           # a sell in a down trend: the bounce only against it
     (POSSIBLE_REVERSAL, {BOLLINGER_BOUNCE}),
     (CONSOLIDATION, set()),
@@ -121,25 +120,16 @@ def test_a_bounce_in_a_trend_only_against_the_trends_direction(S):
     assert not with_.allowed and "Bollinger bounce only against the trend's direction" in with_.blocked_by
 
 
-def test_a_bounce_in_an_emerging_trend_only_in_its_direction(S):
-    # owner, 13 November 2026: allowed in the emerging trend's direction, against it still blocked
-    assert check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, SELL, 100), state(EMERGING, DOWN), PIVOT, EMA100).allowed
-    assert check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, BUY, 120), state(EMERGING, UP), PIVOT, EMA100).allowed
-    for direction, price, d in ((BUY, 120, DOWN), (SELL, 100, UP)):
-        i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, direction, price), state(EMERGING, d), PIVOT, EMA100)
-        assert not i.allowed and "Bollinger bounce only in the trend's direction" in i.blocked_by
-
-
-def test_no_bounce_in_ranging(S):
+@pytest.mark.parametrize("st,d", [(EMERGING, UP), (EMERGING, DOWN), (RANGING, NONE)])
+def test_no_bounce_in_an_emerging_trend_or_ranging(S, st, d):
     for direction, price in ((BUY, 120), (SELL, 100)):
-        i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, direction, price), state(RANGING, NONE), PIVOT, EMA100)
-        assert not i.allowed and "the analyser's state is ranging, which does not allow Bollinger bounce" in i.blocked_by
+        i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, direction, price), state(st, d), PIVOT, EMA100)
+        assert not i.allowed and f"the analyser's state is {st}, which does not allow Bollinger bounce" in i.blocked_by
 
 
 def test_the_analysers_list_for_the_bounce_matches(S):
     from analyser.states import ALLOWED
-    assert not any("bounce" in x for x in ALLOWED[RANGING])
-    assert "Bollinger band bounce (in the emerging trend's direction only)" in ALLOWED[EMERGING]
+    assert not any("bounce" in x for x in ALLOWED[RANGING] + ALLOWED[EMERGING])
     assert "Bollinger band bounce (against the trend's direction only)" in ALLOWED[TREND]
     assert ALLOWED[POSSIBLE_REVERSAL] == ("Bollinger band bounce", "level reversal")
 
@@ -508,7 +498,7 @@ def watch(s, candles, bands=None):
     w, out = RejectionWatcher(s, design_only=True), []
     for k, c in enumerate(candles):
         ev = w.on_candle(c, band(c, upper=bands[k]) if bands else band(c), None)
-        out += bounce_candidates(w, ev)
+        out += bounce_candidates(w, ev) + range_candidates(w, ev)
     return out
 
 
@@ -577,40 +567,15 @@ def test_the_analysers_watcher_keeps_its_rules(S):
     assert len(sells) == 1 and sells[0].pierce.start == START + timedelta(minutes=5)   # restarted
 
 
-# ---- 3.4 the range trade: open right at the band (owner, 13 November 2026) -------------------------
-
-def rt(s, c, upper=110, lower=90, spike=False):
-    w = SimpleNamespace(spike=lambda candle: spike)
-    return [(x.direction, x.entry_price, x.time) for x in range_candidates(s, w, c, band(c, upper, lower))]
-
-
-def test_range_trade_sells_as_soon_as_price_reaches_the_upper_band(S):
-    c = C(0, 104, 107.5, 103, 105)                     # high 107.5: within 3 pips of the band 110
-    assert rt(S, c) == [(SELL, D(107), c.start)]       # sold at the band minus 3 pips, no turn candle, no trigger
-    c = C(0, 108, 109, 106, 107)                       # opened already within 3 pips: sold at the open
-    assert rt(S, c) == [(SELL, D(108), c.start)]
-    assert rt(S, C(0, 104, 106.9, 103, 105)) == []     # 3.1 pips short: not reached
+def test_range_trade_takes_the_trigger(S):
+    candles = [C(0, 106, 112, 105, 108), C(1, 108, 109, 103, 104), C(2, 104, 104.5, 102, 102.5)]
+    got = [x for x in watch(S, candles) if x.strategy == RANGE_TRADE]
+    assert [(x.direction, x.entry_price, x.time) for x in got] == [(SELL, D(103), candles[2].start)]
 
 
-def test_range_trade_buys_as_soon_as_price_reaches_the_lower_band(S):
-    c = C(0, 96, 97, 92.5, 95)
-    assert rt(S, c) == [(BUY, D(93), c.start)]         # the band plus 3 pips
-    c = C(0, 91, 94, 89, 92)
-    assert rt(S, c) == [(BUY, D(91), c.start)]         # opened past it: bought at the open
-    assert rt(S, C(0, 96, 97, 93.1, 95)) == []
-
-
-def test_range_trade_uses_the_3_pip_setting_ignores_spread_spikes_and_needs_a_band(S):
-    s = changed(S, "rejection", near_level_within_pips=1)
-    assert rt(s, C(0, 104, 108.5, 103, 105)) == []
-    assert rt(S, C(0, 104, 107.5, 103, 105), spike=True) == []
-    assert range_candidates(S, SimpleNamespace(spike=lambda c: False), C(0, 104, 112, 103, 105), None) == []
-
-
-def test_range_trade_is_not_closed_on_a_rejection_at_a_level(S):
-    from strategies.common import closed_on_level_rejection
-    assert not closed_on_level_rejection(RANGE_TRADE)
-    assert closed_on_level_rejection(BOLLINGER_BOUNCE)
+def test_range_trade_cancelled_above_the_rejection_high_has_no_idea(S):
+    candles = [C(0, 106, 112, 105, 108), C(1, 108, 109, 103, 104), C(2, 104, 110, 103.5, 109.5)]
+    assert [x for x in watch(S, candles) if x.strategy == RANGE_TRADE] == []
 
 
 # ---- the replay: the checks at entry only ----------------------------------------------------
@@ -736,7 +701,7 @@ def test_the_ema_pullback_is_held_overnight_and_closed_only_on_friday_at_20_30_u
 
 def test_the_ema_pullback_is_not_closed_on_a_rejection_at_a_level(S):
     assert closed_on_level_rejection(EMA_PULLBACK) is False
-    assert all(closed_on_level_rejection(n) for n in OTHERS if n != RANGE_TRADE)     # the range trade: 13 November 2026
+    assert all(closed_on_level_rejection(n) for n in OTHERS)
 
 
 def test_the_ema_pullback_trades_in_a_trend_and_an_emerging_trend(S):
@@ -1063,46 +1028,11 @@ def lr_setup(pierced, highs, direction=SELL):
     return watcher, [ev], [LR0] + cs + [trig]
 
 
-def run_lr(s, watcher, events, candles, levels=None):
+def run_lr(s, watcher, events, candles):
     g, out = LevelReversal(s), []
     for c in candles:
-        out += g.on_candle(c, watcher, events if c is candles[-1] else [], levels)
+        out += g.on_candle(c, watcher, events if c is candles[-1] else [])
     return out
-
-
-def lr_levels(*pairs):
-    return SimpleNamespace(levels=[SimpleNamespace(type=t, price=D(str(p))) for t, p in pairs])
-
-
-def test_level_reversal_take_profit_is_the_next_daily_pivot_level(S):
-    # owner, 13 November 2026: run to the next daily pivot level (pivot, R1-R3, S1-S3) beyond the entry, exactly there
-    lv = lr_levels(("pivot", 100), ("previous_day_low", 94), ("round_number", 93), ("turning_low", 92.5),
-                   ("S1", 90), ("S2", 80), ("R1", 110))
-    w, ev, cs = lr_setup([("pivot", 100)], [104, 103, 102])                 # a sell triggered at 96
-    (x,) = run_lr(S, w, ev, cs, lv)
-    assert x.context["take_profit_price"] == D(90) and x.context["take_profit_level"] == "S1 90"
-    assert "take profit at the next daily pivot level, S1 90" in x.steps[-1]
-    w, ev, cs = lr_setup([("pivot", 100)], [96, 97, 98], direction=BUY)      # a buy triggered at 104
-    (x,) = run_lr(S, w, ev, cs, lv)
-    assert x.context["take_profit_level"] == "R1 110"
-
-
-def test_level_reversal_with_no_daily_pivot_level_beyond_keeps_20_pips(S):
-    w, ev, cs = lr_setup([("S2", 100)], [104, 103, 102])
-    (x,) = run_lr(S, w, ev, cs, lr_levels(("S2", 100), ("round_number", 90), ("R1", 120)))
-    assert "take_profit_price" not in x.context and "take profit 20 pips (no daily pivot level below the entry)" in x.steps[-1]
-    (x,) = run_lr(S, w, ev, cs)                                            # no levels given
-    assert "take_profit_price" not in x.context
-
-
-def test_take_profit_price_is_only_the_level_reversals(S):
-    from strategies.common import take_profit_price, take_profit_pips_to
-    i = check(S, "GBPUSD", cand(LEVEL_REVERSAL, SELL), state(TREND, DOWN), PIVOT, EMA100)
-    i.context["take_profit_price"] = D("13206.0")
-    assert take_profit_price(S, i) == D("13206.0")
-    assert take_profit_price(S, check(S, "GBPUSD", cand(EMA_PULLBACK, SELL), state(TREND, DOWN), PIVOT, EMA100)) is None
-    assert take_profit_pips_to(D("13206.0"), SELL, D("13241.1"), 1) == D("35.1")
-    assert take_profit_pips_to(D("13430.2"), BUY, D("13401.5"), 1) == D("28.7")
 
 
 def test_level_reversal_at_r2_within_the_allowance(S):
@@ -1114,8 +1044,7 @@ def test_level_reversal_at_r2_within_the_allowance(S):
     assert "R2 100" in x.steps[-2] and "4.0 pips past the level" in x.steps[-2] and "to 09:15 GMT" in x.steps[-2]
 
 
-@pytest.mark.parametrize("what,price,allowance", [("R2", 100, 12), ("S2", 100, 12), ("pivot", 100, 12),
-                                                         ("round_number", 200, 5)])
+@pytest.mark.parametrize("what,price,allowance", [("R2", 100, 12), ("S2", 100, 12), ("round_number", 200, 5)])
 def test_level_reversal_allowance_for_each_kind_of_level(S, what, price, allowance):
     w, ev, cs = lr_setup([(what, price)], [price + allowance, price + 1, price])              # exactly the allowance: counts
     (x,) = run_lr(S, w, ev, cs)
@@ -1125,16 +1054,12 @@ def test_level_reversal_allowance_for_each_kind_of_level(S, what, price, allowan
 
 
 def test_level_reversal_each_allowance_is_its_own_setting(S):
-    assert (S.level_reversal.allowance_pips_r2, S.level_reversal.allowance_pips_s2, S.level_reversal.allowance_pips_pivot,
-            S.level_reversal.allowance_pips_round_number) == (12, 12, 12, 5)
+    assert (S.level_reversal.allowance_pips_r2, S.level_reversal.allowance_pips_s2,
+            S.level_reversal.allowance_pips_round_number) == (12, 12, 5)
     w, ev, cs = lr_setup([("S2", 100)], [113, 101, 100])                                     # 13 past S2
     assert run_lr(S, w, ev, cs) == []
     assert len(run_lr(over(S, "level_reversal", allowance_pips_s2=13), w, ev, cs)) == 1
-    assert run_lr(over(S, "level_reversal", allowance_pips_r2=13, allowance_pips_pivot=13,
-                       allowance_pips_round_number=13), w, ev, cs) == []
-    w, ev, cs = lr_setup([("pivot", 100)], [113, 101, 100])                                  # 13 past the pivot
-    assert run_lr(S, w, ev, cs) == []
-    assert len(run_lr(over(S, "level_reversal", allowance_pips_pivot=13), w, ev, cs)) == 1
+    assert run_lr(over(S, "level_reversal", allowance_pips_r2=13, allowance_pips_round_number=13), w, ev, cs) == []
     w, ev, cs = lr_setup([("round_number", 200)], [206, 201, 200])                           # 6 past a 00
     assert run_lr(S, w, ev, cs) == []
     assert len(run_lr(over(S, "level_reversal", allowance_pips_round_number=6), w, ev, cs)) == 1
@@ -1146,8 +1071,8 @@ def test_level_reversal_short_of_the_level_counts(S):
     assert x.context["past_level_pips"] == -2 and x.context["stop_price"] == D(104)
 
 
-def test_level_reversal_only_s2_r2_the_pivot_and_00_round_numbers(S):
-    for what, price in (("R1", 100), ("S1", 100), ("S3", 100), ("R3", 100), ("turning_high", 100), ("previous_day_high", 100),
+def test_level_reversal_only_s2_r2_and_00_round_numbers(S):
+    for what, price in (("R1", 100), ("S1", 100), ("S3", 100), ("R3", 100), ("pivot", 100), ("turning_high", 100),
                         ("upper Bollinger band", 100), ("round_number", 150)):       # 150: a 50, not a 00
         w, ev, cs = lr_setup([(what, price)], [101, 100, 99])
         assert run_lr(S, w, ev, cs) == [], what
@@ -1221,9 +1146,8 @@ def test_the_replay_runs_the_level_reversal(monkeypatch, S):
     seen = []
 
     class Spy(LevelReversal):
-        def on_candle(self, c, watcher, events, levels=None):
+        def on_candle(self, c, watcher, events):
             seen.append((c.start, watcher, list(events)))
-            assert levels is not None                        # the levels, for its take profit
             return []
     monkeypatch.setattr(replay_mod, "LevelReversal", Spy)
     fake_replay(monkeypatch, S, {0: (TREND, DOWN)})

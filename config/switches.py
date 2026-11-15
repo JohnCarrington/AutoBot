@@ -12,6 +12,8 @@
   STRATEGY_BREAKOUT           on or off (never on while breakout.stop_loss_pips or
                               breakout.take_profit_pips is 0)
   STRATEGY_LEVEL_REVERSAL     on or off
+  HOURLY_READ                 on or off: while off the hourly read (analyser/hourly_read.py) does not
+                              gate the trend strategies (strategies/common.py, check 4)
   TRADING                     the master switch, on or off: while off everything runs and is
                               recorded, but no order is ever sent to IG
   STOP_LOSS_PIPS              the stop loss sent with every trade, in pips (whole, 1 to 100),
@@ -84,6 +86,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
     "STRATEGY_BREAKOUT": ("breakout", _on_off),
     "STRATEGY_LEVEL_REVERSAL": ("level_reversal", _on_off),
+    "HOURLY_READ": ("hourly_read", _on_off),
     "TRADING": ("trading", _on_off),
     "STOP_LOSS_PIPS": ("stop_loss_pips", _pips(1, 100)),
     "STOP_LOSS_PIPS_EMA_PULLBACK": ("stop_loss_pips_ema_pullback", _pips(1, 100)),

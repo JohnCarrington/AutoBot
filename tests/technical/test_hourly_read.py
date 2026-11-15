@@ -146,3 +146,20 @@ def test_the_level_reversal_bounce_and_range_trade_are_not_affected(S):
 def test_an_allowed_idea_records_the_hourly_read(S):
     i = check(S, "GBPUSD", cand(EMA_PULLBACK, SELL), st(DOWN), D(110), D(110), hourly(SELL_OFF))
     assert "hourly sell-off: made up" in i.steps[-1]
+
+
+def _switch_off(S):
+    """The same settings with the switch HOURLY_READ off (owner, 15 November 2026: off in .env)."""
+    return SimpleNamespace(**(vars(S) | {"switches": SimpleNamespace(**(vars(S.switches) | {"hourly_read": False}))}))
+
+
+@pytest.mark.parametrize("strategy", [EMA_PULLBACK, SLOW_GRIND])
+def test_with_the_switch_off_the_hourly_read_gates_nothing(S, strategy):
+    off = _switch_off(S)
+    for h in (RANGING, SELL_OFF, RALLY):
+        for d, s5, p in ((SELL, st(DOWN), D(110)), (BUY, st(UP), D(90))):
+            assert hourly_reasons(off, strategy, d, hourly(h)) == []
+            i = check(off, "GBPUSD", cand(strategy, d), s5, p, p, hourly(h))
+            assert i.allowed, (strategy, h, d)
+            assert "hourly" not in i.steps[-1]          # nothing about the hourly read is recorded either
+    assert hourly_reasons(off, BREAKOUT, SELL, hourly(RANGING)) == []

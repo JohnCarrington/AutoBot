@@ -21,8 +21,7 @@ There is **one** rejection part (`rejection/`), shared by the analyser, the stra
 
 ## What counts as a pierce
 
-- **For the bounce, the Bollinger band needs a real pierce:** for a sell, the candle's high is above the upper band (for a buy, its low is below the lower band). Coming close does not count.
-- **For the range trade, reaching the band counts** (owner, 13 November 2026; no pierce needed): for a sell, the candle's high goes above the upper band or **comes within 3 pips** of it (`rejection.near_level_within_pips`); for a buy, its low goes below the lower band or comes within 3 pips of it. Each event says how close it came, as for a level.
+- **The Bollinger band needs a real pierce:** for a sell, the candle's high is above the upper band (for a buy, its low is below the lower band). Coming close does not count.
 - **A level counts when the candle reaches it:** for a sell, the candle opens at or below the level, and its high either goes through it or **comes within 3 pips** of it (`rejection.near_level_within_pips`). For a buy, the candle opens at or above the level, and its low goes through it or comes within 3 pips of it. Each event says how close it came: "through", "touched", or "within 2.3 pips".
 - The levels are the current list from the levels part (`docs/LEVELS.md`), **as it stood at the start of the candle**. Every kind of level counts.
 - One candle can reach several things at once (the band and several levels). They all go into the same setup.
@@ -36,11 +35,9 @@ There is **one** rejection part (`rejection/`), shared by the analyser, the stra
 4. **Trigger:** the live price goes below the confirmation candle's low. There is no time limit for this.
 5. **Cancelled:** if price goes above the reversal candle's high at any point after the reversal candle.
 
-## Version 2: the quicker range-trade version
+## Version 2: the quicker range-trade version (design 3.4)
 
-**Not used by the range trade since 13 November 2026** (owner: the range trade opens right at the band, with no turn candle and no trigger; `strategies/range_trade/strategy.py`, design 3.4). The watcher still runs this version and records its events; nothing trades on them.
-
-1. **Pierce:** a candle reaches the upper Bollinger band: its high goes past it or comes within 3 pips of it (above; owner, 13 November 2026). Levels play no part in this version.
+1. **Pierce:** a candle pierces the upper Bollinger band. Levels play no part in this version.
 2. **Rejection candle:** the very next candle is red (`range_trade.rejection_candle_within_candles`, 1). Otherwise the setup **expires**.
 3. **Trigger:** during the candle after that (`range_trade.trigger_within_candles`, 1), the live price goes below the rejection candle's low. Otherwise the setup **expires** at that candle's close.
 4. **Cancelled:** if price goes above the rejection candle's high first.

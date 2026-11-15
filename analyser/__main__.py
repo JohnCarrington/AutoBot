@@ -55,7 +55,8 @@ def main(argv: list[str] | None = None) -> int:
         t = parse_iso(a)
         print("\n".join(show(analyse(settings, store, t))))
         hourly = last_candles(store, "1h", t, settings.hourly_read.history_candles)
-        print("  " + HourlyReader(settings, hourly).at(t).line())
+        off = "" if settings.switches.hourly_read else " (switch HOURLY_READ off: it gates nothing)"
+        print("  " + HourlyReader(settings, hourly).at(t).line() + off)
     return 0
 
 
