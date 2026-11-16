@@ -12,6 +12,9 @@
   STRATEGY_BREAKOUT           on or off (never on while breakout.stop_loss_pips or
                               breakout.take_profit_pips is 0)
   STRATEGY_LEVEL_REVERSAL     on or off
+  STRATEGY_ASIAN_RANGE_BREAKOUT    on or off (owner, 16 November 2026)
+  STRATEGY_SESSION_SWEEP           on or off (owner, 16 November 2026)
+  STRATEGY_NEW_YORK_OPEN_REVERSAL  on or off (owner, 16 November 2026)
   HOURLY_READ                 on or off: while off the hourly read (analyser/hourly_read.py) does not
                               gate the trend strategies (strategies/common.py, check 4)
   BOUNCE_ONLY_WHEN_HOURLY_RANGING  on or off (off if left out): while on, a Bollinger bounce opens only
@@ -94,6 +97,9 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
     "STRATEGY_BREAKOUT": ("breakout", _on_off),
     "STRATEGY_LEVEL_REVERSAL": ("level_reversal", _on_off),
+    "STRATEGY_ASIAN_RANGE_BREAKOUT": ("asian_range_breakout", _on_off),
+    "STRATEGY_SESSION_SWEEP": ("session_sweep", _on_off),
+    "STRATEGY_NEW_YORK_OPEN_REVERSAL": ("new_york_open_reversal", _on_off),
     "HOURLY_READ": ("hourly_read", _on_off),
     "BOUNCE_ONLY_WHEN_HOURLY_RANGING": ("bounce_only_when_hourly_ranging", _on_off),
     "BOUNCE_ONLY_NEAR_TIMES": ("bounce_only_near_times", _on_off),

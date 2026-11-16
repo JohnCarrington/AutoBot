@@ -673,3 +673,17 @@ def test_a_blocked_setup_does_not_use_up_the_candles_try(S, monkeypatch):
     e.start(WED)
     feed(e, clock, C[:3])
     assert len(ig.orders_sent()) == 1
+
+
+def test_a_session_strategy_the_live_prices_did_not_show_is_never_sent_late(S, monkeypatch):
+    # owner, 16 November 2026: the three session strategies open at the next candle's open, like the bounce
+    from strategies.common import SESSION_SWEEP
+    s = Over(S, switches={k: v for k, v in vars(S.switches).items() if not k.startswith("_")} | {"session_sweep": True})
+    late = idea(SESSION_SWEEP, C[2].start)
+    late.context["stop_price"] = D("112")
+    e, ig, tracker, clock, quote = make(s, monkeypatch, C, {C[2].start: [late]}, trading_on=True)
+    e.start(WED)
+    feed(e, clock, C[:4])
+    assert ig.orders_sent() == [] and e.manager.trades == {}
+    (d,) = [d for d in decisions(e) if d["kind"] == "not sent late"]
+    assert d["strategy"] == SESSION_SWEEP and "not sent late" in d["why"]
