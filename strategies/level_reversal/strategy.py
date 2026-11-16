@@ -2,6 +2,12 @@
 Its ideas are the triggers of the strategies' own rejection watcher (rejection/watch.py,
 design_only=True, the same setups as the Bollinger bounce, design 3.3), kept only when:
 
+  0. price came into the level from the right side (the side check; owner's rule from October, built
+     16 November 2026): a level counts for a sell only if the piercing candle opened at or below it
+     (price rising into it), for a buy only if it opened at or above it (price falling into it). A candle
+     opening exactly on the level counts both ways (owner, 16 November 2026). This is the shared
+     watcher's own side check, which design_only switches off; it is done here so the range trade,
+     which shares that watcher, is not changed;
   1. the setup reached one of the levels in level_reversal.level_types: S2, R2 and round numbers,
      the round numbers only on a multiple of level_reversal.round_numbers_every_pips (100: the 00s,
      not the 50s);
@@ -47,6 +53,7 @@ class LevelReversal:
         self.ppp = Decimal(settings.market.points_per_pip)
         self.candles: deque = deque(maxlen=KEEP_CANDLES)
 
+    def _o(self, c): return getattr(c, f"{self.side}_open")
     def _h(self, c): return getattr(c, f"{self.side}_high")
     def _l(self, c): return getattr(c, f"{self.side}_low")
 
@@ -89,9 +96,12 @@ class LevelReversal:
             return None
         furthest = max(self._h(c) for c in span) if sell else min(self._l(c) for c in span)
         order = sorted(st.pierced, key=lambda p: p["what"] == ROUND_NUMBER)      # S2 and R2 first
+        opened = self._o(st.pierce)
         for p in order:
             name = self.kind(p["what"], p["price"])
             if name is None:
+                continue
+            if (opened > p["price"]) if sell else (opened < p["price"]):            # rule 0: the wrong side
                 continue
             past = (furthest - p["price"]) if sell else (p["price"] - furthest)
             allowance = self.allowance(p["what"])
@@ -101,6 +111,9 @@ class LevelReversal:
             stop = furthest + beyond if sell else furthest - beyond
             word = "above" if sell else "below"
             steps = [x.describe() for x in watcher.events if x.setup == e.setup and x.kind != "ignored"]
+            side = ("on the level" if opened == p["price"] else
+                    f"{'below' if sell else 'above'} it: price {'rose' if sell else 'fell'} into it")
+            steps.append(f"{name}: the piercing candle opened at {plain(opened)}, {side}")
             steps.append(f"{name}: furthest {'high' if sell else 'low'} {plain(furthest)} from "
                          f"{uk_short(st.pierce.start)} to {uk_short(st.confirmation.start)[-9:]}, "
                          f"{plain((past / self.ppp).quantize(Decimal('0.1')))} pips past the level "

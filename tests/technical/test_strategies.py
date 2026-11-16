@@ -990,14 +990,23 @@ from strategies.level_reversal.strategy import LevelReversal  # noqa: E402
 LR0 = C(0, 99, 99.5, 98, 99)                # a candle before the setup
 
 
-def lr_setup(pierced, highs, direction=SELL):
+def lr_setup(pierced, highs, direction=SELL, opened=None):
     """A finished bounce setup: the pierce candle, the reversal candle, the confirmation candle
-    (sell highs as given), then a trigger at 96 on the next candle. Returns (strategy, watcher, events, candles)."""
+    (sell highs as given), then a trigger at 96 on the next candle. Returns (strategy, watcher, events, candles).
+    The pierce candle opens at `opened`; by default 1 below the lowest level (and the high) for a sell (price
+    rising into the levels), 1 above the highest (and the low) for a buy (falling into them), so the side check passes."""
+    prices = [p for _, p in pierced]
     if direction == SELL:
+        h = highs[0]
+        o = min(min(prices), h) - 1 if opened is None else opened
         cs = [C(1 + k, h - 1, h, h - 3, h - 2) for k, h in enumerate(highs)]
+        cs[0] = C(1, o, max(h, o), min(h - 3, o), h - 2)
         price = D(96)
     else:
+        lo = highs[0]
+        o = max(max(prices), lo) + 1 if opened is None else opened
         cs = [C(1 + k, l + 1, l + 3, l, l + 2) for k, l in enumerate(highs)]
+        cs[0] = C(1, o, max(lo + 3, o), min(lo, o), lo + 2)
         price = D(104)
     trig = C(1 + len(highs), 97, 97, 95, 95.5) if direction == SELL else C(1 + len(highs), 103, 105, 103, 104.5)
     st = Setup(1, "bounce", direction, cs[0], [{"what": w, "price": D(str(p)), "how": "through"} for w, p in pierced])
@@ -1080,6 +1089,50 @@ def test_level_reversal_buy_is_the_mirror_image(S):
     w, ev, cs = lr_setup([("S2", 100)], [96, 97, 98], direction=BUY)      # lows: furthest 96, 4 past S2
     (x,) = run_lr(S, w, ev, cs)
     assert (x.direction, x.context["past_level_pips"], x.context["stop_price"]) == (BUY, 4, D(90))
+
+
+def test_level_reversal_side_check_sell_only_when_price_rose_into_the_level(S):
+    """Owner's rule (October; built 16 November 2026): rising into a level, only a sell."""
+    w, ev, cs = lr_setup([("R2", 100)], [104, 103, 102], opened=99)            # opened below: rose into it
+    (x,) = run_lr(S, w, ev, cs)
+    assert "the piercing candle opened at 99, below it: price rose into it" in x.steps[-3]
+    w, ev, cs = lr_setup([("R2", 100)], [104, 103, 102], opened=101)           # opened above: fell into it
+    assert run_lr(S, w, ev, cs) == []
+
+
+def test_level_reversal_side_check_buy_only_when_price_fell_into_the_level(S):
+    w, ev, cs = lr_setup([("S2", 100)], [96, 97, 98], direction=BUY, opened=101)   # opened above: fell into it
+    (x,) = run_lr(S, w, ev, cs)
+    assert "the piercing candle opened at 101, above it: price fell into it" in x.steps[-3]
+    w, ev, cs = lr_setup([("S2", 100)], [96, 97, 98], direction=BUY, opened=99)    # opened below: rose into it
+    assert run_lr(S, w, ev, cs) == []
+
+
+def test_level_reversal_side_check_opening_on_the_level_counts_both_ways(S):
+    """Owner, 16 November 2026: a candle opening exactly on the level counts both ways."""
+    w, ev, cs = lr_setup([("R2", 100)], [104, 103, 102], opened=100)
+    (x,) = run_lr(S, w, ev, cs)
+    assert "opened at 100, on the level" in x.steps[-3]
+    w, ev, cs = lr_setup([("S2", 100)], [96, 97, 98], direction=BUY, opened=100)
+    assert len(run_lr(S, w, ev, cs)) == 1
+
+
+def test_level_reversal_side_check_per_level(S):
+    """Each level is checked on its own: the wrong-side level is skipped, a right-side one can still count."""
+    w, ev, cs = lr_setup([("R2", 98), ("round_number", 200)], [201, 200, 199], opened=199)   # above R2, below the 00
+    (x,) = run_lr(S, w, ev, cs)
+    assert x.context["level"] == D(200)
+
+
+def test_level_reversal_side_check_16_november_2026(S):
+    """This morning's sell (Mon 16 Nov 06:35): the piercing candle opened at 13202.5, above the 00 at 13200,
+    as price fell into it; it is no longer a sell. The buy off the same levels still counts."""
+    w, ev, cs = lr_setup([("round_number", 13200)], [13203, 13202.5, 13201.9], opened=13202.5)
+    assert run_lr(S, w, ev, cs) == []
+    w, ev, cs = lr_setup([("S2", 13196.3), ("round_number", 13200)], [13195.6, 13195.9, 13200.5],
+                         direction=BUY, opened=13198.8)
+    (x,) = run_lr(S, w, ev, cs)
+    assert x.context["level_name"].startswith("S2")
 
 
 def test_level_reversal_one_idea_per_candle_and_direction(S):

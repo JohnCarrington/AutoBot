@@ -218,7 +218,8 @@ Spread spikes are ignored as in the shared rejection part (`rejection.max_spread
 4. **Stop 6 pips beyond the furthest point** price reached (`level_reversal.stop_beyond_furthest_pips`; for a sell, 6 pips above the highest high from the piercing candle to the confirmation candle), so the stop's distance from the entry varies; **take profit 20 pips** (`level_reversal.take_profit_pips`).
 5. In every analyser state except consolidation, either way (2.2); the direction rule (2.3) does not apply.
 6. New trades from 06:00 to 20:30 UK; closed at 20:30 UK; not opened in a big-news window and closed 15 minutes before big news, like the other strategies (section 6); one level reversal trade at a time; no close on a rejection at a level (section 4).
-7. If several of these levels were reached, the first that passes rule 2 is the level (S2 and R2 before round numbers); several setups triggering on the same candle and direction give one trade.
+7. **Side check** (owner's rule from October, built 16 November 2026): price falling into a level means only a buy; price rising into a level means only a sell. A level counts for a sell only if the piercing candle opened at or below it, for a buy only if it opened at or above it; a candle opening exactly on the level counts both ways (owner, 16 November 2026). Each level is checked on its own. It is done in the level reversal itself (`strategies/level_reversal/strategy.py`), not in the shared watcher, so the range trade is not changed. Replays: this morning's 06:50 sell (−11.2) goes; 25 October to 13 November 2026, 25 trades +101.6 → 23 trades +106.4; the 118 complete weekdays of 23 March to 6 November 2026, 249 trades −316.3 → 223 trades −295.5 (`data/research/replay/lr_side_20261116/`).
+8. If several of these levels were reached, the first that passes rules 2 and 7 is the level (S2 and R2 before round numbers); several setups triggering on the same candle and direction give one trade.
 
 ---
 

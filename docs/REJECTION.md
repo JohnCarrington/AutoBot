@@ -66,7 +66,7 @@ This is the shared rejection part's bounce version, used by the analyser and the
 The analyser uses the watcher as described above. The strategies (`strategies/replay.py`) run a second watcher with `design_only=True`, which has only the rules written in design 3.4 and the bounce rules above (owner, 7 November 2026); the range trade and the level reversal read it:
 - every pierce starts its own setup: no limit of one setup per version and direction;
 - a pierce while a setup waits for its reversal candle does not start that setup's count again (it starts a new setup);
-- a level is reached when the candle's high-low range touches it or comes within `rejection.near_level_within_pips` of it, whichever side the candle opened on.
+- a level is reached when the candle's high-low range touches it or comes within `rejection.near_level_within_pips` of it, whichever side the candle opened on. The level reversal then applies the side check itself (design 3.6 rule 7, 16 November 2026): a level counts for its sell only if the piercing candle opened at or below it, for its buy only if it opened at or above it. The range trade does not.
 Everything else (the band pierce, the 3-candle limits, the confirmation close, the trigger, the cancel, the spread-spike rule, the size record) is the same.
 
 ## The reversal watch windows
