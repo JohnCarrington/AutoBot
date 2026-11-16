@@ -30,6 +30,13 @@ only, owner 7 November 2026):
        * BOUNCE_ONLY_WHEN_HOURLY_RANGING: it opens only while the hourly read says ranging (whatever HOURLY_READ is);
        * BOUNCE_ONLY_NEAR_TIMES: it opens only within bounce.near_times_within_minutes (60) of one of
          bounce.near_times (10:00, 14:00, 16:00 UK), both ends included, judged at the moment it opens.
+  6. the trend is still going (owner, 16 November 2026), only while the switch TREND_STILL_GOING is on (off if
+     left out): the trend strategies (TREND_STRATEGIES: EMA pullback, slow grind, breakout) only open a sell if,
+     within the last trend_still_going.within_candles (12) finished 5-minute candles, price made a new low at
+     least trend_still_going.new_extreme_pips (5) below the previous low, and a buy only if it made a new high at
+     least that far above the previous high. The previous low is the last swing low before that candle: a candle
+     whose low is lower than the lows of the trend_still_going.swing_candles_each_side (1) candles before it and
+     after it, all of them before that candle (a swing high, the mirror). Sell price, as on the chart.
 "The current state" is the analyser's state after the last finished 5-minute
 candle, the hourly read is the one after the last finished hourly candle, and
 the direction rule uses the entry price. A candidate that fails a
@@ -336,8 +343,40 @@ def near_times(settings: Any, t: datetime) -> bool:
     return any(abs(lt - dt.combine(lt.date(), x, tzinfo=uk)) <= within for x in settings.bounce.near_times)
 
 
+def still_going_reasons(settings: Any, strategy: str, direction: str, candles: list | None) -> list[str]:
+    """Check 6: why the trend is not still going for this trend strategy this way (empty: allowed). `candles`: the
+    finished 5-minute candles before the entry, oldest first (the strategy runner gives them; None: not checked)."""
+    if strategy not in TREND_STRATEGIES or not getattr(settings.switches, "trend_still_going", False) \
+            or candles is None:
+        return []
+    t, side = settings.trend_still_going, settings.chart.price
+    sell = direction == SELL
+    n, w = int(t.within_candles), int(t.swing_candles_each_side)
+    need = Decimal(t.new_extreme_pips) * Decimal(settings.market.points_per_pip)
+    # a sell looks at lows, a buy at highs turned upside down, so "lower" is "further in the trade's direction"
+    x = [getattr(c, f"{side}_low") if sell else -getattr(c, f"{side}_high") for c in candles]
+    best = None                                         # (how far beyond, swing price, swing candle, new candle)
+    for j in range(max(0, len(x) - n), len(x)):
+        for k in range(j - 1 - w, w - 1, -1):           # the last swing before j, with its w candles after it before j
+            if all(x[k] < x[k - i] for i in range(1, w + 1)) and all(x[k] < x[k + i] for i in range(1, w + 1)):
+                beyond = x[k] - x[j]
+                if best is None or beyond > best[0]:
+                    best = (beyond, x[k], candles[k], candles[j])
+                break
+    if best is not None and best[0] >= need:
+        return []
+    word, extreme = ("low", "below") if sell else ("high", "above")
+    pips = lambda v: plain((v / Decimal(settings.market.points_per_pip)).quantize(Decimal("0.1")))
+    found = "" if best is None else (
+        f" (the most: {pips(best[0])} pips {extreme} the swing {word} {plain(abs(best[1]))} of "
+        f"{best[2].start:%H:%M}, at {best[3].start:%H:%M})")
+    return [f"TREND_STILL_GOING is on and the trend is not still going: no new {word} at least "
+            f"{plain(t.new_extreme_pips)} pips {extreme} the previous {word} in the last {n} five-minute candles{found}"]
+
+
 def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state: Any, pivot: Decimal | None,
-            ema100: Decimal | None, hourly: Any = None, t: datetime | None = None) -> tuple[list[str], Any]:
+            ema100: Decimal | None, hourly: Any = None, t: datetime | None = None,
+            candles: list | None = None) -> tuple[list[str], Any]:
     """Every reason the switch, the state (2.2), the direction rule (2.3) or the hourly read (check 4) does not
     allow this strategy in this direction at this price (empty: allowed), and the direction rule. `hourly`: the
     hourly read (analyser.hourly_read.HourlyRead); the strategy runner always gives it."""
@@ -362,13 +401,16 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
         reasons.append(f"the direction rule says {rule.side} ({rule.reason})")
     reasons += hourly_reasons(settings, strategy, direction, hourly)
     reasons += bounce_reasons(settings, strategy, t, hourly)
+    reasons += still_going_reasons(settings, strategy, direction, candles)
     return reasons, rule
 
 
 def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | None,
-          ema100: Decimal | None, hourly: Any = None) -> Idea:
-    """Turn a candidate into an idea, or a blocked one with every reason. `hourly`: the hourly read."""
-    reasons, rule = allowed(settings, c.strategy, c.direction, c.entry_price, state, pivot, ema100, hourly, c.time)
+          ema100: Decimal | None, hourly: Any = None, candles: list | None = None) -> Idea:
+    """Turn a candidate into an idea, or a blocked one with every reason. `hourly`: the hourly read; `candles`:
+    the finished 5-minute candles before the entry (check 6)."""
+    reasons, rule = allowed(settings, c.strategy, c.direction, c.entry_price, state, pivot, ema100, hourly, c.time,
+                            candles)
     idea = Idea(pair, c.strategy, c.direction, c.time, c.entry_price, state.state, state.direction,
                 state.trend_type, rule.side, list(c.steps), context=dict(c.context))
     if reasons:

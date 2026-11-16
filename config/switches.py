@@ -19,6 +19,9 @@
   BOUNCE_ONLY_NEAR_TIMES      on or off (off if left out): while on, a Bollinger bounce opens only within
                               bounce.near_times_within_minutes (60) of bounce.near_times (10:00, 14:00,
                               16:00 UK) in settings.toml
+  TREND_STILL_GOING           on or off (off if left out): while on, the EMA pullback, slow grind and breakout
+                              open only while the trend is still going ([trend_still_going] in settings.toml;
+                              strategies/common.py, check 6)
   TRADING                     the master switch, on or off: while off everything runs and is
                               recorded, but no order is ever sent to IG
   STOP_LOSS_PIPS              the stop loss sent with every trade, in pips (whole, 1 to 100),
@@ -94,6 +97,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "HOURLY_READ": ("hourly_read", _on_off),
     "BOUNCE_ONLY_WHEN_HOURLY_RANGING": ("bounce_only_when_hourly_ranging", _on_off),
     "BOUNCE_ONLY_NEAR_TIMES": ("bounce_only_near_times", _on_off),
+    "TREND_STILL_GOING": ("trend_still_going", _on_off),
     "TRADING": ("trading", _on_off),
     "STOP_LOSS_PIPS": ("stop_loss_pips", _pips(1, 100)),
     "STOP_LOSS_PIPS_EMA_PULLBACK": ("stop_loss_pips_ema_pullback", _pips(1, 100)),
@@ -101,7 +105,9 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
 }
 
 # Switches that may be left out of .env, and their value then (owner, 15 November 2026: both off by default).
-OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_WHEN_HOURLY_RANGING": "off", "BOUNCE_ONLY_NEAR_TIMES": "off"}
+# TREND_STILL_GOING (owner, 16 November 2026): off if left out too.
+OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_WHEN_HOURLY_RANGING": "off", "BOUNCE_ONLY_NEAR_TIMES": "off",
+                            "TREND_STILL_GOING": "off"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:

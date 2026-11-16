@@ -176,6 +176,17 @@ times = ["10:00", "11:00", "13:00", "14:00", "16:00", "17:00"]
 minutes_before = 20
 minutes_after = 20
 
+[trend_still_going]
+# Trend still going (owner, 16 November 2026; only while the switch TREND_STILL_GOING in .env is on): the EMA
+# pullback, slow grind and breakout only open a sell if, within the last within_candles finished 5-minute candles,
+# price made a new low at least new_extreme_pips below the previous low; a buy only if it made a new high at least
+# new_extreme_pips above the previous high. The previous low is the last swing low before that candle: a candle
+# whose low is lower than the lows of the swing_candles_each_side candles before it and after it (a swing high,
+# the mirror). Sell price, as on the chart.
+new_extreme_pips = 5
+within_candles = 12
+swing_candles_each_side = 1
+
 [bounce]
 # The Bollinger band bounce (design 3.3; owner, 15 November 2026). The pierce: a 5-minute candle's high goes MORE
 # than this many pips above the hourly upper Bollinger band (20, 2; [indicators]) as the hourly chart showed it at

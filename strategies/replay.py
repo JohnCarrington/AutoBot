@@ -157,7 +157,8 @@ class StrategyRunner:
         st = self.state_after(len(self.week) - 1)
         e100 = ema100.get(self.week[-1].start)
         hr = self.hourly_read.at(partial.start)
-        return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100, hr)
+        done = self.warm + self.week                        # the finished candles before the forming one
+        return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100, hr, done)
                 for cand in cands]
 
     def step(self) -> list[tuple[Any, Idea]]:
@@ -194,8 +195,9 @@ class StrategyRunner:
                 st = self.state_after(i - 1)
                 e100 = ema100.get(self.week[i - 1].start) if i > 0 else None
                 hr = self.hourly_read.at(c.start)
+                done = allc[:-1]                            # the finished candles before this one
                 for cand in cands:
-                    out.append((c, check(s, s.market.pair, cand, st, self.pivot_at(c.start), e100, hr)))
+                    out.append((c, check(s, s.market.pair, cand, st, self.pivot_at(c.start), e100, hr, done)))
         self.done = len(hist)
         return out
 

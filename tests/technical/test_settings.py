@@ -113,6 +113,8 @@ EXPECTED = {
         "rollover_no_new_trades_from": time(21, 55), "rollover_no_new_trades_until": time(22, 15),
     },
     "possible_reversal": {"min_trend_move_pips": 30},
+    "trend_still_going": {"new_extreme_pips": Decimal("5"), "within_candles": 12,      # owner, 16 November 2026
+                          "swing_candles_each_side": 1},
     "hourly_read": {"range_candles": 12, "break_beyond_pips": 3, "ranging_after_candles": 12, "history_candles": 600},
     "breakout": {"trigger_within_candles": 3, "stop_loss_pips": 12, "take_profit_pips": 50},
     "trend_day": {"level_above": "R2", "level_below": "S2", "rsi_periods": 14, "rsi_above": 70, "rsi_below": 30,
@@ -541,6 +543,14 @@ def test_the_bounces_two_switches_are_off_if_left_out_and_load(tmp_path):
     for key in ("BOUNCE_ONLY_WHEN_HOURLY_RANGING", "BOUNCE_ONLY_NEAR_TIMES"):
         with pytest.raises(SettingsError, match=f"Invalid switch {key}.*must be on or off"):
             load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, key: "yes"}))
+
+
+def test_the_trend_still_going_switch_is_off_if_left_out_and_loads(tmp_path):
+    assert load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches.trend_still_going is False
+    on = load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "TREND_STILL_GOING": "on"})).switches
+    assert on.trend_still_going is True
+    with pytest.raises(SettingsError, match="Invalid switch TREND_STILL_GOING.*must be on or off"):
+        load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "TREND_STILL_GOING": "yes"}))
 
 
 @pytest.mark.parametrize("key,bad", [("level_above", "S2"), ("level_above", "R4"), ("level_below", "R2"), ("rsi_above", 40),

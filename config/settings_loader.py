@@ -414,6 +414,11 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "rollover_no_new_trades_from": _clock_time,
         "rollover_no_new_trades_until": _clock_time,
     },
+    "trend_still_going": {
+        "new_extreme_pips": _decimal_number("0", "100"),
+        "within_candles": _whole_number(1, 100),
+        "swing_candles_each_side": _whole_number(1, 10),
+    },
     "hourly_read": {
         "range_candles": _whole_number(1, 200),
         "break_beyond_pips": _whole_number(0, 1000),
