@@ -652,3 +652,24 @@ def test_a_live_bounce_is_not_sent_again_when_its_candle_finishes(S, monkeypatch
     e.on_price(tick(clock["t"], 100.6))
     feed(e, clock, C[2:3])
     assert len(ig.orders_sent()) == 1 and not any(d["kind"] == "bounce not sent" for d in decisions(e))
+
+
+def test_two_setups_of_one_strategy_on_one_candle_give_one_trade(S, monkeypatch):
+    # owner, 16 November 2026: the replay opened the same EMA pullback 2 or 3 times on one candle; live gives one
+    # try per strategy, direction and candle, and so does the finished candle now
+    two = {C[1].start: [idea(EMA_PULLBACK, C[1].start), idea(EMA_PULLBACK, C[1].start),
+                        idea(EMA_PULLBACK, C[1].start, BUY)]}
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, two, trading_on=True)
+    e.start(WED)
+    feed(e, clock, C[:3])
+    assert sorted(t.direction for t in e.manager.trades.values()) == [BUY, SELL] and len(ig.orders_sent()) == 2
+    (d,) = [d for d in decisions(e) if d["kind"] == "idea not sent again"]
+    assert d["direction"] == SELL and "already had a try" in d["why"]
+
+
+def test_a_blocked_setup_does_not_use_up_the_candles_try(S, monkeypatch):
+    two = {C[1].start: [idea(EMA_PULLBACK, C[1].start, allowed=False), idea(EMA_PULLBACK, C[1].start)]}
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, two, trading_on=True)
+    e.start(WED)
+    feed(e, clock, C[:3])
+    assert len(ig.orders_sent()) == 1

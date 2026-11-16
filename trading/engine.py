@@ -189,11 +189,20 @@ class Trading:
             self.manager.on_bar(Bar.of(c), band, rej, watching if k == len(new) - 1 else frozenset(), only=before,
                                 finished=True)
             self._after_bars()
-            for idea in ideas_by_candle.get(c.start, []):
-                sent_live = (idea.strategy, idea.direction, c.start) in self.fired
+            tried: set = set()          # one try per strategy, direction and candle, as the live prices give (owner,
+            for idea in ideas_by_candle.get(c.start, []):          # 16 November 2026: no second EMA pullback)
+                key = (idea.strategy, idea.direction, c.start)
+                sent_live = key in self.fired
                 self.book.decision("idea", idea.time, strategy=idea.strategy, direction=idea.direction,
                                    entry_price=idea.entry_price, allowed=idea.allowed, blocked_by=idea.blocked_by,
                                    state=idea.state, already_sent_live=sent_live)
+                if idea.allowed and not sent_live and key in tried:
+                    self.book.decision("idea not sent again", idea.time, strategy=idea.strategy,
+                                       direction=idea.direction, entry_price=idea.entry_price,
+                                       why="this strategy already had a try in this direction on this candle")
+                    continue
+                if idea.allowed and not sent_live:
+                    tried.add(key)
                 if idea.allowed and not sent_live and idea.strategy == BOLLINGER_BOUNCE and not self.replay:
                     # it opens at the candle's open; the live prices did not show it: never sent late
                     self.book.decision("bounce not sent", idea.time, strategy=idea.strategy, direction=idea.direction,
