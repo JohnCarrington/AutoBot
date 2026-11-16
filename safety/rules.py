@@ -13,6 +13,7 @@ It gives EVERY reason it refuses (an empty list: the order may go out):
      Bollinger bounce 1 in each direction, owner, 15 November 2026; the EMA pullback no limit), and at
      most limits.max_open_trades (5) in total not counting the EMA pullback's
      (strategies.common.counts_towards_most_at_once); the Bollinger bounce is not held back by that total;
+     the three session strategies (owner, 16 November 2026) as the bounce: 1 in each direction, not held back;
   6. the size is trade.size_gbp_per_pip (£10 a pip);
   7. total risk: every open trade's risk (its stop distance x its size) plus the new trade's, at most
      safety.max_total_risk_gbp (£100,000; owner, 8 November 2026: set so it is never reached);
@@ -25,6 +26,9 @@ It gives EVERY reason it refuses (an empty list: the order may go out):
      (analyser/day_direction.py: a big-news day's expected news direction, a trend day's direction, the Monday
      after a Friday that moved safety.big_friday_move_pips (80) or more, in the direction that reclaims it).
      Every other trade is unchanged.
+ 10. once a day (owner, 16 November 2026): the Asian range breakout one trade each way per day, the session sweep
+     one trade per level per day, the New York open reversal one trade a day: counted from the trades that opened
+     (the idea's context "once_a_day", kept with each trade in the order record).
 IG's minimum stop distance is NOT checked before a trade (owner, 8 November 2026): the bot assumes each
 strategy's own stop meets it; safety/refusals.py deals with IG refusing a trade.
 """
@@ -37,8 +41,8 @@ from decimal import Decimal
 from typing import Any
 
 from analyser.states import EMERGING, POSSIBLE_REVERSAL, STRONG_PUSH, TREND
-from strategies.common import (BOLLINGER_BOUNCE, EMA_PULLBACK, LEVEL_REVERSAL, SWITCH, counts_towards_most_at_once, may_open,
-                               stop_loss_pips, stop_price)
+from strategies.common import (EMA_PULLBACK, LEVEL_REVERSAL, SWITCH, WITHOUT_HINDRANCE, counts_towards_most_at_once,
+                               may_open, stop_loss_pips, stop_price)
 
 
 @dataclass(frozen=True)
@@ -103,7 +107,7 @@ def _limits(settings: Any, order: Order, open_trades: list[OpenTrade]) -> list[s
     out = []
     if idea.strategy != EMA_PULLBACK:
         mine = [t for t in open_trades if t.strategy == idea.strategy]
-        if idea.strategy == BOLLINGER_BOUNCE:            # one at a time in each direction (owner, 15 November 2026)
+        if idea.strategy in WITHOUT_HINDRANCE:           # one at a time in each direction (owner, 15 and 16 November 2026)
             same = [t for t in mine if t.direction == idea.direction]
             if len(same) >= lim.max_open_trades_per_strategy:
                 out.append(f"{idea.strategy} already has {len(same)} {idea.direction} trade(s) open "
@@ -111,9 +115,9 @@ def _limits(settings: Any, order: Order, open_trades: list[OpenTrade]) -> list[s
         elif len(mine) >= lim.max_open_trades_per_strategy:
             out.append(f"{idea.strategy} already has {len(mine)} trade(s) open "
                        f"(at most {lim.max_open_trades_per_strategy})")
-    # the Bollinger bounce is not held back by the most at once (owner, 15 November 2026: nothing else blocks it);
-    # its open trades still count towards it for the other strategies
-    if counts_towards_most_at_once(idea.strategy) and idea.strategy != BOLLINGER_BOUNCE:
+    # the Bollinger bounce and the session strategies are not held back by the most at once (owner, 15 and 16 November
+    # 2026: nothing else blocks them); their open trades still count towards it for the other strategies
+    if counts_towards_most_at_once(idea.strategy) and idea.strategy not in WITHOUT_HINDRANCE:
         counted = [t for t in open_trades if counts_towards_most_at_once(t.strategy)]
         if len(counted) >= lim.max_open_trades:
             out.append(f"{len(counted)} trades open that count towards the most at once ({lim.max_open_trades}; "
@@ -181,10 +185,22 @@ def _one_view(idea: Any, day: Any) -> list[str]:
     return out
 
 
+def _once_a_day(idea: Any, used: set | None) -> list[str]:
+    """Rule 10: once a day (owner, 16 November 2026). An idea whose context has "once_a_day" (the Asian range
+    breakout: its direction and day; the session sweep: its level and day; the New York open reversal: its day) is
+    refused once a trade with the same key has opened (or was sent and is not yet settled). `used`: those keys."""
+    key = getattr(idea, "context", {}).get("once_a_day")
+    if key and used and key in used:
+        return [f"once a day: a {idea.strategy} trade has already opened for {key.removeprefix(idea.strategy + ' ')}"]
+    return []
+
+
 def decide(settings: Any, order: Order, open_trades: list[OpenTrade], funds: AccountFunds | None,
-           now: datetime, paused: bool, calendar: list | None = None, day: Any = None) -> Decision:
+           now: datetime, paused: bool, calendar: list | None = None, day: Any = None,
+           used_once_a_day: set | None = None) -> Decision:
     """Whether `order` may go out at `now`, with every reason it may not. `day`: the directions of the idea's UK
-    day (analyser.day_direction.day_directions), for rule 9."""
+    day (analyser.day_direction.day_directions), for rule 9. `used_once_a_day`: the once-a-day keys of the trades
+    already opened (rule 10)."""
     idea = order.idea
     reasons: list[str] = []
     if paused:
@@ -201,4 +217,5 @@ def decide(settings: Any, order: Order, open_trades: list[OpenTrade], funds: Acc
     reasons += _risk(settings, order, open_trades)
     reasons += _funds(settings, funds)
     reasons += _one_view(idea, day)
+    reasons += _once_a_day(idea, used_once_a_day)
     return Decision(not reasons, reasons)

@@ -113,6 +113,18 @@ EXPECTED = {
         "rollover_no_new_trades_from": time(21, 55), "rollover_no_new_trades_until": time(22, 15),
     },
     "possible_reversal": {"min_trend_move_pips": 30},
+    # the session strategies (owner, 16 November 2026)
+    "asian_range_breakout": {"range_from": time(0, 0), "range_until": time(7, 0), "breakout_from": time(7, 0),
+                             "breakout_until": time(10, 0), "stop_loss_pips": 12, "trail_from_pips": Decimal("12"),
+                             "trail_candles": 3},
+    "session_sweep": {"asian_range_from": time(0, 0), "asian_range_until": time(7, 0), "london_range_from": time(7, 0),
+                      "london_range_until": time(12, 0), "beyond_pips": Decimal("3"), "confirmation_within_candles": 3,
+                      "stop_beyond_furthest_pips": Decimal("1"), "min_stop_pips": 12, "trail_from_pips": Decimal("12"),
+                      "trail_candles": 3},
+    "new_york_open_reversal": {"move_from": time(7, 0), "move_until": time(13, 30), "min_move_pips": Decimal("30"),
+                               "window_from": time(13, 30), "window_until": time(15, 0), "confirmation_within_candles": 3,
+                               "no_trade_if_big_news_at": time(13, 30), "stop_loss_pips": 12,
+                               "trail_from_pips": Decimal("12"), "trail_candles": 3},
     "trend_still_going": {"new_extreme_pips": Decimal("5"), "within_candles": 12,      # owner, 16 November 2026
                           "swing_candles_each_side": 1},
     "hourly_read": {"range_candles": 12, "break_beyond_pips": 3, "ranging_after_candles": 12, "history_candles": 600},
@@ -449,7 +461,9 @@ SWITCHES_OK = {"PAIRS_ON": "GBPUSD", "NEW_TRADES_FROM": "06:00", "NEW_TRADES_UNT
                "STRATEGY_SLOW_GRIND": "on", "STRATEGY_EMA_PULLBACK": "on",
                "STRATEGY_BOLLINGER_BOUNCE": "off", "STRATEGY_RANGE_TRADE": "on",
                "STOP_LOSS_PIPS": "6", "STOP_LOSS_PIPS_EMA_PULLBACK": "12", "TAKE_PROFIT_PIPS": "100", "STRATEGY_BREAKOUT": "off",
-               "STRATEGY_LEVEL_REVERSAL": "on", "HOURLY_READ": "off", "TRADING": "off"}
+               "STRATEGY_LEVEL_REVERSAL": "on", "HOURLY_READ": "off", "TRADING": "off",
+               "STRATEGY_ASIAN_RANGE_BREAKOUT": "on", "STRATEGY_SESSION_SWEEP": "on",
+               "STRATEGY_NEW_YORK_OPEN_REVERSAL": "on"}
 
 
 def _env(tmp_path, values, secrets=True):
@@ -654,7 +668,7 @@ def test_load_or_exit_reads_the_switches(tmp_path, monkeypatch):
     monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {**SWITCHES_OK, "NEW_TRADES_FROM": "07:15"})))
     assert load_or_exit().switches.new_trades_from == time(7, 15)
     monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {"PAIRS_ON": "GBPUSD"})))
-    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 13 problem"):
+    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 16 problem"):
         load_or_exit()
 
 

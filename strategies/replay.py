@@ -14,7 +14,10 @@ market state at each moment is the one the service would have had). At each
     only the rules of design 3.4 and 3.6 (design_only); the analyser's watcher is
     not changed;
   * the Bollinger bounce keeps its own hourly chart (prices/hourly_chart.py),
-    built from the same 5-minute candles, the warm-up candles included.
+    built from the same 5-minute candles, the warm-up candles included;
+  * the session strategies (the Asian range breakout, the session sweep and the
+    New York open reversal) keep their own UK-day ranges from the same candles,
+    the warm-up candles included.
 With stored candles there are no ticks, so an entry is shown at the start of
 the candle it was reached in.
 """
@@ -43,6 +46,9 @@ from strategies.range_trade.strategy import candidates as range_candidates
 from strategies.slow_grind.strategy import SlowGrind
 from strategies.breakout.strategy import Breakout
 from strategies.level_reversal.strategy import LevelReversal
+from strategies.asian_range_breakout.strategy import AsianRangeBreakout
+from strategies.session_sweep.strategy import SessionSweep
+from strategies.new_york_open_reversal.strategy import NewYorkOpenReversal
 
 @dataclass
 class Replay:
@@ -101,6 +107,9 @@ class StrategyRunner:
         self.reversal = LevelReversal(s)
         self.bounce = BollingerBounce(s)
         self.bounce.warm(self.warm)
+        self.sessions = [AsianRangeBreakout(s), SessionSweep(s), NewYorkOpenReversal(s)]
+        for x in self.sessions:
+            x.warm(self.warm)
 
     def _hourly(self, end: datetime) -> HourlyTrendReader:
         return HourlyTrendReader(self.s, last_candles(self.memo, "1h", end, self.s.ema_pullback.hourly_history_candles))
@@ -148,12 +157,14 @@ class StrategyRunner:
         watcher = fork(self.watcher)
         breakout, grind, pullback, reversal = fork(self.breakout), fork(self.grind), fork(self.pullback), fork(self.reversal)
         bounce = fork(self.bounce)
+        sessions = [fork(x) for x in self.sessions]
         events = watcher.on_candle(partial, band, levels if levels is not None else build(s, self.memo, partial.start))
         cands = (breakout.on_candle(partial, None, None)
                  + grind.on_candle(partial, sg_ema.get(partial.start))
                  + pullback.on_candle(partial, fast.get(partial.start), slow.get(partial.start))
                  + bounce.on_candle(partial) + range_candidates(watcher, events)
-                 + reversal.on_candle(partial, watcher, events))
+                 + reversal.on_candle(partial, watcher, events)
+                 + [x for strat in sessions for x in strat.on_candle(partial)])
         st = self.state_after(len(self.week) - 1)
         e100 = ema100.get(self.week[-1].start)
         hr = self.hourly_read.at(partial.start)
@@ -190,7 +201,8 @@ class StrategyRunner:
                      + self.grind.on_candle(c, sg_ema.get(c.start))
                      + self.pullback.on_candle(c, fast.get(c.start), slow.get(c.start))
                      + self.bounce.on_candle(c) + range_candidates(self.watcher, events)
-                     + self.reversal.on_candle(c, self.watcher, events))
+                     + self.reversal.on_candle(c, self.watcher, events)
+                     + [x for strat in self.sessions for x in strat.on_candle(c)])
             if cands:
                 st = self.state_after(i - 1)
                 e100 = ema100.get(self.week[i - 1].start) if i > 0 else None
@@ -213,7 +225,8 @@ def run(settings: Any, store: CandleStore, start: datetime, end: datetime) -> Re
     ideas = [idea for c, idea in runner.step() if start <= c.start < end]
     out = Replay(ideas, states={c.start: runner.state_after(i) for i, c in enumerate(runner.week)})
     out.notes = {"slow grind": runner.grind.notes, "EMA pullback": runner.pullback.notes, "breakout": runner.breakout.notes,
-                 "Bollinger bounce": runner.bounce.notes}
+                 "Bollinger bounce": runner.bounce.notes, "Asian range breakout": runner.sessions[0].notes,
+                 "session sweep": runner.sessions[1].notes, "New York open reversal": runner.sessions[2].notes}
     out.watcher = runner.watcher
     return out
 
