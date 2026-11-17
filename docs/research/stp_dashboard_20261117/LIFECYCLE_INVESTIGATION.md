@@ -76,8 +76,8 @@ The 5-minute candles that decided each step (sell price):
 12. **Internally consistent?** Yes. Every event is in time order; each id has exactly one terminal event; the
     `recent` list in `current.json` matches the history file; counters match; the zone and destination prices in the
     reasons match the stored plans.
-13. **Incorrectly classified?** No recommendation was misclassified under the approved rules. One genuine planner
-    defect allowed rec 2 to be issued at all (section 3, D-1).
+13. **Incorrectly classified?** No recommendation was misclassified under the approved rules. Rec 2's quick
+    invalidation comes from a mismatch between two approved rules (section 3, D-1).
 
 ## 3. Root causes, by category
 
@@ -86,19 +86,20 @@ The 5-minute candles that decided each step (sell price):
 | **Correct behaviour, poorly presented** | (P-1) Two records with one zone are correct (separate ids, separate forecasts) but the panel listed them as two near-identical lines with no times. (P-2) "Destination reached" uses the approved 3-pip allowance; the wording "price reached 13200" can read as an exact touch (21:55 low was 1.32013). (P-3) Activation by the 3-pip allowance, not physical entry, is not stated. |
 | **Dashboard interpretation defects** | (DI-1) "NOT current" displayed the recommendation's FC-08 currency flag as if it were the analysis's freshness. (DI-2) "NO RECOMMENDATION" gave no reason when the plan recommends but the last recommendation ended since the last analysis. (DI-3) Prices shown as IG points (13213.5–13219.9). |
 | **Recommendation-history defects** | (H-1) When a recommendation ends, the keeper drops the full record; only the short summary in the "created" event survives — the original intermediate/extended destinations, invalidation conditions and structured evidence are lost. Fixed for the future by a reporting-only addition (`issued.jsonl`, section 5). The two 17 November records cannot be restored beyond their summary (the 22:00 full plan was saved in the evidence copy). (H-2) The planner persists only the levels inside the zones it considered, not its whole level map, so the chart can only draw those (documented limitation). |
-| **Genuine planner lifecycle defect** | (D-1) **A recommendation can be issued when price is already at (within the 3-pip touch allowance of) its primary destination.** At issue, the keeper checks only whether price is already in the *entry zone* (`run` → `five_minute(..., entry_only=True)`); it does not check the destination. Rec 2 was therefore born with its "destination reached before entry" condition already effectively met and was invalidated by the next 5-minute candle. While price stays near 1.32000 and the plan is unchanged, every hourly re-plan can repeat this create → invalidate cycle (recorded churn, misleading counts). (D-2, minor) The activation candle can be one that started before creation (20:20 candle vs 20:24:13 creation). |
+| **Genuine planner lifecycle defect** | (D-1) **The guard against issuing at the destination and the touch rule disagree.** The planner already has a guard (`planner/assess.py`, `destination_first_applies`): the "destination reached before entry" rule applies only if the primary destination's edge is more than 3 pips beyond the **current price** (the last close). The touch rule that then fires it (`zones.interacts`) uses the candle's **extreme** with a 3-pip allowance. At 22:00:02 price was 1.32035, 3.5 pips above 1.32000, so the guard switched the rule on (by 0.5 pip) — yet the 21:55 candle's low (1.32013) was already inside the touch allowance, and the next candle (low 1.31988) fired it. A recommendation issued a few pips outside the guard is therefore likely to be invalidated by ordinary 5-minute noise, which is what happened to rec 2. (At 23:00 the same zone was issued again as `…-2300-3` with price 1.32029: inside the guard, so the rule is off and that recommendation waits for its zone — see the follow-up.) (D-2, minor) The activation candle can be one that started before creation (20:20 candle vs 20:24:13 creation). |
 | **Data freshness issues** | None. Data was fresh (`data_fresh: true`, the planner ran every 5 minutes, the analysis was the latest hourly one). |
 
 ## 4. Proposed planner corrections (NOT implemented — need the owner's approval)
 
 These change planner decisions/recording and are outside the dashboard work's authority:
 
-- **D-1 (recommended):** at issue, do not create a recommendation when the latest finished 5-minute candle already
-  interacts with the primary destination zone (`zones.interacts` with the destination, as the 5-minute check uses);
-  record the plan with `no_recommendation = "price is already at the primary destination"` instead. Equivalent
-  alternative: in `assess.choose_zone`/reachability, require price to be between the zone and the primary destination
-  by more than the 3-pip allowance. Either way, a test reproducing 17 November 22:00 (price 1.32035, destination
-  1.32000) must give no recommendation.
+- **D-1 (recommended):** make the guard and the touch rule agree: decide `destination_first_applies` with the
+  same test the 5-minute check uses — the rule applies only if the latest finished 5-minute candle does **not**
+  already interact with the primary destination zone (`zones.interacts`), optionally with a margin of one typical
+  5-minute range. Alternatively, do not issue a recommendation at all while price is within the touch allowance of its
+  primary destination (record `no_recommendation = "price is already at the primary destination"`). A test
+  reproducing 17 November 22:00 (close 1.32035, 21:55 low 1.32013, destination 1.32000) must not produce an
+  immediate "destination reached before entry".
 - **D-2 (optional):** at issue, apply the zone check only to 5-minute candles that *start* at or after the creation
   time, or record the activation as "touch began before creation". The dashboard already flags this case.
 - **H-2 (optional, reporting only):** persist the plan's structured level map in `last_plan` so the chart can draw
@@ -119,4 +120,10 @@ These change planner decisions/recording and are outside the dashboard work's au
 
 ## 6. Follow-up observation (23:00 UTC)
 
-See `FOLLOW_UP_2300.md` (written after the 23:00 analysis) for whether D-1's churn recurred.
+At 23:00:03 the planner issued `STP-GBPUSD-20261117-2300-3`: the same zone 1.32135–1.32199 and primary 1.32000,
+11.9 pips below the zone, price 1.32029. Its `destination_first_applies` is **false** (price within 3 pips of the
+destination), so the 23:00 candle (low 1.32008, inside the touch allowance) did **not** invalidate it; at 23:05 it was
+WAITING. This confirms the guard exists and works when price is inside it, and that rec 2 was a boundary case
+(D-1). Note the consequence for rec 3: with the destination rule off, it can only end by reaching its zone and then
+the destination, a confirmed break, a direction change, supersession or the evidence changing. Evidence copy:
+`evidence/recommendations_20261117T2306Z.jsonl`.

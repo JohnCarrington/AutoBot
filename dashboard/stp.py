@@ -150,7 +150,7 @@ class Prices:
             if lo <= v < hi and self.scale == 10000:
                 return self.real(v) or m.group(0)
             return m.group(0)
-        return re.sub(r"(?<![\d:.\-])\d{4,5}(?:\.\d)?(?![\d:])", rep, s)
+        return re.sub(r"(?<![\d:.\-])\d{4,5}(?:\.\d+)?(?![\d:])", rep, s)
 
 
 def read_state(settings: Any) -> dict | None:
@@ -503,9 +503,9 @@ def technical(st: dict, p: dict, prices: Prices) -> dict:
         "uk_time": o.get("uk_time"), "big_news_today": o.get("big_news_today"),
         "selection_reason": prices.text(p.get("selection_reason")), "no_recommendation": prices.text(p.get("no_recommendation")),
         "alternative": _zone_out(p["alternative"], prices, "alternative", "alternative") if p.get("alternative") else None,
-        "candidates": [(_zone_out(z, prices, "candidate", "candidate") | {"reachability": z.get("reachability"),
+        "candidates": [(_zone_out(z, prices, "candidate", "candidate") | {"reachability": prices.text(z.get("reachability")),
                         "distance_pips": z.get("distance_pips"), "chosen": bool(z.get("chosen")),
-                        "rejected_because": z.get("rejected_because")}) for z in p.get("candidates") or []],
+                        "rejected_because": prices.text(z.get("rejected_because"))}) for z in p.get("candidates") or []],
         "freshness_reasons": st.get("not_current_reasons", []), "data_fresh": st.get("data_fresh"),
         "market_data_utc": p.get("market_data_utc"),
     }

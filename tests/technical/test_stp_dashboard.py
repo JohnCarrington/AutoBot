@@ -364,3 +364,11 @@ def test_12_query_values_are_decoded_without_any_web_library():
     q = stp.parse_qs("q=1.32%20sell&end=2026-11-17T05%3A00%3A00Z&x=&q=a+b&bad=%zz&" + "&".join(f"k{i}=1" for i in range(20)))
     assert q["q"] == ["1.32 sell", "a b"] and q["end"] == ["2026-11-17T05:00:00Z"] and q["bad"] == ["%zz"]
     assert "x" not in q and len(q) <= 10                                                    # bounded
+
+
+def test_prices_in_planner_sentences_are_written_in_gbpusd_notation_and_nothing_else_changes(tmp_path):
+    p = stp.Prices(settings(tmp_path))
+    assert p.text("price 13201.6 above the pivot 13194.4, below the 5m 100 EMA 13207.04 (Tue 17 Nov 2026 22:00 GMT); "
+                  "451 of 592 candles; 14.7 pips") == ("price 1.32016 above the pivot 1.31944, below the 5m 100 EMA 1.32070 "
+                                                       "(Tue 17 Nov 2026 22:00 GMT); 451 of 592 candles; 14.7 pips")
+    assert p.real("13213.5") == "1.32135" and p.zone("13213.5", "13219.9") == "1.32135–1.32199" and p.pips("12.2") == 12.2

@@ -273,7 +273,9 @@
         const top = lvs[0];
         const short = (n) => n.replace("4-hour swing ", "H4 swing ").replace("hourly swing ", "H1 swing ").replace("previous ", "prev ");
         const title = lvs.map(x => short(x.name)).filter((v, i, a) => a.indexOf(v) === i).slice(0, 2).join(" + ");
-        const strong = top.group !== "h1";      // hourly levels: quiet dotted lines, no label (they are many)
+        // hourly levels, and any level more than one ADR from price: quiet lines without a label (they are many)
+        const px0 = S.ov && S.ov.price && S.ov.price.price, adr = Number((S.ov.technical || {}).adr_pips || 0) * 0.0001;
+        const strong = top.group !== "h1" && !(px0 && adr && Math.abs(top.price - px0) > adr);
         L(top.price, colour[top.group] + (strong ? "bb" : "55"), strong ? title : "", strong ? 2 : 1, 1, strong);
       });
       if (S.show.structure) { leg("#c58cff", "H4 swing"); leg("#6b6b80", "H1 level"); leg("#ffaa00", "daily S/R"); leg("#ff7a3d", "weekly S/R"); }
