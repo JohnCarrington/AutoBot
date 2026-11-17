@@ -64,6 +64,8 @@ class PretendIG:
         self.activity = []                                  # IG's activity history (GET /history/activity)
         self.positions_fail = False
         self.move_answer = "accept"                         # PUT /positions/otc/{dealId}: accept, reject, http-400, ...
+        self.min_stop = 8.0                                 # IG's minimum stop distance (points) from GET /markets
+        self.min_stop_fails = False
 
     def login(self):
         raise AssertionError("the order sender must never log in")
@@ -93,7 +95,9 @@ class PretendIG:
                 raise IGRequestError(what, 404, "error.confirms.deal-not-found")
             return Reply(got)
         if method == "GET" and path.startswith("/markets/"):
-            return Reply({"dealingRules": {"minNormalStopOrLimitDistance": {"unit": "POINTS", "value": 8.0}}})
+            if self.min_stop_fails:
+                raise IGRequestError(what, 500, "error.public-api.failure")
+            return Reply({"dealingRules": {"minNormalStopOrLimitDistance": {"unit": "POINTS", "value": self.min_stop}}})
         if method == "GET" and path.startswith("/positions/"):
             deal = path.split("/")[-1]
             p = next((p for p in self.positions if p["position"]["dealId"] == deal), None)
@@ -144,6 +148,13 @@ class PretendIG:
                     p["position"]["stopLevel"] = body["stopLevel"]
                 raise IGRequestError(what, None, "ReadTimeout")
             ref = f"MOVE{len(self.calls)}"
+            mk = p.get("market") or {}
+            if "offer" in mk and "bid" in mk:                   # as IG: a stop inside the minimum is refused
+                short = p["position"]["direction"] == "SELL"
+                gap = (body["stopLevel"] - mk["offer"]) if short else (mk["bid"] - body["stopLevel"])
+                if gap < self.min_stop - 1e-9:
+                    self.confirms[ref] = {"dealStatus": "REJECTED", "reason": "ATTACHED_ORDER_LEVEL_ERROR"}
+                    return Reply({"dealReference": ref})
             if self.move_answer == "reject":
                 self.confirms[ref] = {"dealStatus": "REJECTED", "reason": "ATTACHED_ORDER_LEVEL_ERROR"}
             else:
@@ -851,12 +862,15 @@ def moves(ig):
     return [c for c in ig.calls if c[0] == "PUT"]
 
 
-def bounce_at_ig(S, **kw):
-    """A bounce buy filled at 13400.5, with its stop (12 below) and take profit (100 above) as IG holds them."""
+def bounce_at_ig(S, bid=13412.0, offer=13413.5, **kw):
+    """A bounce buy filled at 13400.5, with its stop (12 below) and take profit (100 above) as IG holds them, and
+    IG's prices now (in its position's market snapshot): by default 11.5 pips up, so a stop at 13400.5 is 11.5 pips
+    below IG's sell price, outside IG's minimum (8)."""
     sender, ig, alerts, sleeps, clock = make(S, **kw)
     r = sender.place(idea(BOLLINGER_BOUNCE, BUY), calendar=[])
-    pos = next(p for p in ig.positions if p["position"]["dealId"] == r.deal_id)["position"]
-    pos["stopLevel"], pos["limitLevel"] = 13388.5, 13500.5
+    p = next(p for p in ig.positions if p["position"]["dealId"] == r.deal_id)
+    p["position"]["stopLevel"], p["position"]["limitLevel"] = 13388.5, 13500.5
+    p["market"].update(bid=bid, offer=offer)
     return sender, ig, alerts, r
 
 
@@ -886,15 +900,14 @@ def test_a_moved_stop_is_known_again_after_a_restart(S):
 @pytest.mark.parametrize("answer, reason", [("reject", "ATTACHED_ORDER_LEVEL_ERROR"),
                                             ("http-400", "error.service.otc.invalid.stop"),
                                             ("timeout", "no clear answer")])
-def test_a_move_ig_does_not_confirm_keeps_the_old_stop_and_alerts_the_owner(S, answer, reason):
+def test_a_move_ig_does_not_confirm_keeps_the_old_stop_and_leaves_the_alert_to_the_trade_manager(S, answer, reason):
     sender, ig, alerts, r = bounce_at_ig(S)
     ig.move_answer = answer
     m = sender.move_stop(r.reference, D("13400.5"))
-    assert (m.ok, m.what) == (False, "stop not moved") and reason in m.reasons[0]
+    assert (m.ok, m.what, m.level) == (False, "stop not moved", D("13400.5")) and reason in m.reasons[0]
     assert sender.trades[r.reference].stop_level is None
     assert next(p for p in ig.positions if p["position"]["dealId"] == r.deal_id)["position"]["stopLevel"] == 13388.5
-    (key, text), = alerts.sent
-    assert key == f"stop-move-refused-{r.deal_id}" and reason in text and "tried again" in text
+    assert alerts.sent == []        # owner, 17 November 2026: one alert, from the trade manager, when it gives up
     assert events(sender)[-1] == "stop not moved"
 
 
@@ -942,3 +955,55 @@ def test_the_once_a_day_key_is_kept_with_the_trade_and_after_a_restart(S):
     assert again.used_once_a_day() == {key}
     r = again.place(idea(ASIAN_RANGE_BREAKOUT, context={"once_a_day": key}), calendar=[])
     assert r.what == "safety refused" and any(x.startswith("once a day") for x in r.reasons)
+
+
+# ---- a stop move IG cannot accept, and what is recorded with every move (owner, 17 November 2026) -----------------
+
+def test_every_stop_move_records_igs_buy_and_sell_prices_and_its_minimum_stop_distance(S):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    sender.move_stop(r.reference, D("13400.5"))
+    sending = next(x for x in records(sender) if x["event"] == "stop move sending")
+    assert (sending["ig_bid"], sending["ig_offer"], sending["prices_from"]) == ("13412.0", "13413.5", "IG's position")
+    assert (sending["ig_min_stop_value"], sending["ig_min_stop_unit"], sending["ig_min_stop_pips"]) == (8.0, "POINTS", "8.0")
+    assert (sending["rule_level"], sending["stop_level"], sending["distance_from_market_pips"]) == \
+        ("13400.5", "13400.5", "11.5")
+    assert ("GET", "/markets/CS.D.GBPUSD.TODAY.IP") in [c[:2] for c in ig.calls]
+
+
+def test_a_level_inside_igs_minimum_is_sent_as_the_nearest_level_ig_allows(S):
+    # a buy: at least 8 below IG's sell price 13405.0, so 13397.0, not the 13400.5 asked for (4.5 below)
+    sender, ig, alerts, r = bounce_at_ig(S, bid=13405.0, offer=13406.5)
+    m = sender.move_stop(r.reference, D("13400.5"))
+    assert (m.ok, m.level) == (True, D("13397.0"))
+    sending = next(x for x in records(sender) if x["event"] == "stop move sending")
+    assert (sending["rule_level"], sending["stop_level"], sending["distance_from_market_pips"]) == \
+        ("13400.5", "13397.0", "8.0")
+
+
+def test_a_level_on_the_wrong_side_of_the_price_is_sent_as_the_nearest_level_ig_allows(S):
+    sender, ig, alerts, r = bounce_at_ig(S, bid=13399.0, offer=13400.5)    # the asked-for stop is above IG's sell price
+    m = sender.move_stop(r.reference, D("13400.5"))
+    assert (m.ok, m.level) == (True, D("13391.0"))
+
+
+def test_no_move_when_the_nearest_level_ig_allows_is_not_closer_than_its_stop(S):
+    sender, ig, alerts, r = bounce_at_ig(S, bid=13395.0, offer=13396.5)    # allowed: 13387.0, below the stop 13388.5
+    m = sender.move_stop(r.reference, D("13400.5"))
+    assert (m.ok, m.what) == (False, "stop not moved") and "not closer" in m.reasons[0]
+    assert moves(ig) == [] and records(sender)[-1]["ig_bid"] == "13395.0"
+
+
+def test_without_igs_prices_in_the_position_the_price_streams_are_used(S):
+    sender, ig, alerts, r = bounce_at_ig(S, quote=(D("13412.0"), D("13413.5")))
+    next(p for p in ig.positions if p["position"]["dealId"] == r.deal_id)["market"].pop("bid")
+    sender.move_stop(r.reference, D("13400.5"))
+    sending = next(x for x in records(sender) if x["event"] == "stop move sending")
+    assert (sending["ig_bid"], sending["prices_from"]) == ("13412.0", "the price stream")
+
+
+def test_a_minimum_ig_cannot_give_is_recorded_as_not_known_and_the_move_still_goes(S):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    ig.min_stop_fails = True
+    m = sender.move_stop(r.reference, D("13400.5"))
+    sending = next(x for x in records(sender) if x["event"] == "stop move sending")
+    assert m.ok and sending["ig_min_stop_pips"] is None and "error.public-api.failure" in sending["ig_min_stop_error"]

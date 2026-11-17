@@ -42,8 +42,11 @@
     trailingStopDistance and trailingStopIncrement null, guaranteedStop false; a stop moved on an open position is a
     level, unlike an order's stop, which is always a distance) and the move is confirmed (GET /confirms/{reference}).
     The move counts only once IG confirms it ("stop moved"); if IG refuses it, or the answer is unclear and IG's
-    position still shows the old stop, the old stop stays ("stop not moved"), the owner gets a Telegram alert with
-    IG's error, and the trade manager tries again after orders.close_retry_seconds. Paper: recorded, nothing sent.
+    position still shows the old stop, the old stop stays ("stop not moved") and the trade manager tries again after
+    orders.close_retry_seconds, up to orders.stop_move_attempts in all, then alerts the owner once. Before each move
+    IG's buy and sell prices (from that position read) and its minimum stop distance (GET /markets/{epic}) are read
+    and recorded with it, and a level on the wrong side of IG's price or inside the minimum is sent as the nearest
+    level IG allows (owner, 17 November 2026). Paper: recorded, nothing sent.
   * It closes trades when the trade manager says so, in full, or by half (a range trade at the opposite band, if
     set to half), and confirms each close with IG. The close matches AutoBot 161's
     close_sb_now.py exactly: POST /positions/otc with VERSION 1 and _method DELETE, the body dealId, direction
@@ -68,12 +71,12 @@ import threading
 import time as _time
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
-from decimal import Decimal
+from decimal import ROUND_CEILING, ROUND_FLOOR, Decimal
 from pathlib import Path
 from typing import Any, Callable
 
 from ig.errors import IGRequestError
-from safety.refusals import on_refusal
+from safety.refusals import min_stop_pips, on_refusal
 from safety.rules import AccountFunds, OpenTrade, decide, order_for
 from strategies.common import RANGE_TRADE, stop_price, take_profit_pips
 
@@ -697,9 +700,11 @@ class OrderSender:
     # ---- moving a stop (the Bollinger bounce's trail) ----------------------------------------------
 
     def move_stop(self, reference: str, level: Decimal, why: str = "") -> Result:
-        """Move one open trade's stop at IG to `level` (the Bollinger bounce's trail).
-        Counts only once IG confirms it. Result.ok False: the old stop stays at IG and in the records; the owner was
-        alerted (except when IG no longer has the position: the regular check of IG's open positions finds that)."""
+        """Move one open trade's stop at IG to `level` (the Bollinger bounce's trail), or to the nearest level IG
+        allows when `level` is on the wrong side of IG's price or inside IG's minimum stop distance (owner,
+        17 November 2026). IG's buy and sell prices and its minimum stop distance are read and recorded with every
+        move. Counts only once IG confirms it; Result.level is the level sent. Result.ok False: the old stop stays at
+        IG and in the records; the trade manager decides whether to try again and alerts the owner when it gives up."""
         with self._lock:
             t = self.trades.get(reference)
             if t is None or t.status != OPEN:
@@ -711,7 +716,8 @@ class OrderSender:
             try:
                 r = self.client.request("GET", f"/positions/{t.deal_id}", "2", what="checking a position",
                                         headers=_headers("2"))
-                pos = (r.json() or {}).get("position") or {}
+                got = r.json() or {}
+                pos, mkt = got.get("position") or {}, got.get("market") or {}
             except IGRequestError as e:
                 if e.status == 404:
                     self._record("stop not moved", reference=reference, deal_id=t.deal_id, stop_level=level,
@@ -719,14 +725,26 @@ class OrderSender:
                     return Result(False, "stop not moved", reference, t.deal_id,
                                   reasons=["IG has no open position with this deal ID"])
                 return self._stop_refused(t, level, f"IG's position could not be read ({e.error_code or e.status})")
-            if _dec(pos.get("stopLevel")) == level:                 # already there (an earlier unclear answer)
-                return self._stop_moved(t, level, "already at IG")
-            body = {"stopLevel": float(level),
+            seen = self._market_now(mkt)
+            send = self._nearest_allowed(t.direction, level, seen)
+            ig_stop = _dec(pos.get("stopLevel"))
+            seen["rule_level"] = level
+            seen["distance_from_market_pips"] = self._distance(t.direction, send, seen)
+            if ig_stop is not None and send != ig_stop and not self._closer(t.direction, send, ig_stop):
+                reason = (f"the nearest level IG allows now, {send}, is not closer than the stop IG has, {ig_stop}: "
+                          f"not sent")
+                self._record("stop not moved", reference=reference, deal_id=t.deal_id, stop_level=send,
+                             reason=reason, **seen)
+                return Result(False, "stop not moved", reference, t.deal_id, send, reasons=[reason])
+            if ig_stop == send:                                     # already there (an earlier unclear answer)
+                return self._stop_moved(t, send, "already at IG")
+            body = {"stopLevel": float(send),
                     "limitLevel": pos.get("limitLevel"),            # the take profit as IG has it: never removed
                     "trailingStop": False, "trailingStopDistance": None, "trailingStopIncrement": None,
                     "guaranteedStop": False}
-            self._record("stop move sending", reference=reference, deal_id=t.deal_id, stop_level=level,
-                         old_stop_level=_dec(pos.get("stopLevel")), why=why, body=body)
+            self._record("stop move sending", reference=reference, deal_id=t.deal_id, stop_level=send,
+                         old_stop_level=ig_stop, why=why, body=body, **seen)
+            level = send
             try:
                 r = self.client.request("PUT", f"/positions/otc/{t.deal_id}", "2", body, what="moving a stop",
                                         headers=_headers("2"))
@@ -755,12 +773,58 @@ class OrderSender:
         return Result(True, "stop moved", t.reference, t.deal_id, level)
 
     def _stop_refused(self, t: Trade, level: Decimal, reason: str) -> Result:
+        # No alert here (owner, 17 November 2026): the trade manager tries up to orders.stop_move_attempts times and
+        # alerts the owner once when it gives up.
         self._record("stop not moved", reference=t.reference, deal_id=t.deal_id, stop_level=level, reason=reason)
-        self.alerts.problem(f"stop-move-refused-{t.deal_id}",
-                            f"IG did not move the stop of {t.strategy} {t.direction} trade {t.deal_id} to "
-                            f"{level} (the trail): {reason}. The old stop stays at IG and in the bot's records; the move is "
-                            f"tried again every {self.o.close_retry_seconds} seconds.")
-        return Result(False, "stop not moved", t.reference, t.deal_id, reasons=[reason])
+        return Result(False, "stop not moved", t.reference, t.deal_id, level, reasons=[reason])
+
+    def _market_now(self, mkt: dict) -> dict:
+        """IG's buy and sell prices and minimum stop distance for a stop move, as recorded with it (owner,
+        17 November 2026). The prices come from IG's position read just before (its market snapshot), else from the
+        price stream; the minimum from GET /markets/{epic} (dealingRules.minNormalStopOrLimitDistance), read with
+        every move because IG can change it. A minimum that cannot be read is recorded as not known."""
+        bid, offer, source = _dec(mkt.get("bid")), _dec(mkt.get("offer")), "IG's position"
+        if bid is None or offer is None:
+            q = self.quote()
+            bid, offer, source = (Decimal(q[0]), Decimal(q[1]), "the price stream") if q else (None, None, "not known")
+        seen: dict[str, Any] = {"ig_bid": bid, "ig_offer": offer, "prices_from": source,
+                                "ig_min_stop_value": None, "ig_min_stop_unit": None, "ig_min_stop_pips": None}
+        try:
+            from ig.markets import min_stop
+            m = min_stop(self.client, self.epic)
+            seen.update(ig_min_stop_value=m.value, ig_min_stop_unit=m.unit,
+                        ig_min_stop_pips=min_stop_pips(self.s, m.value, m.unit, offer or bid or Decimal(0)))
+        except Exception as e:                                      # noqa: BLE001  (recorded; the move goes on)
+            seen["ig_min_stop_error"] = str(e) or type(e).__name__
+        return seen
+
+    def _nearest_allowed(self, direction: str, level: Decimal, seen: dict) -> Decimal:
+        """`level`, or the nearest level IG allows if it is on the wrong side of IG's price or closer to it than IG's
+        minimum stop distance (owner, 17 November 2026): a sell's stop at least the minimum above IG's buy price, a
+        buy's at least the minimum below IG's sell price (the price each would close at), rounded to IG's tenth of a
+        point away from the price. Unchanged if IG's prices are not known; a minimum not known counts as 0."""
+        tenth = self.ppp / 10
+        gap = Decimal(seen.get("ig_min_stop_pips") or 0) * self.ppp
+        if direction == "sell":
+            if seen["ig_offer"] is None:
+                return level
+            floor = seen["ig_offer"] + gap
+            return level if level >= floor else (floor / tenth).to_integral_value(ROUND_CEILING) * tenth
+        if seen["ig_bid"] is None:
+            return level
+        ceiling = seen["ig_bid"] - gap
+        return level if level <= ceiling else (ceiling / tenth).to_integral_value(ROUND_FLOOR) * tenth
+
+    def _distance(self, direction: str, level: Decimal, seen: dict) -> Decimal | None:
+        """How far the stop sent is from the price it would close at, in pips (negative: the wrong side)."""
+        px = seen["ig_offer"] if direction == "sell" else seen["ig_bid"]
+        if px is None:
+            return None
+        return ((level - px) if direction == "sell" else (px - level)) / self.ppp
+
+    @staticmethod
+    def _closer(direction: str, level: Decimal, than: Decimal) -> bool:
+        return level < than if direction == "sell" else level > than
 
     def _residual(self, t: Trade, remaining: Decimal) -> str | None:
         """After a part close IG leaves the rest as a position with a NEW deal ID (AutoBot 161's close report):
