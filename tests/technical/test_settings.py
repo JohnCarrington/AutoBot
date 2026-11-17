@@ -125,6 +125,14 @@ EXPECTED = {
                                "window_from": time(13, 30), "window_until": time(15, 0), "confirmation_within_candles": 3,
                                "no_trade_if_big_news_at": time(13, 30), "stop_loss_pips": 12,
                                "trail_from_pips": Decimal("12"), "trail_candles": 3},
+    "planner": {"folder": Path("/opt/autobot/data/planner"), "adr_weekdays": 20,         # owner, 17 November 2026
+                "h4_swing_candles_each_side": 3, "h4_swing_min_move_pips": 40, "h4_swing_move_within_candles": 6,
+                "daily_swing_candles_each_side": 3, "daily_swing_min_move_pips": 110,
+                "daily_swing_move_within_candles": 6, "h4_swing_lookback_weeks": 8, "daily_swing_lookback_weeks": 48,
+                "structure_break_closes": 1, "zone_width_adr_share": Decimal("0.15"), "major_min_families": 3,
+                "moderate_min_families": 2, "min_entry_class": "Moderate", "ema_slope_candles": 6,
+                "macd_weakening_candles": 3, "no_new_extreme_hourly_candles": 3, "failed_breakout_within_candles": 3,
+                "panel_history": 5},
     "trend_still_going": {"new_extreme_pips": Decimal("5"), "within_candles": 12,      # owner, 16 November 2026
                           "swing_candles_each_side": 1},
     "hourly_read": {"range_candles": 12, "break_beyond_pips": 3, "ranging_after_candles": 12, "history_candles": 600},
@@ -566,6 +574,15 @@ def test_the_trend_still_going_switch_is_off_if_left_out_and_loads(tmp_path):
     with pytest.raises(SettingsError, match="Invalid switch TREND_STILL_GOING.*must be on or off"):
         load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "TREND_STILL_GOING": "yes"}))
 
+
+
+def test_the_planner_observe_switch_is_off_if_left_out_and_loads(tmp_path):
+    """The Structural Trade Planner runs only while PLANNER_OBSERVE is on; off if left out (owner, 17 November 2026)."""
+    assert load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches.planner_observe is False
+    on = load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "PLANNER_OBSERVE": "on"})).switches
+    assert on.planner_observe is True
+    with pytest.raises(SettingsError, match="Invalid switch PLANNER_OBSERVE.*must be on or off"):
+        load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "PLANNER_OBSERVE": "yes"}))
 
 @pytest.mark.parametrize("key,bad", [("level_above", "S2"), ("level_above", "R4"), ("level_below", "R2"), ("rsi_above", 40),
                                      ("rsi_below", 60), ("rsi_periods", 1)])

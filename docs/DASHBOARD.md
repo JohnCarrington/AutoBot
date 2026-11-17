@@ -84,3 +84,7 @@ address, and the dashboard's data service listens only on 127.0.0.1.
    on 127.0.0.1. If the firewall (ufw) is on: `sudo ufw allow in on tailscale0 to any port 3000 proto tcp`.
 
 Then, on a device logged in to the same Tailscale network, open `http://<100.x.y.z>:3000`.
+
+## Structural Trade Planner panel (observe only)
+
+`/api/status` also carries `"planner"`: the panel built by `planner/panel.py` from the planner's own file (`planner.folder/<PAIR>/current.json`). Nothing else is read for it, and a missing or unreadable file shows "no forecast", never an error. The panel is labelled **OBSERVE ONLY — DOES NOT CONTROL TRADING** and keeps apart what is observed now (4-hour structure, MACD, RSI 3, Bollinger, today's range against the ADR, pivots, the direction rule), the forecast (dominant direction, condition, expected movement, opportunity), the recommendation (trade, entry zone and class, reference entry, reachability, next obstacle, destinations, status, structural evidence) and the invalidation, with the time of the last analysis, whether the recommendation is current and the last few recommendations.

@@ -104,6 +104,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "BOUNCE_ONLY_WHEN_HOURLY_RANGING": ("bounce_only_when_hourly_ranging", _on_off),
     "BOUNCE_ONLY_NEAR_TIMES": ("bounce_only_near_times", _on_off),
     "TREND_STILL_GOING": ("trend_still_going", _on_off),
+    "PLANNER_OBSERVE": ("planner_observe", _on_off),
     "TRADING": ("trading", _on_off),
     "STOP_LOSS_PIPS": ("stop_loss_pips", _pips(1, 100)),
     "STOP_LOSS_PIPS_EMA_PULLBACK": ("stop_loss_pips_ema_pullback", _pips(1, 100)),
@@ -113,7 +114,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
 # Switches that may be left out of .env, and their value then (owner, 15 November 2026: both off by default).
 # TREND_STILL_GOING (owner, 16 November 2026): off if left out too.
 OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_WHEN_HOURLY_RANGING": "off", "BOUNCE_ONLY_NEAR_TIMES": "off",
-                            "TREND_STILL_GOING": "off"}
+                            "TREND_STILL_GOING": "off", "PLANNER_OBSERVE": "off"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:

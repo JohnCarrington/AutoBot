@@ -84,6 +84,14 @@
   .banner li::before { content: '◆ '; }
 
   /* stat cards */
+  .stp { margin: 0 16px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+  .stp-flag { display: inline-block; padding: 4px 9px; border-radius: 6px; font-size: 10px; font-weight: 700; letter-spacing: .08em;
+              color: var(--amber); border: 1px solid var(--amber); margin-bottom: 10px; }
+  .stp-h { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 10px 0 4px; }
+  .stp-row { display: flex; justify-content: space-between; gap: 12px; font-size: 11px; padding: 2px 0; }
+  .stp-row span:first-child { color: var(--muted); }
+  .stp-row span:last-child { text-align: right; overflow-wrap: anywhere; }
+  .stp-list { font-size: 10px; color: var(--muted); padding-left: 16px; margin: 2px 0; line-height: 1.5; }
   .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px; }
   .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px;
                position: relative; overflow: hidden; }
@@ -373,6 +381,9 @@
     <div class="trades" id="trades"></div>
     <div class="empty" id="notrades">No open trades.</div>
 
+    <div class="section-title" style="padding-top:16px">Structural Trade Planner</div>
+    <div class="stp" id="stp"></div>
+
     <div class="section-title" style="padding-top:24px">Trading history</div>
     <div class="period-bar" id="periodbar">
       <button class="period-btn active" data-period="day" type="button">Day</button>
@@ -475,6 +486,51 @@ async function load() {
   const w = s.warnings || []; $("warnings").hidden = !w.length; const wl = $("warnlist"); wl.textContent = "";
   w.forEach(x => wl.appendChild(el("li", "", x)));
   $("updated").textContent = s.generated_utc ? "status " + uk(s.generated_utc) : "";
+  renderPlanner(s.planner);
+}
+
+function renderPlanner(p) {
+  const box = $("stp"); box.textContent = "";
+  box.appendChild(el("div", "stp-flag", (p && p.label) || "OBSERVE ONLY — DOES NOT CONTROL TRADING"));
+  if (!p || !p.available) { box.appendChild(el("div", "empty", (p && p.message) || "No planner forecast.")); return; }
+  const row = (k, v) => { if (v === null || v === undefined || v === "") return; const r = el("div", "stp-row");
+    r.appendChild(el("span", "", k)); r.appendChild(el("span", "", String(v))); box.appendChild(r); };
+  const list = (items) => { if (!items || !items.length) return; const u = el("ul", "stp-list");
+    items.forEach(x => u.appendChild(el("li", "", x))); box.appendChild(u); };
+  row("Last analysis", uk(p.last_analysis_utc) + (p.current ? " · current" : " · NOT current"));
+  if (!p.current) list(p.not_current_reasons);
+  const o = p.observed || {};
+  box.appendChild(el("div", "stp-h", "Observed now"));
+  row("4-hour structure", o.h4_structure);
+  if (o.h4_macd) row("4-hour MACD 35/45/30", "line " + o.h4_macd.line + " · histogram " + o.h4_macd.histogram);
+  row("4-hour RSI 3", o.h4_rsi); row("4-hour Bollinger", o.h4_band); row("EMA 7/13/21", o.ema_stack);
+  if (o.adr_pips) row("Today's range", (o.today_range_pips || "–") + " pips of a " + o.adr_pips + "-pip average day");
+  row("Daily pivot", o.vs_daily_pivot); row("Weekly pivot", o.vs_weekly_pivot);
+  row("Direction rule (EMA pullback)", o.direction_rule_5m);
+  if (Array.isArray(o.big_news_today) && o.big_news_today.length) row("Big news today", o.big_news_today.join(", "));
+  if (o.warming_up && o.warming_up.length) row("Warming up (not used)", o.warming_up.join("; "));
+  const f = p.forecast || {};
+  box.appendChild(el("div", "stp-h", "Forecast"));
+  row("Dominant direction", f.dominant_direction); row("Condition", f.condition && f.condition.replace(/_/g, " "));
+  row("Expected movement", f.expected_movement); row("Opportunity", f.opportunity);
+  const r = p.recommendation;
+  box.appendChild(el("div", "stp-h", "Recommendation"));
+  if (!r) { row("Status", "NO RECOMMENDATION"); box.appendChild(el("div", "stp-list", p.no_recommendation || "")); }
+  else {
+    row("Preferred trade", r.trade); row("Entry zone", r.zone + " (" + r.class + ")");
+    if (r.reference_entry) row("Reference entry", r.reference_entry.price + " · " + r.reference_entry.level);
+    row("Reachability", r.reachability); row("Next obstacle", r.next_obstacle);
+    row("Primary destination", r.primary_destination); row("Extended destination", r.extended_destination);
+    row("Status", r.status); row("Id", r.id);
+    box.appendChild(el("div", "stp-h", "Structural evidence (" + (r.families || []).join(", ") + ")"));
+    list(r.evidence);
+    box.appendChild(el("div", "stp-h", "Invalidation"));
+    list(p.invalidation);
+  }
+  if (p.recent && p.recent.length) {
+    box.appendChild(el("div", "stp-h", "Previous recommendations"));
+    list(p.recent.map(x => x.trade + " " + x.zone.join("–") + " · " + x.status + " · " + x.why));
+  }
 }
 
 $("loginform").addEventListener("submit", async (e) => {

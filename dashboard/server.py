@@ -8,7 +8,8 @@ deploy/autobot-dashboard.nginx) and serves the page (dashboard/static/index.html
                       dashboard.login_failures_per_minute wrong ones in a minute.
   POST /logout        ends the session.
   GET  /auth-check    200 with a genuine session, else 401 (nginx's auth_request for every gated address).
-  GET  /api/status    the trading engine's status (data/trading/<PAIR>/status.json, written by the price service
+  GET  /api/status    (also "planner": the Structural Trade Planner's panel, from its own file; observe only)
+                      the trading engine's status (data/trading/<PAIR>/status.json, written by the price service
                       every few seconds): the analyser's state and direction, the strategies allowed now, the open
                       trades with live pips, today's trades and pips, warnings, whether TRADING is on, the pause
                       switch, and this session's csrf token. A status older than dashboard.status_stale_seconds
@@ -100,7 +101,13 @@ class Dashboard:
             if age > self.d.status_stale_seconds:
                 warnings.append(f"The trading engine's status is {int(age)} seconds old (is the price service running?)")
         paused = Path(self.s.trading.pause_file).exists()
-        return st | {"paused": paused, "warnings": warnings + list(st.get("warnings", [])),
+        try:                                            # the planner's panel (observe only): its own file, read only
+            from planner.panel import panel
+            planner = panel(self.s, self.now())
+        except Exception as e:                          # noqa: BLE001  never breaks the status
+            planner = {"label": "OBSERVE ONLY — DOES NOT CONTROL TRADING", "available": False,
+                       "message": f"The planner's file could not be read ({type(e).__name__})."}
+        return st | {"paused": paused, "planner": planner, "warnings": warnings + list(st.get("warnings", [])),
                      "csrf": session["csrf"], "served_utc": self.now().strftime("%Y-%m-%dT%H:%M:%SZ")}
 
     # ---- the trading history (the bot's own trade records) -----------------------------------------------------
