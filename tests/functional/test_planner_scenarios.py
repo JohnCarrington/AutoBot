@@ -330,3 +330,60 @@ def test_real_store_four_hour_candles_rebuilt_from_hourly_equal_the_stored_ones(
     rebuilt = {c.start: c for c in four_hour_from_hourly(S, hourly, end)}
     assert len(native) >= 100
     assert all(rebuilt[c.start].prices() == c.prices() for c in native)
+
+
+# ---- 14 to 17. MACD supports, the 4-hour structure decides (correction of 17 November 2026) ------------------------------
+# Straight after a long rally the slow MACD 35/45/30 line is still above zero when the 4-hour structure has already
+# turned down. The approved rule (D-10) is a MACD line CROSSING above zero during the structure; a line that has not
+# yet fallen below zero is momentum lagging, recorded as supporting evidence, never a veto.
+
+def rally_then_drop(ending):
+    w, h, p = [(0, 12000)], 0, 12000
+    for _ in range(7):                                                              # a long rally: +300 / -150
+        h += 40; p += 300; w.append((h, p)); h += 30; p -= 150; w.append((h, p))   # noqa: E702
+    h += 40; p += 300; w.append((h, p))                                             # noqa: E702
+    for _ in range(4):                                                              # then 4-hour lower highs and lows
+        h += 12; p -= 70; w.append((h, p)); h += 14; p += 45; w.append((h, p))     # noqa: E702
+    for x, y in ending:
+        h += x; p += y; w.append((h, p))                                            # noqa: E702
+    return w
+
+
+@lru_cache(maxsize=None)
+def _lagging(ending):
+    return market(S, START, rally_then_drop(list(ending)))
+
+
+LAG_CORRECTION = ((10, -50), (30, -40), (8, 25))
+LAG_PULLBACK = ((10, -60), (10, -50))
+
+
+def test_14_a_confirmed_4_hour_downtrend_with_the_macd_line_still_positive_is_not_vetoed():
+    st = _lagging(LAG_CORRECTION)
+    t, p = at_end(st)
+    assert D(p["observations"]["h4_macd"]["line"]) > 0                             # MACD still positive
+    assert p["dominant_direction"] == BEARISH and p["condition"] != "REVERSAL_RISK"
+    assert p["trade"] == "SELL" and p["no_recommendation"] is None
+    assert any("momentum has not yet confirmed the new 4-hour downtrend (supporting evidence only, not a veto)" in e
+               for e in p["condition_evidence"])
+
+
+def test_15_a_confirmed_4_hour_uptrend_with_the_macd_line_still_negative_is_not_vetoed():
+    t, p = at_end(mirrored(_lagging(LAG_CORRECTION)))
+    assert D(p["observations"]["h4_macd"]["line"]) < 0
+    assert p["dominant_direction"] == BULLISH and p["condition"] != "REVERSAL_RISK"
+    assert p["trade"] == "BUY" and p["no_recommendation"] is None
+    assert any("not yet confirmed the new 4-hour uptrend" in e for e in p["condition_evidence"])
+
+
+def test_16_a_healthy_pullback_opportunity_survives_lagging_macd_in_both_directions():
+    for store, trade in ((_lagging(LAG_PULLBACK), "SELL"), (mirrored(_lagging(LAG_PULLBACK)), "BUY")):
+        t, p = at_end(store)
+        assert p["condition"] == CONTINUATION and p["opportunity"] == PULLBACK and p["trade"] == trade
+        assert p["no_recommendation"] is None
+
+
+def test_17_corrective_reversals_are_unchanged_by_the_correction():
+    t, p = at_end(corrective_market())                                             # MACD below zero all along
+    assert D(p["observations"]["h4_macd"]["line"]) < 0 and p["opportunity"] == CORRECTIVE and p["trade"] == "SELL"
+    assert not any("not yet confirmed" in e for e in p["condition_evidence"])

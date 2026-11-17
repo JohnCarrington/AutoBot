@@ -540,3 +540,72 @@ def test_no_trading_part_uses_the_planner_and_there_is_no_authorisation_switch_y
     from config.switches import SWITCHES
     assert "PLANNER_AUTHORISES_BOUNCE" not in SWITCHES
     assert not hasattr(S.switches if hasattr(S, "switches") else SimpleNamespace(), "planner_authorises_bounce")
+
+
+# ---- MACD: a cross during the structure is reversal risk; a line still lagging is not (17 November 2026) --------------
+
+def _h4_with_macd_lines(lines):
+    from prices.indicators import Macd
+    cs = [C("4h", T(2026, 11, 2) + timedelta(hours=4 * i), 4, 100, 101, 99, 100) for i in range(len(lines))]
+    m = {c.start: Macd(c.start, D(str(x)), D(0), D(str(x))) for c, x in zip(cs, lines)}
+    return SimpleNamespace(candles=cs, macd=m)
+
+
+def _structure_from(h4, first):
+    sw = SimpleNamespace(candle_utc=h4.candles[first].start)
+    return SimpleNamespace(highs=[sw, sw], lows=[sw, sw])
+
+
+@pytest.mark.parametrize("lines,bear,expected", [
+    ([5, 4, 3, 2, 1], True, (False, True)),         # downtrend, line never below zero yet: lagging, no veto
+    ([5, -1, -2, -1, 2], True, (True, False)),      # went below zero during the downtrend, back above: a cross
+    ([-1, -2, -3, -4, -5], True, (False, False)),   # momentum agrees
+    ([-5, -4, -3, -2, -1], False, (False, True)),   # uptrend, line never above zero yet
+    ([-5, 1, 2, 1, -2], False, (True, False)),      # uptrend: crossed below zero during it
+])
+def test_the_macd_line_vetoes_only_by_crossing_against_during_the_structure(lines, bear, expected):
+    from planner.assess import macd_against
+    h4 = _h4_with_macd_lines(lines)
+    assert macd_against(h4, _structure_from(h4, 0), bear) == expected
+
+
+def test_a_cross_before_the_structure_began_does_not_count():
+    from planner.assess import macd_against
+    h4 = _h4_with_macd_lines([-3, -2, 1, 2, 3])     # below zero only before the structure's first swing (candle 2)
+    assert macd_against(h4, _structure_from(h4, 2), True) == (False, True)
+
+
+# ---- failure isolation, more (pre-deployment review, 17 November 2026) --------------------------------------------------
+
+def test_with_observation_off_the_price_service_never_imports_the_planner():
+    code = ("import sys; import prices.service, trading.engine, strategies.common, trade_manager.manager, "
+            "orders.sender, safety.rules; print(sorted(m for m in sys.modules if m.split('.')[0] == 'planner'))")
+    out = subprocess.run([sys.executable, "-c", code], cwd=ROOT, capture_output=True, text=True, check=True).stdout
+    assert out.strip() == "[]"
+
+
+def test_a_planner_that_cannot_write_its_files_fails_alone(tmp_path, monkeypatch):
+    import planner.__main__ as main
+    blocked = tmp_path / "not-a-folder"
+    blocked.write_text("a file where the planner folder should be")
+    monkeypatch.setattr(main, "load_settings", lambda: SimpleNamespace(for_pair=lambda p: with_folder(S, blocked)))
+    monkeypatch.setattr("housekeeping.logs.setup_logging", lambda *a, **k: None)
+    with pytest.raises(OSError):                      # it cannot even make its own folder: it stops, nothing else is touched
+        main.main(["run"])
+    k = Keeper(with_folder(S, tmp_path / "p"), flat_store(NOW), planner=Script(plan_dict()))
+    monkeypatch.setattr(keeper_mod, "safe_write", lambda *a, **k: (_ for _ in ()).throw(OSError("disk full")))
+    with pytest.raises(OSError):                      # inside its own process: logged there, the price service never sees it
+        k.run(NOW)
+
+
+def test_a_crashed_planner_process_does_not_stop_the_next_one_starting():
+    calls = []
+
+    class Crashed:
+        def poll(self):
+            return 1                                    # finished, with an error
+
+    u = PlannerUpdater(S, popen=lambda cmd, **kw: calls.append(cmd) or Crashed())
+    u(NOW)
+    u(NOW + timedelta(minutes=5))
+    assert len(calls) == 2

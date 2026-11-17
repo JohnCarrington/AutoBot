@@ -13,7 +13,12 @@ DIRECTION (D-03, P-B10/B11): the 4-hour structure decides.
 CONDITION (D-10; FC-12; P-D6, P-D9), from the 4-hour RSI 3, MACD 35/45/30 and Bollinger (P-D7: the 4-hour decides).
 The current impulse runs from the last confirmed 4-hour swing high to now (P-D8); its extreme includes the hourly
 candles finished since the last 4-hour candle.
-  REVERSAL_RISK      the 4-hour MACD line above zero, or a confirmed daily break upwards;
+  REVERSAL_RISK      the 4-hour MACD line CROSSING above zero during the current 4-hour structure (it was below zero
+                     at some 4-hour close since the structure's first swing and is above it now), or a confirmed
+                     daily break upwards. A MACD line still above zero from before the downtrend (it has not yet
+                     fallen below zero since the structure began) is recorded as momentum not yet confirming the
+                     structure: supporting evidence only, never a veto (correction of 17 November 2026: the approved
+                     D-10 wording is "crossing", and the 4-hour structure is the directional authority);
   CORRECTION_ACTIVE  after the impulse low: an hourly close above the hourly Bollinger middle, or an hourly swing low
                      above the impulse low (structure still bearish);
   CORRECTION_LIKELY  EXHAUSTION, and none of the last planner.no_new_extreme_hourly_candles (3) hourly candles made a
@@ -230,10 +235,16 @@ def condition(settings: Any, snap: Snapshot, st: Structure, d1: Structure, h1_sw
     exhausted_momentum = new_extreme and (weakening or divergence)
     exhaustion = exhausted_momentum and (rsi_back or band_back)
     facts["momentum_not_confirming"] = exhausted_momentum
-    if (line_now > 0 if bear else line_now < 0) or daily_against:
+    crossed, not_yet = macd_against(h4, st, bear)
+    facts["macd_crossed_against"], facts["macd_not_yet_confirming"] = crossed, not_yet
+    if not_yet:
+        ev.append(f"4-hour MACD line still {'above' if bear else 'below'} zero: momentum has not yet confirmed the new "
+                  f"4-hour {'down' if bear else 'up'}trend (supporting evidence only, not a veto)")
+    if crossed or daily_against:
         why = []
-        if (line_now > 0 if bear else line_now < 0):
-            why.append(f"the 4-hour MACD line is {'above' if bear else 'below'} zero")
+        if crossed:
+            why.append(f"the 4-hour MACD line crossed {'above' if bear else 'below'} zero during this 4-hour "
+                       f"{'down' if bear else 'up'}trend")
         if daily_against:
             why.append(f"a confirmed daily close {'above' if bear else 'below'} the last daily swing")
         return REVERSAL_RISK, ev + ["reversal risk: " + "; ".join(why)], facts
@@ -286,6 +297,25 @@ def choose_zone(settings: Any, zs: list[Zone], price: Decimal, bear: bool, last_
             good.append((z, reach, dist, info))
     good.sort(key=lambda x: (-CLASS_RANK[x[0].klass], x[2]))
     return looked, good
+
+
+def macd_against(h4: Any, st: Structure, bear: bool) -> tuple[bool, bool]:
+    """(crossed, not_yet) for the 4-hour MACD line against the dominant direction (D-10, D-13):
+    crossed  the line is on the opposite side of zero now, and was on the dominant side at some 4-hour close since
+             the current structure's first swing (a cross during the structure: REVERSAL_RISK, as approved);
+    not_yet  the line is on the opposite side now and has NOT been on the dominant side since the structure began
+             (momentum lagging a structure that is already established: supporting evidence only)."""
+    cs = h4.candles
+    if not cs or cs[-1].start not in h4.macd:
+        return False, False
+    line_now = h4.macd[cs[-1].start].line
+    against = line_now > 0 if bear else line_now < 0
+    if not against:
+        return False, False
+    began = min(s.candle_utc for s in st.highs + st.lows)
+    since = [h4.macd[c.start].line for c in cs if c.start >= began and c.start in h4.macd]
+    confirmed = any((x < 0) if bear else (x > 0) for x in since)
+    return confirmed, not confirmed
 
 
 # ---- the whole plan ------------------------------------------------------------------------------------------------
