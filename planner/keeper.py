@@ -15,9 +15,11 @@ One live recommendation per pair at most. Each run (after a new 5-minute candle)
   3. a full re-plan whenever a new hourly candle has finished (also at the 00:00 UK rollover) (D-21, D-36):
        no live recommendation and the plan recommends -> a new one, at once (adjustment 1: no confirming hour);
        live and the direction changed (or became NEUTRAL/TRANSITIONAL) -> INVALIDATED (FC-10);
-       live and the same direction and fixed levels -> it continues: "supported" or "changed" (moving levels,
-         edges, destinations), recorded (FC-05);
-       live and a different zone (fixed levels) -> SUPERSEDED by the new one (D-22);
+       live and the same direction and fixed levels, AND the new zone overlaps the previous one -> it continues:
+         "supported" or "changed" (moving levels, edges, destinations), recorded (FC-05; owner's R2, 17 November 2026);
+       live and different fixed levels, or a zone that does not overlap the previous one -> SUPERSEDED (D-22). (A
+         zone of moving levels only, such as an hourly EMA and today's still-running session high, has no fixed
+         levels: the overlap test is what tells a different zone from the same one moving.)
        live and no longer recommended -> INVALIDATED, with the plan's reason ("supporting evidence changed").
 CURRENT (FC-08): a recommendation is current only when it was re-checked at the latest finished hourly candle, the
 5-minute checks reached the latest finished 5-minute candle, and the data is fresh (P-A3). Stale data never
@@ -59,6 +61,11 @@ def _iso(t: datetime | None) -> str | None:
 
 def _d(x: Any) -> Decimal:
     return Decimal(str(x))
+
+
+def overlaps(a: dict, b: dict) -> bool:
+    """Two zones ({"low", "high"}) share at least one price."""
+    return _d(a["low"]) <= _d(b["high"]) and _d(b["low"]) <= _d(a["high"])
 
 
 def identity(plan_dict: dict) -> list:
@@ -268,14 +275,18 @@ class Keeper:
                 self._retire(now, INVALIDATED, f"the 4-hour direction changed from {rec['dominant_direction']} to "
                              f"{p['dominant_direction']}")
             elif p["no_recommendation"] is None and p["entry_zone"] is not None:
-                if identity(p) == rec["identity"]:
+                if identity(p) == rec["identity"] and overlaps(p["entry_zone"], rec["entry_zone"]):
                     changed = self._update_from(p)
                     self._event(now, "changed" if changed else "supported",
                                 ("re-checked, still supported; changed: " + "; ".join(changed)) if changed else
                                 "re-checked: the structural basis still holds", plan=summary(p))
                 else:
                     old = rec["id"]
-                    self._retire(now, SUPERSEDED, "a different preferred zone: " + p["selection_reason"])
+                    nz, oz = p["entry_zone"], rec["entry_zone"]
+                    what = ("a zone that does not overlap the previous one" if not overlaps(nz, oz)
+                            else "a zone resting on different fixed levels")
+                    self._retire(now, SUPERSEDED, f"{what} ({oz['low']}-{oz['high']} to {nz['low']}-{nz['high']}): "
+                                 + p["selection_reason"])
                     self._new(now, p, f"supersedes {old}: {p['selection_reason']}")
             else:
                 self._retire(now, INVALIDATED, f"supporting evidence changed: {p['no_recommendation']}")

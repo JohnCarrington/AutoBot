@@ -387,3 +387,46 @@ def test_17_corrective_reversals_are_unchanged_by_the_correction():
     t, p = at_end(corrective_market())                                             # MACD below zero all along
     assert D(p["observations"]["h4_macd"]["line"]) < 0 and p["opportunity"] == CORRECTIVE and p["trade"] == "SELL"
     assert not any("not yet confirmed" in e for e in p["condition_evidence"])
+
+
+# ---- 18 to 20. The owner's R1, R2 and R3 (17 November 2026) ---------------------------------------------------------------
+
+def test_18_opportunity_labels_follow_fc_04_in_every_market():
+    for store in (corrective_market(), _market(tuple(EXHAUSTION_END)), _lagging(LAG_CORRECTION)):
+        _, p = at_end(store)
+        assert p["condition"] in CORRECTIVE_GROUP and p["opportunity"] == CORRECTIVE      # incl. ACTIVE without exhaustion
+    for store in (_market(tuple(PULLBACK_END)), _lagging(LAG_PULLBACK)):
+        _, p = at_end(store)
+        assert p["condition"] == CONTINUATION and p["opportunity"] == PULLBACK
+
+
+def test_19_a_moving_zone_is_followed_while_it_overlaps_and_superseded_when_it_jumps(tmp_path):
+    from tests.technical.test_planner import Script, flat_store, plan_dict
+    moving = [("New York session high (so far)", "13245", False)]
+    t = datetime(2026, 11, 17, 14, 2, tzinfo=UTC)
+    zones_by_hour = [(13240, 13248), (13243, 13251), (13246, 13254), (13300, 13308)]   # drift, drift, jump
+    ids = []
+    for k, z in enumerate(zones_by_hour):
+        now = t + timedelta(hours=k)
+        kp = Keeper(with_folder(S, tmp_path / "p"), flat_store(now), planner=Script(plan_dict(zone=z, levels=moving)))
+        kp.run(now)
+        ids.append(kp.state["recommendation"]["id"])
+    assert ids[0] == ids[1] == ids[2] != ids[3]
+    import json
+    ev = [json.loads(x) for x in (tmp_path / "p" / "GBPUSD" / "recommendations.jsonl").read_text().splitlines()]
+    first = [e["event"] for e in ev if e["id"] == ids[0]]
+    assert first == ["created", "waiting", "changed", "changed", "superseded"]
+    assert [e["event"] for e in ev if e["id"] == ids[3]] == ["created", "waiting"]
+
+
+def test_20_the_panel_appears_only_while_observation_is_on(tmp_path):
+    from tests.technical.test_planner import _dashboard
+    st = corrective_market()
+    end = st.by_tf["5m"][-1].end
+    Keeper(with_folder(S, tmp_path / "planner"), st).run(end)
+    off = _dashboard(tmp_path, False).status({"csrf": "x"})
+    on = _dashboard(tmp_path, True).status({"csrf": "x"})
+    assert "planner" not in off
+    assert on["planner"]["label"] == "OBSERVE ONLY — DOES NOT CONTROL TRADING"
+    assert on["planner"]["forecast"]["dominant_direction"] == BEARISH
+    assert {k: v for k, v in on.items() if k != "planner"} == off                       # nothing else differs

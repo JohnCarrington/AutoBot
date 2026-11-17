@@ -30,8 +30,9 @@ candles finished since the last 4-hour candle.
                      the lower band after a close below it in the impulse;
   CONTINUATION       a new low in the impulse, the histogram below zero and falling, the close below the middle band;
   INDETERMINATE      otherwise, or the 4-hour MACD, RSI or Bollinger not warmed up.
-OPPORTUNITY TYPE (D-16, modified; FC-04): "corrective reversal" when momentum stopped confirming the impulse (an
-exhausted impulse, then a correction); "healthy-trend pullback" when it did not (the trend is not exhausted). No
+OPPORTUNITY TYPE (D-16, modified; FC-04 exactly, owner's R1 of 17 November 2026): a label only, by condition class:
+"healthy-trend pullback" for CONTINUATION; "corrective reversal" for EXHAUSTION, CORRECTION_LIKELY or
+CORRECTION_ACTIVE. Zone choice, invalidation and everything else are the same for both. No
 opportunity in REVERSAL_RISK or INDETERMINATE, or when the direction is not BEARISH or BULLISH.
 
 REACHABILITY (D-14 modified, D-15; FC-03): for each resistance zone above price (or containing it):
@@ -299,6 +300,15 @@ def choose_zone(settings: Any, zs: list[Zone], price: Decimal, bear: bool, last_
     return looked, good
 
 
+def opportunity_of(cond: str) -> str | None:
+    """FC-04: the opportunity label from the condition class (owner's R1, 17 November 2026)."""
+    if cond == CONTINUATION:
+        return PULLBACK
+    if cond in (EXHAUSTION, CORRECTION_LIKELY, CORRECTION_ACTIVE):
+        return CORRECTIVE
+    return None
+
+
 def macd_against(h4: Any, st: Structure, bear: bool) -> tuple[bool, bool]:
     """(crossed, not_yet) for the 4-hour MACD line against the dominant direction (D-10, D-13):
     crossed  the line is on the opposite side of zero now, and was on the dominant side at some 4-hour close since
@@ -363,7 +373,7 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
     if cond not in OPPORTUNITY_CLASSES:
         plan.no_recommendation = f"condition {cond}: no opportunity"
         return plan
-    plan.opportunity = CORRECTIVE if facts.get("momentum_not_confirming") else PULLBACK
+    plan.opportunity = opportunity_of(cond)
     plan.trade = "SELL" if bear else "BUY"
     plan.expected_movement = "UP into resistance, then DOWN" if bear else "DOWN into support, then UP"
     if snap.adr is None:

@@ -609,3 +609,94 @@ def test_a_crashed_planner_process_does_not_stop_the_next_one_starting():
     u(NOW)
     u(NOW + timedelta(minutes=5))
     assert len(calls) == 2
+
+
+# ---- R1: opportunity labels exactly as FC-04 (owner, 17 November 2026) ------------------------------------------------
+
+@pytest.mark.parametrize("cond,label", [("CONTINUATION", "healthy-trend pullback"), ("EXHAUSTION", "corrective reversal"),
+                                        ("CORRECTION_LIKELY", "corrective reversal"),
+                                        ("CORRECTION_ACTIVE", "corrective reversal"), ("REVERSAL_RISK", None),
+                                        ("INDETERMINATE", None)])
+def test_the_opportunity_label_follows_the_condition_class_as_fc_04(cond, label):
+    from planner.assess import opportunity_of
+    assert opportunity_of(cond) == label
+
+
+# ---- R2: identity needs the same fixed levels AND an overlapping zone (owner, 17 November 2026) ------------------------
+
+MOVING_ONLY = [("London session high (so far)", "13245", False)]
+
+
+def test_a_running_session_high_is_a_moving_level_and_a_finished_one_fixed():
+    from planner.zones import from_existing
+    lv = lambda src: SimpleNamespace(price=D(13245), type="london_session_high", source=src, candle_utc=NOW)   # noqa: E731
+    running, done = from_existing(SimpleNamespace(levels=[
+        lv("London session today Tue 17 Nov 07:00-12:00 UTC, so far (to 09:00 UTC)"),
+        lv("London session previous Mon 16 Nov 07:00-12:00 UTC")]))
+    assert (running.fixed, running.name) == (False, "London session high (so far)")
+    assert (done.fixed, done.name) == (True, "London session high")
+
+
+def test_a_moving_only_zone_that_drifts_but_overlaps_keeps_its_identity(tmp_path):
+    K(tmp_path, flat_store(NOW), Script(plan_dict(zone=(13240, 13248), levels=MOVING_ONLY))).run(NOW)
+    later = NOW + timedelta(hours=1)
+    k = K(tmp_path, flat_store(later), Script(plan_dict(zone=(13244, 13252), levels=MOVING_ONLY)))
+    k.run(later)
+    ev = history(tmp_path)
+    assert ev[-1]["event"] == "changed" and "zone edges 13240-13248 to 13244-13252" in ev[-1]["why"]
+    assert len({e["id"] for e in ev if e["id"]}) == 1
+
+
+def test_a_moving_only_zone_that_no_longer_overlaps_is_superseded_with_history_kept(tmp_path):
+    k = K(tmp_path, flat_store(NOW), Script(plan_dict(zone=(13240, 13248), levels=MOVING_ONLY)))
+    k.run(NOW)
+    first = k.state["recommendation"]["id"]
+    later = NOW + timedelta(hours=1)
+    k = K(tmp_path, flat_store(later), Script(plan_dict(zone=(13290, 13298), levels=MOVING_ONLY)))
+    k.run(later)
+    ev = history(tmp_path)
+    sup = [e for e in ev if e["event"] == "superseded"]
+    assert len(sup) == 1 and sup[0]["id"] == first and "does not overlap the previous one" in sup[0]["why"]
+    new = k.state["recommendation"]
+    assert new["id"] != first and new["entry_zone"]["low"] == "13290" and f"supersedes {first}" in new["status_reason"]
+    assert [e["event"] for e in ev if e["id"] == first][:2] == ["created", "waiting"]       # its history is kept
+    assert k.state["recent"][0]["id"] == first and k.state["recent"][0]["status"] == SUPERSEDED
+
+
+def test_the_same_fixed_levels_with_a_non_overlapping_zone_are_still_superseded(tmp_path):
+    K(tmp_path, flat_store(NOW), Script(plan_dict(zone=(13240, 13250)))).run(NOW)
+    later = NOW + timedelta(hours=1)
+    k = K(tmp_path, flat_store(later), Script(plan_dict(zone=(13260, 13270))))
+    k.run(later)
+    assert history(tmp_path)[-3]["event"] == "superseded"
+
+
+# ---- R3: the dashboard panel only while PLANNER_OBSERVE is on (owner, 17 November 2026) --------------------------------
+
+def _dashboard(tmp_path, on):
+    from dashboard.server import Dashboard
+    from tests.planner_helpers import Over, section
+    s2 = Over(S, switches=SimpleNamespace(planner_observe=on), planner=section(S.planner, folder=tmp_path / "planner"),
+              dashboard=section(S.dashboard, status_folder=tmp_path / "status"),
+              trading=section(S.trading, pause_file=tmp_path / "pause"))
+    return Dashboard(s2, None, None, now=lambda: NOW)
+
+
+def test_with_observation_off_the_status_has_no_planner_at_all(tmp_path):
+    K(tmp_path, flat_store(NOW), Script(plan_dict())).run(NOW)               # even with a planner file present
+    st = _dashboard(tmp_path, False).status({"csrf": "x"})
+    assert "planner" not in st
+
+
+def test_with_observation_on_the_status_carries_the_observe_only_panel(tmp_path):
+    K(tmp_path, flat_store(NOW), Script(plan_dict())).run(NOW)
+    p = _dashboard(tmp_path, True).status({"csrf": "x"})["planner"]
+    assert p["label"] == LABEL and p["recommendation"]["trade"] == "SELL"
+    (tmp_path / "planner" / "GBPUSD" / "current.json").write_text("not json")
+    assert _dashboard(tmp_path, True).status({"csrf": "x"})["planner"]["available"] is False
+
+
+def test_the_page_keeps_the_planner_section_hidden_unless_a_planner_block_arrives():
+    page = (ROOT / "dashboard" / "static" / "index.html").read_text()
+    assert '<div id="stpsection" hidden>' in page
+    assert '$("stpsection").hidden = !p;\n  if (!p) return;' in page
