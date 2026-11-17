@@ -176,6 +176,48 @@ times = ["10:00", "11:00", "13:00", "14:00", "16:00", "17:00"]
 minutes_before = 20
 minutes_after = 20
 
+[planner]
+# The Structural Trade Planner V1 (planner/; owner's approval of 17 November 2026). OBSERVE ONLY: it forecasts and
+# records; it never authorises, refuses, opens, changes or closes a trade. It runs only while the switch
+# PLANNER_OBSERVE in .env is on (off if left out). Other numbers it uses are the existing ones, reused as approved:
+# hourly swings [levels] turning_*, the 3-pip level allowance [rejection] near_level_within_pips, the 3-pip close
+# rule [hourly_read] break_beyond_pips, the 5-pip grouping [levels] line_up_within_pips, the 150-pip window
+# [levels] round_numbers_within_pips, freshness [analyser] out_of_date_after_minutes, the indicators [indicators].
+# Where it writes its recommendation (folder/<PAIR>/current.json) and its history (recommendations.jsonl).
+folder = "/opt/autobot/data/planner"
+# The average daily range: the last this many finished weekday daily candles (IG's short Sunday candles left out).
+adr_weekdays = 20
+# 4-hour swings: candles each side, the move away (pips; provisional) and within how many candles.
+h4_swing_candles_each_side = 3
+h4_swing_min_move_pips = 40
+h4_swing_move_within_candles = 6
+# Daily swings: the same (pips provisional).
+daily_swing_candles_each_side = 3
+daily_swing_min_move_pips = 110
+daily_swing_move_within_candles = 6
+# How far back 4-hour and daily swings are kept as levels (weeks).
+h4_swing_lookback_weeks = 8
+daily_swing_lookback_weeks = 48
+# A structural break needs this many closes in a row at least [hourly_read] break_beyond_pips beyond the swing.
+structure_break_closes = 1
+# Zone width: the larger of [levels] line_up_within_pips and this share of the ADR (provisional).
+zone_width_adr_share = 0.15
+# Zone classes: Major needs this many families including a daily-or-weekly level; Moderate this many.
+major_min_families = 3
+moderate_min_families = 2
+# The weakest zone class that may be an entry zone.
+min_entry_class = "Moderate"
+# The 4-hour EMA100 slope is measured over this many 4-hour candles (supporting evidence only).
+ema_slope_candles = 6
+# Momentum weakening: the 4-hour MACD histogram moving towards zero for this many candles in a row.
+macd_weakening_candles = 3
+# CORRECTION_LIKELY: no new extreme in this many finished hourly candles.
+no_new_extreme_hourly_candles = 3
+# Recorded only: a confirmed zone break closed back within this many hourly candles is a failed breakout.
+failed_breakout_within_candles = 3
+# Past recommendations shown on the dashboard panel.
+panel_history = 5
+
 [trend_still_going]
 # Trend still going (owner, 16 November 2026; only while the switch TREND_STILL_GOING in .env is on): the EMA
 # pullback, slow grind and breakout only open a sell if, within the last within_candles finished 5-minute candles,
