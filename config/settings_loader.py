@@ -325,6 +325,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "confirm_attempts": _whole_number(1, 20),
         "confirm_wait_seconds": _whole_number(0, 60),
         "close_retry_seconds": _whole_number(5, 600),
+        "stop_move_attempts": _whole_number(1, 20),
     },
     "trade_manager": {
         "folder": _absolute_folder,

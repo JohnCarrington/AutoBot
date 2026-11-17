@@ -87,6 +87,10 @@ confirm_wait_seconds = 1
 # A close IG refuses (or does not answer clearly) leaves the trade open; the trade manager tries the
 # close again after this many seconds, for as long as the position is open at IG.
 close_retry_seconds = 30
+# A trail's stop move IG refuses (or does not answer clearly) is tried again every close_retry_seconds, this
+# many attempts in all at that level; then the bot gives up on it (one alert), keeps the stop IG has, and works
+# the trail out again after the next finished 5-minute candle. Owner's value, 17 November 2026.
+stop_move_attempts = 3
 
 [trade_manager]
 # Where the trade manager records every decision it makes (design 4).

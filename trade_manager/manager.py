@@ -16,10 +16,13 @@ a bar whose open, high, low and close are the same), in this order (as the resea
      trail_from_pips and trail_candles: owner, 16 November 2026): once the trade has been bounce.trail_from_pips up (12),
      after each FINISHED 5-minute candle its stop is moved at IG to a tenth of a pip beyond the last
      bounce.trail_candles (3) finished candles (a sell: above their highest buy price; a buy: below their lowest
-     sell price), only ever closer (TradeManager.on_bar with finished=True); from then on the stop at IG is
-     there. Live, each move counts only once IG confirms it ("stop moved"); if IG does not confirm it the old stop
-     stays ("stop not moved", the owner alerted by the order sender) and the move is tried again after
-     orders.close_retry_seconds, until a later candle gives a newer one;
+     sell price), only ever closer than the stop IG holds (TradeManager.on_bar with finished=True); from then on
+     the stop at IG is there. The order sender sends the nearest level IG allows if the rule's level is on the
+     wrong side of IG's price or inside IG's minimum stop distance (owner, 17 November 2026). Live, each move counts
+     only once IG confirms it ("stop moved"); if IG does not confirm it the old stop stays ("stop not moved") and the
+     move is tried again after orders.close_retry_seconds, up to orders.stop_move_attempts (3) in all; then the bot
+     gives up on that level (one alert to the owner) and works the trail out again after the next finished candle.
+     A later candle's level replaces one still waiting (owner, 17 November 2026);
   3. the close at the opposite Bollinger band (owner, 11 November 2026, as tested in
      docs/research/management_and_targets_20261111.md): the range trade closes in full there
      (range_trade.close_percent_at_opposite_band, 100); the band as it stood at the last finished candle. The bot closes that part. Its price: the bar's open if the bar opened past the band,
@@ -147,7 +150,7 @@ class ManagedTrade:
     stop_level: Decimal | None = None       # its stop at IG as a price once moved (confirmed); None: not moved
     trail_want: Decimal | None = None       # a stop move not yet confirmed by IG
     retry_move_at: datetime | None = None   # live: a stop move IG did not confirm is tried again from this time
-    move_attempts: int = 0                  # live: stop moves IG did not confirm
+    move_attempts: int = 0                  # live: stop moves IG did not confirm (for the level waiting)
     decisions: list[Decision] = field(default_factory=list)
 
     @property
@@ -465,18 +468,22 @@ class TradeManager:
         last = self.recent[-t.trail_candles:]
         sell = t.direction == SELL
         want = (max(b.buy_high for b in last) + ppp / 10) if sell else (min(b.sell_low for b in last) - ppp / 10)
-        now = t.trail_want if t.trail_want is not None else t.stop_level
+        # "Only ever closer" than the stop IG actually holds, never than a move IG refused (17 November 2026: a
+        # refused 13181.6 blocked every newer level while price rose, and the same level was sent 31 times).
+        now = t.stop_level
         if now is None:
             now = (t.fill + t.stop_pips * ppp) if sell else (t.fill - t.stop_pips * ppp)
-        if (want < now) if sell else (want > now):
-            t.trail_want = want
+        if ((want < now) if sell else (want > now)) and want != t.trail_want:
+            t.trail_want = want                     # a newer level replaces one still waiting: a fresh set of attempts
             t.retry_move_at = None
+            t.move_attempts = 0
             self._move_stop(t)
 
     def _move_stop(self, t: ManagedTrade) -> None:
-        """A stop move the trail asked for: the order sender moves the stop at IG. It counts only once IG confirms it;
-        otherwise the old stop stays and the move is tried again after orders.close_retry_seconds (live; in a replay
-        or a paper trade the move is recorded at once)."""
+        """A stop move the trail asked for: the order sender moves the stop at IG (to the nearest level IG allows, if
+        need be). It counts only once IG confirms it; otherwise the old stop stays and the move is tried again after
+        orders.close_retry_seconds, up to orders.stop_move_attempts in all, then given up until the next finished
+        candle with one alert (live; in a replay or a paper trade the move is recorded at once)."""
         want = t.trail_want
         if want is None:
             return
@@ -486,20 +493,43 @@ class TradeManager:
                f"{t.trail_candles} candles")
         sent = self.sender.move_stop(t.reference, want, why=why) if hasattr(self.sender, "move_stop") else None
         if sent is None or getattr(sent, "ok", False) or not self.ig_confirms:
+            # the order sender may have sent the nearest level IG allows instead (owner, 17 November 2026)
+            level = getattr(sent, "level", None) or want
+            if level != want:
+                why += f"; sent as {level}, the nearest level IG allowed at that moment"
             if t.move_attempts and hasattr(self.sender, "alerts"):
                 self.sender.alerts.info(f"AutoBot: the stop of {t.strategy} {t.direction} trade {t.reference} is now at "
-                                        f"{want} at IG, after {t.move_attempts} move(s) IG did not confirm.")
-            t.stop_level, t.trail_want, t.retry_move_at, t.move_attempts = want, None, None, 0
+                                        f"{level} at IG, after {t.move_attempts} move(s) IG did not confirm.")
+            t.stop_level, t.trail_want, t.retry_move_at, t.move_attempts = level, None, None, 0
             ppp = Decimal(self.s.market.points_per_pip)
-            pips = ((t.fill - want) if t.direction == SELL else (want - t.fill)) / ppp
-            self._record(t, Decision(STOP_MOVED, want, pips, why), sent)
+            pips = ((t.fill - level) if t.direction == SELL else (level - t.fill)) / ppp
+            self._record(t, Decision(STOP_MOVED, level, pips, why), sent)
             return
         t.move_attempts += 1
-        t.retry_move_at = self.now() + timedelta(seconds=self.s.orders.close_retry_seconds)
+        attempts = int(self.s.orders.stop_move_attempts)
         reason = "; ".join(getattr(sent, "reasons", None) or [getattr(sent, "what", "no answer")])
-        self._record(t, Decision(STOP_NOT_MOVED, want, None,
-                                 f"{why}: not done, IG did not confirm it ({reason}); the old stop stays and the move "
-                                 f"is tried again in {self.s.orders.close_retry_seconds} seconds"), sent)
+        tried = getattr(sent, "level", None) or want
+        if t.move_attempts >= attempts:
+            # owner, 17 November 2026: give up on this level after orders.stop_move_attempts (3); the stop stays where
+            # IG has it and the trail is worked out again after the next finished candle. One alert, not one a try.
+            stays = t.stop_level if t.stop_level is not None else "its stop when it opened"
+            self._record(t, Decision(STOP_NOT_MOVED, tried, None,
+                                     f"{why}: not done, IG did not confirm it ({reason}); gave up after {attempts} "
+                                     f"attempts: the stop stays at {stays} and the trail is worked out again after "
+                                     f"the next finished candle"), sent)
+            alerts = getattr(self.sender, "alerts", None)
+            if alerts is not None and hasattr(alerts, "problem"):
+                alerts.problem(f"stop-move-gave-up-{t.reference}",
+                               f"IG did not move the stop of {t.strategy} {t.direction} trade {t.reference} to {tried} "
+                               f"(the trail) in {attempts} attempts: {reason}. The stop stays at {stays} at IG and in "
+                               f"the bot's records; the trail is worked out again after the next finished candle.")
+            t.trail_want, t.retry_move_at, t.move_attempts = None, None, 0
+            return
+        t.retry_move_at = self.now() + timedelta(seconds=self.s.orders.close_retry_seconds)
+        self._record(t, Decision(STOP_NOT_MOVED, tried, None,
+                                 f"{why}: not done, IG did not confirm it ({reason}); attempt {t.move_attempts} of "
+                                 f"{attempts}: the old stop stays and the move is tried again in "
+                                 f"{self.s.orders.close_retry_seconds} seconds"), sent)
 
     _KEEP = ("state", "best", "bars", "half_done", "half_pips", "half_share", "expected_at_ig")
 
