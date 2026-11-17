@@ -88,3 +88,14 @@ Then, on a device logged in to the same Tailscale network, open `http://<100.x.y
 ## Structural Trade Planner panel (observe only)
 
 **Only while the switch `PLANNER_OBSERVE` is on** (owner, 17 November 2026), `/api/status` also carries `"planner"`: the panel built by `planner/panel.py` from the planner's own file (`planner.folder/<PAIR>/current.json`). With it off, the status has no `"planner"` at all and the page keeps the whole planner section hidden, so the dashboard is exactly as before. Nothing else is read for it, and a missing or unreadable file shows "no forecast", never an error. The panel is labelled **OBSERVE ONLY — DOES NOT CONTROL TRADING** and keeps apart what is observed now (4-hour structure, MACD, RSI 3, Bollinger, today's range against the ADR, pivots, the direction rule), the forecast (dominant direction, condition, expected movement, opportunity), the recommendation (trade, entry zone and class, reference entry, reachability, next obstacle, destinations, status, structural evidence) and the invalidation, with the time of the last analysis, whether the recommendation is current and the last few recommendations.
+
+## Structural Trade Planner tab (owner's brief, 17 November 2026)
+
+The page has two tabs: **Operations** (everything above) and **Structural Trade Planner** (shown only while
+`PLANNER_OBSERVE` is on). On the Operations tab the large planner panel is replaced by a compact card (dominant
+direction, expected next movement, recommendation status, last analysis, data freshness, and an **Open Structural
+Trade Planner** button). The tab itself, its read-only routes (`GET /api/stp/...`), the chart and the evaluation are
+described in `docs/STP_DASHBOARD.md`. Its script, style and chart library are served by the data service behind the
+session, so nginx is unchanged; a new version of `dashboard/stp.py` or `dashboard/server.py` needs the data service
+restarted, as any `/api/` change.
+

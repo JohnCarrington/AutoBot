@@ -26,7 +26,8 @@ CURRENT (FC-08): a recommendation is current only when it was re-checked at the 
 invalidates; it makes the recommendation not current (D-21: no new authorisation from it, when that exists).
 
 Files, in planner.folder/<PAIR>/: current.json (the recommendation, the last plan and the state; a safe write) and
-recommendations.jsonl (every event and every hourly analysis; append-only, kept for good, P-F8).
+recommendations.jsonl (every event and every hourly analysis; append-only, kept for good, P-F8); issued.jsonl (each
+recommendation in full as issued, for the dashboard's history: reporting only, append-only).
 """
 
 from __future__ import annotations
@@ -94,6 +95,10 @@ class Keeper:
     def history_path(self) -> Path:
         return self.folder / "recommendations.jsonl"
 
+    @property
+    def issued_path(self) -> Path:
+        return self.folder / "issued.jsonl"
+
     def _load(self) -> dict:
         try:
             st = json.loads(self.current_path.read_text())
@@ -159,8 +164,20 @@ class Keeper:
         rec["six_factors"] = six_factors(plan)
         self.state["recommendation"] = rec
         self._event(t, "created", why, status=CANDIDATE, plan=summary(plan))
+        self._issued(rec)
         rec["status"] = WAITING
         self._event(t, "waiting", "issued on the first analysis with all the evidence (adjustment 1)", status=WAITING)
+
+    def _issued(self, rec: dict) -> None:
+        """Reporting only (the dashboard's history; owner's brief of 17 November 2026): the full recommendation exactly
+        as issued, one line per recommendation in issued.jsonl (append-only), so its original destinations and
+        invalidation stay available after it ends. Decides nothing; a failure here is logged and changes nothing."""
+        try:
+            self.folder.mkdir(parents=True, exist_ok=True)
+            with self.issued_path.open("a") as f:
+                f.write(json.dumps({k: v for k, v in rec.items() if k != "history"}) + "\n")
+        except Exception as e:                                  # noqa: BLE001  never stops the planner
+            log.warning("Planner: issued.jsonl not written (%s); the recommendation is unaffected.", e)
 
     def _update_from(self, plan: dict) -> list[str]:
         """Update the live recommendation from a re-plan with the same identity; what changed, in words (moving

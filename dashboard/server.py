@@ -18,6 +18,9 @@ deploy/autobot-dashboard.nginx) and serves the page (dashboard/static/index.html
   POST /api/pause     {"paused": true|false}: the pause switch (the file trading.pause_file). Needs the session, its
                       csrf token in X-CSRF-Token, and no Origin from another site. Each change is recorded
                       (records/book.py) and sent on Telegram.
+  GET  /api/stp/...   the Structural Trade Planner tab (dashboard/stp.py; read only, observe only): overview, candles,
+                      history, recommendation, evaluation, and the vendored chart library. Needs the session. A failure
+                      there answers that request only, never the status or the pause switch.
   GET  /api/history   ?from=YYYY-MM-DD&to=YYYY-MM-DD (UK days, both included; neither: every trade) &paper=1 (also
                       the paper trades): the bot's own trade records (records.folder/<PAIR>/trades.jsonl, and
                       paper/trades.jsonl), never IG, so it goes back to the very first trade: the trades closed in
@@ -109,6 +112,11 @@ class Dashboard:
             try:
                 from planner.panel import panel
                 extra["planner"] = panel(self.s, self.now())
+                try:                                    # the compact card for the main dashboard (STP tab's summary)
+                    from dashboard.stp import card
+                    extra["planner"]["card"] = card(self.s, self.now())
+                except Exception:                       # noqa: BLE001  the panel still shows without it
+                    pass
             except Exception as e:                      # noqa: BLE001  never breaks the status
                 extra["planner"] = {"label": "OBSERVE ONLY — DOES NOT CONTROL TRADING", "available": False,
                                     "message": f"The planner's file could not be read ({type(e).__name__})."}
@@ -191,6 +199,39 @@ class Dashboard:
                      "totals": totals(bot), "closed_by_owner": totals(owner), "by_strategy": strategies,
                      "trades": trades}
 
+    # ---- the Structural Trade Planner tab (read only) --------------------------------------------------------------
+
+    def stp(self, path: str, query: str) -> tuple[int, Any, str]:
+        """(status, JSON data or bytes, content type) for GET /api/stp/<name>. Never raises."""
+        from dashboard import stp
+        name = path[len("/api/stp/"):]
+        try:
+            if name.startswith("lib/"):
+                f = stp.STATIC.get(name[4:])            # a fixed list of file names: nothing else is served
+                if f is None:
+                    return 404, {"ok": False}, "application/json"
+                return 200, f.read_bytes(), ("text/css; charset=utf-8" if f.suffix == ".css"
+                                             else "application/javascript; charset=utf-8")
+            if not getattr(getattr(self.s, "switches", None), "planner_observe", False):
+                # as the panel (owner's R3): nothing of the planner while PLANNER_OBSERVE is off
+                return 404, {"ok": False, "error": "the Structural Trade Planner is off (PLANNER_OBSERVE)"}, "application/json"
+            if name == "overview":
+                return 200, stp.overview(self.s, self.now()), "application/json"
+            if name == "evaluation":
+                return 200, stp.evaluation(self.s, self.now()), "application/json"
+            if name == "candles":
+                code, data = stp.candles(self.s, query, self.now())
+            elif name == "history":
+                code, data = stp.history(self.s, query)
+            elif name == "recommendation":
+                code, data = stp.recommendation(self.s, query, self.now())
+            else:
+                return 404, {"ok": False}, "application/json"
+            return code, data, "application/json"
+        except Exception as e:                          # noqa: BLE001  the STP tab never breaks the dashboard
+            log.warning("Dashboard STP %s failed: %s", name, type(e).__name__)
+            return 500, {"ok": False, "error": f"the planner's data could not be read ({type(e).__name__})"}, "application/json"
+
     # ---- the pause switch -------------------------------------------------------------------------------
 
     def pause(self, session: dict, headers: Any, body: dict) -> tuple[int, dict]:
@@ -244,6 +285,15 @@ def handler_for(app: Dashboard):
             self.end_headers()
             self.wfile.write(body)
 
+        def _send_bytes(self, code: int, body: bytes, ctype: str) -> None:
+            self.send_response(code)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
         def _body(self) -> dict:
             n = int(self.headers.get("Content-Length") or 0)
             if n > 10_000:
@@ -261,6 +311,13 @@ def handler_for(app: Dashboard):
             if self.path == "/api/status":
                 return self._send(200, app.status(sess)) if sess else self._send(401, {"ok": False})
             path, _, query = self.path.partition("?")
+            if path.startswith("/api/stp/"):
+                if not sess:
+                    return self._send(401, {"ok": False})
+                code, data, ctype = app.stp(path, query)
+                if isinstance(data, bytes):
+                    return self._send_bytes(code, data, ctype)
+                return self._send(code, data)
             if path == "/api/history":
                 if not sess:
                     return self._send(401, {"ok": False})

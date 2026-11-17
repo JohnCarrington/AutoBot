@@ -84,14 +84,20 @@
   .banner li::before { content: '◆ '; }
 
   /* stat cards */
-  .stp { margin: 0 16px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
-  .stp-flag { display: inline-block; padding: 4px 9px; border-radius: 6px; font-size: 10px; font-weight: 700; letter-spacing: .08em;
-              color: var(--amber); border: 1px solid var(--amber); margin-bottom: 10px; }
-  .stp-h { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 10px 0 4px; }
-  .stp-row { display: flex; justify-content: space-between; gap: 12px; font-size: 11px; padding: 2px 0; }
-  .stp-row span:first-child { color: var(--muted); }
-  .stp-row span:last-child { text-align: right; overflow-wrap: anywhere; }
-  .stp-list { font-size: 10px; color: var(--muted); padding-left: 16px; margin: 2px 0; line-height: 1.5; }
+  /* the Structural Trade Planner's compact card (observe only) and the tabs (owner's brief, 17 November 2026) */
+  .stpc { margin: 0 16px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+  .stpc-flag { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; letter-spacing: .08em;
+               color: var(--amber); border: 1px solid var(--amber); margin-bottom: 10px; }
+  .stpc-row { display: flex; justify-content: space-between; gap: 12px; font-size: 11px; padding: 3px 0; }
+  .stpc-row span:first-child { color: var(--muted); white-space: nowrap; }
+  .stpc-row span:last-child { text-align: right; overflow-wrap: anywhere; }
+  .stpc .btn { margin-top: 12px; width: 100%; padding: 9px; font-size: 11px; }
+  .stpc .bear { color: var(--red); } .stpc .bull { color: var(--accent); }
+  .tabs { position: sticky; top: calc(var(--safe-top) + 53px); z-index: 99; background: var(--bg); border-bottom: 1px solid var(--border);
+          display: flex; gap: 4px; padding: 0 16px; overflow-x: auto; }
+  .tab { color: var(--muted); text-decoration: none; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding: 10px 12px;
+         border-bottom: 2px solid transparent; white-space: nowrap; }
+  .tab.on { color: var(--accent); border-bottom-color: var(--accent); }
   .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px; }
   .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px;
                position: relative; overflow: hidden; }
@@ -346,7 +352,12 @@
     </div>
   </div>
 
-  <main>
+  <nav class="tabs" aria-label="Dashboard sections">
+    <a class="tab on" id="tab-ops" href="#operations">Operations</a>
+    <a class="tab" id="tab-stp" href="#stp" hidden>Structural Trade Planner</a>
+  </nav>
+
+  <main id="view-ops">
     <div class="banner warn" id="warnings" hidden><ul id="warnlist" aria-label="Warnings"></ul></div>
 
     <div class="stats-grid">
@@ -383,7 +394,7 @@
 
     <div id="stpsection" hidden>
       <div class="section-title" style="padding-top:16px">Structural Trade Planner</div>
-      <div class="stp" id="stp"></div>
+      <div class="stpc" id="stp"></div>
     </div>
 
     <div class="section-title" style="padding-top:24px">Trading history</div>
@@ -426,6 +437,7 @@
     <div class="trades" id="history"></div>
     <div class="empty" id="nohistory" hidden>No trades closed in this period.</div>
   </main>
+  <div id="view-stp" hidden></div>
   <div class="stamp" id="updated"></div>
 </div>
 
@@ -492,51 +504,55 @@ async function load() {
 }
 
 function renderPlanner(p) {
-  // Shown only while the server sends a planner block, i.e. only while PLANNER_OBSERVE is on (owner's R3).
+  // Shown only while the server sends a planner block, i.e. only while PLANNER_OBSERVE is on (owner's R3). The full
+  // workspace is the Structural Trade Planner tab; this is its compact summary (no trading controls).
+  $("tab-stp").hidden = !p;
+  if (!p && location.hash === "#stp") showView();
   $("stpsection").hidden = !p;
   if (!p) return;
   const box = $("stp"); box.textContent = "";
-  box.appendChild(el("div", "stp-flag", (p && p.label) || "OBSERVE ONLY — DOES NOT CONTROL TRADING"));
-  if (!p || !p.available) { box.appendChild(el("div", "empty", (p && p.message) || "No planner forecast.")); return; }
-  const row = (k, v) => { if (v === null || v === undefined || v === "") return; const r = el("div", "stp-row");
-    r.appendChild(el("span", "", k)); r.appendChild(el("span", "", String(v))); box.appendChild(r); };
-  const list = (items) => { if (!items || !items.length) return; const u = el("ul", "stp-list");
-    items.forEach(x => u.appendChild(el("li", "", x))); box.appendChild(u); };
-  row("Last analysis", uk(p.last_analysis_utc) + (p.current ? " · current" : " · NOT current"));
-  if (!p.current) list(p.not_current_reasons);
-  const o = p.observed || {};
-  box.appendChild(el("div", "stp-h", "Observed now"));
-  row("4-hour structure", o.h4_structure);
-  if (o.h4_macd) row("4-hour MACD 35/45/30", "line " + o.h4_macd.line + " · histogram " + o.h4_macd.histogram);
-  row("4-hour RSI 3", o.h4_rsi); row("4-hour Bollinger", o.h4_band); row("EMA 7/13/21", o.ema_stack);
-  if (o.adr_pips) row("Today's range", (o.today_range_pips || "–") + " pips of a " + o.adr_pips + "-pip average day");
-  row("Daily pivot", o.vs_daily_pivot); row("Weekly pivot", o.vs_weekly_pivot);
-  row("Direction rule (EMA pullback)", o.direction_rule_5m);
-  if (Array.isArray(o.big_news_today) && o.big_news_today.length) row("Big news today", o.big_news_today.join(", "));
-  if (o.warming_up && o.warming_up.length) row("Warming up (not used)", o.warming_up.join("; "));
-  const f = p.forecast || {};
-  box.appendChild(el("div", "stp-h", "Forecast"));
-  row("Dominant direction", f.dominant_direction); row("Condition", f.condition && f.condition.replace(/_/g, " "));
-  row("Expected movement", f.expected_movement); row("Opportunity", f.opportunity);
-  const r = p.recommendation;
-  box.appendChild(el("div", "stp-h", "Recommendation"));
-  if (!r) { row("Status", "NO RECOMMENDATION"); box.appendChild(el("div", "stp-list", p.no_recommendation || "")); }
-  else {
-    row("Preferred trade", r.trade); row("Entry zone", r.zone + " (" + r.class + ")");
-    if (r.reference_entry) row("Reference entry", r.reference_entry.price + " · " + r.reference_entry.level);
-    row("Reachability", r.reachability); row("Next obstacle", r.next_obstacle);
-    row("Primary destination", r.primary_destination); row("Extended destination", r.extended_destination);
-    row("Status", r.status); row("Id", r.id);
-    box.appendChild(el("div", "stp-h", "Structural evidence (" + (r.families || []).join(", ") + ")"));
-    list(r.evidence);
-    box.appendChild(el("div", "stp-h", "Invalidation"));
-    list(p.invalidation);
+  box.appendChild(el("div", "stpc-flag", "OBSERVE ONLY — DOES NOT CONTROL TRADING"));
+  const c = p.card || {};
+  const row = (k, v, cls) => { const r = el("div", "stpc-row"); r.appendChild(el("span", "", k));
+    r.appendChild(el("span", cls || "", (v === null || v === undefined || v === "") ? "–" : String(v))); box.appendChild(r); };
+  if (!p.available || c.available === false) {
+    row("Status", "PLANNER UNAVAILABLE");
+    box.appendChild(el("div", "stpc-row", (c.freshness && c.freshness.detail) || p.message || "No planner forecast."));
+  } else {
+    const d = c.dominant_direction || (p.forecast || {}).dominant_direction;
+    row("GBP/USD dominant direction", (d === "BEARISH" ? "▼ " : d === "BULLISH" ? "▲ " : "") + (d || "–"), d === "BEARISH" ? "bear" : d === "BULLISH" ? "bull" : "");
+    row("Expected next movement", c.expected_movement || "no movement forecast");
+    row("Recommendation", (c.status || "–") + (c.trade ? " · " + c.trade + " " + c.zone : ""));
+    row("Last analysis", uk(c.last_analysis_utc || p.last_analysis_utc));
+    row("Data freshness", c.freshness ? c.freshness.label : (p.data_fresh ? "fresh" : "NOT fresh"));
   }
-  if (p.recent && p.recent.length) {
-    box.appendChild(el("div", "stp-h", "Previous recommendations"));
-    list(p.recent.map(x => x.trade + " " + x.zone.join("–") + " · " + x.status + " · " + x.why));
-  }
+  const b = el("button", "btn", "Open Structural Trade Planner"); b.type = "button";
+  b.addEventListener("click", () => { location.hash = "#stp"; });
+  box.appendChild(b);
 }
+
+// ---- the tabs: Operations (this page) and the Structural Trade Planner (its own script, loaded on first use, so a
+// problem there never reaches this page) ----
+let stpLoading = null;
+function loadStp() {
+  if (window.STP) return Promise.resolve();
+  if (stpLoading) return stpLoading;
+  const css = document.createElement("link"); css.rel = "stylesheet"; css.href = "/api/stp/lib/stp.css"; document.head.appendChild(css);
+  const add = (src) => new Promise((ok, bad) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = bad; document.head.appendChild(s); });
+  stpLoading = add("/api/stp/lib/lightweight-charts.js").catch(() => null).then(() => add("/api/stp/lib/stp.js"));
+  return stpLoading;
+}
+function showView() {
+  const stp = location.hash === "#stp" && !$("tab-stp").hidden;
+  $("view-ops").hidden = stp; $("view-stp").hidden = !stp; $("updated").hidden = stp;
+  $("tab-ops").classList.toggle("on", !stp); $("tab-stp").classList.toggle("on", stp);
+  if (stp) {
+    window.scrollTo(0, 0);
+    loadStp().then(() => window.STP && window.STP.mount($("view-stp")))
+             .catch(() => { $("view-stp").textContent = "The Structural Trade Planner could not be loaded. The rest of the dashboard is unaffected."; });
+  } else if (window.STP) window.STP.pause();
+}
+window.addEventListener("hashchange", showView);
 
 $("loginform").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -863,7 +879,7 @@ async function loadHistory() {
 
 function start() {
   renderHistory();
-  load(); clearInterval(timer);
+  load().then(showView); clearInterval(timer);
   timer = setInterval(() => { load(); if (!isHistorical()) loadHistory(); }, 5000);
 }
 start();

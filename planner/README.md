@@ -19,7 +19,7 @@ It never authorises, refuses, opens, changes or closes a trade. It never contact
 | `structure.py` | Swings by the existing turning-level rule (hourly 3/20/6; 4-hour 3/40/6; daily 3/110/6). Up/down/mixed structure. Breaks need a close at least 3 pips beyond. Turns held back only by the provisional 40/110-pip thresholds are recorded |
 | `zones.py` | The existing levels plus weekly pivots, the previous week's high and low, 4-hour and daily swings, and moving-average levels. Families. Zones (the larger of 5 pips and 0.15 × ADR, built from fixed levels first). Major / Moderate / Minor classes. Tests. The one-sided 3-pip touch rule |
 | `assess.py` | Direction, condition, opportunity, reachability, zone choice, destinations, invalidation, observations: one `Plan` |
-| `keeper.py` | The lifecycle: CANDIDATE, WAITING, ACTIVE, INVALIDATED, SUPERSEDED, COMPLETED. The files `planner.folder/<PAIR>/current.json` and `recommendations.jsonl` (append-only). `PlannerUpdater` for the price service |
+| `keeper.py` | The lifecycle: CANDIDATE, WAITING, ACTIVE, INVALIDATED, SUPERSEDED, COMPLETED. The files `planner.folder/<PAIR>/current.json` and `recommendations.jsonl` (append-only). Also `issued.jsonl`: each recommendation in full as issued, for the dashboard's history (reporting only). `PlannerUpdater` for the price service |
 | `panel.py` | The dashboard panel's content, from the planner's file only |
 | `__main__.py` | `python -m planner run` (one keeper run) and `python -m planner show --at <UTC time>` (print a plan; writes nothing) |
 
