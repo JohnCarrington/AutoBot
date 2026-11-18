@@ -87,3 +87,64 @@ class HourlyReader:
         if k == 0:
             return HourlyRead(RANGING, None, None, None, None, "no hourly candle finished yet")
         return self.reads[k - 1]
+
+
+# ---- a 5-minute close beyond the hourly range (ANALYSER_USES_HOURLY; owner, 18 November 2026; design 2.10) ------
+
+@dataclass(frozen=True)
+class FiveMinuteBreak:
+    """While the hourly read says ranging, a 5-minute close at least hourly_read.break_beyond_pips beyond the hourly
+    range counts, for the analyser and the trend group, as the hourly range breaking that way, without waiting for
+    the hourly candle to close. `low` and `high`: the hourly range as it was at the break (kept for the cancel)."""
+    state: str                          # SELL_OFF (a close below the range) or RALLY (above it)
+    low: Decimal
+    high: Decimal
+    at: datetime                        # start of the 5-minute candle whose close broke the range
+    close: Decimal
+    back: int = 0                       # 5-minute closes in a row back inside the range since
+
+
+def next_break(settings: Any, read: HourlyRead | None, brk: FiveMinuteBreak | None, start: datetime,
+               close: Decimal) -> FiveMinuteBreak | None:
+    """The 5-minute break after the 5-minute candle starting at `start` closed at `close`; `read`: the hourly read
+    after the last hourly candle finished by `start`; `brk`: the break before this candle (None: none).
+
+      * only while the hourly read says ranging: once an hourly close beyond the range makes it a sell-off or a
+        rally, the real read takes over (the break ends);
+      * a close at least break_beyond_pips above the hourly range high starts a break up (a rally), below its low
+        a break down (a sell-off), with the range as it was then;
+      * market_states.persistence_candles (2) closes in a row back inside that range (from its low to its high)
+        cancel it (the analyser's two-closes cancel); an hourly close without a break keeps it;
+      * a close at least break_beyond_pips beyond the other side of that range turns it the other way (as a break
+        the other way does in the hourly read itself)."""
+    if read is None or read.state != RANGING or read.high is None or read.low is None:
+        return None
+    beyond = Decimal(settings.hourly_read.break_beyond_pips) * Decimal(settings.market.points_per_pip)
+    if brk is not None:
+        if brk.state == RALLY and close <= brk.low - beyond:
+            return FiveMinuteBreak(SELL_OFF, brk.low, brk.high, start, close)
+        if brk.state == SELL_OFF and close >= brk.high + beyond:
+            return FiveMinuteBreak(RALLY, brk.low, brk.high, start, close)
+        back = brk.back + 1 if brk.low <= close <= brk.high else 0
+        if back >= settings.market_states.persistence_candles:
+            return None
+        return FiveMinuteBreak(brk.state, brk.low, brk.high, brk.at, brk.close, back)
+    if close >= read.high + beyond:
+        return FiveMinuteBreak(RALLY, read.low, read.high, start, close)
+    if close <= read.low - beyond:
+        return FiveMinuteBreak(SELL_OFF, read.low, read.high, start, close)
+    return None
+
+
+def with_break(read: HourlyRead | None, brk: FiveMinuteBreak | None) -> HourlyRead | None:
+    """The hourly read as the analyser and the trend group see it while ANALYSER_USES_HOURLY is on: the read itself,
+    unless it says ranging and a 5-minute break is standing, which counts as a rally (up) or a sell-off (down). The
+    hourly read itself, and what the dashboard shows for it, stay as they are."""
+    if read is None or brk is None or read.state != RANGING:
+        return read
+    side = "above the hourly range high" if brk.state == RALLY else "below the hourly range low"
+    edge = brk.high if brk.state == RALLY else brk.low
+    return HourlyRead(brk.state, read.candle, brk.low, brk.high, brk.at,
+                      f"the {uk_short(brk.at)} 5-minute candle closed at {plain(brk.close)}, at least the break "
+                      f"distance {side} {plain(edge)} (ANALYSER_USES_HOURLY: the hourly range broke without waiting "
+                      f"for the hourly close; the hourly read itself says ranging)")

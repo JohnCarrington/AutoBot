@@ -24,9 +24,14 @@ this candle happen at once (they are proof in the price itself):
     trend, a bounce failed at or below the 21 EMA and middle band, then price
     makes a new extreme on the outer band, with the 7/13/21 EMAs stacked, price
     beyond them and beyond the 100 EMA, and the outer band sloping -> trend;
+  * while ANALYSER_USES_HOURLY is on, the same trend proof is also watched both
+    ways from ranging and consolidation (stage 1b, owner, 18 November 2026): the
+    new extreme against the highest high / lowest low since that state began ->
+    trend, started at the opposite extreme of that state;
   * in an emerging trend, a confirmed rejection at a strong level the other way
     replaces it with an emerging trend that way (owner's rule);
-  * a possible reversal needs BOTH a move of at least
+  * a possible reversal (never from a strong push while ANALYSER_USES_HOURLY is
+    on; owner, 18 November 2026) needs BOTH a move of at least
     possible_reversal.min_trend_move_pips since the trend started AND a
     confirmed rejection at a level against it (the shared rejection part's
     confirmation; a single opposite candle is not enough);
@@ -152,6 +157,12 @@ class StateMachine:
         self.uses_hourly = switch_on(settings, "analyser_uses_hourly")
         self.hourly: Any = None
         self.position: str | None = None
+        # stage 1b (owner, 18 November 2026; design 2.10): in ranging or consolidation, the highest high and lowest
+        # low since that state began, each with its candle's start, and a failed bounce each way since the last new
+        # extreme that way, so the trend proof (2.5) can run from there both ways
+        self.base_high: tuple[Decimal, datetime] | None = None
+        self.base_low: tuple[Decimal, datetime] | None = None
+        self.base_failed = {UP: False, DOWN: False}
 
     # ---- the answer -----------------------------------------------------------------------
 
@@ -162,6 +173,9 @@ class StateMachine:
                          tuple(evidence), self.position if self.uses_hourly else None)
         self.now = MarketState(state, direction, trend_type, f.candle.start, list(evidence))
         self.changes.append(ch)
+        if state in (RANGING, CONSOLIDATION):             # a new ranging or consolidation begins on this candle
+            self.base_high, self.base_low = (f.h, f.candle.start), (f.l, f.candle.start)
+            self.base_failed = {UP: False, DOWN: False}
         self._pending, self._pending_count = None, 0
         self._type_pending, self._type_count = None, 0
         self.last_news = self.n
@@ -331,7 +345,10 @@ class StateMachine:
                 if e.kind == CONFIRMATION and _move(e.direction) == _opposite(d):
                     stp = setup_of(e.setup)
                     at = self._levels_of(stp)
-                    if moved >= self.s.possible_reversal.min_trend_move_pips and at:
+                    # while ANALYSER_USES_HOURLY is on, a strong push cannot be turned into a possible reversal:
+                    # nothing against it (owner, 18 November 2026; design 2.10); a slow grind as before
+                    pushing = self.uses_hourly and st == TREND and self.now.trend_type == STRONG_PUSH
+                    if moved >= self.s.possible_reversal.min_trend_move_pips and at and not pushing:
                         signs = self.reversal_signs(f, d, stp)
                         self.before = (st, d, self.now.trend_type)
                         self.reversal_setup = e.setup
@@ -391,6 +408,10 @@ class StateMachine:
             return None
 
         # ---- consolidation and ranging ----------------------------------------------------
+        if self.uses_hourly:
+            ch = self._proof_from_base(f)
+            if ch is not None:
+                return ch
         for e, stp in important_rejection(CONFIRMATION, at_edge_only=True):
             return self._start_emerging(f, _move(e.direction), f"rejected at a level: {e.note}", stp)
         if st == CONSOLIDATION and f.upper is not None:
@@ -424,6 +445,55 @@ class StateMachine:
         return self._persist(f, target)
 
     # ---- the hourly range (ANALYSER_USES_HOURLY; owner, 18 November 2026; design 2.10) ----------------------
+
+    def _proof_from_base(self, f: Features) -> StateChange | None:
+        """Stage 1b (owner, 18 November 2026; design 2.10): in ranging or consolidation, whatever the hourly read
+        says, the existing trend proof (2.5, proof()) is watched both ways. The new high (low) is measured against
+        the highest high (lowest low) since that ranging or consolidation began, and the bounce must have failed on
+        an earlier candle after the last new high (low) that way, judged as in a trend. When the proof holds, the
+        analyser moves to trend that way (strong push or slow grind, as from an emerging trend). The trend's start
+        (for the possible reversal's move and the MACD rule) is the lowest low (an up trend) or highest high (a down
+        trend) since that ranging or consolidation began, at that candle's time: the move started there."""
+        if self.base_high is None or self.base_low is None:     # the week's first candle: it begins here
+            self.base_high, self.base_low = (f.h, f.candle.start), (f.l, f.candle.start)
+            self.base_failed = {UP: False, DOWN: False}
+            return None
+        before = dict(self.base_failed)
+        cap = max(x for x in (f.ema21, f.middle) if x is not None) if (f.ema21 or f.middle) else None
+        tol = Decimal(self.m.failed_bounce_within_pips) * self.ppp
+        if cap is not None:                                       # as in a trend: a failed bounce (2.5, point 4)
+            if f.green and f.h <= cap + tol:
+                self.base_failed[DOWN] = True
+            if f.red and f.l >= min(x for x in (f.ema21, f.middle) if x is not None) - tol:
+                self.base_failed[UP] = True
+        up_new, down_new = f.h > self.base_high[0], f.l < self.base_low[0]
+        found = None
+        for d, new in ((UP, up_new), (DOWN, down_new)):
+            if new and found is None:
+                ok, why = self.proof(f, d, True, before[d])
+                if ok:
+                    found = (d, why)
+        if up_new:
+            self.base_high, self.base_failed[UP] = (f.h, f.candle.start), False
+        if down_new:
+            self.base_low, self.base_failed[DOWN] = (f.l, f.candle.start), False
+        if found is None:
+            return None
+        d, why = found
+        price, at = self.base_low if d == UP else self.base_high   # since the state began, this candle included
+        was = self.now.state
+        self.start_price, self.trend_start = price, at
+        self.extreme = f.h if d == UP else f.l
+        self.failed_bounce = False
+        self.before = None
+        self.reversal_setup = None
+        self.origin = None
+        self.breakout_run = (None, 0)
+        self.back_count = 0
+        start = (f"the move started at the {'lowest low' if d == UP else 'highest high'} {self._p(price)} of "
+                 f"{uk_short(at)} since the {was} began")
+        return self._change(f, TREND, d, STRONG_PUSH if self.push(f, d) else SLOW_GRIND,
+                            f"the trend proof held in {was}: {why}", [why, start])
 
     def at_hourly_edge(self, setup: Any, direction: str) -> bool:
         """Whether a rejection may start or flip an emerging trend under stage 1: always while the switch is off, the

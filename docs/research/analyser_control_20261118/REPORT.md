@@ -1,8 +1,206 @@
-# Putting every strategy back under the analyser: stages 1 to 3
+# Putting every strategy back under the analyser: stages 1 to 3, and stage 1b
 
 Branch `feature/analyser-control`, built 18 November 2026 from main (dd9d36d). **Nothing is merged, deployed or switched on.** Main, the live checkout, the running service and the live `.env` were not touched, and nothing was restarted. All three new switches are **off** if left out of `.env`, and the live `.env` doesn't have them, so the bot would behave exactly as today even with this code.
 
 Everything below checks that the code does what your rules say, on named days. Nothing judges profit. The pips shown for paper trades come from the replay's trade manager and are given only so you can see how each trade ended.
+
+## Stage 1b: the analyser must still call trends quickly (owner, 18 November 2026, afternoon)
+
+**This section is the current state of the branch.** The sections further down are the earlier report on stages 1 to 3, written before stage 1b. Their switched-on results for 13 and 17 November are replaced by the ones here (13 November's states and trades did not change). All three switches are still **off** if left out of `.env`. Nothing is merged, deployed or switched on, and nothing was restarted.
+
+### What was added (all behind `ANALYSER_USES_HOURLY`; design 2.10, stage 1, points 5 to 7)
+
+1. **The trend proof works from any state.**
+   - In ranging or consolidation, whatever the hourly read says, the existing trend proof (2.5) is watched both ways, with the same checks and settings as before.
+   - The new high (or low) is measured against the highest high (or lowest low) since that ranging or consolidation began.
+   - The bounce must have failed on an earlier candle, after the last new high (or low) that way.
+   - When the proof holds, the analyser moves straight to **trend**, a slow grind or strong push.
+   - The trend's start, used for the 30-pip possible reversal and the MACD rule, is the lowest low (an up trend) or highest high (a down trend) since that ranging or consolidation began, at that candle's time.
+   - `analyser/states.py` `_proof_from_base`.
+2. **A 5-minute close beyond the hourly range counts as a break.**
+   - While the hourly read says ranging, a 5-minute close at least `hourly_read.break_beyond_pips` (3) beyond the hourly range counts as a rally (above) or a sell-off (below). The range is kept as it was at the break.
+   - Two closes in a row back inside that range cancel the break.
+   - An hourly close beyond the range lets the real sell-off or rally take over. An hourly close without a break keeps the 5-minute break.
+   - The break does not change the 5-minute state. It only lifts the stage 1 edge rule, the `HOURLY_READ` hourly-ranging block (a break up means the trend strategies buy only, down sell only) and the stage 2 hourly-ranging rule.
+   - The hourly read itself, the hourly position and the dashboard stay as they are.
+   - `analyser/hourly_read.py` `next_break`, `with_break`; `analyser/market_state.py`; `strategies/replay.py` `trend_hourly`; `strategies/common.py` (checks 4 and 7).
+3. **No possible reversal from a strong push.** While the trend is a strong push, a rejection at a level does not turn it into a possible reversal. Once the type is back to slow grind, the rule applies as normal. The trend's start is unchanged.
+
+**Filled in by me, for you to confirm:**
+- **Where the proof is checked:** it is looked at first on each ranging or consolidation candle, before a level rejection or a breakout.
+- **When the high/low count restarts:** a new ranging or consolidation begins on the candle it is decided on, including one that follows the other (ranging to consolidation starts again). The week's first candle begins the week's.
+- **A close beyond the other side:** a 5-minute close at least 3 pips beyond the other side of the kept range turns the break the other way, as the hourly read itself does. It did not happen on any of the four test days.
+- **When the break takes effect:** it is decided on each 5-minute close. The analyser uses it from that candle; the strategies use it at entry after that candle.
+
+### Test results (all three switches on, edge 3)
+
+- **New tests:**
+  - `tests/technical/test_analyser_stage_1b.py`: 19 tests (the proof from consolidation and ranging, its start, the 5-minute break and its cancel, the trend group and stage 2 seeing the break, no possible reversal from a strong push). All pass.
+  - `tests/functional/test_analyser_control_real_candles.py`: now 12 tests on the stored candles. All pass.
+- **Full suite:** 2,435 passed.
+
+**Trend days (the gate).** The trend group's trades (ideas allowed at entry that the hours and news rules let open), switches off vs on:
+
+| Day | Off only | On only | Lost |
+|---|---|---|---|
+| Fri 6 Nov | breakout sell 17:50 (13355.2) | breakout sell 17:55 (13350.9) | none (the accepted change) |
+| Tue 10 Nov | none | **slow grind sell 13:55 (13392.5)** | none |
+
+- **The new 10 November trade:**
+  - The 13:45 and 13:50 5-minute closes broke below the hourly range low (13420.2), so the slow grind sell is allowed at 13:55.
+  - With the switches off, it waits for the 13:00 hourly candle's close at 14:00, and the first slow grind after that is at 14:30, which opens either way.
+  - The trend proof also now fires at 13:10 straight from consolidation, instead of emerging at 12:55 then trend at 13:10.
+- **6 November:**
+  - The strong-push rule changes the afternoon's states: there is no possible reversal at 14:30 inside the 13:50 strong push.
+  - The trend runs on as a slow grind from 14:35, with a possible reversal at 15:20 (at S3, after 57.6 pips).
+  - No trend trade changes.
+
+**17 November, the morning rally (02:10 to 05:45):**
+- **03:30:** trend up (slow grind), by the trend proof from consolidation (consolidation since 00:45).
+- **05:55:** possible reversal down, at the New York session high (a slow grind, so the rule applies).
+- **06:00:** emerging down.
+- **06:25:** ranging.
+- **Morning box (07:00 to 13:00):** the proof never fires there.
+
+**17 November, the afternoon rally (13:50 to 18:00):**
+- **16:10:** trend up (slow grind), by the trend proof from consolidation.
+- **16:25:** strong push.
+- **16:45:** slow grind again.
+- **The possible reversal now comes at 18:30** (after 49.1 pips, at the New York session high), not at 16:30. The 16:30 rejection came inside the strong push.
+- **18:35:** emerging down.
+- **Trend group:** first allowed in the afternoon at **16:45 (slow grind buy)**.
+
+**Your expectations, and the bounces you asked about:**
+- No emerging trend at 06:35, 08:55 or 14:45: **holds**.
+- No consolidation breakout at 07:50 or 12:40: **holds**.
+- One trade at 10:05: **holds**. The level reversal is refused: "same signal already traded by Bollinger bounce".
+- **The 16:35 bounce sell does not open:** the analyser is in the strong push up, and a sell is against the trend.
+- **The 17:45 bounce sell does not open:** the analyser is in a slow grind up, so again against the trend.
+- **A bounce sell opens at 18:35,** after the possible reversal.
+
+**17 November, full engine (paper trades; pips only so you can see how each ended, not a verdict):**
+
+| Opened | Strategy | Direction | Entry | Pips (paper) | How it closed |
+|---|---|---|---|---|---|
+| 06:00 | level reversal | sell | 13198.8 | +3.2 | forced close: closed 15 minutes before big news |
+| 10:05 | Bollinger bounce | sell | 13190.3 | +8.7 | stopped by IG: the stop at IG (trailed to 13181.6) |
+| 16:20 | level reversal | buy | 13217.2 | -9.1 | forced close: 20:30 UK close |
+| 16:45 | slow grind | buy | 13218.4 | -10.3 | forced close: 20:30 UK close |
+| 17:15 | EMA pullback | buy | 13223.3 | -12.0 | stopped by IG: the stop at IG |
+| 18:35 | Bollinger bounce | sell | 13219.7 | +8.6 | forced close: 20:30 UK close |
+
+Orders the safety rules refused:
+
+| Time | Strategy | Direction | Refused because |
+|---|---|---|---|
+| 06:15 | level reversal | sell | level reversal already has 1 trade(s) open (at most 1) |
+| 10:05 | level reversal | sell | same signal already traded by Bollinger bounce |
+| 17:10 | slow grind | buy | slow grind already has 1 trade(s) open (at most 1) |
+| 18:00 | slow grind | buy | slow grind already has 1 trade(s) open (at most 1) |
+| 18:20 | slow grind | buy | slow grind already has 1 trade(s) open (at most 1) |
+| 18:40 | Bollinger bounce | sell | Bollinger bounce already has 1 sell trade(s) open (at most 1 each way) |
+| 22:05 | session sweep | sell | outside the trading hours 06:00 to 20:30 UK |
+
+State changes (the whole UK day):
+
+| Time | New state | Hourly position | Why (the analyser's own words) |
+|---|---|---|---|
+| 00:05 | ranging (none) | middle | bands 10.3 pips wide (close together: 6 to 18) and flat (upper 0.2, lower 0.2 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 0.4 pips |
+| 00:45 | consolidation (none) | middle | bands 7.2 pips wide (narrow: <= 14, or narrowing for 6 candles: 3), middle band 0.0 pips/candle, no close outside the bands for 6 candles, average body 1.3 pips, green/re |
+| 03:30 | trend (up, slow grind) | middle | the trend proof held in consolidation: a bounce failed under the 21 EMA and middle band, then a new high 13196.7 on the upper band 13196.1; EMAs 7/13/21 stacked up for 13 |
+| 05:55 | possible reversal (down) | top edge | rejection at a level (new_york_session_high 13205.2, turning_high 13205.2) confirmed after a up move of 34.5 pips: closed 13200.2 below the reversal low 13200.9; trigger  |
+| 06:00 | emerging trend (down) | middle | the reversal triggered: price went below 13198.8 (during this candle) |
+| 06:25 | ranging (none) | middle | the emerging down trend turned into a range: bands 13.6 pips wide (close together: 6 to 18) and flat (upper 0.0, lower 0.1 pips/candle), both bands reached, EMAs weaving, |
+| 06:40 | consolidation (none) | middle | bands 12.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 0), middle band 0.0 pips/candle, no close outside the bands for 6 candles, average body 1.5 pips, green/r |
+| 06:50 | ranging (none) | middle | bands 13.9 pips wide (close together: 6 to 18) and flat (upper -0.0, lower -0.0 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 1.2 pips |
+| 07:35 | consolidation (none) | middle | bands 9.6 pips wide (narrow: <= 14, or narrowing for 6 candles: 5), middle band -0.4 pips/candle, no close outside the bands for 6 candles, average body 2.6 pips, green/r |
+| 08:35 | ranging (none) | middle | bands 14.6 pips wide (close together: 6 to 18) and flat (upper 0.1, lower -0.0 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 0.0 pips |
+| 09:50 | emerging trend (up) | top edge | broke out of the range: 2 closes above the band (last 13202.4, band 13200.6) |
+| 10:00 | emerging trend (down) | middle | rejected at a level against the emerging up trend: closed 13190.5 below the reversal low 13195.2; trigger at below 13189.8 |
+| 10:50 | ranging (none) | middle | the emerging down trend turned into a range: bands 17.9 pips wide (close together: 6 to 18) and flat (upper -0.0, lower -0.1 pips/candle), both bands reached, EMAs weavin |
+| 11:35 | consolidation (none) | middle | bands 9.0 pips wide (narrow: <= 14, or narrowing for 6 candles: 6), middle band -0.4 pips/candle, no close outside the bands for 6 candles, average body 1.3 pips, green/r |
+| 12:25 | ranging (none) | middle | bands 8.0 pips wide (close together: 6 to 18) and flat (upper 0.1, lower 0.0 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 0.1 pips |
+| 12:35 | consolidation (none) | middle | bands 6.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 2), middle band 0.1 pips/candle, no close outside the bands for 6 candles, average body 2.4 pips, green/re |
+| 13:35 | emerging trend (down) | middle | broke out of the consolidation: close 13173.3 below the lower band 13179.0 (at least 4.0 pips beyond it) |
+| 13:50 | consolidation (none) | middle | the emerging down trend was cancelled: 2 closes in a row back inside the Bollinger bands after the breakout (last 13183.5) |
+| 16:10 | trend (up, slow grind) | top edge | the trend proof held in consolidation: a bounce failed under the 21 EMA and middle band, then a new high 13212.0 on the upper band 13210.6; EMAs 7/13/21 stacked up for 10 |
+| 16:25 | trend (up, strong push) | top edge | strong push: 83% of the body size green, bands 2.3x as wide as 12 candles ago, 7/21 EMAs 8.3 pips apart, 3 closes on the band |
+| 16:45 | trend (up, slow grind) | top edge | slow grind: 51% of the body size green, bands 2.2x as wide as 12 candles ago, 7/21 EMAs 7.0 pips apart, 1 closes on the band |
+| 18:30 | possible reversal (down) | middle | rejection at a level (new_york_session_high 13227.9) confirmed after a up move of 49.1 pips: closed 13219.5 below the reversal low 13221.1; trigger at below 13219.5 |
+| 18:35 | emerging trend (down) | middle | the reversal triggered: price went below 13219.5 (during this candle) |
+| 18:45 | emerging trend (up) | middle | rejected at a level against the emerging down trend: closed 13221.7 above the reversal high 13221; trigger at above 13221.7 |
+| 19:00 | emerging trend (down) | middle | rejected at a level against the emerging up trend: closed 13216.7 below the reversal low 13218.2; trigger at below 13216.7 |
+| 19:35 | emerging trend (up) | middle | rejected at a level against the emerging down trend: closed 13218.5 above the reversal high 13218.2; trigger at above 13219.6 |
+| 19:50 | consolidation (none) | middle | the emerging up trend was cancelled: 2 closes in a row back below the turning_low 13217.4 it was rejected at (last 13215.6) |
+| 19:55 | emerging trend (down) | middle | rejected at a level: closed 13213.9 below the reversal low 13215.6; trigger at below 13212.6 |
+| 20:55 | consolidation (none) | middle | the emerging down trend settled into consolidation: bands 13.2 pips wide (narrow: <= 14, or narrowing for 6 candles: 1), middle band -0.4 pips/candle, no close outside th |
+| 21:10 | emerging trend (up) | middle | rejected at a level: closed 13209.5 above the reversal high 13209.3; trigger at above 13211.1 |
+| 21:25 | emerging trend (down) | middle | rejected at a level against the emerging up trend: closed 13206.6 below the reversal low 13208.2; trigger at below 13206.5 |
+| 22:55 | consolidation (none) | middle | the emerging down trend settled into consolidation: bands 12.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 7), middle band -0.3 pips/candle, no close outside th |
+| 23:20 | emerging trend (up) | middle | rejected at a level: closed 13207.8 above the reversal high 13207.1; trigger at above 13208.1 |
+| 23:30 | emerging trend (down) | middle | rejected at a level against the emerging up trend: closed 13206.1 below the reversal low 13206.5; trigger at below 13205.5 |
+| 23:40 | ranging (none) | middle | the emerging down trend was cancelled: 2 closes in a row back above the turning_high 13204.4 it was rejected at (last 13204.8) |
+| 23:50 | emerging trend (up) | middle | rejected at a level: closed 13207 above the reversal high 13206.5; trigger at above 13207.2 |
+
+**13 November** (the range day, full engine): the states and trades are the same as before stage 1b. Neither the trend proof nor a 5-minute break fires.
+
+| Opened | Strategy | Direction | Entry | Pips (paper) | How it closed |
+|---|---|---|---|---|---|
+| 08:20 | Asian range breakout | buy | 13241.8 | -12.0 | stopped by IG: the stop at IG |
+| 08:40 | session sweep | sell | 13235.1 | +9.4 | stopped by IG: the stop at IG (trailed to 13225.7) |
+| 11:00 | Bollinger bounce | buy | 13223.7 | +9.3 | stopped by IG: the stop at IG (trailed to 13234.5) |
+| 15:05 | Bollinger bounce | sell | 13242.3 | +17.9 | stopped by IG: the stop at IG (trailed to 13224.4) |
+| 15:10 | session sweep | sell | 13235.8 | +11.4 | stopped by IG: the stop at IG (trailed to 13224.4) |
+
+Orders the safety rules refused:
+
+| Time | Strategy | Direction | Refused because |
+|---|---|---|---|
+| 03:25 | range trade | buy | outside the trading hours 06:00 to 20:30 UK |
+| 03:45 | range trade | buy | outside the trading hours 06:00 to 20:30 UK |
+| 14:00 | session sweep | sell | once a day: a session sweep trade has already opened for Asian high 2026-11-13 |
+
+State changes:
+
+| Time | New state | Hourly position | Why (the analyser's own words) |
+|---|---|---|---|
+| 00:20 | consolidation (none) | middle | the emerging down trend settled into consolidation: bands 10.4 pips wide (narrow: <= 14, or narrowing for 6 candles: 2), middle band 0.1 pips/candle, no close outside the |
+| 03:10 | ranging (none) | middle | bands 6.8 pips wide (close together: 6 to 18) and flat (upper -0.0, lower -0.1 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 0.0 pips |
+| 04:05 | consolidation (none) | middle | bands 4.8 pips wide (narrow: <= 14, or narrowing for 6 candles: 0), middle band -0.1 pips/candle, no close outside the bands for 6 candles, average body 0.6 pips, green/r |
+| 05:50 | emerging trend (up) | middle | rejected at a level: closed 13226.7 above the reversal high 13226.3; trigger at above 13227.9 |
+| 06:15 | consolidation (none) | middle | the emerging up trend settled into consolidation: bands 8.1 pips wide (narrow: <= 14, or narrowing for 6 candles: 1), middle band -0.1 pips/candle, no close outside the b |
+| 06:55 | ranging (none) | middle | bands 9.9 pips wide (close together: 6 to 18) and flat (upper 0.1, lower -0.2 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 1.0 pips |
+| 07:05 | emerging trend (up) | top edge | broke out of the range: 2 closes above the band (last 13238.5, band 13236.5) |
+| 07:15 | emerging trend (down) | middle | rejected at a level against the emerging up trend: closed 13232.3 below the reversal low 13234.4; trigger at below 13231.6 |
+| 08:10 | consolidation (none) | middle | the emerging down trend settled into consolidation: bands 12.4 pips wide (narrow: <= 14, or narrowing for 6 candles: 6), middle band 0.4 pips/candle, no close outside the |
+| 08:35 | emerging trend (down) | middle | rejected at a level: closed 13235.2 below the reversal low 13236.2; trigger at below 13235.2 |
+| 09:25 | consolidation (none) | middle | the emerging down trend settled into consolidation: bands 12.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 3), middle band 0.3 pips/candle, no close outside the |
+| 09:45 | ranging (none) | middle | bands 13.2 pips wide (close together: 6 to 18) and flat (upper -0.0, lower 0.0 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 0.5 pips |
+| 09:55 | consolidation (none) | middle | bands 12.6 pips wide (narrow: <= 14, or narrowing for 6 candles: 1), middle band -0.2 pips/candle, no close outside the bands for 6 candles, average body 2.1 pips, green/ |
+| 10:55 | emerging trend (up) | middle | rejected at a level: closed 13223.9 above the reversal high 13221.7; trigger at above 13225.3 |
+| 11:40 | ranging (none) | middle | the emerging up trend turned into a range: bands 16.2 pips wide (close together: 6 to 18) and flat (upper -0.0, lower -0.0 pips/candle), both bands reached, EMAs weaving, |
+| 12:35 | consolidation (none) | middle | bands 13.1 pips wide (narrow: <= 14, or narrowing for 6 candles: 3), middle band 0.2 pips/candle, no close outside the bands for 6 candles, average body 2.0 pips, green/r |
+| 13:00 | emerging trend (up) | middle | rejected at a level: closed 13228.5 above the reversal high 13225.9; trigger at above 13228.8 |
+| 13:45 | emerging trend (down) | middle | rejected at a level against the emerging up trend: closed 13237.2 below the reversal low 13238.8; trigger at below 13234.6 |
+| 17:25 | trend (down, slow grind) | bottom edge | the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new low 13205.2 on the lower band 13204.6; EMAs 7/13/21 stacked down for 23 candles |
+| 18:10 | possible reversal (up) | middle | rejection at a level (new_york_session_low 13204.3, S1 13206.0) confirmed after a down move of 32.9 pips: closed 13213.1 above the reversal high 13209.5; trigger at above |
+| 18:20 | emerging trend (up) | middle | the reversal triggered: price went above 13214.9 (during this candle) |
+| 18:30 | emerging trend (down) | middle | rejected at a level against the emerging up trend: closed 13210 below the reversal low 13212.8; trigger at below 13209.9 |
+| 18:55 | ranging (none) | middle | the emerging down trend turned into a range: bands 12.4 pips wide (close together: 6 to 18) and flat (upper -0.1, lower 0.0 pips/candle), both bands reached, EMAs weaving |
+| 19:10 | consolidation (none) | middle | bands 11.5 pips wide (narrow: <= 14, or narrowing for 6 candles: 19), middle band 0.0 pips/candle, no close outside the bands for 6 candles, average body 1.4 pips, green/ |
+| 19:15 | emerging trend (up) | middle | rejected at a level: closed 13211.3 above the reversal high 13210.9; trigger at above 13211.8 |
+| 19:25 | consolidation (none) | middle | the emerging up trend settled into consolidation: bands 9.3 pips wide (narrow: <= 14, or narrowing for 6 candles: 22), middle band 0.2 pips/candle, no close outside the b |
+| 21:30 | emerging trend (down) | middle | rejected at a level: closed 13210.7 below the reversal low 13213; trigger at below 13210.7 |
+| 21:50 | ranging (none) | middle | the emerging down trend turned into a range: bands 10.7 pips wide (close together: 6 to 18) and flat (upper 0.0, lower 0.0 pips/candle), both bands reached, EMAs weaving, |
+
+### Questions
+1. **10 November, 13:55 slow grind sell:** a new trade with the switches on (the same move, 35 minutes sooner). Your gate stops only on a lost trade, so I've kept it and recorded it in the test. Tell me if you want it treated differently.
+2. **Filled in by me** (above): the proof checked first; the count restarting on each ranging or consolidation; a close beyond the other side turning the break; when the break takes effect. Confirm or change.
+3. The edge distance (3 or 5 pips) is still yours to choose. These runs use 3. The 5-pip runs further down are from before stage 1b.
+
+---
+
+# The earlier report: stages 1 to 3 (before stage 1b)
 
 ## Summary
 

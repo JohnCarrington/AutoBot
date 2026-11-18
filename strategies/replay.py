@@ -164,6 +164,15 @@ class StrategyRunner:
             st.macd_ok, st.macd_why = reversal_macd(self.tracker, i, st.direction)
         return st
 
+    def trend_hourly(self, i: int, hr: Any):
+        """The hourly read `hr` as the analyser and the trend group see it after week candle i, while
+        ANALYSER_USES_HOURLY is on: a 5-minute break of the hourly range standing after that candle's close counts
+        as a rally or a sell-off (analyser.hourly_read.with_break; owner, 18 November 2026); None while it is off."""
+        if not switch_on(self.s, "analyser_uses_hourly") or i < 0 or i >= len(self.tracker.extras):
+            return None
+        from analyser.hourly_read import with_break
+        return with_break(hr, self.tracker.extras[i].get("break"))
+
     def pivot_at(self, t: datetime, keep: bool = True):
         """The pivot at t. Kept for a finished candle (step); the live check (keep=False) only reads one already
         kept, so a pivot worked out before that candle's data was all stored is never kept."""
@@ -207,8 +216,9 @@ class StrategyRunner:
         st = self.state_after(len(self.week) - 1)
         e100 = ema100.get(self.week[-1].start)
         hr = self.hourly_read.at(partial.start)
+        th = self.trend_hourly(len(self.week) - 1, hr)
         done = self.warm + self.week                        # the finished candles before the forming one
-        return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100, hr, done)
+        return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100, hr, done, th)
                 for cand in cands]
 
     def step(self) -> list[tuple[Any, Idea]]:
@@ -246,9 +256,10 @@ class StrategyRunner:
                 st = self.state_after(i - 1)
                 e100 = ema100.get(self.week[i - 1].start) if i > 0 else None
                 hr = self.hourly_read.at(c.start)
+                th = self.trend_hourly(i - 1, hr)
                 done = allc[:-1]                            # the finished candles before this one
                 for cand in cands:
-                    out.append((c, check(s, s.market.pair, cand, st, self.pivot_at(c.start), e100, hr, done)))
+                    out.append((c, check(s, s.market.pair, cand, st, self.pivot_at(c.start), e100, hr, done, th)))
         self.done = len(hist)
         return out
 

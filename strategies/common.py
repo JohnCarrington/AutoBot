@@ -397,7 +397,9 @@ def hourly_reasons(settings: Any, strategy: str, direction: str, hourly: Any) ->
         return []
     rng = f" ({plain(hourly.low)} to {plain(hourly.high)})" if hourly.low is not None else ""
     if hourly.state == HOURLY_RANGING:
-        return [f"the hourly chart is ranging{rng}: {strategy} waits for an hourly close at least "
+        wait = ("a 5-minute close (ANALYSER_USES_HOURLY)" if getattr(settings.switches, "analyser_uses_hourly", False)
+                else "an hourly close")
+        return [f"the hourly chart is ranging{rng}: {strategy} waits for {wait} at least "
                 f"{settings.hourly_read.break_beyond_pips} pips beyond the hourly range"]
     if hourly.state == HOURLY_SELL_OFF and direction == BUY:
         return [f"the hourly chart is in a sell-off: {strategy} only sells"]
@@ -550,10 +552,15 @@ def governs_reasons(settings: Any, strategy: str, direction: str, state: Any, ho
 
 def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state: Any, pivot: Decimal | None,
             ema100: Decimal | None, hourly: Any = None, t: datetime | None = None,
-            candles: list | None = None, context: dict | None = None) -> tuple[list[str], Any]:
+            candles: list | None = None, context: dict | None = None,
+            trend_hourly: Any = None) -> tuple[list[str], Any]:
     """Every reason the switch, the state (2.2), the direction rule (2.3) or the hourly read (check 4) does not
     allow this strategy in this direction at this price (empty: allowed), and the direction rule. `hourly`: the
-    hourly read (analyser.hourly_read.HourlyRead); the strategy runner always gives it."""
+    hourly read (analyser.hourly_read.HourlyRead); the strategy runner always gives it. `trend_hourly`: the hourly
+    read as the analyser and the trend group see it while ANALYSER_USES_HOURLY is on (a standing 5-minute break of
+    the hourly range counts as a rally or a sell-off; analyser.hourly_read.with_break; owner, 18 November 2026),
+    used by check 4 and check 7's hourly-ranging rule; None: `hourly`."""
+    seen = trend_hourly if trend_hourly is not None else hourly
     rule = decide(price, "the price", pivot, ema100, "5m 100 EMA", ema100 is not None)
     reasons = []
     if not getattr(settings.switches, SWITCH[strategy]):
@@ -576,19 +583,20 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
     need = BUY_SIDE if direction == BUY else SELL_SIDE
     if rule.side != need and strategy not in NO_DIRECTION_RULE:
         reasons.append(f"the direction rule says {rule.side} ({rule.reason})")
-    reasons += hourly_reasons(settings, strategy, direction, hourly)
+    reasons += hourly_reasons(settings, strategy, direction, seen)
     reasons += bounce_reasons(settings, strategy, t, hourly)
     reasons += still_going_reasons(settings, strategy, direction, candles)
-    reasons += governs_reasons(settings, strategy, direction, state, hourly, context)
+    reasons += governs_reasons(settings, strategy, direction, state, seen, context)
     return reasons, rule
 
 
 def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | None,
-          ema100: Decimal | None, hourly: Any = None, candles: list | None = None) -> Idea:
+          ema100: Decimal | None, hourly: Any = None, candles: list | None = None,
+          trend_hourly: Any = None) -> Idea:
     """Turn a candidate into an idea, or a blocked one with every reason. `hourly`: the hourly read; `candles`:
-    the finished 5-minute candles before the entry (check 6)."""
+    the finished 5-minute candles before the entry (check 6); `trend_hourly`: see allowed()."""
     reasons, rule = allowed(settings, c.strategy, c.direction, c.entry_price, state, pivot, ema100, hourly, c.time,
-                            candles, c.context)
+                            candles, c.context, trend_hourly)
     idea = Idea(pair, c.strategy, c.direction, c.time, c.entry_price, state.state, state.direction,
                 state.trend_type, rule.side, list(c.steps), context=dict(c.context))
     if reasons:
@@ -600,5 +608,7 @@ def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | N
                           + (f"; the direction rule does not apply to {c.strategy}" if exempt else "")
                           + (f"; {hourly.line()}" if hourly is not None and (settings.switches.hourly_read or (
                               c.strategy == BOLLINGER_BOUNCE
-                              and getattr(settings.switches, "bounce_only_when_hourly_ranging", False))) else ""))
+                              and getattr(settings.switches, "bounce_only_when_hourly_ranging", False))) else "")
+                          + (f"; as the analyser and the trend group see it: {trend_hourly.line()}"
+                             if trend_hourly is not None and trend_hourly is not hourly else ""))
     return idea

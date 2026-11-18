@@ -76,10 +76,12 @@ class StateTracker:
         self.watcher: RejectionWatcher | None = None
         self.done = 0                     # candles of this week already stepped
         self.history: list = []           # (features, state after the candle) for each candle stepped
-        # for each candle stepped, as history: {"trend_start", "hourly", "position"} (owner, 18 November 2026:
-        # the analyser control, design 2.10; "hourly" and "position" only while ANALYSER_USES_HOURLY is on)
+        # for each candle stepped, as history: {"trend_start", "hourly", "position", "break"} (owner, 18 November
+        # 2026: the analyser control, design 2.10; "hourly", "position" and "break" (the standing 5-minute break of
+        # the hourly range after the candle's close) only while ANALYSER_USES_HOURLY is on)
         self.extras: list = []
         self.hourly_reader = None
+        self.brk = None                  # the standing 5-minute break of the hourly range (analyser.hourly_read)
         self.folder = Path(settings.market_states.folder) / settings.market.pair
 
     # ---- the week and its candles ----------------------------------------------------------
@@ -110,6 +112,7 @@ class StateTracker:
             self.done = 0
             self.history = []
             self.extras = []
+            self.brk = None
         memo = MemoStore(self.store)
         warm, week = self._candles(memo, week_open, as_of)
         from analyser.states import switch_on
@@ -136,14 +139,19 @@ class StateTracker:
         hr = pos = None
         if self.hourly_reader is not None:                 # ANALYSER_USES_HOURLY (design 2.10)
             from analyser.states import hourly_position
+            from analyser.hourly_read import next_break, with_break
             hr = self.hourly_reader.at(c.start)            # the read after the last hourly candle finished by then
             pos = hourly_position(self.s, hr, f.c)
-        mc.hourly, mc.position = hr, pos
+            # a 5-minute close beyond the hourly range counts as the range breaking (owner, 18 November 2026):
+            # decided on this candle's close, for the analyser on this candle and the strategies after it
+            self.brk = next_break(self.s, hr, self.brk, c.start, f.c)
+        mc.hourly, mc.position = (with_break(hr, self.brk) if hr is not None else None), pos
         ch = mc.step(f, events, lambda i: self.watcher.setups[i - 1])
         moved = (mc._pips(mc.extreme, mc.start_price) if mc.extreme is not None and mc.start_price is not None
                  else None)
         self.history.append((f, mc.now.state, mc.now.direction, events, moved, mc.start_price))
-        self.extras.append({"trend_start": mc.trend_start, "hourly": hr, "position": pos})
+        self.extras.append({"trend_start": mc.trend_start, "hourly": hr, "position": pos,
+                            "break": self.brk if self.hourly_reader is not None else None})
         return ch
 
     @property
