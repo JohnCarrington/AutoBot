@@ -244,6 +244,28 @@ def interacts(settings: Any, c: Candle, low: Decimal, high: Decimal, from_below:
     return lo(c, side) <= high + near and hi(c, side) >= low
 
 
+def ahead(price: Decimal, low: Decimal, high: Decimal, toward_low: bool) -> bool:
+    """The destination zone lies wholly beyond price in the trade's final direction (below price for a sell's
+    destination, above for a buy's): only then can price reach it "before the zone". Otherwise it lies between price
+    and the entry zone, or contains price, and is simply on the way."""
+    return price > high if toward_low else price < low
+
+
+def reached(settings: Any, c: Candle | None, price: Decimal, low: Decimal, high: Decimal, toward_low: bool) -> str | None:
+    """D-1 correction (18 November 2026): is a destination zone already reached, by the lifecycle's own rule for
+    "price reached the primary destination" (interacts: the existing one-sided 3-pip touch rule, coming down into it
+    for a sell's destination, up into it for a buy's), on the latest finished 5-minute candle? Returns how, in words,
+    or None. A destination price has gone well past (the candle wholly beyond it, untouched) is not reached: it lies
+    between price and the entry zone, on the way, as before."""
+    if c is None:
+        return None
+    if interacts(settings, c, low, high, from_below=not toward_low):
+        ext = lo(c, side_of(settings)) if toward_low else hi(c, side_of(settings))
+        return (f"the {uk_short(c.start)} 5-minute candle reached {plain(ext)}, within "
+                f"{settings.rejection.near_level_within_pips} pips of the destination zone {plain(low)}-{plain(high)}")
+    return None
+
+
 def wholly_clear(settings: Any, c: Candle, low: Decimal, high: Decimal) -> bool:
     """The whole candle more than near_level_within_pips away from the zone (P-C8, P-F6)."""
     side = side_of(settings)

@@ -56,6 +56,20 @@
 .stp-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 10px; color: var(--muted); margin-top: 6px; }
 .stp-legend i { display: inline-block; width: 14px; height: 0; border-top: 2px solid; vertical-align: middle; margin-right: 4px; }
 .stp-legend i.dash { border-top-style: dashed; }
+.stp-legend i.band { height: 8px; border: 1px solid; vertical-align: -1px; }
+.stp-warnnote { color: var(--amber); }
+.stp-modes button { font-weight: 600; }
+.stp-lab { position: absolute; left: 6px; height: 15px; line-height: 13px; font-size: 10px; white-space: nowrap; padding: 0 5px;
+           border-left: 3px solid; border-radius: 2px; background: #0b0b12e6; color: #b8b8cc; max-width: calc(100% - 90px);
+           overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
+.stp-lab.plan { font-weight: 700; background: #0b0b12f2; }
+.stp-hover { position: absolute; display: none; z-index: 5; pointer-events: none; background: #15151ff2; border: 1px solid var(--border2);
+             border-radius: 6px; padding: 5px 7px; font-size: 10px; max-width: 320px; }
+.stp-hover div { border-left: 3px solid #8a8aa0; padding: 1px 0 1px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+details.stp-levels { margin-top: 8px; font-size: 11px; }
+details.stp-levels > summary { cursor: pointer; color: var(--muted); font-size: 11px; padding: 4px 0; }
+.stp-leveltable td.num { font-variant-numeric: tabular-nums; white-space: nowrap; padding-left: 8px; }
+.stp-levelbody .stp-tablewrap { max-height: 320px; overflow-y: auto; }
 .stp-histbanner { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
                   background: var(--blue-dim); border: 1px solid #4488ff55; color: #9bb8ff; border-radius: 8px; padding: 6px 10px;
                   font-size: 11px; margin-bottom: 8px; }
@@ -64,7 +78,13 @@
 .stp-rows { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 12px; }
 .stp-rows .k { color: var(--muted); font-size: 11px; white-space: nowrap; }
 .stp-rows .v { text-align: right; overflow-wrap: anywhere; }
-.stp-rows .v.big { font-family: var(--sans); font-weight: 800; font-size: 15px; }
+/* Prices in the plan card: the regular monospace font with tabular figures. (They were in the display font at weight
+   800, whose wide, heavy digits read as oversized and struck through; there was never a strikethrough style.) */
+.stp-rows .v.price { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.stp-rows .v.key { font-weight: 700; font-size: 13px; color: var(--text); }
+.stp-rows .v.key.bear { color: #ff7790; } .stp-rows .v.key.bull { color: #55ffaa; }
+.stp-rows .v.key.dest { color: #8fb0ff; } .stp-rows .v.key.inval { color: #ff7070; }
+.stp-rows .v.dirv { font-weight: 700; font-size: 13px; letter-spacing: .04em; }
 .stp-list { list-style: none; font-size: 11px; color: var(--muted); line-height: 1.55; }
 .stp-list li { padding-left: 12px; position: relative; }
 .stp-list li::before { content: '·'; position: absolute; left: 2px; color: var(--accent); }
@@ -105,6 +125,7 @@ table.stp-table { width: 100%; border-collapse: collapse; font-size: 11px; }
 .stp-ev .k { font-size: 10px; color: var(--muted); line-height: 1.35; min-height: 27px; }
 .stp-ev .v { font-family: var(--sans); font-size: 20px; font-weight: 800; margin-top: 4px; }
 .stp-ev .v.ins { font-size: 11px; color: var(--amber); font-family: var(--mono); letter-spacing: .08em; font-weight: 600; }
+.stp-ev .v.long { font-family: var(--mono); font-size: 13px; font-weight: 700; line-height: 1.35; }
 .stp-ev .s { font-size: 10px; color: var(--muted); margin-top: 2px; }
 
 details.stp-tech { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-top: 22px; }
@@ -131,7 +152,9 @@ details.stp-tech[open] > summary::before { content: '▾ '; }
   .stp-tiles .stp-tile.wide { grid-column: 1 / -1; }
   .stp-tile .v { font-size: 15px; overflow-wrap: normal; }
   .stp-tile .v.long { font-size: 13px; }
-  .stp-chartbox { height: 340px; }
+  .stp-chartbox { height: 360px; }
+  .stp-lab { font-size: 9px; }
+  .stp-toolbar .stp-seg button { padding: 7px 8px; }
   .stp-events div { grid-template-columns: 1fr; gap: 2px; }
   .stp-table .hide-sm { display: none; }
 }

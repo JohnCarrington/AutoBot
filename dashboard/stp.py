@@ -63,7 +63,12 @@ EVENT_LABEL = {"created": "CREATED", "waiting": "WAITING FOR ZONE", "active": "A
                "invalidated": "INVALIDATED", "superseded": "SUPERSEDED", "supported": "RE-CHECKED: STILL SUPPORTED",
                "changed": "RE-CHECKED: CHANGED", "closed beyond": "CLOSED BEYOND EDGE (RECORDED ONLY)",
                "reclaim": "RECLAIMED (RECORDED ONLY)", "wick sweep": "WICK SWEEP (RECORDED ONLY)",
-               "failed breakout": "FAILED BREAKOUT (RECORDED ONLY)"}
+               "failed breakout": "FAILED BREAKOUT (RECORDED ONLY)",
+               "ambiguous": "AMBIGUOUS CANDLE (RECORDED ONLY)", "in zone at creation": "IN ZONE AT CREATION (RECORDED ONLY)"}
+# The chart's MARKET STRUCTURE view: the planner's level kinds that are significant structure (planner/zones.py PRIORITY);
+# every other recorded level (hourly swings, sessions, round numbers, moving averages) is in FULL ANALYSIS only.
+STRUCTURE_KINDS = ("4-hour swing", "daily swing", "daily pivot", "weekly pivot", "daily R/S", "weekly R/S",
+                   "previous day high/low", "previous week high/low")
 ENDED = ("COMPLETED", "INVALIDATED", "SUPERSEDED")
 
 
@@ -295,7 +300,13 @@ def _hm(t: datetime | None) -> str:
 
 # ---- chart overlays: only levels the planner recorded ----------------------------------------------------------
 
-def level_group(name: str) -> str:
+def level_group(name: str, kind: str | None = None) -> str:
+    k = (kind or "").lower()
+    if k:
+        return {"daily pivot": "daily_pivot", "daily r/s": "daily_pivot", "weekly pivot": "weekly_pivot",
+                "weekly r/s": "weekly_pivot", "4-hour swing": "h4_swing", "hourly swing": "h1", "daily swing": "daily_sr",
+                "previous day high/low": "daily_sr", "previous week high/low": "weekly_sr", "psychological": "round",
+                "session high/low": "session", "moving average": "ma"}.get(k, "other")
     n = name.lower()
     if "pivot" in n or re.search(r"\b[rs][123]\b", n):
         return "weekly_pivot" if n.startswith("weekly") else "daily_pivot"
@@ -327,9 +338,34 @@ def _zone_out(z: dict, prices: Prices, kind: str, title: str) -> dict:
             "levels": [prices.text(x) for x in labels]}
 
 
+def structure_levels(structure: dict | None, prices: Prices) -> dict | None:
+    """Every level and zone of a recorded structural snapshot (planner/assess.py structure_snapshot), each level tagged
+    with the chart view it belongs to: "structure" (significant: 4-hour and daily swings, daily and weekly levels) or
+    "full" (everything else). Values exactly as recorded; nothing recalculated."""
+    if not isinstance(structure, dict) or not isinstance(structure.get("levels"), list):
+        return None
+    levels = []
+    for m in structure["levels"]:
+        if not isinstance(m, dict) or m.get("price") is None:
+            continue
+        kind = m.get("kind") or ""
+        levels.append({"price": prices.num(m["price"]), "price_text": prices.real(m["price"]), "name": m.get("name", ""),
+                       "role": m.get("role", ""), "kind": kind, "timeframe": m.get("timeframe"), "family": m.get("family"),
+                       "fixed": m.get("fixed"), "group": level_group(m.get("name", ""), kind),
+                       "tier": "structure" if kind in STRUCTURE_KINDS else "full", "source": "structural snapshot"})
+    zones = [(_zone_out(z, prices, "zone", f"{z.get('class', '')} zone") | {"tier": "structure" if z.get("class") in ("Major", "Moderate") else "full"})
+             for z in structure.get("zones") or [] if isinstance(z, dict)]
+    return {"levels": sorted(levels, key=lambda x: x["price"] or 0), "zones": zones, "complete": True}
+
+
 def overlays(plan: dict | None, rec: dict | None, prices: Prices) -> dict:
-    """The structural levels and zones of the planner's latest analysis, and the live recommendation's plan."""
+    """The structural levels and zones of the planner's latest analysis, and the live recommendation's plan. With the
+    analysis's full structural snapshot when it has one (since 18 November 2026); otherwise only the levels inside the
+    zones the analysis considered (as before)."""
     plan = plan or {}
+    full = structure_levels(plan.get("structure"), prices)
+    if full is not None:
+        return full | {"plan": plan_lines(rec, prices) if rec else None}
     zones, levels, seen = [], [], set()
 
     def add_levels(z: dict, source: str):
@@ -338,10 +374,10 @@ def overlays(plan: dict | None, rec: dict | None, prices: Prices) -> dict:
             lv = parse_level(label, prices, source)
             if lv and (lv["name"], lv["price"]) not in seen:
                 seen.add((lv["name"], lv["price"]))
-                levels.append(lv)
+                levels.append(lv | {"tier": "full" if lv["group"] in ("h1", "other") else "structure"})
 
     for z in plan.get("candidates") or []:
-        zones.append(_zone_out(z, prices, "candidate", f"{z.get('class', '')} zone"))
+        zones.append(_zone_out(z, prices, "candidate", f"{z.get('class', '')} zone") | {"tier": "structure"})
         add_levels(z, "candidate zone")
     for k, d in (plan.get("destinations") or {}).items():
         if d and d.get("zone"):
@@ -354,8 +390,8 @@ def overlays(plan: dict | None, rec: dict | None, prices: Prices) -> dict:
         if m and (name, prices.num(m[1])) not in seen:
             seen.add((name, prices.num(m[1])))
             levels.append({"price": prices.num(m[1]), "price_text": prices.real(m[1]), "name": name, "role": "",
-                           "group": level_group(name), "source": "observations"})
-    out = {"levels": sorted(levels, key=lambda x: x["price"] or 0), "zones": zones, "plan": None}
+                           "group": level_group(name), "source": "observations", "tier": "structure"})
+    out = {"levels": sorted(levels, key=lambda x: x["price"] or 0), "zones": zones, "plan": None, "complete": False}
     if rec:
         out["plan"] = plan_lines(rec, prices)
     return out
@@ -693,7 +729,8 @@ def recommendation(settings: Any, query: str, now: datetime, store: Any = None) 
     return 200, {"ok": True, "id": rid, "status": r["status"], "status_label": STATUS_LABEL.get(r["status"], r["status"]),
                  "outcome": r["outcome"], "outcome_reason": prices.text(r["outcome_reason"]), "ended_utc": r["ended_utc"],
                  "at_creation": at_creation, "latest": latest, "timeline": timeline, "stages": stages,
-                 "observed_after": retro, "live": r["live"]}
+                 "observed_after": retro, "live": r["live"],
+                 "overlays_at_creation": structure_levels((snap or {}).get("structural_snapshot"), prices)}
 
 
 # ---- retrospective evaluation (observed afterwards; no fills, no P&L) -----------------------------------------
@@ -711,20 +748,79 @@ class _DayCache:
         return self.cache[key]
 
 
+def _floor5(t: datetime) -> datetime:
+    return t.replace(minute=t.minute - t.minute % 5, second=0, microsecond=0)
+
+
+def activation_review(settings: Any, r: dict, plan: dict, now: datetime, cache: Any) -> dict:
+    """The recorded activation, and the activation confirmed by market evidence from after creation only (owner's
+    correction, 18 November 2026). The planner's records are never changed: this is the evaluation's own reading.
+    Recorded activations before the correction could rest on the candle finished before creation (the "already in its
+    zone?" check) or on the candle running at creation; neither shows price reaching the zone after the recommendation
+    existed. The confirmed activation is the first finished 5-minute candle that began at or after creation and reached
+    the original zone by the touch rule, before the recorded end."""
+    prices = Prices(settings)
+    created, ended = _parse(r["created_utc"]), _parse(r["ended_utc"])
+    act = next((e for e in r["events"] if e.get("event") == "active"), None)
+    out = {"recorded_utc": act.get("time_utc") if act else None, "recorded_candle_start_utc": None,
+           "recorded_timing": None, "confirmed_utc": None, "confirmed_candle_start_utc": None, "correction": None}
+    if created is None:
+        return out
+    if act:
+        if act.get("candle_timing"):                         # recorded by the planner since the correction
+            out["recorded_candle_start_utc"], out["recorded_timing"] = act.get("candle_start_utc"), act["candle_timing"]
+        else:                                                # before it: worked out from the event time
+            t = _parse(act["time_utc"])
+            if t is not None and abs((t - created).total_seconds()) < 1:      # same run as the creation
+                start = _floor5(created) - timedelta(minutes=5)          # the creation run's "already in the zone" check
+            else:
+                start = t - timedelta(minutes=5) if t else None
+            if start is not None:
+                end = start + timedelta(minutes=5)
+                out["recorded_candle_start_utc"] = _iso(start)
+                out["recorded_timing"] = ("before creation" if end <= created else
+                                          "overlapped creation" if start < created else "after creation")
+    if out["recorded_timing"] == "after creation":
+        out["confirmed_utc"], out["confirmed_candle_start_utc"] = out["recorded_utc"], out["recorded_candle_start_utc"]
+        return out
+    z = plan.get("entry_zone") or {}
+    low, high = z.get("low"), z.get("high")
+    sell = plan.get("trade") == "SELL"
+    stop = min(ended or now, now)
+    if low is not None and high is not None and cache is not None:
+        near = float(settings.rejection.near_level_within_pips) * float(prices.pip)
+        side = settings.chart.price
+        for c in cache.range(created, stop + timedelta(minutes=5)):
+            if c.start < created or c.end > stop:
+                continue
+            h, lw = float(prices.real(getattr(c, f"{side}_high"))), float(prices.real(getattr(c, f"{side}_low")))
+            if (h >= low - near and lw <= high) if sell else (lw <= high + near and h >= low):
+                out["confirmed_utc"], out["confirmed_candle_start_utc"] = _iso(c.end), _iso(c.start)
+                break
+    if act:
+        rc = _parse(out["recorded_candle_start_utc"])
+        what = (f"recorded ACTIVE at {_hm(_parse(out['recorded_utc']))} UTC from the {_hm(rc)} UTC candle, which "
+                f"{'finished before' if out['recorded_timing'] == 'before creation' else 'began before'} the recommendation was "
+                f"created ({created.strftime('%H:%M:%S')} UTC)") if rc else "recorded ACTIVE"
+        out["correction"] = (what + (f"; first reached after creation by the {_hm(_parse(out['confirmed_candle_start_utc']))} UTC "
+                                     f"candle (evaluation uses that)" if out["confirmed_utc"] else
+                                     "; no candle after creation reached the zone before it ended, so the evaluation does not "
+                                     "count it as activated") + " (retrospective correction; the planner's record is unchanged)")
+    return out
+
+
 def retrospective(settings: Any, r: dict, card_at_creation: dict, now: datetime, store: Any = None, cache: _DayCache | None = None) -> dict:
     """What price did after the recommendation, from finished 5-minute candles (chart price). Excursions are measured
     from the planner's own reference level, in pips: they are distances, not fills or profits."""
     prices = Prices(settings)
     side = settings.chart.price
     created, ended = _parse(r["created_utc"]), _parse(r["ended_utc"])
-    activated = _parse(r["activated_utc"])
     plan = card_at_creation.get("plan") or {}
+    plan = plan | {"trade": plan.get("trade") or card_at_creation.get("trade")}
     ref = (plan.get("reference") or {}).get("price")
     out: dict = {"label": "observed after creation (retrospective; not a trade, no fills, no P&L)",
-                 "minutes_to_zone": _mins(created, activated), "minutes_active_to_end": None,
+                 "minutes_to_zone": None, "minutes_active_to_end": None, "activation": None,
                  "mfe_pips": None, "mae_pips": None, "measured_from": None, "ambiguities": []}
-    if r["outcome"] == "COMPLETED" and activated and ended:
-        out["minutes_active_to_end"] = _mins(activated, ended)
     if created is None:
         return out
     try:
@@ -733,11 +829,14 @@ def retrospective(settings: Any, r: dict, card_at_creation: dict, now: datetime,
     except Exception:                                    # noqa: BLE001
         out["note"] = "candles unavailable"
         return out
-    # an activation candle that began before the recommendation existed (it was running when the plan was made)
-    if activated and activated - timedelta(minutes=5) < created:
-        out["ambiguities"].append("the 5-minute candle that reached the zone began before the recommendation was created "
-                                  f"({_hm(activated - timedelta(minutes=5))}–{_hm(activated)} UTC vs creation "
-                                  f"{created.strftime('%H:%M:%S')} UTC): part of that touch may predate the recommendation")
+    review = activation_review(settings, r, plan, now, cache)
+    out["activation"] = review
+    activated = _parse(review["confirmed_utc"])           # only post-creation evidence counts
+    out["minutes_to_zone"] = _mins(created, activated)
+    if r["outcome"] == "COMPLETED" and activated and ended and activated <= ended:
+        out["minutes_active_to_end"] = _mins(activated, ended)
+    if review["correction"]:
+        out["ambiguities"].append(review["correction"])
     if activated and ref is not None:
         stop = ended or now
         cs = [c for c in cache.range(activated - timedelta(minutes=5), stop) if c.end <= now]
@@ -806,7 +905,10 @@ def evaluation(settings: Any, now: datetime, store: Any = None) -> dict:
         retro = retrospective(settings, r, card, now, store, cache) if store is not None else {}
         rechecks = [e for e in r["events"] if e.get("event") in ("supported", "changed")]
         per.append({"id": r["id"], "status": r["status"], "outcome": r["outcome"], "reason": prices.text(r["outcome_reason"]),
-                    "ever_active": r["activated_utc"] is not None, "dest_before_entry": "destination reached before entry" in str(r["outcome_reason"]),
+                    "ever_active": bool((retro.get("activation") or {}).get("confirmed_utc")) if retro else r["activated_utc"] is not None,
+                    "recorded_active": r["activated_utc"] is not None,
+                    "activation_corrected": bool((retro.get("activation") or {}).get("correction")),
+                    "dest_before_entry": "destination reached before entry" in str(r["outcome_reason"]),
                     "issued_at_destination": bool(retro.get("issued_at_destination")),
                     "supported": sum(e["event"] == "supported" for e in rechecks), "changed": sum(e["event"] == "changed" for e in rechecks),
                     **{k: retro.get(k) for k in ("minutes_to_zone", "minutes_active_to_end", "mfe_pips", "mae_pips", "ambiguities")}})
@@ -831,12 +933,15 @@ def evaluation(settings: Any, now: datetime, store: Any = None) -> dict:
             "counts": {"total": n, "awaiting_entry": count(lambda x: x["status"] == "WAITING" and not x["outcome"]),
                        "active_now": count(lambda x: x["status"] == "ACTIVE" and not x["outcome"]),
                        "activated": count(lambda x: x["ever_active"]),
+                       "activated_as_recorded": count(lambda x: x["recorded_active"]),
+                       "activation_corrected": count(lambda x: x["activation_corrected"]),
+                       "completed_without_confirmed_activation": count(lambda x: x["outcome"] == "COMPLETED" and not x["ever_active"]),
                        "completed": count(lambda x: x["outcome"] == "COMPLETED"),
                        "invalidated": count(lambda x: x["outcome"] == "INVALIDATED"),
                        "superseded": superseded,
                        "never_reached_zone": count(lambda x: x["outcome"] and not x["ever_active"]),
                        "reached_primary": count(lambda x: x["outcome"] == "COMPLETED" or x["dest_before_entry"]),
-                       "reached_primary_after_entry": count(lambda x: x["outcome"] == "COMPLETED"),
+                       "reached_primary_after_entry": count(lambda x: x["outcome"] == "COMPLETED" and x["ever_active"]),
                        "destination_before_entry": count(lambda x: x["dest_before_entry"]),
                        "issued_at_destination": count(lambda x: x["issued_at_destination"]),
                        "invalidated_before_primary": count(lambda x: x["outcome"] == "INVALIDATED" and not x["dest_before_entry"])},
@@ -856,7 +961,12 @@ def evaluation(settings: Any, now: datetime, store: Any = None) -> dict:
                 "touched, but before the zone).",
                 "Excursions are distances in pips from the planner's reference level, from the 5-minute candle that reached "
                 "the zone to the end (or now), on the chart (sell) price. They are not fills and not profits.",
-                "Times use the event times: creation to the first ACTIVE event; first ACTIVE to COMPLETED.",
+                "Activation counts only market evidence from after creation (owner's correction, 18 November 2026): a "
+                "recorded activation from a candle that finished before creation, or began before it, is replaced by the "
+                "first later candle that reached the zone; if none did before the end, it is not counted as activated, and "
+                "a completion without a confirmed activation is not counted as reached after the zone. The planner's own "
+                "records are never changed; each correction is listed below.",
+                "Times: creation to the confirmed activation; confirmed activation to COMPLETED.",
                 "Stability: each hourly re-check of a live recommendation is 'supported' (unchanged) or 'changed' "
                 "(same fixed levels, overlapping zone); a different zone retires it as SUPERSEDED.",
                 "Where one 5-minute candle touched both the zone and the destination, the order is ambiguous and is listed.",

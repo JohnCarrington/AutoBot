@@ -3,7 +3,10 @@ owner's adjustment 1, 17 November 2026). OBSERVE ONLY: nothing here authorises, 
 trade, and nothing reads or writes any trading record.
 
 One live recommendation per pair at most. Each run (after a new 5-minute candle):
-  1. the 5-minute checks, on every 5-minute candle finished since the last run (P-F2), in time order:
+  1. the 5-minute checks, on every 5-minute candle finished since the last run (P-F2), in time order, using only
+     market evidence from after the recommendation's creation (owner's correction, 18 November 2026: a candle that
+     began before the creation and ended after it is recorded as "ambiguous" and changes nothing; price already in
+     the zone when a recommendation is created is recorded as "in zone at creation", never an activation):
        WAITING -> ACTIVE          the candle interacts with the zone (planner/zones.py interacts; FC-01);
        WAITING -> INVALIDATED     it reaches the primary destination first ("destination reached before entry");
        ACTIVE (or once ACTIVE) -> COMPLETED   it reaches the primary destination;
@@ -20,7 +23,10 @@ One live recommendation per pair at most. Each run (after a new 5-minute candle)
        live and different fixed levels, or a zone that does not overlap the previous one -> SUPERSEDED (D-22). (A
          zone of moving levels only, such as an hourly EMA and today's still-running session high, has no fixed
          levels: the overlap test is what tells a different zone from the same one moving.)
-       live and no longer recommended -> INVALIDATED, with the plan's reason ("supporting evidence changed").
+       live and no longer recommended -> INVALIDATED, with the plan's reason ("supporting evidence changed"); except
+         when the plan found the recommendation's own primary destination already reached (D-1 correction): COMPLETED
+         if it had been ACTIVE, else INVALIDATED "destination reached before entry".
+  No recommendation is issued with its primary destination already reached (planner/assess.py, D-1 correction).
 CURRENT (FC-08): a recommendation is current only when it was re-checked at the latest finished hourly candle, the
 5-minute checks reached the latest finished 5-minute candle, and the data is fresh (P-A3). Stale data never
 invalidates; it makes the recommendation not current (D-21: no new authorisation from it, when that exists).
@@ -53,6 +59,8 @@ UTC = timezone.utc
 CANDIDATE, WAITING, ACTIVE, INVALIDATED, SUPERSEDED, COMPLETED = (
     "CANDIDATE", "WAITING", "ACTIVE", "INVALIDATED", "SUPERSEDED", "COMPLETED")
 LIVE = (WAITING, ACTIVE)
+BEFORE, OVERLAPPED, AFTER = "before creation", "overlapped creation", "after creation"
+EVENT_BASIS = "5-minute candle (no finer price data is stored, so the moment inside the candle is not known)"
 OBSERVE_ONLY = "OBSERVE ONLY - DOES NOT CONTROL TRADING"
 
 
@@ -62,6 +70,17 @@ def _iso(t: datetime | None) -> str | None:
 
 def _d(x: Any) -> Decimal:
     return Decimal(str(x))
+
+
+def candle_timing(c: Candle, created_utc: str | None) -> str:
+    """Where a candle lies against a recommendation's creation: ended at or before it, began before and ended after
+    it, or began at or after it. A recommendation without a creation time (none exist) counts every candle as after."""
+    if not created_utc:
+        return AFTER
+    created = parse_iso(created_utc)
+    if c.end <= created:
+        return BEFORE
+    return OVERLAPPED if c.start < created else AFTER
 
 
 def overlaps(a: dict, b: dict) -> bool:
@@ -137,10 +156,10 @@ class Keeper:
             rec.setdefault("history", []).append({k: v for k, v in e.items() if k != "id"})
         self._append(e)
 
-    def _retire(self, t: datetime, status: str, why: str) -> None:
+    def _retire(self, t: datetime, status: str, why: str, evidence: dict | None = None) -> None:
         rec = self.state["recommendation"]
         rec["status"], rec["status_reason"], rec["ended_utc"] = status, why, _iso(t)
-        self._event(t, status.lower(), why, status=status)
+        self._event(t, status.lower(), why, status=status, **(evidence or {}))
         self.state["recent"] = ([{"id": rec["id"], "trade": rec["trade"], "zone": [rec["entry_zone"]["low"], rec["entry_zone"]["high"]],
                                   "status": status, "why": why, "created_utc": rec["created_utc"], "ended_utc": rec["ended_utc"]}]
                                 + self.state.get("recent", []))[: self.s.planner.panel_history]
@@ -164,18 +183,26 @@ class Keeper:
         rec["six_factors"] = six_factors(plan)
         self.state["recommendation"] = rec
         self._event(t, "created", why, status=CANDIDATE, plan=summary(plan))
-        self._issued(rec)
+        self._issued(rec, plan)
         rec["status"] = WAITING
         self._event(t, "waiting", "issued on the first analysis with all the evidence (adjustment 1)", status=WAITING)
 
-    def _issued(self, rec: dict) -> None:
-        """Reporting only (the dashboard's history; owner's brief of 17 November 2026): the full recommendation exactly
-        as issued, one line per recommendation in issued.jsonl (append-only), so its original destinations and
-        invalidation stay available after it ends. Decides nothing; a failure here is logged and changes nothing."""
+    def _issued(self, rec: dict, plan: dict | None = None) -> None:
+        """Reporting only (the dashboard's history; owner's briefs of 17 and 18 November 2026): the full recommendation
+        exactly as issued, one line per recommendation in issued.jsonl (append-only), so its original destinations and
+        invalidation stay available after it ends; with the complete structural snapshot of the analysis that issued it
+        (every level, zone and swing, as they stood then) and that analysis's candidates. Decides nothing; a failure
+        here is logged and changes nothing."""
         try:
+            line = {k: v for k, v in rec.items() if k != "history"}
+            if plan is not None:
+                line["analysis_as_of_utc"] = plan.get("as_of_utc")
+                line["structural_snapshot"] = plan.get("structure")
+                line["candidates"] = plan.get("candidates")
+                line["h4_last_swing"] = plan.get("h4_last_swing")
             self.folder.mkdir(parents=True, exist_ok=True)
             with self.issued_path.open("a") as f:
-                f.write(json.dumps({k: v for k, v in rec.items() if k != "history"}) + "\n")
+                f.write(json.dumps(line) + "\n")
         except Exception as e:                                  # noqa: BLE001  never stops the planner
             log.warning("Planner: issued.jsonl not written (%s); the recommendation is unaffected.", e)
 
@@ -215,7 +242,12 @@ class Keeper:
         rec = self.state["recommendation"]
         return _d(rec["entry_zone"]["low"]), _d(rec["entry_zone"]["high"]), rec["trade"] == "SELL"
 
-    def five_minute(self, c: Candle, at: datetime | None = None, entry_only: bool = False) -> None:
+    def five_minute(self, c: Candle, at: datetime | None = None) -> None:
+        """The 5-minute checks on one finished candle. Only market evidence from after the recommendation was created
+        counts (owner's correction, 18 November 2026): a candle that ended at or before its creation is never used; one
+        that began before and ended after it (the candle running when an analysis issues a recommendation, always a few
+        seconds) cannot show whether its high or low came before or after the creation, as there is no finer price data,
+        so what it shows is recorded as AMBIGUOUS and changes nothing; the next candle decides."""
         rec = self.state["recommendation"]
         if rec is None or rec["status"] not in LIVE:
             return
@@ -223,19 +255,36 @@ class Keeper:
         dz = rec["destinations"]["primary"]["zone"]
         dlow, dhigh = _d(dz["low"]), _d(dz["high"])
         at = at or c.end
+        timing = candle_timing(c, rec.get("created_utc"))
+        if timing == BEFORE:
+            return
         applies = rec["invalidation"].get("destination_first_applies", True)
-        if not entry_only and interacts(self.s, c, dlow, dhigh, from_below=not bear) and (applies or rec["ever_active"]):
+        dest = interacts(self.s, c, dlow, dhigh, from_below=not bear) and (applies or rec["ever_active"])
+        zone = rec["status"] == WAITING and interacts(self.s, c, low, high, from_below=bear)
+        evidence = {"candle_start_utc": _iso(c.start), "candle_end_utc": _iso(c.end), "candle_timing": timing,
+                    "qualifying_event_utc": None, "event_time_basis": EVENT_BASIS}
+        if timing == OVERLAPPED:
+            seen = [w for w, yes in ((f"reached the primary destination {rec['destinations']['primary']['price']}", dest),
+                                     (f"reached the zone {plain(low)}-{plain(high)}", zone)) if yes]
+            if seen:
+                self._event(at, "ambiguous", f"the {uk_short(c.start)} 5-minute candle {' and '.join(seen)}, but it began "
+                            f"before the recommendation was created ({rec['created_utc']}) and 5-minute candles cannot show "
+                            f"whether that happened before or after: not used (recorded only)", **evidence)
+            return
+        if dest:
             if rec["ever_active"]:
                 self._retire(at, COMPLETED, f"price reached the primary destination {rec['destinations']['primary']['price']} "
-                             f"({uk_short(c.start)}) after the zone")
+                             f"({uk_short(c.start)}) after the zone", evidence=evidence)
             else:
                 self._retire(at, INVALIDATED, f"destination reached before entry: price reached "
-                             f"{rec['destinations']['primary']['price']} ({uk_short(c.start)}) without reaching the zone")
+                             f"{rec['destinations']['primary']['price']} ({uk_short(c.start)}) without reaching the zone",
+                             evidence=evidence)
             return
-        if rec["status"] == WAITING and interacts(self.s, c, low, high, from_below=bear):
+        if zone:
             rec["status"], rec["ever_active"] = ACTIVE, True
+            rec["activation"] = evidence
             self._event(at, "active", f"the {uk_short(c.start)} 5-minute candle reached the zone "
-                        f"{plain(low)}-{plain(high)}", status=ACTIVE)
+                        f"{plain(low)}-{plain(high)}", status=ACTIVE, **evidence)
 
     def hourly(self, c: Candle) -> None:
         side = side_of(self.s)
@@ -305,6 +354,17 @@ class Keeper:
                     self._retire(now, SUPERSEDED, f"{what} ({oz['low']}-{oz['high']} to {nz['low']}-{nz['high']}): "
                                  + p["selection_reason"])
                     self._new(now, p, f"supersedes {old}: {p['selection_reason']}")
+            elif p.get("destination_reached") and _d(p["destination_reached"]["primary"]) == \
+                    _d(rec["destinations"]["primary"]["price"]):
+                # D-1: the hourly re-check found the recommendation's own primary destination already reached; the
+                # distinction between reached before and after entry is kept
+                hit = p["destination_reached"]["how"]
+                if rec["ever_active"]:
+                    self._retire(now, COMPLETED, f"price reached the primary destination {rec['destinations']['primary']['price']}"
+                                 f" after the zone (found at the hourly re-check: {hit})")
+                else:
+                    self._retire(now, INVALIDATED, f"destination reached before entry: {hit}, without reaching the zone "
+                                 f"(found at the hourly re-check)")
             else:
                 self._retire(now, INVALIDATED, f"supporting evidence changed: {p['no_recommendation']}")
         if self.state["recommendation"] is None and p["no_recommendation"] is None and p["entry_zone"] is not None:
@@ -333,10 +393,16 @@ class Keeper:
             before = (self.state["recommendation"] or {}).get("id")
             self.replan(now)
             new = self.state["recommendation"]
-            if new is not None and new["id"] != before:         # a new one: is price already in its zone?
+            if new is not None and new["id"] != before:         # a new one: was price already in its zone?
                 last5 = [c for c in self.store.read_range("5m", now - timedelta(hours=1), now) if c.end <= now]
-                if last5:
-                    self.five_minute(last5[-1], at=now, entry_only=True)
+                if last5 and interacts(self.s, last5[-1], *self._zone()[:2], from_below=self._zone()[2]):
+                    # recorded only (owner's correction, 18 November 2026): price before the recommendation existed
+                    # never activates it; a candle after its creation must reach the zone
+                    c = last5[-1]
+                    self._event(now, "in zone at creation", f"the {uk_short(c.start)} 5-minute candle, finished before the "
+                                f"recommendation was created, was already at the zone: not an activation (only a candle "
+                                f"after creation can activate it; recorded only)", candle_start_utc=_iso(c.start),
+                                candle_end_utc=_iso(c.end), candle_timing=BEFORE, event_time_basis=EVENT_BASIS)
             self.state["validated_h1_end"] = _iso(h1_end)
             self.state["last_replan_uk_day"] = now.astimezone(UK).date().isoformat()
         five = [c for c in self.store.read_range("5m", now - timedelta(days=4), now) if c.end <= now]

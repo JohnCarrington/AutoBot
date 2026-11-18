@@ -369,11 +369,18 @@ def test_14_a_confirmed_4_hour_downtrend_with_the_macd_line_still_positive_is_no
 
 
 def test_15_a_confirmed_4_hour_uptrend_with_the_macd_line_still_negative_is_not_vetoed():
-    t, p = at_end(mirrored(_lagging(LAG_CORRECTION)))
-    assert D(p["observations"]["h4_macd"]["line"]) < 0
-    assert p["dominant_direction"] == BULLISH and p["condition"] != "REVERSAL_RISK"
-    assert p["trade"] == "BUY" and p["no_recommendation"] is None
-    assert any("not yet confirmed the new 4-hour uptrend" in e for e in p["condition_evidence"])
+    # D-1 correction (owner, 18 November 2026): this market's last 5-minute candle ends with price 0.4 pip under the
+    # primary destination 13814.7 and its high 1.7 pips inside the destination zone, so the final plan is (correctly)
+    # not issued; the MACD point is shown on the candle before, and the final plan still is not a MACD veto.
+    st = mirrored(_lagging(LAG_CORRECTION))
+    t, end = at_end(st)
+    for p in (plan_at(S, st, t - timedelta(minutes=5), calendar=[]).as_dict(), end):
+        assert D(p["observations"]["h4_macd"]["line"]) < 0
+        assert p["dominant_direction"] == BULLISH and p["condition"] != "REVERSAL_RISK"
+        assert p["trade"] == "BUY"
+        assert any("not yet confirmed the new 4-hour uptrend" in e for e in p["condition_evidence"])
+    assert plan_at(S, st, t - timedelta(minutes=5), calendar=[]).as_dict()["no_recommendation"] is None
+    assert end["destination_reached"]["primary"] == "13814.7" and "already reached" in end["no_recommendation"]
 
 
 def test_16_a_healthy_pullback_opportunity_survives_lagging_macd_in_both_directions():

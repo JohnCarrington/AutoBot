@@ -54,14 +54,29 @@ its own guard.
 - **No-recommendation explanation** from recorded reasons only: A direction but no valid entry (the plan's
   `no_recommendation`), B no dominant direction, C unavailable or stale, D the last analysis's recommendation has
   since ended (its id, status and recorded reason; next chance at the next hourly analysis).
-- **Chart:** H4/H1/M5 candles, zoom (wheel/pinch), pan (drag), crosshair, price and time axes in UK time, current
-  price line, responsive (autoSize), older candles loaded when panning left. Overlays (toggles): Structure (4-hour
-  swings, hourly levels, daily and weekly S/R), Pivots (daily, weekly), Zones (the confluence zones considered),
-  Trade plan (shaded entry zone, intermediate/primary/extended destinations, invalidation lines, schematic dashed
-  forecast arrows labelled FORECAST), Past recs (markers). Reset view. The timeframe is remembered (browser storage).
-  The live, unfinished candle is not drawn.
+- **Chart** (redesigned 18 November 2026): H4/H1/M5 candles, zoom (wheel/pinch), pan (drag), crosshair, UK time,
+  current price line, responsive, older candles loaded when panning left; the live, unfinished candle is not drawn.
+  It always opens on **H1, about 60 candles, in the TRADE PLAN view**. Three views:
+  - **Trade plan** (default): the shaded entry zone, primary destination (solid), intermediate and extended
+    (dashed, quieter), the hourly-close invalidation (solid red) and the 4-hour structure break (dashed red), the
+    current price, and the forecast direction.
+  - **Market structure**: plus the significant structure — 4-hour and daily swings, daily and weekly pivots and R/S,
+    previous day and week highs and lows (`STRUCTURE_KINDS` in `dashboard/stp.py`) — and the Major/Moderate confluence
+    zones.
+  - **Full analysis**: every level in the analysis's structural snapshot (hourly swings, sessions, round numbers,
+    moving averages too), as quiet lines; hover any line for its name, price and kind, or open the **level list**.
+  All overlays are drawn in one layer with one label column (left edge), so labels never overlap: the plan's labels
+  always show (moved to the nearest free place, with a tick to the line, if needed); structure labels show only where
+  there is room. Levels within 9 pixels share one label ("+2"); every value stays exactly as recorded. Only the
+  current price has a price-axis label. The forecast is drawn right of a dotted NOW line, in a lightly shaded area,
+  separate from observed candles (historical replay: from a CREATED line, labelled ORIGINAL FORECAST). The plan's
+  levels come from the recommendation; the structure from the analysis's snapshot (`last_plan.structure`) or, for a
+  historical recommendation, from its snapshot in `issued.jsonl` (recommendations issued before 18 November 2026 have
+  none; the chart says so and replays only their plan).
 - **Trade-plan card:** every field of the brief's table, from the live recommendation; with none, the forecast and
-  the explanation only — no levels are drawn.
+  the explanation only — no levels are drawn. Prices are in the regular monospace font with tabular figures, the
+  key ones (entry zone, primary destination, invalidation) bold and coloured. (They were in the heavy display font,
+  whose digits looked oversized and struck through; there was never a strikethrough style or status meaning.)
 - **Lifecycle:** CREATED → WAITING FOR ZONE → ACTIVE → COMPLETED/INVALIDATED/SUPERSEDED with recorded times
   ("not recorded" / "never reached" otherwise) and every event with its reason; "forecast information available at
   creation" beside "market movement observed afterwards".
@@ -96,17 +111,22 @@ failure is logged and ignored.
 Observation only: not trading results; no fills, spreads, commissions, P&L, wins or losses; nothing is optimised.
 Period: the first recorded analysis plus four weeks. Counts come from the lifecycle events. "Reached primary" =
 COMPLETED plus INVALIDATED "destination reached before entry". Excursions: distances in pips from the planner's
-reference level, from the 5-minute candle that reached the zone to the end (or now), chart price. Times: creation →
-first ACTIVE; first ACTIVE → COMPLETED. Stability: hourly re-checks of live recommendations (supported / changed),
+reference level, from the 5-minute candle that reached the zone to the end (or now), chart price. Activation counts
+only market evidence from after creation (correction of 18 November 2026): a recorded activation from a candle that
+finished before creation (the planner's old "already in the zone?" check) or began before it is replaced by the first
+finished candle that began after creation and reached the original zone by the touch rule, before the recorded end;
+if none did, it is not counted as activated, and a completion without a confirmed activation is not counted as
+"reached after the zone". The planner's records are never changed; each correction is listed with its reason, and the
+detail view shows the recorded activation candle and its timing beside the confirmed one. Times: creation → confirmed
+activation; confirmed activation → COMPLETED. Stability: hourly re-checks of live recommendations (supported / changed),
 and supersessions. Ambiguities listed: one 5-minute candle touching both zone and destination; an activation candle
 that began before creation; a recommendation issued with price already within 3 pips of its primary destination.
 Fewer than 3 values: INSUFFICIENT DATA.
 
 ## Known limitations
 
-- Structural levels on the chart are those the planner persisted (inside the zones it considered and their
-  destinations, plus the pivots in its observations). The planner does not persist its whole level map (proposal H-2
-  in the investigation report).
+- The full level map exists from the planner's 18 November 2026 version on (`structure` in each plan; the
+  snapshot in `issued.jsonl`). Before that only the levels inside the zones considered were recorded.
 - Retired recommendations from before `issued.jsonl` have summary-only "at creation" data.
 - The forecast path is schematic (direction sequence), never a price path or timing.
 

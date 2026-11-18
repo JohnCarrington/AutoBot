@@ -61,7 +61,7 @@ from typing import Any
 
 from planner.measure import Snapshot, cl, hi, lo, op, pips, ppp, side_of, snapshot
 from planner.structure import DOWN, MIXED, UP, Structure, structure, swings, threshold_misses
-from planner.zones import CLASS_RANK, MAJOR, Zone, interacts, label, level_map, zones
+from planner.zones import CLASS_RANK, MAJOR, Zone, ahead, interacts, label, level_map, reached, zones
 from prices.model import UK, plain, uk_short
 
 BULLISH, BEARISH, NEUTRAL, TRANSITIONAL, INDETERMINATE_DIR = "BULLISH", "BEARISH", "NEUTRAL", "TRANSITIONAL", "INDETERMINATE"
@@ -98,6 +98,8 @@ class Plan:
     warming_up: list[str] = field(default_factory=list)
     threshold_misses: list[dict] = field(default_factory=list)
     h4_last_swing: dict | None = None
+    destination_reached: dict | None = None     # D-1 correction: the primary destination was already reached
+    structure: dict | None = None               # reporting only: every level, zone and swing the plan saw
 
     @property
     def recommends(self) -> bool:
@@ -118,6 +120,7 @@ class Plan:
             "candidates": self.candidates, "alternative": self.alternative,
             "no_recommendation": self.no_recommendation, "warming_up": self.warming_up,
             "threshold_misses": self.threshold_misses, "h4_last_swing": self.h4_last_swing,
+            "destination_reached": self.destination_reached, "structure": self.structure,
         }
 
 
@@ -381,6 +384,7 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
         return plan
     lmap = level_map(settings, snap, existing_levels, h4_found, d1_found)
     zs = zones(settings, lmap, snap.adr, snap.h1.candles, snap.price)
+    plan.structure = structure_snapshot(lmap, zs, h4_found, d1_found, h1_found)
     price = snap.price
     # candidate entry zones: above price (or containing it) for a sell; below (or containing) for a buy
     looked, good = choose_zone(settings, zs, price, bear, last_opp, snap.adr)
@@ -412,6 +416,22 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
                                   f"{settings.levels.round_numbers_within_pips}-pip window for the primary destination")
         plan.candidates = [_zone_dict(zz, i) for zz, _, _, i in looked]
         return plan
+    # D-1 correction (owner's approval, 18 November 2026): admission uses the same price-reachability test as the
+    # lifecycle's "destination reached" rule (planner/zones.py reached: a destination wholly beyond price that the
+    # latest finished 5-minute candle already reached by the existing one-sided 3-pip touch rule). A recommendation
+    # the next touch would end as "destination reached before entry" is not issued. (Before: admission compared the last close with the destination edge
+    # by more than 3 pips, while the lifecycle used the candle's extreme, so a recommendation could be issued with its
+    # destination already touched, and be invalidated by the next candle; 17 November 2026, 22:00.)
+    hit = reached(settings, snap.five, price, majors[0].low, majors[0].high, toward_low=bear)
+    if hit:
+        plan.destination_reached = {"primary": plain(edge(majors[0])), "zone": [plain(majors[0].low), plain(majors[0].high)],
+                                    "zone_candidate": [plain(z.low), plain(z.high)], "how": hit,
+                                    "candle_utc": _iso(snap.five.start) if snap.five else None}
+        plan.no_recommendation = (f"the primary destination {plain(edge(majors[0]))} is already reached ({hit}); no "
+                                  f"recommendation is issued for a destination price has already reached (D-1 "
+                                  f"correction), so the zone {plain(z.low)}-{plain(z.high)} is not recommended")
+        plan.candidates = [_zone_dict(zz, i) for zz, _, _, i in looked]
+        return plan
     plan.zone, plan.reachability = z, reach
     families = ", ".join(z.families)
     plan.selection_reason = (f"{z.klass} zone ({len(z.families)} families: {families}) "
@@ -429,10 +449,10 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
         "zone_break_close": plain(zone_break), "zone_break_timeframe": "1h",
         "structure_break_close": plain(struct_break), "structure_break_timeframe": "4h",
         "destination_first": plain(edge(majors[0])),
-        # "destination reached before entry" only means something for a destination beyond price now (by more than
-        # the 3-pip allowance): one between price and the zone, or at price, is simply on the way (implementation
-        # note, 17 November 2026)
-        "destination_first_applies": (edge(majors[0]) < price - near) if bear else (edge(majors[0]) > price + near),
+        # "destination reached before entry" applies to a destination wholly beyond price (D-1 correction: decided
+        # with the same zone edges and touch rule as the lifecycle; one that is ahead and already touched was refused
+        # above). One between price and the zone, or containing price, is simply on the way.
+        "destination_first_applies": ahead(price, majors[0].low, majors[0].high, toward_low=bear),
         "conditions": [
             f"an hourly close at or {'above' if bear else 'below'} {plain(zone_break)} "
             f"({settings.hourly_read.break_beyond_pips} pips beyond the zone {'top' if bear else 'bottom'})",
@@ -440,7 +460,7 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
             f"(beyond the last 4-hour swing {last_opp.kind} {plain(last_opp.price)})",
             f"the 4-hour direction no longer {dirn}",
             (f"price reaching the primary destination {plain(edge(majors[0]))} before the zone" if
-             ((edge(majors[0]) < price - near) if bear else (edge(majors[0]) > price + near)) else
+             ahead(price, majors[0].low, majors[0].high, toward_low=bear) else
              f"(the primary destination {plain(edge(majors[0]))} lies between price and the zone: no 'reached first' check)")],
     }
     ref = z.reference.price
@@ -448,6 +468,22 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
     if risk > 0:
         plan.observations["reward_to_invalidation"] = plain((abs(ref - edge(majors[0])) / risk).quantize(Decimal("0.1")))
     return plan
+
+
+def structure_snapshot(lmap: list, zs: list, h4: list, d1: list, h1: list) -> dict | None:
+    """Reporting only (owner's brief, 18 November 2026): every level of the level map, every zone and the swings the
+    plan was built from, exactly as they stood at its time, so that a recommendation can be replayed later without
+    recalculating anything from later data. Decides nothing; a problem here leaves the plan as it is."""
+    try:
+        sw = lambda s: {"kind": s.kind, "price": plain(s.price), "timeframe": s.timeframe,      # noqa: E731
+                        "candle_utc": _iso(s.candle_utc), "known_utc": _iso(s.known_utc)}
+        lv = lambda m: {k: v for k, v in (m.as_dict() | {"kind": m.kind}).items() if k != "note" and v != ""}  # noqa: E731
+        return {"levels": [lv(m) for m in lmap],
+                "zones": [{"low": plain(z.low), "high": plain(z.high), "class": z.klass, "families": z.families,
+                           "tests": z.tests, "levels": [label(m) for m in z.members]} for z in zs],
+                "swings": {"4h": [sw(s) for s in h4[-24:]], "1d": [sw(s) for s in d1[-12:]], "1h": [sw(s) for s in h1[-24:]]}}
+    except Exception:                                    # noqa: BLE001  (reporting only)
+        return None
 
 
 # ---- observations ----------------------------------------------------------------------------------------------------

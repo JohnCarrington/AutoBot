@@ -18,8 +18,8 @@ It never authorises, refuses, opens, changes or closes a trade. It never contact
 | `measure.py` | Finished candles only. 4-hour candles rebuilt from hourly on the store's boundaries. Indicators on H1/H4/daily/weekly with the bot's own code and the chart settings, each only once warmed up. The ADR (20 weekdays, Sunday candles left out). Freshness by the analyser's rule |
 | `structure.py` | Swings by the existing turning-level rule (hourly 3/20/6; 4-hour 3/40/6; daily 3/110/6). Up/down/mixed structure. Breaks need a close at least 3 pips beyond. Turns held back only by the provisional 40/110-pip thresholds are recorded |
 | `zones.py` | The existing levels plus weekly pivots, the previous week's high and low, 4-hour and daily swings, and moving-average levels. Families. Zones (the larger of 5 pips and 0.15 × ADR, built from fixed levels first). Major / Moderate / Minor classes. Tests. The one-sided 3-pip touch rule |
-| `assess.py` | Direction, condition, opportunity, reachability, zone choice, destinations, invalidation, observations: one `Plan` |
-| `keeper.py` | The lifecycle: CANDIDATE, WAITING, ACTIVE, INVALIDATED, SUPERSEDED, COMPLETED. The files `planner.folder/<PAIR>/current.json` and `recommendations.jsonl` (append-only). Also `issued.jsonl`: each recommendation in full as issued, for the dashboard's history (reporting only). `PlannerUpdater` for the price service |
+| `assess.py` | Direction, condition, opportunity, reachability, zone choice, destinations, invalidation, observations: one `Plan`. D-1 correction (18 November 2026): no recommendation when the latest finished 5-minute candle already reaches the primary destination by the lifecycle's own touch rule. Every plan also carries `structure`: every level, zone and recent swing it saw (reporting only) |
+| `keeper.py` | The lifecycle: CANDIDATE, WAITING, ACTIVE, INVALIDATED, SUPERSEDED, COMPLETED. Only market evidence from after a recommendation's creation counts (18 November 2026): a 5-minute candle running at creation is recorded as `ambiguous` and changes nothing; price already in the zone at creation is recorded as `in zone at creation`, never an activation. Each activation records its candle and its timing against creation. The files `planner.folder/<PAIR>/current.json` and `recommendations.jsonl` (append-only). Also `issued.jsonl`: each recommendation in full as issued with the analysis's complete structural snapshot, for the dashboard's history (reporting only). `PlannerUpdater` for the price service |
 | `panel.py` | The dashboard panel's content, from the planner's file only |
 | `__main__.py` | `python -m planner run` (one keeper run) and `python -m planner show --at <UTC time>` (print a plan; writes nothing) |
 
@@ -27,4 +27,4 @@ It never authorises, refuses, opens, changes or closes a trade. It never contact
 
 **Rules in full:** `/home/autobot/research/structural_trade_planner_v1/` (design, decision register, parameter register, readiness), and the docstrings at the top of each file.
 
-**Tests:** `tests/technical/test_planner.py`, `tests/functional/test_planner_scenarios.py`.
+**Tests:** `tests/technical/test_planner.py`, `tests/functional/test_planner_scenarios.py`, `tests/technical/test_stp_corrections.py`.

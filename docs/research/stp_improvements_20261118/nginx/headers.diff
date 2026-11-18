@@ -1,0 +1,76 @@
+--- deploy/autobot-dashboard.nginx	2026-11-18 05:40:05.765362412 +0000
++++ /home/autobot/worktrees/autobot-stp-improvements/docs/research/stp_improvements_20261118/nginx/autobot-dashboard.nginx.proposed	2026-11-18 05:58:39.223022503 +0000
+@@ -3,6 +3,10 @@
+ # it listens ONLY on this server's Tailscale address, never on the public address; the data service listens on
+ # 127.0.0.1 only. TAILSCALE_IP is replaced by the address from `tailscale ip -4` when it is installed
+ # (docs/DASHBOARD.md). Plain HTTP inside the Tailscale network (WireGuard-encrypted).
++#
++# SECURITY HEADERS (proposed 18 November 2026): nginx applies the server-level add_header lines only to a location
++# that has no add_header of its own, so every location that sets its own header (Cache-Control) repeats the four
++# security headers. Same values as the server level; nothing weakened.
+ 
+ limit_req_zone $binary_remote_addr zone=autobot_dashboard_login:1m rate=10r/m;
+ 
+@@ -21,28 +25,51 @@
+     location = / {
+         try_files /index.html =404;
+         add_header Cache-Control "no-cache" always;
++        add_header X-Frame-Options "DENY" always;
++        add_header X-Content-Type-Options "nosniff" always;
++        add_header Referrer-Policy "no-referrer" always;
++        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; form-action 'self'" always;
+     }
+ 
+     # The icons and the home-screen manifest (AutoBot 161's; public, as 161 serves them).
+     location = /favicon.svg {
+         add_header Cache-Control "public, max-age=604800" always;
++        add_header X-Frame-Options "DENY" always;
++        add_header X-Content-Type-Options "nosniff" always;
++        add_header Referrer-Policy "no-referrer" always;
++        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; form-action 'self'" always;
+     }
+     location = /apple-touch-icon.png {
+         add_header Cache-Control "public, max-age=604800" always;
++        add_header X-Frame-Options "DENY" always;
++        add_header X-Content-Type-Options "nosniff" always;
++        add_header Referrer-Policy "no-referrer" always;
++        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; form-action 'self'" always;
+     }
+     location ~ ^/icon-(192|512)\.png$ {
+         add_header Cache-Control "public, max-age=604800" always;
++        add_header X-Frame-Options "DENY" always;
++        add_header X-Content-Type-Options "nosniff" always;
++        add_header Referrer-Policy "no-referrer" always;
++        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; form-action 'self'" always;
+     }
+     location = /manifest.json {
+         types { }
+         default_type application/manifest+json;
+         add_header Cache-Control "no-cache" always;
++        add_header X-Frame-Options "DENY" always;
++        add_header X-Content-Type-Options "nosniff" always;
++        add_header Referrer-Policy "no-referrer" always;
++        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; form-action 'self'" always;
+     }
+ 
+     # The page's two fonts (kept on this server, SIL Open Font License: fonts/OFL-*.txt).
+     location /fonts/ {
+         add_header Cache-Control "public, max-age=604800" always;
++        add_header X-Frame-Options "DENY" always;
+         add_header X-Content-Type-Options "nosniff" always;
++        add_header Referrer-Policy "no-referrer" always;
++        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; form-action 'self'" always;
+     }
+ 
+     # nginx asks the data service whether the session cookie is genuine before every gated address.
+@@ -75,6 +102,10 @@
+         proxy_set_header Origin $http_origin;
+         proxy_set_header X-Real-IP $remote_addr;
+         add_header Cache-Control "no-store" always;
++        add_header X-Frame-Options "DENY" always;
++        add_header X-Content-Type-Options "nosniff" always;
++        add_header Referrer-Policy "no-referrer" always;
++        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; form-action 'self'" always;
+     }
+ 
+     # Nothing else.

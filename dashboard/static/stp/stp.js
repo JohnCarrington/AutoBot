@@ -7,12 +7,18 @@
   const API = "/api/stp/";
   const TF_KEY = "stp.tf";
   const S = {
-    tf: "1h", ov: null, candles: [], chart: null, series: null, lines: [], selected: null, detail: null,
-    show: {structure: true, pivots: true, plan: true, zones: false, past: true},
+    tf: "1h", mode: "plan", ov: null, candles: [], chart: null, series: null, lines: [], selected: null, detail: null,
+    show: {past: true}, placed: [], hoverItems: [],
     hist: {page: 1, size: 15, q: "", sort: "created", order: "desc", rows: [], total: 0, pages: 1},
     timer: null, loadingMore: false, root: null,
   };
-  try { const t = localStorage.getItem(TF_KEY); if (["4h", "1h", "5m"].includes(t)) S.tf = t; } catch (e) { /* none */ }
+  // The chart always opens on H1 in the TRADE PLAN view (owner's brief, 18 November 2026); a timeframe chosen is kept
+  // for the rest of the visit only.
+  try { localStorage.removeItem(TF_KEY); } catch (e) { /* none */ }
+  const MODES = [["plan", "Trade plan", "The recommendation only: entry zone, destinations, invalidation and the forecast direction"],
+                 ["structure", "Market structure", "Significant 4-hour swings, daily and weekly levels, major support and resistance, confluence zones, and the trade plan"],
+                 ["full", "Full analysis", "Every level the planner recorded; hover a line for its details, or open the level list"]];
+  const SHOW_BARS = {"4h": 60, "1h": 60, "5m": 72};
 
   // ---- helpers -------------------------------------------------------------------------------------------------
   function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined && text !== null) e.textContent = text; return e; }
@@ -64,23 +70,23 @@
       const b = el("button", tf === S.tf ? "on" : "", label); b.type = "button"; b.dataset.tf = tf;
       b.addEventListener("click", () => setTf(tf)); seg.appendChild(b);
     });
-    tb.appendChild(seg);
-    [["structure", "Structure"], ["pivots", "Pivots"], ["zones", "Zones"], ["plan", "Trade plan"], ["past", "Past recs"]].forEach(([k, label]) => {
-      const b = el("button", "stp-tog" + (S.show[k] ? " on" : ""), label); b.type = "button"; b.dataset.show = k;
-      b.title = {structure: "Confirmed 4-hour swings, hourly levels, daily and weekly support/resistance recorded by the planner",
-                 pivots: "Daily and weekly pivots recorded by the planner", zones: "The confluence zones the planner considered",
-                 plan: "The recommendation's entry zone, destinations and invalidation", past: "Markers for past recommendations"}[k];
-      b.addEventListener("click", () => { S.show[k] = !S.show[k]; b.classList.toggle("on", S.show[k]); drawOverlays(); });
-      tb.appendChild(b);
+    const modes = el("div", "stp-seg stp-modes");
+    MODES.forEach(([m, label, tip]) => {
+      const b = el("button", m === S.mode ? "on" : "", label); b.type = "button"; b.dataset.mode = m; b.title = tip;
+      b.addEventListener("click", () => setMode(m)); modes.appendChild(b);
     });
+    add(tb, modes, seg);
+    const past = el("button", "stp-tog" + (S.show.past ? " on" : ""), "Past recs"); past.type = "button"; past.title = "Markers for past recommendations";
+    past.addEventListener("click", () => { S.show.past = !S.show.past; past.classList.toggle("on", S.show.past); drawOverlays(); });
     const reset = el("button", "stp-tog", "Reset view"); reset.type = "button";
-    reset.addEventListener("click", () => { if (S.chart) { S.chart.timeScale().resetTimeScale(); S.chart.priceScale("right").applyOptions({autoScale: true}); fitRecent(); } });
-    tb.appendChild(reset);
+    reset.addEventListener("click", () => { if (S.chart) { S.chart.priceScale("right").applyOptions({autoScale: true}); if (isHist()) showHistoricalOnChart(); else fitRecent(); } });
+    add(tb, past, reset);
     cc.appendChild(tb);
-    const box = el("div", "stp-chartbox"); add(box, el("div", "stp-chart"), el("div", "stp-layer"));
+    const box = el("div", "stp-chartbox"); add(box, el("div", "stp-chart"), el("div", "stp-layer"), el("div", "stp-hover"));
     cc.appendChild(box);
     cc.appendChild(el("div", "stp-legend"));
-    cc.appendChild(el("div", "stp-note", "Candles: finished candles only, chart (sell) price, UK time. The live, unfinished candle is not drawn; the dotted line is the current price. Dashed arrows are the planner's FORECAST direction sequence, drawn schematically: no timing or price path is implied."));
+    const lv = el("details", "stp-levels"); lv.appendChild(el("summary", "", "Level list")); lv.appendChild(el("div", "stp-levelbody")); cc.appendChild(lv);
+    cc.appendChild(el("div", "stp-note", "Finished candles only, chart (sell) price, UK time; the live candle is not drawn. Right of the dotted NOW line is the planner's FORECAST, drawn schematically: a direction sequence, no timing or price path implied. Every level is the planner's own recorded value; nearby levels share one label (hover for all of them)."));
     const pc = el("div", "stp-card stp-planbox");
     add(main, cc, pc);
     w.appendChild(main);
@@ -141,7 +147,7 @@
     if (!r) {
       rows(box, [["Instrument", o.pair_text], ["Dominant direction", fc.dominant_direction, dirClass(fc.dominant_direction)],
                  ["Market condition", nice(fc.condition)], ["Forecast opportunity", fc.opportunity || "none"],
-                 ["Status", "NO RECOMMENDATION", "big"], ["Last updated", when((o.freshness || {}).last_analysis_utc)]]);
+                 ["Status", "NO RECOMMENDATION", "dirv"], ["Last updated", when((o.freshness || {}).last_analysis_utc)]]);
       box.appendChild(el("div", "stp-h", "Why there is no recommendation"));
       list(box, [o.explanation && o.explanation.text, o.explanation && o.explanation.planner_reason && ("Planner: " + o.explanation.planner_reason)].filter(Boolean));
       box.appendChild(el("div", "stp-note", "No entry zone, destination or invalidation is drawn: the planner has no live recommendation."));
@@ -150,13 +156,14 @@
     const p = r.plan || {}, d = p.destinations || {};
     rows(box, [["Instrument", o.pair_text], ["Dominant direction", r.dominant_direction, dirClass(r.dominant_direction), "The 4-hour structural direction"],
                ["Market condition", nice(r.condition)], ["Opportunity", r.opportunity],
-               ["Preferred direction", arrow(r.trade) + r.trade, "big " + dirClass(r.trade)],
-               ["Entry zone", r.entry_zone + " (" + (r.zone_class || "") + ")", "big"],
+               ["Preferred direction", arrow(r.trade) + r.trade, "dirv " + dirClass(r.trade)],
+               ["Entry zone", r.entry_zone, "price key " + dirClass(r.trade)], ["Zone class", r.zone_class],
                ["Reference level", r.reference, null, "The zone's primary structural reference level"],
                ["Reachability", r.reachability],
-               ["Intermediate destination", d.intermediate ? d.intermediate.text : "none recorded", null, "The first relevant obstacle"],
-               ["Primary destination", d.primary ? d.primary.text : "none recorded", "big"],
-               ["Extended destination", d.extended ? d.extended.text : "none recorded"],
+               ["Intermediate destination", d.intermediate ? d.intermediate.text : "none recorded", "price", "The first relevant obstacle"],
+               ["Primary destination", d.primary ? d.primary.text : "none recorded", "price key dest"],
+               ["Extended destination", d.extended ? d.extended.text : "none recorded", "price"],
+               ["Invalidation (hourly close)", (p.invalidation || [])[0] ? p.invalidation[0].text : "none recorded", "price key inval"],
                ["Status", r.status_label], ["Created", when(r.created_utc)], ["Last updated", when(r.last_updated_utc)],
                ["Id", r.id]]);
     box.appendChild(el("div", "stp-h", "Invalidation"));
@@ -178,7 +185,7 @@
       layout: {background: {type: "solid", color: "#111118"}, textColor: "#9a9ab0", fontFamily: "JetBrains Mono, monospace", fontSize: 11},
       grid: {vertLines: {color: "#ffffff08"}, horzLines: {color: "#ffffff08"}},
       rightPriceScale: {borderColor: "#ffffff18", scaleMargins: {top: 0.08, bottom: 0.08}},
-      timeScale: {borderColor: "#ffffff18", timeVisible: true, secondsVisible: false, rightOffset: 24,
+      timeScale: {borderColor: "#ffffff18", timeVisible: true, secondsVisible: false, rightOffset: 14,
                   tickMarkFormatter: (t, type) => { const d = new Date(t * 1000); return type <= 2 ? ukDay.format(d) : ukTime.format(d); }},
       crosshair: {mode: 0},
       localization: {priceFormatter: (p) => p.toFixed(5), timeFormatter: (t) => ukFmt.format(new Date(t * 1000))},
@@ -191,6 +198,8 @@
     S.chart.timeScale().subscribeVisibleLogicalRangeChange((rng) => { schedule(); if (rng && rng.from < 5) loadMore(); });
     const box = $q(".stp-chartbox");
     ["pointermove", "wheel", "pointerup", "touchmove"].forEach(ev => box.addEventListener(ev, schedule, {passive: true}));
+    box.addEventListener("pointermove", hover, {passive: true});
+    box.addEventListener("pointerleave", () => { $q(".stp-hover").style.display = "none"; });
     window.addEventListener("resize", schedule);
   }
   let raf = 0;
@@ -226,12 +235,12 @@
   }
   function fitRecent() {
     if (!S.candles.length) return;
-    const n = S.candles.length, show = {"4h": 90, "1h": 120, "5m": 144}[S.tf] || 120;
-    S.chart.timeScale().setVisibleLogicalRange({from: Math.max(0, n - show), to: n + 20});
+    const n = S.candles.length, show = SHOW_BARS[S.tf] || 60;
+    S.chart.timeScale().setVisibleLogicalRange({from: Math.max(0, n - show), to: n + 14});
   }
   function setTf(tf) {
     if (tf === S.tf) return;
-    S.tf = tf; try { localStorage.setItem(TF_KEY, tf); } catch (e) { /* none */ }
+    S.tf = tf;
     $q(".stp-seg").querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.tf === tf));
     if (isHist()) showHistoricalOnChart(); else loadCandles().then(fitRecent);
   }
@@ -248,117 +257,229 @@
     if (isHist()) { const c = S.detail.at_creation.card; return c && c.plan ? c.plan : null; }
     return S.ov && S.ov.recommendation ? S.ov.recommendation.plan : null;
   }
+  // ---- the three chart views (owner's brief, 18 November 2026) ----------------------------------------------------
+  // TRADE PLAN (default): candles, current price, entry zone, destinations, invalidation and the forecast direction.
+  // MARKET STRUCTURE: plus significant 4-hour swings, daily and weekly levels, major/moderate confluence zones.
+  // FULL ANALYSIS: every recorded level, quiet; hover a line or open the level list for details.
+  // Everything is drawn in one SVG layer with one label column, so labels never overlap; only the current price has a
+  // price-axis label. Nearby levels share one label; their values are never moved or rounded.
+  function setMode(m) {
+    if (m === S.mode) return;
+    S.mode = m;
+    $q(".stp-modes").querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.mode === m));
+    drawOverlays();
+  }
+  const GROUP = {h4_swing: ["#c58cff", "4-hour swing"], daily_sr: ["#ffaa00", "daily swing / previous day"],
+                 weekly_sr: ["#ff7a3d", "previous week"], daily_pivot: ["#4fc3f7", "daily pivot, R, S"],
+                 weekly_pivot: ["#2f8ff0", "weekly pivot, R, S"], h1: ["#8a8aa0", "hourly swing"],
+                 session: ["#a8977a", "session high/low"], round: ["#7aa6a6", "round number"], ma: ["#a87aa0", "moving average"],
+                 other: ["#8a8aa0", "other"]};
+  const RANK = ["weekly_pivot", "weekly_sr", "daily_pivot", "daily_sr", "h4_swing", "round", "session", "h1", "ma", "other"];
+  const PLAN = {primary: ["#5b8cff", "", 2, 1], inter: ["#8fa8e8", "2 3", 1, 0.9], ext: ["#5b8cff", "7 4", 1, 0.65],
+                inval: ["#ff3b3b", "", 1.5, 0.95], inval2: ["#ff3b3b", "7 4", 1, 0.6]};
+  const LABEL_H = 15;
+  const grp = (g) => GROUP[g] || GROUP.other;
+  const shortName = (n) => String(n || "").replace("4-hour swing ", "H4 swing ").replace("hourly swing ", "H1 swing ").replace("previous ", "prev ");
+
+  // the recorded structure for the view: the latest analysis's, or the selected recommendation's snapshot at creation
+  function structureSet() {
+    if (isHist()) return S.detail.overlays_at_creation || null;
+    return (S.ov && S.ov.overlays) || null;
+  }
+  function viewLevels() {
+    if (S.mode === "plan") return [];
+    const set = structureSet(); if (!set) return [];
+    return (set.levels || []).filter(l => l.price !== null && l.price !== undefined && (S.mode === "full" || l.tier === "structure"));
+  }
+  function viewZones() {
+    if (S.mode === "plan") return [];
+    const set = structureSet(); if (!set) return [];
+    return (set.zones || []).filter(z => z.low !== null && z.high !== null && (S.mode === "full" || z.tier === "structure"));
+  }
+  function planItems(p) {   // the trade plan's lines, most important first (they always get a label)
+    if (!p) return [];
+    const d = p.destinations || {}, out = [];
+    if (d.primary) out.push({price: d.primary.price, text: d.primary.text, label: "PRIMARY " + d.primary.text, cls: "primary", why: "Primary destination"});
+    (p.invalidation || []).forEach((x, i) => out.push({price: x.price, text: x.text, label: (i === 0 ? "INVALIDATION " : "STRUCTURE BREAK ") + x.text,
+                                                       cls: i === 0 ? "inval" : "inval2", why: x.label}));
+    if (d.intermediate) out.push({price: d.intermediate.price, text: d.intermediate.text, label: "INTERMEDIATE " + d.intermediate.text, cls: "inter", why: "Intermediate destination (the first obstacle)"});
+    if (d.extended) out.push({price: d.extended.price, text: d.extended.text, label: "EXTENDED " + d.extended.text, cls: "ext", why: "Extended destination"});
+    return out.filter(x => x.price !== null && x.price !== undefined);
+  }
+  // one label column: the plan's labels first (moved to the nearest free place if needed), then structure labels only
+  // where there is room. Returns each label with its drawn position (ly).
+  function placeLabels(items, top, bottom) {
+    const placed = [], h = LABEL_H;
+    const ok = (yy) => yy >= top + h / 2 && yy <= bottom - h / 2 && placed.every(q => Math.abs(q.ly - yy) >= h);
+    items.slice().sort((a, b) => a.prio - b.prio || a.y - b.y).forEach(it => {
+      if (it.prio === 1) {
+        for (let d = 0; d <= 90; d += 1) { const yy = [it.y + d, it.y - d].find(ok); if (yy !== undefined) { placed.push(Object.assign({}, it, {ly: yy})); break; } }
+      } else if (ok(it.y)) placed.push(Object.assign({}, it, {ly: it.y}));
+    });
+    return placed;
+  }
+
   function drawOverlays() {
     if (!S.series) return;
     S.lines.forEach(l => { try { S.series.removePriceLine(l); } catch (e) { /* gone */ } }); S.lines = [];
-    const L = (price, color, title, style, width, axis) => { if (price === null || price === undefined) return;
-      S.lines.push(S.series.createPriceLine({price, color, lineWidth: width || 1, lineStyle: style === undefined ? 2 : style, axisLabelVisible: axis !== false, title: title || ""})); };
-    const legend = $q(".stp-legend"); legend.textContent = "";
-    const leg = (color, text, dash) => { const s = el("span"); const i = el("i", dash ? "dash" : ""); i.style.borderTopColor = color; s.appendChild(i); s.append(text); legend.appendChild(s); };
     const hist = isHist();
-    const ov = (S.ov && S.ov.overlays) || {levels: [], zones: []};
-    if (!hist) {
-      // merge levels at the same price into one line with their names (one label per price)
-      const by = new Map();
-      (ov.levels || []).forEach(lv => {
-        const isPivot = lv.group === "daily_pivot" || lv.group === "weekly_pivot";
-        const isStruct = ["h4_swing", "h1", "daily_sr", "weekly_sr"].includes(lv.group);
-        if ((isPivot && !S.show.pivots) || (isStruct && !S.show.structure) || (!isPivot && !isStruct)) return;
-        const k = lv.price_text; if (!by.has(k)) by.set(k, []); by.get(k).push(lv);
-      });
-      const colour = {h4_swing: "#c58cff", h1: "#6b6b80", daily_sr: "#ffaa00", weekly_sr: "#ff7a3d", daily_pivot: "#4fc3f7", weekly_pivot: "#2196f3"};
-      const rank = ["weekly_pivot", "weekly_sr", "daily_pivot", "daily_sr", "h4_swing", "h1"];
-      by.forEach((lvs) => {
-        lvs.sort((a, b) => rank.indexOf(a.group) - rank.indexOf(b.group));
-        const top = lvs[0];
-        const short = (n) => n.replace("4-hour swing ", "H4 swing ").replace("hourly swing ", "H1 swing ").replace("previous ", "prev ");
-        const title = lvs.map(x => short(x.name)).filter((v, i, a) => a.indexOf(v) === i).slice(0, 2).join(" + ");
-        // hourly levels, and any level more than one ADR from price: quiet lines without a label (they are many)
-        const px0 = S.ov && S.ov.price && S.ov.price.price, adr = Number((S.ov.technical || {}).adr_pips || 0) * 0.0001;
-        const strong = top.group !== "h1" && !(px0 && adr && Math.abs(top.price - px0) > adr);
-        L(top.price, colour[top.group] + (strong ? "bb" : "55"), strong ? title : "", strong ? 2 : 1, 1, strong);
-      });
-      if (S.show.structure) { leg("#c58cff", "H4 swing"); leg("#6b6b80", "H1 level"); leg("#ffaa00", "daily S/R"); leg("#ff7a3d", "weekly S/R"); }
-      if (S.show.pivots) { leg("#4fc3f7", "daily pivot"); leg("#2196f3", "weekly pivot"); }
-      const px = S.ov && S.ov.price;
-      if (px && px.price) L(px.price, "#e8e8f0", "price " + px.text, 1, 1, true);
-    }
+    const px = S.ov && S.ov.price;
+    if (!hist && px && px.price) S.lines.push(S.series.createPriceLine({price: px.price, color: "#e8e8f0aa", lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: ""}));
     const p = activePlan();
-    if (p && S.show.plan) {
-      const d = p.destinations || {};
-      if (p.entry_zone) { L(p.entry_zone.low, p.trade === "SELL" ? "#ff4466" : "#00ff88", "", 0, 1, true); L(p.entry_zone.high, p.trade === "SELL" ? "#ff4466" : "#00ff88", "", 0, 1, true); }
-      if (d.intermediate) L(d.intermediate.price, "#88aaff", "Intermediate", 2, 1, true);
-      if (d.primary) L(d.primary.price, "#4488ff", "PRIMARY DESTINATION", 0, 2, true);
-      if (d.extended) L(d.extended.price, "#4488ff99", "Extended", 2, 1, true);
-      (p.invalidation || []).forEach(x => L(x.price, "#ff2222", x.label, 0, 2, true));
-      leg(p.trade === "SELL" ? "#ff4466" : "#00ff88", "entry zone"); leg("#4488ff", "destinations"); leg("#ff2222", "invalidation");
-      leg("#e8e8f0", "forecast path (schematic)", true);
+    // legend: only what this view draws
+    const legend = $q(".stp-legend"); legend.textContent = "";
+    const leg = (color, text, dash, band) => { const s = el("span"); const i = el("i", (dash ? "dash" : "") + (band ? " band" : "")); i.style.borderTopColor = color; if (band) i.style.background = color + "33"; s.appendChild(i); s.append(text); legend.appendChild(s); };
+    if (p) {
+      leg(p.trade === "SELL" ? "#ff4466" : "#00ff88", "entry zone", false, true); leg(PLAN.primary[0], "primary destination");
+      leg(PLAN.inter[0], "intermediate / extended", true); leg(PLAN.inval[0], "invalidation"); leg("#e8e8f0", "forecast (schematic)", true);
+    } else legend.appendChild(el("span", "", hist ? "" : "No live recommendation: no trade plan to draw."));
+    if (S.mode !== "plan") {
+      const groups = new Set(viewLevels().map(l => l.group));
+      RANK.filter(g => groups.has(g)).forEach(g => leg(grp(g)[0], grp(g)[1], true));
+      if (viewZones().length) leg("#9a9ab0", S.mode === "full" ? "confluence zones" : "major / moderate zones", true, true);
+      if (!structureSet()) legend.appendChild(el("span", "stp-warnnote", hist ? "The full level map was not recorded for this recommendation (issued before 18 November 2026): only its trade plan can be replayed."
+                                                                                : "No structural snapshot in the latest analysis."));
     }
+    renderLevelList(p);
     // markers: past recommendations, or the selected one's lifecycle
     const markers = [];
     if (hist) {
       const st = S.detail.stages || {};
       const mk = (iso, text, color, pos, shape) => { if (!iso) return; const t = barAt(Math.floor(new Date(iso).getTime() / 1000)); if (t) markers.push({time: t, position: pos, color, shape, text}); };
       mk(st.created, "created", "#e8e8f0", "aboveBar", "arrowDown");
-      mk(st.active, "active", "#4488ff", "aboveBar", "circle");
+      const act = (S.detail.observed_after || {}).activation || {};
+      mk(st.active, act.correction ? "active (recorded)" : "active", "#5b8cff", "aboveBar", "circle");
+      if (act.correction && act.confirmed_utc) mk(act.confirmed_candle_start_utc, "zone reached after creation", "#ffaa00", "aboveBar", "circle");
       mk(st.completed, "completed", "#00ff88", "belowBar", "circle");
       mk(st.invalidated, "invalidated", "#ff4466", "belowBar", "square");
       mk(st.superseded, "superseded", "#6b6b80", "belowBar", "square");
     } else if (S.show.past) {
       (S.hist.rows || []).forEach(r => { const t = barAt(Math.floor(new Date(r.created_utc).getTime() / 1000));
-        if (t) markers.push({time: t, position: r.trade === "SELL" ? "aboveBar" : "belowBar", color: r.trade === "SELL" ? "#ff4466" : "#00ff88",
-                             shape: r.trade === "SELL" ? "arrowDown" : "arrowUp", text: r.trade + " · " + (r.outcome || r.status)}); });
+        if (t) markers.push({time: t, position: r.trade === "SELL" ? "aboveBar" : "belowBar", color: r.trade === "SELL" ? "#ff446699" : "#00ff8899",
+                             shape: r.trade === "SELL" ? "arrowDown" : "arrowUp", text: ""}); });
     }
     markers.sort((a, b) => a.time - b.time);
     S.series.setMarkers(markers);
     schedule();
   }
 
-  // the HTML/SVG layer: shaded zones and the schematic forecast path
+  function renderLevelList(p) {
+    const det = $q(".stp-levels"); if (!det) return;
+    const body = det.querySelector(".stp-levelbody"); body.textContent = "";
+    const set = structureSet();
+    const lv = S.mode === "plan" ? [] : viewLevels().slice().sort((a, b) => b.price - a.price);
+    det.querySelector("summary").textContent = S.mode === "plan" ? "Level list — trade plan" : "Level list — " + lv.length + " recorded level" + (lv.length === 1 ? "" : "s") + (S.mode === "full" ? " (all)" : " (market structure)");
+    const t = el("table", "stp-table stp-leveltable"); const tb = el("tbody");
+    const row = (price, name, what, color) => { const tr = el("tr"); const a = el("td", "num", price); const b = el("td", "", name); const c = el("td", "hide-sm", what); if (color) a.style.borderLeft = "3px solid " + color; add(tr, a, b, c); tb.appendChild(tr); };
+    if (p) {
+      if (p.entry_zone) row(p.entry_zone.text, "Entry zone (" + (p.entry_zone.class || "") + ")", "trade plan", p.trade === "SELL" ? "#ff4466" : "#00ff88");
+      planItems(p).forEach(it => row(it.text, it.why, "trade plan", PLAN[it.cls][0]));
+    }
+    lv.forEach(l => row(l.price_text, l.name + (l.role ? " (" + l.role + ")" : ""), grp(l.group)[1] + (l.timeframe ? " · " + l.timeframe : ""), grp(l.group)[0]));
+    if (!tb.children.length) { body.appendChild(el("div", "stp-empty", set || S.mode === "plan" ? "Nothing to list." : "No full level map recorded.")); return; }
+    t.appendChild(tb); const w = el("div", "stp-tablewrap"); w.appendChild(t); body.appendChild(w);
+  }
+
+  // the layer: zones, levels, the plan, labels and the forecast
   function drawLayer() {
     const layer = $q(".stp-layer"); if (!layer || !S.series) return;
-    layer.textContent = "";
+    layer.textContent = ""; S.hoverItems = []; S.placed = [];
     const ts = S.chart.timeScale();
-    const width = layer.clientWidth - (S.chart.priceScale("right").width() || 60);
-    const band = (low, high, cls, label) => {
-      if (low === null || high === null || low === undefined || high === undefined) return;
-      const y1 = S.series.priceToCoordinate(high), y2 = S.series.priceToCoordinate(low);
-      if (y1 === null || y2 === null) return;
-      const b = el("div", "stp-band " + cls); b.style.top = Math.min(y1, y2) + "px"; b.style.height = Math.max(2, Math.abs(y2 - y1)) + "px";
-      b.style.width = Math.max(0, width) + "px"; if (label) b.appendChild(el("span", "", label)); layer.appendChild(b);
-    };
-    const hist = isHist();
-    if (!hist && S.show.zones && S.ov && S.ov.overlays) (S.ov.overlays.zones || []).forEach(z => band(z.low, z.high, "cand", ""));
-    const p = activePlan();
-    if (!p || !S.show.plan) return;
-    const d = p.destinations || {};
-    ["intermediate", "primary", "extended"].forEach(k => { if (d[k] && d[k].zone) band(d[k].zone.low, d[k].zone.high, "dest", ""); });
-    if (p.entry_zone) band(p.entry_zone.low, p.entry_zone.high, "entry " + p.trade, (hist ? "ORIGINAL " : "") + "ENTRY ZONE " + p.entry_zone.text + " · " + p.trade);
-    // forecast path: from the anchor (latest candle, or the creation candle for a historical one), into the zone,
-    // then towards the primary destination. A direction sequence only, drawn schematically to the right.
-    if (!S.candles.length || !p.entry_zone || !d.primary) return;
+    const W = layer.clientWidth, H = layer.clientHeight;
+    const plotW = Math.max(0, W - (S.chart.priceScale("right").width() || 60));
+    const plotH = Math.max(0, H - (ts.height() || 26));
+    const yOf = (price) => { const v = S.series.priceToCoordinate(price); return v === null || v === undefined ? null : v; };
+    const inView = (v) => v !== null && v >= 0 && v <= plotH;
+    const NS = "http://www.w3.org/2000/svg";
+    const mk = (tag, attrs) => { const e = document.createElementNS(NS, tag); Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v)); return e; };
+    const svg = mk("svg", {width: W, height: H}); svg.style.position = "absolute"; svg.style.left = "0"; svg.style.top = "0";
+    const hline = (price, color, width, dash, opacity) => { const y = yOf(price); if (!inView(y)) return null;
+      svg.appendChild(mk("line", {x1: 0, x2: plotW, y1: y, y2: y, stroke: color, "stroke-width": width, "stroke-dasharray": dash || "", opacity: opacity})); return y; };
+    const band = (low, high, fill, stroke, dash) => { let y1 = yOf(high), y2 = yOf(low); if (y1 === null || y2 === null) return null;
+      const a = Math.max(0, Math.min(y1, y2)), b = Math.min(plotH, Math.max(y1, y2)); if (b <= a && !(b === a && inView(a))) return null;
+      svg.appendChild(mk("rect", {x: 0, y: a, width: plotW, height: Math.max(2, b - a), fill, stroke, "stroke-width": 1, "stroke-dasharray": dash || ""})); return (a + b) / 2; };
+    const labels = [];
+    const hist = isHist(), p = activePlan();
+    // structure (MARKET STRUCTURE / FULL ANALYSIS)
+    viewZones().forEach(z => { const m = band(z.low, z.high, "#ffffff07", "#ffffff22", "3 3");
+      if (m !== null) S.hoverItems.push({y: m, text: z.text + "  " + (z.class || "") + " confluence zone"}); });
+    const lv = viewLevels().map(l => Object.assign({}, l, {y: yOf(l.price)})).filter(l => inView(l.y)).sort((a, b) => a.y - b.y);
+    const groups = [];
+    lv.forEach(l => { const g = groups[groups.length - 1]; if (g && l.y - g.y0 <= 9) g.items.push(l); else groups.push({y0: l.y, items: [l]}); });
+    groups.forEach(g => {
+      g.items.forEach(l => hline(l.price, grp(l.group)[0], 1, l.tier === "structure" ? "5 3" : "2 4", l.tier === "structure" ? 0.7 : 0.35));
+      g.items.sort((a, b) => RANK.indexOf(a.group) - RANK.indexOf(b.group));
+      const top = g.items[0], structural = g.items.filter(i => i.tier === "structure");
+      if (S.mode === "structure" || structural.length) {
+        const lead = structural[0] || top;
+        labels.push({y: lead.y, prio: 2, color: grp(lead.group)[0], text: shortName(lead.name) + " " + lead.price_text + (g.items.length > 1 ? "  +" + (g.items.length - 1) : "")});
+      }
+      g.items.forEach(l => S.hoverItems.push({y: l.y, color: grp(l.group)[0], text: l.price_text + "  " + l.name + (l.role ? " (" + l.role + ")" : "") + " · " + grp(l.group)[1]}));
+    });
+    // the trade plan (every view)
+    if (p) {
+      const d = p.destinations || {};
+      if (d.primary && d.primary.zone) band(d.primary.zone.low, d.primary.zone.high, "#5b8cff12", "#5b8cff44", "3 3");
+      if (p.entry_zone) {
+        const col = p.trade === "SELL" ? "#ff4466" : "#00ff88";
+        const m = band(p.entry_zone.low, p.entry_zone.high, col + "2e", col + "bb", "");
+        if (m !== null) { labels.push({y: m, prio: 1, color: col, solid: true, text: (hist ? "ORIGINAL " : "") + "ENTRY ZONE " + p.entry_zone.text + " · " + p.trade});
+                          S.hoverItems.push({y: m, color: col, text: p.entry_zone.text + "  entry zone (" + (p.entry_zone.class || "") + ")"}); }
+      }
+      planItems(p).forEach(it => { const [col, dash, w, op] = PLAN[it.cls]; const y = hline(it.price, col, w, dash, op);
+        if (y !== null) { labels.push({y, prio: 1, color: col, solid: true, text: it.label}); S.hoverItems.push({y, color: col, text: it.text + "  " + it.why}); } });
+    }
+    // the forecast: right of NOW (live), or from the creation candle (historical, the original forecast)
     let anchorIdx = S.candles.length - 1;
     if (hist && S.detail.stages.created) { const t = barAt(Math.floor(new Date(S.detail.stages.created).getTime() / 1000)); const i = S.candles.findIndex(c => c.time === t); if (i >= 0) anchorIdx = i; }
-    const a = S.candles[anchorIdx];
-    const k1 = hist ? 3 : 8, k2 = hist ? 7 : 18;          // historical: short, beside the creation candle
-    const x0 = ts.logicalToCoordinate(anchorIdx), x1 = ts.logicalToCoordinate(anchorIdx + k1), x2 = ts.logicalToCoordinate(anchorIdx + k2);
-    const startPrice = hist ? a.close : ((S.ov.price && S.ov.price.price) || a.close);
-    const y0 = S.series.priceToCoordinate(startPrice), y1 = S.series.priceToCoordinate((p.entry_zone.low + p.entry_zone.high) / 2), y2 = S.series.priceToCoordinate(d.primary.price);
-    if ([x0, x1, x2, y0, y1, y2].some(v => v === null || v === undefined)) return;
-    const NS = "http://www.w3.org/2000/svg";
-    const svg = document.createElementNS(NS, "svg"); svg.setAttribute("width", layer.clientWidth); svg.setAttribute("height", layer.clientHeight);
-    svg.style.position = "absolute"; svg.style.left = "0"; svg.style.top = "0";
-    const defs = document.createElementNS(NS, "defs"); const m = document.createElementNS(NS, "marker");
-    m.setAttribute("id", "stpArrow"); m.setAttribute("viewBox", "0 0 10 10"); m.setAttribute("refX", "8"); m.setAttribute("refY", "5");
-    m.setAttribute("markerWidth", "7"); m.setAttribute("markerHeight", "7"); m.setAttribute("orient", "auto-start-reverse");
-    const mp = document.createElementNS(NS, "path"); mp.setAttribute("d", "M0,0 L10,5 L0,10 z"); mp.setAttribute("fill", "#e8e8f0"); m.appendChild(mp); defs.appendChild(m); svg.appendChild(defs);
-    const seg = (xa, ya, xb, yb) => { const l = document.createElementNS(NS, "line"); l.setAttribute("x1", xa); l.setAttribute("y1", ya); l.setAttribute("x2", xb); l.setAttribute("y2", yb);
-      l.setAttribute("stroke", "#e8e8f0"); l.setAttribute("stroke-width", "1.6"); l.setAttribute("stroke-dasharray", "6 5"); l.setAttribute("marker-end", "url(#stpArrow)"); l.setAttribute("opacity", "0.85"); svg.appendChild(l); };
-    seg(x0, y0, x1, y1); seg(x1, y1, x2, y2);
-    const t = document.createElementNS(NS, "text"); t.setAttribute("x", Math.max(4, Math.min(x1 + 6, width - 300))); t.setAttribute("y", Math.max(12, Math.min(y1, y2) - 8));
-    t.setAttribute("fill", "#e8e8f0"); t.setAttribute("font-size", "10"); t.setAttribute("font-family", "JetBrains Mono, monospace");
-    t.textContent = (hist ? "ORIGINAL FORECAST" : "FORECAST") + " (schematic, no timing implied)"; svg.appendChild(t);
+    const xa = S.candles.length ? ts.logicalToCoordinate(anchorIdx) : null;
+    if (xa !== null && xa !== undefined && xa > 0 && xa < plotW) {
+      const xs = xa + 4;
+      if (!hist) svg.appendChild(mk("rect", {x: xs, y: 0, width: Math.max(0, plotW - xs), height: plotH, fill: "#ffffff05"}));
+      svg.appendChild(mk("line", {x1: xs, x2: xs, y1: 0, y2: plotH, stroke: "#e8e8f0", "stroke-width": 1, "stroke-dasharray": "2 3", opacity: 0.45}));
+      const cap = mk("text", {x: xs + 4, y: plotH - 6, fill: "#9a9ab0", "font-size": 9, "font-family": "JetBrains Mono, monospace"});
+      cap.textContent = hist ? "CREATED" : "NOW"; svg.appendChild(cap);
+      if (p && p.entry_zone && p.destinations && p.destinations.primary) {
+        const a = S.candles[anchorIdx];
+        const start = hist ? a.close : ((S.ov.price && S.ov.price.price) || a.close);
+        const room = hist ? Math.min(90, plotW - xs - 8) : plotW - xs - 8;
+        const x1 = xs + room * 0.4, x2 = xs + room * 0.92;
+        const y0 = yOf(start), y1 = yOf((p.entry_zone.low + p.entry_zone.high) / 2), y2 = yOf(p.destinations.primary.price);
+        if (room > 36 && [y0, y1, y2].every(v => v !== null)) {
+          const defs = mk("defs", {}); const m = mk("marker", {id: "stpArrow", viewBox: "0 0 10 10", refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse"});
+          m.appendChild(mk("path", {d: "M0,0 L10,5 L0,10 z", fill: "#e8e8f0"})); defs.appendChild(m); svg.appendChild(defs);
+          const seg = (xp, yp, xq, yq) => svg.appendChild(mk("line", {x1: xp, y1: yp, x2: xq, y2: yq, stroke: "#e8e8f0", "stroke-width": 1.6, "stroke-dasharray": "6 5", "marker-end": "url(#stpArrow)", opacity: hist ? 0.6 : 0.85}));
+          seg(xs, y0, x1, y1); seg(x1, y1, x2, y2);
+          const t = mk("text", {x: xs + 4, y: 12, fill: "#e8e8f0", "font-size": 9, "font-family": "JetBrains Mono, monospace", opacity: 0.8});
+          t.textContent = hist ? "ORIGINAL FORECAST" : "FORECAST (schematic)"; svg.appendChild(t);
+        }
+      }
+    }
     layer.appendChild(svg);
+    // the label column (left edge of the chart, clear of the forecast on the right)
+    const placed = placeLabels(labels, 0, plotH);
+    placed.forEach(q => {
+      if (Math.abs(q.ly - q.y) > 1) svg.appendChild(mk("line", {x1: 2, x2: 2, y1: q.y, y2: q.ly, stroke: q.color, "stroke-width": 1, opacity: 0.8}));
+      const lab = el("div", "stp-lab" + (q.solid ? " plan" : ""), q.text);
+      lab.style.top = (q.ly - LABEL_H / 2) + "px"; lab.style.borderLeftColor = q.color; if (q.solid) lab.style.color = q.color;
+      layer.appendChild(lab);
+    });
+    S.placed = placed;
+  }
+
+  // hover details: every line within a few pixels of the pointer
+  function hover(ev) {
+    const tip = $q(".stp-hover"); if (!tip) return;
+    const r = $q(".stp-chartbox").getBoundingClientRect();
+    const y = ev.clientY - r.top, x = ev.clientX - r.left;
+    const near = S.hoverItems.filter(h => Math.abs(h.y - y) <= 5).slice(0, 12);
+    if (!near.length) { tip.style.display = "none"; return; }
+    tip.textContent = "";
+    near.sort((a, b) => a.y - b.y).forEach(h => { const d = el("div", "", h.text); if (h.color) d.style.borderLeftColor = h.color; tip.appendChild(d); });
+    tip.style.display = "block";
+    const w = tip.offsetWidth, hh = tip.offsetHeight;
+    tip.style.left = Math.max(4, Math.min(x + 14, r.width - w - 4)) + "px";
+    tip.style.top = Math.max(4, Math.min(y + 14, r.height - hh - 4)) + "px";
   }
 
   // ---- lifecycle ------------------------------------------------------------------------------------------------
@@ -399,7 +520,9 @@
     b.appendChild(el("h3", "", "Market movement observed afterwards"));
     b.appendChild(el("div", "stp-note", oa.label || ""));
     rows(b, [["Final status", d.status_label], ["Ended", d.ended_utc ? when(d.ended_utc) : (d.live ? "still live" : "–")],
-             ["Creation → zone", oa.minutes_to_zone === null || oa.minutes_to_zone === undefined ? "zone not reached" : oa.minutes_to_zone + " min"],
+             ["Activation candle (recorded)", oa.activation && oa.activation.recorded_candle_start_utc ? when(oa.activation.recorded_candle_start_utc) + " · " + oa.activation.recorded_timing : "–", null, "Where the candle that the planner recorded as reaching the zone lies against the recommendation's creation"],
+             ["Zone reached after creation", oa.activation && oa.activation.confirmed_utc ? "candle " + when(oa.activation.confirmed_candle_start_utc) : "not confirmed", null, "Only market evidence after creation counts (correction of 18 November 2026)"],
+             ["Creation → zone", oa.minutes_to_zone === null || oa.minutes_to_zone === undefined ? "zone not reached after creation" : oa.minutes_to_zone + " min"],
              ["Active → primary", oa.minutes_active_to_end === null || oa.minutes_active_to_end === undefined ? "–" : oa.minutes_active_to_end + " min"],
              ["Max favourable excursion", oa.mfe_pips === null || oa.mfe_pips === undefined ? "– (not activated)" : oa.mfe_pips + " pips", null, "Furthest price moved in the forecast direction after the zone was reached, from the reference level. A distance, not a profit."],
              ["Max adverse excursion", oa.mae_pips === null || oa.mae_pips === undefined ? "– (not activated)" : oa.mae_pips + " pips", null, "Furthest price moved against the forecast after the zone was reached, from the reference level."]]);
@@ -427,7 +550,7 @@
   async function showHistoricalOnChart() {
     const st = S.detail.stages || {};
     const end = st.completed || st.invalidated || st.superseded;
-    const span = {"4h": 40, "1h": 36, "5m": 72}[S.tf] * {"4h": 4 * 3600, "1h": 3600, "5m": 300}[S.tf] * 1000;
+    const span = {"4h": 24, "1h": 30, "5m": 40}[S.tf] * {"4h": 4 * 3600, "1h": 3600, "5m": 300}[S.tf] * 1000;
     const endAt = end ? new Date(Math.min(Date.now(), new Date(end).getTime() + span)).toISOString().replace(/\.\d{3}Z$/, "Z") : null;
     const slot = $q(".stp-histslot"); slot.textContent = "";
     const bn = el("div", "stp-histbanner"); bn.appendChild(el("span", "", "Historical review: " + S.detail.id + " — original plan as issued; candles after creation are what happened afterwards."));
@@ -436,7 +559,7 @@
     await loadCandles(endAt);
     const t0 = barAt(Math.floor(new Date(st.created).getTime() / 1000));
     const i0 = S.candles.findIndex(c => c.time === t0);
-    if (i0 >= 0) S.chart.timeScale().setVisibleLogicalRange({from: Math.max(0, i0 - 30), to: S.candles.length + 6});
+    if (i0 >= 0) S.chart.timeScale().setVisibleLogicalRange({from: Math.max(0, i0 - 28), to: S.candles.length + 4});
   }
   function clearHistorical(reload) {
     const was = isHist();
@@ -513,11 +636,12 @@
     const tiles = el("div", "stp-evtiles"); tiles.style.marginTop = "10px";
     const c = e.counts;
     const T = (k, v, s, tip) => { const t = el("div", "stp-ev"); const kk = el("div", "k", k); if (tip) { kk.title = tip; kk.classList.add("stp-tip"); } t.appendChild(kk);
-      t.appendChild(el("div", "v" + (v === "INSUFFICIENT DATA" ? " ins" : ""), String(v))); if (s) t.appendChild(el("div", "s", s)); tiles.appendChild(t); };
-    T("Total recommendations", c.total); T("Awaiting entry now", c.awaiting_entry); T("Activated (zone reached)", c.activated);
+      t.appendChild(el("div", "v" + (v === "INSUFFICIENT DATA" ? " ins" : String(v).length > 10 ? " long" : ""), String(v))); if (s) t.appendChild(el("div", "s", s)); tiles.appendChild(t); };
+    T("Total recommendations", c.total); T("Awaiting entry now", c.awaiting_entry);
+    T("Activated (zone reached after creation)", c.activated, c.activation_corrected ? (c.activated_as_recorded + " as recorded; " + c.activation_corrected + " corrected") : null, "Only candles that began after the recommendation was created count; see the corrections listed below");
     T("Completed", c.completed); T("Invalidated", c.invalidated); T("Superseded", c.superseded);
     T("Never reached their zone", c.never_reached_zone, "of " + e.ended + " ended");
-    T("Reached primary destination", c.reached_primary, c.reached_primary_after_entry + " after the zone, " + c.destination_before_entry + " before it");
+    T("Reached primary destination", c.reached_primary, c.reached_primary_after_entry + " after a confirmed zone visit, " + c.destination_before_entry + " before the zone" + (c.completed_without_confirmed_activation ? ", " + c.completed_without_confirmed_activation + " completed without one" : ""));
     T("Invalidated before primary", c.invalidated_before_primary);
     T("Issued with price already at the primary destination", c.issued_at_destination, "see the investigation report", "The last finished 5-minute candle before creation was within 3 pips of the primary destination");
     const D = (k, x, tip) => T(k, x.verdict || (x.median + " " + x.unit), x.verdict ? ("n = " + x.n + (x.values.length ? " · values: " + x.values.join(", ") : "")) : ("median · n = " + x.n + " · range " + x.min + "–" + x.max), tip);
@@ -528,7 +652,7 @@
     T("Stability across hourly re-analysis", e.stability.verdict || (e.stability.supported + " supported / " + e.stability.changed + " changed"),
       e.stability.rechecks + " re-checks · " + e.stability.superseded + " superseded", "Each hourly re-check of a live recommendation: unchanged (supported), changed (same structure), or replaced (superseded)");
     card.appendChild(tiles);
-    if (e.ambiguous && e.ambiguous.length) { card.appendChild(el("div", "stp-h", "Ambiguous or noteworthy event order")); list(card, e.ambiguous.map(a => a.id + ": " + a.notes.join("; "))); }
+    if (e.ambiguous && e.ambiguous.length) { card.appendChild(el("div", "stp-h", "Corrections, ambiguous or noteworthy event order")); list(card, e.ambiguous.map(a => a.id + ": " + a.notes.join("; "))); }
     card.appendChild(el("div", "stp-h", "Methodology")); list(card, e.methodology);
     box.appendChild(card);
   }
