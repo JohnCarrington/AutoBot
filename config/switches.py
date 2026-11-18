@@ -32,6 +32,14 @@
   ONE_SIGNAL_ONE_TRADE        on or off (off if left out; owner, 18 November 2026): stage 3, one trade per rejection
                               candle and direction; the session sweep and New York open reversal under one view at
                               a time (safety/rules.py, rules 9 and 11)
+  SCALE_OUT_REVERSAL          on or off (off if left out; owner, 18 November 2026): the level reversal and the range
+                              trade close half at [scale_out] at_profit_pips (8) and move the stop on the rest to
+                              stop_profit_pips (2) in profit (trade_manager/manager.py)
+  TRAIL_NO_LOSS               on or off (off if left out; owner, 18 November 2026): the trail of the bounce and the
+                              session strategies never moves the stop to the losing side of the entry, and leaves out
+                              candles with a spread over rejection.max_spread_pips (trade_manager/manager.py)
+  LR_ENTRY_NEAR_LEVEL         on or off (off if left out; owner, 18 November 2026): a level reversal opens only within
+                              level_reversal.entry_within_pips_of_level (6) of its level (strategies/common.py)
   TRADING                     the master switch, on or off: while off everything runs and is
                               recorded, but no order is ever sent to IG
   STOP_LOSS_PIPS              the stop loss sent with every trade, in pips (whole, 1 to 100),
@@ -115,6 +123,9 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "ANALYSER_USES_HOURLY": ("analyser_uses_hourly", _on_off),
     "ANALYSER_GOVERNS_ALL": ("analyser_governs_all", _on_off),
     "ONE_SIGNAL_ONE_TRADE": ("one_signal_one_trade", _on_off),
+    "SCALE_OUT_REVERSAL": ("scale_out_reversal", _on_off),
+    "TRAIL_NO_LOSS": ("trail_no_loss", _on_off),
+    "LR_ENTRY_NEAR_LEVEL": ("lr_entry_near_level", _on_off),
     "TRADING": ("trading", _on_off),
     "STOP_LOSS_PIPS": ("stop_loss_pips", _pips(1, 100)),
     "STOP_LOSS_PIPS_EMA_PULLBACK": ("stop_loss_pips_ema_pullback", _pips(1, 100)),
@@ -126,7 +137,9 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
 OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_WHEN_HOURLY_RANGING": "off", "BOUNCE_ONLY_NEAR_TIMES": "off",
                             "TREND_STILL_GOING": "off", "PLANNER_OBSERVE": "off",
                             # the analyser control stages 1 to 3 (owner, 18 November 2026): all off by default
-                            "ANALYSER_USES_HOURLY": "off", "ANALYSER_GOVERNS_ALL": "off", "ONE_SIGNAL_ONE_TRADE": "off"}
+                            "ANALYSER_USES_HOURLY": "off", "ANALYSER_GOVERNS_ALL": "off", "ONE_SIGNAL_ONE_TRADE": "off",
+                            # stage 4, entries and exits (owner, 18 November 2026): all off by default
+                            "SCALE_OUT_REVERSAL": "off", "TRAIL_NO_LOSS": "off", "LR_ENTRY_NEAR_LEVEL": "off"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:

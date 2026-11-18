@@ -135,6 +135,12 @@ class Trading:
                 mt.bars = 1                                 # already open: no entry-candle rule
                 if self.manager.restore(mt, saved):         # its best pips so far, half close, watching
                     log.info("Trade %s: its saved best (%s pips) restored.", t.reference, mt.best)
+                if mt.scale_out is not None and mt.half_done:   # SCALE_OUT_REVERSAL (owner, 18 November 2026)
+                    mt.scaled = True
+                    if mt.stop_level is None:               # its half closed but the stop not yet moved: move it
+                        from trade_manager.manager import scale_out_stop
+                        self.manager._want_stop(mt, scale_out_stop(self.s, mt), "the scale-out (after a restart): the "
+                                                f"stop on the rest moves to {mt.scale_out[1]} pips in profit")
                 self.manager.add(mt)
             self._take_gone()                               # trades IG closed while the bot was away
             self._after_bars()

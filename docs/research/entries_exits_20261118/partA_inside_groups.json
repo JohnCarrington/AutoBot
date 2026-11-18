@@ -1,0 +1,2000 @@
+[
+ {
+  "reference": "AB261109052504-6b186306",
+  "strategy": "slow grind",
+  "direction": "buy",
+  "opened_utc": "2026-11-09T05:25:04Z",
+  "fill": "13380.2",
+  "stop_price": "13365.2",
+  "chart_stop": "13365.2",
+  "how_closed": "take profit hit at IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-09T08:13:41Z",
+  "pips": "20.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "previous_day_high 13361.7",
+   "pips": "3.5"
+  }
+ },
+ {
+  "reference": "AB261109061232-dfb7db37",
+  "strategy": "level reversal",
+  "direction": "buy",
+  "opened_utc": "2026-11-09T06:12:32Z",
+  "fill": "13385.4",
+  "stop_price": "13372.5",
+  "chart_stop": "13372.5",
+  "how_closed": "take profit hit at IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-09T08:18:01Z",
+  "pips": "20.0",
+  "inside_group": {
+   "low": "13369.4",
+   "high": "13373.9",
+   "levels": [
+    "R1 13369.4",
+    "turning_low 13373.9"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "R1 13369.4",
+   "pips": "3.1"
+  }
+ },
+ {
+  "reference": "AB261109075520-1dd927f0",
+  "strategy": "breakout",
+  "direction": "buy",
+  "opened_utc": "2026-11-09T07:55:20Z",
+  "fill": "13392.5",
+  "stop_price": "13386.5",
+  "chart_stop": "13386.5",
+  "how_closed": "closed by owner",
+  "closed_by": "owner",
+  "closed_utc": "2026-11-09T15:21:58Z",
+  "pips": "11.7",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "london_session_low 13381.8",
+   "pips": "4.7"
+  }
+ },
+ {
+  "reference": "AB261109082504-e31f720e",
+  "strategy": "level reversal",
+  "direction": "buy",
+  "opened_utc": "2026-11-09T08:25:03Z",
+  "fill": "13414.9",
+  "stop_price": "13389.6",
+  "chart_stop": "13389.6",
+  "how_closed": "closed by owner",
+  "closed_by": "owner",
+  "closed_utc": "2026-11-09T15:21:54Z",
+  "pips": "-11.2",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "london_session_low 13381.8",
+   "pips": "7.8"
+  }
+ },
+ {
+  "reference": "AB261109090019-f30b66b4",
+  "strategy": "Bollinger bounce",
+  "direction": "sell",
+  "opened_utc": "2026-11-09T09:00:19Z",
+  "fill": "13408.0",
+  "stop_price": "13414.0",
+  "chart_stop": "13412.5",
+  "how_closed": "stopped by IG",
+  "closed_by": null,
+  "closed_utc": "2026-11-09T09:29:18Z",
+  "pips": "-6.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "london_session_high 13415.5",
+   "pips": "3.0"
+  },
+  "stop_candle": {
+   "start": "09:25",
+   "close": "13413.4",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "6.4"
+  }
+ },
+ {
+  "reference": "AB261109093903-e6ab2e00",
+  "strategy": "slow grind",
+  "direction": "buy",
+  "opened_utc": "2026-11-09T09:39:03Z",
+  "fill": "13416.8",
+  "stop_price": "13401.8",
+  "chart_stop": "13401.8",
+  "how_closed": "closed by owner",
+  "closed_by": "owner",
+  "closed_utc": "2026-11-09T15:21:51Z",
+  "pips": "-12.7",
+  "inside_group": {
+   "low": "13401.7",
+   "high": "13406.5",
+   "levels": [
+    "turning_low 13401.7",
+    "turning_low 13402.7",
+    "new_york_session_high 13404.1",
+    "turning_high 13404.1",
+    "turning_high 13406.0",
+    "turning_high 13406.5"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "turning_low 13401.7",
+   "pips": "0.1"
+  }
+ },
+ {
+  "reference": "AB261109135504-b4f4dcfb",
+  "strategy": "range trade",
+  "direction": "buy",
+  "opened_utc": "2026-11-09T13:55:04Z",
+  "fill": "13418.6",
+  "stop_price": "13412.6",
+  "chart_stop": "13412.6",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-09T14:43:52Z",
+  "pips": "-6.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "new_york_session_low 13408.5",
+   "pips": "4.1"
+  },
+  "stop_candle": {
+   "start": "14:40",
+   "close": "13410.8",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "23.3"
+  }
+ },
+ {
+  "reference": "AB261109145506-676341b4",
+  "strategy": "range trade",
+  "direction": "buy",
+  "opened_utc": "2026-11-09T14:55:06Z",
+  "fill": "13415.3",
+  "stop_price": "13409.3",
+  "chart_stop": "13409.3",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-09T14:58:48Z",
+  "pips": "-6.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "new_york_session_low 13408",
+   "pips": "1.3"
+  },
+  "stop_candle": {
+   "start": "14:55",
+   "close": "13409.5",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "26.6"
+  }
+ },
+ {
+  "reference": "AB261109151606-9ab0a4df",
+  "strategy": "range trade",
+  "direction": "buy",
+  "opened_utc": "2026-11-09T15:16:06Z",
+  "fill": "13410.9",
+  "stop_price": "13404.9",
+  "chart_stop": "13404.9",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-09T15:20:56Z",
+  "pips": "-6.0",
+  "inside_group": {
+   "low": "13401.7",
+   "high": "13406.5",
+   "levels": [
+    "turning_low 13401.7",
+    "turning_low 13402.7",
+    "new_york_session_high 13404.1",
+    "turning_high 13404.1",
+    "new_york_session_low 13404.5",
+    "turning_high 13406.0",
+    "turning_high 13406.5"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "new_york_session_low 13404.5",
+   "pips": "0.4"
+  },
+  "stop_candle": {
+   "start": "15:20",
+   "close": "13403.3",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "31.9"
+  }
+ },
+ {
+  "reference": "AB261109154530-ea1707a1",
+  "strategy": "slow grind",
+  "direction": "sell",
+  "opened_utc": "2026-11-09T15:45:30Z",
+  "fill": "13401.6",
+  "stop_price": "13416.6",
+  "chart_stop": "13415.7",
+  "how_closed": "stopped by IG",
+  "closed_by": null,
+  "closed_utc": "2026-11-09T16:17:45Z",
+  "pips": "-15.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "london_session_high 13416.1",
+   "pips": "0.4"
+  },
+  "stop_candle": {
+   "start": "16:15",
+   "close": "13417",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "-10.7"
+  }
+ },
+ {
+  "reference": "AB261109195538-c8fbaec1",
+  "strategy": "slow grind",
+  "direction": "buy",
+  "opened_utc": "2026-11-09T19:55:38Z",
+  "fill": "13438.6",
+  "stop_price": "13423.6",
+  "chart_stop": "13423.6",
+  "how_closed": "forced close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-09T20:30:02Z",
+  "pips": "-2.5",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "london_session_high 13416.1",
+   "pips": "7.5"
+  }
+ },
+ {
+  "reference": "AB261109210206-d8d6bd07",
+  "strategy": "EMA pullback",
+  "direction": "buy",
+  "opened_utc": "2026-11-09T21:02:06Z",
+  "fill": "13443.6",
+  "stop_price": "13431.6",
+  "chart_stop": "13431.6",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-09T22:00:00Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_high 13430.3",
+   "pips": "1.3"
+  },
+  "stop_candle": {
+   "start": "22:00",
+   "close": "13428.3",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "2.7"
+  }
+ },
+ {
+  "reference": "AB261110050131-24a2ec21",
+  "strategy": "EMA pullback",
+  "direction": "buy",
+  "opened_utc": "2026-11-10T05:01:31Z",
+  "fill": "13451.0",
+  "stop_price": "13439.0",
+  "chart_stop": "13439.0",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-10T09:00:12Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13435.7",
+   "pips": "3.3"
+  },
+  "stop_candle": {
+   "start": "09:00",
+   "close": "13435.9",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "-10.2"
+  }
+ },
+ {
+  "reference": "AB261110061203-63c240e0",
+  "strategy": "EMA pullback",
+  "direction": "buy",
+  "opened_utc": "2026-11-10T06:12:03Z",
+  "fill": "13452.8",
+  "stop_price": "13440.8",
+  "chart_stop": "13440.8",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-10T09:00:11Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13435.7",
+   "pips": "5.1"
+  },
+  "stop_candle": {
+   "start": "09:00",
+   "close": "13435.9",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "-12.0"
+  }
+ },
+ {
+  "reference": "AB261110072103-be785120",
+  "strategy": "EMA pullback",
+  "direction": "buy",
+  "opened_utc": "2026-11-10T07:21:03Z",
+  "fill": "13456.1",
+  "stop_price": "13444.1",
+  "chart_stop": "13444.1",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-10T09:00:08Z",
+  "pips": "-12.0",
+  "inside_group": {
+   "low": "13441.9",
+   "high": "13446.6",
+   "levels": [
+    "new_york_session_high 13441.9",
+    "previous_day_high 13443.2",
+    "turning_low 13445.2",
+    "london_session_low 13446.6"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "previous_day_high 13443.2",
+   "pips": "0.9"
+  },
+  "stop_candle": {
+   "start": "09:00",
+   "close": "13435.9",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "-15.3"
+  }
+ },
+ {
+  "reference": "AB261110075502-c03be913",
+  "strategy": "Bollinger bounce",
+  "direction": "sell",
+  "opened_utc": "2026-11-10T07:55:01Z",
+  "fill": "13449.6",
+  "stop_price": "13455.6",
+  "chart_stop": "13454.1",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-10T08:01:07Z",
+  "pips": "-6.0",
+  "inside_group": {
+   "low": "13453.3",
+   "high": "13457.9",
+   "levels": [
+    "turning_low 13453.3",
+    "london_session_high 13457.9"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "london_session_high 13457.9",
+   "pips": "3.8"
+  },
+  "stop_candle": {
+   "start": "08:00",
+   "close": "13451.9",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "59.0"
+  }
+ },
+ {
+  "reference": "AB261110082038-5801e7ea",
+  "strategy": "Bollinger bounce",
+  "direction": "sell",
+  "opened_utc": "2026-11-10T08:20:38Z",
+  "fill": "13448.9",
+  "stop_price": "13454.9",
+  "chart_stop": "13454.0",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-10T08:24:21Z",
+  "pips": "-6.0",
+  "inside_group": {
+   "low": "13453.3",
+   "high": "13457.9",
+   "levels": [
+    "turning_low 13453.3",
+    "london_session_high 13457.9"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "london_session_high 13457.9",
+   "pips": "3.9"
+  },
+  "stop_candle": {
+   "start": "08:20",
+   "close": "13452.9",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "62.8"
+  }
+ },
+ {
+  "reference": "AB261110084511-8f60a26b",
+  "strategy": "Bollinger bounce",
+  "direction": "sell",
+  "opened_utc": "2026-11-10T08:45:11Z",
+  "fill": "13453.7",
+  "stop_price": "13459.7",
+  "chart_stop": "13458.2",
+  "how_closed": "close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-10T10:45:02Z",
+  "pips": "22.8",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "london_session_high 13458.6",
+   "pips": "0.4"
+  }
+ },
+ {
+  "reference": "AB261110091019-5bf72647",
+  "strategy": "breakout",
+  "direction": "sell",
+  "opened_utc": "2026-11-10T09:10:19Z",
+  "fill": "13432.7",
+  "stop_price": "13438.7",
+  "chart_stop": "13437.2",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-10T09:24:10Z",
+  "pips": "-6.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "new_york_session_high 13441.9",
+   "pips": "4.7"
+  },
+  "stop_candle": {
+   "start": "09:20",
+   "close": "13440.6",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "61.3"
+  }
+ },
+ {
+  "reference": "AB261110115016-fd3dc213",
+  "strategy": "breakout",
+  "direction": "sell",
+  "opened_utc": "2026-11-10T11:50:16Z",
+  "fill": "13422.7",
+  "stop_price": "13428.7",
+  "chart_stop": "13427.2",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-10T12:02:44Z",
+  "pips": "-6.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_high 13430.3",
+   "pips": "3.1"
+  },
+  "stop_candle": {
+   "start": "12:00",
+   "close": "13425.2",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "109.5"
+  }
+ },
+ {
+  "reference": "AB261110131104-b5630855",
+  "strategy": "breakout",
+  "direction": "sell",
+  "opened_utc": "2026-11-10T13:11:04Z",
+  "fill": "13419.6",
+  "stop_price": "13425.6",
+  "chart_stop": "13424.1",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-10T13:29:38Z",
+  "pips": "-6.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "london_session_high 13426",
+   "pips": "1.9"
+  },
+  "stop_candle": {
+   "start": "13:25",
+   "close": "13427.8",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "106.4"
+  }
+ },
+ {
+  "reference": "AB261110133002-89adec72",
+  "strategy": "slow grind",
+  "direction": "sell",
+  "opened_utc": "2026-11-10T13:30:02Z",
+  "fill": "13396.5",
+  "stop_price": "13411.5",
+  "chart_stop": "13395.5",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-10T13:30:03Z",
+  "pips": "-15.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13396.1",
+   "pips": "0.6"
+  },
+  "stop_candle": {
+   "start": "13:30",
+   "close": "13396.6",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "83.3"
+  }
+ },
+ {
+  "reference": "AB261110135631-e00fccae",
+  "strategy": "slow grind",
+  "direction": "sell",
+  "opened_utc": "2026-11-10T13:56:31Z",
+  "fill": "13392.2",
+  "stop_price": "13407.2",
+  "chart_stop": "13405.7",
+  "how_closed": "close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-10T15:00:02Z",
+  "pips": "17.1",
+  "inside_group": {
+   "low": "13401.7",
+   "high": "13406.5",
+   "levels": [
+    "turning_low 13401.7",
+    "turning_low 13402.7",
+    "turning_high 13404.1",
+    "turning_high 13406.0",
+    "turning_high 13406.5"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "turning_high 13406.0",
+   "pips": "0.3"
+  }
+ },
+ {
+  "reference": "AB261110140609-3940540f",
+  "strategy": "level reversal",
+  "direction": "sell",
+  "opened_utc": "2026-11-10T14:06:08Z",
+  "fill": "13388.9",
+  "stop_price": "13407.4",
+  "chart_stop": "13405.9",
+  "how_closed": "take profit hit at IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-10T15:29:46Z",
+  "pips": "20.0",
+  "inside_group": {
+   "low": "13401.7",
+   "high": "13406.5",
+   "levels": [
+    "turning_low 13401.7",
+    "turning_low 13402.7",
+    "turning_high 13404.1",
+    "turning_high 13406.0",
+    "turning_high 13406.5"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "turning_high 13406.0",
+   "pips": "0.1"
+  }
+ },
+ {
+  "reference": "AB261110151924-2a9a014b",
+  "strategy": "slow grind",
+  "direction": "sell",
+  "opened_utc": "2026-11-10T15:19:23Z",
+  "fill": "13373.0",
+  "stop_price": "13388.0",
+  "chart_stop": "13386.5",
+  "how_closed": "closed by owner",
+  "closed_by": "owner",
+  "closed_utc": "2026-11-10T17:56:27Z",
+  "pips": "37.8",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13396.1",
+   "pips": "9.6"
+  }
+ },
+ {
+  "reference": "AB261110162619-81b74285",
+  "strategy": "level reversal",
+  "direction": "sell",
+  "opened_utc": "2026-11-10T16:26:19Z",
+  "fill": "13321.0",
+  "stop_price": "13341.2",
+  "chart_stop": "13339.7",
+  "how_closed": "closed by owner",
+  "closed_by": "owner",
+  "closed_utc": "2026-11-10T17:56:34Z",
+  "pips": "-14.6",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13341.4",
+   "pips": "1.7"
+  }
+ },
+ {
+  "reference": "AB261110170429-2eb5d332",
+  "strategy": "Bollinger bounce",
+  "direction": "buy",
+  "opened_utc": "2026-11-10T17:04:29Z",
+  "fill": "13323.7",
+  "stop_price": "13317.7",
+  "chart_stop": "13317.7",
+  "how_closed": "closed by owner",
+  "closed_by": "owner",
+  "closed_utc": "2026-11-10T17:12:04Z",
+  "pips": "0.6",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_high 13312.3",
+   "pips": "5.4"
+  }
+ },
+ {
+  "reference": "AB261111062012-a83d5286",
+  "strategy": "Bollinger bounce",
+  "direction": "buy",
+  "opened_utc": "2026-11-11T06:20:12Z",
+  "fill": "13342.3",
+  "stop_price": "13336.3",
+  "chart_stop": "13336.3",
+  "how_closed": "stopped by IG",
+  "closed_by": null,
+  "closed_utc": "2026-11-11T06:29:10Z",
+  "pips": "-6.0",
+  "inside_group": {
+   "low": "13334",
+   "high": "13337.6",
+   "levels": [
+    "turning_low 13334",
+    "turning_high 13336.0",
+    "turning_high 13337.6"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "turning_high 13336.0",
+   "pips": "0.3"
+  },
+  "stop_candle": {
+   "start": "06:25",
+   "close": "13336.4",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "2.6"
+  }
+ },
+ {
+  "reference": "AB261111065505-6d002d16",
+  "strategy": "Bollinger bounce",
+  "direction": "buy",
+  "opened_utc": "2026-11-11T06:55:04Z",
+  "fill": "13336.1",
+  "stop_price": "13330.1",
+  "chart_stop": "13330.1",
+  "how_closed": "close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-11T07:30:00Z",
+  "pips": "0.1",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13327.5",
+   "pips": "2.6"
+  }
+ },
+ {
+  "reference": "AB261111073227-70b52107",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-11T07:32:27Z",
+  "fill": "13330.9",
+  "stop_price": "13342.9",
+  "chart_stop": "13341.4",
+  "how_closed": "take profit hit at IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-11T13:20:33Z",
+  "pips": "30.0",
+  "inside_group": {
+   "low": "13341.4",
+   "high": "13344.9",
+   "levels": [
+    "turning_low 13341.4",
+    "london_session_high 13344.9"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "london_session_high 13344.9",
+   "pips": "3.5"
+  }
+ },
+ {
+  "reference": "AB261111081302-1478afef",
+  "strategy": "slow grind",
+  "direction": "sell",
+  "opened_utc": "2026-11-11T08:13:02Z",
+  "fill": "13326.6",
+  "stop_price": "13341.6",
+  "chart_stop": "13340.1",
+  "how_closed": "close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-11T11:47:50Z",
+  "pips": "10.3",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13341.4",
+   "pips": "1.3"
+  }
+ },
+ {
+  "reference": "AB261111081626-aa017be6",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-11T08:16:25Z",
+  "fill": "13323.1",
+  "stop_price": "13335.1",
+  "chart_stop": "13333.6",
+  "how_closed": "take profit hit at IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-11T13:51:00Z",
+  "pips": "30.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13334",
+   "pips": "0.4"
+  }
+ },
+ {
+  "reference": "AB261111083616-f080e939",
+  "strategy": "Bollinger bounce",
+  "direction": "buy",
+  "opened_utc": "2026-11-11T08:36:16Z",
+  "fill": "13326.1",
+  "stop_price": "13314.1",
+  "chart_stop": "13314.1",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-11T09:30:56Z",
+  "pips": "-12.0",
+  "inside_group": {
+   "low": "13312.2",
+   "high": "13314.2",
+   "levels": [
+    "previous_day_low 13312.2",
+    "new_york_session_low 13312.2",
+    "turning_low 13312.2",
+    "london_session_low 13314.2"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "previous_day_low 13312.2",
+   "pips": "1.9"
+  },
+  "stop_candle": {
+   "start": "09:30",
+   "close": "13319.1",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "3.5"
+  }
+ },
+ {
+  "reference": "AB261111095012-583fa210",
+  "strategy": "Bollinger bounce",
+  "direction": "buy",
+  "opened_utc": "2026-11-11T09:50:12Z",
+  "fill": "13321.6",
+  "stop_price": "13309.6",
+  "chart_stop": "13309.6",
+  "how_closed": "close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-11T10:50:03Z",
+  "pips": "0.45",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13302.5",
+   "pips": "7.1"
+  }
+ },
+ {
+  "reference": "AB261111105137-14e9f1ea",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-11T10:51:36Z",
+  "fill": "13317.0",
+  "stop_price": "13329.0",
+  "chart_stop": "13327.5",
+  "how_closed": "take profit hit at IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-11T13:56:51Z",
+  "pips": "30.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13334",
+   "pips": "6.5"
+  }
+ },
+ {
+  "reference": "AB261111111306-0b7cfb1d",
+  "strategy": "range trade",
+  "direction": "buy",
+  "opened_utc": "2026-11-11T11:13:05Z",
+  "fill": "13318.4",
+  "stop_price": "13306.4",
+  "chart_stop": "13306.4",
+  "how_closed": "close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-11T12:00:04Z",
+  "pips": "-9.1",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13302.5",
+   "pips": "3.9"
+  }
+ },
+ {
+  "reference": "AB261111131014-e8539738",
+  "strategy": "breakout",
+  "direction": "sell",
+  "opened_utc": "2026-11-11T13:10:14Z",
+  "fill": "13305.7",
+  "stop_price": "13317.7",
+  "chart_stop": "13316.2",
+  "how_closed": "take profit hit at IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-12T02:38:43Z",
+  "pips": "50.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13327.5",
+   "pips": "11.3"
+  }
+ },
+ {
+  "reference": "AB261111134006-2accc8ab",
+  "strategy": "level reversal",
+  "direction": "sell",
+  "opened_utc": "2026-11-11T13:40:05Z",
+  "fill": "13294.2",
+  "stop_price": "13307.3",
+  "chart_stop": "13305.8",
+  "how_closed": "take profit hit at IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-11T14:24:17Z",
+  "pips": "20.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "london_session_low 13307.4",
+   "pips": "1.6"
+  }
+ },
+ {
+  "reference": "AB261111144503-863e033f",
+  "strategy": "slow grind",
+  "direction": "sell",
+  "opened_utc": "2026-11-11T14:45:03Z",
+  "fill": "13268.7",
+  "stop_price": "13283.7",
+  "chart_stop": "13282.2",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-11T15:14:12Z",
+  "pips": "-15.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "S1 13286.4",
+   "pips": "4.2"
+  },
+  "stop_candle": {
+   "start": "15:10",
+   "close": "13285",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "-1.7"
+  }
+ },
+ {
+  "reference": "AB261111151015-cf768e4a",
+  "strategy": "Bollinger bounce",
+  "direction": "buy",
+  "opened_utc": "2026-11-11T15:10:14Z",
+  "fill": "13279.3",
+  "stop_price": "13267.3",
+  "chart_stop": "13267.3",
+  "how_closed": "close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-11T17:00:03Z",
+  "pips": "0.1",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "new_york_session_low 13265.6",
+   "pips": "1.7"
+  }
+ },
+ {
+  "reference": "AB261111173753-7f15d073",
+  "strategy": "slow grind",
+  "direction": "sell",
+  "opened_utc": "2026-11-11T17:37:52Z",
+  "fill": "13271.8",
+  "stop_price": "13286.8",
+  "chart_stop": "13285.9",
+  "how_closed": "forced close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-11T20:30:03Z",
+  "pips": "-7.5",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "S1 13286.4",
+   "pips": "0.5"
+  }
+ },
+ {
+  "reference": "AB261111184820-01edf84f",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-11T18:48:20Z",
+  "fill": "13273.5",
+  "stop_price": "13285.5",
+  "chart_stop": "13284.0",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-11T22:03:08Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "S1 13286.4",
+   "pips": "2.4"
+  },
+  "stop_candle": {
+   "start": "22:00",
+   "close": "13286.3",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "23.0"
+  }
+ },
+ {
+  "reference": "AB261111210601-2796b31f",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-11T21:06:01Z",
+  "fill": "13270.7",
+  "stop_price": "13282.7",
+  "chart_stop": "13281.2",
+  "how_closed": "closed at IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-11T22:00:00Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "S1 13286.4",
+   "pips": "5.2"
+  }
+ },
+ {
+  "reference": "AB261112025806-66e604ca",
+  "strategy": "slow grind",
+  "direction": "sell",
+  "opened_utc": "2026-11-12T02:58:06Z",
+  "fill": "13255.0",
+  "stop_price": "13270.0",
+  "chart_stop": "13268.5",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-12T07:41:04Z",
+  "pips": "-15.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "pivot 13294.9",
+   "pips": "26.4"
+  },
+  "stop_candle": {
+   "start": "07:40",
+   "close": "13269.5",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "3.3"
+  }
+ },
+ {
+  "reference": "AB261112083349-22052260",
+  "strategy": "slow grind",
+  "direction": "buy",
+  "opened_utc": "2026-11-12T08:33:49Z",
+  "fill": "13274.9",
+  "stop_price": "13259.9",
+  "chart_stop": "13259.9",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-12T12:29:53Z",
+  "pips": "-15.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "previous_day_low 13253",
+   "pips": "6.9"
+  },
+  "stop_candle": {
+   "start": "12:25",
+   "close": "13260",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "-1.1"
+  }
+ },
+ {
+  "reference": "AB261112102048-95c0ebd4",
+  "strategy": "breakout",
+  "direction": "buy",
+  "opened_utc": "2026-11-12T10:20:48Z",
+  "fill": "13279.1",
+  "stop_price": "13267.1",
+  "chart_stop": "13267.1",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-12T11:22:52Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "new_york_session_low 13265.6",
+   "pips": "1.5"
+  },
+  "stop_candle": {
+   "start": "11:20",
+   "close": "13267.6",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "-5.3"
+  }
+ },
+ {
+  "reference": "AB261112113005-491b2bb4",
+  "strategy": "breakout",
+  "direction": "sell",
+  "opened_utc": "2026-11-12T11:30:02Z",
+  "fill": "13264.6",
+  "stop_price": "13276.6",
+  "chart_stop": "13275.1",
+  "how_closed": "closed at IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-12T16:14:34Z",
+  "pips": "21.1",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "london_session_high 13279.1",
+   "pips": "4.0"
+  }
+ },
+ {
+  "reference": "AB261112190217-24454d57",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-12T19:02:16Z",
+  "fill": "13225.6",
+  "stop_price": "13237.6",
+  "chart_stop": "13236.1",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-12T20:02:25Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13249",
+   "pips": "12.9"
+  },
+  "stop_candle": {
+   "start": "20:00",
+   "close": "13238.6",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "-3.5"
+  }
+ },
+ {
+  "reference": "AB261112220003-6f3ea2d6",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-12T22:00:00Z",
+  "fill": "13230.7",
+  "stop_price": "13242.7",
+  "chart_stop": "13225.8",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-12T22:00:03Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "S1 13234.1",
+   "pips": "8.3"
+  },
+  "stop_candle": {
+   "start": "22:00",
+   "close": "13244.8",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "1.6"
+  }
+ },
+ {
+  "reference": "AB261112234719-4027e20e",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-12T23:47:19Z",
+  "fill": "13229.2",
+  "stop_price": "13241.2",
+  "chart_stop": "13239.7",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-13T01:41:27Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13249",
+   "pips": "9.3"
+  },
+  "stop_candle": {
+   "start": "01:40",
+   "close": "13239.9",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "7.9"
+  }
+ },
+ {
+  "reference": "AB261113064003-5de91c24",
+  "strategy": "breakout",
+  "direction": "buy",
+  "opened_utc": "2026-11-13T06:40:02Z",
+  "fill": "13233.5",
+  "stop_price": "13221.5",
+  "chart_stop": "13221.5",
+  "how_closed": "closed by owner",
+  "closed_by": "owner",
+  "closed_utc": "2026-11-13T08:22:03Z",
+  "pips": "5.2",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "previous_day_low 13219.9",
+   "pips": "1.6"
+  }
+ },
+ {
+  "reference": "AB261113095515-2e0af647",
+  "strategy": "range trade",
+  "direction": "buy",
+  "opened_utc": "2026-11-13T09:55:15Z",
+  "fill": "13235.0",
+  "stop_price": "13223.0",
+  "chart_stop": "13223.0",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-13T10:32:17Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "previous_day_low 13219.9",
+   "pips": "3.1"
+  },
+  "stop_candle": {
+   "start": "10:30",
+   "close": "13223.6",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "15.9"
+  }
+ },
+ {
+  "reference": "AB261113102845-80d07d8e",
+  "strategy": "breakout",
+  "direction": "sell",
+  "opened_utc": "2026-11-13T10:28:45Z",
+  "fill": "13225.1",
+  "stop_price": "13237.1",
+  "chart_stop": "13235.6",
+  "how_closed": "closed at IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-13T13:30:02Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_high 13240",
+   "pips": "4.4"
+  }
+ },
+ {
+  "reference": "AB261113102847-3f971410",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-13T10:28:45Z",
+  "fill": "13225.1",
+  "stop_price": "13237.1",
+  "chart_stop": "13235.6",
+  "how_closed": "closed at IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-13T13:30:02Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_high 13240",
+   "pips": "4.4"
+  }
+ },
+ {
+  "reference": "AB261113180632-3b01dbbb",
+  "strategy": "Bollinger bounce",
+  "direction": "buy",
+  "opened_utc": "2026-11-13T18:06:31Z",
+  "fill": "13209.5",
+  "stop_price": "13197.5",
+  "chart_stop": "13197.5",
+  "how_closed": "close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-13T18:40:02Z",
+  "pips": "3.45",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "S2 13182.4",
+   "pips": "15.1"
+  }
+ },
+ {
+  "reference": "AB261116065029-01bbac29",
+  "strategy": "level reversal",
+  "direction": "sell",
+  "opened_utc": "2026-11-16T06:50:29Z",
+  "fill": "13197.5",
+  "stop_price": "13209.0",
+  "chart_stop": "13207.5",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-16T07:15:30Z",
+  "pips": "-11.5",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "pivot 13211.7",
+   "pips": "4.2"
+  },
+  "stop_candle": {
+   "start": "07:15",
+   "close": "13206.9",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "13.9"
+  }
+ },
+ {
+  "reference": "AB261116084007-e7717c69",
+  "strategy": "level reversal",
+  "direction": "buy",
+  "opened_utc": "2026-11-16T08:40:06Z",
+  "fill": "13210.4",
+  "stop_price": "13194.0",
+  "chart_stop": "13194.0",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-16T09:33:42Z",
+  "pips": "-16.4",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "S3 13190.5",
+   "pips": "3.5"
+  },
+  "stop_candle": {
+   "start": "09:30",
+   "close": "13192",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "-5.2"
+  }
+ },
+ {
+  "reference": "AB261116095008-1dd40481",
+  "strategy": "level reversal",
+  "direction": "sell",
+  "opened_utc": "2026-11-16T09:50:07Z",
+  "fill": "13186.5",
+  "stop_price": "13204.3",
+  "chart_stop": "13202.8",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-16T12:20:21Z",
+  "pips": "-17.8",
+  "inside_group": {
+   "low": "13202",
+   "high": "13205.9",
+   "levels": [
+    "previous_day_low 13202",
+    "new_york_session_low 13204.3",
+    "S1 13205.9"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "new_york_session_low 13204.3",
+   "pips": "1.5"
+  },
+  "stop_candle": {
+   "start": "12:20",
+   "close": "13201.1",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "6.6"
+  }
+ },
+ {
+  "reference": "AB261116102502-8ca0a4f3",
+  "strategy": "Bollinger bounce",
+  "direction": "buy",
+  "opened_utc": "2026-11-16T10:25:00Z",
+  "fill": "13198.3",
+  "stop_price": "13186.3",
+  "chart_stop": "13186.3",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-16T10:52:36Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "london_session_low 13184.6",
+   "pips": "1.7"
+  },
+  "stop_candle": {
+   "start": "10:50",
+   "close": "13185.7",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "6.9"
+  }
+ },
+ {
+  "reference": "AB261116105010-ad5f0927",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-16T10:50:10Z",
+  "fill": "13187.1",
+  "stop_price": "13199.1",
+  "chart_stop": "13197.6",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-16T12:12:21Z",
+  "pips": "-12.0",
+  "inside_group": {
+   "low": "13196.3",
+   "high": "13200",
+   "levels": [
+    "S2 13196.3",
+    "round_number 13200"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "round_number 13200",
+   "pips": "2.4"
+  },
+  "stop_candle": {
+   "start": "12:10",
+   "close": "13201",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "6.8"
+  }
+ },
+ {
+  "reference": "AB261116123707-f968f12b",
+  "strategy": "level reversal",
+  "direction": "sell",
+  "opened_utc": "2026-11-16T12:37:06Z",
+  "fill": "13194.5",
+  "stop_price": "13208.9",
+  "chart_stop": "13207.4",
+  "how_closed": "forced close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-16T20:30:03Z",
+  "pips": "8.3",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "pivot 13211.7",
+   "pips": "4.3"
+  }
+ },
+ {
+  "reference": "AB261116142600-28e4ce2b",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-16T14:26:00Z",
+  "fill": "13192.1",
+  "stop_price": "13204.1",
+  "chart_stop": "13202.6",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-17T09:48:55Z",
+  "pips": "-12.0",
+  "inside_group": {
+   "low": "13202",
+   "high": "13205.9",
+   "levels": [
+    "previous_day_low 13202",
+    "new_york_session_low 13204.3",
+    "new_york_session_high 13205.2",
+    "S1 13205.9"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "new_york_session_low 13204.3",
+   "pips": "1.7"
+  },
+  "stop_candle": {
+   "start": "09:45",
+   "close": "13201.4",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "17.8"
+  }
+ },
+ {
+  "reference": "AB261116145756-aef8ca68",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-16T14:57:56Z",
+  "fill": "13187.3",
+  "stop_price": "13199.3",
+  "chart_stop": "13197.8",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-16T15:16:57Z",
+  "pips": "-12.0",
+  "inside_group": {
+   "low": "13196.3",
+   "high": "13200",
+   "levels": [
+    "S2 13196.3",
+    "round_number 13200"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "round_number 13200",
+   "pips": "2.2"
+  },
+  "stop_candle": {
+   "start": "15:15",
+   "close": "13199.2",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "8.8"
+  }
+ },
+ {
+  "reference": "AB261116154706-2620cd60",
+  "strategy": "slow grind",
+  "direction": "sell",
+  "opened_utc": "2026-11-16T15:47:06Z",
+  "fill": "13187.1",
+  "stop_price": "13202.1",
+  "chart_stop": "13200.6",
+  "how_closed": "forced close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-16T20:30:04Z",
+  "pips": "0.6",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "previous_day_low 13202",
+   "pips": "1.4"
+  }
+ },
+ {
+  "reference": "AB261116155042-21970f93",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-16T15:50:41Z",
+  "fill": "13183.2",
+  "stop_price": "13195.2",
+  "chart_stop": "13193.7",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-16T16:09:45Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "S2 13196.3",
+   "pips": "2.6"
+  },
+  "stop_candle": {
+   "start": "16:05",
+   "close": "13195.3",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "4.7"
+  }
+ },
+ {
+  "reference": "AB261116165348-41107992",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-16T16:53:48Z",
+  "fill": "13182.5",
+  "stop_price": "13194.5",
+  "chart_stop": "13193.0",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-16T17:11:19Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "S2 13196.3",
+   "pips": "3.3"
+  },
+  "stop_candle": {
+   "start": "17:10",
+   "close": "13195.7",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "4.0"
+  }
+ },
+ {
+  "reference": "AB261116172743-ffb9ef3e",
+  "strategy": "range trade",
+  "direction": "sell",
+  "opened_utc": "2026-11-16T17:27:43Z",
+  "fill": "13193.7",
+  "stop_price": "13205.7",
+  "chart_stop": "13204.2",
+  "how_closed": "close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-16T18:19:12Z",
+  "pips": "11.6",
+  "inside_group": {
+   "low": "13202",
+   "high": "13205.9",
+   "levels": [
+    "previous_day_low 13202",
+    "new_york_session_low 13204.3",
+    "new_york_session_high 13205.2",
+    "turning_high 13205.2",
+    "S1 13205.9"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "new_york_session_low 13204.3",
+   "pips": "0.1"
+  }
+ },
+ {
+  "reference": "AB261116200003-22ddaab9",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-16T20:00:03Z",
+  "fill": "13184.7",
+  "stop_price": "13196.7",
+  "chart_stop": "13195.2",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-16T22:04:53Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "S2 13196.3",
+   "pips": "1.1"
+  },
+  "stop_candle": {
+   "start": "22:00",
+   "close": "13194.7",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "15.2"
+  }
+ },
+ {
+  "reference": "AB261117060334-02fbe3ed",
+  "strategy": "level reversal",
+  "direction": "sell",
+  "opened_utc": "2026-11-17T06:03:34Z",
+  "fill": "13198.7",
+  "stop_price": "13208.5",
+  "chart_stop": "13207.0",
+  "how_closed": "forced close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-17T06:45:01Z",
+  "pips": "3.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "R1 13213.5",
+   "pips": "6.5"
+  }
+ },
+ {
+  "reference": "AB261117073511-102f0b1c",
+  "strategy": "level reversal",
+  "direction": "sell",
+  "opened_utc": "2026-11-17T07:35:11Z",
+  "fill": "13191.7",
+  "stop_price": "13205.1",
+  "chart_stop": "13203.6",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-17T09:49:00Z",
+  "pips": "-13.4",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "new_york_session_high 13205.2",
+   "pips": "1.6"
+  },
+  "stop_candle": {
+   "start": "09:45",
+   "close": "13201.4",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "17.4"
+  }
+ },
+ {
+  "reference": "AB261117085903-10e83670",
+  "strategy": "range trade",
+  "direction": "sell",
+  "opened_utc": "2026-11-17T08:59:02Z",
+  "fill": "13190.4",
+  "stop_price": "13202.4",
+  "chart_stop": "13200.9",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-17T09:48:34Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "new_york_session_high 13205.2",
+   "pips": "4.3"
+  },
+  "stop_candle": {
+   "start": "09:45",
+   "close": "13201.4",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "16.1"
+  }
+ },
+ {
+  "reference": "AB261117100502-941a3fa2",
+  "strategy": "Bollinger bounce",
+  "direction": "sell",
+  "opened_utc": "2026-11-17T10:05:01Z",
+  "fill": "13189.9",
+  "stop_price": "13201.9",
+  "chart_stop": "13200.4",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-17T14:06:00Z",
+  "pips": "-3.3",
+  "inside_group": {
+   "low": "13200",
+   "high": "13204.4",
+   "levels": [
+    "round_number 13200",
+    "turning_high 13202.5",
+    "london_session_high 13204.4"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "turning_high 13202.5",
+   "pips": "2.1"
+  },
+  "stop_candle": {
+   "start": "14:05",
+   "close": "13197.1",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "0.1"
+  }
+ },
+ {
+  "reference": "AB261117100503-0a139d25",
+  "strategy": "level reversal",
+  "direction": "sell",
+  "opened_utc": "2026-11-17T10:05:02Z",
+  "fill": "13189.5",
+  "stop_price": "13210.3",
+  "chart_stop": "13208.8",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-17T15:45:18Z",
+  "pips": "-20.8",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "R1 13213.5",
+   "pips": "4.7"
+  },
+  "stop_candle": {
+   "start": "15:45",
+   "close": "13204.3",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "-14.1"
+  }
+ },
+ {
+  "reference": "AB261117140003-17c8ac88",
+  "strategy": "session sweep",
+  "direction": "buy",
+  "opened_utc": "2026-11-17T14:00:02Z",
+  "fill": "13188.8",
+  "stop_price": "13171.7",
+  "chart_stop": "13171.7",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-17T14:37:44Z",
+  "pips": "5.1",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_low 13168",
+   "pips": "3.7"
+  },
+  "stop_candle": {
+   "start": "14:35",
+   "close": "13195.8",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "39.1"
+  }
+ },
+ {
+  "reference": "AB261117162254-f521e517",
+  "strategy": "level reversal",
+  "direction": "buy",
+  "opened_utc": "2026-11-17T16:22:53Z",
+  "fill": "13218.8",
+  "stop_price": "13196.3",
+  "chart_stop": "13196.3",
+  "how_closed": "forced close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-17T20:30:03Z",
+  "pips": "-9.2",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "pivot 13194.4",
+   "pips": "1.9"
+  }
+ },
+ {
+  "reference": "AB261117163503-e22632c9",
+  "strategy": "Bollinger bounce",
+  "direction": "sell",
+  "opened_utc": "2026-11-17T16:35:01Z",
+  "fill": "13215.1",
+  "stop_price": "13227.1",
+  "chart_stop": "13225.6",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-17T17:16:22Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_high 13240",
+   "pips": "14.4"
+  },
+  "stop_candle": {
+   "start": "17:15",
+   "close": "13223.5",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "10.5"
+  }
+ },
+ {
+  "reference": "AB261117164610-ee454643",
+  "strategy": "slow grind",
+  "direction": "buy",
+  "opened_utc": "2026-11-17T16:46:09Z",
+  "fill": "13220.0",
+  "stop_price": "13205.0",
+  "chart_stop": "13205.0",
+  "how_closed": "forced close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-17T20:30:04Z",
+  "pips": "-10.4",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "london_session_high 13204.4",
+   "pips": "0.6"
+  }
+ },
+ {
+  "reference": "AB261117171601-370bf9ae",
+  "strategy": "EMA pullback",
+  "direction": "buy",
+  "opened_utc": "2026-11-17T17:16:00Z",
+  "fill": "13225.1",
+  "stop_price": "13213.1",
+  "chart_stop": "13213.1",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-17T19:59:26Z",
+  "pips": "-12.0",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "new_york_session_high 13205.2",
+   "pips": "7.9"
+  },
+  "stop_candle": {
+   "start": "19:55",
+   "close": "13213.9",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "-9.8"
+  }
+ },
+ {
+  "reference": "AB261117174504-40b8089d",
+  "strategy": "Bollinger bounce",
+  "direction": "sell",
+  "opened_utc": "2026-11-17T17:45:03Z",
+  "fill": "13221.1",
+  "stop_price": "13233.1",
+  "chart_stop": "13231.6",
+  "how_closed": "forced close",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-17T20:30:05Z",
+  "pips": "10.2",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "turning_high 13240",
+   "pips": "8.4"
+  }
+ },
+ {
+  "reference": "AB261118073003-e0728f6f",
+  "strategy": "Asian range breakout",
+  "direction": "sell",
+  "opened_utc": "2026-11-18T07:30:02Z",
+  "fill": "13180.2",
+  "stop_price": "13192.2",
+  "chart_stop": "13190.7",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-18T09:25:12Z",
+  "pips": "21.7",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "london_session_high 13192.7",
+   "pips": "2.0"
+  },
+  "stop_candle": {
+   "start": "09:25",
+   "close": "13162.9",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "29.0"
+  }
+ },
+ {
+  "reference": "AB261118093004-63abaf9b",
+  "strategy": "Bollinger bounce",
+  "direction": "buy",
+  "opened_utc": "2026-11-18T09:30:01Z",
+  "fill": "13163.1",
+  "stop_price": "13151.1",
+  "chart_stop": "13151.1",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-18T11:03:23Z",
+  "pips": "7.2",
+  "inside_group": null,
+  "next_level_beyond_stop": {
+   "level": "round_number 13150",
+   "pips": "1.1"
+  },
+  "stop_candle": {
+   "start": "11:00",
+   "close": "13169.7",
+   "closed_back": true
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "10.5"
+  }
+ },
+ {
+  "reference": "AB261118123737-487acb12",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "opened_utc": "2026-11-18T12:37:37Z",
+  "fill": "13156.4",
+  "stop_price": "13168.4",
+  "chart_stop": "13166.9",
+  "how_closed": "stopped by IG",
+  "closed_by": "bot",
+  "closed_utc": "2026-11-18T13:07:56Z",
+  "pips": "-12.6",
+  "inside_group": {
+   "low": "13166.9",
+   "high": "13168",
+   "levels": [
+    "new_york_session_high 13166.9",
+    "previous_day_low 13168",
+    "turning_low 13168"
+   ]
+  },
+  "next_level_beyond_stop": {
+   "level": "previous_day_low 13168",
+   "pips": "1.1"
+  },
+  "stop_candle": {
+   "start": "13:05",
+   "close": "13169.4",
+   "closed_back": false
+  },
+  "after": {
+   "best_pips_from_entry_next_6h": "-4.5"
+  }
+ }
+]

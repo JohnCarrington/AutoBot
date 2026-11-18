@@ -51,6 +51,7 @@ class Trade:
     entry: Decimal
     pips: Decimal
     closed: str                         # how it closed (the trade manager's last decision)
+    reference: str = ""
 
     def line(self) -> str:
         return (f"{self.opened.astimezone(UK):%H:%M} {self.strategy} {self.direction} at {self.entry}: "
@@ -65,6 +66,7 @@ class Day:
     trades: list = field(default_factory=list)      # Trade
     blocked: list = field(default_factory=list)     # (time, strategy, direction, blocked_by), ideas the checks blocked
     refused: list = field(default_factory=list)     # (time, strategy, direction, reasons), orders the safety refused
+    journal: list = field(default_factory=list)     # the trade manager's decisions (dicts), every trade of the day
 
 
 class EdgeSettings:
@@ -120,7 +122,8 @@ def run_day(day: date, control_on: bool, edge=None, **extra: str) -> Day:
                 continue
             last = mt.decisions[-1] if mt.decisions else None
             closed = (f"{last.kind}: {last.why}" if last is not None and not mt.open else "still open at the day's end")
-            out.trades.append(Trade(idea.time, idea.strategy, idea.direction, idea.entry_price, mt.total_pips(), closed))
+            out.trades.append(Trade(idea.time, idea.strategy, idea.direction, idea.entry_price, mt.total_pips(), closed,
+                                    mt.reference))
         rec = Path(s.records.folder)
         for p in rec.rglob("decisions.jsonl"):
             for line in p.read_text().splitlines():
@@ -138,6 +141,9 @@ def run_day(day: date, control_on: bool, edge=None, **extra: str) -> Day:
                 t = datetime.fromisoformat(r["time_utc"].replace("Z", "+00:00"))
                 if start <= t < end:
                     out.refused.append((t, r.get("strategy"), r.get("direction"), r.get("reasons", [])))
+        tm = Path(s.trade_manager.folder)
+        for p in tm.rglob("decisions.jsonl"):
+            out.journal += [json.loads(line) for line in p.read_text().splitlines()]
         out.blocked.sort(key=lambda x: x[0])
         out.refused.sort(key=lambda x: x[0])
         return out
@@ -170,12 +176,14 @@ def as_json(d: Day) -> dict:
                          "trend_type": ch.trend_type, "hourly_position": getattr(ch, "hourly_position", None),
                          "reason": ch.reason} for ch in d.changes],
             "trades": [{"opened_uk": f"{t.opened.astimezone(UK):%H:%M}", "strategy": t.strategy,
-                        "direction": t.direction, "entry": str(t.entry), "pips": f"{t.pips:+.1f}", "closed": t.closed}
+                        "direction": t.direction, "entry": str(t.entry), "pips": f"{t.pips:+.1f}", "closed": t.closed,
+                        "reference": t.reference}
                        for t in d.trades],
             "refused": [{"time_uk": f"{t.astimezone(UK):%H:%M}", "strategy": s, "direction": di, "reasons": r}
                         for t, s, di, r in d.refused],
             "blocked": [{"time_uk": f"{t.astimezone(UK):%H:%M}", "strategy": s, "direction": di, "blocked_by": b}
-                        for t, s, di, b in d.blocked]}
+                        for t, s, di, b in d.blocked],
+            "journal": d.journal}
 
 
 def show(d: Day) -> list[str]:

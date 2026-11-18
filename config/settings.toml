@@ -387,6 +387,16 @@ allowance_pips_round_number = 5
 # pips from the entry.
 stop_beyond_furthest_pips = 6
 take_profit_pips = 20
+# LR_ENTRY_NEAR_LEVEL (owner, 18 November 2026): while that switch is on, a level reversal opens only if its entry
+# price is within this many pips of the level it traded (the level its rules 2, 7 and 8 picked). Sell price.
+entry_within_pips_of_level = 6
+
+[scale_out]
+# SCALE_OUT_REVERSAL (owner, 18 November 2026; level reversal and range trade only): once the trade is this many pips
+# in profit (on the price it would close at), half of it is closed ...
+at_profit_pips = 8
+# ... and the stop on the rest is moved to this many pips in profit.
+stop_profit_pips = 2
 
 [range_trade]
 # The share of a range trade closed when price reaches the opposite band (owner, 11 November 2026: 100, in

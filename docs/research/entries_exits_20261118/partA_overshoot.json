@@ -1,0 +1,8646 @@
+{
+ "from": "2026-11-04T14:00:00+00:00",
+ "to": "2026-11-18T14:00:00+00:00",
+ "setups": [
+  {
+   "pierce": "2026-11-04T14:10:00Z",
+   "direction": "buy",
+   "group": "13481.1-13483.8",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.9"
+  },
+  {
+   "pierce": "2026-11-04T15:05:00Z",
+   "direction": "buy",
+   "group": "13468.2-13471.4",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.1"
+  },
+  {
+   "pierce": "2026-11-04T14:40:00Z",
+   "direction": "sell",
+   "group": "13483.8-13483.8",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.6"
+  },
+  {
+   "pierce": "2026-11-04T15:15:00Z",
+   "direction": "buy",
+   "group": "13468.2-13469.1",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "7.1"
+  },
+  {
+   "pierce": "2026-11-04T15:20:00Z",
+   "direction": "sell",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-04T15:30:00Z",
+   "direction": "sell",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.7"
+  },
+  {
+   "pierce": "2026-11-04T15:40:00Z",
+   "direction": "sell",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "3.6"
+  },
+  {
+   "pierce": "2026-11-04T15:45:00Z",
+   "direction": "buy",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.9"
+  },
+  {
+   "pierce": "2026-11-04T16:15:00Z",
+   "direction": "buy",
+   "group": "13461.1-13461.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.7"
+  },
+  {
+   "pierce": "2026-11-04T16:10:00Z",
+   "direction": "sell",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.9"
+  },
+  {
+   "pierce": "2026-11-04T16:45:00Z",
+   "direction": "buy",
+   "group": "13454.6-13458.8",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.3"
+  },
+  {
+   "pierce": "2026-11-04T16:50:00Z",
+   "direction": "sell",
+   "group": "13458.8-13458.8",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.3"
+  },
+  {
+   "pierce": "2026-11-04T17:10:00Z",
+   "direction": "sell",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "7.6"
+  },
+  {
+   "pierce": "2026-11-04T17:15:00Z",
+   "direction": "buy",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-04T17:55:00Z",
+   "direction": "buy",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-04T18:35:00Z",
+   "direction": "buy",
+   "group": "13458.8-13458.8",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-04T18:30:00Z",
+   "direction": "sell",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-04T18:45:00Z",
+   "direction": "sell",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.0"
+  },
+  {
+   "pierce": "2026-11-04T18:45:00Z",
+   "direction": "buy",
+   "group": "13458.8-13458.8",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-04T19:05:00Z",
+   "direction": "buy",
+   "group": "13458.8-13458.8",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.9"
+  },
+  {
+   "pierce": "2026-11-04T19:20:00Z",
+   "direction": "sell",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-04T19:30:00Z",
+   "direction": "buy",
+   "group": "13458.8-13458.8",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.9"
+  },
+  {
+   "pierce": "2026-11-04T19:45:00Z",
+   "direction": "sell",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.9"
+  },
+  {
+   "pierce": "2026-11-04T20:05:00Z",
+   "direction": "buy",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-04T20:15:00Z",
+   "direction": "buy",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.2"
+  },
+  {
+   "pierce": "2026-11-04T21:05:00Z",
+   "direction": "buy",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.0"
+  },
+  {
+   "pierce": "2026-11-04T21:25:00Z",
+   "direction": "buy",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-04T21:40:00Z",
+   "direction": "buy",
+   "group": "13468.2-13468.2",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "8.3"
+  },
+  {
+   "pierce": "2026-11-05T04:00:00Z",
+   "direction": "sell",
+   "group": "13498.2-13503.1",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-6.9"
+  },
+  {
+   "pierce": "2026-11-05T04:10:00Z",
+   "direction": "sell",
+   "group": "13498.2-13503.1",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-6.9"
+  },
+  {
+   "pierce": "2026-11-05T07:00:00Z",
+   "direction": "sell",
+   "group": "13498.2-13503.1",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.7"
+  },
+  {
+   "pierce": "2026-11-05T07:30:00Z",
+   "direction": "buy",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.0"
+  },
+  {
+   "pierce": "2026-11-05T08:00:00Z",
+   "direction": "buy",
+   "group": "13468.0-13469.0",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "3.6"
+  },
+  {
+   "pierce": "2026-11-05T08:35:00Z",
+   "direction": "buy",
+   "group": "13464.4-13468.2",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.2"
+  },
+  {
+   "pierce": "2026-11-05T09:15:00Z",
+   "direction": "buy",
+   "group": "13464.4-13468.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-05T09:50:00Z",
+   "direction": "buy",
+   "group": "13461.7-13461.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.9"
+  },
+  {
+   "pierce": "2026-11-05T09:45:00Z",
+   "direction": "sell",
+   "group": "13464.4-13468.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.7"
+  },
+  {
+   "pierce": "2026-11-05T10:05:00Z",
+   "direction": "sell",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.9"
+  },
+  {
+   "pierce": "2026-11-05T10:00:00Z",
+   "direction": "buy",
+   "group": "13461.4-13461.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.0"
+  },
+  {
+   "pierce": "2026-11-05T10:20:00Z",
+   "direction": "buy",
+   "group": "13458.8-13458.8",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.5"
+  },
+  {
+   "pierce": "2026-11-05T10:45:00Z",
+   "direction": "buy",
+   "group": "13453.3-13457.3",
+   "members": 4,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.7"
+  },
+  {
+   "pierce": "2026-11-05T11:10:00Z",
+   "direction": "buy",
+   "group": "13453.3-13457.0",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-05T11:35:00Z",
+   "direction": "buy",
+   "group": "13453.2-13454.6",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.4"
+  },
+  {
+   "pierce": "2026-11-05T11:40:00Z",
+   "direction": "sell",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "26.7"
+  },
+  {
+   "pierce": "2026-11-05T11:45:00Z",
+   "direction": "buy",
+   "group": "13447.2-13450.1",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.0"
+  },
+  {
+   "pierce": "2026-11-05T12:20:00Z",
+   "direction": "sell",
+   "group": "13481.3-13481.3",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-05T12:30:00Z",
+   "direction": "buy",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "8.6"
+  },
+  {
+   "pierce": "2026-11-05T12:40:00Z",
+   "direction": "sell",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.8"
+  },
+  {
+   "pierce": "2026-11-05T12:55:00Z",
+   "direction": "sell",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.1"
+  },
+  {
+   "pierce": "2026-11-05T13:15:00Z",
+   "direction": "buy",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-05T13:40:00Z",
+   "direction": "sell",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.7"
+  },
+  {
+   "pierce": "2026-11-05T13:45:00Z",
+   "direction": "buy",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-05T14:05:00Z",
+   "direction": "sell",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.4"
+  },
+  {
+   "pierce": "2026-11-05T14:25:00Z",
+   "direction": "buy",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "10.6"
+  },
+  {
+   "pierce": "2026-11-05T14:30:00Z",
+   "direction": "sell",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "8.2"
+  },
+  {
+   "pierce": "2026-11-05T14:35:00Z",
+   "direction": "buy",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.8"
+  },
+  {
+   "pierce": "2026-11-05T14:50:00Z",
+   "direction": "sell",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "8.2"
+  },
+  {
+   "pierce": "2026-11-05T15:00:00Z",
+   "direction": "buy",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-05T15:25:00Z",
+   "direction": "sell",
+   "group": "13482.5-13482.5",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.1"
+  },
+  {
+   "pierce": "2026-11-05T15:40:00Z",
+   "direction": "buy",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.0"
+  },
+  {
+   "pierce": "2026-11-05T15:50:00Z",
+   "direction": "buy",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "7.7"
+  },
+  {
+   "pierce": "2026-11-05T16:05:00Z",
+   "direction": "buy",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "11.3"
+  },
+  {
+   "pierce": "2026-11-05T16:15:00Z",
+   "direction": "sell",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "9.1"
+  },
+  {
+   "pierce": "2026-11-05T16:30:00Z",
+   "direction": "buy",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-05T16:55:00Z",
+   "direction": "sell",
+   "group": "13484.6-13484.6",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.6"
+  },
+  {
+   "pierce": "2026-11-05T17:15:00Z",
+   "direction": "sell",
+   "group": "13484.6-13484.6",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.0"
+  },
+  {
+   "pierce": "2026-11-05T17:45:00Z",
+   "direction": "sell",
+   "group": "13484.6-13484.6",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.4"
+  },
+  {
+   "pierce": "2026-11-05T18:00:00Z",
+   "direction": "sell",
+   "group": "13486.0-13486.0",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-05T18:20:00Z",
+   "direction": "buy",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.2"
+  },
+  {
+   "pierce": "2026-11-05T18:45:00Z",
+   "direction": "buy",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.6"
+  },
+  {
+   "pierce": "2026-11-05T18:40:00Z",
+   "direction": "sell",
+   "group": "13468.0-13468.2",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-05T19:20:00Z",
+   "direction": "buy",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.9"
+  },
+  {
+   "pierce": "2026-11-05T19:25:00Z",
+   "direction": "sell",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-05T19:35:00Z",
+   "direction": "buy",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.6"
+  },
+  {
+   "pierce": "2026-11-05T19:45:00Z",
+   "direction": "sell",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "5.1"
+  },
+  {
+   "pierce": "2026-11-05T20:00:00Z",
+   "direction": "buy",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-05T20:10:00Z",
+   "direction": "buy",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-05T20:25:00Z",
+   "direction": "buy",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.5"
+  },
+  {
+   "pierce": "2026-11-05T20:35:00Z",
+   "direction": "sell",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.3"
+  },
+  {
+   "pierce": "2026-11-05T20:45:00Z",
+   "direction": "buy",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.2"
+  },
+  {
+   "pierce": "2026-11-05T21:00:00Z",
+   "direction": "sell",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.2"
+  },
+  {
+   "pierce": "2026-11-05T21:05:00Z",
+   "direction": "buy",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-05T21:20:00Z",
+   "direction": "sell",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.4"
+  },
+  {
+   "pierce": "2026-11-05T21:30:00Z",
+   "direction": "buy",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.3"
+  },
+  {
+   "pierce": "2026-11-05T21:35:00Z",
+   "direction": "sell",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.2"
+  },
+  {
+   "pierce": "2026-11-05T21:45:00Z",
+   "direction": "sell",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-05T21:50:00Z",
+   "direction": "buy",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.1"
+  },
+  {
+   "pierce": "2026-11-05T23:10:00Z",
+   "direction": "buy",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-6.1"
+  },
+  {
+   "pierce": "2026-11-05T23:30:00Z",
+   "direction": "buy",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-05T23:40:00Z",
+   "direction": "buy",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-05T23:55:00Z",
+   "direction": "buy",
+   "group": "13453.3-13454.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-06T00:05:00Z",
+   "direction": "sell",
+   "group": "13463.8-13468.2",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.9"
+  },
+  {
+   "pierce": "2026-11-06T00:30:00Z",
+   "direction": "buy",
+   "group": "13453.3-13453.3",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.8"
+  },
+  {
+   "pierce": "2026-11-06T01:00:00Z",
+   "direction": "buy",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.1"
+  },
+  {
+   "pierce": "2026-11-06T01:05:00Z",
+   "direction": "sell",
+   "group": "13453.3-13453.3",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.3"
+  },
+  {
+   "pierce": "2026-11-06T01:15:00Z",
+   "direction": "buy",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.1"
+  },
+  {
+   "pierce": "2026-11-06T01:35:00Z",
+   "direction": "buy",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.8"
+  },
+  {
+   "pierce": "2026-11-06T01:40:00Z",
+   "direction": "sell",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.6"
+  },
+  {
+   "pierce": "2026-11-06T01:50:00Z",
+   "direction": "sell",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-06T01:55:00Z",
+   "direction": "buy",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.9"
+  },
+  {
+   "pierce": "2026-11-06T02:20:00Z",
+   "direction": "sell",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-06T02:15:00Z",
+   "direction": "buy",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-06T02:45:00Z",
+   "direction": "buy",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.0"
+  },
+  {
+   "pierce": "2026-11-06T02:50:00Z",
+   "direction": "sell",
+   "group": "13445.2-13450",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.6"
+  },
+  {
+   "pierce": "2026-11-06T03:15:00Z",
+   "direction": "buy",
+   "group": "13432.5-13435.7",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.2"
+  },
+  {
+   "pierce": "2026-11-06T03:40:00Z",
+   "direction": "buy",
+   "group": "13426.4-13430.3",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.3"
+  },
+  {
+   "pierce": "2026-11-06T03:35:00Z",
+   "direction": "sell",
+   "group": "13432.5-13435.7",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-06T03:55:00Z",
+   "direction": "sell",
+   "group": "13432.5-13435.7",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-06T04:10:00Z",
+   "direction": "buy",
+   "group": "13426.4-13430.3",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-06T04:50:00Z",
+   "direction": "sell",
+   "group": "13432.5-13435.7",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.1"
+  },
+  {
+   "pierce": "2026-11-06T04:35:00Z",
+   "direction": "buy",
+   "group": "13426.4-13430.3",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.1"
+  },
+  {
+   "pierce": "2026-11-06T04:45:00Z",
+   "direction": "buy",
+   "group": "13426.4-13430.3",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.1"
+  },
+  {
+   "pierce": "2026-11-06T04:55:00Z",
+   "direction": "buy",
+   "group": "13426.4-13430.3",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.4"
+  },
+  {
+   "pierce": "2026-11-06T05:15:00Z",
+   "direction": "buy",
+   "group": "13426.4-13430.3",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.5"
+  },
+  {
+   "pierce": "2026-11-06T05:10:00Z",
+   "direction": "sell",
+   "group": "13426.4-13430.3",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-06T05:30:00Z",
+   "direction": "sell",
+   "group": "13426.4-13430.3",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.7"
+  },
+  {
+   "pierce": "2026-11-06T05:35:00Z",
+   "direction": "buy",
+   "group": "13426.4-13430.3",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.5"
+  },
+  {
+   "pierce": "2026-11-06T05:55:00Z",
+   "direction": "sell",
+   "group": "13426.4-13430.3",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.3"
+  },
+  {
+   "pierce": "2026-11-06T06:20:00Z",
+   "direction": "sell",
+   "group": "13426.4-13430.3",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.0"
+  },
+  {
+   "pierce": "2026-11-06T06:30:00Z",
+   "direction": "sell",
+   "group": "13426.4-13430.3",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.0"
+  },
+  {
+   "pierce": "2026-11-06T07:00:00Z",
+   "direction": "buy",
+   "group": "13401.7-13406.5",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.6"
+  },
+  {
+   "pierce": "2026-11-06T07:05:00Z",
+   "direction": "sell",
+   "group": "13401.7-13406.5",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.9"
+  },
+  {
+   "pierce": "2026-11-06T07:35:00Z",
+   "direction": "sell",
+   "group": "13400-13402.7",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.8"
+  },
+  {
+   "pierce": "2026-11-06T07:30:00Z",
+   "direction": "buy",
+   "group": "13396.1-13400.1",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.0"
+  },
+  {
+   "pierce": "2026-11-06T07:50:00Z",
+   "direction": "sell",
+   "group": "13406.0-13406.5",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.0"
+  },
+  {
+   "pierce": "2026-11-06T07:55:00Z",
+   "direction": "buy",
+   "group": "13394.1-13399.1",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.0"
+  },
+  {
+   "pierce": "2026-11-06T08:10:00Z",
+   "direction": "sell",
+   "group": "13406.0-13406.5",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "3.3"
+  },
+  {
+   "pierce": "2026-11-06T08:25:00Z",
+   "direction": "buy",
+   "group": "13394.1-13399.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.0"
+  },
+  {
+   "pierce": "2026-11-06T08:30:00Z",
+   "direction": "sell",
+   "group": "13400-13402.7",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-06T08:40:00Z",
+   "direction": "buy",
+   "group": "13394.1-13399.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.1"
+  },
+  {
+   "pierce": "2026-11-06T09:00:00Z",
+   "direction": "sell",
+   "group": "13396.1-13400",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-5.6"
+  },
+  {
+   "pierce": "2026-11-06T08:55:00Z",
+   "direction": "buy",
+   "group": "13393.1-13396.1",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.0"
+  },
+  {
+   "pierce": "2026-11-06T09:10:00Z",
+   "direction": "sell",
+   "group": "13396.1-13400",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-6.1"
+  },
+  {
+   "pierce": "2026-11-06T09:20:00Z",
+   "direction": "buy",
+   "group": "13387.3-13388.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-06T09:35:00Z",
+   "direction": "sell",
+   "group": "13386.1-13388.0",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.6"
+  },
+  {
+   "pierce": "2026-11-06T09:30:00Z",
+   "direction": "buy",
+   "group": "13386.7-13388.0",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.0"
+  },
+  {
+   "pierce": "2026-11-06T09:45:00Z",
+   "direction": "sell",
+   "group": "13396.1-13400",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-6.4"
+  },
+  {
+   "pierce": "2026-11-06T09:55:00Z",
+   "direction": "buy",
+   "group": "13380.2-13384.7",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.4"
+  },
+  {
+   "pierce": "2026-11-06T10:05:00Z",
+   "direction": "sell",
+   "group": "13387.3-13388.0",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.3"
+  },
+  {
+   "pierce": "2026-11-06T10:20:00Z",
+   "direction": "buy",
+   "group": "13380.2-13382.6",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.5"
+  },
+  {
+   "pierce": "2026-11-06T10:35:00Z",
+   "direction": "sell",
+   "group": "13387.3-13388.0",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "7.5"
+  },
+  {
+   "pierce": "2026-11-06T10:45:00Z",
+   "direction": "buy",
+   "group": "13387.3-13388.0",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-06T11:00:00Z",
+   "direction": "sell",
+   "group": "13396.1-13400",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.5"
+  },
+  {
+   "pierce": "2026-11-06T11:25:00Z",
+   "direction": "sell",
+   "group": "13401.7-13406.5",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.0"
+  },
+  {
+   "pierce": "2026-11-06T11:20:00Z",
+   "direction": "buy",
+   "group": "13396.1-13400",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-06T11:30:00Z",
+   "direction": "buy",
+   "group": "13396.1-13400",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-06T11:40:00Z",
+   "direction": "sell",
+   "group": "13401.7-13406.5",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.0"
+  },
+  {
+   "pierce": "2026-11-06T11:55:00Z",
+   "direction": "buy",
+   "group": "13396.1-13400",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.7"
+  },
+  {
+   "pierce": "2026-11-06T12:20:00Z",
+   "direction": "sell",
+   "group": "13401.7-13406.5",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.4"
+  },
+  {
+   "pierce": "2026-11-06T12:30:00Z",
+   "direction": "buy",
+   "group": "13395.5-13400",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.2"
+  },
+  {
+   "pierce": "2026-11-06T12:50:00Z",
+   "direction": "buy",
+   "group": "13380.2-13383.3",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.0"
+  },
+  {
+   "pierce": "2026-11-06T12:45:00Z",
+   "direction": "sell",
+   "group": "13396.1-13400",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.3"
+  },
+  {
+   "pierce": "2026-11-06T13:05:00Z",
+   "direction": "buy",
+   "group": "13380.2-13383.3",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.3"
+  },
+  {
+   "pierce": "2026-11-06T13:20:00Z",
+   "direction": "sell",
+   "group": "13396.1-13400",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.2"
+  },
+  {
+   "pierce": "2026-11-06T13:20:00Z",
+   "direction": "buy",
+   "group": "13387.3-13388.0",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "33.3"
+  },
+  {
+   "pierce": "2026-11-06T13:45:00Z",
+   "direction": "sell",
+   "group": "13373.9-13378.4",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.3"
+  },
+  {
+   "pierce": "2026-11-06T14:10:00Z",
+   "direction": "buy",
+   "group": "13348.1-13351.0",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "6.7"
+  },
+  {
+   "pierce": "2026-11-06T14:00:00Z",
+   "direction": "sell",
+   "group": "13359.1-13362.4",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-06T14:15:00Z",
+   "direction": "sell",
+   "group": "13346.1-13350",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-06T14:35:00Z",
+   "direction": "sell",
+   "group": "13357.4-13362.4",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.0"
+  },
+  {
+   "pierce": "2026-11-06T14:40:00Z",
+   "direction": "buy",
+   "group": "13357.4-13362.4",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.4"
+  },
+  {
+   "pierce": "2026-11-06T14:50:00Z",
+   "direction": "sell",
+   "group": "13357.4-13362.4",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "7.2"
+  },
+  {
+   "pierce": "2026-11-06T15:10:00Z",
+   "direction": "sell",
+   "group": "13373.9-13378.4",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.4"
+  },
+  {
+   "pierce": "2026-11-06T15:05:00Z",
+   "direction": "buy",
+   "group": "13357.4-13362.4",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.0"
+  },
+  {
+   "pierce": "2026-11-06T15:20:00Z",
+   "direction": "sell",
+   "group": "13373.9-13378.4",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.2"
+  },
+  {
+   "pierce": "2026-11-06T15:55:00Z",
+   "direction": "buy",
+   "group": "13357.4-13362.4",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.6"
+  },
+  {
+   "pierce": "2026-11-06T15:35:00Z",
+   "direction": "sell",
+   "group": "13373.9-13378.4",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-7.0"
+  },
+  {
+   "pierce": "2026-11-06T16:05:00Z",
+   "direction": "sell",
+   "group": "13357.4-13362.4",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.8"
+  },
+  {
+   "pierce": "2026-11-06T16:15:00Z",
+   "direction": "sell",
+   "group": "13357.4-13362.4",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "6.8"
+  },
+  {
+   "pierce": "2026-11-06T16:35:00Z",
+   "direction": "buy",
+   "group": "13357.4-13362.4",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.0"
+  },
+  {
+   "pierce": "2026-11-06T16:50:00Z",
+   "direction": "sell",
+   "group": "13373.9-13378.4",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-6.2"
+  },
+  {
+   "pierce": "2026-11-06T17:00:00Z",
+   "direction": "buy",
+   "group": "13357.4-13362.4",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-6.1"
+  },
+  {
+   "pierce": "2026-11-06T17:10:00Z",
+   "direction": "sell",
+   "group": "13373.9-13378.4",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.2"
+  },
+  {
+   "pierce": "2026-11-06T17:35:00Z",
+   "direction": "sell",
+   "group": "13373.9-13378.4",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.9"
+  },
+  {
+   "pierce": "2026-11-06T17:55:00Z",
+   "direction": "buy",
+   "group": "13348.1-13350",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.9"
+  },
+  {
+   "pierce": "2026-11-06T17:50:00Z",
+   "direction": "sell",
+   "group": "13357.4-13362.4",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.7"
+  },
+  {
+   "pierce": "2026-11-06T18:00:00Z",
+   "direction": "sell",
+   "group": "13357.4-13362.4",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.7"
+  },
+  {
+   "pierce": "2026-11-06T18:15:00Z",
+   "direction": "buy",
+   "group": "13348.1-13350",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.0"
+  },
+  {
+   "pierce": "2026-11-06T18:20:00Z",
+   "direction": "sell",
+   "group": "13348.1-13350",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.0"
+  },
+  {
+   "pierce": "2026-11-06T18:40:00Z",
+   "direction": "sell",
+   "group": "13357.4-13362.4",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.4"
+  },
+  {
+   "pierce": "2026-11-06T19:15:00Z",
+   "direction": "sell",
+   "group": "13357.4-13362.4",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-7.3"
+  },
+  {
+   "pierce": "2026-11-06T19:15:00Z",
+   "direction": "buy",
+   "group": "13348.1-13350",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.6"
+  },
+  {
+   "pierce": "2026-11-06T19:35:00Z",
+   "direction": "buy",
+   "group": "13348.1-13350",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.3"
+  },
+  {
+   "pierce": "2026-11-06T19:50:00Z",
+   "direction": "buy",
+   "group": "13348.1-13350",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.9"
+  },
+  {
+   "pierce": "2026-11-06T19:55:00Z",
+   "direction": "sell",
+   "group": "13348.1-13350",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.2"
+  },
+  {
+   "pierce": "2026-11-06T20:15:00Z",
+   "direction": "buy",
+   "group": "13348.1-13350",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-06T20:25:00Z",
+   "direction": "sell",
+   "group": "13348.1-13350",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.3"
+  },
+  {
+   "pierce": "2026-11-06T20:30:00Z",
+   "direction": "buy",
+   "group": "13348.1-13350",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.4"
+  },
+  {
+   "pierce": "2026-11-06T20:35:00Z",
+   "direction": "sell",
+   "group": "13348.1-13350",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.7"
+  },
+  {
+   "pierce": "2026-11-06T20:45:00Z",
+   "direction": "buy",
+   "group": "13348.1-13350",
+   "members": 3,
+   "status": "running",
+   "stage": "trigger",
+   "turned_back": true,
+   "past_far_edge_pips": "1.4"
+  },
+  {
+   "pierce": "2026-11-06T20:55:00Z",
+   "direction": "sell",
+   "group": "13348.1-13350",
+   "members": 3,
+   "status": "running",
+   "stage": "reversal",
+   "turned_back": false,
+   "past_far_edge_pips": "0.0"
+  },
+  {
+   "pierce": "2026-11-08T23:15:00Z",
+   "direction": "sell",
+   "group": "13357.4-13359.1",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-08T23:10:00Z",
+   "direction": "buy",
+   "group": "13357.4-13359.1",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.0"
+  },
+  {
+   "pierce": "2026-11-08T23:20:00Z",
+   "direction": "buy",
+   "group": "13357.4-13359.1",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.4"
+  },
+  {
+   "pierce": "2026-11-08T23:40:00Z",
+   "direction": "sell",
+   "group": "13357.4-13359.1",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.6"
+  },
+  {
+   "pierce": "2026-11-08T23:40:00Z",
+   "direction": "buy",
+   "group": "13357.4-13359.1",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.2"
+  },
+  {
+   "pierce": "2026-11-09T00:00:00Z",
+   "direction": "sell",
+   "group": "13357.4-13361.7",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.0"
+  },
+  {
+   "pierce": "2026-11-09T00:05:00Z",
+   "direction": "buy",
+   "group": "13357.4-13361.7",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-09T00:10:00Z",
+   "direction": "sell",
+   "group": "13357.4-13361.7",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "4.4"
+  },
+  {
+   "pierce": "2026-11-09T00:30:00Z",
+   "direction": "buy",
+   "group": "13357.4-13361.7",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.8"
+  },
+  {
+   "pierce": "2026-11-09T00:35:00Z",
+   "direction": "sell",
+   "group": "13357.4-13361.7",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.0"
+  },
+  {
+   "pierce": "2026-11-09T00:50:00Z",
+   "direction": "buy",
+   "group": "13357.4-13361.7",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.6"
+  },
+  {
+   "pierce": "2026-11-09T01:20:00Z",
+   "direction": "sell",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.3"
+  },
+  {
+   "pierce": "2026-11-09T01:35:00Z",
+   "direction": "buy",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.5"
+  },
+  {
+   "pierce": "2026-11-09T01:40:00Z",
+   "direction": "sell",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.0"
+  },
+  {
+   "pierce": "2026-11-09T02:00:00Z",
+   "direction": "sell",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.3"
+  },
+  {
+   "pierce": "2026-11-09T01:55:00Z",
+   "direction": "buy",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-09T02:15:00Z",
+   "direction": "sell",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.3"
+  },
+  {
+   "pierce": "2026-11-09T02:25:00Z",
+   "direction": "buy",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.1"
+  },
+  {
+   "pierce": "2026-11-09T02:40:00Z",
+   "direction": "buy",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.7"
+  },
+  {
+   "pierce": "2026-11-09T02:45:00Z",
+   "direction": "sell",
+   "group": "13378.4-13380.7",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.4"
+  },
+  {
+   "pierce": "2026-11-09T03:00:00Z",
+   "direction": "buy",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-09T03:05:00Z",
+   "direction": "sell",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.9"
+  },
+  {
+   "pierce": "2026-11-09T03:10:00Z",
+   "direction": "buy",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-09T03:15:00Z",
+   "direction": "sell",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.9"
+  },
+  {
+   "pierce": "2026-11-09T03:30:00Z",
+   "direction": "buy",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-09T03:35:00Z",
+   "direction": "sell",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.8"
+  },
+  {
+   "pierce": "2026-11-09T03:40:00Z",
+   "direction": "buy",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-09T03:50:00Z",
+   "direction": "sell",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-09T03:55:00Z",
+   "direction": "buy",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.6"
+  },
+  {
+   "pierce": "2026-11-09T04:15:00Z",
+   "direction": "buy",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-09T04:20:00Z",
+   "direction": "sell",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.4"
+  },
+  {
+   "pierce": "2026-11-09T05:05:00Z",
+   "direction": "sell",
+   "group": "13378.4-13380.7",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.3"
+  },
+  {
+   "pierce": "2026-11-09T04:35:00Z",
+   "direction": "buy",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.9"
+  },
+  {
+   "pierce": "2026-11-09T05:00:00Z",
+   "direction": "buy",
+   "group": "13369.4-13373.9",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-6.6"
+  },
+  {
+   "pierce": "2026-11-09T05:25:00Z",
+   "direction": "sell",
+   "group": "13378.4-13380.7",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.3"
+  },
+  {
+   "pierce": "2026-11-09T05:35:00Z",
+   "direction": "buy",
+   "group": "13378.4-13380.7",
+   "members": 4,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-09T05:40:00Z",
+   "direction": "sell",
+   "group": "13378.4-13380.7",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.4"
+  },
+  {
+   "pierce": "2026-11-09T05:55:00Z",
+   "direction": "buy",
+   "group": "13378.4-13380.7",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-09T06:10:00Z",
+   "direction": "buy",
+   "group": "13378.4-13380.7",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.6"
+  },
+  {
+   "pierce": "2026-11-09T06:20:00Z",
+   "direction": "buy",
+   "group": "13378.4-13380.7",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.5"
+  },
+  {
+   "pierce": "2026-11-09T06:35:00Z",
+   "direction": "buy",
+   "group": "13378.4-13380.7",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.0"
+  },
+  {
+   "pierce": "2026-11-09T07:10:00Z",
+   "direction": "buy",
+   "group": "13384.3-13388.4",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.5"
+  },
+  {
+   "pierce": "2026-11-09T07:35:00Z",
+   "direction": "sell",
+   "group": "13389.5-13389.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.7"
+  },
+  {
+   "pierce": "2026-11-09T07:30:00Z",
+   "direction": "buy",
+   "group": "13378.4-13381.8",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-6.3"
+  },
+  {
+   "pierce": "2026-11-09T07:50:00Z",
+   "direction": "sell",
+   "group": "13391.2-13396.1",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-09T08:20:00Z",
+   "direction": "sell",
+   "group": "13416.1-13416.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-09T08:10:00Z",
+   "direction": "buy",
+   "group": "13396.1-13400",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-09T08:25:00Z",
+   "direction": "buy",
+   "group": "13401.7-13406.5",
+   "members": 6,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-6.4"
+  },
+  {
+   "pierce": "2026-11-09T08:40:00Z",
+   "direction": "sell",
+   "group": "13415.3-13416.1",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-09T08:45:00Z",
+   "direction": "buy",
+   "group": "13401.7-13406.5",
+   "members": 6,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.5"
+  },
+  {
+   "pierce": "2026-11-09T09:15:00Z",
+   "direction": "buy",
+   "group": "13401.7-13406.5",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.1"
+  },
+  {
+   "pierce": "2026-11-09T09:35:00Z",
+   "direction": "sell",
+   "group": "13415.5-13416.1",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.6"
+  },
+  {
+   "pierce": "2026-11-09T09:45:00Z",
+   "direction": "sell",
+   "group": "13416.1-13416.1",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.6"
+  },
+  {
+   "pierce": "2026-11-09T10:00:00Z",
+   "direction": "buy",
+   "group": "13416.1-13418.5",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.0"
+  },
+  {
+   "pierce": "2026-11-09T10:10:00Z",
+   "direction": "sell",
+   "group": "13416.1-13418.7",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.1"
+  },
+  {
+   "pierce": "2026-11-09T10:20:00Z",
+   "direction": "buy",
+   "group": "13416.1-13419.7",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.5"
+  },
+  {
+   "pierce": "2026-11-09T10:25:00Z",
+   "direction": "sell",
+   "group": "13416.1-13419.8",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "3.1"
+  },
+  {
+   "pierce": "2026-11-09T10:50:00Z",
+   "direction": "buy",
+   "group": "13416.1-13416.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-09T11:15:00Z",
+   "direction": "sell",
+   "group": "13423.9-13426.4",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-09T11:05:00Z",
+   "direction": "buy",
+   "group": "13416.1-13416.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.7"
+  },
+  {
+   "pierce": "2026-11-09T11:25:00Z",
+   "direction": "buy",
+   "group": "13416.1-13416.1",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.8"
+  },
+  {
+   "pierce": "2026-11-09T12:05:00Z",
+   "direction": "sell",
+   "group": "13410.4-13412.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-09T12:35:00Z",
+   "direction": "sell",
+   "group": "13415.8-13416.1",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.1"
+  },
+  {
+   "pierce": "2026-11-09T12:20:00Z",
+   "direction": "buy",
+   "group": "13409-13409",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.7"
+  },
+  {
+   "pierce": "2026-11-09T12:40:00Z",
+   "direction": "buy",
+   "group": "13416.1-13418",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.8"
+  },
+  {
+   "pierce": "2026-11-09T12:45:00Z",
+   "direction": "sell",
+   "group": "13416.1-13418",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.0"
+  },
+  {
+   "pierce": "2026-11-09T12:50:00Z",
+   "direction": "buy",
+   "group": "13416.1-13419.2",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "5.0"
+  },
+  {
+   "pierce": "2026-11-09T13:15:00Z",
+   "direction": "sell",
+   "group": "13416.1-13420",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-09T13:05:00Z",
+   "direction": "buy",
+   "group": "13416.1-13420",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "3.0"
+  },
+  {
+   "pierce": "2026-11-09T13:40:00Z",
+   "direction": "buy",
+   "group": "13409-13409",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-09T13:55:00Z",
+   "direction": "sell",
+   "group": "13421.2-13426",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.3"
+  },
+  {
+   "pierce": "2026-11-09T14:00:00Z",
+   "direction": "buy",
+   "group": "13416.1-13416.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "3.2"
+  },
+  {
+   "pierce": "2026-11-09T14:25:00Z",
+   "direction": "sell",
+   "group": "13421.2-13426",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-7.2"
+  },
+  {
+   "pierce": "2026-11-09T14:20:00Z",
+   "direction": "buy",
+   "group": "13416.1-13416.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.9"
+  },
+  {
+   "pierce": "2026-11-09T14:30:00Z",
+   "direction": "buy",
+   "group": "13416.1-13416.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.3"
+  },
+  {
+   "pierce": "2026-11-09T14:45:00Z",
+   "direction": "buy",
+   "group": "13408.5-13408.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.4"
+  },
+  {
+   "pierce": "2026-11-09T14:50:00Z",
+   "direction": "sell",
+   "group": "13416.1-13416.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.5"
+  },
+  {
+   "pierce": "2026-11-09T15:05:00Z",
+   "direction": "buy",
+   "group": "13401.7-13406.5",
+   "members": 6,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-09T15:25:00Z",
+   "direction": "buy",
+   "group": "13396.1-13400",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.6"
+  },
+  {
+   "pierce": "2026-11-09T15:30:00Z",
+   "direction": "sell",
+   "group": "13401.7-13406.5",
+   "members": 6,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-09T15:50:00Z",
+   "direction": "buy",
+   "group": "13396.1-13400",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.0"
+  },
+  {
+   "pierce": "2026-11-09T16:00:00Z",
+   "direction": "buy",
+   "group": "13396.1-13400",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.6"
+  },
+  {
+   "pierce": "2026-11-09T16:15:00Z",
+   "direction": "sell",
+   "group": "13416.1-13416.1",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.7"
+  },
+  {
+   "pierce": "2026-11-09T17:00:00Z",
+   "direction": "sell",
+   "group": "13421.2-13426",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.1"
+  },
+  {
+   "pierce": "2026-11-09T16:55:00Z",
+   "direction": "buy",
+   "group": "13416.1-13416.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.0"
+  },
+  {
+   "pierce": "2026-11-09T17:10:00Z",
+   "direction": "buy",
+   "group": "13416.1-13416.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.2"
+  },
+  {
+   "pierce": "2026-11-09T17:25:00Z",
+   "direction": "sell",
+   "group": "13425.4-13430.3",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.4"
+  },
+  {
+   "pierce": "2026-11-09T17:40:00Z",
+   "direction": "sell",
+   "group": "13425.9-13430.3",
+   "members": 5,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-6.8"
+  },
+  {
+   "pierce": "2026-11-09T17:55:00Z",
+   "direction": "buy",
+   "group": "13416.1-13416.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.3"
+  },
+  {
+   "pierce": "2026-11-09T18:20:00Z",
+   "direction": "buy",
+   "group": "13416.1-13416.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.7"
+  },
+  {
+   "pierce": "2026-11-09T18:30:00Z",
+   "direction": "sell",
+   "group": "13425.9-13430.3",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.1"
+  },
+  {
+   "pierce": "2026-11-09T18:50:00Z",
+   "direction": "sell",
+   "group": "13426-13430.3",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-6.4"
+  },
+  {
+   "pierce": "2026-11-09T19:15:00Z",
+   "direction": "sell",
+   "group": "13426-13430.3",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.8"
+  },
+  {
+   "pierce": "2026-11-09T19:35:00Z",
+   "direction": "sell",
+   "group": "13432.5-13435.7",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "6.2"
+  },
+  {
+   "pierce": "2026-11-09T19:45:00Z",
+   "direction": "buy",
+   "group": "13432.5-13435.7",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.7"
+  },
+  {
+   "pierce": "2026-11-09T20:55:00Z",
+   "direction": "buy",
+   "group": "13432.5-13435.7",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-5.0"
+  },
+  {
+   "pierce": "2026-11-09T21:00:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.4"
+  },
+  {
+   "pierce": "2026-11-09T21:25:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.0"
+  },
+  {
+   "pierce": "2026-11-09T21:30:00Z",
+   "direction": "buy",
+   "group": "13441.9-13445.2",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "3.3"
+  },
+  {
+   "pierce": "2026-11-09T21:50:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.1"
+  },
+  {
+   "pierce": "2026-11-09T23:15:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.7"
+  },
+  {
+   "pierce": "2026-11-09T23:35:00Z",
+   "direction": "buy",
+   "group": "13432.5-13435.7",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.9"
+  },
+  {
+   "pierce": "2026-11-10T00:40:00Z",
+   "direction": "buy",
+   "group": "13426-13430.3",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.7"
+  },
+  {
+   "pierce": "2026-11-10T00:05:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.8"
+  },
+  {
+   "pierce": "2026-11-10T00:35:00Z",
+   "direction": "sell",
+   "group": "13432.5-13435.7",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.3"
+  },
+  {
+   "pierce": "2026-11-10T01:10:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-10T00:55:00Z",
+   "direction": "buy",
+   "group": "13432.5-13435.7",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.0"
+  },
+  {
+   "pierce": "2026-11-10T01:15:00Z",
+   "direction": "buy",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-10T01:25:00Z",
+   "direction": "sell",
+   "group": "13447.2-13450",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.7"
+  },
+  {
+   "pierce": "2026-11-10T01:40:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-10T01:50:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.3"
+  },
+  {
+   "pierce": "2026-11-10T02:00:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.3"
+  },
+  {
+   "pierce": "2026-11-10T02:20:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.2"
+  },
+  {
+   "pierce": "2026-11-10T02:45:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.7"
+  },
+  {
+   "pierce": "2026-11-10T02:35:00Z",
+   "direction": "buy",
+   "group": "13432.5-13435.7",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.8"
+  },
+  {
+   "pierce": "2026-11-10T03:00:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.2"
+  },
+  {
+   "pierce": "2026-11-10T03:30:00Z",
+   "direction": "sell",
+   "group": "13447.2-13450",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.1"
+  },
+  {
+   "pierce": "2026-11-10T03:15:00Z",
+   "direction": "buy",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.2"
+  },
+  {
+   "pierce": "2026-11-10T03:40:00Z",
+   "direction": "buy",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.2"
+  },
+  {
+   "pierce": "2026-11-10T03:45:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.2"
+  },
+  {
+   "pierce": "2026-11-10T04:05:00Z",
+   "direction": "buy",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-10T04:10:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.3"
+  },
+  {
+   "pierce": "2026-11-10T04:40:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.3"
+  },
+  {
+   "pierce": "2026-11-10T04:25:00Z",
+   "direction": "buy",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-10T04:50:00Z",
+   "direction": "buy",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.8"
+  },
+  {
+   "pierce": "2026-11-10T05:00:00Z",
+   "direction": "sell",
+   "group": "13447.2-13450",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.0"
+  },
+  {
+   "pierce": "2026-11-10T05:10:00Z",
+   "direction": "buy",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.7"
+  },
+  {
+   "pierce": "2026-11-10T05:25:00Z",
+   "direction": "sell",
+   "group": "13447.2-13450",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-10T05:45:00Z",
+   "direction": "buy",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-10T05:40:00Z",
+   "direction": "sell",
+   "group": "13447.2-13450",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.3"
+  },
+  {
+   "pierce": "2026-11-10T06:10:00Z",
+   "direction": "sell",
+   "group": "13453.3-13453.3",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-10T06:00:00Z",
+   "direction": "buy",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.9"
+  },
+  {
+   "pierce": "2026-11-10T06:30:00Z",
+   "direction": "sell",
+   "group": "13453.3-13453.3",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-10T06:50:00Z",
+   "direction": "buy",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.2"
+  },
+  {
+   "pierce": "2026-11-10T06:45:00Z",
+   "direction": "sell",
+   "group": "13447.2-13450",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-10T07:00:00Z",
+   "direction": "sell",
+   "group": "13447.2-13450",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.5"
+  },
+  {
+   "pierce": "2026-11-10T07:35:00Z",
+   "direction": "sell",
+   "group": "13453.3-13456.8",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.1"
+  },
+  {
+   "pierce": "2026-11-10T07:15:00Z",
+   "direction": "buy",
+   "group": "13447.2-13451.5",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.1"
+  },
+  {
+   "pierce": "2026-11-10T07:25:00Z",
+   "direction": "buy",
+   "group": "13447.2-13450",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.4"
+  },
+  {
+   "pierce": "2026-11-10T07:40:00Z",
+   "direction": "buy",
+   "group": "13453.3-13457.1",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.0"
+  },
+  {
+   "pierce": "2026-11-10T07:50:00Z",
+   "direction": "buy",
+   "group": "13447.2-13450",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-10T07:55:00Z",
+   "direction": "sell",
+   "group": "13453.3-13457.9",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.4"
+  },
+  {
+   "pierce": "2026-11-10T08:15:00Z",
+   "direction": "buy",
+   "group": "13447.2-13450",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.0"
+  },
+  {
+   "pierce": "2026-11-10T08:30:00Z",
+   "direction": "sell",
+   "group": "13453.3-13457.9",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.7"
+  },
+  {
+   "pierce": "2026-11-10T08:50:00Z",
+   "direction": "buy",
+   "group": "13447.2-13450",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "14.6"
+  },
+  {
+   "pierce": "2026-11-10T08:55:00Z",
+   "direction": "sell",
+   "group": "13453.3-13453.3",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.8"
+  },
+  {
+   "pierce": "2026-11-10T09:15:00Z",
+   "direction": "buy",
+   "group": "13426-13430.3",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.7"
+  },
+  {
+   "pierce": "2026-11-10T09:20:00Z",
+   "direction": "sell",
+   "group": "13441.9-13445.2",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.4"
+  },
+  {
+   "pierce": "2026-11-10T09:25:00Z",
+   "direction": "buy",
+   "group": "13426-13430.3",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.4"
+  },
+  {
+   "pierce": "2026-11-10T09:50:00Z",
+   "direction": "buy",
+   "group": "13423.5-13426.4",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.5"
+  },
+  {
+   "pierce": "2026-11-10T09:45:00Z",
+   "direction": "sell",
+   "group": "13426-13430.3",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.9"
+  },
+  {
+   "pierce": "2026-11-10T10:00:00Z",
+   "direction": "sell",
+   "group": "13430.3-13433.7",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.3"
+  },
+  {
+   "pierce": "2026-11-10T10:15:00Z",
+   "direction": "sell",
+   "group": "13422-13426.4",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.7"
+  },
+  {
+   "pierce": "2026-11-10T10:25:00Z",
+   "direction": "buy",
+   "group": "13422-13426.4",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-10T10:40:00Z",
+   "direction": "sell",
+   "group": "13430.3-13433.7",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.2"
+  },
+  {
+   "pierce": "2026-11-10T10:55:00Z",
+   "direction": "buy",
+   "group": "13421.9-13426.4",
+   "members": 4,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.8"
+  },
+  {
+   "pierce": "2026-11-10T11:00:00Z",
+   "direction": "sell",
+   "group": "13430.3-13433.7",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.3"
+  },
+  {
+   "pierce": "2026-11-10T11:20:00Z",
+   "direction": "buy",
+   "group": "13421.9-13426.4",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.4"
+  },
+  {
+   "pierce": "2026-11-10T11:25:00Z",
+   "direction": "sell",
+   "group": "13421.9-13426.4",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.7"
+  },
+  {
+   "pierce": "2026-11-10T11:35:00Z",
+   "direction": "sell",
+   "group": "13421.9-13426.4",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.7"
+  },
+  {
+   "pierce": "2026-11-10T11:45:00Z",
+   "direction": "buy",
+   "group": "13421.9-13426.4",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-10T11:50:00Z",
+   "direction": "sell",
+   "group": "13421.9-13426.4",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.9"
+  },
+  {
+   "pierce": "2026-11-10T12:10:00Z",
+   "direction": "sell",
+   "group": "13428.3-13432.5",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.6"
+  },
+  {
+   "pierce": "2026-11-10T12:20:00Z",
+   "direction": "buy",
+   "group": "13421.8-13426.4",
+   "members": 5,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.5"
+  },
+  {
+   "pierce": "2026-11-10T12:25:00Z",
+   "direction": "sell",
+   "group": "13429.9-13433.7",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-5.0"
+  },
+  {
+   "pierce": "2026-11-10T12:40:00Z",
+   "direction": "sell",
+   "group": "13429.9-13433.7",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.7"
+  },
+  {
+   "pierce": "2026-11-10T13:00:00Z",
+   "direction": "buy",
+   "group": "13420.2-13421.8",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.3"
+  },
+  {
+   "pierce": "2026-11-10T12:55:00Z",
+   "direction": "sell",
+   "group": "13421.8-13426.4",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.2"
+  },
+  {
+   "pierce": "2026-11-10T13:10:00Z",
+   "direction": "buy",
+   "group": "13420.2-13421.8",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "4.3"
+  },
+  {
+   "pierce": "2026-11-10T13:20:00Z",
+   "direction": "sell",
+   "group": "13421.8-13426.4",
+   "members": 4,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.4"
+  },
+  {
+   "pierce": "2026-11-10T13:35:00Z",
+   "direction": "buy",
+   "group": "13391.5-13396.1",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.4"
+  },
+  {
+   "pierce": "2026-11-10T13:45:00Z",
+   "direction": "sell",
+   "group": "13401.7-13406.5",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.6"
+  },
+  {
+   "pierce": "2026-11-10T14:05:00Z",
+   "direction": "buy",
+   "group": "13380.2-13384.4",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.4"
+  },
+  {
+   "pierce": "2026-11-10T14:15:00Z",
+   "direction": "sell",
+   "group": "13396.1-13400",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.3"
+  },
+  {
+   "pierce": "2026-11-10T14:55:00Z",
+   "direction": "buy",
+   "group": "13373.9-13378.4",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.3"
+  },
+  {
+   "pierce": "2026-11-10T14:50:00Z",
+   "direction": "sell",
+   "group": "13380.2-13384.4",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-10T15:10:00Z",
+   "direction": "sell",
+   "group": "13378.4-13381.8",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.9"
+  },
+  {
+   "pierce": "2026-11-10T16:00:00Z",
+   "direction": "buy",
+   "group": "13328.7-13331.5",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.0"
+  },
+  {
+   "pierce": "2026-11-10T15:25:00Z",
+   "direction": "sell",
+   "group": "13369.9-13373.9",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.5"
+  },
+  {
+   "pierce": "2026-11-10T15:40:00Z",
+   "direction": "sell",
+   "group": "13358.1-13358.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.8"
+  },
+  {
+   "pierce": "2026-11-10T15:55:00Z",
+   "direction": "sell",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.0"
+  },
+  {
+   "pierce": "2026-11-10T16:05:00Z",
+   "direction": "sell",
+   "group": "13334-13337.6",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.1"
+  },
+  {
+   "pierce": "2026-11-10T16:10:00Z",
+   "direction": "buy",
+   "group": "13328.7-13328.7",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "7.2"
+  },
+  {
+   "pierce": "2026-11-10T16:40:00Z",
+   "direction": "buy",
+   "group": "13312.3-13314.5",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-10T17:15:00Z",
+   "direction": "sell",
+   "group": "13328.7-13328.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.4"
+  },
+  {
+   "pierce": "2026-11-10T17:20:00Z",
+   "direction": "buy",
+   "group": "13328.7-13328.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.3"
+  },
+  {
+   "pierce": "2026-11-10T17:25:00Z",
+   "direction": "sell",
+   "group": "13328.7-13328.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.4"
+  },
+  {
+   "pierce": "2026-11-10T17:40:00Z",
+   "direction": "sell",
+   "group": "13328.7-13328.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.5"
+  },
+  {
+   "pierce": "2026-11-10T17:45:00Z",
+   "direction": "buy",
+   "group": "13328.7-13328.7",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-10T17:50:00Z",
+   "direction": "sell",
+   "group": "13334-13337.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.6"
+  },
+  {
+   "pierce": "2026-11-10T18:10:00Z",
+   "direction": "sell",
+   "group": "13334-13337.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.6"
+  },
+  {
+   "pierce": "2026-11-10T18:15:00Z",
+   "direction": "buy",
+   "group": "13334-13337.6",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-10T18:35:00Z",
+   "direction": "buy",
+   "group": "13334-13337.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.6"
+  },
+  {
+   "pierce": "2026-11-10T18:50:00Z",
+   "direction": "buy",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.8"
+  },
+  {
+   "pierce": "2026-11-10T19:10:00Z",
+   "direction": "buy",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.4"
+  },
+  {
+   "pierce": "2026-11-10T19:30:00Z",
+   "direction": "buy",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-10T19:50:00Z",
+   "direction": "sell",
+   "group": "13350-13350",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.0"
+  },
+  {
+   "pierce": "2026-11-10T20:05:00Z",
+   "direction": "buy",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-10T20:40:00Z",
+   "direction": "buy",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-10T20:25:00Z",
+   "direction": "sell",
+   "group": "13350-13350",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.0"
+  },
+  {
+   "pierce": "2026-11-10T21:05:00Z",
+   "direction": "buy",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.7"
+  },
+  {
+   "pierce": "2026-11-10T21:10:00Z",
+   "direction": "sell",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "4.5"
+  },
+  {
+   "pierce": "2026-11-10T21:35:00Z",
+   "direction": "buy",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.3"
+  },
+  {
+   "pierce": "2026-11-10T21:45:00Z",
+   "direction": "buy",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "12.7"
+  },
+  {
+   "pierce": "2026-11-10T23:25:00Z",
+   "direction": "sell",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-10T23:40:00Z",
+   "direction": "sell",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-11T00:15:00Z",
+   "direction": "sell",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.3"
+  },
+  {
+   "pierce": "2026-11-11T00:30:00Z",
+   "direction": "buy",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.6"
+  },
+  {
+   "pierce": "2026-11-11T01:00:00Z",
+   "direction": "sell",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.6"
+  },
+  {
+   "pierce": "2026-11-11T01:15:00Z",
+   "direction": "buy",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.6"
+  },
+  {
+   "pierce": "2026-11-11T01:30:00Z",
+   "direction": "sell",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.4"
+  },
+  {
+   "pierce": "2026-11-11T01:35:00Z",
+   "direction": "buy",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.3"
+  },
+  {
+   "pierce": "2026-11-11T01:55:00Z",
+   "direction": "buy",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.8"
+  },
+  {
+   "pierce": "2026-11-11T02:15:00Z",
+   "direction": "buy",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.5"
+  },
+  {
+   "pierce": "2026-11-11T02:25:00Z",
+   "direction": "sell",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-11T03:05:00Z",
+   "direction": "sell",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.4"
+  },
+  {
+   "pierce": "2026-11-11T03:05:00Z",
+   "direction": "buy",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.8"
+  },
+  {
+   "pierce": "2026-11-11T03:25:00Z",
+   "direction": "buy",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.8"
+  },
+  {
+   "pierce": "2026-11-11T03:35:00Z",
+   "direction": "sell",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.5"
+  },
+  {
+   "pierce": "2026-11-11T03:50:00Z",
+   "direction": "buy",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.2"
+  },
+  {
+   "pierce": "2026-11-11T04:00:00Z",
+   "direction": "sell",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.2"
+  },
+  {
+   "pierce": "2026-11-11T04:20:00Z",
+   "direction": "sell",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.3"
+  },
+  {
+   "pierce": "2026-11-11T04:35:00Z",
+   "direction": "buy",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.3"
+  },
+  {
+   "pierce": "2026-11-11T05:15:00Z",
+   "direction": "buy",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-11T05:40:00Z",
+   "direction": "buy",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.7"
+  },
+  {
+   "pierce": "2026-11-11T05:35:00Z",
+   "direction": "sell",
+   "group": "13349-13350",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.8"
+  },
+  {
+   "pierce": "2026-11-11T06:05:00Z",
+   "direction": "buy",
+   "group": "13334-13337.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.7"
+  },
+  {
+   "pierce": "2026-11-11T06:15:00Z",
+   "direction": "sell",
+   "group": "13341.4-13341.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.5"
+  },
+  {
+   "pierce": "2026-11-11T06:30:00Z",
+   "direction": "sell",
+   "group": "13334-13337.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-11T07:05:00Z",
+   "direction": "sell",
+   "group": "13340.1-13341.4",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.5"
+  },
+  {
+   "pierce": "2026-11-11T06:55:00Z",
+   "direction": "buy",
+   "group": "13334-13337.6",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.2"
+  },
+  {
+   "pierce": "2026-11-11T07:15:00Z",
+   "direction": "sell",
+   "group": "13341-13341.4",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "3.5"
+  },
+  {
+   "pierce": "2026-11-11T07:35:00Z",
+   "direction": "buy",
+   "group": "13327.5-13330.5",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.4"
+  },
+  {
+   "pierce": "2026-11-11T07:30:00Z",
+   "direction": "sell",
+   "group": "13333.9-13337.6",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-11T07:45:00Z",
+   "direction": "buy",
+   "group": "13327.5-13327.7",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.4"
+  },
+  {
+   "pierce": "2026-11-11T08:20:00Z",
+   "direction": "buy",
+   "group": "13312.2-13312.2",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.0"
+  },
+  {
+   "pierce": "2026-11-11T08:15:00Z",
+   "direction": "sell",
+   "group": "13323.6-13327.5",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.4"
+  },
+  {
+   "pierce": "2026-11-11T08:30:00Z",
+   "direction": "sell",
+   "group": "13327.5-13327.5",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.6"
+  },
+  {
+   "pierce": "2026-11-11T09:00:00Z",
+   "direction": "buy",
+   "group": "13312.2-13314.2",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.7"
+  },
+  {
+   "pierce": "2026-11-11T09:25:00Z",
+   "direction": "buy",
+   "group": "13312.2-13314.2",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.3"
+  },
+  {
+   "pierce": "2026-11-11T09:35:00Z",
+   "direction": "buy",
+   "group": "13312.2-13314",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.3"
+  },
+  {
+   "pierce": "2026-11-11T10:00:00Z",
+   "direction": "sell",
+   "group": "13327.5-13327.5",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-11T10:25:00Z",
+   "direction": "sell",
+   "group": "13327.5-13327.5",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.1"
+  },
+  {
+   "pierce": "2026-11-11T10:30:00Z",
+   "direction": "buy",
+   "group": "13327.5-13327.5",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "7.7"
+  },
+  {
+   "pierce": "2026-11-11T10:50:00Z",
+   "direction": "buy",
+   "group": "13312.2-13313.5",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.9"
+  },
+  {
+   "pierce": "2026-11-11T11:00:00Z",
+   "direction": "buy",
+   "group": "13312.2-13313.5",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.3"
+  },
+  {
+   "pierce": "2026-11-11T11:30:00Z",
+   "direction": "buy",
+   "group": "13311.8-13312.2",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "3.7"
+  },
+  {
+   "pierce": "2026-11-11T11:40:00Z",
+   "direction": "sell",
+   "group": "13308.1-13312.2",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.9"
+  },
+  {
+   "pierce": "2026-11-11T11:50:00Z",
+   "direction": "buy",
+   "group": "13308.1-13312.2",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.0"
+  },
+  {
+   "pierce": "2026-11-11T11:55:00Z",
+   "direction": "sell",
+   "group": "13308.1-13312.2",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.4"
+  },
+  {
+   "pierce": "2026-11-11T12:05:00Z",
+   "direction": "buy",
+   "group": "13302.5-13307.4",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.6"
+  },
+  {
+   "pierce": "2026-11-11T12:10:00Z",
+   "direction": "sell",
+   "group": "13310.8-13312.2",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.9"
+  },
+  {
+   "pierce": "2026-11-11T12:20:00Z",
+   "direction": "sell",
+   "group": "13312.2-13312.7",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.4"
+  },
+  {
+   "pierce": "2026-11-11T12:45:00Z",
+   "direction": "sell",
+   "group": "13312.2-13314.2",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.4"
+  },
+  {
+   "pierce": "2026-11-11T12:40:00Z",
+   "direction": "buy",
+   "group": "13312.2-13314.1",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.4"
+  },
+  {
+   "pierce": "2026-11-11T12:50:00Z",
+   "direction": "buy",
+   "group": "13312.2-13315.6",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.3"
+  },
+  {
+   "pierce": "2026-11-11T13:05:00Z",
+   "direction": "buy",
+   "group": "13302.5-13307.4",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.5"
+  },
+  {
+   "pierce": "2026-11-11T13:10:00Z",
+   "direction": "sell",
+   "group": "13302.5-13307.4",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.4"
+  },
+  {
+   "pierce": "2026-11-11T13:25:00Z",
+   "direction": "buy",
+   "group": "13296.0-13300.4",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.7"
+  },
+  {
+   "pierce": "2026-11-11T13:30:00Z",
+   "direction": "sell",
+   "group": "13296.0-13300.4",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-11T13:35:00Z",
+   "direction": "buy",
+   "group": "13296-13300.4",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.7"
+  },
+  {
+   "pierce": "2026-11-11T14:00:00Z",
+   "direction": "buy",
+   "group": "13284.1-13288.4",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "11.0"
+  },
+  {
+   "pierce": "2026-11-11T13:50:00Z",
+   "direction": "sell",
+   "group": "13292.3-13296.0",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.2"
+  },
+  {
+   "pierce": "2026-11-11T14:20:00Z",
+   "direction": "buy",
+   "group": "13273.1-13273.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.3"
+  },
+  {
+   "pierce": "2026-11-11T14:30:00Z",
+   "direction": "buy",
+   "group": "13269.4-13269.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.6"
+  },
+  {
+   "pierce": "2026-11-11T14:55:00Z",
+   "direction": "buy",
+   "group": "13267.8-13267.8",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.2"
+  },
+  {
+   "pierce": "2026-11-11T15:15:00Z",
+   "direction": "sell",
+   "group": "13286.4-13288.4",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.2"
+  },
+  {
+   "pierce": "2026-11-11T16:15:00Z",
+   "direction": "sell",
+   "group": "13286.4-13288.4",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.1"
+  },
+  {
+   "pierce": "2026-11-11T16:35:00Z",
+   "direction": "sell",
+   "group": "13286.4-13288.4",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.7"
+  },
+  {
+   "pierce": "2026-11-12T02:20:00Z",
+   "direction": "buy",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.9"
+  },
+  {
+   "pierce": "2026-11-12T02:40:00Z",
+   "direction": "buy",
+   "group": "13250-13253",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.4"
+  },
+  {
+   "pierce": "2026-11-12T02:55:00Z",
+   "direction": "buy",
+   "group": "13250-13253",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.0"
+  },
+  {
+   "pierce": "2026-11-12T03:20:00Z",
+   "direction": "sell",
+   "group": "13250-13253",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.3"
+  },
+  {
+   "pierce": "2026-11-12T03:15:00Z",
+   "direction": "buy",
+   "group": "13250-13253",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.0"
+  },
+  {
+   "pierce": "2026-11-12T03:30:00Z",
+   "direction": "buy",
+   "group": "13250-13253",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.7"
+  },
+  {
+   "pierce": "2026-11-12T03:55:00Z",
+   "direction": "buy",
+   "group": "13250-13253",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-5.1"
+  },
+  {
+   "pierce": "2026-11-12T04:05:00Z",
+   "direction": "buy",
+   "group": "13250-13253",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.7"
+  },
+  {
+   "pierce": "2026-11-12T04:45:00Z",
+   "direction": "sell",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.5"
+  },
+  {
+   "pierce": "2026-11-12T05:15:00Z",
+   "direction": "sell",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.7"
+  },
+  {
+   "pierce": "2026-11-12T06:10:00Z",
+   "direction": "buy",
+   "group": "13250-13253",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.9"
+  },
+  {
+   "pierce": "2026-11-12T06:40:00Z",
+   "direction": "buy",
+   "group": "13250-13253",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.3"
+  },
+  {
+   "pierce": "2026-11-12T06:50:00Z",
+   "direction": "buy",
+   "group": "13250-13253",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-12T07:05:00Z",
+   "direction": "sell",
+   "group": "13265.6-13266.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.3"
+  },
+  {
+   "pierce": "2026-11-12T07:30:00Z",
+   "direction": "sell",
+   "group": "13265.6-13266.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.3"
+  },
+  {
+   "pierce": "2026-11-12T07:45:00Z",
+   "direction": "sell",
+   "group": "13265.6-13269.4",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "4.2"
+  },
+  {
+   "pierce": "2026-11-12T07:55:00Z",
+   "direction": "buy",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.3"
+  },
+  {
+   "pierce": "2026-11-12T08:10:00Z",
+   "direction": "buy",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.6"
+  },
+  {
+   "pierce": "2026-11-12T08:20:00Z",
+   "direction": "sell",
+   "group": "13273.6-13273.6",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.2"
+  },
+  {
+   "pierce": "2026-11-12T08:25:00Z",
+   "direction": "buy",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.6"
+  },
+  {
+   "pierce": "2026-11-12T08:30:00Z",
+   "direction": "sell",
+   "group": "13273.6-13273.6",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.2"
+  },
+  {
+   "pierce": "2026-11-12T08:50:00Z",
+   "direction": "buy",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-12T09:05:00Z",
+   "direction": "sell",
+   "group": "13275.1-13275.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.4"
+  },
+  {
+   "pierce": "2026-11-12T09:10:00Z",
+   "direction": "buy",
+   "group": "13275.5-13275.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "6.0"
+  },
+  {
+   "pierce": "2026-11-12T09:25:00Z",
+   "direction": "sell",
+   "group": "13276.5-13276.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.0"
+  },
+  {
+   "pierce": "2026-11-12T09:35:00Z",
+   "direction": "sell",
+   "group": "13276.5-13276.5",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.0"
+  },
+  {
+   "pierce": "2026-11-12T09:50:00Z",
+   "direction": "buy",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-12T10:20:00Z",
+   "direction": "sell",
+   "group": "13277.4-13281.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.8"
+  },
+  {
+   "pierce": "2026-11-12T10:35:00Z",
+   "direction": "sell",
+   "group": "13279.1-13281.9",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.2"
+  },
+  {
+   "pierce": "2026-11-12T10:50:00Z",
+   "direction": "sell",
+   "group": "13279.1-13281.9",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.3"
+  },
+  {
+   "pierce": "2026-11-12T11:25:00Z",
+   "direction": "buy",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-12T11:35:00Z",
+   "direction": "sell",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "5.3"
+  },
+  {
+   "pierce": "2026-11-12T11:45:00Z",
+   "direction": "buy",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.1"
+  },
+  {
+   "pierce": "2026-11-12T11:55:00Z",
+   "direction": "sell",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "7.4"
+  },
+  {
+   "pierce": "2026-11-12T11:55:00Z",
+   "direction": "buy",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.6"
+  },
+  {
+   "pierce": "2026-11-12T12:05:00Z",
+   "direction": "buy",
+   "group": "13265.6-13269.2",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.8"
+  },
+  {
+   "pierce": "2026-11-12T12:30:00Z",
+   "direction": "buy",
+   "group": "13259.6-13259.6",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.0"
+  },
+  {
+   "pierce": "2026-11-12T12:20:00Z",
+   "direction": "sell",
+   "group": "13263.8-13265.6",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-12T12:45:00Z",
+   "direction": "sell",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.5"
+  },
+  {
+   "pierce": "2026-11-12T12:55:00Z",
+   "direction": "sell",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.0"
+  },
+  {
+   "pierce": "2026-11-12T13:10:00Z",
+   "direction": "buy",
+   "group": "13249-13253",
+   "members": 6,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.2"
+  },
+  {
+   "pierce": "2026-11-12T13:05:00Z",
+   "direction": "sell",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.0"
+  },
+  {
+   "pierce": "2026-11-12T13:15:00Z",
+   "direction": "sell",
+   "group": "13249-13253",
+   "members": 7,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "10.8"
+  },
+  {
+   "pierce": "2026-11-12T13:40:00Z",
+   "direction": "sell",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.5"
+  },
+  {
+   "pierce": "2026-11-12T13:45:00Z",
+   "direction": "buy",
+   "group": "13249-13253",
+   "members": 7,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.8"
+  },
+  {
+   "pierce": "2026-11-12T13:55:00Z",
+   "direction": "sell",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "7.6"
+  },
+  {
+   "pierce": "2026-11-12T14:00:00Z",
+   "direction": "buy",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "4.4"
+  },
+  {
+   "pierce": "2026-11-12T14:15:00Z",
+   "direction": "sell",
+   "group": "13273.2-13273.2",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.6"
+  },
+  {
+   "pierce": "2026-11-12T14:30:00Z",
+   "direction": "buy",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "10.7"
+  },
+  {
+   "pierce": "2026-11-12T14:35:00Z",
+   "direction": "sell",
+   "group": "13265.6-13265.6",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.7"
+  },
+  {
+   "pierce": "2026-11-12T15:20:00Z",
+   "direction": "buy",
+   "group": "13227-13227",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "7.1"
+  },
+  {
+   "pierce": "2026-11-12T14:55:00Z",
+   "direction": "sell",
+   "group": "13249-13253",
+   "members": 7,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.1"
+  },
+  {
+   "pierce": "2026-11-12T15:15:00Z",
+   "direction": "sell",
+   "group": "13239.2-13239.2",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-12T15:25:00Z",
+   "direction": "sell",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-12T15:40:00Z",
+   "direction": "buy",
+   "group": "13222-13222",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.1"
+  },
+  {
+   "pierce": "2026-11-12T15:55:00Z",
+   "direction": "sell",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "5.4"
+  },
+  {
+   "pierce": "2026-11-12T16:05:00Z",
+   "direction": "buy",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.2"
+  },
+  {
+   "pierce": "2026-11-12T16:10:00Z",
+   "direction": "sell",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "8.2"
+  },
+  {
+   "pierce": "2026-11-12T16:20:00Z",
+   "direction": "buy",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "3.6"
+  },
+  {
+   "pierce": "2026-11-12T16:25:00Z",
+   "direction": "sell",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "9.8"
+  },
+  {
+   "pierce": "2026-11-12T17:20:00Z",
+   "direction": "buy",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "6.1"
+  },
+  {
+   "pierce": "2026-11-12T17:25:00Z",
+   "direction": "sell",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-12T17:40:00Z",
+   "direction": "buy",
+   "group": "13219.9-13219.9",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.5"
+  },
+  {
+   "pierce": "2026-11-12T18:25:00Z",
+   "direction": "sell",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-12T18:35:00Z",
+   "direction": "sell",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-12T19:15:00Z",
+   "direction": "sell",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.9"
+  },
+  {
+   "pierce": "2026-11-12T19:20:00Z",
+   "direction": "buy",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.2"
+  },
+  {
+   "pierce": "2026-11-12T19:55:00Z",
+   "direction": "buy",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-12T20:10:00Z",
+   "direction": "buy",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.3"
+  },
+  {
+   "pierce": "2026-11-12T21:00:00Z",
+   "direction": "buy",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-12T21:10:00Z",
+   "direction": "buy",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.0"
+  },
+  {
+   "pierce": "2026-11-12T21:20:00Z",
+   "direction": "buy",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-12T21:35:00Z",
+   "direction": "buy",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.7"
+  },
+  {
+   "pierce": "2026-11-12T23:20:00Z",
+   "direction": "buy",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.3"
+  },
+  {
+   "pierce": "2026-11-12T23:30:00Z",
+   "direction": "sell",
+   "group": "13234.1-13234.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.3"
+  },
+  {
+   "pierce": "2026-11-13T05:40:00Z",
+   "direction": "buy",
+   "group": "13219.9-13219.9",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-13T06:30:00Z",
+   "direction": "buy",
+   "group": "13219.9-13219.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-13T07:05:00Z",
+   "direction": "sell",
+   "group": "13240-13243.5",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.1"
+  },
+  {
+   "pierce": "2026-11-13T07:10:00Z",
+   "direction": "buy",
+   "group": "13234.4-13234.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.2"
+  },
+  {
+   "pierce": "2026-11-13T07:35:00Z",
+   "direction": "buy",
+   "group": "13231.2-13231.2",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-13T07:45:00Z",
+   "direction": "buy",
+   "group": "13230-13230",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-13T07:55:00Z",
+   "direction": "buy",
+   "group": "13230-13230",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.9"
+  },
+  {
+   "pierce": "2026-11-13T08:15:00Z",
+   "direction": "sell",
+   "group": "13240-13243.5",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.3"
+  },
+  {
+   "pierce": "2026-11-13T08:20:00Z",
+   "direction": "buy",
+   "group": "13240-13243.5",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.8"
+  },
+  {
+   "pierce": "2026-11-13T08:45:00Z",
+   "direction": "buy",
+   "group": "13227.1-13227.1",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.8"
+  },
+  {
+   "pierce": "2026-11-13T09:05:00Z",
+   "direction": "sell",
+   "group": "13240-13243.5",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.6"
+  },
+  {
+   "pierce": "2026-11-13T09:30:00Z",
+   "direction": "buy",
+   "group": "13227.1-13227.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.2"
+  },
+  {
+   "pierce": "2026-11-13T09:45:00Z",
+   "direction": "buy",
+   "group": "13227.1-13227.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.2"
+  },
+  {
+   "pierce": "2026-11-13T10:05:00Z",
+   "direction": "buy",
+   "group": "13227.1-13227.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-13T10:45:00Z",
+   "direction": "buy",
+   "group": "13219.8-13220.5",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.0"
+  },
+  {
+   "pierce": "2026-11-13T10:50:00Z",
+   "direction": "sell",
+   "group": "13218.9-13219.9",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "8.0"
+  },
+  {
+   "pierce": "2026-11-13T11:05:00Z",
+   "direction": "buy",
+   "group": "13218.8-13219.9",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.8"
+  },
+  {
+   "pierce": "2026-11-13T12:05:00Z",
+   "direction": "sell",
+   "group": "13229.7-13234.3",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.5"
+  },
+  {
+   "pierce": "2026-11-13T12:20:00Z",
+   "direction": "buy",
+   "group": "13218.8-13219.9",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.5"
+  },
+  {
+   "pierce": "2026-11-13T12:35:00Z",
+   "direction": "sell",
+   "group": "13234.3-13234.3",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.5"
+  },
+  {
+   "pierce": "2026-11-13T12:50:00Z",
+   "direction": "buy",
+   "group": "13218.3-13219.9",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.9"
+  },
+  {
+   "pierce": "2026-11-13T13:35:00Z",
+   "direction": "sell",
+   "group": "13248.6-13253",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.7"
+  },
+  {
+   "pierce": "2026-11-13T13:45:00Z",
+   "direction": "buy",
+   "group": "13240-13243.5",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "11.4"
+  },
+  {
+   "pierce": "2026-11-13T13:50:00Z",
+   "direction": "sell",
+   "group": "13240-13243.5",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.6"
+  },
+  {
+   "pierce": "2026-11-13T14:45:00Z",
+   "direction": "sell",
+   "group": "13249-13253",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.1"
+  },
+  {
+   "pierce": "2026-11-13T14:50:00Z",
+   "direction": "buy",
+   "group": "13240-13243.5",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-13T15:05:00Z",
+   "direction": "buy",
+   "group": "13240-13243.5",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.5"
+  },
+  {
+   "pierce": "2026-11-13T15:10:00Z",
+   "direction": "sell",
+   "group": "13240-13243.5",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-13T15:15:00Z",
+   "direction": "buy",
+   "group": "13240-13243.5",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "18.7"
+  },
+  {
+   "pierce": "2026-11-13T15:45:00Z",
+   "direction": "buy",
+   "group": "13217.4-13219.9",
+   "members": 6,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-13T15:50:00Z",
+   "direction": "sell",
+   "group": "13217.4-13219.9",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "5.7"
+  },
+  {
+   "pierce": "2026-11-13T15:55:00Z",
+   "direction": "buy",
+   "group": "13217.4-13219.9",
+   "members": 6,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.2"
+  },
+  {
+   "pierce": "2026-11-13T16:15:00Z",
+   "direction": "buy",
+   "group": "13215.2-13219.9",
+   "members": 7,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-13T16:50:00Z",
+   "direction": "buy",
+   "group": "13206.0-13206.0",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-13T16:45:00Z",
+   "direction": "sell",
+   "group": "13215.2-13219.9",
+   "members": 7,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.7"
+  },
+  {
+   "pierce": "2026-11-13T17:35:00Z",
+   "direction": "buy",
+   "group": "13200-13204.8",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.3"
+  },
+  {
+   "pierce": "2026-11-13T17:30:00Z",
+   "direction": "sell",
+   "group": "13205.2-13206.0",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.9"
+  },
+  {
+   "pierce": "2026-11-13T17:50:00Z",
+   "direction": "sell",
+   "group": "13206.0-13206.0",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.5"
+  },
+  {
+   "pierce": "2026-11-13T17:45:00Z",
+   "direction": "buy",
+   "group": "13200-13204.3",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.3"
+  },
+  {
+   "pierce": "2026-11-13T18:00:00Z",
+   "direction": "buy",
+   "group": "13200-13204.3",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.0"
+  },
+  {
+   "pierce": "2026-11-13T18:20:00Z",
+   "direction": "sell",
+   "group": "13217.4-13219.9",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.2"
+  },
+  {
+   "pierce": "2026-11-13T18:45:00Z",
+   "direction": "buy",
+   "group": "13206.0-13206.0",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.8"
+  },
+  {
+   "pierce": "2026-11-13T19:00:00Z",
+   "direction": "buy",
+   "group": "13206.0-13206.0",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.7"
+  },
+  {
+   "pierce": "2026-11-13T19:35:00Z",
+   "direction": "buy",
+   "group": "13206.0-13206.0",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-13T19:55:00Z",
+   "direction": "buy",
+   "group": "13206.0-13206.0",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.2"
+  },
+  {
+   "pierce": "2026-11-13T20:15:00Z",
+   "direction": "buy",
+   "group": "13206.0-13206.0",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.2"
+  },
+  {
+   "pierce": "2026-11-13T20:55:00Z",
+   "direction": "sell",
+   "group": "13217.4-13219.9",
+   "members": 6,
+   "status": "running",
+   "stage": "reversal",
+   "turned_back": false,
+   "past_far_edge_pips": "-5.4"
+  },
+  {
+   "pierce": "2026-11-15T23:50:00Z",
+   "direction": "sell",
+   "group": "13217.4-13219.9",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.2"
+  },
+  {
+   "pierce": "2026-11-16T00:05:00Z",
+   "direction": "sell",
+   "group": "13217.4-13221.3",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.8"
+  },
+  {
+   "pierce": "2026-11-16T00:00:00Z",
+   "direction": "buy",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.6"
+  },
+  {
+   "pierce": "2026-11-16T00:40:00Z",
+   "direction": "buy",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-6.9"
+  },
+  {
+   "pierce": "2026-11-16T00:20:00Z",
+   "direction": "sell",
+   "group": "13217.4-13221.3",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.6"
+  },
+  {
+   "pierce": "2026-11-16T00:35:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.8"
+  },
+  {
+   "pierce": "2026-11-16T00:45:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.8"
+  },
+  {
+   "pierce": "2026-11-16T00:55:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.1"
+  },
+  {
+   "pierce": "2026-11-16T01:10:00Z",
+   "direction": "buy",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.2"
+  },
+  {
+   "pierce": "2026-11-16T01:15:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.2"
+  },
+  {
+   "pierce": "2026-11-16T01:20:00Z",
+   "direction": "buy",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.2"
+  },
+  {
+   "pierce": "2026-11-16T01:25:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.2"
+  },
+  {
+   "pierce": "2026-11-16T01:40:00Z",
+   "direction": "buy",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.1"
+  },
+  {
+   "pierce": "2026-11-16T01:55:00Z",
+   "direction": "sell",
+   "group": "13217.4-13221.3",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.6"
+  },
+  {
+   "pierce": "2026-11-16T02:05:00Z",
+   "direction": "buy",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.8"
+  },
+  {
+   "pierce": "2026-11-16T02:15:00Z",
+   "direction": "buy",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.9"
+  },
+  {
+   "pierce": "2026-11-16T02:25:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.6"
+  },
+  {
+   "pierce": "2026-11-16T02:40:00Z",
+   "direction": "buy",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.4"
+  },
+  {
+   "pierce": "2026-11-16T02:50:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.5"
+  },
+  {
+   "pierce": "2026-11-16T03:10:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.3"
+  },
+  {
+   "pierce": "2026-11-16T03:30:00Z",
+   "direction": "buy",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.3"
+  },
+  {
+   "pierce": "2026-11-16T03:45:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.1"
+  },
+  {
+   "pierce": "2026-11-16T04:00:00Z",
+   "direction": "buy",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.2"
+  },
+  {
+   "pierce": "2026-11-16T04:15:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-16T04:20:00Z",
+   "direction": "buy",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-16T04:30:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.3"
+  },
+  {
+   "pierce": "2026-11-16T04:45:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.4"
+  },
+  {
+   "pierce": "2026-11-16T04:40:00Z",
+   "direction": "buy",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.3"
+  },
+  {
+   "pierce": "2026-11-16T04:55:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.3"
+  },
+  {
+   "pierce": "2026-11-16T05:05:00Z",
+   "direction": "buy",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.9"
+  },
+  {
+   "pierce": "2026-11-16T05:15:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.9"
+  },
+  {
+   "pierce": "2026-11-16T05:35:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.6"
+  },
+  {
+   "pierce": "2026-11-16T05:30:00Z",
+   "direction": "buy",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.3"
+  },
+  {
+   "pierce": "2026-11-16T05:45:00Z",
+   "direction": "buy",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.5"
+  },
+  {
+   "pierce": "2026-11-16T05:50:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.2"
+  },
+  {
+   "pierce": "2026-11-16T05:55:00Z",
+   "direction": "buy",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.3"
+  },
+  {
+   "pierce": "2026-11-16T06:05:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.0"
+  },
+  {
+   "pierce": "2026-11-16T06:20:00Z",
+   "direction": "buy",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.2"
+  },
+  {
+   "pierce": "2026-11-16T06:15:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.0"
+  },
+  {
+   "pierce": "2026-11-16T06:45:00Z",
+   "direction": "buy",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.9"
+  },
+  {
+   "pierce": "2026-11-16T06:35:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.9"
+  },
+  {
+   "pierce": "2026-11-16T06:50:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.3"
+  },
+  {
+   "pierce": "2026-11-16T06:55:00Z",
+   "direction": "buy",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.9"
+  },
+  {
+   "pierce": "2026-11-16T07:15:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.4"
+  },
+  {
+   "pierce": "2026-11-16T07:20:00Z",
+   "direction": "buy",
+   "group": "13195.9-13200",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.8"
+  },
+  {
+   "pierce": "2026-11-16T07:25:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.4"
+  },
+  {
+   "pierce": "2026-11-16T07:35:00Z",
+   "direction": "buy",
+   "group": "13195.9-13200",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.8"
+  },
+  {
+   "pierce": "2026-11-16T07:40:00Z",
+   "direction": "sell",
+   "group": "13208.3-13211.7",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.4"
+  },
+  {
+   "pierce": "2026-11-16T07:50:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-16T08:00:00Z",
+   "direction": "buy",
+   "group": "13195.9-13200",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.2"
+  },
+  {
+   "pierce": "2026-11-16T08:05:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.9"
+  },
+  {
+   "pierce": "2026-11-16T08:15:00Z",
+   "direction": "buy",
+   "group": "13195.9-13200",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.1"
+  },
+  {
+   "pierce": "2026-11-16T08:20:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.5"
+  },
+  {
+   "pierce": "2026-11-16T08:50:00Z",
+   "direction": "sell",
+   "group": "13217.4-13221.3",
+   "members": 8,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.2"
+  },
+  {
+   "pierce": "2026-11-16T08:40:00Z",
+   "direction": "buy",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-6.0"
+  },
+  {
+   "pierce": "2026-11-16T09:00:00Z",
+   "direction": "sell",
+   "group": "13227.1-13227.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.6"
+  },
+  {
+   "pierce": "2026-11-16T09:50:00Z",
+   "direction": "buy",
+   "group": "13186.7-13190.5",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.6"
+  },
+  {
+   "pierce": "2026-11-16T09:20:00Z",
+   "direction": "sell",
+   "group": "13211.7-13211.7",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.5"
+  },
+  {
+   "pierce": "2026-11-16T09:40:00Z",
+   "direction": "sell",
+   "group": "13187.3-13190.5",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-16T09:55:00Z",
+   "direction": "sell",
+   "group": "13185.5-13190.5",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.6"
+  },
+  {
+   "pierce": "2026-11-16T10:00:00Z",
+   "direction": "buy",
+   "group": "13185.5-13190.5",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.9"
+  },
+  {
+   "pierce": "2026-11-16T10:05:00Z",
+   "direction": "sell",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "8.1"
+  },
+  {
+   "pierce": "2026-11-16T10:25:00Z",
+   "direction": "sell",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.2"
+  },
+  {
+   "pierce": "2026-11-16T11:05:00Z",
+   "direction": "buy",
+   "group": "13183.7-13183.7",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.6"
+  },
+  {
+   "pierce": "2026-11-16T10:50:00Z",
+   "direction": "sell",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-16T11:00:00Z",
+   "direction": "sell",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.5"
+  },
+  {
+   "pierce": "2026-11-16T11:15:00Z",
+   "direction": "buy",
+   "group": "13182.1-13182.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-16T11:25:00Z",
+   "direction": "sell",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.8"
+  },
+  {
+   "pierce": "2026-11-16T11:35:00Z",
+   "direction": "sell",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.0"
+  },
+  {
+   "pierce": "2026-11-16T11:55:00Z",
+   "direction": "sell",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-5.1"
+  },
+  {
+   "pierce": "2026-11-16T12:00:00Z",
+   "direction": "buy",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.3"
+  },
+  {
+   "pierce": "2026-11-16T12:15:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.0"
+  },
+  {
+   "pierce": "2026-11-16T12:30:00Z",
+   "direction": "buy",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.8"
+  },
+  {
+   "pierce": "2026-11-16T12:35:00Z",
+   "direction": "sell",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.4"
+  },
+  {
+   "pierce": "2026-11-16T12:45:00Z",
+   "direction": "buy",
+   "group": "13190.5-13190.8",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.0"
+  },
+  {
+   "pierce": "2026-11-16T12:55:00Z",
+   "direction": "sell",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-16T13:10:00Z",
+   "direction": "sell",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.2"
+  },
+  {
+   "pierce": "2026-11-16T13:20:00Z",
+   "direction": "buy",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.4"
+  },
+  {
+   "pierce": "2026-11-16T13:30:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-16T13:35:00Z",
+   "direction": "buy",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.4"
+  },
+  {
+   "pierce": "2026-11-16T13:40:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 4,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.5"
+  },
+  {
+   "pierce": "2026-11-16T13:45:00Z",
+   "direction": "buy",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.8"
+  },
+  {
+   "pierce": "2026-11-16T14:10:00Z",
+   "direction": "sell",
+   "group": "13202-13205.9",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.4"
+  },
+  {
+   "pierce": "2026-11-16T14:05:00Z",
+   "direction": "buy",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-16T14:25:00Z",
+   "direction": "buy",
+   "group": "13190.5-13190.8",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.4"
+  },
+  {
+   "pierce": "2026-11-16T14:35:00Z",
+   "direction": "sell",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.2"
+  },
+  {
+   "pierce": "2026-11-16T14:55:00Z",
+   "direction": "buy",
+   "group": "13182.1-13182.1",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.5"
+  },
+  {
+   "pierce": "2026-11-16T15:00:00Z",
+   "direction": "sell",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.4"
+  },
+  {
+   "pierce": "2026-11-16T15:15:00Z",
+   "direction": "sell",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.0"
+  },
+  {
+   "pierce": "2026-11-16T15:35:00Z",
+   "direction": "buy",
+   "group": "13182.1-13184.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.1"
+  },
+  {
+   "pierce": "2026-11-16T15:30:00Z",
+   "direction": "sell",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.0"
+  },
+  {
+   "pierce": "2026-11-16T15:50:00Z",
+   "direction": "buy",
+   "group": "13182.1-13184.6",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "3.0"
+  },
+  {
+   "pierce": "2026-11-16T16:05:00Z",
+   "direction": "sell",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.4"
+  },
+  {
+   "pierce": "2026-11-16T16:25:00Z",
+   "direction": "sell",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.2"
+  },
+  {
+   "pierce": "2026-11-16T16:35:00Z",
+   "direction": "sell",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.5"
+  },
+  {
+   "pierce": "2026-11-16T16:45:00Z",
+   "direction": "sell",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.7"
+  },
+  {
+   "pierce": "2026-11-16T16:55:00Z",
+   "direction": "buy",
+   "group": "13179.1-13182.1",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.0"
+  },
+  {
+   "pierce": "2026-11-16T17:15:00Z",
+   "direction": "sell",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-16T17:10:00Z",
+   "direction": "buy",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-16T17:30:00Z",
+   "direction": "sell",
+   "group": "13196.3-13200",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.7"
+  },
+  {
+   "pierce": "2026-11-16T17:40:00Z",
+   "direction": "buy",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.2"
+  },
+  {
+   "pierce": "2026-11-16T17:55:00Z",
+   "direction": "sell",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.3"
+  },
+  {
+   "pierce": "2026-11-16T18:20:00Z",
+   "direction": "buy",
+   "group": "13179.1-13182.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.7"
+  },
+  {
+   "pierce": "2026-11-16T18:25:00Z",
+   "direction": "sell",
+   "group": "13178.4-13182.1",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.8"
+  },
+  {
+   "pierce": "2026-11-16T18:50:00Z",
+   "direction": "sell",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.0"
+  },
+  {
+   "pierce": "2026-11-16T18:40:00Z",
+   "direction": "buy",
+   "group": "13178.4-13182.1",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.0"
+  },
+  {
+   "pierce": "2026-11-16T19:00:00Z",
+   "direction": "buy",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-5.1"
+  },
+  {
+   "pierce": "2026-11-16T19:15:00Z",
+   "direction": "buy",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-6.5"
+  },
+  {
+   "pierce": "2026-11-16T19:25:00Z",
+   "direction": "sell",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.1"
+  },
+  {
+   "pierce": "2026-11-16T20:00:00Z",
+   "direction": "buy",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.7"
+  },
+  {
+   "pierce": "2026-11-16T19:50:00Z",
+   "direction": "sell",
+   "group": "13190.5-13190.5",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.0"
+  },
+  {
+   "pierce": "2026-11-16T20:35:00Z",
+   "direction": "buy",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.4"
+  },
+  {
+   "pierce": "2026-11-16T20:40:00Z",
+   "direction": "sell",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.5"
+  },
+  {
+   "pierce": "2026-11-16T20:50:00Z",
+   "direction": "buy",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-16T20:55:00Z",
+   "direction": "sell",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.9"
+  },
+  {
+   "pierce": "2026-11-16T21:05:00Z",
+   "direction": "buy",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.4"
+  },
+  {
+   "pierce": "2026-11-16T21:25:00Z",
+   "direction": "sell",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.0"
+  },
+  {
+   "pierce": "2026-11-16T21:45:00Z",
+   "direction": "sell",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.9"
+  },
+  {
+   "pierce": "2026-11-16T21:50:00Z",
+   "direction": "buy",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-16T23:10:00Z",
+   "direction": "buy",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-5.3"
+  },
+  {
+   "pierce": "2026-11-16T23:20:00Z",
+   "direction": "buy",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-5.5"
+  },
+  {
+   "pierce": "2026-11-16T23:30:00Z",
+   "direction": "buy",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-5.5"
+  },
+  {
+   "pierce": "2026-11-16T23:40:00Z",
+   "direction": "buy",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-5.8"
+  },
+  {
+   "pierce": "2026-11-16T23:55:00Z",
+   "direction": "buy",
+   "group": "13177.4-13182.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.4"
+  },
+  {
+   "pierce": "2026-11-17T00:20:00Z",
+   "direction": "buy",
+   "group": "13175.2-13177.4",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.3"
+  },
+  {
+   "pierce": "2026-11-17T00:25:00Z",
+   "direction": "sell",
+   "group": "13182.1-13182.1",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-17T00:45:00Z",
+   "direction": "sell",
+   "group": "13182.1-13182.1",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "3.5"
+  },
+  {
+   "pierce": "2026-11-17T00:40:00Z",
+   "direction": "buy",
+   "group": "13175.2-13177.4",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.1"
+  },
+  {
+   "pierce": "2026-11-17T01:15:00Z",
+   "direction": "buy",
+   "group": "13175.2-13177.4",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "6.8"
+  },
+  {
+   "pierce": "2026-11-17T01:05:00Z",
+   "direction": "sell",
+   "group": "13182.1-13182.1",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-17T01:20:00Z",
+   "direction": "sell",
+   "group": "13175.2-13177.4",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.8"
+  },
+  {
+   "pierce": "2026-11-17T01:30:00Z",
+   "direction": "sell",
+   "group": "13175.2-13177.4",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-17T01:40:00Z",
+   "direction": "sell",
+   "group": "13175.2-13177.4",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.5"
+  },
+  {
+   "pierce": "2026-11-17T01:45:00Z",
+   "direction": "buy",
+   "group": "13175.2-13177.4",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.6"
+  },
+  {
+   "pierce": "2026-11-17T02:10:00Z",
+   "direction": "sell",
+   "group": "13182.1-13182.1",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-17T02:00:00Z",
+   "direction": "buy",
+   "group": "13175.2-13177.4",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.6"
+  },
+  {
+   "pierce": "2026-11-17T02:15:00Z",
+   "direction": "buy",
+   "group": "13175.2-13177.4",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.8"
+  },
+  {
+   "pierce": "2026-11-17T02:30:00Z",
+   "direction": "sell",
+   "group": "13182.1-13182.1",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-17T02:25:00Z",
+   "direction": "buy",
+   "group": "13175.2-13177.4",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.1"
+  },
+  {
+   "pierce": "2026-11-17T02:35:00Z",
+   "direction": "buy",
+   "group": "13175.2-13177.4",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.1"
+  },
+  {
+   "pierce": "2026-11-17T02:55:00Z",
+   "direction": "buy",
+   "group": "13182.1-13182.1",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-17T03:20:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.3"
+  },
+  {
+   "pierce": "2026-11-17T03:25:00Z",
+   "direction": "buy",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.5"
+  },
+  {
+   "pierce": "2026-11-17T03:30:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.3"
+  },
+  {
+   "pierce": "2026-11-17T03:35:00Z",
+   "direction": "buy",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "4.1"
+  },
+  {
+   "pierce": "2026-11-17T03:45:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.5"
+  },
+  {
+   "pierce": "2026-11-17T03:55:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.6"
+  },
+  {
+   "pierce": "2026-11-17T04:05:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.6"
+  },
+  {
+   "pierce": "2026-11-17T04:10:00Z",
+   "direction": "buy",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.4"
+  },
+  {
+   "pierce": "2026-11-17T04:25:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.0"
+  },
+  {
+   "pierce": "2026-11-17T04:45:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-17T05:00:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-17T05:15:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.4"
+  },
+  {
+   "pierce": "2026-11-17T05:45:00Z",
+   "direction": "sell",
+   "group": "13205.2-13205.2",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.7"
+  },
+  {
+   "pierce": "2026-11-17T05:35:00Z",
+   "direction": "buy",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.5"
+  },
+  {
+   "pierce": "2026-11-17T06:15:00Z",
+   "direction": "buy",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "4.6"
+  },
+  {
+   "pierce": "2026-11-17T06:00:00Z",
+   "direction": "sell",
+   "group": "13200-13200",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.2"
+  },
+  {
+   "pierce": "2026-11-17T06:25:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.9"
+  },
+  {
+   "pierce": "2026-11-17T06:40:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.3"
+  },
+  {
+   "pierce": "2026-11-17T07:05:00Z",
+   "direction": "sell",
+   "group": "13199.9-13200",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.3"
+  },
+  {
+   "pierce": "2026-11-17T07:05:00Z",
+   "direction": "buy",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.1"
+  },
+  {
+   "pierce": "2026-11-17T07:20:00Z",
+   "direction": "sell",
+   "group": "13199.9-13200",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-17T07:35:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-17T07:50:00Z",
+   "direction": "buy",
+   "group": "13181.3-13182.1",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-17T07:50:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.8"
+  },
+  {
+   "pierce": "2026-11-17T08:00:00Z",
+   "direction": "buy",
+   "group": "13181.3-13182.1",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-17T08:15:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.3"
+  },
+  {
+   "pierce": "2026-11-17T08:30:00Z",
+   "direction": "sell",
+   "group": "13199.9-13200",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.7"
+  },
+  {
+   "pierce": "2026-11-17T08:35:00Z",
+   "direction": "buy",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.6"
+  },
+  {
+   "pierce": "2026-11-17T08:40:00Z",
+   "direction": "sell",
+   "group": "13199.9-13200",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-17T09:00:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.6"
+  },
+  {
+   "pierce": "2026-11-17T09:15:00Z",
+   "direction": "sell",
+   "group": "13199.9-13202.5",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.1"
+  },
+  {
+   "pierce": "2026-11-17T09:20:00Z",
+   "direction": "buy",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "6.7"
+  },
+  {
+   "pierce": "2026-11-17T09:35:00Z",
+   "direction": "sell",
+   "group": "13199.9-13202.5",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.9"
+  },
+  {
+   "pierce": "2026-11-17T09:40:00Z",
+   "direction": "buy",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.6"
+  },
+  {
+   "pierce": "2026-11-17T09:50:00Z",
+   "direction": "sell",
+   "group": "13200-13204.4",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-17T10:00:00Z",
+   "direction": "buy",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "10.0"
+  },
+  {
+   "pierce": "2026-11-17T10:05:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.0"
+  },
+  {
+   "pierce": "2026-11-17T10:15:00Z",
+   "direction": "buy",
+   "group": "13181.3-13182.1",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.1"
+  },
+  {
+   "pierce": "2026-11-17T10:25:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.4"
+  },
+  {
+   "pierce": "2026-11-17T11:25:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.4"
+  },
+  {
+   "pierce": "2026-11-17T11:45:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.4"
+  },
+  {
+   "pierce": "2026-11-17T12:10:00Z",
+   "direction": "sell",
+   "group": "13194-13194.4",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.5"
+  },
+  {
+   "pierce": "2026-11-17T12:25:00Z",
+   "direction": "sell",
+   "group": "13194-13194.4",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.3"
+  },
+  {
+   "pierce": "2026-11-17T12:45:00Z",
+   "direction": "sell",
+   "group": "13194.4-13196.7",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.8"
+  },
+  {
+   "pierce": "2026-11-17T12:50:00Z",
+   "direction": "buy",
+   "group": "13194.4-13198.3",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.8"
+  },
+  {
+   "pierce": "2026-11-17T13:00:00Z",
+   "direction": "sell",
+   "group": "13194.4-13198.4",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-17T13:15:00Z",
+   "direction": "buy",
+   "group": "13187.4-13187.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "14.6"
+  },
+  {
+   "pierce": "2026-11-17T13:20:00Z",
+   "direction": "sell",
+   "group": "13181.3-13186",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "4.9"
+  },
+  {
+   "pierce": "2026-11-17T14:05:00Z",
+   "direction": "sell",
+   "group": "13194.4-13198.5",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.3"
+  },
+  {
+   "pierce": "2026-11-17T13:35:00Z",
+   "direction": "buy",
+   "group": "13175.2-13178.7",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.4"
+  },
+  {
+   "pierce": "2026-11-17T13:55:00Z",
+   "direction": "buy",
+   "group": "13181.3-13182.1",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.3"
+  },
+  {
+   "pierce": "2026-11-17T14:25:00Z",
+   "direction": "sell",
+   "group": "13199.8-13204.4",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.4"
+  },
+  {
+   "pierce": "2026-11-17T14:20:00Z",
+   "direction": "buy",
+   "group": "13194.4-13198.5",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.8"
+  },
+  {
+   "pierce": "2026-11-17T14:35:00Z",
+   "direction": "buy",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.1"
+  },
+  {
+   "pierce": "2026-11-17T14:45:00Z",
+   "direction": "buy",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.6"
+  },
+  {
+   "pierce": "2026-11-17T14:55:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.3"
+  },
+  {
+   "pierce": "2026-11-17T15:05:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.1"
+  },
+  {
+   "pierce": "2026-11-17T15:15:00Z",
+   "direction": "sell",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "6.3"
+  },
+  {
+   "pierce": "2026-11-17T15:25:00Z",
+   "direction": "sell",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.2"
+  },
+  {
+   "pierce": "2026-11-17T15:30:00Z",
+   "direction": "buy",
+   "group": "13194.4-13194.4",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.9"
+  },
+  {
+   "pierce": "2026-11-17T15:40:00Z",
+   "direction": "sell",
+   "group": "13205.2-13205.2",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.2"
+  },
+  {
+   "pierce": "2026-11-17T15:45:00Z",
+   "direction": "buy",
+   "group": "13200-13204.4",
+   "members": 4,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.1"
+  },
+  {
+   "pierce": "2026-11-17T16:20:00Z",
+   "direction": "sell",
+   "group": "13219.8-13224.5",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.8"
+  },
+  {
+   "pierce": "2026-11-17T16:05:00Z",
+   "direction": "buy",
+   "group": "13200-13204.4",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.3"
+  },
+  {
+   "pierce": "2026-11-17T16:30:00Z",
+   "direction": "buy",
+   "group": "13213.5-13218.5",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.2"
+  },
+  {
+   "pierce": "2026-11-17T16:45:00Z",
+   "direction": "buy",
+   "group": "13213.5-13218.5",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.6"
+  },
+  {
+   "pierce": "2026-11-17T16:50:00Z",
+   "direction": "sell",
+   "group": "13213.5-13218.5",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.9"
+  },
+  {
+   "pierce": "2026-11-17T17:05:00Z",
+   "direction": "buy",
+   "group": "13213.5-13218.5",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-17T17:25:00Z",
+   "direction": "sell",
+   "group": "13219.8-13224.5",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.7"
+  },
+  {
+   "pierce": "2026-11-17T17:35:00Z",
+   "direction": "sell",
+   "group": "13219.8-13224.5",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.2"
+  },
+  {
+   "pierce": "2026-11-17T17:50:00Z",
+   "direction": "sell",
+   "group": "13219.8-13224.5",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "3.4"
+  },
+  {
+   "pierce": "2026-11-17T18:00:00Z",
+   "direction": "sell",
+   "group": "13226.3-13226.3",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.6"
+  },
+  {
+   "pierce": "2026-11-17T18:05:00Z",
+   "direction": "buy",
+   "group": "13219.8-13224.5",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-3.5"
+  },
+  {
+   "pierce": "2026-11-17T18:35:00Z",
+   "direction": "buy",
+   "group": "13213.5-13218.5",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.1"
+  },
+  {
+   "pierce": "2026-11-17T18:20:00Z",
+   "direction": "sell",
+   "group": "13227.9-13227.9",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.1"
+  },
+  {
+   "pierce": "2026-11-17T18:50:00Z",
+   "direction": "sell",
+   "group": "13219.8-13224.5",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.5"
+  },
+  {
+   "pierce": "2026-11-17T19:00:00Z",
+   "direction": "buy",
+   "group": "13213.5-13218.5",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-17T19:15:00Z",
+   "direction": "sell",
+   "group": "13213.5-13218.5",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.1"
+  },
+  {
+   "pierce": "2026-11-17T19:10:00Z",
+   "direction": "buy",
+   "group": "13213.5-13218.5",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.9"
+  },
+  {
+   "pierce": "2026-11-17T19:25:00Z",
+   "direction": "buy",
+   "group": "13213.5-13218.5",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.0"
+  },
+  {
+   "pierce": "2026-11-17T19:35:00Z",
+   "direction": "sell",
+   "group": "13219.8-13224.5",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-4.9"
+  },
+  {
+   "pierce": "2026-11-17T19:45:00Z",
+   "direction": "sell",
+   "group": "13219.8-13224.5",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.1"
+  },
+  {
+   "pierce": "2026-11-17T20:00:00Z",
+   "direction": "sell",
+   "group": "13213.5-13218.5",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.4"
+  },
+  {
+   "pierce": "2026-11-17T20:20:00Z",
+   "direction": "sell",
+   "group": "13213.5-13218.5",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-6.4"
+  },
+  {
+   "pierce": "2026-11-17T20:45:00Z",
+   "direction": "sell",
+   "group": "13213.5-13218.5",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.2"
+  },
+  {
+   "pierce": "2026-11-17T21:00:00Z",
+   "direction": "buy",
+   "group": "13205.2-13205.2",
+   "members": 2,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.0"
+  },
+  {
+   "pierce": "2026-11-17T21:15:00Z",
+   "direction": "sell",
+   "group": "13213.5-13218.5",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-7.7"
+  },
+  {
+   "pierce": "2026-11-17T21:30:00Z",
+   "direction": "buy",
+   "group": "13205.2-13205.2",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.8"
+  },
+  {
+   "pierce": "2026-11-17T21:50:00Z",
+   "direction": "buy",
+   "group": "13205.2-13205.2",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "6.7"
+  },
+  {
+   "pierce": "2026-11-17T23:10:00Z",
+   "direction": "sell",
+   "group": "13205.2-13205.2",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "3.5"
+  },
+  {
+   "pierce": "2026-11-17T23:10:00Z",
+   "direction": "buy",
+   "group": "13200-13204.4",
+   "members": 4,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.2"
+  },
+  {
+   "pierce": "2026-11-17T23:40:00Z",
+   "direction": "buy",
+   "group": "13200-13204.4",
+   "members": 4,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-4.4"
+  },
+  {
+   "pierce": "2026-11-17T23:45:00Z",
+   "direction": "sell",
+   "group": "13205.2-13205.2",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.0"
+  },
+  {
+   "pierce": "2026-11-18T00:00:00Z",
+   "direction": "buy",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "3.0"
+  },
+  {
+   "pierce": "2026-11-18T00:10:00Z",
+   "direction": "sell",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.2"
+  },
+  {
+   "pierce": "2026-11-18T00:20:00Z",
+   "direction": "buy",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.3"
+  },
+  {
+   "pierce": "2026-11-18T00:25:00Z",
+   "direction": "sell",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-18T00:30:00Z",
+   "direction": "buy",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.0"
+  },
+  {
+   "pierce": "2026-11-18T00:40:00Z",
+   "direction": "sell",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.6"
+  },
+  {
+   "pierce": "2026-11-18T01:20:00Z",
+   "direction": "buy",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.0"
+  },
+  {
+   "pierce": "2026-11-18T01:30:00Z",
+   "direction": "sell",
+   "group": "13205.2-13205.2",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.5"
+  },
+  {
+   "pierce": "2026-11-18T01:55:00Z",
+   "direction": "sell",
+   "group": "13205.2-13205.2",
+   "members": 1,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "1.7"
+  },
+  {
+   "pierce": "2026-11-18T01:45:00Z",
+   "direction": "buy",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.5"
+  },
+  {
+   "pierce": "2026-11-18T02:05:00Z",
+   "direction": "buy",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.3"
+  },
+  {
+   "pierce": "2026-11-18T02:30:00Z",
+   "direction": "buy",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.2"
+  },
+  {
+   "pierce": "2026-11-18T02:40:00Z",
+   "direction": "sell",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.1"
+  },
+  {
+   "pierce": "2026-11-18T02:55:00Z",
+   "direction": "buy",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.0"
+  },
+  {
+   "pierce": "2026-11-18T03:00:00Z",
+   "direction": "sell",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.8"
+  },
+  {
+   "pierce": "2026-11-18T03:30:00Z",
+   "direction": "sell",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.6"
+  },
+  {
+   "pierce": "2026-11-18T03:55:00Z",
+   "direction": "sell",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-5.3"
+  },
+  {
+   "pierce": "2026-11-18T04:35:00Z",
+   "direction": "sell",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-7.2"
+  },
+  {
+   "pierce": "2026-11-18T04:55:00Z",
+   "direction": "sell",
+   "group": "13200-13204.4",
+   "members": 5,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-7.2"
+  },
+  {
+   "pierce": "2026-11-18T07:15:00Z",
+   "direction": "sell",
+   "group": "13181.3-13182.1",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.6"
+  },
+  {
+   "pierce": "2026-11-18T07:05:00Z",
+   "direction": "buy",
+   "group": "13168-13172.8",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-3.9"
+  },
+  {
+   "pierce": "2026-11-18T07:50:00Z",
+   "direction": "buy",
+   "group": "13168-13172.8",
+   "members": 6,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.1"
+  },
+  {
+   "pierce": "2026-11-18T07:55:00Z",
+   "direction": "sell",
+   "group": "13168-13172.8",
+   "members": 6,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "2.6"
+  },
+  {
+   "pierce": "2026-11-18T08:15:00Z",
+   "direction": "buy",
+   "group": "13163.9-13168",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.7"
+  },
+  {
+   "pierce": "2026-11-18T08:20:00Z",
+   "direction": "sell",
+   "group": "13168-13172.8",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-7.5"
+  },
+  {
+   "pierce": "2026-11-18T08:25:00Z",
+   "direction": "buy",
+   "group": "13161.1-13161.1",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.1"
+  },
+  {
+   "pierce": "2026-11-18T08:35:00Z",
+   "direction": "buy",
+   "group": "13159.2-13159.2",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "1.8"
+  },
+  {
+   "pierce": "2026-11-18T08:50:00Z",
+   "direction": "buy",
+   "group": "13150-13150",
+   "members": 1,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "0.8"
+  },
+  {
+   "pierce": "2026-11-18T09:00:00Z",
+   "direction": "buy",
+   "group": "13150-13150.6",
+   "members": 2,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.0"
+  },
+  {
+   "pierce": "2026-11-18T09:20:00Z",
+   "direction": "buy",
+   "group": "13148-13150",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-2.0"
+  },
+  {
+   "pierce": "2026-11-18T09:40:00Z",
+   "direction": "sell",
+   "group": "13168-13172.8",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-18T09:45:00Z",
+   "direction": "buy",
+   "group": "13168-13172.8",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "4.5"
+  },
+  {
+   "pierce": "2026-11-18T09:55:00Z",
+   "direction": "sell",
+   "group": "13168-13172.8",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-18T10:05:00Z",
+   "direction": "sell",
+   "group": "13168-13172.8",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.0"
+  },
+  {
+   "pierce": "2026-11-18T10:15:00Z",
+   "direction": "buy",
+   "group": "13168-13172.8",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "4.4"
+  },
+  {
+   "pierce": "2026-11-18T10:40:00Z",
+   "direction": "sell",
+   "group": "13168-13172.8",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "2.8"
+  },
+  {
+   "pierce": "2026-11-18T10:30:00Z",
+   "direction": "buy",
+   "group": "13168-13172.8",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.9"
+  },
+  {
+   "pierce": "2026-11-18T10:40:00Z",
+   "direction": "buy",
+   "group": "13168-13172.8",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-0.7"
+  },
+  {
+   "pierce": "2026-11-18T11:05:00Z",
+   "direction": "buy",
+   "group": "13168-13172.8",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "4.1"
+  },
+  {
+   "pierce": "2026-11-18T11:15:00Z",
+   "direction": "sell",
+   "group": "13168-13172.8",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "0.6"
+  },
+  {
+   "pierce": "2026-11-18T11:25:00Z",
+   "direction": "buy",
+   "group": "13168-13172.8",
+   "members": 5,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "5.9"
+  },
+  {
+   "pierce": "2026-11-18T11:35:00Z",
+   "direction": "sell",
+   "group": "13168-13172.8",
+   "members": 5,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-6.7"
+  },
+  {
+   "pierce": "2026-11-18T12:15:00Z",
+   "direction": "sell",
+   "group": "13165.1-13168",
+   "members": 3,
+   "status": "cancelled",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-18T12:25:00Z",
+   "direction": "sell",
+   "group": "13166.9-13168",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.1"
+  },
+  {
+   "pierce": "2026-11-18T12:45:00Z",
+   "direction": "buy",
+   "group": "13148-13150",
+   "members": 2,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-1.7"
+  },
+  {
+   "pierce": "2026-11-18T13:05:00Z",
+   "direction": "sell",
+   "group": "13172.3-13172.8",
+   "members": 3,
+   "status": "triggered",
+   "stage": "done",
+   "turned_back": true,
+   "past_far_edge_pips": "-0.2"
+  },
+  {
+   "pierce": "2026-11-18T13:10:00Z",
+   "direction": "buy",
+   "group": "13168-13172.8",
+   "members": 6,
+   "status": "expired",
+   "stage": "done",
+   "turned_back": false,
+   "past_far_edge_pips": "6.9"
+  },
+  {
+   "pierce": "2026-11-18T13:40:00Z",
+   "direction": "sell",
+   "group": "13168-13172.8",
+   "members": 6,
+   "status": "running",
+   "stage": "reversal",
+   "turned_back": false,
+   "past_far_edge_pips": "-2.9"
+  }
+ ]
+}

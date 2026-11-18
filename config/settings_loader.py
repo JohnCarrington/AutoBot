@@ -501,6 +501,11 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "allowance_pips_round_number": _whole_number(0, 100),
         "stop_beyond_furthest_pips": _whole_number(1, 100),
         "take_profit_pips": _whole_number(1, 1000),
+        "entry_within_pips_of_level": _decimal_number("0", "100"),
+    },
+    "scale_out": {
+        "at_profit_pips": _decimal_number("0", "100"),
+        "stop_profit_pips": _decimal_number("0", "100"),
     },
     "trend_day": {
         "level_above": _one_of("R1", "R2", "R3"),

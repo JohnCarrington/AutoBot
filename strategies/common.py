@@ -469,6 +469,23 @@ def still_going_reasons(settings: Any, strategy: str, direction: str, candles: l
             f"{plain(t.new_extreme_pips)} pips {extreme} the previous {word} in the last {n} five-minute candles{found}"]
 
 
+def near_level_reasons(settings: Any, strategy: str, price: Decimal, context: dict | None) -> list[str]:
+    """LR_ENTRY_NEAR_LEVEL (owner, 18 November 2026; design 3.6, rule 9): a level reversal opens only if its entry price
+    is within level_reversal.entry_within_pips_of_level (6) of the level it traded (the level its rules 2, 7 and 8
+    picked: the candidate's context "level"). Empty: allowed (or the switch off, or not a level reversal)."""
+    if strategy != LEVEL_REVERSAL or not getattr(getattr(settings, "switches", None), "lr_entry_near_level", False) \
+            or not context or context.get("level") is None:
+        return []
+    ppp = Decimal(settings.market.points_per_pip)
+    away = (abs(Decimal(price) - Decimal(context["level"])) / ppp).quantize(Decimal("0.1"))
+    most = Decimal(settings.level_reversal.entry_within_pips_of_level)
+    if away <= most:
+        return []
+    name = context.get("level_name") or plain(context["level"])
+    return [f"LR_ENTRY_NEAR_LEVEL: the entry {plain(price)} is {plain(away)} pips from the level it traded ({name}), "
+            f"more than {plain(most)}"]
+
+
 def governed_allowed(state: str) -> list[str]:
     """The strategies check 7 lets open in this analyser state, either way or one way (for the dashboard, while
     ANALYSER_GOVERNS_ALL is on; owner, 18 November 2026): each strategy's own state rule (2) and the table of
@@ -587,6 +604,7 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
     reasons += bounce_reasons(settings, strategy, t, hourly)
     reasons += still_going_reasons(settings, strategy, direction, candles)
     reasons += governs_reasons(settings, strategy, direction, state, seen, context)
+    reasons += near_level_reasons(settings, strategy, price, context)
     return reasons, rule
 
 
