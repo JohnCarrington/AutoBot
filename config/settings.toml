@@ -391,6 +391,19 @@ take_profit_pips = 20
 # price is within this many pips of the level it traded (the level its rules 2, 7 and 8 picked). Sell price.
 entry_within_pips_of_level = 6
 
+[level_stops]
+# LEVEL_STOPS (owner, 18 November 2026; the range trade, the level reversal and the EMA pullback): while that switch is
+# on, the stop goes this many pips beyond the far edge of the nearest level group beyond the entry on the stop side
+# (plus the spread for a sell), replacing the strategy's own stop ...
+beyond_group_pips = 5
+# ... and if that stop would be further than this from the entry, the trade does not open (refused, with the
+# distance). A group counts only if its far edge is within this many pips of the entry; with none, the strategy's own
+# stop is used (the owner's answers, 18 November 2026).
+widest_stop_pips = 20
+# The spread added to a sell's level-based stop is at most this many pips (owner, 18 November 2026: a news spike in
+# the spread must not push the stop out; IG's own spread at sending, capped).
+max_spread_pips = 3
+
 [scale_out]
 # SCALE_OUT_REVERSAL (owner, 18 November 2026; level reversal and range trade only): once the trade is this many pips
 # in profit (on the price it would close at), half of it is closed ...

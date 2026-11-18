@@ -13,7 +13,8 @@ Only the bot's own records (`data/records/GBPUSD/trades.jsonl`) and its stored c
   - The bounce's first trail move goes to the entry instead of 13193.2.
   - The 16:20 level reversal buy is refused: its level is the round number 13200, 17.2 pips away.
   - With only `SCALE_OUT_REVERSAL` on, that trade instead closes half at +8 and the rest at +2.
-- **Full test suite:** 2,466 passed.
+- **LEVEL_STOPS** (added after your answers): the stop 5 pips beyond the nearest level group (the spread for a sell capped at 3), widest 20. Trend days unchanged. On 17 November the 17:15 EMA pullback buy changes, −12.0 becomes −10.0 (its 10-pip level stop).
+- **Full test suite:** 2,484 passed.
 
 ## Part A: the stop numbers (measured, not chosen)
 
@@ -330,7 +331,7 @@ For comparison, the 473 setups that did not turn back (cancelled: price went on 
 - the 6-pip rule and its refusal text;
 - the start-up line.
 
-Settings tests cover the new values and switches. The full suite: 2,466 passed.
+Settings tests cover the new values and switches. The full suite: 2,484 passed (with LEVEL_STOPS).
 
 ## Part B: the days
 
@@ -430,11 +431,68 @@ Refused by `LR_ENTRY_NEAR_LEVEL` that day: 14:05 sell (the entry 13389.1 is 10.9
 - **11:00 bounce buy (filled at 13225.2 in the replay):** at 13:30 the stop went to the entry, 13225.2, instead of 13224.8 (0.4 on the losing side). The off run then moved it to 13225.9 (13:35) and 13229.9 (13:40). With the switch on, those two moves did not happen. With the wide-spread candles of that time left out, the last 3 normal candles reached further back, and their level was below the entry, so the stop stayed at the entry. At 13:45 both runs moved it to 13234.5, and both were stopped there at 13:50 (+9.3).
 - **15:05 bounce sell (filled at 13242.3):** at 15:25 the stop went to the entry, 13242.3, instead of 13244.6 (2.3 on the losing side).
 
+## LEVEL_STOPS: the level-based stop (your answers of 18 November 2026)
+
+**Built** (switch `LEVEL_STOPS`, off if left out; `docs/DESIGN.md` section 4 "Level-based stops"; `docs/SETTINGS.md`):
+- **Which trades:** the range trade, the level reversal and the EMA pullback.
+- **Where the stop goes:** 5 pips (`level_stops.beyond_group_pips`) beyond the far edge of the nearest level group beyond the entry on the stop side, using the bot's own level list and grouping on the candle the trade is checked on.
+  - A sell: 5 pips above the group's highest level, plus IG's spread when the order is sent, **capped at 3 pips** (`level_stops.max_spread_pips`, your answer).
+  - A buy: 5 pips below the group's lowest level.
+- **What it replaces:** the fixed 12 pips, and the level reversal's 6 beyond the furthest point.
+- **Widest stop 20 pips** (`level_stops.widest_stop_pips`): a wider level-based stop means the trade does not open. It is recorded as refused with the distance ("LEVEL_STOPS: the stop ... is ... pips from the entry, more than 20").
+- **No group within 20 pips:** a group counts only if its far edge is within 20 pips of the entry. With none, the strategy keeps its own stop (your answers).
+- **IG refuses the opening order because of its stop** (e.g. the level too close to IG's price in a news spread spike): it is recorded as refused with IG's reason and you get one alert with IG's minimum stop distance. It is not sent again. This was already the order sender's behaviour for every opening order; a new test holds the level stop to it.
+- **Where in the code:** `strategies/common.py` (`level_stop_context`, `level_stop_price`), `strategies/replay.py` (the group attached to each candidate), `orders/sender.py` (`_stop_distance`: the spread, the cap, the widest stop).
+- **Replay harness change:** paper replays now give the order sender the candle's real buy and sell prices, so a sell's spread is known (it was 0 before). Fills and the other stops are unchanged.
+
+**Before the cap**, the 6 November 13:30 EMA pullback sell was refused. It triggered in the payrolls candle, whose open spread was 15.7 pips: 13378.4 + 5 + 15.7 = 13399.1, 21.6 pips from the 13377.5 entry. **With the 3-pip cap it opens again:** 13378.4 + 5 + 3 = 13386.4, 8.9 pips, and it ends as with the switch off (+26.1).
+
+**The days** (today's live switches; `LEVEL_STOPS` off vs on, the other new switches off):
+
+| Day | Trade | Off | `LEVEL_STOPS` on | The level-based stop |
+|---|---|---|---|---|
+| Fri 6 Nov | 04:10 EMA pullback sell (trend group) | +74.3 | +74.3 | 13436.8, 11.1 pips (group 13426.4 to 13430.3) |
+| Fri 6 Nov | 08:05 level reversal buy | −15.1 (stopped) | −9.9 (stopped) | 13395.0, 9.9 pips (group 13400 to 13402.7) |
+| Fri 6 Nov | 08:55 level reversal sell | not opened | **new**, −9.5 (stopped) | 13402.6, 9.5 pips. It opens because the 08:05 one closed sooner (one level reversal at a time) |
+| Fri 6 Nov | 12:40 level reversal sell | +10.3 | +10.3 | 13406.5, 8.9 pips |
+| Fri 6 Nov | 12:45 EMA pullback sell (trend group) | +43.2 | +43.2 | 13406.5, 11.9 pips |
+| Fri 6 Nov | 13:30 EMA pullback sell (trend group) | +26.1 | +26.1 | 13386.4, 8.9 pips (the spread capped at 3) |
+| Tue 10 Nov | 07:45 range trade sell | −2.4 | −2.4 | 13464.4, 9.7 pips |
+| Tue 10 Nov | 08:40 range trade sell | +4.2 | +4.2 | 13469.8, 15.1 pips |
+| Tue 10 Nov | 14:05 level reversal sell | +20.0 | +20.0 | 13406.5, 17.4 pips |
+| Tue 10 Nov | 16:35 level reversal sell | −19.4 (stopped) | −18.8 (stopped) | 13335.2, 18.8 pips (S2 13328.7) |
+| Fri 13 Nov | none of the three strategies opened | | | |
+| Tue 17 Nov | 06:00 level reversal sell | +3.2 | +3.2 | 13206.5, 7.7 pips (round number 13200) |
+| Tue 17 Nov | 16:20 level reversal buy | −9.1 (closed at 20:30) | −10.2 (stopped) | 13208.5, 10.2 pips (group 13213.5 to 13218.5) |
+| Tue 17 Nov | 17:15 EMA pullback buy (trend group) | −12.0 (stopped) | −10.0 (stopped) | 13214.8, 10.0 pips (group 13219.8 to 13224.5) |
+
+- **Trend days (the gate):** on 6 and 10 November no trend trade is lost or changed with the cap. Every trend-group trade opens, with the same result.
+- **17 November trend group:** the 17:15 EMA pullback buy changes, −12.0 becomes −10.0, stopped at its 10-pip level-based stop instead of the fixed 12.
+- **13 November:** nothing changes. No range trade, level reversal or EMA pullback opened that day.
+- **Raw data:** `day_<date>_levels.json` beside this report, and the stops in `level_stops_used.json`. The stops in the last column are worked out again from each trade's candle (the spread from the candle's open, capped at 3), as the bot does.
+
+**Tests:** in `tests/technical/test_entries_exits.py`:
+- the nearest group either way;
+- no group within 20 (the strategy's own stop);
+- 5 beyond the group;
+- the order sender adding the spread, the 3-pip cap (the 6 November 13:30 case) and the 20-pip refusal;
+- IG's refusal recorded once and not resent;
+- off as before.
+
+Settings tests cover `level_stops`.
+
 ## Questions
 
-1. **Part A:** the buffer (2 to 6) and the widest stop (15 to 25) are yours to choose. Nothing in Part B uses them yet: you asked for the measurements first.
-2. **Filled in by me** (Part B, above): the band-or-+8 order inside a replayed candle; the half's price; the order of the half close and the stop move; restart; the give-up message. Confirm or change.
-3. **The trade 15 pips from its level:** the 16:20 buy's level by the strategy's own rules is 13200, 17.2 pips away. Its nearest level group below the entry (Part A) is 13213.5–13218.5 (R1, the New York high and two turning levels). The strategy did not pick those because they are not S2, R2 or a round number ending 00. Tell me if you meant the distance from a different level.
+Your answers of 18 November 2026 are built:
+- buffer 5, widest stop 20;
+- the five filled-in details accepted;
+- 13200 as the 16:20 trade's level;
+- with no group within 20 pips, the strategy's own stop;
+- "within 20" measured to the group's far edge;
+- the spread for a sell capped at 3 pips;
+- IG's refusal recorded, not retried.
+
+No open questions.
 
 ## Files
 

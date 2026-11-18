@@ -147,6 +147,8 @@ EXPECTED = {
                        "stop_beyond_furthest_pips": 6, "take_profit_pips": 20,
                        "entry_within_pips_of_level": Decimal("6")},
     "scale_out": {"at_profit_pips": Decimal("8"), "stop_profit_pips": Decimal("2")},
+    "level_stops": {"beyond_group_pips": Decimal("5"), "widest_stop_pips": Decimal("20"),
+                    "max_spread_pips": Decimal("3")},
     "range_trade": {"close_percent_at_opposite_band": 100, "rejection_candle_within_candles": 1,
                     "trigger_within_candles": 1},
     "indicators": {"bollinger_periods": 20, "bollinger_std_devs": 2, "ema_periods": (7, 13, 21, 100, 200),
@@ -378,6 +380,9 @@ INVALID = [
     ("level_reversal", "entry_within_pips_of_level", -1, "must be between"),
     ("scale_out", "at_profit_pips", 101, "must be between"),
     ("scale_out", "stop_profit_pips", -1, "must be between"),
+    ("level_stops", "beyond_group_pips", -1, "must be between"),
+    ("level_stops", "widest_stop_pips", 0, "must be between"),
+    ("level_stops", "max_spread_pips", -1, "must be between"),
     ("range_trade", "close_percent_at_opposite_band", 150, "must be one of 50, 100"),
     ("range_trade", "close_percent_at_opposite_band", 30, "must be one of 50, 100"),
     ("bounce", "trail_from_pips", -1, "must be between"),
@@ -807,7 +812,8 @@ def test_bot_process_starts_with_good_settings(pretend_switches):
                                       ("ONE_SIGNAL_ONE_TRADE", "one_signal_one_trade"),
                                       ("SCALE_OUT_REVERSAL", "scale_out_reversal"),
                                       ("TRAIL_NO_LOSS", "trail_no_loss"),
-                                      ("LR_ENTRY_NEAR_LEVEL", "lr_entry_near_level")])
+                                      ("LR_ENTRY_NEAR_LEVEL", "lr_entry_near_level"),
+                                      ("LEVEL_STOPS", "level_stops")])
 def test_the_analyser_control_switches_are_off_if_left_out_and_load(tmp_path, key, name):
     """The three analyser control stages each have a switch, off if left out of .env (owner, 18 November 2026)."""
     assert getattr(load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches, name) is False

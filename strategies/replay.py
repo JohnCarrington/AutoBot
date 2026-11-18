@@ -42,7 +42,7 @@ from prices.model import plain
 from prices.store import CandleStore
 from rejection.watch import RejectionWatcher
 from strategies.bollinger_bounce.strategy import BollingerBounce
-from strategies.common import Idea, check
+from strategies.common import Idea, check, level_stop_context
 from strategies.ema_pullback.strategy import EmaPullback, HourlyTrendReader
 from strategies.range_trade.strategy import candidates as range_candidates
 from strategies.slow_grind.strategy import SlowGrind
@@ -206,7 +206,8 @@ class StrategyRunner:
         breakout, grind, pullback, reversal = fork(self.breakout), fork(self.grind), fork(self.pullback), fork(self.reversal)
         bounce = fork(self.bounce)
         sessions = [fork(x) for x in self.sessions]
-        events = watcher.on_candle(partial, band, levels if levels is not None else build(s, self.memo, partial.start))
+        levels = levels if levels is not None else build(s, self.memo, partial.start)
+        events = watcher.on_candle(partial, band, levels)
         cands = (breakout.on_candle(partial, None, None)
                  + grind.on_candle(partial, sg_ema.get(partial.start))
                  + pullback.on_candle(partial, fast.get(partial.start), slow.get(partial.start))
@@ -217,6 +218,7 @@ class StrategyRunner:
         e100 = ema100.get(self.week[-1].start)
         hr = self.hourly_read.at(partial.start)
         th = self.trend_hourly(len(self.week) - 1, hr)
+        with_level_stops(s, cands, levels)
         done = self.warm + self.week                        # the finished candles before the forming one
         return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100, hr, done, th)
                 for cand in cands]
@@ -243,7 +245,8 @@ class StrategyRunner:
             changes = self.tracker.changes
             change_at = {ch.time: (k, ch) for k, ch in enumerate(changes)}
             band = Band(c.start, f.middle, f.upper, f.lower) if f.upper is not None else None
-            events = self.watcher.on_candle(c, band, build(s, self.memo, c.start))
+            levels = build(s, self.memo, c.start)
+            events = self.watcher.on_candle(c, band, levels)
             kc = change_at.get(c.start)
             since = changes[kc[0] - 1].time if kc and kc[0] > 0 else None
             cands = (self.breakout.on_candle(c, kc[1] if kc else None, since)
@@ -257,11 +260,20 @@ class StrategyRunner:
                 e100 = ema100.get(self.week[i - 1].start) if i > 0 else None
                 hr = self.hourly_read.at(c.start)
                 th = self.trend_hourly(i - 1, hr)
+                with_level_stops(s, cands, levels)
                 done = allc[:-1]                            # the finished candles before this one
                 for cand in cands:
                     out.append((c, check(s, s.market.pair, cand, st, self.pivot_at(c.start), e100, hr, done, th)))
         self.done = len(hist)
         return out
+
+
+def with_level_stops(settings: Any, cands: list, levels: Any) -> None:
+    """LEVEL_STOPS (owner, 18 November 2026): each range trade, level reversal and EMA pullback candidate gets the
+    nearest level group beyond its entry on the stop side (strategies.common.level_stop_context), from the levels of the
+    candle it is checked on. Nothing while the switch is off."""
+    for cand in cands:
+        cand.context.update(level_stop_context(settings, cand.strategy, cand.direction, cand.entry_price, levels))
 
 
 def run(settings: Any, store: CandleStore, start: datetime, end: datetime) -> Replay:

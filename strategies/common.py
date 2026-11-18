@@ -379,6 +379,53 @@ def stop_loss_pips(settings: Any, strategy: str) -> int:
     return sw.stop_loss_pips_ema_pullback if strategy == EMA_PULLBACK else sw.stop_loss_pips
 
 
+LEVEL_STOP_STRATEGIES = (RANGE_TRADE, LEVEL_REVERSAL, EMA_PULLBACK)
+
+
+def level_stops_on(settings: Any, strategy: str) -> bool:
+    """LEVEL_STOPS (owner, 18 November 2026) applies to this strategy: the switch is on and it is the range trade, the
+    level reversal or the EMA pullback."""
+    return strategy in LEVEL_STOP_STRATEGIES and bool(getattr(getattr(settings, "switches", None), "level_stops", False))
+
+
+def level_stop_context(settings: Any, strategy: str, direction: str, entry: Decimal, levels: Any) -> dict:
+    """LEVEL_STOPS: the nearest level group beyond the entry on the stop side (the bot's level list and its grouping,
+    levels.current.LevelList): a sell, the lowest group whose highest level is above the entry; a buy, the highest group
+    whose lowest level is below it. It counts only if its far edge (a sell: its highest level; a buy: its lowest) is
+    within level_stops.widest_stop_pips (20) of the entry (the owner's answer, 18 November 2026). Returns the idea's
+    context entries: {"level_stop_edge", "level_stop_group"} or {"level_stop_none": why} (the strategy's own stop is
+    then used); {} while the switch is off or for another strategy."""
+    if not level_stops_on(settings, strategy) or levels is None:
+        return {}
+    ppp = Decimal(settings.market.points_per_pip)
+    most = Decimal(settings.level_stops.widest_stop_pips) * ppp
+    entry = Decimal(entry)
+    sell = direction == SELL
+    groups = [g for g in levels.groups if (g["high"] > entry if sell else g["low"] < entry)]
+    if not groups:
+        return {"level_stop_none": "no level group beyond the entry on the stop side"}
+    g = min(groups, key=lambda g: g["high"]) if sell else max(groups, key=lambda g: g["low"])
+    edge = g["high"] if sell else g["low"]
+    if abs(edge - entry) > most:
+        return {"level_stop_none": f"no level group within {plain(settings.level_stops.widest_stop_pips)} pips on the "
+                                   f"stop side (the nearest's far edge {plain(edge)} is "
+                                   f"{plain((abs(edge - entry) / ppp).quantize(Decimal('0.1')))} pips away)"}
+    names = ", ".join(f"{m.type} {plain(m.price)}" for m in g["members"])
+    return {"level_stop_edge": edge, "level_stop_group": f"{plain(g['low'])} to {plain(g['high'])} ({names})"}
+
+
+def level_stop_price(settings: Any, idea: Any) -> Decimal | None:
+    """LEVEL_STOPS: the stop on the chart (sell) price, level_stops.beyond_group_pips (5) beyond the group's far edge
+    (the order sender adds the spread for a sell when it sends it). None: not used (switch off, another strategy, or no
+    group within the widest stop: the strategy's own stop)."""
+    ctx = getattr(idea, "context", None) or {}
+    if not level_stops_on(settings, idea.strategy) or ctx.get("level_stop_edge") is None:
+        return None
+    beyond = Decimal(settings.level_stops.beyond_group_pips) * Decimal(settings.market.points_per_pip)
+    edge = Decimal(ctx["level_stop_edge"])
+    return edge + beyond if idea.direction == SELL else edge - beyond
+
+
 def stop_price(settings: Any, idea: Any) -> Decimal | None:
     """Design section 4: the stop as a price (chart price) when a strategy sets it from its setup:
     the level reversal's, level_reversal.stop_beyond_furthest_pips beyond the furthest point price
@@ -386,6 +433,9 @@ def stop_price(settings: Any, idea: Any) -> Decimal | None:
     session_sweep.stop_beyond_furthest_pips (1) beyond the sweep's furthest point and at least
     session_sweep.min_stop_pips (12) from the entry (worked out by the strategy, in the idea's context).
     None for every other strategy, whose stop is stop_loss_pips() from the entry."""
+    level = level_stop_price(settings, idea)          # LEVEL_STOPS (owner, 18 November 2026): replaces the own stop
+    if level is not None:
+        return level
     if idea.strategy not in (LEVEL_REVERSAL, SESSION_SWEEP):
         return None
     return idea.context["stop_price"]

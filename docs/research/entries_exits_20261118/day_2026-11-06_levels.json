@@ -1,0 +1,1988 @@
+{
+ "day": "2026-11-06",
+ "switches": "on",
+ "changes": [
+  {
+   "time_uk": "00:15",
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "rejected at a level against the emerging up trend: closed 13458.0 below the reversal low 13459.8; trigger at below 13457.0"
+  },
+  {
+   "time_uk": "01:10",
+   "state": "ranging",
+   "direction": "none",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "the emerging down trend turned into a range: bands 11.7 pips wide (close together: 6 to 18) and flat (upper -0.1, lower -0.2 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 0.7 pips"
+  },
+  {
+   "time_uk": "01:15",
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "rejected at a level: closed 13451.3 below the reversal low 13451.6; trigger at below 13448.3"
+  },
+  {
+   "time_uk": "01:35",
+   "state": "trend",
+   "direction": "down",
+   "trend_type": "slow grind",
+   "hourly_position": "middle",
+   "reason": "the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new low 13446.9 on the lower band 13446.3; EMAs 7/13/21 stacked down for 6 candles, close 13447.4 below them and the 100 EMA 13455.9; band sloping -0.7 pips/candle"
+  },
+  {
+   "time_uk": "02:30",
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "the down trend ran out of steam: bands 8.3 pips wide (narrow: <= 14, or narrowing for 6 candles: 4), middle band -0.4 pips/candle, no close outside the bands for 6 candles, average body 0.7 pips, green/red 1.8"
+  },
+  {
+   "time_uk": "02:40",
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "rejected at a level: closed 13447.1 below the reversal low 13447.2; trigger at below 13446.9"
+  },
+  {
+   "time_uk": "03:50",
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "hourly_position": "bottom edge",
+   "reason": "rejected at a level against the emerging down trend: closed 13433.7 above the reversal high 13432.1; trigger at above 13434.3"
+  },
+  {
+   "time_uk": "04:05",
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "hourly_position": "bottom edge",
+   "reason": "rejected at a level against the emerging up trend: closed 13429.6 below the reversal low 13432.9; trigger at below 13428.5"
+  },
+  {
+   "time_uk": "04:30",
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "hourly_position": "bottom edge",
+   "reason": "rejected at a level against the emerging down trend: closed 13430.6 above the reversal high 13426.9; trigger at above 13430.6"
+  },
+  {
+   "time_uk": "05:05",
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "rejected at a level against the emerging up trend: closed 13429.9 below the reversal low 13430.2; trigger at below 13429.8"
+  },
+  {
+   "time_uk": "05:30",
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "hourly_position": "bottom edge",
+   "reason": "rejected at a level against the emerging down trend: closed 13427.4 above the reversal high 13427.1; trigger at above 13428.6"
+  },
+  {
+   "time_uk": "05:40",
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "hourly_position": "bottom edge",
+   "reason": "the emerging up trend was cancelled: 2 closes in a row back below the turning_high 13426.4 it was rejected at (last 13425.0)"
+  },
+  {
+   "time_uk": "05:45",
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "hourly_position": "bottom edge",
+   "reason": "rejected at a level: closed 13426.7 above the reversal high 13425.9; trigger at above 13427.0"
+  },
+  {
+   "time_uk": "05:55",
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "hourly_position": "bottom edge",
+   "reason": "the emerging up trend was cancelled: 2 closes in a row back below the turning_high 13426.4 it was rejected at (last 13424.9)"
+  },
+  {
+   "time_uk": "06:40",
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "hourly_position": "bottom edge",
+   "reason": "rejected at a level: closed 13420.9 below the reversal low 13422.1; trigger at below 13419.0"
+  },
+  {
+   "time_uk": "07:20",
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "hourly_position": "bottom edge",
+   "reason": "rejected at a level against the emerging down trend: closed 13411.4 above the reversal high 13410.2; trigger at above 13411.4"
+  },
+  {
+   "time_uk": "08:20",
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "rejected at a level against the emerging up trend: closed 13399.0 below the reversal low 13402.6; trigger at below 13398.5"
+  },
+  {
+   "time_uk": "09:50",
+   "state": "trend",
+   "direction": "down",
+   "trend_type": "slow grind",
+   "hourly_position": "bottom edge",
+   "reason": "the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new low 13384.7 on the lower band 13384.4; EMAs 7/13/21 stacked down for 105 candles, close 13387.4 below them and the 100 EMA 13416.8; band sloping -0.6 pips/candle"
+  },
+  {
+   "time_uk": "13:50",
+   "state": "trend",
+   "direction": "down",
+   "trend_type": "strong push",
+   "hourly_position": "bottom edge",
+   "reason": "strong push: 90% of the body size red, bands 2.4x as wide as 12 candles ago, 7/21 EMAs 9.2 pips apart, 4 closes on the band"
+  },
+  {
+   "time_uk": "14:35",
+   "state": "trend",
+   "direction": "down",
+   "trend_type": "slow grind",
+   "hourly_position": "middle",
+   "reason": "slow grind: 31% of the body size red, bands 2.2x as wide as 12 candles ago, 7/21 EMAs 10.6 pips apart, 1 closes on the band"
+  },
+  {
+   "time_uk": "15:20",
+   "state": "possible reversal",
+   "direction": "up",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "rejection at a level (S3 13362.4) confirmed after a down move of 57.6 pips: closed 13376.9 above the reversal high 13372.0; trigger at above 13377.0"
+  },
+  {
+   "time_uk": "15:25",
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "the reversal triggered: price went above 13377.0 (during this candle)"
+  },
+  {
+   "time_uk": "16:00",
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "the emerging up trend was cancelled: 2 closes in a row back below the S3 13362.4 it was rejected at (last 13359.0)"
+  },
+  {
+   "time_uk": "16:05",
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "rejected at a level: closed 13364.0 above the reversal high 13362.0; trigger at above 13366.2"
+  },
+  {
+   "time_uk": "17:25",
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "the emerging up trend settled into consolidation: bands 13.8 pips wide (narrow: <= 14, or narrowing for 6 candles: 0), middle band -0.1 pips/candle, no close outside the bands for 6 candles, average body 2.5 pips, green/red 1.6"
+  },
+  {
+   "time_uk": "17:50",
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "broke out of the consolidation: close 13351.9 below the lower band 13355.9 (at least 4.0 pips beyond it)"
+  },
+  {
+   "time_uk": "18:05",
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "the emerging down trend was cancelled: 2 closes in a row back inside the Bollinger bands after the breakout (last 13351.4)"
+  },
+  {
+   "time_uk": "18:15",
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "rejected at a level: closed 13349.9 below the reversal low 13350.9; trigger at below 13349.6"
+  },
+  {
+   "time_uk": "18:30",
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "rejected at a level against the emerging down trend: closed 13354.2 above the reversal high 13352.9; trigger at above 13355.0"
+  },
+  {
+   "time_uk": "19:00",
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "rejected at a level against the emerging up trend: closed 13354.7 below the reversal low 13354.9; trigger at below 13353.1"
+  },
+  {
+   "time_uk": "20:00",
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "rejected at a level against the emerging down trend: closed 13352.0 above the reversal high 13351.4; trigger at above 13352.1"
+  },
+  {
+   "time_uk": "20:25",
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "the emerging up trend settled into consolidation: bands 8.4 pips wide (narrow: <= 14, or narrowing for 6 candles: 0), middle band -0.2 pips/candle, no close outside the bands for 6 candles, average body 0.8 pips, green/red 1.7"
+  },
+  {
+   "time_uk": "20:45",
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "rejected at a level: closed 13347.9 below the reversal low 13349.2; trigger at below 13347.7"
+  },
+  {
+   "time_uk": "20:55",
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "rejected at a level against the emerging down trend: closed 13349.8 above the reversal high 13349; trigger at above 13350"
+  },
+  {
+   "time_uk": "21:10",
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "the emerging up trend settled into consolidation: bands 6.1 pips wide (narrow: <= 14, or narrowing for 6 candles: 8), middle band -0.2 pips/candle, no close outside the bands for 6 candles, average body 1.0 pips, green/red 1.5"
+  },
+  {
+   "time_uk": "21:50",
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "hourly_position": "middle",
+   "reason": "rejected at a level: closed 13347.3 below the reversal low 13348.4; trigger at below 13346.5"
+  }
+ ],
+ "trades": [
+  {
+   "opened_uk": "04:10",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "entry": "13425.7",
+   "pips": "+74.3",
+   "closed": "forced close: 20:30 UK close",
+   "reference": "AB261106041000-85f560b0"
+  },
+  {
+   "opened_uk": "07:05",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "entry": "13402.2",
+   "pips": "+7.6",
+   "closed": "stopped by IG: the stop at IG (trailed to 13394.6)",
+   "reference": "AB261106070500-e8a44422"
+  },
+  {
+   "opened_uk": "07:25",
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "entry": "13411.3",
+   "pips": "-12.0",
+   "closed": "stopped by IG: the stop at IG",
+   "reference": "AB261106072500-83d577cf"
+  },
+  {
+   "opened_uk": "07:50",
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "entry": "13402.8",
+   "pips": "-12.0",
+   "closed": "stopped by IG: the stop at IG",
+   "reference": "AB261106075000-d3eab50f"
+  },
+  {
+   "opened_uk": "08:05",
+   "strategy": "level reversal",
+   "direction": "buy",
+   "entry": "13403.4",
+   "pips": "-9.9",
+   "closed": "stopped by IG: the stop at IG",
+   "reference": "AB261106080500-ba9ad560"
+  },
+  {
+   "opened_uk": "08:55",
+   "strategy": "level reversal",
+   "direction": "sell",
+   "entry": "13393.1",
+   "pips": "-9.5",
+   "closed": "stopped by IG: the stop at IG",
+   "reference": "AB261106085500-4bb14ad1"
+  },
+  {
+   "opened_uk": "12:40",
+   "strategy": "level reversal",
+   "direction": "sell",
+   "entry": "13397.6",
+   "pips": "+10.3",
+   "closed": "forced close: closed 15 minutes before big news",
+   "reference": "AB261106124000-799196ed"
+  },
+  {
+   "opened_uk": "12:45",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "entry": "13394.6",
+   "pips": "+43.2",
+   "closed": "forced close: 20:30 UK close",
+   "reference": "AB261106124500-726c5504"
+  },
+  {
+   "opened_uk": "13:00",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "entry": "13385.1",
+   "pips": "-0.6",
+   "closed": "close: the profit lock: back to 10 pips up after 15 up",
+   "reference": "AB261106130000-612b067b"
+  },
+  {
+   "opened_uk": "13:30",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "entry": "13377.5",
+   "pips": "+26.1",
+   "closed": "forced close: 20:30 UK close",
+   "reference": "AB261106133000-b61cb57a"
+  },
+  {
+   "opened_uk": "13:45",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "entry": "13366.7",
+   "pips": "+10.0",
+   "closed": "close: the profit lock: back to 10 pips up after 15 up",
+   "reference": "AB261106134500-09bf6ec8"
+  },
+  {
+   "opened_uk": "17:55",
+   "strategy": "breakout",
+   "direction": "sell",
+   "entry": "13350.9",
+   "pips": "-0.5",
+   "closed": "forced close: 20:30 UK close",
+   "reference": "AB261106175500-dbf9a851"
+  }
+ ],
+ "refused": [
+  {
+   "time_uk": "07:10",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "07:15",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "07:20",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "07:50",
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "same signal already traded by Bollinger bounce"
+   ]
+  },
+  {
+   "time_uk": "08:05",
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "reasons": [
+    "Bollinger bounce already has 1 buy trade(s) open (at most 1 each way)"
+   ]
+  },
+  {
+   "time_uk": "08:15",
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "level reversal already has 1 trade(s) open (at most 1)"
+   ]
+  },
+  {
+   "time_uk": "08:25",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "08:30",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "08:35",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "08:40",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "08:45",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "08:50",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "08:55",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "09:00",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "09:05",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "09:10",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "09:15",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "09:20",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "09:25",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "09:30",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "09:35",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "09:40",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "09:45",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "09:50",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "09:55",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "10:00",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-06"
+   ]
+  },
+  {
+   "time_uk": "13:10",
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "level reversal already has 1 trade(s) open (at most 1)"
+   ]
+  },
+  {
+   "time_uk": "13:30",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "reasons": [
+    "slow grind already has 1 trade(s) open (at most 1)"
+   ]
+  }
+ ],
+ "blocked": [
+  {
+   "time_uk": "00:05",
+   "strategy": "slow grind",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; the hourly chart is in a sell-off: slow grind only sells"
+  },
+  {
+   "time_uk": "01:10",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the emerging trend is down: range trade only in the trend's direction"
+  },
+  {
+   "time_uk": "01:25",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the emerging trend is down: range trade only in the trend's direction"
+  },
+  {
+   "time_uk": "01:30",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 2.9 pips below the swing low 13452.5 of 00:35, at 01:05)"
+  },
+  {
+   "time_uk": "01:55",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 2.9 pips below the swing low 13452.5 of 00:35, at 01:05)"
+  },
+  {
+   "time_uk": "02:00",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 2.9 pips below the swing low 13452.5 of 00:35, at 01:05)"
+  },
+  {
+   "time_uk": "02:05",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the trend is down: range trade only in the trend's direction"
+  },
+  {
+   "time_uk": "02:15",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 3.6 pips below the swing low 13446.9 of 01:35, at 02:00)"
+  },
+  {
+   "time_uk": "02:45",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 3.6 pips below the swing low 13446.9 of 01:35, at 02:00)"
+  },
+  {
+   "time_uk": "02:55",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 3.6 pips below the swing low 13446.9 of 01:35, at 02:00)"
+  },
+  {
+   "time_uk": "03:50",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the emerging trend is down: range trade only in the trend's direction"
+  },
+  {
+   "time_uk": "03:55",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade"
+  },
+  {
+   "time_uk": "04:05",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; ANALYSER_GOVERNS_ALL: the emerging trend is up: slow grind only in the trend's direction"
+  },
+  {
+   "time_uk": "05:15",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 3.5 pips below the swing low 13428.7 of 03:45, at 04:15)"
+  },
+  {
+   "time_uk": "05:15",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 3.5 pips below the swing low 13428.7 of 03:45, at 04:15)"
+  },
+  {
+   "time_uk": "05:15",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 3.5 pips below the swing low 13428.7 of 03:45, at 04:15)"
+  },
+  {
+   "time_uk": "05:25",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the emerging trend is down: range trade only in the trend's direction"
+  },
+  {
+   "time_uk": "05:35",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; ANALYSER_GOVERNS_ALL: the emerging trend is up: slow grind only in the trend's direction"
+  },
+  {
+   "time_uk": "05:55",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; ANALYSER_GOVERNS_ALL: the emerging trend is up: slow grind only in the trend's direction"
+  },
+  {
+   "time_uk": "06:15",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind; ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the trend group opens nothing"
+  },
+  {
+   "time_uk": "06:35",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 2.6 pips below the swing low 13423.9 of 05:35, at 06:00); ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the trend group opens nothing"
+  },
+  {
+   "time_uk": "06:45",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 3.4 pips below the swing low 13422.4 of 06:25, at 06:40)"
+  },
+  {
+   "time_uk": "06:45",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 3.4 pips below the swing low 13422.4 of 06:25, at 06:40)"
+  },
+  {
+   "time_uk": "07:15",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the emerging trend is down: range trade only in the trend's direction"
+  },
+  {
+   "time_uk": "07:25",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; ANALYSER_GOVERNS_ALL: the emerging trend is up: slow grind only in the trend's direction"
+  },
+  {
+   "time_uk": "07:25",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction"
+  },
+  {
+   "time_uk": "07:30",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction"
+  },
+  {
+   "time_uk": "07:35",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction"
+  },
+  {
+   "time_uk": "07:40",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade"
+  },
+  {
+   "time_uk": "07:40",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction"
+  },
+  {
+   "time_uk": "07:45",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction"
+  },
+  {
+   "time_uk": "07:50",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction"
+  },
+  {
+   "time_uk": "07:55",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction"
+  },
+  {
+   "time_uk": "08:00",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction"
+  },
+  {
+   "time_uk": "08:05",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction"
+  },
+  {
+   "time_uk": "08:10",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction"
+  },
+  {
+   "time_uk": "08:15",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction"
+  },
+  {
+   "time_uk": "08:20",
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction"
+  },
+  {
+   "time_uk": "08:40",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 0.7 pips below the swing low 13397.1 of 08:00, at 08:30)"
+  },
+  {
+   "time_uk": "08:40",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 0.7 pips below the swing low 13397.1 of 08:00, at 08:30)"
+  },
+  {
+   "time_uk": "08:40",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 0.7 pips below the swing low 13397.1 of 08:00, at 08:30)"
+  },
+  {
+   "time_uk": "08:55",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 3.3 pips below the swing low 13396.4 of 08:30, at 08:40)"
+  },
+  {
+   "time_uk": "09:00",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 3.3 pips below the swing low 13396.4 of 08:30, at 08:40)"
+  },
+  {
+   "time_uk": "09:15",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind"
+  },
+  {
+   "time_uk": "09:50",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind"
+  },
+  {
+   "time_uk": "10:15",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 2.5 pips below the swing low 13386.1 of 09:30, at 10:00)"
+  },
+  {
+   "time_uk": "10:30",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the trend is down: range trade only in the trend's direction"
+  },
+  {
+   "time_uk": "10:40",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the trend is down: range trade only in the trend's direction"
+  },
+  {
+   "time_uk": "11:05",
+   "strategy": "slow grind",
+   "direction": "buy",
+   "blocked_by": "the trend is down: slow grind only in the trend's direction; the hourly chart is in a sell-off: slow grind only sells; TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 3.3 pips above the swing high 13389.3 of 10:05, at 10:40); ANALYSER_GOVERNS_ALL: the trend is down: slow grind only in the trend's direction"
+  },
+  {
+   "time_uk": "11:40",
+   "strategy": "slow grind",
+   "direction": "buy",
+   "blocked_by": "the trend is down: slow grind only in the trend's direction; the hourly chart is in a sell-off: slow grind only sells; ANALYSER_GOVERNS_ALL: the trend is down: slow grind only in the trend's direction"
+  },
+  {
+   "time_uk": "12:20",
+   "strategy": "slow grind",
+   "direction": "buy",
+   "blocked_by": "the trend is down: slow grind only in the trend's direction; the hourly chart is in a sell-off: slow grind only sells; ANALYSER_GOVERNS_ALL: the trend is down: slow grind only in the trend's direction"
+  },
+  {
+   "time_uk": "12:20",
+   "strategy": "level reversal",
+   "direction": "buy",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the trend is down: level reversal only in the trend's direction"
+  },
+  {
+   "time_uk": "13:15",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the trend is down: range trade only in the trend's direction"
+  },
+  {
+   "time_uk": "13:20",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the trend is down: range trade only in the trend's direction"
+  },
+  {
+   "time_uk": "13:50",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the trend is down: range trade only in the trend's direction"
+  },
+  {
+   "time_uk": "14:35",
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the trend is down: Bollinger bounce only in the trend's direction"
+  },
+  {
+   "time_uk": "14:40",
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "blocked_by": "ANALYSER_GOVERNS_ALL: the trend is down: Bollinger bounce only in the trend's direction"
+  },
+  {
+   "time_uk": "15:45",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "the emerging trend is up: EMA pullback only in the trend's direction; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 2.7 pips below the swing low 13357.7 of 14:45, at 15:00); ANALYSER_GOVERNS_ALL: the emerging trend is up: EMA pullback only in the trend's direction"
+  },
+  {
+   "time_uk": "15:45",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "the emerging trend is up: EMA pullback only in the trend's direction; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 2.7 pips below the swing low 13357.7 of 14:45, at 15:00); ANALYSER_GOVERNS_ALL: the emerging trend is up: EMA pullback only in the trend's direction"
+  },
+  {
+   "time_uk": "15:55",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "the emerging trend is up: EMA pullback only in the trend's direction; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 2.7 pips below the swing low 13357.7 of 14:45, at 15:00); ANALYSER_GOVERNS_ALL: the emerging trend is up: EMA pullback only in the trend's direction"
+  },
+  {
+   "time_uk": "16:00",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "the emerging trend is up: EMA pullback only in the trend's direction; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 3.6 pips below the swing low 13362.0 of 15:45, at 15:55); ANALYSER_GOVERNS_ALL: the emerging trend is up: EMA pullback only in the trend's direction"
+  },
+  {
+   "time_uk": "17:20",
+   "strategy": "range trade",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the emerging trend is up: range trade only in the trend's direction"
+  },
+  {
+   "time_uk": "17:45",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is consolidation, which does not allow EMA pullback; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 2.5 pips below the swing low 13363.7 of 17:20, at 17:40); ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the trend group opens nothing"
+  },
+  {
+   "time_uk": "17:45",
+   "strategy": "range trade",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is consolidation, which does not allow range trade; ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the reversal group opens nothing"
+  },
+  {
+   "time_uk": "18:15",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind; ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the trend group opens nothing"
+  },
+  {
+   "time_uk": "19:45",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 1.4 pips below the swing low 13353.1 of 19:00, at 19:15)"
+  },
+  {
+   "time_uk": "19:50",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 2.5 pips below the swing low 13351.9 of 19:35, at 19:45)"
+  },
+  {
+   "time_uk": "20:00",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the emerging trend is down: range trade only in the trend's direction"
+  },
+  {
+   "time_uk": "20:05",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade"
+  },
+  {
+   "time_uk": "20:45",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind; ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the trend group opens nothing"
+  },
+  {
+   "time_uk": "21:00",
+   "strategy": "range trade",
+   "direction": "buy",
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade"
+  },
+  {
+   "time_uk": "21:50",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 1.5 pips below the swing low 13348.2 of 20:35, at 20:50); ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the trend group opens nothing"
+  },
+  {
+   "time_uk": "21:55",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 1.0 pips below the swing low 13347.5 of 21:30, at 21:50)"
+  },
+  {
+   "time_uk": "21:55",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 1.0 pips below the swing low 13347.5 of 21:30, at 21:50)"
+  },
+  {
+   "time_uk": "21:55",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "blocked_by": "TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 1.0 pips below the swing low 13347.5 of 21:30, at 21:50)"
+  }
+ ],
+ "journal": [
+  {
+   "time_utc": "2026-11-02T07:20:00Z",
+   "reference": "AB261102060000-25a14343",
+   "strategy": "level reversal",
+   "decision": "stopped by IG",
+   "price": "13409.1",
+   "pips": "-11.4",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-02T08:00:00Z",
+   "reference": "AB261102070500-191a9f42",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13410.1",
+   "pips": "5.1",
+   "part": "1",
+   "why": "12.6 pips up at best (the trail from 12): the stop moves to 13410.1, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-02T08:05:00Z",
+   "reference": "AB261102070500-191a9f42",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13411.1",
+   "pips": "6.1",
+   "part": "1",
+   "why": "12.6 pips up at best (the trail from 12): the stop moves to 13411.1, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-02T08:20:00Z",
+   "reference": "AB261102070500-191a9f42",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13412.4",
+   "pips": "7.4",
+   "part": "1",
+   "why": "12.6 pips up at best (the trail from 12): the stop moves to 13412.4, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-02T08:30:00Z",
+   "reference": "AB261102070500-191a9f42",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13412.5",
+   "pips": "7.5",
+   "part": "1",
+   "why": "19.9 pips up at best (the trail from 12): the stop moves to 13412.5, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-02T08:35:00Z",
+   "reference": "AB261102070500-191a9f42",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13416.2",
+   "pips": "11.2",
+   "part": "1",
+   "why": "25.1 pips up at best (the trail from 12): the stop moves to 13416.2, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-02T08:40:00Z",
+   "reference": "AB261102072500-3bf26ad0",
+   "strategy": "level reversal",
+   "decision": "take profit hit at IG",
+   "price": "13430.4",
+   "pips": "20.0",
+   "part": "1",
+   "why": "the take profit at IG (20 pips)",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-02T08:40:00Z",
+   "reference": "AB261102070500-191a9f42",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13420.3",
+   "pips": "15.3",
+   "part": "1",
+   "why": "26.1 pips up at best (the trail from 12): the stop moves to 13420.3, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-02T08:45:00Z",
+   "reference": "AB261102080000-141c6fc4",
+   "strategy": "slow grind",
+   "decision": "take profit hit at IG",
+   "price": "13436.6",
+   "pips": "20.0",
+   "part": "1",
+   "why": "the take profit at IG (20 pips)",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-02T08:45:00Z",
+   "reference": "AB261102070500-191a9f42",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13423.8",
+   "pips": "18.8",
+   "part": "1",
+   "why": "31.6 pips up at best (the trail from 12): the stop moves to 13423.8, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-02T08:50:00Z",
+   "reference": "AB261102070500-191a9f42",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13426.1",
+   "pips": "21.1",
+   "part": "1",
+   "why": "34.3 pips up at best (the trail from 12): the stop moves to 13426.1, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-02T08:55:00Z",
+   "reference": "AB261102070500-191a9f42",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13430.7",
+   "pips": "25.7",
+   "part": "1",
+   "why": "35.9 pips up at best (the trail from 12): the stop moves to 13430.7, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-02T09:00:00Z",
+   "reference": "AB261102070500-191a9f42",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13435.3",
+   "pips": "30.3",
+   "part": "1",
+   "why": "43.0 pips up at best (the trail from 12): the stop moves to 13435.3, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-02T09:05:00Z",
+   "reference": "AB261102070500-191a9f42",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13436.3",
+   "pips": "31.3",
+   "part": "1",
+   "why": "43.0 pips up at best (the trail from 12): the stop moves to 13436.3, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-02T09:10:00Z",
+   "reference": "AB261102070500-191a9f42",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13439.9",
+   "pips": "34.9",
+   "part": "1",
+   "why": "43.0 pips up at best (the trail from 12): the stop moves to 13439.9, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-02T09:15:00Z",
+   "reference": "AB261102070500-191a9f42",
+   "strategy": "Asian range breakout",
+   "decision": "stopped by IG",
+   "price": "13439.9",
+   "pips": "34.9",
+   "part": "1",
+   "why": "the stop at IG (trailed to 13439.9)",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-02T10:25:00Z",
+   "reference": "AB261102083000-da9566f7",
+   "strategy": "EMA pullback",
+   "decision": "stopped by IG",
+   "price": "13413.6",
+   "pips": "-7.9",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-02T13:25:00Z",
+   "reference": "AB261102122500-c389d2f4",
+   "strategy": "EMA pullback",
+   "decision": "stopped by IG",
+   "price": "13413.6",
+   "pips": "-9.1",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-02T15:35:00Z",
+   "reference": "AB261102143000-cb5eee80",
+   "strategy": "EMA pullback",
+   "decision": "stopped by IG",
+   "price": "13413.6",
+   "pips": "-9.2",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-02T17:50:00Z",
+   "reference": "AB261102173500-9b944c27",
+   "strategy": "range trade",
+   "decision": "watching a level",
+   "price": null,
+   "pips": null,
+   "part": "1",
+   "why": "the analyser's rejection setup running against it at a level"
+  },
+  {
+   "time_utc": "2026-11-02T18:10:00Z",
+   "reference": "AB261102173500-9b944c27",
+   "strategy": "range trade",
+   "decision": "hold",
+   "price": null,
+   "pips": null,
+   "part": "1",
+   "why": "the analyser's rejection setup is over"
+  },
+  {
+   "time_utc": "2026-11-02T18:15:00Z",
+   "reference": "AB261102173500-9b944c27",
+   "strategy": "range trade",
+   "decision": "close",
+   "price": "13413.8",
+   "pips": "3.9",
+   "part": "1",
+   "why": "the opposite Bollinger band",
+   "order_sender": "closed"
+  },
+  {
+   "time_utc": "2026-11-02T20:30:00Z",
+   "reference": "AB261102105000-62cb3f02",
+   "strategy": "session sweep",
+   "decision": "forced close",
+   "price": "13411.3",
+   "pips": "-8.5",
+   "part": "1",
+   "why": "20:30 UK close",
+   "order_sender": "closed"
+  },
+  {
+   "time_utc": "2026-11-02T20:30:00Z",
+   "reference": "AB261102110500-b76ac99c",
+   "strategy": "level reversal",
+   "decision": "forced close",
+   "price": "13410.4",
+   "pips": "-1.3",
+   "part": "1",
+   "why": "20:30 UK close",
+   "order_sender": "closed"
+  },
+  {
+   "time_utc": "2026-11-03T07:55:00Z",
+   "reference": "AB261103074000-39795234",
+   "strategy": "range trade",
+   "decision": "watching a level",
+   "price": null,
+   "pips": null,
+   "part": "1",
+   "why": "the analyser's rejection setup running against it at a level"
+  },
+  {
+   "time_utc": "2026-11-03T09:15:00Z",
+   "reference": "AB261103074000-39795234",
+   "strategy": "range trade",
+   "decision": "close",
+   "price": "13413.1",
+   "pips": "3.4",
+   "part": "1",
+   "why": "the opposite Bollinger band",
+   "order_sender": "closed"
+  },
+  {
+   "time_utc": "2026-11-03T10:00:00Z",
+   "reference": "AB261103072500-639e5400",
+   "strategy": "Asian range breakout",
+   "decision": "stopped by IG",
+   "price": "13408.1",
+   "pips": "-12.0",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-03T13:25:00Z",
+   "reference": "AB261103102000-bc24b5b2",
+   "strategy": "session sweep",
+   "decision": "stopped by IG",
+   "price": "13424.9",
+   "pips": "-18.0",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-04T05:00:00Z",
+   "reference": "AB261104023500-13f94e4a",
+   "strategy": "EMA pullback",
+   "decision": "stopped by IG",
+   "price": "13453.8",
+   "pips": "-16.6",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-04T07:15:00Z",
+   "reference": "AB261104061500-6c7c7ce1",
+   "strategy": "level reversal",
+   "decision": "stopped by IG",
+   "price": "13465.3",
+   "pips": "-12.3",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-04T07:55:00Z",
+   "reference": "AB261104074000-25b67ffc",
+   "strategy": "Asian range breakout",
+   "decision": "stopped by IG",
+   "price": "13470.3",
+   "pips": "-12.0",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-04T08:45:00Z",
+   "reference": "AB261104072000-03ff619b",
+   "strategy": "level reversal",
+   "decision": "take profit hit at IG",
+   "price": "13487.2",
+   "pips": "20.0",
+   "part": "1",
+   "why": "the take profit at IG (20 pips)",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-04T08:55:00Z",
+   "reference": "AB261104084000-5fa01e27",
+   "strategy": "EMA pullback",
+   "decision": "stopped by IG",
+   "price": "13478.8",
+   "pips": "-8.7",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-04T08:55:00Z",
+   "reference": "AB261104084500-695f149e",
+   "strategy": "EMA pullback",
+   "decision": "stopped by IG",
+   "price": "13478.8",
+   "pips": "-10.2",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-04T10:20:00Z",
+   "reference": "AB261104101500-617d21f9",
+   "strategy": "EMA pullback",
+   "decision": "stopped by IG",
+   "price": "13490.8",
+   "pips": "-8.3",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-04T10:30:00Z",
+   "reference": "AB261104100500-45de46da",
+   "strategy": "slow grind",
+   "decision": "stopped by IG",
+   "price": "13480.9",
+   "pips": "-15.0",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-04T11:40:00Z",
+   "reference": "AB261104111500-a3a9000d",
+   "strategy": "session sweep",
+   "decision": "stopped by IG",
+   "price": "13485.6",
+   "pips": "-12.0",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-04T14:35:00Z",
+   "reference": "AB261104132500-3f495f9d",
+   "strategy": "session sweep",
+   "decision": "stop moved",
+   "price": "13492.1",
+   "pips": "2.8",
+   "part": "1",
+   "why": "15.0 pips up at best (the trail from 12): the stop moves to 13492.1, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-04T14:45:00Z",
+   "reference": "AB261104132500-3f495f9d",
+   "strategy": "session sweep",
+   "decision": "stop moved",
+   "price": "13491.9",
+   "pips": "3.0",
+   "part": "1",
+   "why": "17.1 pips up at best (the trail from 12): the stop moves to 13491.9, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-04T14:50:00Z",
+   "reference": "AB261104132500-3f495f9d",
+   "strategy": "session sweep",
+   "decision": "stop moved",
+   "price": "13483.8",
+   "pips": "11.1",
+   "part": "1",
+   "why": "20.8 pips up at best (the trail from 12): the stop moves to 13483.8, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-04T14:55:00Z",
+   "reference": "AB261104132500-3f495f9d",
+   "strategy": "session sweep",
+   "decision": "stop moved",
+   "price": "13482.4",
+   "pips": "12.5",
+   "part": "1",
+   "why": "20.8 pips up at best (the trail from 12): the stop moves to 13482.4, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-04T15:00:00Z",
+   "reference": "AB261104132500-3f495f9d",
+   "strategy": "session sweep",
+   "decision": "stop moved",
+   "price": "13479.8",
+   "pips": "15.1",
+   "part": "1",
+   "why": "22.5 pips up at best (the trail from 12): the stop moves to 13479.8, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-04T15:05:00Z",
+   "reference": "AB261104135500-6d67032b",
+   "strategy": "New York open reversal",
+   "decision": "stop moved",
+   "price": "13479.8",
+   "pips": "3.9",
+   "part": "1",
+   "why": "12.8 pips up at best (the trail from 12): the stop moves to 13479.8, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-04T15:15:00Z",
+   "reference": "AB261104124000-f1592442",
+   "strategy": "level reversal",
+   "decision": "take profit hit at IG",
+   "price": "13467.4",
+   "pips": "20.0",
+   "part": "1",
+   "why": "the take profit at IG (20 pips)",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-04T15:15:00Z",
+   "reference": "AB261104132500-3f495f9d",
+   "strategy": "session sweep",
+   "decision": "stop moved",
+   "price": "13477.3",
+   "pips": "17.6",
+   "part": "1",
+   "why": "30.7 pips up at best (the trail from 12): the stop moves to 13477.3, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-04T15:15:00Z",
+   "reference": "AB261104135500-6d67032b",
+   "strategy": "New York open reversal",
+   "decision": "stop moved",
+   "price": "13477.3",
+   "pips": "6.4",
+   "part": "1",
+   "why": "19.5 pips up at best (the trail from 12): the stop moves to 13477.3, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-04T15:20:00Z",
+   "reference": "AB261104132500-3f495f9d",
+   "strategy": "session sweep",
+   "decision": "stop moved",
+   "price": "13475.1",
+   "pips": "19.8",
+   "part": "1",
+   "why": "32.3 pips up at best (the trail from 12): the stop moves to 13475.1, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-04T15:20:00Z",
+   "reference": "AB261104135500-6d67032b",
+   "strategy": "New York open reversal",
+   "decision": "stop moved",
+   "price": "13475.1",
+   "pips": "8.6",
+   "part": "1",
+   "why": "21.1 pips up at best (the trail from 12): the stop moves to 13475.1, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-04T15:25:00Z",
+   "reference": "AB261104132500-3f495f9d",
+   "strategy": "session sweep",
+   "decision": "stop moved",
+   "price": "13471.4",
+   "pips": "23.5",
+   "part": "1",
+   "why": "32.3 pips up at best (the trail from 12): the stop moves to 13471.4, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-04T15:25:00Z",
+   "reference": "AB261104135500-6d67032b",
+   "strategy": "New York open reversal",
+   "decision": "stop moved",
+   "price": "13471.4",
+   "pips": "12.3",
+   "part": "1",
+   "why": "21.1 pips up at best (the trail from 12): the stop moves to 13471.4, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-04T15:30:00Z",
+   "reference": "AB261104132500-3f495f9d",
+   "strategy": "session sweep",
+   "decision": "stop moved",
+   "price": "13471.0",
+   "pips": "23.9",
+   "part": "1",
+   "why": "32.3 pips up at best (the trail from 12): the stop moves to 13471.0, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-04T15:30:00Z",
+   "reference": "AB261104135500-6d67032b",
+   "strategy": "New York open reversal",
+   "decision": "stop moved",
+   "price": "13471.0",
+   "pips": "12.7",
+   "part": "1",
+   "why": "21.1 pips up at best (the trail from 12): the stop moves to 13471.0, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-04T15:40:00Z",
+   "reference": "AB261104132500-3f495f9d",
+   "strategy": "session sweep",
+   "decision": "stopped by IG",
+   "price": "13471.0",
+   "pips": "23.9",
+   "part": "1",
+   "why": "the stop at IG (trailed to 13471.0)",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-04T15:40:00Z",
+   "reference": "AB261104135500-6d67032b",
+   "strategy": "New York open reversal",
+   "decision": "stopped by IG",
+   "price": "13471.0",
+   "pips": "12.7",
+   "part": "1",
+   "why": "the stop at IG (trailed to 13471.0)",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-05T07:15:00Z",
+   "reference": "AB261105070500-017142c9",
+   "strategy": "Asian range breakout",
+   "decision": "stopped by IG",
+   "price": "13487.5",
+   "pips": "-12.0",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-05T07:25:00Z",
+   "reference": "AB261105071500-8738a632",
+   "strategy": "session sweep",
+   "decision": "stop moved",
+   "price": "13493.0",
+   "pips": "-3.7",
+   "part": "1",
+   "why": "12.3 pips up at best (the trail from 12): the stop moves to 13493.0, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-05T07:30:00Z",
+   "reference": "AB261105071500-8738a632",
+   "strategy": "session sweep",
+   "decision": "stop moved",
+   "price": "13488.3",
+   "pips": "1.0",
+   "part": "1",
+   "why": "18.6 pips up at best (the trail from 12): the stop moves to 13488.3, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-05T07:35:00Z",
+   "reference": "AB261105071500-8738a632",
+   "strategy": "session sweep",
+   "decision": "stop moved",
+   "price": "13483.3",
+   "pips": "6.0",
+   "part": "1",
+   "why": "18.9 pips up at best (the trail from 12): the stop moves to 13483.3, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-05T07:40:00Z",
+   "reference": "AB261105071500-8738a632",
+   "strategy": "session sweep",
+   "decision": "stop moved",
+   "price": "13478.4",
+   "pips": "10.9",
+   "part": "1",
+   "why": "18.9 pips up at best (the trail from 12): the stop moves to 13478.4, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-05T07:45:00Z",
+   "reference": "AB261105071500-8738a632",
+   "strategy": "session sweep",
+   "decision": "stop moved",
+   "price": "13477.4",
+   "pips": "11.9",
+   "part": "1",
+   "why": "18.9 pips up at best (the trail from 12): the stop moves to 13477.4, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-05T07:50:00Z",
+   "reference": "AB261105071500-8738a632",
+   "strategy": "session sweep",
+   "decision": "stopped by IG",
+   "price": "13477.4",
+   "pips": "11.9",
+   "part": "1",
+   "why": "the stop at IG (trailed to 13477.4)",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-05T08:15:00Z",
+   "reference": "AB261105073500-844b0c5d",
+   "strategy": "Asian range breakout",
+   "decision": "stopped by IG",
+   "price": "13481.8",
+   "pips": "-12.0",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-05T15:00:00Z",
+   "reference": "AB261105145000-faf9f108",
+   "strategy": "New York open reversal",
+   "decision": "stopped by IG",
+   "price": "13454.8",
+   "pips": "-12.0",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-05T19:20:00Z",
+   "reference": "AB261105165500-13d84abe",
+   "strategy": "session sweep",
+   "decision": "stopped by IG",
+   "price": "13455.7",
+   "pips": "-24.2",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-06T07:30:00Z",
+   "reference": "AB261106072500-83d577cf",
+   "strategy": "Bollinger bounce",
+   "decision": "stopped by IG",
+   "price": "13400.8",
+   "pips": "-12.0",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-06T08:40:00Z",
+   "reference": "AB261106080500-ba9ad560",
+   "strategy": "level reversal",
+   "decision": "stopped by IG",
+   "price": "13395.0",
+   "pips": "-9.9",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-06T09:00:00Z",
+   "reference": "AB261106075000-d3eab50f",
+   "strategy": "Bollinger bounce",
+   "decision": "stopped by IG",
+   "price": "13391.7",
+   "pips": "-12.0",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-06T09:00:00Z",
+   "reference": "AB261106070500-e8a44422",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13399.3",
+   "pips": "2.9",
+   "part": "1",
+   "why": "12.6 pips up at best (the trail from 12): the stop moves to 13399.3, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-06T09:05:00Z",
+   "reference": "AB261106070500-e8a44422",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13398.8",
+   "pips": "3.4",
+   "part": "1",
+   "why": "12.6 pips up at best (the trail from 12): the stop moves to 13398.8, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-06T09:10:00Z",
+   "reference": "AB261106070500-e8a44422",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13396.0",
+   "pips": "6.2",
+   "part": "1",
+   "why": "12.6 pips up at best (the trail from 12): the stop moves to 13396.0, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-06T09:15:00Z",
+   "reference": "AB261106070500-e8a44422",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13395.5",
+   "pips": "6.7",
+   "part": "1",
+   "why": "12.6 pips up at best (the trail from 12): the stop moves to 13395.5, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-06T09:25:00Z",
+   "reference": "AB261106070500-e8a44422",
+   "strategy": "Asian range breakout",
+   "decision": "stop moved",
+   "price": "13394.6",
+   "pips": "7.6",
+   "part": "1",
+   "why": "14.0 pips up at best (the trail from 12): the stop moves to 13394.6, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-06T09:30:00Z",
+   "reference": "AB261106070500-e8a44422",
+   "strategy": "Asian range breakout",
+   "decision": "stopped by IG",
+   "price": "13394.6",
+   "pips": "7.6",
+   "part": "1",
+   "why": "the stop at IG (trailed to 13394.6)",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-06T11:40:00Z",
+   "reference": "AB261106085500-4bb14ad1",
+   "strategy": "level reversal",
+   "decision": "stopped by IG",
+   "price": "13402.6",
+   "pips": "-9.5",
+   "part": "1",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-06T13:15:00Z",
+   "reference": "AB261106124000-799196ed",
+   "strategy": "level reversal",
+   "decision": "forced close",
+   "price": "13387.3",
+   "pips": "10.3",
+   "part": "1",
+   "why": "closed 15 minutes before big news",
+   "order_sender": "closed"
+  },
+  {
+   "time_utc": "2026-11-06T13:35:00Z",
+   "reference": "AB261106130000-612b067b",
+   "strategy": "slow grind",
+   "decision": "close",
+   "price": "13385.7",
+   "pips": "-0.6",
+   "part": "1",
+   "why": "the profit lock: back to 10 pips up after 15 up",
+   "order_sender": "closed"
+  },
+  {
+   "time_utc": "2026-11-06T14:30:00Z",
+   "reference": "AB261106134500-09bf6ec8",
+   "strategy": "slow grind",
+   "decision": "close",
+   "price": "13356.7",
+   "pips": "10.0",
+   "part": "1",
+   "why": "the profit lock: back to 10 pips up after 15 up",
+   "order_sender": "closed"
+  },
+  {
+   "time_utc": "2026-11-06T20:30:00Z",
+   "reference": "AB261106041000-85f560b0",
+   "strategy": "EMA pullback",
+   "decision": "forced close",
+   "price": "13351.4",
+   "pips": "74.3",
+   "part": "1",
+   "why": "20:30 UK close",
+   "order_sender": "closed"
+  },
+  {
+   "time_utc": "2026-11-06T20:30:00Z",
+   "reference": "AB261106124500-726c5504",
+   "strategy": "EMA pullback",
+   "decision": "forced close",
+   "price": "13351.4",
+   "pips": "43.2",
+   "part": "1",
+   "why": "20:30 UK close",
+   "order_sender": "closed"
+  },
+  {
+   "time_utc": "2026-11-06T20:30:00Z",
+   "reference": "AB261106133000-b61cb57a",
+   "strategy": "EMA pullback",
+   "decision": "forced close",
+   "price": "13351.4",
+   "pips": "26.1",
+   "part": "1",
+   "why": "20:30 UK close",
+   "order_sender": "closed"
+  },
+  {
+   "time_utc": "2026-11-06T20:30:00Z",
+   "reference": "AB261106175500-dbf9a851",
+   "strategy": "breakout",
+   "decision": "forced close",
+   "price": "13351.4",
+   "pips": "-0.5",
+   "part": "1",
+   "why": "20:30 UK close",
+   "order_sender": "closed"
+  }
+ ]
+}

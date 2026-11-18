@@ -1,0 +1,22 @@
+{
+ "2026-11-06": [
+  "04:10 EMA pullback sell: group 13426.4 to 13430.3 (turning_high 13426.4, S1 13427.1, turning_high 13430.3); stop 13436.8 (11.1 pips)",
+  "08:05 level reversal buy: group 13400 to 13402.7 (round_number 13400, turning_low 13401.7, turning_low 13402.7); stop 13395 (9.9 pips)",
+  "08:55 level reversal sell: group 13393.1 to 13396.1 (london_session_low 13393.1, turning_low 13396.1); stop 13402.6 (9.5 pips)",
+  "12:40 level reversal sell: group 13395.5 to 13400 (new_york_session_low 13395.5, turning_low 13396.1, S2 13399.1, round_number 13400); stop 13406.5 (8.9 pips)",
+  "12:45 EMA pullback sell: group 13396.1 to 13400 (turning_low 13396.1, S2 13399.1, round_number 13400); stop 13406.5 (11.9 pips)",
+  "13:30 EMA pullback sell: group 13373.9 to 13378.4 (turning_low 13373.9, turning_low 13378.4); stop 13386.4 (8.9 pips)"
+ ],
+ "2026-11-10": [
+  "07:45 range trade sell: group 13453.3 to 13457.9 (turning_low 13453.3, london_session_high 13457.9); stop 13464.4 (9.7 pips)",
+  "08:40 range trade sell: group 13458.6 to 13463.3 (london_session_high 13458.6, turning_high 13463.3); stop 13469.8 (15.1 pips)",
+  "14:05 level reversal sell: group 13396.1 to 13400 (turning_low 13396.1, new_york_session_low 13397.7, turning_low 13397.7, round_number 13400); stop 13406.5 (17.4 pips)",
+  "16:35 level reversal sell: group 13328.7 to 13328.7 (S2 13328.7); stop 13335.2 (18.8 pips)"
+ ],
+ "2026-11-13": [],
+ "2026-11-17": [
+  "06:00 level reversal sell: group 13200 to 13200 (round_number 13200); stop 13206.5 (7.7 pips)",
+  "16:20 level reversal buy: group 13213.5 to 13218.5 (R1 13213.5, new_york_session_high 13217.2, turning_low 13217.4, turning_high 13218.5); stop 13208.5 (10.2 pips)",
+  "17:15 EMA pullback buy: group 13219.8 to 13224.5 (turning_low 13219.8, turning_low 13219.9, new_york_session_high 13221.4, previous_day_high 13224.5, london_session_high 13224.5, turning_high 13224.5); stop 13214.8 (10.0 pips)"
+ ]
+}

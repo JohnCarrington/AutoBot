@@ -231,8 +231,11 @@ class Trading:
         td = self._trend_day(idea.time)
         if self.replay:
             sell = idea.direction == "sell"
-            fill = idea.entry_price if sell else idea.entry_price + (candle.buy_open - candle.sell_open)
-            self.sender.quote = lambda: (fill, fill)        # the research's fill: the entry, plus the spread for a buy
+            spread = candle.buy_open - candle.sell_open
+            fill = idea.entry_price if sell else idea.entry_price + spread
+            # the research's fill: the entry, plus the spread for a buy; as (bid, offer), so a sell's spread is known
+            bid, offer = (fill, fill + spread) if sell else (fill - spread, fill)
+            self.sender.quote = lambda: (bid, offer)
         r = self._place(idea, td)
         if not r.ok:
             return

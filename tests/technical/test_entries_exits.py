@@ -219,3 +219,101 @@ def test_one_startup_line_lists_every_switch(S, tmp_path):
     for name in SWITCHES:
         assert f"{name}=" in line
     assert "TRAIL_NO_LOSS=on" in line and "SCALE_OUT_REVERSAL=off" in line
+
+
+# ---- LEVEL_STOPS ----------------------------------------------------------------------------------------------------
+
+from strategies.common import EMA_PULLBACK, level_stop_context, level_stop_price  # noqa: E402
+
+
+def lv(t, p):
+    return SimpleNamespace(type=t, price=D(p))
+
+
+# the 17 November 07:35 picture: the pivot 13194.4 on its own, round number 13200 and the New York high 13205.2
+LEVELS = SimpleNamespace(groups=[
+    {"low": D("13168.0"), "high": D("13172.8"), "members": [lv("previous_day_low", "13168.0"), lv("london_session_low", "13172.8")]},
+    {"low": D("13194.4"), "high": D("13194.4"), "members": [lv("pivot", "13194.4")]},
+    {"low": D("13200"), "high": D("13200"), "members": [lv("round_number", "13200")]},
+    {"low": D("13205.2"), "high": D("13205.2"), "members": [lv("new_york_session_high", "13205.2")]},
+])
+
+
+def test_level_stops_find_the_nearest_group_beyond_the_entry(S, tmp_path):
+    s = on(S, tmp_path, level_stops=True)
+    sell = level_stop_context(s, LEVEL_REVERSAL, SELL, D("13191.7"), LEVELS)
+    assert sell["level_stop_edge"] == D("13194.4") and sell["level_stop_group"] == "13194.4 to 13194.4 (pivot 13194.4)"
+    buy = level_stop_context(s, EMA_PULLBACK, BUY, D("13185.0"), LEVELS)
+    assert buy["level_stop_edge"] == D("13168.0")           # the far edge of 13168.0 to 13172.8
+    assert level_stop_context(on(S, tmp_path), LEVEL_REVERSAL, SELL, D("13191.7"), LEVELS) == {}   # off
+    assert level_stop_context(s, BOLLINGER_BOUNCE, SELL, D("13191.7"), LEVELS) == {}
+
+
+def test_level_stops_no_group_within_20_pips_keeps_the_strategys_own_stop(S, tmp_path):
+    s = on(S, tmp_path, level_stops=True)
+    got = level_stop_context(s, RANGE_TRADE, BUY, D("13188.1"), LEVELS)      # 13168.0 is 20.1 pips below
+    assert "level_stop_edge" not in got and "20.1 pips away" in got["level_stop_none"]
+    assert level_stop_context(s, RANGE_TRADE, BUY, D("13188.0"), LEVELS)["level_stop_edge"] == D("13168.0")   # 20.0
+    i = idea(RANGE_TRADE, BUY, price="13188.1", context=got)
+    assert level_stop_price(s, i) is None                   # the fixed 12 pips stays
+
+
+def test_level_stops_5_beyond_the_group(S, tmp_path):
+    s = on(S, tmp_path, level_stops=True)
+    i = idea(LEVEL_REVERSAL, SELL, price="13191.7", context={"stop_price": D("13205.1"), "level_stop_edge": D("13194.4"),
+                                                               "level_stop_group": "13194.4 to 13194.4 (pivot 13194.4)"})
+    assert level_stop_price(s, i) == D("13199.4")           # replaces the level reversal's 13205.1
+    b = idea(EMA_PULLBACK, BUY, price="13190.0", context={"level_stop_edge": D("13168.0")})
+    assert level_stop_price(s, b) == D("13163.0")
+
+
+def test_the_order_sender_adds_the_spread_for_a_sell_and_refuses_beyond_20(S, tmp_path):
+    s = on(S, tmp_path, level_stops=True)
+    sender, ig, alerts, sleeps, clock = make(s, quote=(D("13191.7"), D("13193.2")))
+    from safety.rules import order_for
+    i = idea(LEVEL_REVERSAL, SELL, price="13191.7", context={"stop_price": D("13205.1"), "level_stop_edge": D("13194.4"),
+                                                               "level_stop_group": "13194.4 to 13194.4 (pivot 13194.4)"})
+    dist, why = sender._stop_distance(i, order_for(s, i))
+    assert (dist, why) == (D("9.2"), "")                   # 13194.4 + 5 + 1.5 spread = 13200.9, from the bid 13191.7
+    far = idea(EMA_PULLBACK, SELL, price="13180.0", context={"level_stop_edge": D("13194.4"),
+                                                              "level_stop_group": "13194.4 to 13194.4 (pivot 13194.4)"})
+    sender2, *_ = make(s, quote=(D("13180.0"), D("13181.5")))
+    dist, why = sender2._stop_distance(far, order_for(s, far))
+    assert dist is None and why == ("LEVEL_STOPS: the stop 13200.9, 5 pips beyond the level group 13194.4 to 13194.4 "
+                                    "(pivot 13194.4) plus the spread (at most 3), is 20.9 pips from the entry, more than 20")
+    r = sender2.place(far, calendar=[])
+    assert not r.ok and r.reasons == [why]
+    assert records(sender2)[-1]["event"] == "safety refused"
+
+
+def test_level_stops_off_the_stops_are_as_before(S, tmp_path):
+    s = on(S, tmp_path)
+    sender, *_ = make(s, quote=(D("13191.7"), D("13193.2")))
+    from safety.rules import order_for
+    i = idea(LEVEL_REVERSAL, SELL, price="13191.7", context={"stop_price": D("13205.1"), "level_stop_edge": D("13194.4")})
+    assert sender._stop_distance(i, order_for(s, i)) == (D("13.4"), "")
+
+
+def test_the_spread_added_to_a_sells_level_stop_is_capped_at_3(S, tmp_path):
+    """6 November 13:30: the payrolls candle opened with a 15.7-pip spread. The EMA pullback sell at 13377.5, the group
+    13373.9 to 13378.4: 13378.4 + 5 + 3 (capped) = 13386.4, 8.9 pips: it opens (21.6 pips, refused, without the cap)."""
+    s = on(S, tmp_path, level_stops=True)
+    sender, *_ = make(s, quote=(D("13377.5"), D("13393.2")))
+    from safety.rules import order_for
+    i = idea(EMA_PULLBACK, SELL, price="13377.5", context={"level_stop_edge": D("13378.4"),
+                                                            "level_stop_group": "13373.9 to 13378.4"})
+    assert sender._stop_distance(i, order_for(s, i)) == (D("8.9"), "")
+
+
+def test_ig_refusing_the_opening_order_for_its_stop_is_recorded_and_not_sent_again(S, tmp_path):
+    s = on(S, tmp_path, level_stops=True)
+    sender, ig, alerts, sleeps, clock = make(s, quote=(D("13191.7"), D("13193.2")))
+    ig.post_open = {"dealStatus": "REJECTED", "reason": "ATTACHED_ORDER_LEVEL_ERROR"}
+    i = idea(LEVEL_REVERSAL, SELL, price="13191.7", context={"stop_price": D("13205.1"), "level_stop_edge": D("13194.4"),
+                                                               "level_stop_group": "13194.4 to 13194.4 (pivot 13194.4)"})
+    r = sender.place(i, calendar=[])
+    assert not r.ok and r.what == "refused" and "ATTACHED_ORDER_LEVEL_ERROR" in r.reasons[0]
+    refused = [x for x in records(sender) if x["event"] == "refused"]
+    assert len(refused) == 1 and refused[0]["reason"] == "ATTACHED_ORDER_LEVEL_ERROR"
+    opens = [c for c in ig.calls if c[0] == "POST" and c[1] == "/positions/otc"]
+    assert len(opens) == 1                                  # sent once, never retried

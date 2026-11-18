@@ -78,7 +78,8 @@ from typing import Any, Callable
 from ig.errors import IGRequestError
 from safety.refusals import min_stop_pips, on_refusal
 from safety.rules import AccountFunds, OpenTrade, decide, order_for
-from strategies.common import RANGE_TRADE, stop_price, take_profit_pips
+from prices.model import plain
+from strategies.common import RANGE_TRADE, level_stop_price, stop_price, take_profit_pips
 
 log = logging.getLogger("autobot.orders")
 
@@ -493,11 +494,24 @@ class OrderSender:
         if not q:
             return None, f"no current price to turn the {idea.strategy}'s stop price into a distance"
         bid, offer = (Decimal(str(x)) for x in q)
+        level = level_stop_price(self.s, idea)
+        if level is not None and idea.direction == "sell":
+            # LEVEL_STOPS: plus the spread for a sell, at most level_stops.max_spread_pips (owner, 18 November 2026)
+            sp = Decimal(sp) + min(offer - bid, Decimal(self.s.level_stops.max_spread_pips) * self.ppp)
         dist = (Decimal(sp) - bid) if idea.direction == "sell" else (offer - Decimal(sp))
         dist = dist.quantize(Decimal("0.1"))
         if dist <= 0:
             return None, (f"the price ({bid if idea.direction == 'sell' else offer}) is already past the "
                           f"{idea.strategy}'s stop price ({sp})")
+        if level is not None:
+            most = Decimal(self.s.level_stops.widest_stop_pips) * self.ppp
+            if dist > most:                                 # the widest stop (owner, 18 November 2026)
+                ctx = idea.context
+                return None, (f"LEVEL_STOPS: the stop {plain(sp)}, {self.s.level_stops.beyond_group_pips} pips beyond "
+                              f"the level group {ctx.get('level_stop_group')}"
+                              f"{' plus the spread (at most ' + plain(self.s.level_stops.max_spread_pips) + ')' if idea.direction == 'sell' else ''}, is "
+                              f"{plain((dist / self.ppp).quantize(Decimal('0.1')))} pips from the entry, more than "
+                              f"{self.s.level_stops.widest_stop_pips}")
         return dist, ""
 
     def place(self, idea: Any, *, paused: bool = False, trend_day: str | None = None,
