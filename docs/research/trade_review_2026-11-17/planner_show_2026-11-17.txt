@@ -1,0 +1,104 @@
+######## .venv/bin/python -m planner show --pair GBPUSD --at 2026-11-17T10:00:00Z   (code dd9d36d; writes nothing)
+STRUCTURAL TRADE PLANNER - GBPUSD   (OBSERVE ONLY - DOES NOT CONTROL TRADING)
+as at 2026-11-17T10:00:00Z; data to 2026-11-17T10:00:00Z (fresh)
+
+Dominant direction:  BEARISH
+   - 4-hour structure: lower highs and lower lows: swing highs 13250.9 then 13224.5, swing lows 13334 then 13312.2
+   - 4-hour EMA 7/13/21 stack: 7 < 13 < 21 (down)
+   - 4-hour close 13186 below the EMA100 13317.8
+   - 4-hour EMA200: warming up (not used)
+   - 4-hour EMA100 falling 16.5 pips over 6 candles
+   - warning: the daily structure (up) is against the 4-hour structure (down)
+Condition:           CORRECTION_ACTIVE
+   - impulse from the 4h swing high 13224.5 (Mon 16 Nov 08:00 GMT) to the low 13168 (Tue 17 Nov 00:00 GMT)
+   - new low: 13168 beyond the previous swing low 13312.2
+   - 4-hour MACD line -18.01, histogram -7.65, moving towards zero for 3 candles (momentum weakening)
+   - 4-hour RSI 36.8 (back inside its line after the impulse)
+   - correction under way: an hourly close above the hourly Bollinger middle (Tue 17 Nov 03:00 GMT) after the impulse low, 4-hour structure intact
+
+Opportunity:         corrective reversal
+Preferred trade:     SELL
+Expected movement:   UP into resistance, then DOWN
+Entry zone:          13189.7-13200 (Major; families: pivot, psychological, session, structure; tests 14)
+   - 4-hour swing low 13189.7
+   - 4-hour swing low 13193.2
+   - daily pivot 13194.4
+   - 4-hour swing low 13198.6 (former support, now resistance)
+   - previous week low 13199.9
+   - round number 13200
+Reference entry:     13194.4 (daily pivot)
+Reachability:        NEAR
+Why this zone:       Major zone (4 families: pivot, psychological, session, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals
+Destinations:        intermediate 13183.8, primary 13145.1, extended -
+Invalidation:
+   - an hourly close at or above 13203 (3 pips beyond the zone top)
+   - a 4-hour close at or above 13227.5 (beyond the last 4-hour swing high 13224.5)
+   - the 4-hour direction no longer BEARISH
+   - price reaching the primary destination 13145.1 before the zone
+
+Warming up (not used): 4h EMA200 (448 of 592 candles); 1w EMA100 (209 of 296 candles); 1w EMA200 (209 of 592 candles)
+Threshold note: a 4h turn at 13219.9 moved 31.0 pips within 6 candles, short of the 40.0 needed: not counted as a swing (provisional threshold, recorded for review)
+
+######## .venv/bin/python -m planner show --pair GBPUSD --at 2026-11-17T16:30:00Z   (code dd9d36d; writes nothing)
+STRUCTURAL TRADE PLANNER - GBPUSD   (OBSERVE ONLY - DOES NOT CONTROL TRADING)
+as at 2026-11-17T16:30:00Z; data to 2026-11-17T16:30:00Z (fresh)
+
+Dominant direction:  BEARISH
+   - 4-hour structure: lower highs and lower lows: swing highs 13250.9 then 13224.5, swing lows 13312.2 then 13168
+   - 4-hour EMA 7/13/21 stack: 7 < 13 < 21 (down)
+   - 4-hour close 13203.4 below the EMA100 13313.1
+   - 4-hour EMA200: warming up (not used)
+   - 4-hour EMA100 falling 15.6 pips over 6 candles
+   - warning: the daily structure (up) is against the 4-hour structure (down)
+Condition:           CORRECTION_ACTIVE
+   - impulse from the 4h swing high 13224.5 (Mon 16 Nov 08:00 GMT) to the low 13168 (Tue 17 Nov 00:00 GMT)
+   - new low: 13168 beyond the previous swing low 13312.2
+   - 4-hour MACD line -17.90, histogram -6.59, moving towards zero for 3 candles (momentum weakening)
+   - 4-hour RSI 76.6 (back inside its line after the impulse)
+   - correction under way: an hourly close above the hourly Bollinger middle (Tue 17 Nov 03:00 GMT) after the impulse low, 4-hour structure intact
+
+Opportunity:         corrective reversal
+Preferred trade:     SELL
+Expected movement:   UP into resistance, then DOWN
+Entry zone:          13213.5-13220.7 (Major; families: higher-timeframe structure, pivot, session, structure; tests 37)
+   - daily R1 13213.5
+   - daily swing low 13215.5
+   - hourly swing low 13217.4 (former support, now resistance)
+   - hourly swing high 13218.5
+   - hourly swing low 13219.8 (former support, now resistance)
+   - hourly swing low 13219.9 (former support, now resistance)
+   - New York session high (so far) 13220.7
+Reference entry:     13213.5 (daily R1)
+Reachability:        NEAR
+Why this zone:       Major zone (4 families: higher-timeframe structure, pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals
+Destinations:        intermediate 13209.0, primary 13200, extended 13172.8
+Invalidation:
+   - an hourly close at or above 13223.7 (3 pips beyond the zone top)
+   - a 4-hour close at or above 13227.5 (beyond the last 4-hour swing high 13224.5)
+   - the 4-hour direction no longer BEARISH
+   - price reaching the primary destination 13200 before the zone
+
+Warming up (not used): 4h EMA200 (450 of 592 candles); 1w EMA100 (209 of 296 candles); 1w EMA200 (209 of 592 candles)
+
+######## .venv/bin/python -m planner show --pair GBPUSD --at 2026-11-17T17:40:00Z   (code dd9d36d; writes nothing)
+STRUCTURAL TRADE PLANNER - GBPUSD   (OBSERVE ONLY - DOES NOT CONTROL TRADING)
+as at 2026-11-17T17:40:00Z; data to 2026-11-17T17:40:00Z (fresh)
+
+Dominant direction:  BEARISH
+   - 4-hour structure: lower highs and lower lows: swing highs 13250.9 then 13224.5, swing lows 13312.2 then 13168
+   - 4-hour EMA 7/13/21 stack: 7 < 13 < 21 (down)
+   - 4-hour close 13203.4 below the EMA100 13313.1
+   - 4-hour EMA200: warming up (not used)
+   - 4-hour EMA100 falling 15.6 pips over 6 candles
+   - warning: the daily structure (up) is against the 4-hour structure (down)
+Condition:           CORRECTION_ACTIVE
+   - impulse from the 4h swing high 13224.5 (Mon 16 Nov 08:00 GMT) to the low 13168 (Tue 17 Nov 00:00 GMT)
+   - new low: 13168 beyond the previous swing low 13312.2
+   - 4-hour MACD line -17.90, histogram -6.59, moving towards zero for 3 candles (momentum weakening)
+   - 4-hour RSI 76.6 (back inside its line after the impulse)
+   - correction under way: an hourly close above the hourly Bollinger middle (Tue 17 Nov 03:00 GMT) after the impulse low, 4-hour structure intact
+
+NO RECOMMENDATION: the primary destination 13219.9 is already reached (the Tue 17 Nov 17:35 GMT 5-minute candle reached 13221.9, within 3 pips of the destination zone 13213.5-13219.9); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13224.5-13232.5 is not recommended
+
+Warming up (not used): 4h EMA200 (450 of 592 candles); 1w EMA100 (209 of 296 candles); 1w EMA200 (209 of 592 candles)
+

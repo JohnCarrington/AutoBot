@@ -1,0 +1,43 @@
+Hourly read (analyser/hourly_read.py HourlyReader, the bot's stored hourly candles, sell price) as it stood at each hour of Tue 17 Nov 2026 (UK = UTC):
+  00:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13175.2 to 13205.2
+  01:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13175.2 to 13205.2
+  02:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13168 to 13202.5
+  03:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13168 to 13201
+  04:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13168 to 13198.1
+  05:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13168 to 13198.1
+  06:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13168 to 13202.5
+  07:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13168 to 13202.5
+  08:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13168 to 13202.5
+  09:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13168 to 13202.5
+  10:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13168 to 13204.4
+  11:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13168 to 13204.4
+  12:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13168 to 13204.4
+  13:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13168 to 13204.4
+  14:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13172.8 to 13204.4
+  15:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13172.8 to 13204.4
+  16:00 hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13172.8 to 13210.4
+  17:00 hourly rally: the Tue 17 Nov 16:00 GMT hourly candle closed at 13215.3, 4.9 pips above the high 13210.4 of the 12 hourly candles before it; the hourly range 13172.8 to 13220.7
+  18:00 hourly rally: the Tue 17 Nov 17:00 GMT hourly candle closed at 13224, 3.3 pips above the high 13220.7 of the 12 hourly candles before it; the hourly range 13172.8 to 13226.3
+  19:00 hourly rally: the Tue 17 Nov 17:00 GMT hourly candle closed at 13224, 3.3 pips above the high 13220.7 of the 12 hourly candles before it; the hourly range 13172.8 to 13227.9
+  20:00 hourly rally: the Tue 17 Nov 17:00 GMT hourly candle closed at 13224, 3.3 pips above the high 13220.7 of the 12 hourly candles before it; the hourly range 13172.8 to 13227.9
+  21:00 hourly rally: the Tue 17 Nov 17:00 GMT hourly candle closed at 13224, 3.3 pips above the high 13220.7 of the 12 hourly candles before it; the hourly range 13172.8 to 13227.9
+  22:00 hourly rally: the Tue 17 Nov 17:00 GMT hourly candle closed at 13224, 3.3 pips above the high 13220.7 of the 12 hourly candles before it; the hourly range 13172.8 to 13227.9
+  23:00 hourly rally: the Tue 17 Nov 17:00 GMT hourly candle closed at 13224, 3.3 pips above the high 13220.7 of the 12 hourly candles before it; the hourly range 13172.8 to 13227.9
+
+EMA pullback step 0 (strategies/ema_pullback/strategy.py HourlyTrendReader) at 5 minutes past each hour:
+  05:05 HourlyTrend(direction=None, qualified=False, why='hourly EMAs not in order and all moving one way (8 13187.0, 13 13187.3, 20 13189.8)')
+  06:05 HourlyTrend(direction=None, qualified=False, why='hourly EMAs not in order and all moving one way (8 13189.9, 13 13189.2, 20 13190.7)')
+  07:05 HourlyTrend(direction=None, qualified=False, why='hourly EMAs not in order and all moving one way (8 13189.4, 13 13188.9, 20 13190.4)')
+  08:05 HourlyTrend(direction=None, qualified=False, why='hourly EMAs not in order and all moving one way (8 13188.6, 13 13188.5, 20 13190.0)')
+  09:05 HourlyTrend(direction=None, qualified=False, why='hourly EMAs not in order and all moving one way (8 13189.1, 13 13188.8, 20 13190.1)')
+  10:05 HourlyTrend(direction=None, qualified=False, why='hourly EMAs not in order and all moving one way (8 13191.0, 13 13190.1, 20 13190.8)')
+  11:05 HourlyTrend(direction=None, qualified=False, why='hourly EMAs not in order and all moving one way (8 13190.0, 13 13189.5, 20 13190.4)')
+  12:05 HourlyTrend(direction=None, qualified=False, why='hourly EMAs not in order and all moving one way (8 13190.0, 13 13189.6, 20 13190.3)')
+  13:05 HourlyTrend(direction=None, qualified=False, why='hourly EMAs not in order and all moving one way (8 13191.1, 13 13190.4, 20 13190.8)')
+  14:05 HourlyTrend(direction=None, qualified=False, why='hourly EMAs not in order and all moving one way (8 13190.2, 13 13189.9, 20 13190.4)')
+  15:05 HourlyTrend(direction=None, qualified=False, why='hourly EMAs not in order and all moving one way (8 13190.4, 13 13190.1, 20 13190.5)')
+  16:05 HourlyTrend(direction='buy', qualified=True, why='hourly 8/13/20 EMAs in order, rising; slopes 0.72, 0.52, 0.30 pips/hour (min 0.16); gaps 1.30 and 0.25 pips (min 0.25 and 0.2)')
+  17:05 HourlyTrend(direction='buy', qualified=True, why='hourly 8/13/20 EMAs in order, rising; slopes 2.66, 1.80, 1.18 pips/hour (min 0.16); gaps 2.86 and 1.34 pips (min 0.25 and 0.2)')
+  18:05 HourlyTrend(direction='buy', qualified=True, why='hourly 8/13/20 EMAs in order, rising; slopes 4.51, 3.11, 2.11 pips/hour (min 0.16); gaps 4.50 and 2.58 pips (min 0.25 and 0.2)')
+  19:05 HourlyTrend(direction='buy', qualified=True, why='hourly 8/13/20 EMAs in order, rising; slopes 4.61, 3.38, 2.38 pips/hour (min 0.16); gaps 5.00 and 3.23 pips (min 0.25 and 0.2)')
+  20:05 HourlyTrend(direction='buy', qualified=True, why='hourly 8/13/20 EMAs in order, rising; slopes 3.49, 2.83, 2.11 pips/hour (min 0.16); gaps 4.83 and 3.49 pips (min 0.25 and 0.2)')

@@ -1,0 +1,1227 @@
+2026-11-16 22:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 21:55 GMT: buy O 13188.5 H 13190.7 L 13188.4 C 13190.6 | sell O 13183 H 13184.7 L 13182.5 C 13183.3
+2026-11-16 22:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Mon 16 Nov 21:00 GMT: buy O 13181 H 13190.7 L 13178.5 C 13190.6 | sell O 13179.5 H 13185 L 13177 C 13183.3 (from 12 of 12 5-minute candles)
+2026-11-16 22:00:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 22:02:47 GMT WARNING autobot.prices: [GBPUSD] NO PRICES from IG for 120 seconds while the market is open (warning after 120 seconds).
+2026-11-16 22:02:47 GMT WARNING autobot.alerts: ALERT stream-quiet: NO PRICES from IG for 120 seconds while the market is open (warning after 120 seconds).
+2026-11-16 22:02:47 GMT INFO    autobot.alerts: Telegram message sent (message 13065): AutoBot PROBLEM: NO PRICES from IG for 120 seconds while the market is open (warning after 120 seconds).
+2026-11-16 22:04:53 GMT WARNING autobot.ig.stream: Prices are arriving again (after 246 seconds with none).
+2026-11-16 22:04:53 GMT INFO    autobot.orders: Order record: closed at IG AB261116200003-22ddaab9
+2026-11-16 22:04:53 GMT INFO    autobot.orders: Order record: funds 
+2026-11-16 22:04:53 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🔴 TRADE CLOSED
+2026-11-16 22:04:53 GMT INFO    autobot.alerts: Telegram message sent (message 13066): [AutoBot] 🔴 TRADE CLOSED
+2026-11-16 22:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 22:00 GMT: buy O 13190.7 H 13197.7 L 13190.7 C 13194.7 | sell O 13183.4 H 13183.4 L 13177.8 C 13177.8
+2026-11-16 22:05:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 22:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 22:05 GMT: buy O 13195.1 H 13197.1 L 13194.4 C 13197.1 | sell O 13178.2 H 13180.2 L 13177.5 C 13180.2
+2026-11-16 22:10:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 22:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 22:10 GMT: buy O 13197 H 13197.2 L 13196.9 C 13197.2 | sell O 13180.1 H 13180.3 L 13180 C 13180.3
+2026-11-16 22:15:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 22:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 22:15 GMT: buy O 13197.3 H 13200.1 L 13197.3 C 13199.6 | sell O 13180.4 H 13183.2 L 13180.4 C 13182.7
+2026-11-16 22:20:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 22:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 22:20 GMT: buy O 13201.4 H 13201.4 L 13199.3 C 13201.4 | sell O 13184.5 H 13184.5 L 13182.4 C 13184.5
+2026-11-16 22:25:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 22:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 22:25 GMT: buy O 13201.3 H 13201.3 L 13200.1 C 13201.1 | sell O 13184.6 H 13185.8 L 13184.6 C 13184.7
+2026-11-16 22:30:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 22:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 22:30 GMT: buy O 13201 H 13201.4 L 13198.3 C 13198.9 | sell O 13184.8 H 13185.2 L 13181.4 C 13182
+2026-11-16 22:35:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 22:35:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Mon 16 Nov 22:30 GMT  ranging (none): bands 8.5 pips wide (close together: 6 to 18) and flat (upper 0.0, lower -0.0 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 1.2 pips
+2026-11-16 22:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 22:35 GMT: buy O 13198.4 H 13198.5 L 13195.8 C 13197.3 | sell O 13181.5 H 13181.6 L 13178.9 C 13180.4
+2026-11-16 22:40:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 22:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 22:40 GMT: buy O 13197.2 H 13198.5 L 13196.1 C 13196.3 | sell O 13180.3 H 13181.6 L 13180.1 C 13180.1
+2026-11-16 22:45:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 22:45:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Mon 16 Nov 22:40 GMT  consolidation (none): bands 7.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 3), middle band 0.1 pips/candle, no close outside the bands for 6 candles, average body 1.1 pips, green/red 1.7
+2026-11-16 22:47:00 GMT INFO    autobot.prices: [GBPUSD] Status: 63761 ticks (671 with a price carried forward, 8 skipped) and 303 five-minute candles stored since start; last tick Mon 16 Nov 2026 22:46:39 GMT: buy 13193.4 sell 13176.5.
+2026-11-16 22:47:00 GMT INFO    autobot.prices.service: Stream connections 2, drops 1, re-logins 0.
+2026-11-16 22:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 22:45 GMT: buy O 13196.4 H 13196.6 L 13192.1 C 13192.4 | sell O 13180 H 13180.3 L 13175.2 C 13175.5
+2026-11-16 22:50:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 22:50:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Mon 16 Nov 22:45 GMT  emerging trend (down): broke out of the consolidation: close 13175.5 below the lower band 13176.9
+2026-11-16 22:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 22:50 GMT: buy O 13192.3 H 13194.6 L 13192.3 C 13194.6 | sell O 13175.4 H 13177.7 L 13175.4 C 13177.7
+2026-11-16 22:55:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 22:58:24 GMT INFO    autobot.prices.service: Received SIGTERM: stopping.
+2026-11-16 22:58:25 GMT INFO    autobot.ig: Logged out of IG: confirmed.
+2026-11-16 22:58:25 GMT INFO    autobot.prices.service: AutoBot price service stopped at Mon 16 Nov 2026 22:58:25 GMT.
+2026-11-16 22:58:25 GMT INFO    autobot.prices: [GBPUSD] 63964 ticks and 305 five-minute candles stored since start.
+2026-11-16 23:00:27 GMT INFO    autobot.prices.service: AutoBot price service starting for GBPUSD (CS.D.GBPUSD.TODAY.IP).
+2026-11-16 23:00:28 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 01 Nov 21:20 GMT to Sun 01 Nov 21:25 GMT (already recorded).
+2026-11-16 23:00:28 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 01 Nov 21:35 GMT to Sun 01 Nov 21:40 GMT (already recorded).
+2026-11-16 23:00:28 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 08 Nov 21:15 GMT to Sun 08 Nov 21:20 GMT (already recorded).
+2026-11-16 23:00:28 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 08 Nov 21:35 GMT to Sun 08 Nov 21:40 GMT (already recorded).
+2026-11-16 23:00:28 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Sun 08 Nov 21:45 GMT to Sun 08 Nov 21:55 GMT (already recorded).
+2026-11-16 23:00:28 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 15 Nov 21:05 GMT to Sun 15 Nov 21:10 GMT (already recorded).
+2026-11-16 23:00:28 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Sun 15 Nov 21:20 GMT to Sun 15 Nov 21:30 GMT (already recorded).
+2026-11-16 23:00:28 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 3 candle(s) missing from Sun 15 Nov 21:40 GMT to Sun 15 Nov 21:55 GMT (already recorded).
+2026-11-16 23:00:28 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Sun 05 Apr 00:00 BST to Mon 06 Apr 00:00 BST (already recorded).
+2026-11-16 23:00:28 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Fri 19 Jun 00:00 BST to Fri 19 Jun 22:00 BST (already recorded).
+2026-11-16 23:00:28 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Sun 19 Jul 00:00 BST to Mon 20 Jul 00:00 BST (already recorded).
+2026-11-16 23:00:28 GMT WARNING autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Mon 16 Nov 22:55 GMT to Mon 16 Nov 23:00 GMT, since the last stored candle (the bot was not running). Recorded; not filled.
+2026-11-16 23:00:28 GMT INFO    autobot.prices.store: Gap recorded: 5m Mon 16 Nov 22:55 GMT to Mon 16 Nov 23:00 GMT (1 candle(s)), found since the last candle, at start-up.
+2026-11-16 23:00:28 GMT WARNING autobot.alerts: ALERT store-problem: GBPUSD: GAP in 5m candles during market hours: 1 candle(s) missing from Mon 16 Nov 22:55 GMT to Mon 16 Nov 23:00 GMT, since the last stored candle (the bot was not running); recorded, not filled
+2026-11-16 23:00:28 GMT INFO    autobot.alerts: Telegram message sent (message 13067): AutoBot PROBLEM: GBPUSD: GAP in 5m candles during market hours: 1 candle(s) missing from Mon 16 Nov 22:55 GMT to Mon 16 Nov 23:00 GMT, since the last stored candle (the bot was not running); recorded, not filled
+2026-11-16 23:00:29 GMT INFO    autobot.prices: [GBPUSD] Store check at start-up: 7320 candle(s) checked (5m 4643, 1h 1739, 4h 99, 1d 630, 1w 209); 0 problem(s); 0 new gap(s); 11 gap(s) already recorded.
+2026-11-16 23:00:29 GMT INFO    autobot.prices: [GBPUSD] Newest 5-minute candle in the store: Mon 16 Nov 22:50 GMT to Mon 16 Nov 22:55 GMT, finished 5 minute(s) ago.
+2026-11-16 23:00:29 GMT INFO    autobot.prices: [GBPUSD] Gap since the last stored candle: 1 five-minute candle(s) during market hours, recorded and not filled.
+2026-11-16 23:00:29 GMT WARNING autobot.levels: Levels: The previous day's daily candle (Sun 15 Nov) is missing 6 five-minute candle(s); pivots use it as stored.
+2026-11-16 23:00:29 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 23:00:31 GMT INFO    autobot.analyser: [GBPUSD] Market states replayed from the week's open (305 candles): emerging trend (down) since 2026-11-16 22:45 UTC; 44 state change(s) this week, recorded in /opt/autobot/data/analyser/GBPUSD/state_changes.jsonl.
+2026-11-16 23:00:31 GMT INFO    autobot.ig: Logged in to IG (version 2 login). Active account at login: ****G4CJ. Streaming address received.
+2026-11-16 23:00:32 GMT INFO    autobot.ig: Using account ****G4CJ (already active). IG's default account was not changed.
+2026-11-16 23:00:32 GMT INFO    autobot.orders: Order record: found at IG AB261116142600-28e4ce2b
+2026-11-16 23:00:32 GMT INFO    autobot.orders: Order record: funds 
+2026-11-16 23:00:32 GMT INFO    autobot.orders: Order record: ready 
+2026-11-16 23:00:32 GMT ERROR   autobot.prices.service: Trading not started.
+2026-11-16 23:00:32 GMT WARNING autobot.alerts: ALERT trading-not-started: Trading did not start (NameError: name 'trail' is not defined). The prices go on.
+2026-11-16 23:00:32 GMT INFO    autobot.alerts: Telegram message sent (message 13068): AutoBot PROBLEM: Trading did not start (NameError: name 'trail' is not defined). The prices go on.
+2026-11-16 23:00:33 GMT INFO    autobot.ig.stream: Price stream connected (CONNECTED:WS-STREAMING).
+2026-11-16 23:00:33 GMT INFO    autobot.ig.stream: Subscribed to CHART:CS.D.GBPUSD.TODAY.IP:5MINUTE.
+2026-11-16 23:00:33 GMT INFO    autobot.ig.stream: Subscribed to CHART:CS.D.GBPUSD.TODAY.IP:TICK.
+2026-11-16 23:00:35 GMT INFO    autobot.prices: [GBPUSD] Tick skipped (BID blank and not yet received on this connection). IG sent: BID (sell)=None OFR (buy)='13189.7' UTM='1794870035379'
+2026-11-16 23:03:35 GMT INFO    autobot.prices.service: Received SIGTERM: stopping.
+2026-11-16 23:03:36 GMT INFO    autobot.ig: Logged out of IG: confirmed.
+2026-11-16 23:03:36 GMT INFO    autobot.prices.service: AutoBot price service stopped at Mon 16 Nov 2026 23:03:36 GMT.
+2026-11-16 23:03:36 GMT INFO    autobot.prices: [GBPUSD] 57 ticks and 0 five-minute candles stored since start.
+2026-11-16 23:07:19 GMT INFO    autobot.prices.service: AutoBot price service starting for GBPUSD (CS.D.GBPUSD.TODAY.IP).
+2026-11-16 23:07:20 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 01 Nov 21:20 GMT to Sun 01 Nov 21:25 GMT (already recorded).
+2026-11-16 23:07:20 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 01 Nov 21:35 GMT to Sun 01 Nov 21:40 GMT (already recorded).
+2026-11-16 23:07:20 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 08 Nov 21:15 GMT to Sun 08 Nov 21:20 GMT (already recorded).
+2026-11-16 23:07:20 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 08 Nov 21:35 GMT to Sun 08 Nov 21:40 GMT (already recorded).
+2026-11-16 23:07:20 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Sun 08 Nov 21:45 GMT to Sun 08 Nov 21:55 GMT (already recorded).
+2026-11-16 23:07:20 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 15 Nov 21:05 GMT to Sun 15 Nov 21:10 GMT (already recorded).
+2026-11-16 23:07:20 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Sun 15 Nov 21:20 GMT to Sun 15 Nov 21:30 GMT (already recorded).
+2026-11-16 23:07:20 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 3 candle(s) missing from Sun 15 Nov 21:40 GMT to Sun 15 Nov 21:55 GMT (already recorded).
+2026-11-16 23:07:20 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Sun 05 Apr 00:00 BST to Mon 06 Apr 00:00 BST (already recorded).
+2026-11-16 23:07:20 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Fri 19 Jun 00:00 BST to Fri 19 Jun 22:00 BST (already recorded).
+2026-11-16 23:07:20 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Sun 19 Jul 00:00 BST to Mon 20 Jul 00:00 BST (already recorded).
+2026-11-16 23:07:20 GMT WARNING autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Mon 16 Nov 22:55 GMT to Mon 16 Nov 23:05 GMT, since the last stored candle (the bot was not running). Recorded; not filled.
+2026-11-16 23:07:20 GMT INFO    autobot.prices.store: Gap recorded: 5m Mon 16 Nov 22:55 GMT to Mon 16 Nov 23:05 GMT (2 candle(s)), found since the last candle, at start-up.
+2026-11-16 23:07:20 GMT WARNING autobot.alerts: ALERT store-problem: GBPUSD: GAP in 5m candles during market hours: 2 candle(s) missing from Mon 16 Nov 22:55 GMT to Mon 16 Nov 23:05 GMT, since the last stored candle (the bot was not running); recorded, not filled
+2026-11-16 23:07:20 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: GBPUSD: GAP in 5m candles during market hours: 2 candle(s) missing from Mon 16 Nov 22:55 GMT to Mon 16 Nov 23:05 GMT, since the last stored candle (the bot was not running); recorded, not filled
+2026-11-16 23:07:20 GMT WARNING autobot.prices: [GBPUSD] 1h candle Mon 16 Nov 22:00 GMT built from only 11 of 12 5-minute candles (some are missing).
+2026-11-16 23:07:20 GMT INFO    autobot.prices: [GBPUSD] Store check at start-up: 7320 candle(s) checked (5m 4643, 1h 1739, 4h 99, 1d 630, 1w 209); 0 problem(s); 0 new gap(s); 11 gap(s) already recorded.
+2026-11-16 23:07:20 GMT INFO    autobot.prices: [GBPUSD] Newest 5-minute candle in the store: Mon 16 Nov 22:50 GMT to Mon 16 Nov 22:55 GMT, finished 12 minute(s) ago.
+2026-11-16 23:07:20 GMT INFO    autobot.prices: [GBPUSD] Gap since the last stored candle: 2 five-minute candle(s) during market hours, recorded and not filled.
+2026-11-16 23:07:20 GMT WARNING autobot.levels: Levels: The previous day's daily candle (Sun 15 Nov) is missing 6 five-minute candle(s); pivots use it as stored.
+2026-11-16 23:07:20 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 23:07:23 GMT INFO    autobot.analyser: [GBPUSD] Market states replayed from the week's open (305 candles): emerging trend (down) since 2026-11-16 22:45 UTC; 44 state change(s) this week, recorded in /opt/autobot/data/analyser/GBPUSD/state_changes.jsonl.
+2026-11-16 23:07:24 GMT INFO    autobot.ig: Logged in to IG (version 2 login). Active account at login: ****G4CJ. Streaming address received.
+2026-11-16 23:07:24 GMT INFO    autobot.ig: Using account ****G4CJ (already active). IG's default account was not changed.
+2026-11-16 23:07:24 GMT INFO    autobot.orders: Order record: found at IG AB261116142600-28e4ce2b
+2026-11-16 23:07:24 GMT INFO    autobot.orders: Order record: funds 
+2026-11-16 23:07:24 GMT INFO    autobot.orders: Order record: ready 
+2026-11-16 23:07:24 GMT INFO    autobot.trading: Trade AB261116142600-28e4ce2b: its saved best (13.6 pips) restored.
+2026-11-16 23:07:38 GMT INFO    autobot.trading: Trading ON: 1 open trade(s) taken over; the strategies are up to 2026-11-16 23:07 UTC.
+2026-11-16 23:07:38 GMT INFO    autobot.ig.stream: Price stream connected (CONNECTED:WS-STREAMING).
+2026-11-16 23:07:38 GMT INFO    autobot.ig.stream: Subscribed to CHART:CS.D.GBPUSD.TODAY.IP:TICK.
+2026-11-16 23:07:38 GMT INFO    autobot.ig.stream: Subscribed to CHART:CS.D.GBPUSD.TODAY.IP:5MINUTE.
+2026-11-16 23:07:39 GMT INFO    autobot.prices: [GBPUSD] Tick skipped (OFR blank and not yet received on this connection). IG sent: BID (sell)='13184.3' OFR (buy)=None UTM='1794870459733'
+2026-11-16 23:07:54 GMT INFO    autobot.prices: [GBPUSD] Tick skipped (OFR blank and not yet received on this connection). IG sent: BID (sell)='13184.4' OFR (buy)=None UTM='1794870474589'
+2026-11-16 23:07:54 GMT INFO    autobot.prices: [GBPUSD] Tick skipped (OFR blank and not yet received on this connection). IG sent: BID (sell)='13184.3' OFR (buy)=None UTM='1794870474649'
+2026-11-16 23:07:55 GMT INFO    autobot.prices: [GBPUSD] Tick skipped (OFR blank and not yet received on this connection). IG sent: BID (sell)='13184.4' OFR (buy)=None UTM='1794870475868'
+2026-11-16 23:08:00 GMT INFO    autobot.prices: [GBPUSD] Tick skipped (OFR blank and not yet received on this connection). IG sent: BID (sell)='13184.3' OFR (buy)=None UTM='1794870480434'
+2026-11-16 23:08:19 GMT INFO    autobot.prices: [GBPUSD] Tick skipped (OFR blank and not yet received on this connection). IG sent: BID (sell)='13184.4' OFR (buy)=None UTM='1794870499866'
+2026-11-16 23:08:29 GMT INFO    autobot.prices: [GBPUSD] Tick skipped (OFR blank and not yet received on this connection). IG sent: BID (sell)='13184.6' OFR (buy)=None UTM='1794870509108'
+2026-11-16 23:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 23:05 GMT: buy O 13185.7 H 13187.6 L 13185.7 C 13187.4 | sell O 13182.2 H 13184.6 L 13182.2 C 13184.1
+2026-11-16 23:10:00 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Mon 16 Nov 22:55 GMT to Mon 16 Nov 23:05 GMT (already recorded).
+2026-11-16 23:10:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 23:10:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Mon 16 Nov 23:05 GMT  ranging (none): the emerging down trend was cancelled: 2 closes in a row back inside the Bollinger bands after the breakout (last 13184.1)
+2026-11-16 23:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 23:10 GMT: buy O 13187.2 H 13187.2 L 13185.6 C 13185.8 | sell O 13184.6 H 13184.6 L 13182.7 C 13183.3
+2026-11-16 23:15:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 23:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 23:15 GMT: buy O 13185.9 H 13186.6 L 13185.8 C 13186.4 | sell O 13183.4 H 13184.3 L 13183.3 C 13184.1
+2026-11-16 23:20:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 23:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 23:20 GMT: buy O 13186.3 H 13186.9 L 13185.2 C 13185.3 | sell O 13184 H 13184.7 L 13183.2 C 13183.8
+2026-11-16 23:25:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 23:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 23:25 GMT: buy O 13185.4 H 13187 L 13185.2 C 13186.1 | sell O 13183.9 H 13185.1 L 13183.7 C 13184
+2026-11-16 23:30:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 23:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 23:30 GMT: buy O 13186.2 H 13186.4 L 13184.4 C 13184.9 | sell O 13183.8 H 13184.5 L 13182.9 C 13183.4
+2026-11-16 23:35:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 23:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 23:35 GMT: buy O 13185 H 13185.5 L 13184.9 C 13185.4 | sell O 13183.5 H 13184 L 13183.4 C 13183.9
+2026-11-16 23:40:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 23:40:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Mon 16 Nov 23:35 GMT  consolidation (none): bands 10.3 pips wide (narrow: <= 14, or narrowing for 6 candles: 0), middle band 0.1 pips/candle, no close outside the bands for 6 candles, average body 0.5 pips, green/red 1.6
+2026-11-16 23:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 23:40 GMT: buy O 13185.5 H 13185.5 L 13184.7 C 13185.1 | sell O 13184 H 13184 L 13183.2 C 13183.6
+2026-11-16 23:45:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 23:46:50 GMT INFO    autobot.prices.service: Received SIGTERM: stopping.
+2026-11-16 23:46:51 GMT INFO    autobot.ig: Logged out of IG: confirmed.
+2026-11-16 23:46:51 GMT INFO    autobot.prices.service: AutoBot price service stopped at Mon 16 Nov 2026 23:46:51 GMT.
+2026-11-16 23:46:51 GMT INFO    autobot.prices: [GBPUSD] 674 ticks and 8 five-minute candles stored since start.
+2026-11-16 23:46:51 GMT INFO    autobot.prices.service: AutoBot price service starting for GBPUSD (CS.D.GBPUSD.TODAY.IP).
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 01 Nov 21:20 GMT to Sun 01 Nov 21:25 GMT (already recorded).
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 01 Nov 21:35 GMT to Sun 01 Nov 21:40 GMT (already recorded).
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 08 Nov 21:15 GMT to Sun 08 Nov 21:20 GMT (already recorded).
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 08 Nov 21:35 GMT to Sun 08 Nov 21:40 GMT (already recorded).
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Sun 08 Nov 21:45 GMT to Sun 08 Nov 21:55 GMT (already recorded).
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 15 Nov 21:05 GMT to Sun 15 Nov 21:10 GMT (already recorded).
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Sun 15 Nov 21:20 GMT to Sun 15 Nov 21:30 GMT (already recorded).
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 3 candle(s) missing from Sun 15 Nov 21:40 GMT to Sun 15 Nov 21:55 GMT (already recorded).
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Mon 16 Nov 22:55 GMT to Mon 16 Nov 23:05 GMT (already recorded).
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Sun 05 Apr 00:00 BST to Mon 06 Apr 00:00 BST (already recorded).
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Fri 19 Jun 00:00 BST to Fri 19 Jun 22:00 BST (already recorded).
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Sun 19 Jul 00:00 BST to Mon 20 Jul 00:00 BST (already recorded).
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] Store check at start-up: 7329 candle(s) checked (5m 4651, 1h 1740, 4h 99, 1d 630, 1w 209); 0 problem(s); 0 new gap(s); 12 gap(s) already recorded.
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] Newest 5-minute candle in the store: Mon 16 Nov 23:40 GMT to Mon 16 Nov 23:45 GMT, finished 1 minute(s) ago.
+2026-11-16 23:46:52 GMT INFO    autobot.prices: [GBPUSD] No gap since the last stored candle.
+2026-11-16 23:46:52 GMT WARNING autobot.levels: Levels: The previous day's daily candle (Sun 15 Nov) is missing 6 five-minute candle(s); pivots use it as stored.
+2026-11-16 23:46:52 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 23:46:54 GMT INFO    autobot.analyser: [GBPUSD] Market states replayed from the week's open (313 candles): consolidation (none) since 2026-11-16 23:35 UTC; 46 state change(s) this week, recorded in /opt/autobot/data/analyser/GBPUSD/state_changes.jsonl.
+2026-11-16 23:46:54 GMT INFO    autobot.ig: Logged in to IG (version 2 login). Active account at login: ****G4CJ. Streaming address received.
+2026-11-16 23:46:54 GMT INFO    autobot.ig: Using account ****G4CJ (already active). IG's default account was not changed.
+2026-11-16 23:46:54 GMT INFO    autobot.orders: Order record: found at IG AB261116142600-28e4ce2b
+2026-11-16 23:46:55 GMT INFO    autobot.orders: Order record: funds 
+2026-11-16 23:46:55 GMT INFO    autobot.orders: Order record: ready 
+2026-11-16 23:46:55 GMT INFO    autobot.trading: Trade AB261116142600-28e4ce2b: its saved best (13.6 pips) restored.
+2026-11-16 23:47:07 GMT INFO    autobot.trading: Trading ON: 1 open trade(s) taken over; the strategies are up to 2026-11-16 23:46 UTC.
+2026-11-16 23:47:07 GMT INFO    autobot.ig.stream: Price stream connected (CONNECTED:WS-STREAMING).
+2026-11-16 23:47:07 GMT INFO    autobot.ig.stream: Subscribed to CHART:CS.D.GBPUSD.TODAY.IP:TICK.
+2026-11-16 23:47:07 GMT INFO    autobot.ig.stream: Subscribed to CHART:CS.D.GBPUSD.TODAY.IP:5MINUTE.
+2026-11-16 23:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 23:45 GMT: buy O 13185.2 H 13186.8 L 13185.1 C 13186.7 | sell O 13183.7 H 13185.3 L 13183.6 C 13185.2
+2026-11-16 23:50:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-16 23:50:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Mon 16 Nov 23:45 GMT  ranging (none): bands 10.6 pips wide (close together: 6 to 18) and flat (upper 0.1, lower -0.0 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 0.8 pips
+2026-11-16 23:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 23:50 GMT: buy O 13186.8 H 13187 L 13185.5 C 13185.9 | sell O 13185.3 H 13185.5 L 13184 C 13184.4
+2026-11-16 23:55:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (16 lined up).
+2026-11-17 00:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Mon 16 Nov 23:55 GMT: buy O 13185.8 H 13186.9 L 13184.9 C 13184.9 | sell O 13184.3 H 13185.4 L 13183.4 C 13183.4
+2026-11-17 00:00:00 GMT INFO    autobot.prices: [GBPUSD] Compressed 2 candle file(s) older than 30 days.
+2026-11-17 00:00:00 GMT WARNING autobot.levels: Levels: The previous day's daily candle (Mon 16 Nov) is not stored yet: no pivots and no previous day high or low.
+2026-11-17 00:00:00 GMT INFO    autobot.levels: Levels updated: 50 levels in 29 groups (14 lined up).
+2026-11-17 00:00:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Mon 16 Nov 23:55 GMT  consolidation (none): bands 9.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 2), middle band 0.1 pips/candle, no close outside the bands for 6 candles, average body 0.8 pips, green/red 1.4
+2026-11-17 00:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 00:00 GMT: buy O 13184.8 H 13187.3 L 13183.9 C 13187 | sell O 13183.3 H 13185.8 L 13182.4 C 13185.5
+2026-11-17 00:05:00 GMT WARNING autobot.prices: [GBPUSD] 1h candle Mon 16 Nov 23:00 GMT built from only 11 of 12 5-minute candles (some are missing).
+2026-11-17 00:05:00 GMT WARNING autobot.prices: [GBPUSD] 4h candle Mon 16 Nov 20:00 GMT built from only 46 of 48 5-minute candles (some are missing).
+2026-11-17 00:05:00 GMT WARNING autobot.prices: [GBPUSD] 1d candle Mon 16 Nov 00:00 GMT built from only 286 of 288 5-minute candles (some are missing).
+2026-11-17 00:05:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Mon 16 Nov 23:00 GMT: buy O 13185.7 H 13187.6 L 13184.4 C 13184.9 | sell O 13182.2 H 13185.5 L 13182.2 C 13183.4 (from 11 of 12 5-minute candles)
+2026-11-17 00:05:00 GMT INFO    autobot.prices: [GBPUSD] Built 4h Mon 16 Nov 20:00 GMT: buy O 13187.2 H 13201.4 L 13178.5 C 13184.9 | sell O 13185.7 H 13187.1 L 13175.2 C 13183.4 (from 46 of 48 5-minute candles)
+2026-11-17 00:05:00 GMT INFO    autobot.prices: [GBPUSD] Built 1d Mon 16 Nov 00:00 GMT: buy O 13217.3 H 13226 L 13178.5 C 13184.9 | sell O 13215.8 H 13224.5 L 13175.2 C 13183.4 (from 286 of 288 5-minute candles)
+2026-11-17 00:05:00 GMT WARNING autobot.levels: Levels: The previous day's daily candle (Mon 16 Nov) is missing 2 five-minute candle(s); pivots use it as stored.
+2026-11-17 00:05:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 00:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 00:05 GMT: buy O 13187.1 H 13189.7 L 13186.1 C 13187.2 | sell O 13185.6 H 13188.2 L 13184.6 C 13185.7
+2026-11-17 00:10:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 00:10:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 00:05 GMT  ranging (none): bands 10.3 pips wide (close together: 6 to 18) and flat (upper 0.2, lower 0.2 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 0.4 pips
+2026-11-17 00:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 00:10 GMT: buy O 13187.6 H 13187.8 L 13184.5 C 13184.7 | sell O 13186.1 H 13186.3 L 13183 C 13183.2
+2026-11-17 00:15:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 00:15:03 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 00:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 00:15 GMT: buy O 13184.9 H 13184.9 L 13181.3 C 13182.4 | sell O 13183.4 H 13183.4 L 13179.8 C 13180.9
+2026-11-17 00:20:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 00:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 00:20 GMT: buy O 13182.7 H 13183.9 L 13180.4 C 13180.9 | sell O 13181.2 H 13182.4 L 13178.9 C 13179.4
+2026-11-17 00:25:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 00:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 00:25 GMT: buy O 13181.1 H 13182.5 L 13180 C 13182.1 | sell O 13179.6 H 13181 L 13178.5 C 13180.6
+2026-11-17 00:30:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 00:32:12 GMT INFO    autobot.news: Economic calendar fetched: 1862 releases from 2026-11-10 to 2026-12-01; 3028 kept on disk.
+2026-11-17 00:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 00:30 GMT: buy O 13182 H 13183.2 L 13181 C 13181.1 | sell O 13180.5 H 13181.7 L 13179.5 C 13179.6
+2026-11-17 00:35:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 00:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 00:35 GMT: buy O 13180.5 H 13183 L 13180.4 C 13182.9 | sell O 13179 H 13181.5 L 13178.9 C 13181.4
+2026-11-17 00:40:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 00:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 00:40 GMT: buy O 13182.8 H 13183.5 L 13181.8 C 13182.8 | sell O 13181.3 H 13182 L 13180.3 C 13181.3
+2026-11-17 00:45:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 00:46:55 GMT INFO    autobot.prices: [GBPUSD] Status: 2243 ticks (0 with a price carried forward, 0 skipped) and 12 five-minute candles stored since start; last tick Tue 17 Nov 2026 00:46:54 GMT: buy 13183.3 sell 13181.8.
+2026-11-17 00:46:55 GMT INFO    autobot.prices.service: Stream connections 1, drops 0, re-logins 0.
+2026-11-17 00:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 00:45 GMT: buy O 13183.2 H 13185.4 L 13182.1 C 13185 | sell O 13181.7 H 13183.9 L 13180.6 C 13183.5
+2026-11-17 00:50:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 00:50:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 00:45 GMT  consolidation (none): bands 7.2 pips wide (narrow: <= 14, or narrowing for 6 candles: 3), middle band 0.0 pips/candle, no close outside the bands for 6 candles, average body 1.3 pips, green/red 1.9
+2026-11-17 00:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 00:50 GMT: buy O 13185.2 H 13187.1 L 13184.7 C 13186.3 | sell O 13183.7 H 13185.6 L 13183.2 C 13184.8
+2026-11-17 00:55:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 01:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 00:55 GMT: buy O 13186.2 H 13186.5 L 13184.7 C 13185.3 | sell O 13184.7 H 13185 L 13183.2 C 13183.8
+2026-11-17 01:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 00:00 GMT: buy O 13184.8 H 13189.7 L 13180 C 13185.3 | sell O 13183.3 H 13188.2 L 13178.5 C 13183.8 (from 12 of 12 5-minute candles)
+2026-11-17 01:00:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 01:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 01:00 GMT: buy O 13185.4 H 13186 L 13181.6 C 13182.7 | sell O 13183.9 H 13184.5 L 13180.1 C 13181.2
+2026-11-17 01:05:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 01:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 01:05 GMT: buy O 13182.4 H 13182.9 L 13179.5 C 13179.8 | sell O 13180.9 H 13181.4 L 13178 C 13178.3
+2026-11-17 01:10:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 01:10:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 01:05 GMT  emerging trend (down): broke out of the consolidation: close 13178.3 below the lower band 13178.4
+2026-11-17 01:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 01:10 GMT: buy O 13179.7 H 13179.8 L 13177.1 C 13177.1 | sell O 13178.2 H 13178.3 L 13175.6 C 13175.6
+2026-11-17 01:15:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 01:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 01:15 GMT: buy O 13177.3 H 13178 L 13172 C 13172.5 | sell O 13175.8 H 13176.5 L 13170.5 C 13171
+2026-11-17 01:20:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 01:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 01:20 GMT: buy O 13172.9 H 13174 L 13171.8 C 13173.5 | sell O 13171.4 H 13172.5 L 13170.3 C 13172
+2026-11-17 01:25:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 01:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 01:25 GMT: buy O 13173.2 H 13173.7 L 13169.9 C 13170.3 | sell O 13171.7 H 13172.2 L 13168.4 C 13168.8
+2026-11-17 01:30:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 01:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 01:30 GMT: buy O 13170.4 H 13174.1 L 13169.5 C 13174.1 | sell O 13168.9 H 13172.6 L 13168 C 13172.6
+2026-11-17 01:35:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 01:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 01:35 GMT: buy O 13174 H 13175.3 L 13172.7 C 13173.9 | sell O 13172.5 H 13173.8 L 13171.2 C 13172.4
+2026-11-17 01:40:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 01:40:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 01:35 GMT  consolidation (none): the emerging down trend was cancelled: 2 closes in a row back inside the Bollinger bands after the breakout (last 13172.4)
+2026-11-17 01:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 01:40 GMT: buy O 13174 H 13178.8 L 13174 C 13178.3 | sell O 13172.5 H 13177.3 L 13172.5 C 13176.8
+2026-11-17 01:45:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 01:46:55 GMT INFO    autobot.prices: [GBPUSD] Status: 4836 ticks (0 with a price carried forward, 0 skipped) and 24 five-minute candles stored since start; last tick Tue 17 Nov 2026 01:46:55 GMT: buy 13179.8 sell 13178.3.
+2026-11-17 01:46:55 GMT INFO    autobot.prices.service: Stream connections 1, drops 0, re-logins 0.
+2026-11-17 01:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 01:45 GMT: buy O 13178.4 H 13180.4 L 13176.9 C 13177.2 | sell O 13176.9 H 13178.9 L 13175.4 C 13175.7
+2026-11-17 01:50:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 01:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 01:50 GMT: buy O 13177.4 H 13179.8 L 13176.5 C 13179.2 | sell O 13175.9 H 13178.3 L 13175 C 13177.7
+2026-11-17 01:55:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 02:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 01:55 GMT: buy O 13179.1 H 13179.9 L 13177.5 C 13179 | sell O 13177.6 H 13178.4 L 13176 C 13177.5
+2026-11-17 02:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 01:00 GMT: buy O 13185.4 H 13186 L 13169.5 C 13179 | sell O 13183.9 H 13184.5 L 13168 C 13177.5 (from 12 of 12 5-minute candles)
+2026-11-17 02:00:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 02:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 02:00 GMT: buy O 13178.6 H 13178.8 L 13176.1 C 13176.9 | sell O 13177.1 H 13177.3 L 13174.6 C 13175.4
+2026-11-17 02:05:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 02:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 02:05 GMT: buy O 13176.7 H 13179 L 13176.7 C 13177.4 | sell O 13175.2 H 13177.5 L 13175.2 C 13175.9
+2026-11-17 02:10:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 02:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 02:10 GMT: buy O 13177.5 H 13182.5 L 13176.9 C 13182.3 | sell O 13176 H 13181 L 13175.4 C 13180.8
+2026-11-17 02:15:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 02:15:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 02:10 GMT  emerging trend (up): rejected at a level: closed 13180.8 above the reversal high 13177.5; trigger at above 13181
+2026-11-17 02:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 02:15 GMT: buy O 13182.2 H 13183.8 L 13181.1 C 13181.2 | sell O 13180.7 H 13182.3 L 13179.6 C 13179.7
+2026-11-17 02:20:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 02:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 02:20 GMT: buy O 13181.1 H 13183.4 L 13181.1 C 13183.4 | sell O 13179.6 H 13181.9 L 13179.6 C 13181.9
+2026-11-17 02:25:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 02:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 02:25 GMT: buy O 13183.5 H 13184.1 L 13180.5 C 13180.7 | sell O 13182 H 13182.6 L 13179 C 13179.2
+2026-11-17 02:30:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 02:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 02:30 GMT: buy O 13180.8 H 13184.1 L 13180.7 C 13183.9 | sell O 13179.3 H 13182.6 L 13179.2 C 13182.4
+2026-11-17 02:35:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 02:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 02:35 GMT: buy O 13183.8 H 13183.9 L 13179.8 C 13180.8 | sell O 13182.3 H 13182.4 L 13178.3 C 13179.3
+2026-11-17 02:40:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 02:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 02:40 GMT: buy O 13180.9 H 13183.6 L 13180.5 C 13181.9 | sell O 13179.4 H 13182.1 L 13179 C 13180.4
+2026-11-17 02:45:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 02:46:56 GMT INFO    autobot.prices: [GBPUSD] Status: 7261 ticks (0 with a price carried forward, 0 skipped) and 36 five-minute candles stored since start; last tick Tue 17 Nov 2026 02:46:55 GMT: buy 13183.2 sell 13181.7.
+2026-11-17 02:46:56 GMT INFO    autobot.prices.service: Stream connections 1, drops 0, re-logins 0.
+2026-11-17 02:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 02:45 GMT: buy O 13182 H 13184 L 13181.1 C 13183.3 | sell O 13180.5 H 13182.5 L 13179.6 C 13181.8
+2026-11-17 02:50:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 02:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 02:50 GMT: buy O 13183.2 H 13184.5 L 13182.3 C 13184.5 | sell O 13181.7 H 13183 L 13180.8 C 13183
+2026-11-17 02:55:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 03:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 02:55 GMT: buy O 13184.4 H 13188.6 L 13184.2 C 13188.6 | sell O 13182.9 H 13187.1 L 13182.7 C 13187.1
+2026-11-17 03:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 02:00 GMT: buy O 13178.6 H 13188.6 L 13176.1 C 13188.6 | sell O 13177.1 H 13187.1 L 13174.6 C 13187.1 (from 12 of 12 5-minute candles)
+2026-11-17 03:00:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 03:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 03:00 GMT: buy O 13188.3 H 13189.7 L 13187.4 C 13188.2 | sell O 13186.8 H 13188.2 L 13185.9 C 13186.7
+2026-11-17 03:05:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 03:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 03:05 GMT: buy O 13188.3 H 13191 L 13188 C 13190.1 | sell O 13186.8 H 13189.5 L 13186.5 C 13188.6
+2026-11-17 03:10:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 03:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 03:10 GMT: buy O 13190.2 H 13192.2 L 13189 C 13191.6 | sell O 13188.7 H 13190.7 L 13187.5 C 13190.1
+2026-11-17 03:15:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 03:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 03:15 GMT: buy O 13191.2 H 13192.4 L 13190.1 C 13191.2 | sell O 13189.7 H 13190.9 L 13188.6 C 13189.7
+2026-11-17 03:20:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 03:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 03:20 GMT: buy O 13191.3 H 13196.4 L 13190.8 C 13195.9 | sell O 13189.8 H 13194.9 L 13189.3 C 13194.4
+2026-11-17 03:25:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 03:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 03:25 GMT: buy O 13196.1 H 13196.1 L 13193.7 C 13195 | sell O 13194.6 H 13194.6 L 13192.2 C 13193.5
+2026-11-17 03:30:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 03:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 03:30 GMT: buy O 13194.9 H 13198.2 L 13194.2 C 13197 | sell O 13193.4 H 13196.7 L 13192.7 C 13195.5
+2026-11-17 03:35:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 03:35:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 03:30 GMT  trend (up, slow grind): the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new high 13196.7 on the upper band 13196.1; EMAs 7/13/21 stacked up for 13 candles, close 13195.5 above them and the 100 EMA 13183.5; band sloping 1.4 pips/candle
+2026-11-17 03:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 03:35 GMT: buy O 13197.2 H 13197.5 L 13193.4 C 13193.6 | sell O 13195.7 H 13196 L 13191.9 C 13192.1
+2026-11-17 03:40:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 03:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 03:40 GMT: buy O 13193.8 H 13194.2 L 13192.2 C 13193.3 | sell O 13192.3 H 13192.7 L 13190.7 C 13191.8
+2026-11-17 03:45:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 03:46:56 GMT INFO    autobot.prices: [GBPUSD] Status: 9570 ticks (0 with a price carried forward, 0 skipped) and 48 five-minute candles stored since start; last tick Tue 17 Nov 2026 03:46:52 GMT: buy 13192.4 sell 13190.9.
+2026-11-17 03:46:56 GMT INFO    autobot.prices.service: Stream connections 1, drops 0, re-logins 0.
+2026-11-17 03:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 03:45 GMT: buy O 13193.2 H 13194.9 L 13191.8 C 13194.8 | sell O 13191.7 H 13193.4 L 13190.3 C 13193.3
+2026-11-17 03:50:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 03:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 03:50 GMT: buy O 13195.3 H 13195.4 L 13193.1 C 13195 | sell O 13193.8 H 13193.9 L 13191.6 C 13193.5
+2026-11-17 03:55:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 04:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 03:55 GMT: buy O 13194.9 H 13196.4 L 13194.6 C 13195.6 | sell O 13193.4 H 13194.9 L 13193.1 C 13194.1
+2026-11-17 04:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 03:00 GMT: buy O 13188.3 H 13198.2 L 13187.4 C 13195.6 | sell O 13186.8 H 13196.7 L 13185.9 C 13194.1 (from 12 of 12 5-minute candles)
+2026-11-17 04:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 4h Tue 17 Nov 00:00 GMT: buy O 13184.8 H 13198.2 L 13169.5 C 13195.6 | sell O 13183.3 H 13196.7 L 13168 C 13194.1 (from 48 of 48 5-minute candles)
+2026-11-17 04:00:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 04:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 04:00 GMT: buy O 13195.1 H 13195.1 L 13192.2 C 13192.3 | sell O 13193.6 H 13193.6 L 13190.7 C 13190.8
+2026-11-17 04:05:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 04:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 04:05 GMT: buy O 13192.5 H 13197.5 L 13192.3 C 13197.2 | sell O 13191 H 13196 L 13190.8 C 13195.7
+2026-11-17 04:10:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 04:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 04:10 GMT: buy O 13197 H 13197.1 L 13194.8 C 13194.8 | sell O 13195.5 H 13195.6 L 13193.3 C 13193.3
+2026-11-17 04:15:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 04:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 04:15 GMT: buy O 13194.6 H 13196.1 L 13194.6 C 13195 | sell O 13193.1 H 13194.6 L 13193.1 C 13193.5
+2026-11-17 04:20:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 04:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 04:20 GMT: buy O 13195.1 H 13196.1 L 13194.9 C 13195.2 | sell O 13193.6 H 13194.6 L 13193.4 C 13193.7
+2026-11-17 04:25:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 04:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 04:25 GMT: buy O 13195.3 H 13195.9 L 13194.6 C 13194.8 | sell O 13193.8 H 13194.4 L 13193.1 C 13193.3
+2026-11-17 04:30:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 04:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 04:30 GMT: buy O 13194.6 H 13195.8 L 13193.5 C 13193.7 | sell O 13193.1 H 13194.3 L 13192 C 13192.2
+2026-11-17 04:35:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 04:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 04:35 GMT: buy O 13193.8 H 13194.3 L 13192.5 C 13193.1 | sell O 13192.3 H 13192.8 L 13191 C 13191.6
+2026-11-17 04:40:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 04:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 04:40 GMT: buy O 13193.2 H 13193.9 L 13193 C 13193.3 | sell O 13191.7 H 13192.4 L 13191.5 C 13191.8
+2026-11-17 04:45:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 04:46:56 GMT INFO    autobot.prices: [GBPUSD] Status: 11383 ticks (0 with a price carried forward, 0 skipped) and 60 five-minute candles stored since start; last tick Tue 17 Nov 2026 04:46:56 GMT: buy 13190.9 sell 13189.4.
+2026-11-17 04:46:56 GMT INFO    autobot.prices.service: Stream connections 1, drops 0, re-logins 0.
+2026-11-17 04:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 04:45 GMT: buy O 13193.4 H 13193.7 L 13190.6 C 13193.4 | sell O 13191.9 H 13192.2 L 13189.1 C 13191.9
+2026-11-17 04:50:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 04:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 04:50 GMT: buy O 13193.5 H 13194.2 L 13192.3 C 13192.8 | sell O 13192 H 13192.7 L 13190.8 C 13191.3
+2026-11-17 04:55:00 GMT INFO    autobot.levels: Levels updated: 58 levels in 33 groups (16 lined up).
+2026-11-17 05:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 04:55 GMT: buy O 13192.7 H 13192.8 L 13191.8 C 13192.3 | sell O 13191.2 H 13191.3 L 13190.3 C 13190.8
+2026-11-17 05:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 04:00 GMT: buy O 13195.1 H 13197.5 L 13190.6 C 13192.3 | sell O 13193.6 H 13196 L 13189.1 C 13190.8 (from 12 of 12 5-minute candles)
+2026-11-17 05:00:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 05:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 05:00 GMT: buy O 13192.4 H 13197.1 L 13191.6 C 13196.5 | sell O 13190.9 H 13195.6 L 13190.1 C 13195
+2026-11-17 05:05:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 05:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 05:05 GMT: buy O 13196 H 13196.1 L 13194.8 C 13195.2 | sell O 13194.5 H 13194.6 L 13193.3 C 13193.7
+2026-11-17 05:10:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 05:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 05:10 GMT: buy O 13195.3 H 13196 L 13194.6 C 13195.7 | sell O 13193.8 H 13194.5 L 13193.1 C 13194.2
+2026-11-17 05:15:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 05:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 05:15 GMT: buy O 13195.8 H 13197.1 L 13195.3 C 13195.9 | sell O 13194.3 H 13195.6 L 13193.8 C 13194.4
+2026-11-17 05:20:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 05:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 05:20 GMT: buy O 13195.8 H 13197.2 L 13195.1 C 13195.7 | sell O 13194.3 H 13195.7 L 13193.6 C 13194.2
+2026-11-17 05:25:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 05:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 05:25 GMT: buy O 13195.6 H 13196.5 L 13194.9 C 13195.1 | sell O 13194.1 H 13195 L 13193.4 C 13193.6
+2026-11-17 05:30:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 05:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 05:30 GMT: buy O 13195.2 H 13199.3 L 13195.2 C 13199.1 | sell O 13193.7 H 13197.8 L 13193.7 C 13197.6
+2026-11-17 05:35:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 05:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 05:35 GMT: buy O 13199.2 H 13200.4 L 13198.4 C 13200.1 | sell O 13197.7 H 13198.9 L 13196.9 C 13198.6
+2026-11-17 05:40:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 05:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 05:40 GMT: buy O 13200.2 H 13204 L 13199.8 C 13202.3 | sell O 13198.7 H 13202.5 L 13198.3 C 13200.8
+2026-11-17 05:45:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 32 groups (18 lined up).
+2026-11-17 05:46:56 GMT INFO    autobot.prices: [GBPUSD] Status: 13574 ticks (0 with a price carried forward, 0 skipped) and 72 five-minute candles stored since start; last tick Tue 17 Nov 2026 05:46:56 GMT: buy 13202.7 sell 13201.2.
+2026-11-17 05:46:56 GMT INFO    autobot.prices.service: Stream connections 1, drops 0, re-logins 0.
+2026-11-17 05:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 05:45 GMT: buy O 13202.4 H 13204 L 13201.9 C 13203.9 | sell O 13200.9 H 13202.5 L 13200.4 C 13202.4
+2026-11-17 05:50:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 32 groups (18 lined up).
+2026-11-17 05:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 05:50 GMT: buy O 13203.8 H 13203.9 L 13202.4 C 13202.8 | sell O 13202.3 H 13202.4 L 13200.9 C 13201.3
+2026-11-17 05:55:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 32 groups (18 lined up).
+2026-11-17 06:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 05:55 GMT: buy O 13202 H 13202.5 L 13200.3 C 13201.7 | sell O 13200.5 H 13201 L 13198.8 C 13200.2
+2026-11-17 06:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 05:00 GMT: buy O 13192.4 H 13204 L 13191.6 C 13201.7 | sell O 13190.9 H 13202.5 L 13190.1 C 13200.2 (from 12 of 12 5-minute candles)
+2026-11-17 06:00:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 32 groups (18 lined up).
+2026-11-17 06:00:04 GMT INFO    autobot.alerts: ALERT: AutoBot READY for the day (Tue 17 Nov 2026)
+2026-11-17 06:00:05 GMT INFO    autobot.alerts: Telegram message sent (message 13070): AutoBot READY for the day (Tue 17 Nov 2026)
+2026-11-17 06:03:34 GMT INFO    autobot.orders: Order record: sending AB261117060334-02fbe3ed
+2026-11-17 06:03:34 GMT INFO    autobot.orders: Order record: opened AB261117060334-02fbe3ed
+2026-11-17 06:03:34 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 06:03:34 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🎯 TRADE OPENED
+2026-11-17 06:03:34 GMT INFO    autobot.alerts: Telegram message sent (message 13071): [AutoBot] 🎯 TRADE OPENED
+2026-11-17 06:03:34 GMT INFO    autobot.trading: Live entry: level reversal sell at 13198.7 (entry price 13198.8).
+2026-11-17 06:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 06:00 GMT: buy O 13201.5 H 13202.7 L 13197.4 C 13198.1 | sell O 13200 H 13201.2 L 13195.9 C 13196.6
+2026-11-17 06:05:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 06:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 06:05 GMT: buy O 13197.9 H 13199.6 L 13197.1 C 13197.3 | sell O 13196.4 H 13198.1 L 13195.6 C 13195.8
+2026-11-17 06:10:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 06:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 06:10 GMT: buy O 13197.2 H 13198 L 13194.9 C 13197 | sell O 13195.7 H 13196.5 L 13193.4 C 13195.5
+2026-11-17 06:15:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 06:15:38 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 06:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 06:15 GMT: buy O 13196.9 H 13197.5 L 13194.2 C 13194.6 | sell O 13195.4 H 13196 L 13192.7 C 13193.1
+2026-11-17 06:20:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 06:20:22 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 06:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 06:20 GMT: buy O 13194.8 H 13195.3 L 13192.3 C 13192.7 | sell O 13193.3 H 13193.8 L 13190.8 C 13191.2
+2026-11-17 06:25:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 06:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 06:25 GMT: buy O 13192.4 H 13194.6 L 13191.3 C 13194.1 | sell O 13190.9 H 13193.1 L 13189.8 C 13192.6
+2026-11-17 06:30:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 06:30:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 06:25 GMT  ranging (none): the up trend turned into a range: bands 13.6 pips wide (close together: 6 to 18) and flat (upper 0.0, lower 0.1 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 2.1 pips
+2026-11-17 06:32:42 GMT INFO    autobot.news: Economic calendar fetched: 1862 releases from 2026-11-10 to 2026-12-01; 3028 kept on disk.
+2026-11-17 06:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 06:30 GMT: buy O 13194 H 13195.2 L 13192 C 13193.4 | sell O 13192.5 H 13193.7 L 13190.5 C 13191.9
+2026-11-17 06:35:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 06:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 06:35 GMT: buy O 13193.5 H 13196.8 L 13192.5 C 13195 | sell O 13192 H 13195.3 L 13191 C 13193.5
+2026-11-17 06:40:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 06:40:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 06:35 GMT  emerging trend (up): rejected at a level: closed 13193.5 above the reversal high 13193.1; trigger at above 13195.3
+2026-11-17 06:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 06:40 GMT: buy O 13195.1 H 13197.2 L 13193.7 C 13195.7 | sell O 13193.6 H 13195.7 L 13192.2 C 13194.2
+2026-11-17 06:45:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 06:45:01 GMT INFO    autobot.orders: Order record: close sending AB261117060334-02fbe3ed
+2026-11-17 06:45:01 GMT INFO    autobot.orders: Order record: closed AB261117060334-02fbe3ed
+2026-11-17 06:45:01 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 06:45:01 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🟢 TRADE CLOSED
+2026-11-17 06:45:02 GMT INFO    autobot.alerts: Telegram message sent (message 13072): [AutoBot] 🟢 TRADE CLOSED
+2026-11-17 06:46:57 GMT INFO    autobot.prices: [GBPUSD] Status: 22626 ticks (0 with a price carried forward, 0 skipped) and 84 five-minute candles stored since start; last tick Tue 17 Nov 2026 06:46:53 GMT: buy 13192.4 sell 13190.9.
+2026-11-17 06:46:57 GMT INFO    autobot.prices.service: Stream connections 1, drops 0, re-logins 0.
+2026-11-17 06:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 06:45 GMT: buy O 13195.6 H 13195.7 L 13191.2 C 13192.2 | sell O 13194.1 H 13194.2 L 13189.7 C 13190.7
+2026-11-17 06:50:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 06:50:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 06:45 GMT  ranging (none): the emerging up trend was cancelled: 2 closes in a row back below the pivot 13194.4 it was rejected at (last 13190.7)
+2026-11-17 06:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 06:50 GMT: buy O 13192 H 13194.2 L 13192 C 13193.3 | sell O 13190.5 H 13192.7 L 13190.5 C 13191.8
+2026-11-17 06:55:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 07:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 06:55 GMT: buy O 13193.9 H 13193.9 L 13191.4 C 13192.4 | sell O 13192.4 H 13192.4 L 13187.5 C 13187.5
+2026-11-17 07:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 06:00 GMT: buy O 13201.5 H 13202.7 L 13191.2 C 13192.4 | sell O 13200 H 13201.2 L 13187.5 C 13187.5 (from 12 of 12 5-minute candles)
+2026-11-17 07:00:00 GMT INFO    autobot.levels: Levels updated: 59 levels in 33 groups (17 lined up).
+2026-11-17 07:00:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 06:55 GMT  emerging trend (down): rejected at a level: closed 13187.5 below the reversal low 13189.7; trigger at below 13187.5
+2026-11-17 07:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 07:00 GMT: buy O 13193.8 H 13201.4 L 13187.2 C 13197.4 | sell O 13188 H 13199.9 L 13181.3 C 13195.9
+2026-11-17 07:05:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (18 lined up).
+2026-11-17 07:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 07:05 GMT: buy O 13197.2 H 13199.2 L 13193.7 C 13194.2 | sell O 13195.7 H 13197.7 L 13192.2 C 13192.7
+2026-11-17 07:10:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (18 lined up).
+2026-11-17 07:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 07:10 GMT: buy O 13194.1 H 13195.1 L 13192.8 C 13193.6 | sell O 13192.6 H 13193.6 L 13191.3 C 13192.1
+2026-11-17 07:15:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (18 lined up).
+2026-11-17 07:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 07:15 GMT: buy O 13193.5 H 13194.3 L 13191.3 C 13192.4 | sell O 13192 H 13192.8 L 13189.8 C 13190.9
+2026-11-17 07:20:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (18 lined up).
+2026-11-17 07:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 07:20 GMT: buy O 13192.3 H 13198.8 L 13192.3 C 13198.7 | sell O 13190.8 H 13197.3 L 13190.8 C 13197.2
+2026-11-17 07:25:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (18 lined up).
+2026-11-17 07:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 07:25 GMT: buy O 13198.5 H 13200.4 L 13195 C 13195 | sell O 13197 H 13198.9 L 13193.5 C 13193.5
+2026-11-17 07:30:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (18 lined up).
+2026-11-17 07:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 07:30 GMT: buy O 13195.1 H 13197.5 L 13193.5 C 13193.7 | sell O 13193.6 H 13196 L 13192 C 13192.2
+2026-11-17 07:35:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (18 lined up).
+2026-11-17 07:35:11 GMT INFO    autobot.orders: Order record: sending AB261117073511-102f0b1c
+2026-11-17 07:35:12 GMT INFO    autobot.orders: Order record: opened AB261117073511-102f0b1c
+2026-11-17 07:35:13 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 07:35:13 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🎯 TRADE OPENED
+2026-11-17 07:35:13 GMT INFO    autobot.alerts: Telegram message sent (message 13073): [AutoBot] 🎯 TRADE OPENED
+2026-11-17 07:35:13 GMT INFO    autobot.trading: Live entry: level reversal sell at 13191.7 (entry price 13192).
+2026-11-17 07:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 07:35 GMT: buy O 13193.9 H 13194.8 L 13190.8 C 13191.1 | sell O 13192.4 H 13193.3 L 13189.3 C 13189.6
+2026-11-17 07:40:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (18 lined up).
+2026-11-17 07:40:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 07:35 GMT  consolidation (none): the emerging down trend settled into consolidation: bands 9.6 pips wide (narrow: <= 14, or narrowing for 6 candles: 5), middle band -0.4 pips/candle, no close outside the bands for 6 candles, average body 2.6 pips, green/red 1.5
+2026-11-17 07:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 07:40 GMT: buy O 13191.2 H 13192.3 L 13190.1 C 13190.4 | sell O 13189.7 H 13190.8 L 13188.6 C 13188.9
+2026-11-17 07:45:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (18 lined up).
+2026-11-17 07:46:57 GMT INFO    autobot.prices: [GBPUSD] Status: 25414 ticks (58 with a price carried forward, 0 skipped) and 96 five-minute candles stored since start; last tick Tue 17 Nov 2026 07:46:57 GMT: buy 13189.5 sell 13188.
+2026-11-17 07:46:57 GMT INFO    autobot.prices.service: Stream connections 1, drops 0, re-logins 0.
+2026-11-17 07:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 07:45 GMT: buy O 13190.3 H 13192.4 L 13189.1 C 13192.3 | sell O 13188.8 H 13190.9 L 13187.6 C 13190.8
+2026-11-17 07:50:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (18 lined up).
+2026-11-17 07:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 07:50 GMT: buy O 13192.2 H 13193.1 L 13186.4 C 13186.4 | sell O 13190.7 H 13191.6 L 13184.9 C 13184.9
+2026-11-17 07:55:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (18 lined up).
+2026-11-17 07:55:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 07:50 GMT  emerging trend (down): broke out of the consolidation: close 13184.9 below the lower band 13186.4
+2026-11-17 08:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 07:55 GMT: buy O 13186.2 H 13187.7 L 13185.5 C 13187.5 | sell O 13184.7 H 13186.2 L 13184 C 13186
+2026-11-17 08:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 07:00 GMT: buy O 13193.8 H 13201.4 L 13185.5 C 13187.5 | sell O 13188 H 13199.9 L 13181.3 C 13186 (from 12 of 12 5-minute candles)
+2026-11-17 08:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 4h Tue 17 Nov 04:00 GMT: buy O 13195.1 H 13204 L 13185.5 C 13187.5 | sell O 13193.6 H 13202.5 L 13181.3 C 13186 (from 48 of 48 5-minute candles)
+2026-11-17 08:00:00 GMT INFO    autobot.levels: Levels updated: 60 levels in 33 groups (17 lined up).
+2026-11-17 08:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 08:00 GMT: buy O 13187.3 H 13188.8 L 13184.7 C 13185.8 | sell O 13185.8 H 13187.3 L 13183.2 C 13184.3
+2026-11-17 08:05:00 GMT INFO    autobot.levels: Levels updated: 60 levels in 33 groups (17 lined up).
+2026-11-17 08:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 08:05 GMT: buy O 13185.7 H 13188.1 L 13185 C 13187.6 | sell O 13184.2 H 13186.6 L 13183.5 C 13186.1
+2026-11-17 08:10:00 GMT INFO    autobot.levels: Levels updated: 60 levels in 33 groups (17 lined up).
+2026-11-17 08:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 08:10 GMT: buy O 13187.7 H 13190.9 L 13187.6 C 13189.9 | sell O 13186.2 H 13189.4 L 13186.1 C 13188.4
+2026-11-17 08:15:00 GMT INFO    autobot.levels: Levels updated: 60 levels in 33 groups (17 lined up).
+2026-11-17 08:15:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 08:10 GMT  consolidation (none): the emerging down trend was cancelled: 2 closes in a row back inside the Bollinger bands after the breakout (last 13188.4)
+2026-11-17 08:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 08:15 GMT: buy O 13189.7 H 13194.3 L 13189.2 C 13194 | sell O 13188.2 H 13192.8 L 13187.7 C 13192.5
+2026-11-17 08:20:00 GMT INFO    autobot.levels: Levels updated: 60 levels in 33 groups (17 lined up).
+2026-11-17 08:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 08:20 GMT: buy O 13193.9 H 13194.1 L 13190.9 C 13191.9 | sell O 13192.4 H 13192.6 L 13189.4 C 13190.4
+2026-11-17 08:25:00 GMT INFO    autobot.levels: Levels updated: 60 levels in 33 groups (17 lined up).
+2026-11-17 08:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 08:25 GMT: buy O 13192.1 H 13197.2 L 13191.9 C 13196.5 | sell O 13190.6 H 13195.7 L 13190.4 C 13195
+2026-11-17 08:30:00 GMT INFO    autobot.levels: Levels updated: 60 levels in 33 groups (17 lined up).
+2026-11-17 08:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 08:30 GMT: buy O 13196 H 13199.8 L 13195.5 C 13197.8 | sell O 13194.5 H 13198.3 L 13194 C 13196.3
+2026-11-17 08:35:00 GMT INFO    autobot.levels: Levels updated: 60 levels in 33 groups (17 lined up).
+2026-11-17 08:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 08:35 GMT: buy O 13198.2 H 13198.4 L 13193 C 13193.5 | sell O 13196.7 H 13196.9 L 13191.5 C 13192
+2026-11-17 08:40:00 GMT INFO    autobot.levels: Levels updated: 60 levels in 33 groups (17 lined up).
+2026-11-17 08:40:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 08:35 GMT  ranging (none): bands 14.6 pips wide (close together: 6 to 18) and flat (upper 0.1, lower -0.0 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 0.0 pips
+2026-11-17 08:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 08:40 GMT: buy O 13193.6 H 13198.7 L 13193.4 C 13197.7 | sell O 13192.1 H 13197.2 L 13191.9 C 13196.2
+2026-11-17 08:45:00 GMT INFO    autobot.levels: Levels updated: 60 levels in 33 groups (17 lined up).
+2026-11-17 08:46:57 GMT INFO    autobot.prices: [GBPUSD] Status: 28209 ticks (58 with a price carried forward, 0 skipped) and 108 five-minute candles stored since start; last tick Tue 17 Nov 2026 08:46:57 GMT: buy 13199.4 sell 13197.9.
+2026-11-17 08:46:57 GMT INFO    autobot.prices.service: Stream connections 1, drops 0, re-logins 0.
+2026-11-17 08:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 08:45 GMT: buy O 13197.8 H 13200.8 L 13195.1 C 13195.2 | sell O 13196.3 H 13199.3 L 13193.6 C 13193.7
+2026-11-17 08:50:00 GMT INFO    autobot.levels: Levels updated: 60 levels in 33 groups (17 lined up).
+2026-11-17 08:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 08:50 GMT: buy O 13195.3 H 13196.9 L 13192.3 C 13195.2 | sell O 13193.8 H 13195.4 L 13190.8 C 13193.7
+2026-11-17 08:55:00 GMT INFO    autobot.levels: Levels updated: 60 levels in 33 groups (17 lined up).
+2026-11-17 08:59:03 GMT INFO    autobot.orders: Order record: sending AB261117085903-10e83670
+2026-11-17 08:59:03 GMT INFO    autobot.orders: Order record: opened AB261117085903-10e83670
+2026-11-17 08:59:03 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 08:59:03 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🎯 TRADE OPENED
+2026-11-17 08:59:03 GMT INFO    autobot.alerts: Telegram message sent (message 13074): [AutoBot] 🎯 TRADE OPENED
+2026-11-17 08:59:03 GMT INFO    autobot.trading: Live entry: range trade sell at 13190.4 (entry price 13190.8).
+2026-11-17 09:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 08:55 GMT: buy O 13195.1 H 13196 L 13191 C 13192.3 | sell O 13193.6 H 13194.5 L 13189.5 C 13190.8
+2026-11-17 09:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 08:00 GMT: buy O 13187.3 H 13200.8 L 13184.7 C 13192.3 | sell O 13185.8 H 13199.3 L 13183.2 C 13190.8 (from 12 of 12 5-minute candles)
+2026-11-17 09:00:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 09:00:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 08:55 GMT  emerging trend (down): rejected at a level: closed 13190.8 below the reversal low 13193.6; trigger at below 13189.5
+2026-11-17 09:01:08 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 09:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 09:00 GMT: buy O 13192.5 H 13195.2 L 13190.2 C 13193.2 | sell O 13191 H 13193.7 L 13188.7 C 13191.7
+2026-11-17 09:05:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 09:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 09:05 GMT: buy O 13193.3 H 13193.3 L 13189.6 C 13190.5 | sell O 13191.8 H 13191.8 L 13188.1 C 13189
+2026-11-17 09:10:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 09:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 09:10 GMT: buy O 13190.2 H 13200.5 L 13190.1 C 13195.7 | sell O 13188.7 H 13199 L 13188.6 C 13194.2
+2026-11-17 09:15:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 09:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 09:15 GMT: buy O 13195.6 H 13199.9 L 13195.2 C 13197.9 | sell O 13194.1 H 13198.4 L 13193.7 C 13196.4
+2026-11-17 09:20:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 09:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 09:20 GMT: buy O 13198 H 13199.3 L 13190.2 C 13190.5 | sell O 13196.5 H 13197.8 L 13188.7 C 13189
+2026-11-17 09:25:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 09:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 09:25 GMT: buy O 13190.4 H 13196.2 L 13189.2 C 13196 | sell O 13188.9 H 13194.7 L 13187.7 C 13194.5
+2026-11-17 09:30:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 09:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 09:30 GMT: buy O 13195.7 H 13197.3 L 13193.6 C 13196.4 | sell O 13194.2 H 13195.8 L 13192.1 C 13194.9
+2026-11-17 09:35:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 09:35:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 09:30 GMT  emerging trend (up): rejected at a level against the emerging down trend: closed 13194.9 above the reversal high 13194.7; trigger at above 13195.8
+2026-11-17 09:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 09:35 GMT: buy O 13196.5 H 13199.4 L 13196.1 C 13196.4 | sell O 13195 H 13197.9 L 13194.6 C 13194.9
+2026-11-17 09:40:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 09:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 09:40 GMT: buy O 13196.5 H 13199.3 L 13195.1 C 13196.2 | sell O 13195 H 13197.8 L 13193.6 C 13194.7
+2026-11-17 09:45:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 09:46:57 GMT INFO    autobot.prices: [GBPUSD] Status: 31627 ticks (64 with a price carried forward, 0 skipped) and 120 five-minute candles stored since start; last tick Tue 17 Nov 2026 09:46:57 GMT: buy 13195.8 sell 13194.3.
+2026-11-17 09:46:57 GMT INFO    autobot.prices.service: Stream connections 1, drops 0, re-logins 0.
+2026-11-17 09:48:34 GMT INFO    autobot.orders: Order record: closed at IG AB261117085903-10e83670
+2026-11-17 09:48:35 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 09:48:35 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 09:48:35 GMT INFO    autobot.alerts: Telegram message sent (message 13075): [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 09:48:55 GMT INFO    autobot.orders: Order record: still open at IG AB261116142600-28e4ce2b
+2026-11-17 09:48:55 GMT INFO    autobot.orders: Order record: closed at IG AB261116142600-28e4ce2b
+2026-11-17 09:48:55 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 09:48:55 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 09:48:55 GMT INFO    autobot.alerts: Telegram message sent (message 13076): [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 09:49:00 GMT INFO    autobot.orders: Order record: still open at IG AB261117073511-102f0b1c
+2026-11-17 09:49:00 GMT INFO    autobot.orders: Order record: closed at IG AB261117073511-102f0b1c
+2026-11-17 09:49:00 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 09:49:00 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 09:49:01 GMT INFO    autobot.alerts: Telegram message sent (message 13077): [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 09:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 09:45 GMT: buy O 13196.4 H 13205.9 L 13195.2 C 13201.4 | sell O 13194.9 H 13204.4 L 13193.7 C 13199.9
+2026-11-17 09:50:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 09:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 09:50 GMT: buy O 13201.5 H 13205.8 L 13201.3 C 13203.9 | sell O 13200 H 13204.3 L 13199.8 C 13202.4
+2026-11-17 09:55:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 32 groups (18 lined up).
+2026-11-17 10:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 09:55 GMT: buy O 13204.3 H 13205.1 L 13196.7 C 13199.6 | sell O 13202.8 H 13203.6 L 13195.2 C 13197.4
+2026-11-17 10:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 09:00 GMT: buy O 13192.5 H 13205.9 L 13189.2 C 13199.6 | sell O 13191 H 13204.4 L 13187.7 C 13197.4 (from 12 of 12 5-minute candles)
+2026-11-17 10:00:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 10:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 10:00 GMT: buy O 13199 H 13199 L 13191.3 C 13192 | sell O 13197.5 H 13197.5 L 13189.8 C 13190.5
+2026-11-17 10:05:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 10:05:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 10:00 GMT  emerging trend (down): rejected at a level against the emerging up trend: closed 13190.5 below the reversal low 13195.2; trigger at below 13189.8
+2026-11-17 10:05:02 GMT INFO    autobot.orders: Order record: sending AB261117100502-941a3fa2
+2026-11-17 10:05:02 GMT INFO    autobot.orders: Order record: opened AB261117100502-941a3fa2
+2026-11-17 10:05:02 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 10:05:02 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🎯 TRADE OPENED
+2026-11-17 10:05:02 GMT INFO    autobot.alerts: Telegram message sent (message 13078): [AutoBot] 🎯 TRADE OPENED
+2026-11-17 10:05:02 GMT INFO    autobot.trading: Live entry: Bollinger bounce sell at 13189.9 (entry price 13190.1).
+2026-11-17 10:05:03 GMT INFO    autobot.orders: Order record: sending AB261117100503-0a139d25
+2026-11-17 10:05:03 GMT INFO    autobot.orders: Order record: opened AB261117100503-0a139d25
+2026-11-17 10:05:03 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 10:05:03 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🎯 TRADE OPENED
+2026-11-17 10:05:03 GMT INFO    autobot.alerts: Telegram message sent (message 13079): [AutoBot] 🎯 TRADE OPENED
+2026-11-17 10:05:03 GMT INFO    autobot.trading: Live entry: level reversal sell at 13189.5 (entry price 13189.8).
+2026-11-17 10:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 10:05 GMT: buy O 13191.8 H 13192.9 L 13188.4 C 13188.4 | sell O 13190.3 H 13191.4 L 13186.9 C 13186.9
+2026-11-17 10:10:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 10:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 10:10 GMT: buy O 13188.2 H 13190.3 L 13186.9 C 13188.8 | sell O 13186.7 H 13188.8 L 13185.4 C 13187.3
+2026-11-17 10:15:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 10:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 10:15 GMT: buy O 13188.3 H 13189.1 L 13185.9 C 13186.6 | sell O 13186.8 H 13187.6 L 13184.4 C 13185.1
+2026-11-17 10:20:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 10:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 10:20 GMT: buy O 13186 H 13191.8 L 13186 C 13191.6 | sell O 13184.5 H 13190.3 L 13184.5 C 13190.1
+2026-11-17 10:25:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 10:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 10:25 GMT: buy O 13191.7 H 13197.3 L 13190.2 C 13195.7 | sell O 13190.2 H 13195.8 L 13188.7 C 13194.2
+2026-11-17 10:30:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 10:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 10:30 GMT: buy O 13195.8 H 13196.2 L 13191.9 C 13194.4 | sell O 13194.3 H 13194.7 L 13190.4 C 13192.9
+2026-11-17 10:35:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 10:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 10:35 GMT: buy O 13194.3 H 13194.3 L 13189.7 C 13190.9 | sell O 13192.8 H 13192.8 L 13188.2 C 13189.4
+2026-11-17 10:40:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 10:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 10:40 GMT: buy O 13191 H 13192.8 L 13189 C 13192.7 | sell O 13189.5 H 13191.3 L 13187.5 C 13191.2
+2026-11-17 10:45:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 10:46:58 GMT INFO    autobot.prices: [GBPUSD] Status: 34474 ticks (75 with a price carried forward, 0 skipped) and 132 five-minute candles stored since start; last tick Tue 17 Nov 2026 10:46:57 GMT: buy 13191.1 sell 13189.6.
+2026-11-17 10:46:58 GMT INFO    autobot.prices.service: Stream connections 1, drops 0, re-logins 0.
+2026-11-17 10:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 10:45 GMT: buy O 13192.6 H 13192.6 L 13189.3 C 13190.3 | sell O 13191.1 H 13191.1 L 13187.8 C 13188.8
+2026-11-17 10:50:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 10:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 10:50 GMT: buy O 13190.4 H 13191.5 L 13187.7 C 13188.8 | sell O 13188.9 H 13190 L 13186.2 C 13187.3
+2026-11-17 10:55:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 11:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 10:55 GMT: buy O 13188.7 H 13189.7 L 13186.1 C 13188 | sell O 13187.2 H 13188.2 L 13184.6 C 13186.5
+2026-11-17 11:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 10:00 GMT: buy O 13199 H 13199 L 13185.9 C 13188 | sell O 13197.5 H 13197.5 L 13184.4 C 13186.5 (from 12 of 12 5-minute candles)
+2026-11-17 11:00:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 11:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 11:00 GMT: buy O 13187.8 H 13192.1 L 13187.7 C 13189.6 | sell O 13186.3 H 13190.6 L 13186.2 C 13188.1
+2026-11-17 11:05:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 11:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 11:05 GMT: buy O 13190.2 H 13190.4 L 13187.6 C 13189.8 | sell O 13188.7 H 13188.9 L 13186.1 C 13188.3
+2026-11-17 11:10:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 11:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 11:10 GMT: buy O 13189.5 H 13190.7 L 13188.2 C 13188.8 | sell O 13188 H 13189.5 L 13187 C 13187.9
+2026-11-17 11:15:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 11:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 11:15 GMT: buy O 13188.7 H 13189.8 L 13187.3 C 13188.2 | sell O 13187.8 H 13188.4 L 13186.2 C 13187.3
+2026-11-17 11:20:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 11:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 11:20 GMT: buy O 13188.3 H 13191.8 L 13188.3 C 13191.7 | sell O 13187.4 H 13190.3 L 13187 C 13190.2
+2026-11-17 11:25:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 11:29:25 GMT WARNING autobot.prices: [GBPUSD] Price stream dropped (DISCONNECTED:WILL-RETRY). Reconnecting in 5 seconds (attempt 1). Not logging in again.
+2026-11-17 11:29:30 GMT INFO    autobot.ig.stream: Price stream connected (CONNECTED:WS-STREAMING).
+2026-11-17 11:29:30 GMT INFO    autobot.ig.stream: Subscribed to CHART:CS.D.GBPUSD.TODAY.IP:5MINUTE.
+2026-11-17 11:29:30 GMT INFO    autobot.ig.stream: Subscribed to CHART:CS.D.GBPUSD.TODAY.IP:TICK.
+2026-11-17 11:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 11:25 GMT: buy O 13191.8 H 13193.9 L 13190.3 C 13193.7 | sell O 13190.3 H 13192.4 L 13188.9 C 13192.2
+2026-11-17 11:30:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 11:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 11:30 GMT: buy O 13193.8 H 13194.5 L 13190.5 C 13191.5 | sell O 13192.3 H 13193 L 13189 C 13190
+2026-11-17 11:35:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 11:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 11:35 GMT: buy O 13191.2 H 13192.3 L 13190.1 C 13191.3 | sell O 13189.7 H 13190.8 L 13188.6 C 13189.8
+2026-11-17 11:40:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 11:40:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 11:35 GMT  consolidation (none): the emerging down trend settled into consolidation: bands 9.0 pips wide (narrow: <= 14, or narrowing for 6 candles: 6), middle band -0.4 pips/candle, no close outside the bands for 6 candles, average body 1.3 pips, green/red 1.7
+2026-11-17 11:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 11:40 GMT: buy O 13191.4 H 13191.9 L 13190.5 C 13191.6 | sell O 13189.9 H 13190.4 L 13189 C 13190.1
+2026-11-17 11:45:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 11:46:59 GMT INFO    autobot.prices: [GBPUSD] Status: 36784 ticks (104 with a price carried forward, 0 skipped) and 144 five-minute candles stored since start; last tick Tue 17 Nov 2026 11:46:57 GMT: buy 13193 sell 13191.5.
+2026-11-17 11:46:59 GMT INFO    autobot.prices.service: Stream connections 2, drops 1, re-logins 0.
+2026-11-17 11:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 11:45 GMT: buy O 13191.4 H 13193.5 L 13191.4 C 13193.2 | sell O 13189.9 H 13192 L 13189.9 C 13191.7
+2026-11-17 11:50:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 11:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 11:50 GMT: buy O 13193.4 H 13194.9 L 13191.2 C 13192.9 | sell O 13191.9 H 13193.4 L 13189.7 C 13191.4
+2026-11-17 11:55:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 12:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 11:55 GMT: buy O 13192.8 H 13193.8 L 13186.7 C 13191.5 | sell O 13191.3 H 13192.3 L 13185.2 C 13190
+2026-11-17 12:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 11:00 GMT: buy O 13187.8 H 13194.9 L 13186.7 C 13191.5 | sell O 13186.3 H 13193.4 L 13185.2 C 13190 (from 12 of 12 5-minute candles)
+2026-11-17 12:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 4h Tue 17 Nov 08:00 GMT: buy O 13187.3 H 13205.9 L 13184.7 C 13191.5 | sell O 13185.8 H 13204.4 L 13183.2 C 13190 (from 48 of 48 5-minute candles)
+2026-11-17 12:00:00 GMT INFO    autobot.levels: Levels updated: 61 levels in 33 groups (17 lined up).
+2026-11-17 12:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 12:00 GMT: buy O 13191.4 H 13195.5 L 13189.6 C 13191.8 | sell O 13189.9 H 13194 L 13188.3 C 13190.3
+2026-11-17 12:05:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 34 groups (18 lined up).
+2026-11-17 12:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 12:05 GMT: buy O 13192 H 13195.5 L 13192 C 13193.6 | sell O 13190.5 H 13194 L 13190.5 C 13192.1
+2026-11-17 12:10:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 34 groups (18 lined up).
+2026-11-17 12:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 12:10 GMT: buy O 13193.7 H 13194.6 L 13191.9 C 13194.4 | sell O 13192.2 H 13193.1 L 13190.4 C 13192.9
+2026-11-17 12:15:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 34 groups (18 lined up).
+2026-11-17 12:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 12:15 GMT: buy O 13194.5 H 13195.2 L 13190.3 C 13191.2 | sell O 13193 H 13193.7 L 13188.8 C 13189.7
+2026-11-17 12:20:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 34 groups (18 lined up).
+2026-11-17 12:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 12:20 GMT: buy O 13191.3 H 13195.4 L 13189.9 C 13194 | sell O 13189.8 H 13193.9 L 13188.4 C 13192.5
+2026-11-17 12:25:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 34 groups (18 lined up).
+2026-11-17 12:29:30 GMT INFO    autobot.ig.stream: Price stream healthy for 1:00:00: reconnect waits start from the first again.
+2026-11-17 12:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 12:25 GMT: buy O 13193.9 H 13195.5 L 13193.3 C 13195.2 | sell O 13192.4 H 13194 L 13191.8 C 13193.7
+2026-11-17 12:30:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 34 groups (18 lined up).
+2026-11-17 12:30:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 12:25 GMT  ranging (none): bands 8.0 pips wide (close together: 6 to 18) and flat (upper 0.1, lower 0.0 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 0.1 pips
+2026-11-17 12:33:08 GMT INFO    autobot.news: Economic calendar fetched: 1870 releases from 2026-11-10 to 2026-12-01; 3036 kept on disk.
+2026-11-17 12:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 12:30 GMT: buy O 13195.1 H 13195.3 L 13188.9 C 13190.6 | sell O 13193.6 H 13193.8 L 13187.4 C 13189.1
+2026-11-17 12:35:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 34 groups (18 lined up).
+2026-11-17 12:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 12:35 GMT: buy O 13190.7 H 13193.5 L 13190.3 C 13192.7 | sell O 13189.2 H 13192 L 13188.8 C 13191.2
+2026-11-17 12:40:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 34 groups (18 lined up).
+2026-11-17 12:40:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 12:35 GMT  consolidation (none): bands 6.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 2), middle band 0.1 pips/candle, no close outside the bands for 6 candles, average body 2.4 pips, green/red 1.2
+2026-11-17 12:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 12:40 GMT: buy O 13192.4 H 13198.2 L 13192.4 C 13197.6 | sell O 13190.9 H 13196.7 L 13190.9 C 13196.1
+2026-11-17 12:45:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 34 groups (18 lined up).
+2026-11-17 12:45:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 12:40 GMT  emerging trend (up): broke out of the consolidation: close 13196.1 above the upper band 13194.9
+2026-11-17 12:46:59 GMT INFO    autobot.prices: [GBPUSD] Status: 55236 ticks (112 with a price carried forward, 0 skipped) and 156 five-minute candles stored since start; last tick Tue 17 Nov 2026 12:46:58 GMT: buy 13197 sell 13195.5.
+2026-11-17 12:46:59 GMT INFO    autobot.prices.service: Stream connections 2, drops 1, re-logins 0.
+2026-11-17 12:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 12:45 GMT: buy O 13197 H 13199.8 L 13195.4 C 13199.8 | sell O 13195.5 H 13198.3 L 13193.9 C 13198.3
+2026-11-17 12:50:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 34 groups (18 lined up).
+2026-11-17 12:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 12:50 GMT: buy O 13199.6 H 13199.9 L 13193.1 C 13194.8 | sell O 13198.1 H 13198.4 L 13191.7 C 13193.3
+2026-11-17 12:55:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 34 groups (18 lined up).
+2026-11-17 13:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 12:55 GMT: buy O 13194.7 H 13198.6 L 13194.2 C 13196.6 | sell O 13193.2 H 13197.1 L 13192.7 C 13195.1
+2026-11-17 13:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 12:00 GMT: buy O 13191.4 H 13199.9 L 13188.9 C 13196.6 | sell O 13189.9 H 13198.4 L 13187.4 C 13195.1 (from 12 of 12 5-minute candles)
+2026-11-17 13:00:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 34 groups (18 lined up).
+2026-11-17 13:00:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 12:55 GMT  consolidation (none): the emerging up trend was cancelled: 2 closes in a row back inside the Bollinger bands after the breakout (last 13195.1)
+2026-11-17 13:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 13:00 GMT: buy O 13197 H 13200 L 13196.1 C 13197.8 | sell O 13195.5 H 13198.5 L 13194.6 C 13196.3
+2026-11-17 13:05:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 34 groups (18 lined up).
+2026-11-17 13:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 13:05 GMT: buy O 13197.7 H 13197.7 L 13191.7 C 13192.9 | sell O 13196.2 H 13196.2 L 13190.6 C 13191.4
+2026-11-17 13:10:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 34 groups (18 lined up).
+2026-11-17 13:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 13:10 GMT: buy O 13192.2 H 13193.2 L 13190.4 C 13191.4 | sell O 13190.7 H 13191.7 L 13188.9 C 13189.9
+2026-11-17 13:15:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 34 groups (18 lined up).
+2026-11-17 13:15:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 13:10 GMT  emerging trend (down): rejected at a level: closed 13189.9 below the reversal low 13190.6; trigger at below 13188.9
+2026-11-17 13:19:35 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 13:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 13:15 GMT: buy O 13191.3 H 13193.7 L 13187.5 C 13187.5 | sell O 13189.8 H 13192.2 L 13186 C 13186
+2026-11-17 13:20:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (18 lined up).
+2026-11-17 13:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 13:20 GMT: buy O 13187.1 H 13189.7 L 13184.5 C 13189.2 | sell O 13185.6 H 13188.2 L 13183 C 13187.7
+2026-11-17 13:25:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (18 lined up).
+2026-11-17 13:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 13:25 GMT: buy O 13188.7 H 13192.4 L 13188.3 C 13191.6 | sell O 13187.2 H 13190.9 L 13186.8 C 13187
+2026-11-17 13:30:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (18 lined up).
+2026-11-17 13:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 13:30 GMT: buy O 13193.1 H 13193.1 L 13180.2 C 13180.9 | sell O 13186.6 H 13186.6 L 13178.7 C 13179.4
+2026-11-17 13:35:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (18 lined up).
+2026-11-17 13:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 13:35 GMT: buy O 13181.2 H 13181.2 L 13174.3 C 13174.8 | sell O 13179.7 H 13179.7 L 13172.8 C 13173.3
+2026-11-17 13:40:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (18 lined up).
+2026-11-17 13:40:02 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:40:02 GMT INFO    autobot.orders: Order record: stop moved AB261117100502-941a3fa2
+2026-11-17 13:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 13:40 GMT: buy O 13174.5 H 13181.2 L 13174.5 C 13178.2 | sell O 13173 H 13180.3 L 13173 C 13176.7
+2026-11-17 13:45:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (18 lined up).
+2026-11-17 13:46:59 GMT INFO    autobot.prices: [GBPUSD] Status: 64988 ticks (198 with a price carried forward, 0 skipped) and 168 five-minute candles stored since start; last tick Tue 17 Nov 2026 13:46:59 GMT: buy 13178.2 sell 13177.3.
+2026-11-17 13:46:59 GMT INFO    autobot.prices.service: Stream connections 2, drops 1, re-logins 0.
+2026-11-17 13:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 13:45 GMT: buy O 13178 H 13181.5 L 13177.8 C 13180.5 | sell O 13176.5 H 13180.1 L 13176.3 C 13179.6
+2026-11-17 13:50:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (18 lined up).
+2026-11-17 13:50:02 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:50:02 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:50:02 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:50:02 GMT INFO    autobot.alerts: Telegram message sent (message 13080): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:50:33 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:50:33 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:50:33 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:50:33 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:51:07 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:51:07 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:51:07 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:51:07 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:51:38 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:51:38 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:51:38 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:51:38 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:52:10 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:52:10 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:52:10 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:52:10 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:52:42 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:52:42 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:52:42 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:52:42 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:53:13 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:53:13 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:53:13 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:53:13 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:53:49 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:53:50 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:53:50 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:53:50 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:54:23 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:54:23 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:54:23 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:54:23 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:54:54 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:54:54 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:54:54 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:54:54 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 13:50 GMT: buy O 13180.2 H 13185 L 13180.1 C 13185 | sell O 13179.3 H 13183.5 L 13178.8 C 13183.5
+2026-11-17 13:55:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (18 lined up).
+2026-11-17 13:55:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 13:50 GMT  emerging trend (up): rejected at a level against the emerging down trend: closed 13183.5 above the reversal high 13180.3; trigger at above 13183.5
+2026-11-17 13:55:27 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:55:28 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:55:28 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:55:28 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:56:00 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:56:01 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:56:01 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:56:01 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:56:31 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:56:31 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:56:31 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:56:31 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:57:03 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:57:04 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:57:04 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:57:04 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:57:34 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:57:35 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:57:35 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:57:35 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:58:06 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:58:06 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:58:06 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:58:06 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:58:43 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:58:44 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:58:44 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:58:44 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:59:15 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:59:15 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:59:15 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:59:15 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:59:45 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 13:59:46 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 13:59:46 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 13:59:46 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 13:55 GMT: buy O 13184.7 H 13189.7 L 13182.5 C 13188.4 | sell O 13183.2 H 13188.2 L 13181 C 13186.9
+2026-11-17 14:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 13:00 GMT: buy O 13197 H 13200 L 13174.3 C 13188.4 | sell O 13195.5 H 13198.5 L 13172.8 C 13186.9 (from 12 of 12 5-minute candles)
+2026-11-17 14:00:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (17 lined up).
+2026-11-17 14:00:03 GMT INFO    autobot.orders: Order record: sending AB261117140003-17c8ac88
+2026-11-17 14:00:03 GMT INFO    autobot.orders: Order record: opened AB261117140003-17c8ac88
+2026-11-17 14:00:03 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 14:00:03 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🎯 TRADE OPENED
+2026-11-17 14:00:03 GMT INFO    autobot.alerts: Telegram message sent (message 13081): [AutoBot] 🎯 TRADE OPENED
+2026-11-17 14:00:03 GMT INFO    autobot.trading: Live entry: session sweep buy at 13188.8 (entry price 13187.4).
+2026-11-17 14:00:16 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 14:00:16 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 14:00:16 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:00:17 GMT INFO    autobot.alerts: Telegram message sent (message 13082): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:00:48 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 14:00:48 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 14:00:48 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:00:48 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:01:20 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 14:01:20 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 14:01:20 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:01:20 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:01:50 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 14:01:50 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 14:01:50 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:01:50 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:02:21 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 14:02:21 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 14:02:21 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:02:21 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:02:51 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 14:02:51 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 14:02:51 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:02:51 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:03:21 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 14:03:22 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 14:03:22 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:03:22 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:03:53 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 14:03:53 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 14:03:53 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:03:53 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:04:23 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 14:04:23 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 14:04:23 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:04:23 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:04:55 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 14:04:56 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 14:04:56 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:04:56 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 14:00 GMT: buy O 13188.5 H 13192.7 L 13183.3 C 13191.7 | sell O 13187 H 13191.4 L 13181.8 C 13190.2
+2026-11-17 14:05:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (17 lined up).
+2026-11-17 14:05:27 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 14:05:27 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 14:05:27 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:05:27 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:06:00 GMT INFO    autobot.orders: Order record: stop move sending AB261117100502-941a3fa2
+2026-11-17 14:06:00 GMT INFO    autobot.orders: Order record: stop not moved AB261117100502-941a3fa2
+2026-11-17 14:06:00 GMT WARNING autobot.alerts: ALERT stop-move-refused-DIAAAAYU3W2C2BY: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:06:00 GMT INFO    autobot.alerts: Telegram message held back (the same problem was sent less than 0:10:00 ago): AutoBot PROBLEM: IG did not move the stop of Bollinger bounce sell trade DIAAAAYU3W2C2BY to 13181.6 (the trail): ATTACHED_ORDER_LEVEL_ERROR. The old stop stays at IG and in the bot's records; the move is tried again every 30 seconds.
+2026-11-17 14:06:00 GMT INFO    autobot.orders: Order record: still open at IG AB261117100502-941a3fa2
+2026-11-17 14:06:01 GMT INFO    autobot.orders: Order record: closed at IG AB261117100502-941a3fa2
+2026-11-17 14:06:01 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 14:06:01 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 14:06:01 GMT INFO    autobot.alerts: Telegram message sent (message 13083): [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 14:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 14:05 GMT: buy O 13191.8 H 13197.7 L 13191.7 C 13197.1 | sell O 13190.3 H 13196.2 L 13190.2 C 13195.6
+2026-11-17 14:10:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (17 lined up).
+2026-11-17 14:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 14:10 GMT: buy O 13197.2 H 13199.1 L 13193.5 C 13193.8 | sell O 13195.7 H 13197.6 L 13190.6 C 13190.6
+2026-11-17 14:15:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (17 lined up).
+2026-11-17 14:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 14:15 GMT: buy O 13194 H 13196.6 L 13193 C 13196.4 | sell O 13189.7 H 13195.1 L 13189.7 C 13194.9
+2026-11-17 14:20:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (17 lined up).
+2026-11-17 14:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 14:20 GMT: buy O 13196.3 H 13201.3 L 13195.6 C 13196.3 | sell O 13194.8 H 13199.8 L 13194.1 C 13194.8
+2026-11-17 14:25:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 14:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 14:25 GMT: buy O 13196.4 H 13201.9 L 13195.5 C 13201.7 | sell O 13194.9 H 13200.4 L 13194 C 13200.2
+2026-11-17 14:30:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (17 lined up).
+2026-11-17 14:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 14:30 GMT: buy O 13201.6 H 13202.5 L 13195.5 C 13199.7 | sell O 13200.1 H 13201 L 13194 C 13198.2
+2026-11-17 14:35:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 14:35:02 GMT INFO    autobot.orders: Order record: stop move sending AB261117140003-17c8ac88
+2026-11-17 14:35:02 GMT INFO    autobot.orders: Order record: stop moved AB261117140003-17c8ac88
+2026-11-17 14:37:44 GMT INFO    autobot.orders: Order record: still open at IG AB261117140003-17c8ac88
+2026-11-17 14:37:44 GMT INFO    autobot.orders: Order record: closed at IG AB261117140003-17c8ac88
+2026-11-17 14:37:44 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 14:37:44 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🟢 TRADE CLOSED
+2026-11-17 14:37:44 GMT INFO    autobot.alerts: Telegram message sent (message 13084): [AutoBot] 🟢 TRADE CLOSED
+2026-11-17 14:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 14:35 GMT: buy O 13199.4 H 13199.9 L 13194.1 C 13197.3 | sell O 13197.9 H 13198.4 L 13192.6 C 13195.8
+2026-11-17 14:40:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 14:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 14:40 GMT: buy O 13197.5 H 13198.6 L 13195 C 13198 | sell O 13196 H 13197.1 L 13193.5 C 13196.5
+2026-11-17 14:45:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 14:46:59 GMT INFO    autobot.prices: [GBPUSD] Status: 68882 ticks (263 with a price carried forward, 0 skipped) and 180 five-minute candles stored since start; last tick Tue 17 Nov 2026 14:46:59 GMT: buy 13195.2 sell 13194.3.
+2026-11-17 14:46:59 GMT INFO    autobot.prices.service: Stream connections 2, drops 1, re-logins 0.
+2026-11-17 14:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 14:45 GMT: buy O 13198.1 H 13199.1 L 13192.8 C 13194 | sell O 13196.6 H 13198.1 L 13191.3 C 13192.5
+2026-11-17 14:50:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 14:50:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 14:45 GMT  emerging trend (down): rejected at a level against the emerging up trend: closed 13192.5 below the reversal low 13194; trigger at below 13191.3
+2026-11-17 14:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 14:50 GMT: buy O 13194.1 H 13198.5 L 13193.2 C 13193.9 | sell O 13192.6 H 13197 L 13191.7 C 13192.4
+2026-11-17 14:55:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 14:55:12 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 15:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 14:55 GMT: buy O 13194 H 13194.6 L 13191.9 C 13192.5 | sell O 13192.5 H 13193.1 L 13190.4 C 13191
+2026-11-17 15:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 14:00 GMT: buy O 13188.5 H 13202.5 L 13183.3 C 13192.5 | sell O 13187 H 13201 L 13181.8 C 13191 (from 12 of 12 5-minute candles)
+2026-11-17 15:00:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 15:00:42 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 15:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 15:00 GMT: buy O 13192.2 H 13195.2 L 13191.3 C 13191.8 | sell O 13190.7 H 13193.7 L 13189.8 C 13190.3
+2026-11-17 15:05:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 15:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 15:05 GMT: buy O 13191.7 H 13195.3 L 13189.8 C 13192.9 | sell O 13190.2 H 13194.1 L 13188.3 C 13191.4
+2026-11-17 15:10:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 15:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 15:10 GMT: buy O 13192.8 H 13194.8 L 13191 C 13192 | sell O 13191.3 H 13193.3 L 13189.5 C 13190.5
+2026-11-17 15:15:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 15:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 15:15 GMT: buy O 13192.1 H 13195.8 L 13191.7 C 13194.3 | sell O 13190.6 H 13194.3 L 13190.2 C 13192.8
+2026-11-17 15:20:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 15:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 15:20 GMT: buy O 13194.2 H 13194.9 L 13192 C 13193.2 | sell O 13192.7 H 13193.4 L 13190.5 C 13191.7
+2026-11-17 15:25:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 15:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 15:25 GMT: buy O 13193.5 H 13202.2 L 13192.4 C 13201.1 | sell O 13192 H 13200.7 L 13190.9 C 13199.6
+2026-11-17 15:30:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 15:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 15:30 GMT: buy O 13201.2 H 13201.2 L 13193 C 13198.2 | sell O 13199.7 H 13199.7 L 13191.5 C 13196.7
+2026-11-17 15:35:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 15:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 15:35 GMT: buy O 13198.1 H 13204.7 L 13196.8 C 13200 | sell O 13196.6 H 13203.2 L 13195.3 C 13198.5
+2026-11-17 15:40:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (16 lined up).
+2026-11-17 15:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 15:40 GMT: buy O 13200.1 H 13209.4 L 13198.9 C 13205.9 | sell O 13198.6 H 13207.9 L 13197.4 C 13204.4
+2026-11-17 15:45:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (17 lined up).
+2026-11-17 15:45:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 15:40 GMT  emerging trend (up): rejected at a level against the emerging down trend: closed 13204.4 above the reversal high 13203.2; trigger at above 13207.9
+2026-11-17 15:45:18 GMT INFO    autobot.orders: Order record: still open at IG AB261117100503-0a139d25
+2026-11-17 15:45:19 GMT INFO    autobot.orders: Order record: closed at IG AB261117100503-0a139d25
+2026-11-17 15:45:19 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 15:45:19 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 15:45:19 GMT INFO    autobot.alerts: Telegram message sent (message 13085): [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 15:46:59 GMT INFO    autobot.prices: [GBPUSD] Status: 73520 ticks (299 with a price carried forward, 0 skipped) and 192 five-minute candles stored since start; last tick Tue 17 Nov 2026 15:46:59 GMT: buy 13210 sell 13208.5.
+2026-11-17 15:46:59 GMT INFO    autobot.prices.service: Stream connections 2, drops 1, re-logins 0.
+2026-11-17 15:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 15:45 GMT: buy O 13206 H 13211.9 L 13203.7 C 13204.3 | sell O 13204.5 H 13210.4 L 13202.2 C 13202.8
+2026-11-17 15:50:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (18 lined up).
+2026-11-17 15:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 15:50 GMT: buy O 13204.4 H 13210.4 L 13203.6 C 13208.1 | sell O 13202.9 H 13208.9 L 13202.1 C 13206.6
+2026-11-17 15:55:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (18 lined up).
+2026-11-17 16:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 15:55 GMT: buy O 13208.2 H 13211.4 L 13203.9 C 13204.9 | sell O 13206.7 H 13209.9 L 13202.8 C 13203.4
+2026-11-17 16:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 15:00 GMT: buy O 13192.2 H 13211.9 L 13189.8 C 13204.9 | sell O 13190.7 H 13210.4 L 13188.3 C 13203.4 (from 12 of 12 5-minute candles)
+2026-11-17 16:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 4h Tue 17 Nov 12:00 GMT: buy O 13191.4 H 13211.9 L 13174.3 C 13204.9 | sell O 13189.9 H 13210.4 L 13172.8 C 13203.4 (from 48 of 48 5-minute candles)
+2026-11-17 16:00:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (18 lined up).
+2026-11-17 16:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 16:00 GMT: buy O 13204.5 H 13210.8 L 13204 C 13205.7 | sell O 13203.6 H 13209.3 L 13203.1 C 13204.2
+2026-11-17 16:05:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (18 lined up).
+2026-11-17 16:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 16:05 GMT: buy O 13206 H 13209.1 L 13203.8 C 13208.8 | sell O 13204.5 H 13207.6 L 13202.3 C 13207.3
+2026-11-17 16:10:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (18 lined up).
+2026-11-17 16:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 16:10 GMT: buy O 13209.1 H 13213.5 L 13208.3 C 13212.1 | sell O 13207.6 H 13212 L 13207.1 C 13210.6
+2026-11-17 16:15:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 33 groups (18 lined up).
+2026-11-17 16:15:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 16:10 GMT  trend (up, slow grind): the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new high 13212.0 on the upper band 13210.6; EMAs 7/13/21 stacked up for 10 candles, close 13210.6 above them and the 100 EMA 13193.1; band sloping 1.4 pips/candle
+2026-11-17 16:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 16:15 GMT: buy O 13212.2 H 13218.7 L 13212.2 C 13216.2 | sell O 13210.7 H 13217.2 L 13210.7 C 13214.7
+2026-11-17 16:20:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (17 lined up).
+2026-11-17 16:22:54 GMT INFO    autobot.orders: Order record: sending AB261117162254-f521e517
+2026-11-17 16:22:55 GMT INFO    autobot.orders: Order record: opened AB261117162254-f521e517
+2026-11-17 16:22:55 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 16:22:55 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🎯 TRADE OPENED
+2026-11-17 16:22:55 GMT INFO    autobot.alerts: Telegram message sent (message 13086): [AutoBot] 🎯 TRADE OPENED
+2026-11-17 16:22:55 GMT INFO    autobot.trading: Live entry: level reversal buy at 13218.8 (entry price 13217.2).
+2026-11-17 16:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 16:20 GMT: buy O 13215.8 H 13222.1 L 13212.5 C 13221.3 | sell O 13214.3 H 13220.6 L 13211 C 13219.8
+2026-11-17 16:25:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (17 lined up).
+2026-11-17 16:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 16:25 GMT: buy O 13221.4 H 13222.2 L 13217.6 C 13218.2 | sell O 13219.9 H 13220.7 L 13216.1 C 13216.7
+2026-11-17 16:30:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (17 lined up).
+2026-11-17 16:30:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 16:25 GMT  trend (up, strong push): strong push: 83% of the body size green, bands 2.3x as wide as 12 candles ago, 7/21 EMAs 8.3 pips apart, 3 closes on the band
+2026-11-17 16:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 16:30 GMT: buy O 13218.3 H 13218.4 L 13215.2 C 13216.6 | sell O 13216.8 H 13217.1 L 13213.7 C 13215.1
+2026-11-17 16:35:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (17 lined up).
+2026-11-17 16:35:03 GMT INFO    autobot.orders: Order record: sending AB261117163503-e22632c9
+2026-11-17 16:35:03 GMT INFO    autobot.orders: Order record: opened AB261117163503-e22632c9
+2026-11-17 16:35:03 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 16:35:03 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🎯 TRADE OPENED
+2026-11-17 16:35:03 GMT INFO    autobot.alerts: Telegram message sent (message 13087): [AutoBot] 🎯 TRADE OPENED
+2026-11-17 16:35:03 GMT INFO    autobot.trading: Live entry: Bollinger bounce sell at 13215.1 (entry price 13215.1).
+2026-11-17 16:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 16:35 GMT: buy O 13216.5 H 13219.9 L 13216.2 C 13218.1 | sell O 13215 H 13218.4 L 13214.7 C 13216.6
+2026-11-17 16:40:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (17 lined up).
+2026-11-17 16:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 16:40 GMT: buy O 13218.2 H 13219.9 L 13215.9 C 13218.9 | sell O 13216.7 H 13218.4 L 13214.4 C 13217.4
+2026-11-17 16:45:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (17 lined up).
+2026-11-17 16:46:10 GMT INFO    autobot.orders: Order record: sending AB261117164610-ee454643
+2026-11-17 16:46:11 GMT INFO    autobot.orders: Order record: opened AB261117164610-ee454643
+2026-11-17 16:46:11 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 16:46:11 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🎯 TRADE OPENED
+2026-11-17 16:46:11 GMT INFO    autobot.alerts: Telegram message sent (message 13088): [AutoBot] 🎯 TRADE OPENED
+2026-11-17 16:46:11 GMT INFO    autobot.trading: Live entry: slow grind buy at 13220.0 (entry price 13218.4).
+2026-11-17 16:47:00 GMT INFO    autobot.prices: [GBPUSD] Status: 78192 ticks (360 with a price carried forward, 0 skipped) and 204 five-minute candles stored since start; last tick Tue 17 Nov 2026 16:47:00 GMT: buy 13219.2 sell 13217.7.
+2026-11-17 16:47:00 GMT INFO    autobot.prices.service: Stream connections 2, drops 1, re-logins 0.
+2026-11-17 16:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 16:45 GMT: buy O 13218.1 H 13221.8 L 13215 C 13215.7 | sell O 13216.6 H 13220.3 L 13213.5 C 13214.2
+2026-11-17 16:50:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (17 lined up).
+2026-11-17 16:50:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 16:45 GMT  trend (up, slow grind): slow grind: 51% of the body size green, bands 2.2x as wide as 12 candles ago, 7/21 EMAs 7.0 pips apart, 1 closes on the band
+2026-11-17 16:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 16:50 GMT: buy O 13216.1 H 13218 L 13213.4 C 13217.1 | sell O 13214.6 H 13216.5 L 13211.9 C 13215.6
+2026-11-17 16:55:00 GMT INFO    autobot.levels: Levels updated: 63 levels in 32 groups (17 lined up).
+2026-11-17 17:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 16:55 GMT: buy O 13217 H 13220 L 13216.6 C 13216.8 | sell O 13215.5 H 13218.5 L 13215.1 C 13215.3
+2026-11-17 17:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 16:00 GMT: buy O 13204.5 H 13222.2 L 13203.8 C 13216.8 | sell O 13203.6 H 13220.7 L 13202.3 C 13215.3 (from 12 of 12 5-minute candles)
+2026-11-17 17:00:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 32 groups (17 lined up).
+2026-11-17 17:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 17:00 GMT: buy O 13217.6 H 13219.5 L 13215.2 C 13219 | sell O 13216.1 H 13218 L 13213.7 C 13217.5
+2026-11-17 17:05:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 32 groups (17 lined up).
+2026-11-17 17:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 17:05 GMT: buy O 13219.3 H 13220 L 13216.6 C 13216.9 | sell O 13217.8 H 13218.5 L 13215.1 C 13215.4
+2026-11-17 17:10:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 32 groups (17 lined up).
+2026-11-17 17:14:10 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 17:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 17:10 GMT: buy O 13217.1 H 13222.9 L 13215.6 C 13222.6 | sell O 13215.6 H 13221.4 L 13214.1 C 13221.1
+2026-11-17 17:15:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 32 groups (17 lined up).
+2026-11-17 17:16:01 GMT INFO    autobot.orders: Order record: sending AB261117171601-370bf9ae
+2026-11-17 17:16:02 GMT INFO    autobot.orders: Order record: opened AB261117171601-370bf9ae
+2026-11-17 17:16:02 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 17:16:02 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🎯 TRADE OPENED
+2026-11-17 17:16:02 GMT INFO    autobot.alerts: Telegram message sent (message 13089): [AutoBot] 🎯 TRADE OPENED
+2026-11-17 17:16:02 GMT INFO    autobot.trading: Live entry: EMA pullback buy at 13225.1 (entry price 13223.3).
+2026-11-17 17:17:07 GMT INFO    autobot.orders: Order record: closed at IG AB261117163503-e22632c9
+2026-11-17 17:17:07 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 17:17:07 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 17:17:07 GMT INFO    autobot.alerts: Telegram message sent (message 13090): [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 17:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 17:15 GMT: buy O 13222.7 H 13227.8 L 13221.6 C 13223.5 | sell O 13221.2 H 13226.3 L 13220.1 C 13222
+2026-11-17 17:20:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 17:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 17:20 GMT: buy O 13223.4 H 13225.1 L 13222.6 C 13225.1 | sell O 13221.9 H 13223.6 L 13221.1 C 13223.6
+2026-11-17 17:25:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 17:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 17:25 GMT: buy O 13225 H 13226.7 L 13223.1 C 13225 | sell O 13223.5 H 13225.2 L 13221.6 C 13223.5
+2026-11-17 17:30:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 17:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 17:30 GMT: buy O 13224.9 H 13225.2 L 13222.5 C 13223.9 | sell O 13223.4 H 13223.7 L 13221 C 13222.4
+2026-11-17 17:35:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 17:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 17:35 GMT: buy O 13224.3 H 13225.6 L 13223.4 C 13223.5 | sell O 13222.8 H 13224.1 L 13221.9 C 13222
+2026-11-17 17:40:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 17:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 17:40 GMT: buy O 13223.4 H 13224.1 L 13220.7 C 13222.8 | sell O 13221.9 H 13222.6 L 13219.2 C 13221.3
+2026-11-17 17:45:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 17:45:04 GMT INFO    autobot.orders: Order record: sending AB261117174504-40b8089d
+2026-11-17 17:45:04 GMT INFO    autobot.orders: Order record: opened AB261117174504-40b8089d
+2026-11-17 17:45:04 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 17:45:04 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🎯 TRADE OPENED
+2026-11-17 17:45:05 GMT INFO    autobot.alerts: Telegram message sent (message 13091): [AutoBot] 🎯 TRADE OPENED
+2026-11-17 17:45:05 GMT INFO    autobot.trading: Live entry: Bollinger bounce sell at 13221.1 (entry price 13221.2).
+2026-11-17 17:47:00 GMT INFO    autobot.prices: [GBPUSD] Status: 81254 ticks (363 with a price carried forward, 0 skipped) and 216 five-minute candles stored since start; last tick Tue 17 Nov 2026 17:47:00 GMT: buy 13221.5 sell 13220.
+2026-11-17 17:47:00 GMT INFO    autobot.prices.service: Stream connections 2, drops 1, re-logins 0.
+2026-11-17 17:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 17:45 GMT: buy O 13222.7 H 13222.8 L 13220.8 C 13222.2 | sell O 13221.2 H 13221.3 L 13219.3 C 13220.7
+2026-11-17 17:50:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 17:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 17:50 GMT: buy O 13222.1 H 13226.2 L 13222.1 C 13226.1 | sell O 13220.6 H 13224.7 L 13220.6 C 13224.6
+2026-11-17 17:55:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 18:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 17:55 GMT: buy O 13226 H 13226.7 L 13225 C 13225.5 | sell O 13224.5 H 13225.2 L 13223.5 C 13224
+2026-11-17 18:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 17:00 GMT: buy O 13217.6 H 13227.8 L 13215.2 C 13225.5 | sell O 13216.1 H 13226.3 L 13213.7 C 13224 (from 12 of 12 5-minute candles)
+2026-11-17 18:00:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 18:02:37 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 18:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 18:00 GMT: buy O 13225.6 H 13229.4 L 13224.5 C 13226.9 | sell O 13224.1 H 13227.9 L 13223 C 13225.4
+2026-11-17 18:05:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 18:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 18:05 GMT: buy O 13227 H 13227.1 L 13224.9 C 13225.5 | sell O 13225.5 H 13225.6 L 13223.4 C 13224
+2026-11-17 18:10:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 18:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 18:10 GMT: buy O 13225.8 H 13226.9 L 13225.2 C 13226 | sell O 13224.3 H 13225.4 L 13223.7 C 13224.5
+2026-11-17 18:15:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 18:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 18:15 GMT: buy O 13226.1 H 13226.6 L 13224.8 C 13226 | sell O 13224.6 H 13225.1 L 13223.3 C 13224.5
+2026-11-17 18:20:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 18:21:00 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 18:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 18:20 GMT: buy O 13226.2 H 13227.3 L 13224.2 C 13224.4 | sell O 13224.7 H 13225.8 L 13222.7 C 13222.9
+2026-11-17 18:25:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 18:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 18:25 GMT: buy O 13224.3 H 13224.9 L 13222.6 C 13223.4 | sell O 13222.8 H 13223.4 L 13221.1 C 13221.9
+2026-11-17 18:30:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 18:30:04 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 18:33:34 GMT INFO    autobot.news: Economic calendar fetched: 1870 releases from 2026-11-10 to 2026-12-01; 3036 kept on disk.
+2026-11-17 18:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 18:30 GMT: buy O 13223.5 H 13224.1 L 13221 C 13221 | sell O 13222 H 13222.6 L 13219.5 C 13219.5
+2026-11-17 18:35:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 18:35:05 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 18:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 18:35 GMT: buy O 13221.2 H 13222.1 L 13220.1 C 13220.1 | sell O 13219.7 H 13220.6 L 13218.6 C 13218.6
+2026-11-17 18:40:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 18:40:03 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 18:45:00 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 18:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 18:40 GMT: buy O 13220.2 H 13222.5 L 13220.1 C 13221.8 | sell O 13218.7 H 13221 L 13218.6 C 13220.3
+2026-11-17 18:45:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 18:47:01 GMT INFO    autobot.prices: [GBPUSD] Status: 83072 ticks (365 with a price carried forward, 0 skipped) and 228 five-minute candles stored since start; last tick Tue 17 Nov 2026 18:46:49 GMT: buy 13221.7 sell 13220.2.
+2026-11-17 18:47:01 GMT INFO    autobot.prices.service: Stream connections 2, drops 1, re-logins 0.
+2026-11-17 18:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 18:45 GMT: buy O 13221.9 H 13223.2 L 13220.4 C 13223.2 | sell O 13220.4 H 13221.7 L 13218.9 C 13221.7
+2026-11-17 18:50:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 18:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 18:50 GMT: buy O 13223.4 H 13224.5 L 13222.9 C 13223.6 | sell O 13221.9 H 13223 L 13221.8 C 13222.1
+2026-11-17 18:55:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 19:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 18:55 GMT: buy O 13223 H 13223.4 L 13219.7 C 13219.8 | sell O 13221.9 H 13221.9 L 13218.2 C 13218.3
+2026-11-17 19:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 18:00 GMT: buy O 13225.6 H 13229.4 L 13219.7 C 13219.8 | sell O 13224.1 H 13227.9 L 13218.2 C 13218.3 (from 12 of 12 5-minute candles)
+2026-11-17 19:00:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 19:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 19:00 GMT: buy O 13219.7 H 13220.9 L 13218.2 C 13218.2 | sell O 13218.2 H 13219.6 L 13216.7 C 13216.7
+2026-11-17 19:05:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 19:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 19:05 GMT: buy O 13218.3 H 13219.4 L 13218.3 C 13218.9 | sell O 13216.8 H 13218.2 L 13216.8 C 13217.4
+2026-11-17 19:10:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 19:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 19:10 GMT: buy O 13219 H 13219.1 L 13216.9 C 13218.1 | sell O 13218.1 H 13218.2 L 13215.4 C 13216.6
+2026-11-17 19:15:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 19:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 19:15 GMT: buy O 13218.2 H 13220.6 L 13218.1 C 13219.2 | sell O 13216.7 H 13219.1 L 13216.6 C 13218.3
+2026-11-17 19:20:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 19:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 19:20 GMT: buy O 13219.1 H 13219.9 L 13218.3 C 13218.8 | sell O 13218.2 H 13219 L 13216.8 C 13217.3
+2026-11-17 19:25:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 19:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 19:25 GMT: buy O 13218.9 H 13218.9 L 13217 C 13218.5 | sell O 13217.4 H 13217.8 L 13215.5 C 13217
+2026-11-17 19:30:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 19:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 19:30 GMT: buy O 13218.1 H 13219.4 L 13217.5 C 13219.1 | sell O 13216.6 H 13218.2 L 13216 C 13218.2
+2026-11-17 19:35:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 19:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 19:35 GMT: buy O 13219 H 13221 L 13218 C 13220 | sell O 13218.1 H 13219.6 L 13216.5 C 13218.5
+2026-11-17 19:40:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 19:40:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 19:35 GMT  consolidation (none): the up trend ran out of steam: bands 11.4 pips wide (narrow: <= 14, or narrowing for 6 candles: 2), middle band -0.2 pips/candle, no close outside the bands for 6 candles, average body 1.1 pips, green/red 1.3
+2026-11-17 19:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 19:40 GMT: buy O 13219.9 H 13220.7 L 13219.2 C 13219.8 | sell O 13218.4 H 13219.2 L 13217.7 C 13218.3
+2026-11-17 19:45:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 19:47:01 GMT INFO    autobot.prices: [GBPUSD] Status: 84941 ticks (410 with a price carried forward, 0 skipped) and 240 five-minute candles stored since start; last tick Tue 17 Nov 2026 19:47:01 GMT: buy 13220.1 sell 13218.6.
+2026-11-17 19:47:01 GMT INFO    autobot.prices.service: Stream connections 2, drops 1, re-logins 0.
+2026-11-17 19:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 19:45 GMT: buy O 13219.7 H 13220.9 L 13218.7 C 13218.8 | sell O 13218.2 H 13219.4 L 13217.2 C 13217.3
+2026-11-17 19:50:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 19:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 19:50 GMT: buy O 13218.9 H 13218.9 L 13217.1 C 13217.1 | sell O 13217.4 H 13217.4 L 13215.6 C 13215.6
+2026-11-17 19:55:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 19:59:26 GMT INFO    autobot.orders: Order record: closed at IG AB261117171601-370bf9ae
+2026-11-17 19:59:26 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 19:59:26 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 19:59:26 GMT INFO    autobot.alerts: Telegram message sent (message 13092): [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 20:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 19:55 GMT: buy O 13217.2 H 13217.4 L 13214.1 C 13215.4 | sell O 13215.7 H 13215.9 L 13212.6 C 13213.9
+2026-11-17 20:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 19:00 GMT: buy O 13219.7 H 13221 L 13214.1 C 13215.4 | sell O 13218.2 H 13219.6 L 13212.6 C 13213.9 (from 12 of 12 5-minute candles)
+2026-11-17 20:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 4h Tue 17 Nov 16:00 GMT: buy O 13204.5 H 13229.4 L 13203.8 C 13215.4 | sell O 13203.6 H 13227.9 L 13202.3 C 13213.9 (from 48 of 48 5-minute candles)
+2026-11-17 20:00:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 20:00:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 19:55 GMT  emerging trend (down): rejected at a level: closed 13213.9 below the reversal low 13215.6; trigger at below 13212.6
+2026-11-17 20:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 20:00 GMT: buy O 13215.3 H 13216 L 13213.9 C 13214.7 | sell O 13213.8 H 13215.1 L 13212.4 C 13213.2
+2026-11-17 20:05:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 20:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 20:05 GMT: buy O 13214.5 H 13214.6 L 13212 C 13212.2 | sell O 13213 H 13213.1 L 13210.5 C 13210.7
+2026-11-17 20:10:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 20:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 20:10 GMT: buy O 13212.3 H 13213 L 13210.8 C 13211.2 | sell O 13210.8 H 13212.1 L 13209.3 C 13209.7
+2026-11-17 20:15:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 20:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 20:15 GMT: buy O 13211.1 H 13211.4 L 13209.8 C 13210.9 | sell O 13209.6 H 13210.2 L 13208.3 C 13209.4
+2026-11-17 20:20:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 20:24:05 GMT INFO    autobot.prices.service: Received SIGTERM: stopping.
+2026-11-17 20:24:06 GMT INFO    autobot.ig: Logged out of IG: confirmed.
+2026-11-17 20:24:06 GMT INFO    autobot.prices.service: AutoBot price service stopped at Tue 17 Nov 2026 20:24:06 GMT.
+2026-11-17 20:24:06 GMT INFO    autobot.prices: [GBPUSD] 86228 ticks and 247 five-minute candles stored since start.
+2026-11-17 20:24:06 GMT INFO    autobot.prices.service: AutoBot price service starting for GBPUSD (CS.D.GBPUSD.TODAY.IP).
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 01 Nov 21:20 GMT to Sun 01 Nov 21:25 GMT (already recorded).
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 01 Nov 21:35 GMT to Sun 01 Nov 21:40 GMT (already recorded).
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 08 Nov 21:15 GMT to Sun 08 Nov 21:20 GMT (already recorded).
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 08 Nov 21:35 GMT to Sun 08 Nov 21:40 GMT (already recorded).
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Sun 08 Nov 21:45 GMT to Sun 08 Nov 21:55 GMT (already recorded).
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 15 Nov 21:05 GMT to Sun 15 Nov 21:10 GMT (already recorded).
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Sun 15 Nov 21:20 GMT to Sun 15 Nov 21:30 GMT (already recorded).
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 3 candle(s) missing from Sun 15 Nov 21:40 GMT to Sun 15 Nov 21:55 GMT (already recorded).
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Mon 16 Nov 22:55 GMT to Mon 16 Nov 23:05 GMT (already recorded).
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Sun 05 Apr 00:00 BST to Mon 06 Apr 00:00 BST (already recorded).
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Fri 19 Jun 00:00 BST to Fri 19 Jun 22:00 BST (already recorded).
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Sun 19 Jul 00:00 BST to Mon 20 Jul 00:00 BST (already recorded).
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] Store check at start-up: 7604 candle(s) checked (5m 4898, 1h 1761, 4h 105, 1d 631, 1w 209); 0 problem(s); 0 new gap(s); 12 gap(s) already recorded.
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] Newest 5-minute candle in the store: Tue 17 Nov 20:15 GMT to Tue 17 Nov 20:20 GMT, finished 4 minute(s) ago.
+2026-11-17 20:24:07 GMT INFO    autobot.prices: [GBPUSD] No gap since the last stored candle.
+2026-11-17 20:24:07 GMT WARNING autobot.levels: Levels: The previous day's daily candle (Mon 16 Nov) is missing 2 five-minute candle(s); pivots use it as stored.
+2026-11-17 20:24:07 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 20:24:13 GMT INFO    autobot.analyser: [GBPUSD] Market states replayed from the week's open (560 candles): emerging trend (down) since 2026-11-17 19:55 UTC; 79 state change(s) this week, recorded in /opt/autobot/data/analyser/GBPUSD/state_changes.jsonl.
+2026-11-17 20:24:13 GMT INFO    autobot.ig: Logged in to IG (version 2 login). Active account at login: ****G4CJ. Streaming address received.
+2026-11-17 20:24:13 GMT INFO    autobot.ig: Using account ****G4CJ (already active). IG's default account was not changed.
+2026-11-17 20:24:13 GMT INFO    autobot.orders: Order record: found at IG AB261117162254-f521e517
+2026-11-17 20:24:13 GMT INFO    autobot.orders: Order record: found at IG AB261117164610-ee454643
+2026-11-17 20:24:13 GMT INFO    autobot.orders: Order record: found at IG AB261117174504-40b8089d
+2026-11-17 20:24:13 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 20:24:13 GMT INFO    autobot.orders: Order record: ready 
+2026-11-17 20:24:14 GMT INFO    autobot.trading: Trade AB261117162254-f521e517: its saved best (9.1 pips) restored.
+2026-11-17 20:24:14 GMT INFO    autobot.trading: Trade AB261117164610-ee454643: its saved best (7.9 pips) restored.
+2026-11-17 20:24:14 GMT INFO    autobot.trading: Trade AB261117174504-40b8089d: its saved best (11.3 pips) restored.
+2026-11-17 20:24:41 GMT INFO    autobot.trading: Trading ON: 3 open trade(s) taken over; the strategies are up to 2026-11-17 20:24 UTC.
+2026-11-17 20:24:41 GMT INFO    autobot.ig.stream: Price stream connected (CONNECTED:WS-STREAMING).
+2026-11-17 20:24:41 GMT INFO    autobot.ig.stream: Subscribed to CHART:CS.D.GBPUSD.TODAY.IP:TICK.
+2026-11-17 20:24:41 GMT INFO    autobot.ig.stream: Subscribed to CHART:CS.D.GBPUSD.TODAY.IP:5MINUTE.
+2026-11-17 20:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 20:20 GMT: buy O 13210.7 H 13213.6 L 13210.1 C 13212.6 | sell O 13209.2 H 13212.1 L 13208.6 C 13211.1
+2026-11-17 20:25:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 20:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 20:25 GMT: buy O 13212.5 H 13212.6 L 13210.5 C 13211 | sell O 13211 H 13211.1 L 13209 C 13209.5
+2026-11-17 20:30:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 20:30:02 GMT INFO    autobot.orders: Order record: close sending AB261117162254-f521e517
+2026-11-17 20:30:02 GMT INFO    autobot.orders: Order record: closed AB261117162254-f521e517
+2026-11-17 20:30:03 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 20:30:03 GMT INFO    autobot.orders: Order record: close sending AB261117164610-ee454643
+2026-11-17 20:30:04 GMT INFO    autobot.orders: Order record: closed AB261117164610-ee454643
+2026-11-17 20:30:04 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 20:30:04 GMT INFO    autobot.orders: Order record: close sending AB261117174504-40b8089d
+2026-11-17 20:30:05 GMT INFO    autobot.orders: Order record: closed AB261117174504-40b8089d
+2026-11-17 20:30:05 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 20:30:05 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 20:30:05 GMT INFO    autobot.alerts: Telegram message sent (message 13093): [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 20:30:05 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 20:30:06 GMT INFO    autobot.alerts: Telegram message sent (message 13094): [AutoBot] 🔴 TRADE CLOSED
+2026-11-17 20:30:06 GMT INFO    autobot.alerts: ALERT: [AutoBot] 🟢 TRADE CLOSED
+2026-11-17 20:30:06 GMT INFO    autobot.alerts: Telegram message sent (message 13095): [AutoBot] 🟢 TRADE CLOSED
+2026-11-17 20:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 20:30 GMT: buy O 13211.1 H 13212.9 L 13210.9 C 13212.7 | sell O 13209.6 H 13211.4 L 13209.4 C 13211.2
+2026-11-17 20:35:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 20:35:03 GMT INFO    autobot.alerts: ALERT: [AutoBot] 📊 DAILY SUMMARY
+2026-11-17 20:35:03 GMT INFO    autobot.alerts: Telegram message sent (message 13096): [AutoBot] 📊 DAILY SUMMARY
+2026-11-17 20:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 20:35 GMT: buy O 13212.5 H 13214.8 L 13212.5 C 13213 | sell O 13211 H 13213.3 L 13211 C 13211.5
+2026-11-17 20:40:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 20:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 20:40 GMT: buy O 13212.9 H 13213.2 L 13211.9 C 13212.9 | sell O 13211.4 H 13211.8 L 13210.4 C 13211.4
+2026-11-17 20:45:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 20:46:05 GMT INFO    autobot.prices.service: Received SIGTERM: stopping.
+2026-11-17 20:46:05 GMT INFO    autobot.ig: Logged out of IG: confirmed.
+2026-11-17 20:46:05 GMT INFO    autobot.prices.service: AutoBot price service stopped at Tue 17 Nov 2026 20:46:05 GMT.
+2026-11-17 20:46:05 GMT INFO    autobot.prices: [GBPUSD] 644 ticks and 5 five-minute candles stored since start.
+2026-11-17 20:46:05 GMT INFO    autobot.prices.service: AutoBot price service starting for GBPUSD (CS.D.GBPUSD.TODAY.IP).
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 01 Nov 21:20 GMT to Sun 01 Nov 21:25 GMT (already recorded).
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 01 Nov 21:35 GMT to Sun 01 Nov 21:40 GMT (already recorded).
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 08 Nov 21:15 GMT to Sun 08 Nov 21:20 GMT (already recorded).
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 08 Nov 21:35 GMT to Sun 08 Nov 21:40 GMT (already recorded).
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Sun 08 Nov 21:45 GMT to Sun 08 Nov 21:55 GMT (already recorded).
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 1 candle(s) missing from Sun 15 Nov 21:05 GMT to Sun 15 Nov 21:10 GMT (already recorded).
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Sun 15 Nov 21:20 GMT to Sun 15 Nov 21:30 GMT (already recorded).
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 3 candle(s) missing from Sun 15 Nov 21:40 GMT to Sun 15 Nov 21:55 GMT (already recorded).
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] GAP in 5m candles during market hours: 2 candle(s) missing from Mon 16 Nov 22:55 GMT to Mon 16 Nov 23:05 GMT (already recorded).
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Sun 05 Apr 00:00 BST to Mon 06 Apr 00:00 BST (already recorded).
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Fri 19 Jun 00:00 BST to Fri 19 Jun 22:00 BST (already recorded).
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] GAP in 1d candles during market hours: 1 candle(s) missing from Sun 19 Jul 00:00 BST to Mon 20 Jul 00:00 BST (already recorded).
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] Store check at start-up: 7609 candle(s) checked (5m 4903, 1h 1761, 4h 105, 1d 631, 1w 209); 0 problem(s); 0 new gap(s); 12 gap(s) already recorded.
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] Newest 5-minute candle in the store: Tue 17 Nov 20:40 GMT to Tue 17 Nov 20:45 GMT, finished 1 minute(s) ago.
+2026-11-17 20:46:06 GMT INFO    autobot.prices: [GBPUSD] No gap since the last stored candle.
+2026-11-17 20:46:06 GMT WARNING autobot.levels: Levels: The previous day's daily candle (Mon 16 Nov) is missing 2 five-minute candle(s); pivots use it as stored.
+2026-11-17 20:46:06 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 20:46:10 GMT INFO    autobot.analyser: [GBPUSD] Market states replayed from the week's open (565 candles): emerging trend (down) since 2026-11-17 19:55 UTC; 79 state change(s) this week, recorded in /opt/autobot/data/analyser/GBPUSD/state_changes.jsonl.
+2026-11-17 20:46:10 GMT INFO    autobot.ig: Logged in to IG (version 2 login). Active account at login: ****G4CJ. Streaming address received.
+2026-11-17 20:46:10 GMT INFO    autobot.ig: Using account ****G4CJ (already active). IG's default account was not changed.
+2026-11-17 20:46:10 GMT INFO    autobot.orders: Order record: funds 
+2026-11-17 20:46:10 GMT INFO    autobot.orders: Order record: ready 
+2026-11-17 20:46:38 GMT INFO    autobot.trading: Trading ON: 0 open trade(s) taken over; the strategies are up to 2026-11-17 20:46 UTC.
+2026-11-17 20:46:38 GMT INFO    autobot.ig.stream: Price stream connected (CONNECTED:WS-STREAMING).
+2026-11-17 20:46:38 GMT INFO    autobot.ig.stream: Subscribed to CHART:CS.D.GBPUSD.TODAY.IP:TICK.
+2026-11-17 20:46:38 GMT INFO    autobot.ig.stream: Subscribed to CHART:CS.D.GBPUSD.TODAY.IP:5MINUTE.
+2026-11-17 20:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 20:45 GMT: buy O 13213.1 H 13216.8 L 13212.6 C 13213.8 | sell O 13211.6 H 13215.3 L 13211.1 C 13212.9
+2026-11-17 20:50:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 20:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 20:50 GMT: buy O 13214 H 13214 L 13210.9 C 13210.9 | sell O 13212.5 H 13212.6 L 13210 C 13210
+2026-11-17 20:55:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 21:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 20:55 GMT: buy O 13211 H 13212 L 13209.9 C 13210.4 | sell O 13210.1 H 13210.8 L 13209 C 13209.5
+2026-11-17 21:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 20:00 GMT: buy O 13215.3 H 13216.8 L 13209.8 C 13210.4 | sell O 13213.8 H 13215.3 L 13208.3 C 13209.5 (from 12 of 12 5-minute candles)
+2026-11-17 21:00:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 21:00:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 20:55 GMT  consolidation (none): the emerging down trend settled into consolidation: bands 13.2 pips wide (narrow: <= 14, or narrowing for 6 candles: 1), middle band -0.4 pips/candle, no close outside the bands for 6 candles, average body 1.1 pips, green/red 1.1
+2026-11-17 21:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 21:00 GMT: buy O 13210.1 H 13210.7 L 13208.7 C 13210.5 | sell O 13209.2 H 13209.2 L 13207.2 C 13209
+2026-11-17 21:05:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 21:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 21:05 GMT: buy O 13210.4 H 13210.8 L 13209.1 C 13210.8 | sell O 13208.9 H 13209.3 L 13207.6 C 13209.3
+2026-11-17 21:10:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 21:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 21:10 GMT: buy O 13211.2 H 13212.6 L 13210.8 C 13211 | sell O 13209.7 H 13211.1 L 13209.3 C 13209.5
+2026-11-17 21:15:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 21:15:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 21:10 GMT  emerging trend (up): rejected at a level: closed 13209.5 above the reversal high 13209.3; trigger at above 13211.1
+2026-11-17 21:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 21:15 GMT: buy O 13211.1 H 13212 L 13210.7 C 13211.7 | sell O 13209.6 H 13210.5 L 13209.2 C 13210.2
+2026-11-17 21:20:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 21:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 21:20 GMT: buy O 13211.9 H 13212.3 L 13209.7 C 13210.4 | sell O 13210.4 H 13210.8 L 13208.2 C 13208.9
+2026-11-17 21:25:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 21:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 21:25 GMT: buy O 13210.6 H 13211 L 13208 C 13208.1 | sell O 13209.1 H 13209.8 L 13206.5 C 13206.6
+2026-11-17 21:30:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 21:30:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 21:25 GMT  emerging trend (down): rejected at a level against the emerging up trend: closed 13206.6 below the reversal low 13208.2; trigger at below 13206.5
+2026-11-17 21:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 21:30 GMT: buy O 13208.3 H 13208.7 L 13207.8 C 13208.2 | sell O 13206.8 H 13207.2 L 13206.3 C 13206.7
+2026-11-17 21:35:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 21:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 21:35 GMT: buy O 13208.4 H 13210.5 L 13207.5 C 13209 | sell O 13206.9 H 13209 L 13206 C 13207.5
+2026-11-17 21:40:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 21:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 21:40 GMT: buy O 13209.2 H 13209.8 L 13208.8 C 13209.4 | sell O 13207.7 H 13208.3 L 13207.3 C 13207.9
+2026-11-17 21:45:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 21:46:10 GMT INFO    autobot.prices: [GBPUSD] Status: 1461 ticks (19 with a price carried forward, 0 skipped) and 12 five-minute candles stored since start; last tick Tue 17 Nov 2026 21:46:10 GMT: buy 13208.7 sell 13207.2.
+2026-11-17 21:46:10 GMT INFO    autobot.prices.service: Stream connections 1, drops 0, re-logins 0.
+2026-11-17 21:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 21:45 GMT: buy O 13210 H 13210.7 L 13208.2 C 13209.6 | sell O 13207.7 H 13208.7 L 13206.7 C 13208.1
+2026-11-17 21:50:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 21:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 21:50 GMT: buy O 13209.9 H 13210.2 L 13207.7 C 13209.3 | sell O 13208.4 H 13208.4 L 13206.2 C 13206.6
+2026-11-17 21:55:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 22:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 21:55 GMT: buy O 13210.1 H 13214.2 L 13207.2 C 13214.2 | sell O 13206.5 H 13207.3 L 13201.3 C 13203.5
+2026-11-17 22:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 21:00 GMT: buy O 13210.1 H 13214.2 L 13207.2 C 13214.2 | sell O 13209.2 H 13211.1 L 13201.3 C 13203.5 (from 12 of 12 5-minute candles)
+2026-11-17 22:00:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 22:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 22:00 GMT: buy O 13216.6 H 13218.7 L 13215.7 C 13215.9 | sell O 13199.7 H 13201.8 L 13198.8 C 13199
+2026-11-17 22:05:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 34 groups (16 lined up).
+2026-11-17 22:05:03 GMT INFO    autobot.orders: Order record: safety refused 
+2026-11-17 22:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 22:05 GMT: buy O 13215.7 H 13218.5 L 13215.5 C 13217.4 | sell O 13198.8 H 13201.6 L 13198.6 C 13200.5
+2026-11-17 22:10:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 22:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 22:10 GMT: buy O 13217.5 H 13217.5 L 13217.4 C 13217.5 | sell O 13200.6 H 13200.6 L 13200.5 C 13200.6
+2026-11-17 22:15:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 22:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 22:15 GMT: buy O 13217.3 H 13217.8 L 13215.7 C 13215.7 | sell O 13200.4 H 13200.9 L 13198.8 C 13198.8
+2026-11-17 22:20:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 34 groups (16 lined up).
+2026-11-17 22:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 22:20 GMT: buy O 13215.8 H 13215.8 L 13215.4 C 13215.5 | sell O 13198.9 H 13198.9 L 13198.5 C 13198.6
+2026-11-17 22:25:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 34 groups (16 lined up).
+2026-11-17 22:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 22:25 GMT: buy O 13218.5 H 13218.9 L 13218.5 C 13218.8 | sell O 13201.6 H 13202 L 13201.6 C 13201.9
+2026-11-17 22:30:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 22:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 22:30 GMT: buy O 13218.9 H 13221.9 L 13218.8 C 13221.9 | sell O 13202 H 13205 L 13201.9 C 13205
+2026-11-17 22:35:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 22:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 22:35 GMT: buy O 13221.8 H 13221.9 L 13221.5 C 13221.5 | sell O 13204.9 H 13205 L 13204.6 C 13204.6
+2026-11-17 22:40:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 22:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 22:40 GMT: buy O 13221.7 H 13222.3 L 13221.5 C 13221.9 | sell O 13204.8 H 13205.4 L 13204.6 C 13205
+2026-11-17 22:45:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 22:46:11 GMT INFO    autobot.prices: [GBPUSD] Status: 2281 ticks (218 with a price carried forward, 0 skipped) and 24 five-minute candles stored since start; last tick Tue 17 Nov 2026 22:46:11 GMT: buy 13221.8 sell 13204.9.
+2026-11-17 22:46:11 GMT INFO    autobot.prices.service: Stream connections 1, drops 0, re-logins 0.
+2026-11-17 22:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 22:45 GMT: buy O 13222 H 13222.2 L 13215.6 C 13218.3 | sell O 13205.1 H 13205.3 L 13200.2 C 13203.2
+2026-11-17 22:50:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 22:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 22:50 GMT: buy O 13218.2 H 13218.3 L 13215.4 C 13217.6 | sell O 13203.3 H 13205.3 L 13203.2 C 13203.5
+2026-11-17 22:55:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 23:00:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 22:55 GMT: buy O 13217.7 H 13221.6 L 13214.2 C 13218.5 | sell O 13203.4 H 13208.2 L 13198.9 C 13201.6
+2026-11-17 23:00:00 GMT INFO    autobot.prices: [GBPUSD] Built 1h Tue 17 Nov 22:00 GMT: buy O 13216.6 H 13222.3 L 13214.2 C 13218.5 | sell O 13199.7 H 13208.2 L 13198.5 C 13201.6 (from 12 of 12 5-minute candles)
+2026-11-17 23:00:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 23:00:01 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 22:55 GMT  consolidation (none): the emerging down trend settled into consolidation: bands 12.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 7), middle band -0.3 pips/candle, no close outside the bands for 6 candles, average body 1.2 pips, green/red 1.2
+2026-11-17 23:05:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 23:00 GMT: buy O 13218.6 H 13218.9 L 13207 C 13207.1 | sell O 13201.7 H 13205.6 L 13200.8 C 13202.9
+2026-11-17 23:05:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 23:10:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 23:05 GMT: buy O 13206.6 H 13208.1 L 13204.6 C 13206.2 | sell O 13203.3 H 13205.4 L 13203.1 C 13204.1
+2026-11-17 23:10:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 23:15:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 23:10 GMT: buy O 13205.6 H 13208.4 L 13205.6 C 13207.5 | sell O 13204.2 H 13206.3 L 13204.2 C 13206
+2026-11-17 23:15:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 23:19:12 GMT WARNING autobot.prices: [GBPUSD] NO PRICES from IG for 120 seconds while the market is open (warning after 120 seconds).
+2026-11-17 23:19:12 GMT WARNING autobot.alerts: ALERT stream-quiet: NO PRICES from IG for 120 seconds while the market is open (warning after 120 seconds).
+2026-11-17 23:19:12 GMT INFO    autobot.alerts: Telegram message sent (message 13097): AutoBot PROBLEM: NO PRICES from IG for 120 seconds while the market is open (warning after 120 seconds).
+2026-11-17 23:19:34 GMT WARNING autobot.ig.stream: Prices are arriving again (after 142 seconds with none).
+2026-11-17 23:20:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 23:15 GMT: buy O 13207.6 H 13209.2 L 13207.3 C 13208.4 | sell O 13206.1 H 13207.1 L 13205.8 C 13206.9
+2026-11-17 23:20:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 23:25:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 23:20 GMT: buy O 13208.5 H 13209.6 L 13208.3 C 13209.3 | sell O 13207 H 13208.1 L 13206.8 C 13207.8
+2026-11-17 23:25:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 23:25:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 23:20 GMT  emerging trend (up): rejected at a level: closed 13207.8 above the reversal high 13207.1; trigger at above 13208.1
+2026-11-17 23:30:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 23:25 GMT: buy O 13209.4 H 13210.2 L 13208 C 13208 | sell O 13207.9 H 13208.7 L 13206.5 C 13206.5
+2026-11-17 23:30:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 23:35:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 23:30 GMT: buy O 13208.1 H 13209.5 L 13207 C 13207.6 | sell O 13206.6 H 13208 L 13205.5 C 13206.1
+2026-11-17 23:35:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 23:35:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 23:30 GMT  emerging trend (down): rejected at a level against the emerging up trend: closed 13206.1 below the reversal low 13206.5; trigger at below 13205.5
+2026-11-17 23:40:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 23:35 GMT: buy O 13207.7 H 13207.8 L 13206.3 C 13206.7 | sell O 13206.2 H 13206.3 L 13204.8 C 13205.2
+2026-11-17 23:40:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 23:45:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 23:40 GMT: buy O 13206.8 H 13207.1 L 13206.2 C 13206.3 | sell O 13205.3 H 13205.6 L 13204.7 C 13204.8
+2026-11-17 23:45:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 23:45:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 23:40 GMT  ranging (none): the emerging down trend was cancelled: 2 closes in a row back above the turning_high 13204.4 it was rejected at (last 13204.8)
+2026-11-17 23:46:11 GMT INFO    autobot.prices: [GBPUSD] Status: 3380 ticks (530 with a price carried forward, 0 skipped) and 36 five-minute candles stored since start; last tick Tue 17 Nov 2026 23:46:10 GMT: buy 13206.5 sell 13205.
+2026-11-17 23:46:11 GMT INFO    autobot.prices.service: Stream connections 1, drops 0, re-logins 0.
+2026-11-17 23:50:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 23:45 GMT: buy O 13206.2 H 13208 L 13205.9 C 13208 | sell O 13204.7 H 13206.5 L 13204.4 C 13206.5
+2026-11-17 23:50:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 23:55:00 GMT INFO    autobot.prices: [GBPUSD] Stored 5m Tue 17 Nov 23:50 GMT: buy O 13208.1 H 13208.7 L 13208.1 C 13208.5 | sell O 13206.6 H 13207.2 L 13206.6 C 13207
+2026-11-17 23:55:00 GMT INFO    autobot.levels: Levels updated: 64 levels in 33 groups (17 lined up).
+2026-11-17 23:55:00 GMT INFO    autobot.analyser: [GBPUSD] Market state: Tue 17 Nov 23:50 GMT  emerging trend (up): rejected at a level: closed 13207 above the reversal high 13206.5; trigger at above 13207.2

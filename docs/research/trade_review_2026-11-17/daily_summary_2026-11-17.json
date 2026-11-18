@@ -1,0 +1,57 @@
+{
+ "day": "2026-11-17",
+ "trades": 12,
+ "wins": 3,
+ "losses": 9,
+ "pips": "-86.8",
+ "gbp": "-868.00",
+ "closed_by_owner": {
+  "trades": 0,
+  "pips": "0",
+  "gbp": "0"
+ },
+ "by_strategy": {
+  "level reversal": {
+   "trades": 4,
+   "wins": 1,
+   "losses": 3,
+   "pips": "-40.4",
+   "gbp": "-404.00"
+  },
+  "range trade": {
+   "trades": 1,
+   "wins": 0,
+   "losses": 1,
+   "pips": "-12.0",
+   "gbp": "-120.00"
+  },
+  "EMA pullback": {
+   "trades": 2,
+   "wins": 0,
+   "losses": 2,
+   "pips": "-24.0",
+   "gbp": "-240.00"
+  },
+  "Bollinger bounce": {
+   "trades": 3,
+   "wins": 1,
+   "losses": 2,
+   "pips": "-5.1",
+   "gbp": "-51.00"
+  },
+  "session sweep": {
+   "trades": 1,
+   "wins": 1,
+   "losses": 0,
+   "pips": "5.1",
+   "gbp": "51.00"
+  },
+  "slow grind": {
+   "trades": 1,
+   "wins": 0,
+   "losses": 1,
+   "pips": "-10.4",
+   "gbp": "-104.00"
+  }
+ }
+}

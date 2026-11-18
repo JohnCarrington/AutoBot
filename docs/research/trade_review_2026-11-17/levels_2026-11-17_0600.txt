@@ -1,0 +1,100 @@
+######## .venv/bin/python -m levels --pair GBPUSD --at 2026-11-17T06:00:00Z
+Levels as of Tue 17 Nov 2026 06:00:00 GMT (SELL prices, in points; 13450 means 1.3450)
+Day: daily candle starting Tue 17 Nov 00:00 GMT
+Pivots from the daily candle Mon 16 Nov 00:00 GMT: sell H 13224.5 L 13175.2 C 13183.4
+  R3 13262.8  R2 13243.7  R1 13213.5  pivot 13194.4  S1 13164.2  S2 13145.1  S3 13114.9
+Latest sell close (for round numbers): 13200.2
+WARNING: The previous day's daily candle (Mon 16 Nov) is missing 2 five-minute candle(s); pivots use it as stored.
+
+59 levels in 32 groups (18 groups where levels line up). * = the group holds a level that matters most (S2, R2, pivot, round number, turning level).
+  G32 * 13500.4-13503.1
+           13503.1  turning_high           hourly candle Wed 04 Nov 13:00 GMT high (sell)
+           13500.4  turning_high           hourly candle Thu 05 Nov 07:00 GMT high (sell)
+  G31 * 13486.0
+           13486.0  turning_high           hourly candle Thu 05 Nov 17:00 GMT high (sell)
+  G30 * 13468.2
+           13468.2  turning_low            hourly candle Wed 04 Nov 11:00 GMT low (sell)
+  G29 * 13458.6-13463.3
+           13463.3  turning_high           hourly candle Fri 06 Nov 00:00 GMT high (sell)
+           13458.6  turning_high           hourly candle Tue 10 Nov 08:00 GMT high (sell)
+  G28 * 13453.3
+           13453.3  turning_low            hourly candle Wed 04 Nov 16:00 GMT low (sell)
+  G27 * 13445.2-13447.2
+           13447.2  turning_low            hourly candle Wed 04 Nov 05:00 GMT low (sell)
+           13445.2  turning_low            hourly candle Thu 05 Nov 12:00 GMT low (sell)
+  G26 * 13432.5-13435.7
+           13435.7  turning_low            hourly candle Thu 05 Nov 22:00 GMT low (sell)
+           13432.5  turning_high           hourly candle Tue 03 Nov 14:00 GMT high (sell)
+  G25 * 13426-13426.4
+           13426.4  turning_high           hourly candle Tue 03 Nov 08:00 GMT high (sell)
+             13426  turning_high           hourly candle Mon 09 Nov 11:00 GMT high (sell)
+  G24 * 13404.1
+           13404.1  turning_high           hourly candle Fri 06 Nov 12:00 GMT high (sell)
+  G23 * 13397.7-13402.7
+           13402.7  turning_low            hourly candle Tue 03 Nov 22:00 GMT low (sell)
+           13401.7  turning_low            hourly candle Tue 03 Nov 11:00 GMT low (sell)
+           13397.7  turning_low            hourly candle Mon 09 Nov 15:00 GMT low (sell)
+  G22 * 13355.7
+           13355.7  turning_high           hourly candle Wed 11 Nov 02:00 GMT high (sell)
+  G21 * 13349-13350
+             13350  round_number           round number (every 50 points)
+             13349  turning_high           hourly candle Tue 10 Nov 19:00 GMT high (sell)
+  G20 * 13341.4
+           13341.4  turning_low            hourly candle Fri 06 Nov 14:00 GMT low (sell)
+  G19 * 13334
+             13334  turning_low            hourly candle Sun 08 Nov 21:00 GMT low (sell)
+  G18 * 13327.5
+           13327.5  turning_low            hourly candle Tue 10 Nov 22:00 GMT low (sell)
+  G17 * 13312.2
+           13312.2  turning_low            hourly candle Tue 10 Nov 16:00 GMT low (sell)
+  G16 * 13300
+             13300  round_number           round number (every 50 points)
+  G15 * 13279.1-13281.9
+           13281.9  turning_high           hourly candle Wed 11 Nov 23:00 GMT high (sell)
+           13279.1  turning_high           hourly candle Thu 12 Nov 10:00 GMT high (sell)
+  G14 * 13262.8-13265.6
+           13265.6  turning_low            hourly candle Wed 11 Nov 15:00 GMT low (sell)
+           13262.8  R3                     daily candle Mon 16 Nov (sell H 13224.5 L 13175.2 C 13183.4)
+  G13 * 13249-13253
+             13253  turning_low            hourly candle Wed 11 Nov 22:00 GMT low (sell)
+           13251.1  turning_low            hourly candle Thu 12 Nov 07:00 GMT low (sell)
+           13250.9  turning_high           hourly candle Fri 13 Nov 14:00 GMT high (sell)
+             13250  round_number           round number (every 50 points)
+             13249  turning_low            hourly candle Thu 12 Nov 03:00 GMT low (sell)
+  G12 * 13240-13243.7
+           13243.7  R2                     daily candle Mon 16 Nov (sell H 13224.5 L 13175.2 C 13183.4)
+           13243.2  turning_high           hourly candle Fri 13 Nov 08:00 GMT high (sell)
+             13240  turning_high           hourly candle Fri 13 Nov 01:00 GMT high (sell)
+  G11 * 13219.8-13224.5
+           13224.5  turning_high           hourly candle Mon 16 Nov 09:00 GMT high (sell)
+           13224.5  london_session_high    London session previous Mon 16 Nov 07:00-12:00 UTC
+           13224.5  previous_day_high      daily candle Mon 16 Nov (sell)
+           13219.9  turning_low            hourly candle Thu 12 Nov 15:00 GMT low (sell)
+           13219.8  turning_low            hourly candle Fri 13 Nov 06:00 GMT low (sell)
+  G10 * 13213.5-13218.5
+           13218.5  turning_high           hourly candle Mon 16 Nov 00:00 GMT high (sell)
+           13217.4  turning_low            hourly candle Fri 13 Nov 12:00 GMT low (sell)
+           13213.5  R1                     daily candle Mon 16 Nov (sell H 13224.5 L 13175.2 C 13183.4)
+  G9  * 13205.2
+           13205.2  turning_high           hourly candle Mon 16 Nov 13:00 GMT high (sell)
+           13205.2  new_york_session_high  New York session previous Mon 16 Nov 12:00-21:00 UTC
+  G8  * 13200
+             13200  round_number           round number (every 50 points)
+  G7  * 13194.4
+           13194.4  pivot                  daily candle Mon 16 Nov (sell H 13224.5 L 13175.2 C 13183.4)
+  G6  * 13182.1
+           13182.1  turning_low            hourly candle Mon 16 Nov 11:00 GMT low (sell)
+           13182.1  london_session_low     London session previous Mon 16 Nov 07:00-12:00 UTC
+  G5    13175.2-13177.4
+           13177.4  new_york_session_low   New York session previous Mon 16 Nov 12:00-21:00 UTC
+           13175.2  previous_day_low       daily candle Mon 16 Nov (sell)
+  G4  * 13164.2-13168
+             13168  turning_low            hourly candle Tue 17 Nov 01:00 GMT low (sell)
+           13164.2  S1                     daily candle Mon 16 Nov (sell H 13224.5 L 13175.2 C 13183.4)
+  G3  * 13145.1-13150
+             13150  round_number           round number (every 50 points)
+           13145.1  S2                     daily candle Mon 16 Nov (sell H 13224.5 L 13175.2 C 13183.4)
+  G2    13114.9
+           13114.9  S3                     daily candle Mon 16 Nov (sell H 13224.5 L 13175.2 C 13183.4)
+  G1  * 13100
+             13100  round_number           round number (every 50 points)
