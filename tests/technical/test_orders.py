@@ -1007,3 +1007,30 @@ def test_a_minimum_ig_cannot_give_is_recorded_as_not_known_and_the_move_still_go
     m = sender.move_stop(r.reference, D("13400.5"))
     sending = next(x for x in records(sender) if x["event"] == "stop move sending")
     assert m.ok and sending["ig_min_stop_pips"] is None and "error.public-api.failure" in sending["ig_min_stop_error"]
+
+
+# ---- one signal, one trade (owner, 18 November 2026; safety rule 11) -------------------------------------------------
+
+def test_one_signal_one_trade_the_second_strategy_on_the_same_rejection_candle_is_refused(S):
+    s = Over(S, switches={k: v for k, v in vars(S.switches).items() if not k.startswith("_")}
+             | {"bollinger_bounce": True, "level_reversal": True, "one_signal_one_trade": True})
+    sender, ig, *_ = make(s)
+    sig = {"signal": "sell 2026-11-04T09:55:00Z", "furthest": D("13404.0"), "rejection_close": D("13397.0")}
+    assert sender.place(idea(BOLLINGER_BOUNCE, SELL, context=dict(sig)), calendar=[]).ok
+    assert sender.used_signals() == {"sell 2026-11-04T09:55:00Z": BOLLINGER_BOUNCE}
+    again, *_ = make(s, ig)                                            # a restart: read back from the record
+    assert again.used_signals() == {"sell 2026-11-04T09:55:00Z": BOLLINGER_BOUNCE}
+    r = again.place(idea(LEVEL_REVERSAL, SELL, context=dict(sig, stop_price=D("13410.0"))), calendar=[])
+    assert r.what == "safety refused" and "same signal already traded by Bollinger bounce" in r.reasons
+    other = dict(sig, signal="sell 2026-11-04T10:30:00Z", stop_price=D("13410.0"))
+    assert "same signal already traded by Bollinger bounce" not in (again.place(idea(LEVEL_REVERSAL, SELL,
+                                                                    context=other), calendar=[]).reasons or [])
+
+
+def test_with_one_signal_one_trade_off_both_strategies_may_open_on_one_signal(S):
+    s = Over(S, switches={k: v for k, v in vars(S.switches).items() if not k.startswith("_")}
+             | {"bollinger_bounce": True, "level_reversal": True, "one_signal_one_trade": False})
+    sender, ig, *_ = make(s)
+    sig = {"signal": "sell 2026-11-04T09:55:00Z"}
+    assert sender.place(idea(BOLLINGER_BOUNCE, SELL, context=dict(sig)), calendar=[]).ok
+    assert sender.place(idea(LEVEL_REVERSAL, SELL, context=dict(sig, stop_price=D("13410.0"))), calendar=[]).ok

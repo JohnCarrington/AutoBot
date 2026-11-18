@@ -22,7 +22,7 @@ from decimal import Decimal
 from typing import Any
 
 from prices.model import Candle, plain, uk_short
-from strategies.common import BUY, NEW_YORK_OPEN_REVERSAL, SELL, Candidate
+from strategies.common import BUY, NEW_YORK_OPEN_REVERSAL, SELL, Candidate, signal_context
 from strategies.sessions import Setup, confirm_step, uk_day_and_time, uk_zone
 
 
@@ -85,8 +85,10 @@ class NewYorkOpenReversal:
         out: list[Candidate] = []
         for st in self.due[:1]:                                   # one a day: never two at once
             steps = st.steps + [f"{uk_short(c.start)} opens at this candle's open, {plain(c.sell_open)} (sell price)"]
+            far = st.rejection.sell_high if st.direction == SELL else st.rejection.sell_low
             out.append(Candidate(NEW_YORK_OPEN_REVERSAL, st.direction, c.start, c.sell_open, steps,
-                                 {"once_a_day": f"{NEW_YORK_OPEN_REVERSAL} {self.day}"}))
+                                 {"once_a_day": f"{NEW_YORK_OPEN_REVERSAL} {self.day}",
+                                  **signal_context(st.direction, st.rejection.start, far, st.rejection.sell_close)}))
         self.due = []
         self._day(c)
         self._measure(c)

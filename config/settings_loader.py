@@ -484,6 +484,10 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "possible_reversal": {
         "min_trend_move_pips": _whole_number(1, 1000),
     },
+    "analyser_control": {
+        "edge_within_pips": _decimal_number("0", "100"),
+        "consolidation_breakout_beyond_pips": _decimal_number("0", "100"),
+    },
     "breakout": {
         "trigger_within_candles": _whole_number(1, 50),
         "stop_loss_pips": _whole_number(0, 100),

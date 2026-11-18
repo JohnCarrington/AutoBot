@@ -26,17 +26,19 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
+from decimal import Decimal
 from types import SimpleNamespace
 from typing import Any
 
 from analyser.hourly_read import HourlyReader
 from analyser.indicators import last_candles
 from analyser.market_state import MemoStore, StateTracker
-from analyser.states import CONSOLIDATION, NONE
+from analyser.states import CONSOLIDATION, NONE, POSSIBLE_REVERSAL, switch_on
 from config.pairs import check_same_pair
 from levels.current import build
 from levels.rules import PIVOT
 from prices.indicators import Band, ema
+from prices.model import plain
 from prices.store import CandleStore
 from rejection.watch import RejectionWatcher
 from strategies.bollinger_bounce.strategy import BollingerBounce
@@ -49,6 +51,38 @@ from strategies.level_reversal.strategy import LevelReversal
 from strategies.asian_range_breakout.strategy import AsianRangeBreakout
 from strategies.session_sweep.strategy import SessionSweep
 from strategies.new_york_open_reversal.strategy import NewYorkOpenReversal
+
+def reversal_macd(tracker: Any, i: int, new_direction: str) -> tuple[bool, str]:
+    """Check 7's MACD rule in a possible reversal (owner, 18 November 2026, with the owner's answers): the 5-minute
+    MACD (35, 45, 30) histogram of the last finished candle (week candle i), against the bars since the old trend
+    started (the start of its emerging trend, which the analyser keeps). Allowed while the bar is the biggest in the
+    old trend's direction, or smaller than both that biggest bar and the bar before it, or on the other side of zero
+    (or at zero): then it is past its biggest. (allowed, why)."""
+    from prices.model import uk_short
+    hist, extras = tracker.history, tracker.extras
+    if i < 0 or i >= len(hist) or i >= len(extras):
+        return False, "the MACD is not known"
+    start = extras[i]["trend_start"]
+    sign = Decimal(-1) if new_direction == "up" else Decimal(1)   # the old trend: down (new up) bars are negative
+    bars = [(h[0].candle.start, h[0].macd_hist) for h in hist[:i + 1] if start is None or h[0].candle.start >= start]
+    bars = [(t, sign * x) for t, x in bars if x is not None]
+    if not bars:
+        return False, "the 5-minute MACD histogram is not known"
+    now = bars[-1][1]
+    since = f"since the old trend started at {uk_short(start)}" if start is not None else "this week"
+    q = lambda x: plain((sign * x).quantize(Decimal("0.01")))   # noqa: E731
+    if now <= 0:
+        return True, f"the histogram {q(now)} has crossed zero: past its biggest bar in the old direction"
+    big_t, big = max(bars, key=lambda b: b[1])
+    if now >= big:
+        return True, f"the histogram {q(now)} is its biggest bar in the old direction {since}"
+    prev = bars[-2][1] if len(bars) >= 2 else None
+    if prev is not None and now < prev:
+        return True, (f"the histogram {q(now)} is past its biggest bar {q(big)} ({uk_short(big_t)}) {since} and "
+                      f"shrinking (the bar before {q(prev)})")
+    return False, (f"the histogram {q(now)} is not its biggest bar {q(big)} ({uk_short(big_t)}) {since}, and not "
+                   f"shrinking" + (f" (the bar before {q(prev)})" if prev is not None else ""))
+
 
 @dataclass
 class Replay:
@@ -119,11 +153,16 @@ class StrategyRunner:
         return HourlyReader(self.s, last_candles(self.memo, "1h", end, self.s.hourly_read.history_candles))
 
     def state_after(self, i: int):
-        """The analyser's state after week candle i (before the week's first candle: consolidation)."""
+        """The analyser's state after week candle i (before the week's first candle: consolidation). In a possible
+        reversal, while ANALYSER_GOVERNS_ALL is on, also `macd_ok` and `macd_why`: check 7's MACD rule at that candle
+        (owner, 18 November 2026; design 2.10)."""
         t = self.week[i].start if i >= 0 else None
         before = [ch for ch in self.tracker.changes if t is not None and ch.time <= t]
-        return (SimpleNamespace(state=before[-1].state, direction=before[-1].direction, trend_type=before[-1].trend_type)
-                if before else SimpleNamespace(state=CONSOLIDATION, direction=NONE, trend_type=None))
+        st = (SimpleNamespace(state=before[-1].state, direction=before[-1].direction, trend_type=before[-1].trend_type)
+              if before else SimpleNamespace(state=CONSOLIDATION, direction=NONE, trend_type=None))
+        if st.state == POSSIBLE_REVERSAL and switch_on(self.s, "analyser_governs_all"):
+            st.macd_ok, st.macd_why = reversal_macd(self.tracker, i, st.direction)
+        return st
 
     def pivot_at(self, t: datetime, keep: bool = True):
         """The pivot at t. Kept for a finished candle (step); the live check (keep=False) only reads one already

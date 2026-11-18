@@ -101,3 +101,13 @@ Anything that depends on a **condition** needs it for **2 candles in a row** (fl
 
 **This week (2 to 6 November) with the strong-level rule:** 220 state changes (130 inside trading hours, 90 outside); median length 20 minutes; 70 lasted under 15 minutes, 116 from 15 to 60 minutes, 34 over an hour. Many short consolidation and emerging-trend spells: a known issue to check in the no-trading run (design section 12).
 
+
+## The analyser in charge again (owner, 18 November 2026; design 2.10)
+
+Three switches in `.env`, all off until the owner switches them on:
+
+- `ANALYSER_USES_HOURLY` (stage 1, `analyser/states.py`, `analyser/market_state.py`): while the hourly read says ranging, a level rejection starts or flips an emerging trend only at the edge of the hourly range (its furthest point within `analyser_control.edge_within_pips` of the hourly high for a sell, of the low for a buy, or beyond it, and its rejection candle closing back inside the hourly range); ranging can end an emerging trend; a breakout from consolidation needs a close at least `analyser_control.consolidation_breakout_beyond_pips` beyond the band; every state change records `hourly_position` (top edge, bottom edge, middle), also in `current.json` and on the dashboard.
+- `ANALYSER_GOVERNS_ALL` (stage 2, `strategies/common.py` check 7): every strategy asks the analyser by the table of design 2.10.
+- `ONE_SIGNAL_ONE_TRADE` (stage 3, `safety/rules.py` rules 9 and 11): one trade per rejection candle and direction; the session sweep and the New York open reversal under one view at a time.
+
+`python -m research.analyser_control_days <day> [on|off [edge_pips]]` replays a UK day through the full wired path with the three switches on or off (writes only to a temporary folder).

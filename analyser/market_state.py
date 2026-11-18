@@ -76,6 +76,10 @@ class StateTracker:
         self.watcher: RejectionWatcher | None = None
         self.done = 0                     # candles of this week already stepped
         self.history: list = []           # (features, state after the candle) for each candle stepped
+        # for each candle stepped, as history: {"trend_start", "hourly", "position"} (owner, 18 November 2026:
+        # the analyser control, design 2.10; "hourly" and "position" only while ANALYSER_USES_HOURLY is on)
+        self.extras: list = []
+        self.hourly_reader = None
         self.folder = Path(settings.market_states.folder) / settings.market.pair
 
     # ---- the week and its candles ----------------------------------------------------------
@@ -105,8 +109,14 @@ class StateTracker:
             self.watcher = RejectionWatcher(self.s)
             self.done = 0
             self.history = []
+            self.extras = []
         memo = MemoStore(self.store)
         warm, week = self._candles(memo, week_open, as_of)
+        from analyser.states import switch_on
+        if switch_on(self.s, "analyser_uses_hourly"):
+            from analyser.hourly_read import HourlyReader
+            self.hourly_reader = HourlyReader(self.s, last_candles(memo, "1h", as_of,
+                                                                   self.s.hourly_read.history_candles))
         if len(week) > self.done:
             feats = compute(warm + week, self.s)[len(warm):]
             for c, f in zip(week[self.done:], feats[self.done:]):
@@ -122,11 +132,18 @@ class StateTracker:
         band = Band(c.start, f.middle, f.upper, f.lower) if f.upper is not None else None
         levels = build(self.s, store, c.start)
         events = self.watcher.on_candle(c, band, levels)
-        ch = self.machine.step(f, events, lambda i: self.watcher.setups[i - 1])
         mc = self.machine
+        hr = pos = None
+        if self.hourly_reader is not None:                 # ANALYSER_USES_HOURLY (design 2.10)
+            from analyser.states import hourly_position
+            hr = self.hourly_reader.at(c.start)            # the read after the last hourly candle finished by then
+            pos = hourly_position(self.s, hr, f.c)
+        mc.hourly, mc.position = hr, pos
+        ch = mc.step(f, events, lambda i: self.watcher.setups[i - 1])
         moved = (mc._pips(mc.extreme, mc.start_price) if mc.extreme is not None and mc.start_price is not None
                  else None)
         self.history.append((f, mc.now.state, mc.now.direction, events, moved, mc.start_price))
+        self.extras.append({"trend_start": mc.trend_start, "hourly": hr, "position": pos})
         return ch
 
     @property
@@ -162,7 +179,9 @@ class StateTracker:
         safe_write(self.folder / CURRENT, (json.dumps({
             "state": now.state, "direction": now.direction, "trend_type": now.trend_type,
             "since_utc": now.since.strftime("%Y-%m-%dT%H:%M:%SZ"), "evidence": now.evidence,
-            "strategies_allowed": list(now.strategies_allowed)}, indent=1) + "\n").encode())
+            "strategies_allowed": list(now.strategies_allowed),
+            **({"hourly_position": self.extras[-1]["position"]} if self.extras and self.extras[-1]["position"]
+               else {})}, indent=1) + "\n").encode())
 
     def _differences(self, as_of: datetime, rows: list[dict], made: list[dict], last: str) -> None:
         week_from = self.week_open.strftime("%Y-%m-%dT%H:%M:%SZ")

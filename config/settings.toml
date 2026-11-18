@@ -462,6 +462,15 @@ ranging_after_candles = 12
 # Stored hourly candles read to work out the read.
 history_candles = 600
 
+[analyser_control]
+# Putting every strategy back under the analyser (owner, 18 November 2026; design 2.10). Sell price.
+# The edge of the hourly range (stages 1 and 2): price reaching within this many pips of the hourly range high
+# (or above it) is the top edge; within this many pips of its low (or below it) the bottom edge; else the middle.
+edge_within_pips = 3
+# Stage 1: while ANALYSER_USES_HOURLY is on, a breakout from consolidation needs one 5-minute close at least this
+# many pips beyond the Bollinger band.
+consolidation_breakout_beyond_pips = 4
+
 [market_states]
 # The analyser's five market states (design section 2; docs/ANALYSER.md).
 # Worked out on the 5-minute candles, sell price. "161" = AutoBot 161's NMS

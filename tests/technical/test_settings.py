@@ -114,6 +114,8 @@ EXPECTED = {
         "rollover_no_new_trades_from": time(21, 55), "rollover_no_new_trades_until": time(22, 15),
     },
     "possible_reversal": {"min_trend_move_pips": 30},
+    # the analyser control (owner, 18 November 2026)
+    "analyser_control": {"edge_within_pips": Decimal("3"), "consolidation_breakout_beyond_pips": Decimal("4")},
     # the session strategies (owner, 16 November 2026)
     "asian_range_breakout": {"range_from": time(0, 0), "range_until": time(7, 0), "breakout_from": time(7, 0),
                              "breakout_until": time(10, 0), "stop_loss_pips": 12, "trail_from_pips": Decimal("12"),
@@ -369,6 +371,8 @@ INVALID = [
     ("slow_grind", "min_pause_candles", 0, "must be between"),
     ("ema_pullback", "setup_expires_after_minutes", 0, "must be between"),
     ("possible_reversal", "min_trend_move_pips", 0, "must be between"),
+    ("analyser_control", "edge_within_pips", -1, "must be between"),
+    ("analyser_control", "consolidation_breakout_beyond_pips", 101, "must be between"),
     ("range_trade", "close_percent_at_opposite_band", 150, "must be one of 50, 100"),
     ("range_trade", "close_percent_at_opposite_band", 30, "must be one of 50, 100"),
     ("bounce", "trail_from_pips", -1, "must be between"),
@@ -791,3 +795,15 @@ def test_bot_process_starts_with_good_settings(pretend_switches):
             in r.stdout)
     assert "  [prices] candle_timeframes = tick, 5m, 1h, 4h, 1d, 1w\n" in r.stdout
     assert "datetime" not in r.stdout
+
+
+@pytest.mark.parametrize("key,name", [("ANALYSER_USES_HOURLY", "analyser_uses_hourly"),
+                                      ("ANALYSER_GOVERNS_ALL", "analyser_governs_all"),
+                                      ("ONE_SIGNAL_ONE_TRADE", "one_signal_one_trade")])
+def test_the_analyser_control_switches_are_off_if_left_out_and_load(tmp_path, key, name):
+    """The three analyser control stages each have a switch, off if left out of .env (owner, 18 November 2026)."""
+    assert getattr(load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches, name) is False
+    on = load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, key: "on"})).switches
+    assert getattr(on, name) is True
+    with pytest.raises(SettingsError, match=f"Invalid switch {key}.*must be on or off"):
+        load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, key: "yes"}))

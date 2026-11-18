@@ -29,7 +29,7 @@ from decimal import Decimal
 from typing import Any
 
 from prices.model import Candle, plain, uk_short
-from strategies.common import BUY, SELL, SESSION_SWEEP, Candidate
+from strategies.common import BUY, SELL, SESSION_SWEEP, Candidate, signal_context
 from strategies.sessions import Setup, confirm_step, uk_day_and_time, uk_zone
 
 
@@ -117,7 +117,9 @@ class SessionSweep:
                                 f"point {plain(st.context['furthest'])})"]
             out.append(Candidate(SESSION_SWEEP, st.direction, c.start, entry, steps,
                                  {"stop_price": stop, "furthest": st.context["furthest"], "level_name": lv.name,
-                                  "level": lv.price, "once_a_day": f"{SESSION_SWEEP} {lv.name} {self.day}"}))
+                                  "level": lv.price, "once_a_day": f"{SESSION_SWEEP} {lv.name} {self.day}",
+                                  **signal_context(st.direction, st.rejection.start, st.context["furthest"],
+                                                  st.rejection.sell_close)}))
         self.due = []
         self._day(c)
         self._ranges(c)                                                 # a range that ends now: its levels count from this candle

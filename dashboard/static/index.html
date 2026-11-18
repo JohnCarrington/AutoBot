@@ -472,6 +472,7 @@ async function load() {
   const a = s.analyser;
   $("state").textContent = a ? (a.state + " " + (a.direction === "up" ? "▲" : a.direction === "down" ? "▼" : "")) : "–";
   $("since").textContent = a ? ((a.trend_type ? a.trend_type + " · " : "") + "since " + uk(a.since_utc)) +
+                              (a.hourly_position ? " · hourly range: " + a.hourly_position : "") +
                               (s.price ? " · bid " + s.price.bid + " / offer " + s.price.offer : "") : "";
   const al = $("allowed"); al.textContent = "";
   (s.strategies_allowed || []).forEach(x => al.appendChild(el("span", "chip" + (x.switched_on ? "" : " off"),

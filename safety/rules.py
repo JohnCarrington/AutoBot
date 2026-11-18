@@ -26,6 +26,11 @@ It gives EVERY reason it refuses (an empty list: the order may go out):
      (analyser/day_direction.py: a big-news day's expected news direction, a trend day's direction, the Monday
      after a Friday that moved safety.big_friday_move_pips (80) or more, in the direction that reclaims it).
      Every other trade is unchanged.
+ 11. one signal, one trade (owner, 18 November 2026; design 6), only while the switch ONE_SIGNAL_ONE_TRADE is on:
+     an idea whose context has "signal" (a reversal-group strategy: its direction and the start of its rejection or
+     reversal candle) is refused once a trade with the same signal has opened (or was sent and is not yet settled):
+     "same signal already traded by <strategy>". While the switch is on, rule 9 also counts the session sweep and the
+     New York open reversal as reversal trades when they trade against the analyser's trend direction.
  10. once a day (owner, 16 November 2026): the Asian range breakout one trade each way per day, the session sweep
      one trade per level per day, the New York open reversal one trade a day: counted from the trades that opened
      (the idea's context "once_a_day", kept with each trade in the order record).
@@ -41,8 +46,8 @@ from decimal import Decimal
 from typing import Any
 
 from analyser.states import EMERGING, POSSIBLE_REVERSAL, STRONG_PUSH, TREND
-from strategies.common import (EMA_PULLBACK, LEVEL_REVERSAL, SWITCH, WITHOUT_HINDRANCE, counts_towards_most_at_once,
-                               may_open, stop_loss_pips, stop_price)
+from strategies.common import (EMA_PULLBACK, LEVEL_REVERSAL, NEW_YORK_OPEN_REVERSAL, SESSION_SWEEP, SWITCH,
+                               WITHOUT_HINDRANCE, counts_towards_most_at_once, may_open, stop_loss_pips, stop_price)
 
 
 @dataclass(frozen=True)
@@ -162,19 +167,23 @@ def trend_direction(idea: Any) -> str | None:
     return None
 
 
-def is_reversal(idea: Any) -> bool:
-    """A reversal trade for rule 9: a level reversal against the analyser's trend direction. The Bollinger
-    bounce is not held back by rule 9 (owner, 15 November 2026), nor are the EMA pullback, slow grind, breakout
-    and range trade."""
-    if idea.strategy == LEVEL_REVERSAL:
+def is_reversal(idea: Any, settings: Any = None) -> bool:
+    """A reversal trade for rule 9: a level reversal against the analyser's trend direction; while
+    ONE_SIGNAL_ONE_TRADE is on, also the session sweep and the New York open reversal against it (owner, 18 November
+    2026, with the owner's answer: the Asian range breakout never counts). The Bollinger bounce is not held back by
+    rule 9 (owner, 15 November 2026), nor are the EMA pullback, slow grind, breakout and range trade."""
+    from analyser.states import switch_on
+    counted = (LEVEL_REVERSAL,) + ((SESSION_SWEEP, NEW_YORK_OPEN_REVERSAL)
+                                   if settings is not None and switch_on(settings, "one_signal_one_trade") else ())
+    if idea.strategy in counted:
         td = trend_direction(idea)
         return td is not None and td != idea.direction
     return False
 
 
-def _one_view(idea: Any, day: Any) -> list[str]:
+def _one_view(idea: Any, day: Any, settings: Any = None) -> list[str]:
     """Rule 9: one view at a time. `day`: the day's directions (analyser.day_direction.DayDirections), or None."""
-    if not is_reversal(idea):
+    if not is_reversal(idea, settings):
         return []
     out = []
     td = trend_direction(idea)
@@ -195,9 +204,19 @@ def _once_a_day(idea: Any, used: set | None) -> list[str]:
     return []
 
 
+def _one_signal(settings: Any, idea: Any, used: dict | None) -> list[str]:
+    """Rule 11: one signal, one trade (owner, 18 November 2026), while ONE_SIGNAL_ONE_TRADE is on. `used`: the
+    signal keys of the trades already opened (or sent and not yet settled), each with its strategy."""
+    from analyser.states import switch_on
+    key = (getattr(idea, "context", None) or {}).get("signal")
+    if not key or not used or key not in used or not switch_on(settings, "one_signal_one_trade"):
+        return []
+    return [f"same signal already traded by {used[key]}"]
+
+
 def decide(settings: Any, order: Order, open_trades: list[OpenTrade], funds: AccountFunds | None,
            now: datetime, paused: bool, calendar: list | None = None, day: Any = None,
-           used_once_a_day: set | None = None) -> Decision:
+           used_once_a_day: set | None = None, used_signals: dict | None = None) -> Decision:
     """Whether `order` may go out at `now`, with every reason it may not. `day`: the directions of the idea's UK
     day (analyser.day_direction.day_directions), for rule 9. `used_once_a_day`: the once-a-day keys of the trades
     already opened (rule 10)."""
@@ -216,6 +235,7 @@ def decide(settings: Any, order: Order, open_trades: list[OpenTrade], funds: Acc
         reasons.append(f"the size is £{order.size_gbp_per_pip} a pip, not £{want}")
     reasons += _risk(settings, order, open_trades)
     reasons += _funds(settings, funds)
-    reasons += _one_view(idea, day)
+    reasons += _one_view(idea, day, settings)
     reasons += _once_a_day(idea, used_once_a_day)
+    reasons += _one_signal(settings, idea, used_signals)
     return Decision(not reasons, reasons)

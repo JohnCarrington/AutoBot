@@ -1,0 +1,42 @@
+Fri 13 Nov 2026, analyser control switches on, edge 5 pips
+State changes:
+  00:20 consolidation (none) [middle]: the emerging down trend settled into consolidation: bands 10.4 pips wide (narrow: <= 14, or narrowing for 6 candles: 2), middle band 0.1 pips/candle, no close outside the bands for 6 candles, average body 0.9 pips, green/red 1.3
+  03:10 ranging (none) [middle]: bands 6.8 pips wide (close together: 6 to 18) and flat (upper -0.0, lower -0.1 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 0.0 pips
+  04:05 consolidation (none) [middle]: bands 4.8 pips wide (narrow: <= 14, or narrowing for 6 candles: 0), middle band -0.1 pips/candle, no close outside the bands for 6 candles, average body 0.6 pips, green/red 1.2
+  05:50 emerging trend (up) [middle]: rejected at a level: closed 13226.7 above the reversal high 13226.3; trigger at above 13227.9
+  06:15 consolidation (none) [bottom edge]: the emerging up trend settled into consolidation: bands 8.1 pips wide (narrow: <= 14, or narrowing for 6 candles: 1), middle band -0.1 pips/candle, no close outside the bands for 6 candles, average body 1.8 pips, green/red 1.2
+  06:55 ranging (none) [middle]: bands 9.9 pips wide (close together: 6 to 18) and flat (upper 0.1, lower -0.2 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 1.0 pips
+  07:05 emerging trend (up) [top edge]: broke out of the range: 2 closes above the band (last 13238.5, band 13236.5)
+  07:15 emerging trend (down) [middle]: rejected at a level against the emerging up trend: closed 13232.3 below the reversal low 13234.4; trigger at below 13231.6
+  08:10 consolidation (none) [top edge]: the emerging down trend settled into consolidation: bands 12.4 pips wide (narrow: <= 14, or narrowing for 6 candles: 6), middle band 0.4 pips/candle, no close outside the bands for 6 candles, average body 2.6 pips, green/red 1.6
+  08:35 emerging trend (down) [middle]: rejected at a level: closed 13235.2 below the reversal low 13236.2; trigger at below 13235.2
+  09:25 consolidation (none) [middle]: the emerging down trend settled into consolidation: bands 12.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 3), middle band 0.3 pips/candle, no close outside the bands for 6 candles, average body 2.0 pips, green/red 1.1
+  09:45 ranging (none) [middle]: bands 13.2 pips wide (close together: 6 to 18) and flat (upper -0.0, lower 0.0 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 0.5 pips
+  09:55 consolidation (none) [middle]: bands 12.6 pips wide (narrow: <= 14, or narrowing for 6 candles: 1), middle band -0.2 pips/candle, no close outside the bands for 6 candles, average body 2.1 pips, green/red 1.5
+  10:55 emerging trend (up) [bottom edge]: rejected at a level: closed 13223.9 above the reversal high 13221.7; trigger at above 13225.3
+  11:40 ranging (none) [middle]: the emerging up trend turned into a range: bands 16.2 pips wide (close together: 6 to 18) and flat (upper -0.0, lower -0.0 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 1.0 pips
+  12:30 emerging trend (up) [middle]: rejected at a level: closed 13228.3 above the reversal high 13227.4; trigger at above 13228.6
+  12:40 consolidation (none) [middle]: the emerging up trend settled into consolidation: bands 13.0 pips wide (narrow: <= 14, or narrowing for 6 candles: 4), middle band 0.2 pips/candle, no close outside the bands for 6 candles, average body 2.6 pips, green/red 1.1
+  13:00 emerging trend (up) [middle]: rejected at a level: closed 13228.5 above the reversal high 13225.9; trigger at above 13228.8
+  13:45 emerging trend (down) [middle]: rejected at a level against the emerging up trend: closed 13237.2 below the reversal low 13238.8; trigger at below 13234.6
+  17:25 trend (down, slow grind) [bottom edge]: the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new low 13205.2 on the lower band 13204.6; EMAs 7/13/21 stacked down for 23 candles, close 13205.4 below them and the 100 EMA 13226.3; band sloping -0.5 pips/candle
+  18:10 possible reversal (up) [middle]: rejection at a level (new_york_session_low 13204.3, S1 13206.0) confirmed after a down move of 32.9 pips: closed 13213.1 above the reversal high 13209.5; trigger at above 13214.9
+  18:20 emerging trend (up) [middle]: the reversal triggered: price went above 13214.9 (during this candle)
+  18:30 emerging trend (down) [middle]: rejected at a level against the emerging up trend: closed 13210 below the reversal low 13212.8; trigger at below 13209.9
+  18:55 ranging (none) [bottom edge]: the emerging down trend turned into a range: bands 12.4 pips wide (close together: 6 to 18) and flat (upper -0.1, lower 0.0 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 2.9 pips
+  19:10 consolidation (none) [middle]: bands 11.5 pips wide (narrow: <= 14, or narrowing for 6 candles: 19), middle band 0.0 pips/candle, no close outside the bands for 6 candles, average body 1.4 pips, green/red 1.2
+  19:15 emerging trend (up) [middle]: rejected at a level: closed 13211.3 above the reversal high 13210.9; trigger at above 13211.8
+  19:25 consolidation (none) [middle]: the emerging up trend settled into consolidation: bands 9.3 pips wide (narrow: <= 14, or narrowing for 6 candles: 22), middle band 0.2 pips/candle, no close outside the bands for 6 candles, average body 1.1 pips, green/red 1.4
+  21:30 emerging trend (down) [middle]: rejected at a level: closed 13210.7 below the reversal low 13213; trigger at below 13210.7
+  21:50 ranging (none) [middle]: the emerging down trend turned into a range: bands 10.7 pips wide (close together: 6 to 18) and flat (upper 0.0, lower 0.0 pips/candle), both bands reached, EMAs weaving, 100 EMA moved 0.8 pips
+Trades opened:
+  08:20 Asian range breakout buy at 13241.8: -12.0 (stopped by IG: the stop at IG)
+  08:40 session sweep sell at 13235.1: +9.4 (stopped by IG: the stop at IG (trailed to 13225.7))
+  11:00 Bollinger bounce buy at 13223.7: +9.3 (stopped by IG: the stop at IG (trailed to 13234.5))
+  15:05 Bollinger bounce sell at 13242.3: +17.9 (stopped by IG: the stop at IG (trailed to 13224.4))
+  15:10 session sweep sell at 13235.8: +11.4 (stopped by IG: the stop at IG (trailed to 13224.4))
+Orders the safety rules refused:
+  03:25 range trade buy: outside the trading hours 06:00 to 20:30 UK
+  03:45 range trade buy: outside the trading hours 06:00 to 20:30 UK
+  14:00 session sweep sell: once a day: a session sweep trade has already opened for Asian high 2026-11-13
+

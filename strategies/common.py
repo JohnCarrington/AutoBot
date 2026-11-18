@@ -31,6 +31,27 @@ only, owner 7 November 2026):
        * BOUNCE_ONLY_WHEN_HOURLY_RANGING: it opens only while the hourly read says ranging (whatever HOURLY_READ is);
        * BOUNCE_ONLY_NEAR_TIMES: it opens only within bounce.near_times_within_minutes (60) of one of
          bounce.near_times (10:00, 14:00, 16:00 UK), both ends included, judged at the moment it opens.
+  7. the analyser governs every strategy (owner, 18 November 2026; design 2.10), only while the switch
+     ANALYSER_GOVERNS_ALL is on (off if left out). Two groups: the TREND GROUP (slow grind, EMA pullback, breakout,
+     Asian range breakout) and the REVERSAL GROUP (Bollinger bounce, level reversal, session sweep, New York open
+     reversal, range trade). By the analyser's state (after the last finished 5-minute candle):
+       * ranging: the trend group nothing; the reversal group either way;
+       * emerging trend, trend: both groups only in the trend's direction;
+       * possible reversal: the trend group nothing new; the reversal group either way, but against the OLD trend
+         (in the possible reversal's direction) only while the 5-minute MACD histogram is at its biggest bar in the
+         old trend's direction since the old trend started, or smaller than both that biggest bar and the bar
+         before it, or has crossed zero (owner's answers, 18 November 2026);
+       * consolidation: nothing.
+     The Asian range breakout (owner, 18 November 2026): the trend group for direction only; ranging, consolidation
+     and the hourly-ranging rule below do not block it (a possible reversal's "nothing new" still does).
+     And while the hourly read (analyser/hourly_read.py, after the last finished hourly candle; whatever HOURLY_READ
+     is) says ranging: the trend group nothing; the reversal group sells only at the top edge, buys only at the
+     bottom edge, judged on the setup's furthest point (the candidate's context "furthest": from its piercing or
+     rejection candle to its confirmation candle) within analyser_control.edge_within_pips of the hourly range high
+     or above it (a sell), of its low or below it (a buy), and its rejection candle closing back inside the hourly
+     range (the context "rejection_close"; owner, 18 November 2026). Each strategy's own state rule in 2 still applies
+     inside this, except that the level reversal's "every state except consolidation, either way" and the bounce's
+     and session strategies' "without hindrance" are replaced by it while the switch is on.
   6. the trend is still going (owner, 16 November 2026), only while the switch TREND_STILL_GOING is on (off if
      left out): the trend strategies (TREND_STRATEGIES: EMA pullback, slow grind, breakout) only open a sell if,
      within the last trend_still_going.within_candles (12) finished 5-minute candles, price made a new low at
@@ -87,6 +108,12 @@ NO_DIRECTION_RULE = (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND, LEVEL_
 BUY, SELL = "buy", "sell"
 # The strategies the hourly read applies to (check 4 above; owner, 14 November 2026).
 TREND_STRATEGIES = (EMA_PULLBACK, SLOW_GRIND, BREAKOUT)
+# The two groups of check 7, while ANALYSER_GOVERNS_ALL is on (owner, 18 November 2026; design 2.10).
+TREND_GROUP = (SLOW_GRIND, EMA_PULLBACK, BREAKOUT, ASIAN_RANGE_BREAKOUT)
+REVERSAL_GROUP = (BOLLINGER_BOUNCE, LEVEL_REVERSAL, SESSION_SWEEP, NEW_YORK_OPEN_REVERSAL, RANGE_TRADE)
+# The strategies whose own state rule check 7 replaces while ANALYSER_GOVERNS_ALL is on: the level reversal's
+# "every state except consolidation, either way" and "without hindrance" (the bounce and the session strategies).
+STATE_RULE_REPLACED = (LEVEL_REVERSAL,) + WITHOUT_HINDRANCE
 # Section 2.2: which states allow which strategy: "any" direction, only in the trend's direction
 # ("trend"), or only against it ("against").
 ALLOWED_IN = {
@@ -440,9 +467,90 @@ def still_going_reasons(settings: Any, strategy: str, direction: str, candles: l
             f"{plain(t.new_extreme_pips)} pips {extreme} the previous {word} in the last {n} five-minute candles{found}"]
 
 
+def governed_allowed(state: str) -> list[str]:
+    """The strategies check 7 lets open in this analyser state, either way or one way (for the dashboard, while
+    ANALYSER_GOVERNS_ALL is on; owner, 18 November 2026): each strategy's own state rule (2) and the table of
+    design 2.10. The hourly read and the direction are checked at entry."""
+    out = []
+    for name in TREND_GROUP + REVERSAL_GROUP:
+        arb = name == ASIAN_RANGE_BREAKOUT              # not held back by ranging or consolidation
+        if (state == CONSOLIDATION and not arb) or (state == RANGING and name in TREND_GROUP and not arb):
+            continue
+        if state == POSSIBLE_REVERSAL and name in TREND_GROUP:
+            continue
+        if name not in STATE_RULE_REPLACED and state not in ALLOWED_IN[name]:
+            continue                                     # its own state rule (e.g. the slow grind: trend only)
+        out.append(name)
+    return out
+
+
+def signal_context(direction: str, rejection_start: datetime, furthest: Decimal | None,
+                   rejection_close: Decimal | None = None) -> dict:
+    """What a reversal-group candidate carries for the analyser control (owner, 18 November 2026; design 2.10):
+    "furthest", the setup's furthest point (check 7's edge of the hourly range), and "signal", its direction and
+    the start of its rejection (or reversal) candle (safety rule 11, one signal one trade)."""
+    return {"furthest": furthest, "rejection_close": rejection_close,
+            "rejection_candle": rejection_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "signal": f"{direction} {rejection_start.strftime('%Y-%m-%dT%H:%M:%SZ')}"}
+
+
+def governs_reasons(settings: Any, strategy: str, direction: str, state: Any, hourly: Any,
+                    context: dict | None) -> list[str]:
+    """Check 7: why the analyser does not allow this strategy this way (empty: allowed), only while
+    ANALYSER_GOVERNS_ALL is on. `state`: the analyser's state (for a possible reversal with `macd_ok` and
+    `macd_why`, worked out by the strategy runner); `hourly`: the hourly read; `context`: the candidate's context
+    ("furthest" for the reversal group)."""
+    from analyser.states import rejection_at_edge, switch_on
+    if not switch_on(settings, "analyser_governs_all"):
+        return []
+    trend = strategy in TREND_GROUP
+    # the Asian range breakout: the trend group for direction only; ranging, consolidation and the hourly-ranging
+    # rule do not block it, breaking out of the quiet Asian range being its job (owner, 18 November 2026)
+    arb = strategy == ASIAN_RANGE_BREAKOUT
+    group = "the trend group" if trend else "the reversal group"
+    st, d = state.state, state.direction
+    want = SELL if d == DOWN else BUY if d == UP else None
+    out = []
+    if st == CONSOLIDATION:
+        if not arb:
+            out.append(f"ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: {group} opens nothing")
+    elif st == RANGING:
+        if trend and not arb:
+            out.append(f"ANALYSER_GOVERNS_ALL: the analyser's state is ranging: {group} opens nothing")
+    elif st in (EMERGING, TREND):
+        if direction != want:
+            out.append(f"ANALYSER_GOVERNS_ALL: the {st} is {d}: {strategy} only in the trend's direction")
+    elif st == POSSIBLE_REVERSAL:
+        if trend:
+            out.append(f"ANALYSER_GOVERNS_ALL: the analyser's state is possible reversal: {group} opens nothing new")
+        elif direction == want and not getattr(state, "macd_ok", False):
+            out.append(f"ANALYSER_GOVERNS_ALL: in a possible reversal {strategy} goes against the old trend only "
+                       f"while the 5-minute MACD histogram is at its biggest bar in the old trend's direction, or "
+                       f"past it and shrinking ({getattr(state, 'macd_why', 'the MACD is not known')})")
+    if hourly is not None and hourly.state == HOURLY_RANGING and not arb:
+        rng = f" ({plain(hourly.low)} to {plain(hourly.high)})" if hourly.low is not None else ""
+        if trend:
+            out.append(f"ANALYSER_GOVERNS_ALL: the hourly chart is ranging{rng}: {group} opens nothing")
+        elif hourly.high is not None:
+            far = (context or {}).get("furthest")
+            close = (context or {}).get("rejection_close")
+            edge = "top" if direction == SELL else "bottom"
+            if far is None or close is None:
+                out.append(f"ANALYSER_GOVERNS_ALL: the hourly chart is ranging{rng} and the setup's furthest point "
+                           f"is not known: {strategy} opens only at the {edge} edge")
+            elif not rejection_at_edge(settings, hourly, Decimal(far), Decimal(close), direction):
+                out.append(f"ANALYSER_GOVERNS_ALL: the hourly chart is ranging{rng}: a {direction} opens only at the "
+                           f"{edge} edge (furthest point within "
+                           f"{plain(settings.analyser_control.edge_within_pips)} pips of the hourly "
+                           f"{'high' if direction == SELL else 'low'} or beyond it, and the rejection candle closing "
+                           f"back inside the hourly range); the setup's furthest point {plain(Decimal(far))}, its "
+                           f"rejection candle's close {plain(Decimal(close))}")
+    return out
+
+
 def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state: Any, pivot: Decimal | None,
             ema100: Decimal | None, hourly: Any = None, t: datetime | None = None,
-            candles: list | None = None) -> tuple[list[str], Any]:
+            candles: list | None = None, context: dict | None = None) -> tuple[list[str], Any]:
     """Every reason the switch, the state (2.2), the direction rule (2.3) or the hourly read (check 4) does not
     allow this strategy in this direction at this price (empty: allowed), and the direction rule. `hourly`: the
     hourly read (analyser.hourly_read.HourlyRead); the strategy runner always gives it."""
@@ -451,8 +559,11 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
     if not getattr(settings.switches, SWITCH[strategy]):
         reasons.append(f"its switch STRATEGY_{SWITCH[strategy].upper()} is off")
     ok_in = ALLOWED_IN[strategy]
+    from analyser.states import switch_on
     if strategy in WITHOUT_HINDRANCE:
         pass                                            # not checked against the state (owner, 15 and 16 November 2026)
+    elif strategy in STATE_RULE_REPLACED and switch_on(settings, "analyser_governs_all"):
+        pass                                            # check 7 replaces it (owner, 18 November 2026)
     elif state.state not in ok_in:
         reasons.append(f"the analyser's state is {state.state}, which does not allow {strategy}")
     elif ok_in[state.state] in ("trend", "against"):
@@ -468,6 +579,7 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
     reasons += hourly_reasons(settings, strategy, direction, hourly)
     reasons += bounce_reasons(settings, strategy, t, hourly)
     reasons += still_going_reasons(settings, strategy, direction, candles)
+    reasons += governs_reasons(settings, strategy, direction, state, hourly, context)
     return reasons, rule
 
 
@@ -476,7 +588,7 @@ def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | N
     """Turn a candidate into an idea, or a blocked one with every reason. `hourly`: the hourly read; `candles`:
     the finished 5-minute candles before the entry (check 6)."""
     reasons, rule = allowed(settings, c.strategy, c.direction, c.entry_price, state, pivot, ema100, hourly, c.time,
-                            candles)
+                            candles, c.context)
     idea = Idea(pair, c.strategy, c.direction, c.time, c.entry_price, state.state, state.direction,
                 state.trend_type, rule.side, list(c.steps), context=dict(c.context))
     if reasons:

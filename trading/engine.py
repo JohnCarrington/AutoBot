@@ -480,9 +480,16 @@ class Trading:
         for ref, t in self.manager.trades.items():
             if t.open and t.expected_at_ig:
                 warnings.append(f"Trade {ref}: IG's {t.expected_at_ig[0]} expected but not yet confirmed by IG")
-        allowed = list(ALLOWED.get(st.state, ())) if st is not None else []
-        allowed.append("Bollinger bounce")                  # in every state (owner, 15 November 2026)
-        allowed += list(SESSION_STRATEGIES)                 # in every state (owner, 16 November 2026)
+        from analyser.states import switch_on
+        from strategies.common import governed_allowed
+        if switch_on(self.s, "analyser_governs_all"):       # check 7 (owner, 18 November 2026; design 2.10)
+            allowed = governed_allowed(st.state) if st is not None else []
+        else:
+            allowed = list(ALLOWED.get(st.state, ())) if st is not None else []
+            allowed.append("Bollinger bounce")              # in every state (owner, 15 November 2026)
+            allowed += list(SESSION_STRATEGIES)             # in every state (owner, 16 November 2026)
+        extras = getattr(self.tracker, "extras", None) or []
+        position = extras[-1].get("position") if extras else None
         by_name = {n.lower(): n for n in SWITCH}
         switches = {name: bool(getattr(self.s.switches, key, False)) for name, key in SWITCH.items()}
         trades = []
@@ -504,7 +511,9 @@ class Trading:
                 "trading_on": self.trading_on, "paused": self._paused(),
                 "analyser": None if st is None else {"state": st.state, "direction": st.direction,
                                                     "trend_type": st.trend_type,
-                                                    "since_utc": st.since.strftime("%Y-%m-%dT%H:%M:%SZ")},
+                                                    "since_utc": st.since.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                                                    # ANALYSER_USES_HOURLY (owner, 18 November 2026; design 2.10)
+                                                    **({"hourly_position": position} if position else {})},
                 "strategies_allowed": [{"name": a, "switched_on": switches.get(by_name.get(a.split(" (")[0].lower().replace(
                     "bollinger band bounce", "bollinger bounce"), ""), True)} for a in allowed],
                 "price": None if tick is None else {"bid": str(tick.sell), "offer": str(tick.buy),

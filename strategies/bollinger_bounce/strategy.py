@@ -27,7 +27,7 @@ from typing import Any
 
 from prices.hourly_chart import HourlyChart
 from prices.model import Candle, plain, uk_short
-from strategies.common import BOLLINGER_BOUNCE, BUY, SELL, Candidate
+from strategies.common import BOLLINGER_BOUNCE, BUY, SELL, Candidate, signal_context
 
 
 def spread(c: Candle) -> Decimal:
@@ -43,6 +43,9 @@ class Setup:
     beyond_pips: Decimal
     candles: int = 0                    # candles since the rejection candle
     steps: list = field(default_factory=list)
+    # the furthest price (a sell: highest high; a buy: lowest low) from the rejection candle to the confirmation
+    # candle, as the level reversal's allowance is measured (owner, 18 November 2026; design 2.10)
+    furthest: Decimal | None = None
 
 
 class BollingerBounce:
@@ -62,7 +65,7 @@ class BollingerBounce:
         new = BollingerBounce.__new__(BollingerBounce)
         new.__dict__.update(self.__dict__)
         new.chart = self.chart.copy()
-        new.waiting = [Setup(x.direction, x.rejection, x.band, x.beyond_pips, x.candles, list(x.steps))
+        new.waiting = [Setup(x.direction, x.rejection, x.band, x.beyond_pips, x.candles, list(x.steps), x.furthest)
                        for x in self.waiting]
         new.due = list(self.due)
         new.notes = []
@@ -87,13 +90,16 @@ class BollingerBounce:
                 continue
             seen.add(st.direction)
             steps = st.steps + [f"{uk_short(c.start)} opens at this candle's open, {plain(c.sell_open)} (sell price)"]
-            out.append(Candidate(BOLLINGER_BOUNCE, st.direction, c.start, c.sell_open, steps, {}))
+            out.append(Candidate(BOLLINGER_BOUNCE, st.direction, c.start, c.sell_open, steps,
+                                 signal_context(st.direction, st.rejection.start, st.furthest,
+                                                st.rejection.sell_close)))
         self.due = []
         spike = spread(c) > self.max_spread
         for st in list(self.waiting):                               # 5. cancel, 3. confirm, or expire
             st.candles += 1
             sell = st.direction == SELL
             r = st.rejection
+            st.furthest = max(st.furthest, c.sell_high) if sell else min(st.furthest, c.sell_low)
             beyond_cancel = (c.sell_high > r.sell_high) if sell else (c.sell_low < r.sell_low)
             if beyond_cancel and not spike:
                 self._note(c, st.direction, f"{uk_short(c.start)} cancelled: price went "
@@ -135,7 +141,7 @@ class BollingerBounce:
             if spike:
                 self._note(c, direction, what + f"; IG's spread was {plain(spread(c))} points: ignored")
                 continue
-            st = Setup(direction, c, edge, past / self.ppp)
+            st = Setup(direction, c, edge, past / self.ppp, furthest=extreme)
             self._note(c, direction, what, st)
             self.waiting.append(st)
         self.chart.add(c)

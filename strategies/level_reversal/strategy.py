@@ -39,7 +39,7 @@ from decimal import Decimal
 from typing import Any
 
 from prices.model import Candle, plain, uk_short
-from strategies.common import BUY, LEVEL_REVERSAL, SELL, Candidate
+from strategies.common import BUY, LEVEL_REVERSAL, SELL, Candidate, signal_context
 
 ROUND_NUMBER = "round_number"
 KEEP_CANDLES = 300          # more than any setup lasts (pierce, reversal and confirmation within a few candles)
@@ -122,5 +122,7 @@ class LevelReversal:
                          f"take profit {self.lr.take_profit_pips} pips")
             return Candidate(LEVEL_REVERSAL, SELL if sell else BUY, e.time, e.price, steps,
                              context={"level": p["price"], "level_name": name, "furthest": furthest,
-                                      "past_level_pips": past / self.ppp, "stop_price": stop})
+                                      "past_level_pips": past / self.ppp, "stop_price": stop,
+                                      **signal_context(e.direction, st.reversal.start, furthest,
+                                                       getattr(st.reversal, f"{self.side}_close"))})
         return None
