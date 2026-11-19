@@ -414,7 +414,8 @@ def test_every_state_change_is_recorded_once_even_after_a_restart(st):
     rows = a.recorded()
     assert [r["time_utc"] for r in rows] == [c.as_dict()["time_utc"] for c in a.changes]
     assert set(rows[0]) == {"time_utc", "state", "direction", "trend_type", "previous_state",
-                            "previous_direction", "reason", "evidence"}
+                            "previous_direction", "reason", "evidence",
+                            "provenance", "recorded_utc", "run_started_utc"}   # provenance: 19 November 2026
     StateTracker(st, store, record=True).replay(end)          # a restart replays the week again
     assert a.recorded() == rows                               # nothing recorded twice
     current = json.loads((a.folder / "current.json").read_text())

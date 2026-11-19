@@ -16,6 +16,19 @@ record in time order: a restart's replay adds only changes newer than its last
 line; where the replay calls earlier candles differently (a rule changed), the
 differences go to replay_differences_<date>.jsonl, never into the journal.
 
+PROVENANCE (owner's investigation brief, 19 November 2026): every line written from now on says how it was made
+and when it was written. "time_utc" stays the event time (the start of the candle the change came from);
+"recorded_utc" is the moment the line was written; "run_started_utc" is when that run of the analyser started;
+"provenance" is one of:
+  * LIVE_DECISION: made by the running analyser from a newly finished candle (not the start-up replay);
+  * HISTORICAL_REPLAY: made by the start-up replay for a time the last run was covering live (or when it cannot
+    be shown that it was not): worked out afterwards, possibly under newer rules; the live bot did NOT act on it;
+  * RECONSTRUCTED: made by the start-up replay for a time after the last run's last live candle (the service
+    was stopped then): no live decision existed, so it is filled in from the stored candles.
+A line without "provenance" (written before 19 November 2026) is UNKNOWN_LEGACY (provenance_of): never assumed
+live. Existing lines are never rewritten or relabelled. current.json carries "live_through_utc", the end of the
+last candle taken live, so the next start-up can tell HISTORICAL_REPLAY from RECONSTRUCTED.
+
 Reads the candle store only; never contacts IG.
 """
 
@@ -41,6 +54,8 @@ UTC = timezone.utc
 JOURNAL = "state_changes.jsonl"
 CURRENT = "current.json"
 DIFFERENCES = "replay_differences_{date}.jsonl"
+LIVE_DECISION, HISTORICAL_REPLAY, RECONSTRUCTED, UNKNOWN_LEGACY = (
+    "LIVE_DECISION", "HISTORICAL_REPLAY", "RECONSTRUCTED", "UNKNOWN_LEGACY")
 REPLAY_ONLY = "replayed, not in the live record"
 RECORD_ONLY = "in the live record, not replayed"
 
@@ -83,6 +98,11 @@ class StateTracker:
         self.hourly_reader = None
         self.brk = None                  # the standing 5-minute break of the hourly range (analyser.hourly_read)
         self.folder = Path(settings.market_states.folder) / settings.market.pair
+        self.clock = lambda: datetime.now(UTC)  # the wall clock, for "recorded_utc" (a test can set it)
+        self.run_started: datetime | None = None
+        self.live_from = 0                # changes before this index came from the start-up replay
+        self.live_through: datetime | None = None     # end of the last candle taken live in this run
+        self.prior_live_through: str | None = None    # the last run's, read from current.json at start-up
 
     # ---- the week and its candles ----------------------------------------------------------
 
@@ -99,6 +119,7 @@ class StateTracker:
     def replay(self, as_of: datetime) -> MarketState:
         """Start-up: run the week from its open up to as_of."""
         self.week_open = None
+        self.run_started = None                  # a start-up replay: its changes are not live decisions
         return self.advance(as_of)
 
     def advance(self, as_of: datetime) -> MarketState:
@@ -113,6 +134,7 @@ class StateTracker:
             self.history = []
             self.extras = []
             self.brk = None
+            self.live_from = 0                   # a new week while running: its changes are all live
         memo = MemoStore(self.store)
         warm, week = self._candles(memo, week_open, as_of)
         from analyser.states import switch_on
@@ -120,14 +142,37 @@ class StateTracker:
             from analyser.hourly_read import HourlyReader
             self.hourly_reader = HourlyReader(self.s, last_candles(memo, "1h", as_of,
                                                                    self.s.hourly_read.history_candles))
+        start_up = self.run_started is None
+        if start_up:                              # this run's first call: the start-up replay
+            self.run_started = self.clock()
+            self.prior_live_through = self._prior_live_through() if self.record else None
         if len(week) > self.done:
             feats = compute(warm + week, self.s)[len(warm):]
             for c, f in zip(week[self.done:], feats[self.done:]):
                 self._step(memo, f)
             self.done = len(week)
+            if not start_up:
+                self.live_through = week[-1].end
+        if start_up:
+            self.live_from = len(self.changes)
         if self.record:
             self._write(as_of)
         return self.machine.now
+
+    def _prior_live_through(self) -> str | None:
+        try:
+            v = json.loads((self.folder / CURRENT).read_text()).get("live_through_utc")
+            return v if isinstance(v, str) else None
+        except (OSError, ValueError, AttributeError):
+            return None
+
+    def provenance(self, k: int, r: dict) -> str:
+        """How the k-th change of this week (r: its as_dict) was made, in this run."""
+        if k >= self.live_from:
+            return LIVE_DECISION
+        if self.prior_live_through is not None and r["time_utc"] >= self.prior_live_through:
+            return RECONSTRUCTED
+        return HISTORICAL_REPLAY
 
     def _step(self, store: CandleStore, f: Features) -> StateChange | None:
         from prices.indicators import Band
@@ -176,11 +221,13 @@ class StateTracker:
         have = {_key(r) for r in rows}
         last = max((r["time_utc"] for r in rows), default="")
         made = [ch.as_dict() for ch in self.changes]
-        new = [r for r in made if _key(r) not in have and r["time_utc"] > last]
+        new = [(k, r) for k, r in enumerate(made) if _key(r) not in have and r["time_utc"] > last]
         if new:
+            recorded = _utc(self.clock())
             with (self.folder / JOURNAL).open("a") as fh:
-                for r in new:
-                    fh.write(json.dumps(r) + "\n")
+                for k, r in new:
+                    fh.write(json.dumps({**r, "provenance": self.provenance(k, r), "recorded_utc": recorded,
+                                         "run_started_utc": _utc(self.run_started)}) + "\n")
                 fh.flush()
         self._differences(as_of, rows, made, last)
         now = self.machine.now
@@ -188,6 +235,7 @@ class StateTracker:
             "state": now.state, "direction": now.direction, "trend_type": now.trend_type,
             "since_utc": now.since.strftime("%Y-%m-%dT%H:%M:%SZ"), "evidence": now.evidence,
             "strategies_allowed": list(now.strategies_allowed),
+            "live_through_utc": _utc(self.live_through) if self.live_through else self.prior_live_through,
             **({"hourly_position": self.extras[-1]["position"]} if self.extras and self.extras[-1]["position"]
                else {})}, indent=1) + "\n").encode())
 
@@ -215,6 +263,17 @@ class StateTracker:
         logging.getLogger("autobot.analyser").warning(
             "[%s] The week's replay differs from the live record in %d state change(s) at or before %s (a rule "
             "changed?); not added to %s, written to %s.", self.s.market.pair, len(diff), last, JOURNAL, p)
+
+
+def _utc(t: datetime) -> str:
+    return t.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def provenance_of(r: dict) -> str:
+    """A journal line's provenance: UNKNOWN_LEGACY for a line written before provenance was recorded (never
+    assumed to be a live decision)."""
+    p = r.get("provenance")
+    return p if p in (LIVE_DECISION, HISTORICAL_REPLAY, RECONSTRUCTED) else UNKNOWN_LEGACY
 
 
 def _key(r: dict) -> tuple:
