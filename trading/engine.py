@@ -15,7 +15,8 @@ sender and the trade manager, run inside the price service on its IG login.
     sending anything for the past, so they carry on from where the week is.
   * Live entries (design 3: a trade opens as soon as the live price reaches its trigger): on every live price the
     5-minute candle forming so far is given to COPIES of the strategies (StrategyRunner.peek, the same code as for
-    a finished candle); an idea whose entry price it has reached goes to the order sender at once. When that
+    a finished candle), once the candle before it has been stored and taken (at each candle's turn the live prices
+    arrive before IG's finished candle; StrategyRunner.waiting_for_finished_candle); an idea whose entry price it has reached goes to the order sender at once. When that
     candle finishes, the strategies take it as always (so their state, and the replay, are unchanged) and an idea
     already sent live is not sent again; one the live prices did not show (a gap in the stream) is sent then.
     A trade opened during a candle is not run on that candle's earlier prices.

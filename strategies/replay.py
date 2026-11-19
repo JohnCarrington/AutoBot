@@ -25,7 +25,7 @@ the candle it was reached in.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 from types import SimpleNamespace
 from typing import Any
@@ -38,6 +38,7 @@ from config.pairs import check_same_pair
 from levels.current import build
 from levels.rules import PIVOT
 from prices.indicators import Band, ema
+from prices.calendar import MarketHours
 from prices.model import plain
 from prices.store import CandleStore
 from rejection.watch import RejectionWatcher
@@ -119,6 +120,7 @@ class StrategyRunner:
     def __init__(self, settings: Any, store: Any, tracker: Any, hourly_end: datetime | None = None):
         self.s, self.store, self.tracker, self.hourly_end = settings, store, tracker, hourly_end
         self.memo = MemoStore(store)                        # this call's view of the store (renewed every call)
+        self.hours = MarketHours(settings.market_hours)
         self.week_open = None
         self.done = 0
 
@@ -195,6 +197,8 @@ class StrategyRunner:
             return []
         if partial.start <= self.week[-1].start:
             return []
+        if self.waiting_for_finished_candle(partial.start):
+            return []
         self._fresh()
         allc = self.warm + self.week + [partial]
         sg_ema = ema(allc, side, s.slow_grind.ema_periods)
@@ -220,6 +224,18 @@ class StrategyRunner:
         done = self.warm + self.week                        # the finished candles before the forming one
         return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100, hr, done, th)
                 for cand in cands]
+
+    def waiting_for_finished_candle(self, start: datetime) -> bool:
+        """True while the 5-minute candle before the forming one (starting at `start`) is not yet taken: in the
+        market's hours and newer than the last finished candle the strategies have. At each candle's turn the live
+        prices of the new candle arrive before IG's finished candle is stored (18 November 2026: a breakout idea at
+        15:45:00, before the 15:40 candle was stored at 15:45:00); the strategies' copies would otherwise be given
+        the new candle straight after the one before last, missing a candle: a setup already triggered or cancelled
+        in it could trigger again. The live check waits (only seconds, normally) until that candle is stored and
+        taken; nothing in the strategies' rules changes. A candle IG never sends pauses the live check for one
+        candle; the candle-close step still sends what it finds then, as for a gap in the live prices."""
+        prev = start - timedelta(minutes=5)
+        return self.week[-1].start < prev and self.hours.is_open(prev)
 
     def step(self) -> list[tuple[Any, Idea]]:
         """Run the strategies on every candle the tracker has taken since the last call: [(candle, idea)]."""
