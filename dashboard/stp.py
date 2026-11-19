@@ -64,7 +64,8 @@ EVENT_LABEL = {"created": "CREATED", "waiting": "WAITING FOR ZONE", "active": "A
                "changed": "RE-CHECKED: CHANGED", "closed beyond": "CLOSED BEYOND EDGE (RECORDED ONLY)",
                "reclaim": "RECLAIMED (RECORDED ONLY)", "wick sweep": "WICK SWEEP (RECORDED ONLY)",
                "failed breakout": "FAILED BREAKOUT (RECORDED ONLY)",
-               "ambiguous": "AMBIGUOUS CANDLE (RECORDED ONLY)", "in zone at creation": "IN ZONE AT CREATION (RECORDED ONLY)"}
+               "ambiguous": "AMBIGUOUS CANDLE (RECORDED ONLY)", "in zone at creation": "IN ZONE AT CREATION (RECORDED ONLY)",
+               "kept": "RE-CHECKED: CONDITION UNCLASSIFIED, KEPT", "duplicate": "NOT ISSUED: DUPLICATE OF A COMPLETED ONE"}
 # The chart's MARKET STRUCTURE view: the planner's level kinds that are significant structure (planner/zones.py PRIORITY);
 # every other recorded level (hourly swings, sessions, round numbers, moving averages) is in FULL ANALYSIS only.
 STRUCTURE_KINDS = ("4-hour swing", "daily swing", "daily pivot", "weekly pivot", "daily R/S", "weekly R/S",
@@ -281,6 +282,11 @@ def explanation(st: dict | None, fresh: dict, prices: Prices) -> dict:
     if reason:
         return {"scenario": "A", "text": f"The dominant structure is {d.lower()}, but no structural entry currently meets "
                 "the planner's requirements.", "planner_reason": prices.text(reason)}
+    held = st.get("not_issued")
+    if held and held.get("time_utc") == p.get("as_of_utc"):
+        return {"scenario": "A", "text": f"The dominant structure is {d.lower()}; the opportunity found repeats one that "
+                "has already reached its primary destination, so it was not issued again.",
+                "planner_reason": prices.text(held.get("why"))}
     recent = (st.get("recent") or [None])[0]
     last_an = _parse(st.get("last_analysis_utc"))
     if recent and _parse(recent.get("ended_utc")) and last_an and _parse(recent["ended_utc"]) >= last_an - timedelta(seconds=5):

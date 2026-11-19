@@ -23,13 +23,23 @@ One live recommendation per pair at most. Each run (after a new 5-minute candle)
        live and different fixed levels, or a zone that does not overlap the previous one -> SUPERSEDED (D-22). (A
          zone of moving levels only, such as an hourly EMA and today's still-running session high, has no fixed
          levels: the overlap test is what tells a different zone from the same one moving.)
+       live, the same direction, and the condition only UNCLASSIFIED (INDETERMINATE because no class recipe matched,
+         data fresh and warmed up: plan["condition_unclassified"]) -> KEPT, recorded ("kept"); its structural basis
+         (direction, zone, invalidation levels) is unchanged and every structural check above still applies. It is
+         not current while unclassified (no new authorisation from it). Issuing a NEW recommendation still needs a
+         classified condition (owner's approval of 19 November 2026: issuing and validity are separate tests);
        live and no longer recommended -> INVALIDATED, with the plan's reason ("supporting evidence changed"); except
          when the plan found the recommendation's own primary destination already reached (D-1 correction): COMPLETED
          if it had been ACTIVE, else INVALIDATED "destination reached before entry".
   No recommendation is issued with its primary destination already reached (planner/assess.py, D-1 correction).
+  DUPLICATES (owner's approval of 19 November 2026; FC-05, D-1): no new recommendation while the most recently ended
+  one was COMPLETED with the same identity (trade + fixed levels) and the same primary destination: that destination
+  was already achieved by the same opportunity. Recorded once ("duplicate"). It ends with any structural change: other
+  fixed levels (the daily pivot rollover included), another primary destination, another direction or zone. No time.
 CURRENT (FC-08): a recommendation is current only when it was re-checked at the latest finished hourly candle, the
 5-minute checks reached the latest finished 5-minute candle, and the data is fresh (P-A3). Stale data never
-invalidates; it makes the recommendation not current (D-21: no new authorisation from it, when that exists).
+invalidates; it makes the recommendation not current (D-21: no new authorisation from it, when that exists). A
+recommendation kept through an unclassified condition is not current either, until a re-plan classifies it again.
 
 Files, in planner.folder/<PAIR>/: current.json (the recommendation, the last plan and the state; a safe write) and
 recommendations.jsonl (every event and every hourly analysis; append-only, kept for good, P-F8); issued.jsonl (each
@@ -166,7 +176,19 @@ class Keeper:
         if status == INVALIDATED and rec.get("zone_broken_at"):
             self.state["watch_after_break"] = {"id": rec["id"], "far_edge": rec["far_edge"], "trade": rec["trade"],
                                                "broken_utc": rec["zone_broken_at"], "candles": 0}
+        self.state["last_ended"] = {"id": rec["id"], "status": status, "identity": rec["identity"],
+                                    "primary": (rec.get("destinations") or {}).get("primary", {}).get("price")}
         self.state["recommendation"] = None
+
+    def _duplicate_of(self, p: dict) -> str | None:
+        """The id of the completed recommendation this plan would repeat (same identity and primary), else None."""
+        le = self.state.get("last_ended")
+        if not le or le.get("status") != COMPLETED or le.get("primary") is None:
+            return None
+        primary = ((p.get("destinations") or {}).get("primary") or {}).get("price")
+        if identity(p) == le["identity"] and primary is not None and _d(primary) == _d(le["primary"]):
+            return le["id"]
+        return None
 
     def _new(self, t: datetime, plan: dict, why: str) -> None:
         self.state["counter"] = self.state.get("counter", 0) + 1
@@ -354,6 +376,13 @@ class Keeper:
                     self._retire(now, SUPERSEDED, f"{what} ({oz['low']}-{oz['high']} to {nz['low']}-{nz['high']}): "
                                  + p["selection_reason"])
                     self._new(now, p, f"supersedes {old}: {p['selection_reason']}")
+            elif p.get("condition_unclassified") and p.get("fresh"):
+                # issuing and validity are separate tests (owner's approval of 19 November 2026): the condition
+                # could not be classified, but the direction, zone and invalidation levels are unchanged
+                rec["condition_unclassified"] = True
+                self._event(now, "kept", "re-checked: the condition is unclassified (the evidence does not fit one "
+                            "condition) but the structural basis is unchanged (same direction, zone and invalidation "
+                            "levels): kept, not current for a new authorisation until a re-plan classifies it")
             elif p.get("destination_reached") and _d(p["destination_reached"]["primary"]) == \
                     _d(rec["destinations"]["primary"]["price"]):
                 # D-1: the hourly re-check found the recommendation's own primary destination already reached; the
@@ -367,8 +396,23 @@ class Keeper:
                                  f"(found at the hourly re-check)")
             else:
                 self._retire(now, INVALIDATED, f"supporting evidence changed: {p['no_recommendation']}")
+        rec = self.state["recommendation"]
+        if rec is not None and rec["status"] in LIVE and not p.get("condition_unclassified"):
+            rec.pop("condition_unclassified", None)
+        self.state.pop("not_issued", None)
         if self.state["recommendation"] is None and p["no_recommendation"] is None and p["entry_zone"] is not None:
-            self._new(now, p, p["selection_reason"])
+            dup = self._duplicate_of(p)
+            if dup is None:
+                self._new(now, p, p["selection_reason"])
+            else:
+                why = (f"not issued: the same identity and primary destination {p['destinations']['primary']['price']} "
+                       f"as {dup}, which already reached it (a new recommendation needs a structural change: other "
+                       f"fixed levels, another destination, direction or zone)")
+                self.state["not_issued"] = {"time_utc": _iso(now), "why": why, "duplicate_of": dup}
+                if self.state.get("duplicate_noted") != dup:            # recorded once per completed recommendation
+                    self.state["duplicate_noted"] = dup
+                    self._append({"time_utc": _iso(now), "event": "duplicate", "id": None, "why": why,
+                                  "duplicate_of": dup})
         return p
 
     # ---- one run ---------------------------------------------------------------------------------------------------
@@ -413,6 +457,9 @@ class Keeper:
         rec = self.state["recommendation"]
         if rec is not None and self.state.get("validated_h1_end") != _iso(h1_end):
             reasons.append("not re-checked at the latest finished hourly candle")
+        if rec is not None and rec.get("condition_unclassified"):
+            reasons.append("the condition was unclassified at the latest re-plan: kept on its structural basis, "
+                           "not current for a new authorisation")
         self.state["data_fresh"] = fresh
         self.state["current"] = rec is not None and fresh and not reasons
         self.state["not_current_reasons"] = reasons

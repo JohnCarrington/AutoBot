@@ -8,6 +8,10 @@ DIRECTION (D-03, P-B10/B11): the 4-hour structure decides.
   BULLISH       the mirror image;
   TRANSITIONAL  the structure is still down (up) but a confirmed 4-hour close went beyond the last opposite swing;
   NEUTRAL       mixed swings, or too few.
+  The structure used is planner/structure.py dominant_structure (candidate C, owner's approval of 19 November 2026):
+  the observed swings, except that a wick-only sweep of an established trend is "unresolved" (NEUTRAL) until a
+  confirmed 4-hour close beyond the last swing on the other side rejects it (the trend is restored); a confirmed
+  close beyond the swept swing makes the higher high (lower low) real and the observed mixed sequence stands.
   Daily and weekly are context (shown, never deciding). The 4-hour EMA100 slope (P-D1) and EMA stack support.
 
 CONDITION (D-10; FC-12; P-D6, P-D9), from the 4-hour RSI 3, MACD 35/45/30 and Bollinger (P-D7: the 4-hour decides).
@@ -29,7 +33,9 @@ candles finished since the last 4-hour candle.
                      of: RSI 3 back above its lower line after being below it in the impulse; a 4-hour close back inside
                      the lower band after a close below it in the impulse;
   CONTINUATION       a new low in the impulse, the histogram below zero and falling, the close below the middle band;
-  INDETERMINATE      otherwise, or the 4-hour MACD, RSI or Bollinger not warmed up.
+  INDETERMINATE      otherwise, or the 4-hour MACD, RSI or Bollinger not warmed up. "Otherwise" (data ready, no recipe
+                     matched) is marked condition_unclassified: it stops a NEW recommendation, but a live one keeps
+                     its structural basis and is kept (planner/keeper.py; owner's approval of 19 November 2026).
 OPPORTUNITY TYPE (D-16, modified; FC-04 exactly, owner's R1 of 17 November 2026): a label only, by condition class:
 "healthy-trend pullback" for CONTINUATION; "corrective reversal" for EXHAUSTION, CORRECTION_LIKELY or
 CORRECTION_ACTIVE. Zone choice, invalidation and everything else are the same for both. No
@@ -60,7 +66,7 @@ from decimal import Decimal
 from typing import Any
 
 from planner.measure import Snapshot, cl, hi, lo, op, pips, ppp, side_of, snapshot
-from planner.structure import DOWN, MIXED, UP, Structure, structure, swings, threshold_misses
+from planner.structure import DOWN, MIXED, UP, Structure, dominant_structure, structure, swings, threshold_misses
 from planner.zones import CLASS_RANK, MAJOR, Zone, ahead, interacts, label, level_map, reached, zones
 from prices.model import UK, plain, uk_short
 
@@ -99,6 +105,7 @@ class Plan:
     threshold_misses: list[dict] = field(default_factory=list)
     h4_last_swing: dict | None = None
     destination_reached: dict | None = None     # D-1 correction: the primary destination was already reached
+    condition_unclassified: bool = False        # INDETERMINATE only because no class recipe matched (data ready)
     structure: dict | None = None               # reporting only: every level, zone and swing the plan saw
 
     @property
@@ -121,6 +128,7 @@ class Plan:
             "no_recommendation": self.no_recommendation, "warming_up": self.warming_up,
             "threshold_misses": self.threshold_misses, "h4_last_swing": self.h4_last_swing,
             "destination_reached": self.destination_reached, "structure": self.structure,
+            "condition_unclassified": self.condition_unclassified,
         }
 
 
@@ -262,6 +270,7 @@ def condition(settings: Any, snap: Snapshot, st: Structure, d1: Structure, h1_sw
         return EXHAUSTION, ev + ["exhaustion: a new extreme that momentum does not confirm"], facts
     if new_extreme and away and beyond_mid:
         return CONTINUATION, ev + [f"continuation: new {word}s, momentum building, close {'below' if bear else 'above'} the middle band"], facts
+    facts["unclassified"] = True     # data ready, no class recipe matched (not "data not ready"): 19 November 2026
     return INDETERMINATE, ev + ["the evidence does not fit one condition"], facts
 
 
@@ -350,7 +359,7 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
     h4_found = swings(settings, snap.h4.candles, "4h")
     d1_found = swings(settings, snap.d1.candles, "1d")
     h1_found = swings(settings, snap.h1.candles[-400:], "1h")
-    st = structure(settings, snap.h4.candles, "4h", h4_found)
+    st = dominant_structure(settings, snap.h4.candles, "4h", h4_found)    # candidate C (19 November 2026)
     d1 = structure(settings, snap.d1.candles, "1d", d1_found)
     dirn, dir_ev = direction(settings, st)
     misses = threshold_misses(settings, snap.h4.candles, "4h", h4_found) + \
@@ -358,18 +367,25 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
     plan = Plan(pair, snap.as_of, data_utc, snap.fresh, dirn, dir_ev, INDETERMINATE, [], warming_up=warming,
                 threshold_misses=misses)
     plan.observations = observations(settings, snap, st, d1, existing_levels, calendar, five_minute_rule)
+    if st.sweep is not None:
+        plan.observations["h4_sweep"] = st.sweep
     dir_ev += plan.observations.get("supporting", [])
     if snap.price is None or snap.h4.last is None:
         plan.no_recommendation = "no finished candles to work from"
         return plan
     if dirn not in (BEARISH, BULLISH):
-        plan.no_recommendation = f"the 4-hour direction is {dirn}: no recommendation until it is BEARISH or BULLISH"
+        unresolved = st.sweep is not None and st.sweep["state"] == "unresolved"
+        plan.no_recommendation = (f"the 4-hour direction is {dirn}"
+                                  + (f" (the wick-only sweep of {st.sweep['beyond']} by {st.sweep['price']} is unresolved)"
+                                     if unresolved else "")
+                                  + ": no recommendation until it is BEARISH or BULLISH")
         return plan
     bear = dirn == BEARISH
     last_opp = (st.highs if bear else st.lows)[-1]
     plan.h4_last_swing = {"kind": last_opp.kind, "price": plain(last_opp.price), "candle_utc": _iso(last_opp.candle_utc)}
     cond, cond_ev, facts = condition(settings, snap, st, d1, h1_found)
     plan.condition, plan.condition_evidence = cond, cond_ev
+    plan.condition_unclassified = cond == INDETERMINATE and bool(facts.get("unclassified"))
     if facts.get("impulse_size_points") is not None and snap.adr:
         plan.observations["impulse_pips"] = plain(pips(settings, facts["impulse_size_points"]))
         plan.observations["impulse_adr"] = plain((facts["impulse_size_points"] / snap.adr).quantize(Decimal("0.01")))
