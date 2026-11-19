@@ -53,7 +53,7 @@ def test_the_planner_uses_the_approved_numbers_and_your_chart_settings():
     assert tuple(ind.ema_periods) == (7, 13, 21, 100, 200) and (ind.macd_fast_periods, ind.macd_slow_periods,
                                                                 ind.macd_signal_periods, ind.rsi_periods) == (35, 45, 30, 3)
     assert ind.timeframes == ("5m", "1h")              # the analyser's timeframes are NOT changed by the planner
-    assert (S.rejection.near_level_within_pips, S.hourly_read.break_beyond_pips, S.levels.line_up_within_pips) == (3, 3, 5)
+    assert (S.rejection.near_level_within_pips, S.planner.break_beyond_pips, S.levels.line_up_within_pips) == (3, 3, 5)
 
 
 # ---- indicators -------------------------------------------------------------------------------------------------

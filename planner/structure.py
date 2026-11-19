@@ -12,7 +12,7 @@ completed it (the later of the N-th candle after it and the first candle that ma
 Structure (P-B12): from the last two confirmed swing highs and the last two confirmed swing lows:
   up    both higher;   down    both lower;   otherwise mixed.
 A confirmed break (P-B10, P-B11): planner.structure_break_closes candle close(s) in a row at least
-hourly_read.break_beyond_pips (3) beyond the level (the hourly read's own rule, verified). Wicks never count.
+planner.break_beyond_pips (3) beyond the level (the hourly read's rule on main, given its own setting here: owner, 19 November 2026). Wicks never count.
 
 Dominant structure (owner's approval of candidate C, 19 November 2026; D-20, design 6.2/6.3): `structure` above is
 the OBSERVED swing sequence and is never changed; `dominant_structure` is the CONFIRMED one used for the 4-hour
@@ -119,7 +119,7 @@ def broke(settings: Any, candles: Sequence[Candle], after: Swing, direction: str
     """The first candle after the swing that completes structure_break_closes closes in a row at least
     break_beyond_pips beyond it (`direction` up: above a swing high; down: below a swing low)."""
     side = side_of(settings)
-    beyond = Decimal(settings.hourly_read.break_beyond_pips) * ppp(settings)
+    beyond = Decimal(settings.planner.break_beyond_pips) * ppp(settings)
     need = settings.planner.structure_break_closes
     run = 0
     for c in candles[after.index + 1:]:

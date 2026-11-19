@@ -7,7 +7,16 @@
                               in settings.toml, or the same)
   STRATEGY_SLOW_GRIND         on or off
   STRATEGY_EMA_PULLBACK       on or off
-  STRATEGY_BOLLINGER_BOUNCE   on or off
+  STRATEGY_BOLLINGER_BOUNCE   on or off (the hourly-pierce bounce of 15 November 2026)
+  STRATEGY_BOLLINGER_BOUNCE_5M  on or off (the first build's 5-minute band and level bounce, kept and renamed;
+                              owner, 19 November 2026)
+  ONE_SIGNAL_ONE_TRADE        on or off (off if left out; owner, 18 November 2026): one trade per rejection
+                              candle and direction; the session sweep and New York open reversal under one view at
+                              a time (safety/rules.py, rules 9 and 11)
+  PLANNER_OBSERVE             on or off (off if left out): the Structural Trade Planner (planner/), OBSERVE ONLY
+  BOUNCE_ONLY_NEAR_TIMES      on or off (off if left out): while on, a Bollinger bounce opens only within
+                              bounce.near_times_within_minutes (60) of bounce.near_times (10:00, 14:00,
+                              16:00 UK) in settings.toml
   STRATEGY_RANGE_TRADE        on or off
   STRATEGY_BREAKOUT           on or off (never on while breakout.stop_loss_pips or
                               breakout.take_profit_pips is 0)
@@ -15,34 +24,6 @@
   STRATEGY_ASIAN_RANGE_BREAKOUT    on or off (owner, 16 November 2026)
   STRATEGY_SESSION_SWEEP           on or off (owner, 16 November 2026)
   STRATEGY_NEW_YORK_OPEN_REVERSAL  on or off (owner, 16 November 2026)
-  HOURLY_READ                 on or off: while off the hourly read (analyser/hourly_read.py) does not
-                              gate the trend strategies (strategies/common.py, check 4)
-  BOUNCE_ONLY_WHEN_HOURLY_RANGING  on or off (off if left out): while on, a Bollinger bounce opens only
-                              while the hourly read (analyser/hourly_read.py) says ranging
-  BOUNCE_ONLY_NEAR_TIMES      on or off (off if left out): while on, a Bollinger bounce opens only within
-                              bounce.near_times_within_minutes (60) of bounce.near_times (10:00, 14:00,
-                              16:00 UK) in settings.toml
-  TREND_STILL_GOING           on or off (off if left out): while on, the EMA pullback, slow grind and breakout
-                              open only while the trend is still going ([trend_still_going] in settings.toml;
-                              strategies/common.py, check 6)
-  ANALYSER_USES_HOURLY        on or off (off if left out; owner, 18 November 2026): stage 1, the analyser uses the
-                              hourly chart (analyser/states.py; [analyser_control] in settings.toml)
-  ANALYSER_GOVERNS_ALL        on or off (off if left out; owner, 18 November 2026): stage 2, every strategy asks the
-                              analyser (strategies/common.py, check 7)
-  ONE_SIGNAL_ONE_TRADE        on or off (off if left out; owner, 18 November 2026): stage 3, one trade per rejection
-                              candle and direction; the session sweep and New York open reversal under one view at
-                              a time (safety/rules.py, rules 9 and 11)
-  SCALE_OUT_REVERSAL          on or off (off if left out; owner, 18 November 2026): the level reversal and the range
-                              trade close half at [scale_out] at_profit_pips (8) and move the stop on the rest to
-                              stop_profit_pips (2) in profit (trade_manager/manager.py)
-  TRAIL_NO_LOSS               on or off (off if left out; owner, 18 November 2026): the trail of the bounce and the
-                              session strategies never moves the stop to the losing side of the entry, and leaves out
-                              candles with a spread over rejection.max_spread_pips (trade_manager/manager.py)
-  LR_ENTRY_NEAR_LEVEL         on or off (off if left out; owner, 18 November 2026): a level reversal opens only within
-                              level_reversal.entry_within_pips_of_level (6) of its level (strategies/common.py)
-  LEVEL_STOPS                 on or off (off if left out; owner, 18 November 2026): the range trade, the level reversal
-                              and the EMA pullback put their stop [level_stops] beyond_group_pips (5) beyond the
-                              nearest level group on the stop side, refused if wider than widest_stop_pips (20)
   TRADING                     the master switch, on or off: while off everything runs and is
                               recorded, but no order is ever sent to IG
   STOP_LOSS_PIPS              the stop loss sent with every trade, in pips (whole, 1 to 100),
@@ -112,24 +93,16 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "STRATEGY_SLOW_GRIND": ("slow_grind", _on_off),
     "STRATEGY_EMA_PULLBACK": ("ema_pullback", _on_off),
     "STRATEGY_BOLLINGER_BOUNCE": ("bollinger_bounce", _on_off),
+    "STRATEGY_BOLLINGER_BOUNCE_5M": ("bollinger_bounce_5m", _on_off),
+    "BOUNCE_ONLY_NEAR_TIMES": ("bounce_only_near_times", _on_off),
+    "PLANNER_OBSERVE": ("planner_observe", _on_off),
+    "ONE_SIGNAL_ONE_TRADE": ("one_signal_one_trade", _on_off),
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
     "STRATEGY_BREAKOUT": ("breakout", _on_off),
     "STRATEGY_LEVEL_REVERSAL": ("level_reversal", _on_off),
     "STRATEGY_ASIAN_RANGE_BREAKOUT": ("asian_range_breakout", _on_off),
     "STRATEGY_SESSION_SWEEP": ("session_sweep", _on_off),
     "STRATEGY_NEW_YORK_OPEN_REVERSAL": ("new_york_open_reversal", _on_off),
-    "HOURLY_READ": ("hourly_read", _on_off),
-    "BOUNCE_ONLY_WHEN_HOURLY_RANGING": ("bounce_only_when_hourly_ranging", _on_off),
-    "BOUNCE_ONLY_NEAR_TIMES": ("bounce_only_near_times", _on_off),
-    "TREND_STILL_GOING": ("trend_still_going", _on_off),
-    "PLANNER_OBSERVE": ("planner_observe", _on_off),
-    "ANALYSER_USES_HOURLY": ("analyser_uses_hourly", _on_off),
-    "ANALYSER_GOVERNS_ALL": ("analyser_governs_all", _on_off),
-    "ONE_SIGNAL_ONE_TRADE": ("one_signal_one_trade", _on_off),
-    "SCALE_OUT_REVERSAL": ("scale_out_reversal", _on_off),
-    "TRAIL_NO_LOSS": ("trail_no_loss", _on_off),
-    "LR_ENTRY_NEAR_LEVEL": ("lr_entry_near_level", _on_off),
-    "LEVEL_STOPS": ("level_stops", _on_off),
     "TRADING": ("trading", _on_off),
     "STOP_LOSS_PIPS": ("stop_loss_pips", _pips(1, 100)),
     "STOP_LOSS_PIPS_EMA_PULLBACK": ("stop_loss_pips_ema_pullback", _pips(1, 100)),
@@ -137,14 +110,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
 }
 
 # Switches that may be left out of .env, and their value then (owner, 15 November 2026: both off by default).
-# TREND_STILL_GOING (owner, 16 November 2026): off if left out too.
-OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_WHEN_HOURLY_RANGING": "off", "BOUNCE_ONLY_NEAR_TIMES": "off",
-                            "TREND_STILL_GOING": "off", "PLANNER_OBSERVE": "off",
-                            # the analyser control stages 1 to 3 (owner, 18 November 2026): all off by default
-                            "ANALYSER_USES_HOURLY": "off", "ANALYSER_GOVERNS_ALL": "off", "ONE_SIGNAL_ONE_TRADE": "off",
-                            # stage 4, entries and exits (owner, 18 November 2026): all off by default
-                            "SCALE_OUT_REVERSAL": "off", "TRAIL_NO_LOSS": "off", "LR_ENTRY_NEAR_LEVEL": "off",
-                            "LEVEL_STOPS": "off"}
+OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_NEAR_TIMES": "off", "PLANNER_OBSERVE": "off", "ONE_SIGNAL_ONE_TRADE": "off"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:

@@ -127,31 +127,18 @@ def test_the_bounce_still_needs_its_switch(S):
     assert not i.allowed and "STRATEGY_BOLLINGER_BOUNCE is off" in i.blocked_by
 
 
-def test_the_analysers_list_has_no_bounce(S):
+def test_the_analysers_list_has_only_the_first_builds_bounce(S):
+    """The hourly-pierce bounce opens in every state (it is added to the status by the engine); the analyser's own
+    list keeps the first build's bounce, renamed (first-build-plus, owner, 19 November 2026)."""
     from analyser.states import ALLOWED
-    assert not any("bounce" in x for v in ALLOWED.values() for x in v)
+    assert all(x.startswith("Bollinger bounce 5m") for v in ALLOWED.values() for x in v if "bounce" in x)
 
 
 def test_the_ema_pullback_has_its_own_stop_loss(S):
     from strategies.common import stop_loss_pips
     assert stop_loss_pips(S, EMA_PULLBACK) == 12
     for name in (BOLLINGER_BOUNCE, RANGE_TRADE):
-        assert stop_loss_pips(S, name) == 6                    # the pretend .env's STOP_LOSS_PIPS
-
-
-def test_owners_12_pip_stop_is_for_the_bounce_range_trade_and_breakout_only(S):
-    """Owner, 10 November 2026: STOP_LOSS_PIPS=12 in .env and breakout.stop_loss_pips = 12 give exactly the
-    Bollinger bounce, the range trade and the breakout a 12-pip stop; every other strategy keeps its own."""
-    from strategies.common import stop_loss_pips
-    assert S.breakout.stop_loss_pips == 12                     # config/settings.toml
-    s = over(S, "switches", stop_loss_pips=12)                 # the owner's .env line
-    assert {n: stop_loss_pips(s, n) for n in (BOLLINGER_BOUNCE, RANGE_TRADE, BREAKOUT)} == \
-        {BOLLINGER_BOUNCE: 12, RANGE_TRADE: 12, BREAKOUT: 12}
-    assert stop_loss_pips(s, EMA_PULLBACK) == S.switches.stop_loss_pips_ema_pullback == 12   # its own switch
-    assert stop_loss_pips(s, SLOW_GRIND) == 15                 # slow_grind.stop_loss_pips
-    assert stop_loss_pips(s, LEVEL_REVERSAL) == 6              # 6 pips beyond the furthest point, not from the entry
-    s6 = over(S, "switches", stop_loss_pips=6)                 # STOP_LOSS_PIPS reaches only the bounce and range trade
-    assert stop_loss_pips(s6, BREAKOUT) == 12 and stop_loss_pips(s6, SLOW_GRIND) == 15
+        assert stop_loss_pips(S, name) == 6
 
 
 def test_a_bounce_in_a_possible_reversal_may_go_either_way(S):
@@ -442,30 +429,6 @@ def test_hourly_trend_minimums_are_settings(S):
     assert HourlyTrendReader(s, hourly_candles(D("0.1"))).at(START).qualified
 
 
-def _reader_with(S, f, m, s):
-    """A reader whose hourly 8/13/20 EMAs are given at the candles 3 back, 1 back and now: (back, prev, now)."""
-    candles = hourly_candles(D(2))
-    r = HourlyTrendReader(S, candles)
-    done = [c for c in candles if c.end <= START]
-    back, prev, now = done[-4].start, done[-2].start, done[-1].start
-    for attr, vals in (("f", f), ("m", m), ("sl", s)):
-        getattr(r, attr).update(dict(zip((back, prev, now), (D(str(v)) for v in vals))))
-    return r
-
-
-def test_hourly_trend_slope_must_point_the_trends_way(S):
-    """AutoBot 161's rule, the slope of each hourly EMA over 3 candles "must have the right sign and absolute
-    magnitude >= 0.16 pips/hour" (owner, 13 November 2026): an 8 EMA in order and rising on the last candle, but
-    lower than 3 hours ago, does not qualify a buy."""
-    t = _reader_with(S, (110, 104, 105), (100, 101, 102), (95, 96, 97)).at(START)
-    assert t.direction == BUY and not t.qualified and "slopes -1.67" in t.why
-    # the same with the 8 EMA higher than 3 hours ago qualifies
-    assert _reader_with(S, (102, 104, 105), (100, 101, 102), (95, 96, 97)).at(START).qualified
-    # and the mirror for a sell
-    t = _reader_with(S, (90, 96, 95), (100, 99, 98), (105, 104, 103)).at(START)
-    assert t.direction == SELL and not t.qualified
-
-
 def test_hourly_trend_flat_has_no_direction(S):
     assert HourlyTrendReader(S, hourly_candles(D(0))).at(START).direction is None
 
@@ -559,17 +522,9 @@ def test_range_trade_cancelled_above_the_rejection_high_has_no_idea(S):
 
 # ---- the replay: the checks at entry only ----------------------------------------------------
 
-def fake_hourly(monkeypatch, state):
-    """The hourly read (analyser/hourly_read.py) the replay sees, at every moment."""
-    from analyser.hourly_read import HourlyRead
-    read = HourlyRead(state, None, D(100), D(110), None, "made up")
-    monkeypatch.setattr(replay_mod, "HourlyReader", lambda s, candles: SimpleNamespace(at=lambda t: read))
-
-
-def fake_replay(monkeypatch, S, states, hourly="sell-off"):
+def fake_replay(monkeypatch, S, states):
     """A slow grind sell: the pause counts at candle 3 and price breaks it on candle 4.
-    `states`: {candle number: (state, direction) from that candle on}. `hourly`: the hourly read."""
-    fake_hourly(monkeypatch, hourly)
+    `states`: {candle number: (state, direction) from that candle on}."""
     candles = PAUSE + [BREAK]
     S = over(S, "slow_grind", min_pause_candles=3)
     hist = [(SimpleNamespace(candle=c, upper=None, middle=None, lower=None), None, None, [], None, None)
@@ -600,15 +555,6 @@ def test_replay_checks_at_entry_with_the_state_after_the_last_finished_candle(mo
 def test_replay_does_not_check_when_a_setup_starts(monkeypatch, S):
     (i,) = fake_replay(monkeypatch, S, {3: (TREND, DOWN)})   # consolidation while the pause formed
     assert i.allowed
-
-
-def test_replay_checks_the_hourly_read(monkeypatch, S):
-    (i,) = fake_replay(monkeypatch, S, {0: (TREND, DOWN)}, hourly="ranging")
-    assert not i.allowed and i.blocked_by.startswith("the hourly chart is ranging (100 to 110)")
-    (j,) = fake_replay(monkeypatch, S, {0: (TREND, DOWN)}, hourly="rally")
-    assert not j.allowed and "the hourly chart is in a rally: slow grind only buys" in j.blocked_by
-    (k,) = fake_replay(monkeypatch, S, {0: (TREND, DOWN)}, hourly="sell-off")
-    assert k.allowed and "hourly sell-off: made up" in k.steps[-1]
 
 
 # ---- hours, news and the forced close per strategy (design sections 4 and 6) ----------------
@@ -874,7 +820,7 @@ def test_breakout_hours_news_friday_and_exits(S):
     assert closed_before_big_news(BREAKOUT) is False
     assert closed_on_level_rejection(BREAKOUT) is False                                       # no level close
     assert counts_towards_most_at_once(BREAKOUT) is True
-    assert (stop_loss_pips(S, BREAKOUT), take_profit_pips(S, BREAKOUT, U(2026, 11, 5, 9, 0), "GBPUSD", BOE_CAL)) == (12, 50)
+    assert (stop_loss_pips(S, BREAKOUT), take_profit_pips(S, BREAKOUT, U(2026, 11, 5, 9, 0), "GBPUSD", BOE_CAL)) == (6, 50)
 
 
 def test_the_replay_gives_the_breakout_the_analysers_breakout(monkeypatch, S):
@@ -886,7 +832,6 @@ def test_the_replay_gives_the_breakout_the_analysers_breakout(monkeypatch, S):
                                previous_state=CONSOLIDATION, reason=BREAKOUT_REASONS[CONSOLIDATION] + ": close above the band")]
     tracker = SimpleNamespace(history=hist, week_open=MIDNIGHT, watcher=None, replay=lambda end: None, changes=changes)
     level = SimpleNamespace(type="pivot", price=D(90))
-    fake_hourly(monkeypatch, "rally")
     monkeypatch.setattr(replay_mod, "StateTracker", lambda s, store: tracker)
     monkeypatch.setattr(replay_mod, "MemoStore", lambda store: store)
     monkeypatch.setattr(replay_mod, "check_same_pair", lambda s, store: None)
@@ -990,23 +935,14 @@ from strategies.level_reversal.strategy import LevelReversal  # noqa: E402
 LR0 = C(0, 99, 99.5, 98, 99)                # a candle before the setup
 
 
-def lr_setup(pierced, highs, direction=SELL, opened=None):
+def lr_setup(pierced, highs, direction=SELL):
     """A finished bounce setup: the pierce candle, the reversal candle, the confirmation candle
-    (sell highs as given), then a trigger at 96 on the next candle. Returns (strategy, watcher, events, candles).
-    The pierce candle opens at `opened`; by default 1 below the lowest level (and the high) for a sell (price
-    rising into the levels), 1 above the highest (and the low) for a buy (falling into them), so the side check passes."""
-    prices = [p for _, p in pierced]
+    (sell highs as given), then a trigger at 96 on the next candle. Returns (strategy, watcher, events, candles)."""
     if direction == SELL:
-        h = highs[0]
-        o = min(min(prices), h) - 1 if opened is None else opened
         cs = [C(1 + k, h - 1, h, h - 3, h - 2) for k, h in enumerate(highs)]
-        cs[0] = C(1, o, max(h, o), min(h - 3, o), h - 2)
         price = D(96)
     else:
-        lo = highs[0]
-        o = max(max(prices), lo) + 1 if opened is None else opened
         cs = [C(1 + k, l + 1, l + 3, l, l + 2) for k, l in enumerate(highs)]
-        cs[0] = C(1, o, max(lo + 3, o), min(lo, o), lo + 2)
         price = D(104)
     trig = C(1 + len(highs), 97, 97, 95, 95.5) if direction == SELL else C(1 + len(highs), 103, 105, 103, 104.5)
     st = Setup(1, "bounce", direction, cs[0], [{"what": w, "price": D(str(p)), "how": "through"} for w, p in pierced])
@@ -1089,50 +1025,6 @@ def test_level_reversal_buy_is_the_mirror_image(S):
     w, ev, cs = lr_setup([("S2", 100)], [96, 97, 98], direction=BUY)      # lows: furthest 96, 4 past S2
     (x,) = run_lr(S, w, ev, cs)
     assert (x.direction, x.context["past_level_pips"], x.context["stop_price"]) == (BUY, 4, D(90))
-
-
-def test_level_reversal_side_check_sell_only_when_price_rose_into_the_level(S):
-    """Owner's rule (October; built 16 November 2026): rising into a level, only a sell."""
-    w, ev, cs = lr_setup([("R2", 100)], [104, 103, 102], opened=99)            # opened below: rose into it
-    (x,) = run_lr(S, w, ev, cs)
-    assert "the piercing candle opened at 99, below it: price rose into it" in x.steps[-3]
-    w, ev, cs = lr_setup([("R2", 100)], [104, 103, 102], opened=101)           # opened above: fell into it
-    assert run_lr(S, w, ev, cs) == []
-
-
-def test_level_reversal_side_check_buy_only_when_price_fell_into_the_level(S):
-    w, ev, cs = lr_setup([("S2", 100)], [96, 97, 98], direction=BUY, opened=101)   # opened above: fell into it
-    (x,) = run_lr(S, w, ev, cs)
-    assert "the piercing candle opened at 101, above it: price fell into it" in x.steps[-3]
-    w, ev, cs = lr_setup([("S2", 100)], [96, 97, 98], direction=BUY, opened=99)    # opened below: rose into it
-    assert run_lr(S, w, ev, cs) == []
-
-
-def test_level_reversal_side_check_opening_on_the_level_counts_both_ways(S):
-    """Owner, 16 November 2026: a candle opening exactly on the level counts both ways."""
-    w, ev, cs = lr_setup([("R2", 100)], [104, 103, 102], opened=100)
-    (x,) = run_lr(S, w, ev, cs)
-    assert "opened at 100, on the level" in x.steps[-3]
-    w, ev, cs = lr_setup([("S2", 100)], [96, 97, 98], direction=BUY, opened=100)
-    assert len(run_lr(S, w, ev, cs)) == 1
-
-
-def test_level_reversal_side_check_per_level(S):
-    """Each level is checked on its own: the wrong-side level is skipped, a right-side one can still count."""
-    w, ev, cs = lr_setup([("R2", 98), ("round_number", 200)], [201, 200, 199], opened=199)   # above R2, below the 00
-    (x,) = run_lr(S, w, ev, cs)
-    assert x.context["level"] == D(200)
-
-
-def test_level_reversal_side_check_16_november_2026(S):
-    """This morning's sell (Mon 16 Nov 06:35): the piercing candle opened at 13202.5, above the 00 at 13200,
-    as price fell into it; it is no longer a sell. The buy off the same levels still counts."""
-    w, ev, cs = lr_setup([("round_number", 13200)], [13203, 13202.5, 13201.9], opened=13202.5)
-    assert run_lr(S, w, ev, cs) == []
-    w, ev, cs = lr_setup([("S2", 13196.3), ("round_number", 13200)], [13195.6, 13195.9, 13200.5],
-                         direction=BUY, opened=13198.8)
-    (x,) = run_lr(S, w, ev, cs)
-    assert x.context["level_name"].startswith("S2")
 
 
 def test_level_reversal_one_idea_per_candle_and_direction(S):

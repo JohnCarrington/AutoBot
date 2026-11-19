@@ -23,11 +23,8 @@ a bar whose open, high, low and close are the same), in this order (as the resea
      move is tried again after orders.close_retry_seconds, up to orders.stop_move_attempts (3) in all; then the bot
      gives up on that level (one alert to the owner) and works the trail out again after the next finished candle.
      A later candle's level replaces one still waiting (owner, 17 November 2026);
-  3. the close at the opposite Bollinger band (owner, 11 November 2026, as tested in
-     docs/research/management_and_targets_20261111.md): the range trade closes in full there
-     (range_trade.close_percent_at_opposite_band, 100); the band as it stood at the last finished candle. The bot closes that part. Its price: the bar's open if the bar opened past the band,
-     otherwise the band (on the closing side: a sell's band plus the bar's spread), rounded to IG's tenth of a
-     pip against the trade;
+  3. the range trade's half close at the opposite band (range_trade.close_percent_at_opposite_band, 50%),
+     the band as it stood at the last finished candle; the bot closes that part;
   4. the take profit at IG (strategies.common.take_profit_pips: 100 on a big-news day or in a trend day's
      direction where the design gives it);
   5. the close on a confirmed rejection at a level against the trade (the analyser's rejection part: a bounce
@@ -57,12 +54,12 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
-from decimal import ROUND_CEILING, ROUND_FLOOR, Decimal
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
-from strategies.common import (BUY, LEVEL_REVERSAL, RANGE_TRADE, SELL, closed_before_big_news,
-                               closed_on_level_rejection, forced_close_at, profit_lock, take_profit_pips, trail)
+from strategies.common import (BUY, RANGE_TRADE, SELL, closed_before_big_news, closed_on_level_rejection,
+                               forced_close_at, profit_lock, take_profit_pips, trail)
 
 UTC = timezone.utc
 # The decisions (design 4: hold, half close, close, forced close, stopped by IG, take profit hit at IG).
@@ -133,7 +130,7 @@ class ManagedTrade:
     close_why: str
     lock: tuple[int, int] | None
     level_close: bool
-    band_close: Decimal                 # the share closed at the opposite band (0: none, 1: all of it)
+    half_close: bool
     news_direction: str | None          # the day's expected news direction (buy or sell), if any
     best: Decimal | None = None         # the best pips reached in earlier bars
     bars: int = 0
@@ -151,12 +148,6 @@ class ManagedTrade:
     trail_want: Decimal | None = None       # a stop move not yet confirmed by IG
     retry_move_at: datetime | None = None   # live: a stop move IG did not confirm is tried again from this time
     move_attempts: int = 0                  # live: stop moves IG did not confirm (for the level waiting)
-    # SCALE_OUT_REVERSAL (owner, 18 November 2026): (at_profit_pips, stop_profit_pips) for the level reversal and the
-    # range trade while the switch is on; None otherwise. `scaled`: its half is closed.
-    scale_out: tuple[Decimal, Decimal] | None = None
-    scaled: bool = False
-    move_why: str | None = None             # why the stop move waiting is wanted (the scale-out's; None: the trail)
-    no_loss: bool = False                   # TRAIL_NO_LOSS (owner, 18 November 2026): the trail never below the entry
     decisions: list[Decision] = field(default_factory=list)
 
     @property
@@ -211,39 +202,15 @@ def plan(settings: Any, reference: str, strategy: str, direction: str, opened_at
             close_at, why = min(news), "closed 15 minutes before big news"
     return ManagedTrade(reference, strategy, direction, opened_at, Decimal(entry_price), Decimal(fill), Decimal(stop_pips),
                         Decimal(tp), close_at, why, profit_lock(settings, strategy), closed_on_level_rejection(strategy),
-                        band_close_share(settings, strategy), day_news_direction(settings, pair, opened_at, calendar),
-                        trail_from=trail_from(settings, strategy), trail_candles=_trail_candles(settings, strategy),
-                        scale_out=scale_out(settings, strategy), no_loss=_switch(settings, "trail_no_loss"))
-
-
-def _switch(settings: Any, name: str) -> bool:
-    """A switch from .env that is off if left out, read safely."""
-    return bool(getattr(getattr(settings, "switches", None), name, False))
-
-
-SCALE_OUT_WHY = "the scale-out"
-
-
-def scale_out(settings: Any, strategy: str) -> tuple[Decimal, Decimal] | None:
-    """SCALE_OUT_REVERSAL (owner, 18 November 2026): for the level reversal and the range trade while the switch is
-    on, (scale_out.at_profit_pips, scale_out.stop_profit_pips): half closed at 8 pips in profit, the stop on the rest
-    moved to 2 pips in profit. None otherwise."""
-    if strategy not in (LEVEL_REVERSAL, RANGE_TRADE) or not _switch(settings, "scale_out_reversal"):
-        return None
-    return Decimal(settings.scale_out.at_profit_pips), Decimal(settings.scale_out.stop_profit_pips)
-
-
-def scale_out_stop(settings: Any, t: "ManagedTrade") -> Decimal:
-    """The level the scale-out moves the stop to: stop_profit_pips in profit from the fill (a sell: below it)."""
-    ppp = Decimal(settings.market.points_per_pip)
-    d = t.scale_out[1] * ppp
-    return (t.fill - d) if t.direction == SELL else (t.fill + d)
+                        strategy == RANGE_TRADE, day_news_direction(settings, pair, opened_at, calendar),
+                        trail_from=trail_from(settings, strategy), trail_candles=_trail_candles(settings, strategy))
 
 
 def trail_from(settings: Any, strategy: str) -> Decimal | None:
     """The pips in profit after which a trade's stop trails behind the last candles (strategies.common.trail):
     bounce.trail_from_pips for the Bollinger bounce (owner, 15 November 2026: 12), and each session strategy's own
-    trail_from_pips (owner, 16 November 2026: 12); None for every other strategy."""
+    trail_from_pips (owner, 16 November 2026: 12); None for every other strategy (the first build's bounce,
+    Bollinger bounce 5m, has no trail, as on 9 November 2026)."""
     got = trail(settings, strategy)
     return None if got is None else got[0]
 
@@ -252,15 +219,6 @@ def _trail_candles(settings: Any, strategy: str) -> int:
     """How many finished candles the trail looks back over (3); the bounce's for a strategy without a trail."""
     got = trail(settings, strategy)
     return int(settings.bounce.trail_candles) if got is None else got[1]
-
-
-def band_close_share(settings: Any, strategy: str) -> Decimal:
-    """The share of a trade closed at the opposite Bollinger band (owner, 11 November 2026): the range trade's
-    range_trade.close_percent_at_opposite_band (100: in full); 0 for every other strategy (the Bollinger bounce
-    no longer closes there: owner, 15 November 2026)."""
-    if strategy == RANGE_TRADE:
-        return Decimal(settings.range_trade.close_percent_at_opposite_band) / 100
-    return Decimal(0)
 
 
 def step(settings: Any, t: ManagedTrade, bar: Bar, band: tuple[Decimal, Decimal] | None = None,
@@ -308,40 +266,19 @@ def step(settings: Any, t: ManagedTrade, bar: Bar, band: tuple[Decimal, Decimal]
             return finish(CLOSE, price, f"the profit lock: back to {t.lock[1]} pips up after {t.lock[0]} up")
         return finish(STOPPED_BY_IG, price, f"the stop at IG (trailed to {t.stop_level})"
                       if t.stop_level is not None and level == pips(t.stop_level) else "the stop at IG")
-    band_price = None                                                  # 3. the close at the opposite band
-    if t.band_close > 0 and (not t.half_done or t.scaled) and band is not None:
+    if t.half_close and not t.half_done and band is not None:          # 3. the range trade's half close
         upper, lower = (Decimal(x) for x in band)
-        b = lower if sell else upper
-        reached = (bar.sell_low <= b) if sell else (bar.sell_high >= b)
+        reached = (bar.sell_low <= lower) if sell else (bar.sell_high >= upper)
         if reached:
-            if (bar.sell_open <= b) if sell else (bar.sell_open >= b):
-                band_price = g("open")                                  # opened past it: closed at the open
-            else:
-                step_ = ppp / 10                                        # IG quotes a tenth of a pip
-                raw = (b + (bar.buy_open - bar.sell_open)) if sell else b   # the band is a sell price
-                band_price = (raw / step_).to_integral_value(ROUND_CEILING if sell else ROUND_FLOOR) * step_
-    # SCALE_OUT_REVERSAL (owner, 18 November 2026): half closed at at_profit_pips (8) in profit, unless the range trade
-    # reached the opposite band first (then it closes in full as before). In a bar that reaches both, the band came
-    # first if it is nearer the entry than at_profit_pips.
-    if t.scale_out is not None and not t.half_done and best >= t.scale_out[0] and \
-            (band_price is None or pips(band_price) >= t.scale_out[0]):
-        at = t.scale_out[0]
-        opened_beyond = pips(g("open")) >= at and not first
-        price = g("open") if opened_beyond else ((t.fill - at * ppp) if sell else (t.fill + at * ppp))
-        d = Decision(HALF_CLOSE, price, pips(price), f"{SCALE_OUT_WHY}: {at} pips in profit, half closed; the stop on "
-                     f"the rest goes to {t.scale_out[1]} pips in profit", Decimal("0.5"), bar.start)
-        t.half_done, t.half_pips, t.half_share, t.state, t.scaled = True, d.pips, Decimal("0.5"), HALF_CLOSE, True
-        t.decisions.append(d)
-        out.append(d)
-    if band_price is not None:
-        price = band_price
-        if t.band_close >= 1 or t.scaled:
-            return finish(CLOSE, price, "the opposite Bollinger band")
-        share = t.band_close
-        d = Decision(HALF_CLOSE, price, pips(price), "the opposite Bollinger band", share, bar.start)
-        t.half_done, t.half_pips, t.half_share, t.state = True, d.pips, share, HALF_CLOSE
-        t.decisions.append(d)
-        out.append(d)
+            b = lower if sell else upper
+            price = b + (bar.buy_open - bar.sell_open) if sell else b   # the band is a sell price
+            if first and ((bar.sell_open <= lower) if sell else (bar.sell_open >= upper)):
+                price = g("open")
+            share = Decimal(settings.range_trade.close_percent_at_opposite_band) / 100
+            d = Decision(HALF_CLOSE, price, pips(price), "the opposite Bollinger band", share, bar.start)
+            t.half_done, t.half_pips, t.half_share, t.state = True, d.pips, share, HALF_CLOSE
+            t.decisions.append(d)
+            out.append(d)
     if best >= t.take_profit_pips:                                     # 4. the take profit at IG
         price = (t.fill - t.take_profit_pips * ppp) if sell else (t.fill + t.take_profit_pips * ppp)
         return finish(TAKE_PROFIT_AT_IG, price, f"the take profit at IG ({t.take_profit_pips} pips)")
@@ -425,8 +362,6 @@ class TradeManager:
         t.watching = bool(saved["watching"])
         if t.half_done and t.state == HOLD:
             t.state = HALF_CLOSE
-        if t.half_done and t.scale_out is not None:      # the scale-out's half (owner, 18 November 2026)
-            t.scaled = True
         return True
 
     def on_bar(self, bar: Bar, band: tuple[Decimal, Decimal] | None = None, rejections: list[Rejection] = (),
@@ -471,10 +406,6 @@ class TradeManager:
                             t.half_pips = d.pips
                     if d.kind == HALF_CLOSE:
                         kept.append(d)
-                        if d.why.startswith(SCALE_OUT_WHY):     # the stop on the rest (owner, 18 November 2026)
-                            self._want_stop(t, scale_out_stop(self.s, t),
-                                            f"{SCALE_OUT_WHY}: the stop on the rest moves to {t.scale_out[1]} pips "
-                                            "in profit")
                 elif d.kind in IG_CLOSES and hasattr(self.sender, "closed_at_ig"):
                     sent = self.sender.closed_at_ig(t.reference, d.kind, d.price)
                     if self.ig_confirms and getattr(sent, "what", "") in GONE:
@@ -490,9 +421,6 @@ class TradeManager:
                         d = Decision(d.kind, d.price, d.pips, d.why + " (expected; IG has not closed it yet)", d.part)
                 self._record(t, d, sent)
                 done.append((t, d))
-            if t.open and t.trail_want is not None and t.move_why is not None and t.retry_move_at is None \
-                    and t.move_attempts == 0:
-                self._move_stop(t)                          # the scale-out's stop move, sent at once
             if t.open and t.level_close:
                 against = BUY if t.direction == SELL else SELL
                 now_watching = against in watching and t.news_direction != t.direction
@@ -518,18 +446,12 @@ class TradeManager:
         """The Bollinger bounce's trail (owner, 15 November 2026): once the trade has been trail_from pips up, its
         stop goes to a tenth of a pip beyond the last trail_candles finished candles (a sell: above their highest buy
         price; a buy: below their lowest sell price), only ever closer."""
-        ppp = Decimal(self.s.market.points_per_pip)
-        # TRAIL_NO_LOSS (owner, 18 November 2026): a candle whose spread was over rejection.max_spread_pips is left
-        # out of the last candles (the last trail_candles normal candles are used), as the rejection part ignores
-        # spread spikes
-        recent = [b for b in self.recent if not self._spike(b)] if t.no_loss else self.recent
-        if t.best is None or t.best < t.trail_from or len(recent) < t.trail_candles:
+        if t.best is None or t.best < t.trail_from or len(self.recent) < t.trail_candles:
             return
-        last = recent[-t.trail_candles:]
+        ppp = Decimal(self.s.market.points_per_pip)
+        last = self.recent[-t.trail_candles:]
         sell = t.direction == SELL
         want = (max(b.buy_high for b in last) + ppp / 10) if sell else (min(b.sell_low for b in last) - ppp / 10)
-        if t.no_loss and ((want > t.fill) if sell else (want < t.fill)):
-            want = t.fill                           # never on the losing side of the entry: the stop goes to the entry
         # "Only ever closer" than the stop IG actually holds, never than a move IG refused (17 November 2026: a
         # refused 13181.6 blocked every newer level while price rose, and the same level was sent 31 times).
         now = t.stop_level
@@ -541,17 +463,6 @@ class TradeManager:
             t.move_attempts = 0
             self._move_stop(t)
 
-    def _spike(self, b: Bar) -> bool:
-        """IG's spread on this candle was over rejection.max_spread_pips (the widest buy-minus-sell gap of its open,
-        high, low and close), as the rejection part measures it."""
-        most = Decimal(self.s.rejection.max_spread_pips) * Decimal(self.s.market.points_per_pip)
-        return max(b.buy_open - b.sell_open, b.buy_high - b.sell_high, b.buy_low - b.sell_low,
-                   b.buy_close - b.sell_close) > most
-
-    def _want_stop(self, t: ManagedTrade, level: Decimal, why: str) -> None:
-        """A stop move that is not the trail's (the scale-out's), made with the trail's handling."""
-        t.trail_want, t.move_why, t.retry_move_at, t.move_attempts = level, why, None, 0
-
     def _move_stop(self, t: ManagedTrade) -> None:
         """A stop move the trail asked for: the order sender moves the stop at IG (to the nearest level IG allows, if
         need be). It counts only once IG confirms it; otherwise the old stop stays and the move is tried again after
@@ -562,11 +473,8 @@ class TradeManager:
             return
         if self.ig_confirms and t.retry_move_at is not None and self.now() < t.retry_move_at:
             return
-        why = (f"{t.move_why}: {want}" if t.move_why is not None else
-               f"{t.best} pips up at best (the trail from {t.trail_from}): the stop moves to {want}, beyond the last "
+        why = (f"{t.best} pips up at best (the trail from {t.trail_from}): the stop moves to {want}, beyond the last "
                f"{t.trail_candles} candles")
-        again = ("the move is not tried again" if t.move_why is not None else
-                 "the trail is worked out again after the next finished candle")
         sent = self.sender.move_stop(t.reference, want, why=why) if hasattr(self.sender, "move_stop") else None
         if sent is None or getattr(sent, "ok", False) or not self.ig_confirms:
             # the order sender may have sent the nearest level IG allows instead (owner, 17 November 2026)
@@ -576,7 +484,7 @@ class TradeManager:
             if t.move_attempts and hasattr(self.sender, "alerts"):
                 self.sender.alerts.info(f"AutoBot: the stop of {t.strategy} {t.direction} trade {t.reference} is now at "
                                         f"{level} at IG, after {t.move_attempts} move(s) IG did not confirm.")
-            t.stop_level, t.trail_want, t.retry_move_at, t.move_attempts, t.move_why = level, None, None, 0, None
+            t.stop_level, t.trail_want, t.retry_move_at, t.move_attempts = level, None, None, 0
             ppp = Decimal(self.s.market.points_per_pip)
             pips = ((t.fill - level) if t.direction == SELL else (level - t.fill)) / ppp
             self._record(t, Decision(STOP_MOVED, level, pips, why), sent)
@@ -591,14 +499,15 @@ class TradeManager:
             stays = t.stop_level if t.stop_level is not None else "its stop when it opened"
             self._record(t, Decision(STOP_NOT_MOVED, tried, None,
                                      f"{why}: not done, IG did not confirm it ({reason}); gave up after {attempts} "
-                                     f"attempts: the stop stays at {stays} and {again}"), sent)
+                                     f"attempts: the stop stays at {stays} and the trail is worked out again after "
+                                     f"the next finished candle"), sent)
             alerts = getattr(self.sender, "alerts", None)
             if alerts is not None and hasattr(alerts, "problem"):
                 alerts.problem(f"stop-move-gave-up-{t.reference}",
                                f"IG did not move the stop of {t.strategy} {t.direction} trade {t.reference} to {tried} "
-                               f"({t.move_why or 'the trail'}) in {attempts} attempts: {reason}. The stop stays at "
-                               f"{stays} at IG and in the bot's records; {again}.")
-            t.trail_want, t.retry_move_at, t.move_attempts, t.move_why = None, None, 0, None
+                               f"(the trail) in {attempts} attempts: {reason}. The stop stays at {stays} at IG and in "
+                               f"the bot's records; the trail is worked out again after the next finished candle.")
+            t.trail_want, t.retry_move_at, t.move_attempts = None, None, 0
             return
         t.retry_move_at = self.now() + timedelta(seconds=self.s.orders.close_retry_seconds)
         self._record(t, Decision(STOP_NOT_MOVED, tried, None,
@@ -606,7 +515,7 @@ class TradeManager:
                                  f"{attempts}: the old stop stays and the move is tried again in "
                                  f"{self.s.orders.close_retry_seconds} seconds"), sent)
 
-    _KEEP = ("state", "best", "bars", "half_done", "half_pips", "half_share", "expected_at_ig", "scaled")
+    _KEEP = ("state", "best", "bars", "half_done", "half_pips", "half_share", "expected_at_ig")
 
     @classmethod
     def _before(cls, t: ManagedTrade) -> dict:
@@ -620,7 +529,6 @@ class TradeManager:
         del t.decisions[before["decisions"]:]
         for d in kept:
             t.half_done, t.half_pips, t.half_share, t.state = True, d.pips, d.part, HALF_CLOSE
-            t.scaled = t.scaled or d.why.startswith(SCALE_OUT_WHY)
             t.decisions.append(d)
 
     def _closed_at_ig(self, t: ManagedTrade, found: Any) -> None:

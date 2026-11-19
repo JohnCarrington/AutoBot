@@ -63,6 +63,8 @@ country_currencies = ["GB=GBP", "UK=GBP", "US=USD", "EU=EUR", "EMU=EUR", "JP=JPY
 
 [limits]
 max_open_trades_per_strategy = 1
+# The first build's bounce (Bollinger bounce 5m): this many more open in the opposite direction (as on 9 November 2026).
+bollinger_bounce_extra_opposite_direction_trades = 1
 # Most trades open at once (design 6: 5), not counting the EMA pullback's.
 max_open_trades = 5
 
@@ -123,6 +125,10 @@ status_every_seconds = 5
 status_stale_seconds = 30
 
 [safety]
+# One view at a time (design 6; owner, 9 November 2026): on the Monday after a Friday whose daily
+# candle (sell price, open to close) moved at least this many pips, no reversal trade against the
+# direction that reclaims Friday's move. 80 is the value tested in docs/research/one_view_20261109.md.
+big_friday_move_pips = 80
 # Total risk across all open trades (each trade's stop distance x its size), at most this
 # (owner, 8 November 2026: set so it is never reached).
 max_total_risk_gbp = 100000
@@ -136,10 +142,6 @@ ig_stop_refusal_reasons = ["ATTACHED_ORDER_LEVEL_ERROR"]
 ig_funds_refusal_reasons = ["INSUFFICIENT_FUNDS"]
 # Where the bot records IG's minimum stop distance each time IG refuses a trade because of its stop.
 folder = "/opt/autobot/data/safety"
-# One view at a time (design 6; owner, 9 November 2026): on the Monday after a Friday whose daily
-# candle (sell price, open to close) moved at least this many pips, no reversal trade against the
-# direction that reclaims Friday's move. 80 is the value tested in docs/research/one_view_20261109.md.
-big_friday_move_pips = 80
 
 [chart]
 # The price every level and indicator is worked out from, to match the owner's
@@ -179,59 +181,6 @@ turning_move_within_candles = 6
 times = ["10:00", "11:00", "13:00", "14:00", "16:00", "17:00"]
 minutes_before = 20
 minutes_after = 20
-
-[planner]
-# The Structural Trade Planner V1 (planner/; owner's approval of 17 November 2026). OBSERVE ONLY: it forecasts and
-# records; it never authorises, refuses, opens, changes or closes a trade. It runs only while the switch
-# PLANNER_OBSERVE in .env is on (off if left out). Other numbers it uses are the existing ones, reused as approved:
-# hourly swings [levels] turning_*, the 3-pip level allowance [rejection] near_level_within_pips, the 3-pip close
-# rule [hourly_read] break_beyond_pips, the 5-pip grouping [levels] line_up_within_pips, the 150-pip window
-# [levels] round_numbers_within_pips, freshness [analyser] out_of_date_after_minutes, the indicators [indicators].
-# Where it writes its recommendation (folder/<PAIR>/current.json) and its history (recommendations.jsonl).
-folder = "/opt/autobot/data/planner"
-# The average daily range: the last this many finished weekday daily candles (IG's short Sunday candles left out).
-adr_weekdays = 20
-# 4-hour swings: candles each side, the move away (pips; provisional) and within how many candles.
-h4_swing_candles_each_side = 3
-h4_swing_min_move_pips = 40
-h4_swing_move_within_candles = 6
-# Daily swings: the same (pips provisional).
-daily_swing_candles_each_side = 3
-daily_swing_min_move_pips = 110
-daily_swing_move_within_candles = 6
-# How far back 4-hour and daily swings are kept as levels (weeks).
-h4_swing_lookback_weeks = 8
-daily_swing_lookback_weeks = 48
-# A structural break needs this many closes in a row at least [hourly_read] break_beyond_pips beyond the swing.
-structure_break_closes = 1
-# Zone width: the larger of [levels] line_up_within_pips and this share of the ADR (provisional).
-zone_width_adr_share = 0.15
-# Zone classes: Major needs this many families including a daily-or-weekly level; Moderate this many.
-major_min_families = 3
-moderate_min_families = 2
-# The weakest zone class that may be an entry zone.
-min_entry_class = "Moderate"
-# The 4-hour EMA100 slope is measured over this many 4-hour candles (supporting evidence only).
-ema_slope_candles = 6
-# Momentum weakening: the 4-hour MACD histogram moving towards zero for this many candles in a row.
-macd_weakening_candles = 3
-# CORRECTION_LIKELY: no new extreme in this many finished hourly candles.
-no_new_extreme_hourly_candles = 3
-# Recorded only: a confirmed zone break closed back within this many hourly candles is a failed breakout.
-failed_breakout_within_candles = 3
-# Past recommendations shown on the dashboard panel.
-panel_history = 5
-
-[trend_still_going]
-# Trend still going (owner, 16 November 2026; only while the switch TREND_STILL_GOING in .env is on): the EMA
-# pullback, slow grind and breakout only open a sell if, within the last within_candles finished 5-minute candles,
-# price made a new low at least new_extreme_pips below the previous low; a buy only if it made a new high at least
-# new_extreme_pips above the previous high. The previous low is the last swing low before that candle: a candle
-# whose low is lower than the lows of the swing_candles_each_side candles before it and after it (a swing high,
-# the mirror). Sell price, as on the chart.
-new_extreme_pips = 5
-within_candles = 12
-swing_candles_each_side = 1
 
 [bounce]
 # The Bollinger band bounce (design 3.3; owner, 15 November 2026). The pierce: a 5-minute candle's high goes MORE
@@ -288,8 +237,7 @@ slow_ema_periods = 21
 # all rising, with the slope and gap minimums from 161's service"). From AutoBot
 # 161's EMA pullback service (audit ema_pullback_audit_for_new_bot_20261106.md,
 # trend.py): EMAs 8/13/20 in order and each rising on the last hourly candle;
-# each EMA's slope over the last 3 hourly candles in the trend's direction and at
-# least 0.16 pips an hour (161: "the right sign and absolute magnitude");
+# each EMA's slope over the last 3 hourly candles at least 0.16 pips an hour;
 # the 8 and 13 EMAs at least 0.25 pips apart, the 13 and 20 at least 0.20.
 hourly_fast_ema_periods = 8
 hourly_mid_ema_periods = 13
@@ -313,10 +261,9 @@ min_trend_move_pips = 30
 # Design 3.5 (owner, 7 November 2026). The breakout candle's high (buy) or low
 # (sell) must be broken within this many candles after it, or the setup expires.
 trigger_within_candles = 3
-# Its stop loss and take profit in pips (owner, 7 November 2026; the stop 12 from
-# 10 November 2026, with the bounce and range trade's STOP_LOSS_PIPS). 0 would mean
+# Its stop loss and take profit in pips (owner, 7 November 2026). 0 would mean
 # "not chosen": the bot refuses to start with STRATEGY_BREAKOUT on while either is 0.
-stop_loss_pips = 12
+stop_loss_pips = 6
 take_profit_pips = 50
 
 [asian_range_breakout]
@@ -387,34 +334,9 @@ allowance_pips_round_number = 5
 # pips from the entry.
 stop_beyond_furthest_pips = 6
 take_profit_pips = 20
-# LR_ENTRY_NEAR_LEVEL (owner, 18 November 2026): while that switch is on, a level reversal opens only if its entry
-# price is within this many pips of the level it traded (the level its rules 2, 7 and 8 picked). Sell price.
-entry_within_pips_of_level = 6
-
-[level_stops]
-# LEVEL_STOPS (owner, 18 November 2026; the range trade, the level reversal and the EMA pullback): while that switch is
-# on, the stop goes this many pips beyond the far edge of the nearest level group beyond the entry on the stop side
-# (plus the spread for a sell), replacing the strategy's own stop ...
-beyond_group_pips = 5
-# ... and if that stop would be further than this from the entry, the trade does not open (refused, with the
-# distance). A group counts only if its far edge is within this many pips of the entry; with none, the strategy's own
-# stop is used (the owner's answers, 18 November 2026).
-widest_stop_pips = 20
-# The spread added to a sell's level-based stop is at most this many pips (owner, 18 November 2026: a news spike in
-# the spread must not push the stop out; IG's own spread at sending, capped).
-max_spread_pips = 3
-
-[scale_out]
-# SCALE_OUT_REVERSAL (owner, 18 November 2026; level reversal and range trade only): once the trade is this many pips
-# in profit (on the price it would close at), half of it is closed ...
-at_profit_pips = 8
-# ... and the stop on the rest is moved to this many pips in profit.
-stop_profit_pips = 2
 
 [range_trade]
-# The share of a range trade closed when price reaches the opposite band (owner, 11 November 2026: 100, in
-# full, as tested in docs/research/management_and_targets_20261111.md; 50 before). 50 or 100.
-close_percent_at_opposite_band = 100
+close_percent_at_opposite_band = 50
 # The rejection candle must be the candle straight after the one that pierced
 # the band (1 = the next candle) ...
 rejection_candle_within_candles = 1
@@ -471,28 +393,6 @@ rsi_above = 70
 rsi_below = 30
 # Daily candles read to work out the RSI (all the store holds, up to this many).
 rsi_history_candles = 1000
-
-[hourly_read]
-# The hourly read (owner, 14 November 2026; analyser/hourly_read.py): the analyser first looks at the
-# hourly chart (sell price) to see the context. A sell-off starts when an hourly candle closes at least
-# break_beyond_pips below the lowest low of the range_candles hourly candles before it; a rally when one
-# closes at least break_beyond_pips above their highest high. It is ranging once ranging_after_candles
-# more hourly candles have closed with no new break; the hourly range is the high and low of the last
-# range_candles hourly candles. What the strategies do with it: strategies/common.py.
-range_candles = 12
-break_beyond_pips = 3
-ranging_after_candles = 12
-# Stored hourly candles read to work out the read.
-history_candles = 600
-
-[analyser_control]
-# Putting every strategy back under the analyser (owner, 18 November 2026; design 2.10). Sell price.
-# The edge of the hourly range (stages 1 and 2): price reaching within this many pips of the hourly range high
-# (or above it) is the top edge; within this many pips of its low (or below it) the bottom edge; else the middle.
-edge_within_pips = 3
-# Stage 1: while ANALYSER_USES_HOURLY is on, a breakout from consolidation needs one 5-minute close at least this
-# many pips beyond the Bollinger band.
-consolidation_breakout_beyond_pips = 4
 
 [market_states]
 # The analyser's five market states (design section 2; docs/ANALYSER.md).
@@ -706,3 +606,47 @@ sunday_ready_within_minutes = 30
 # no more than this many minutes ago.
 candles_arriving_within_minutes = 10
 
+[planner]
+# The Structural Trade Planner V1 (planner/; owner's approval of 17 November 2026). OBSERVE ONLY: it forecasts and
+# records; it never authorises, refuses, opens, changes or closes a trade. It runs only while the switch
+# PLANNER_OBSERVE in .env is on (off if left out). Other numbers it uses are the existing ones, reused as approved:
+# hourly swings [levels] turning_*, the 3-pip level allowance [rejection] near_level_within_pips, the 5-pip grouping [levels] line_up_within_pips, the 150-pip window
+# [levels] round_numbers_within_pips, freshness [analyser] out_of_date_after_minutes, the indicators [indicators].
+# Where it writes its recommendation (folder/<PAIR>/current.json) and its history (recommendations.jsonl).
+folder = "/opt/autobot/data/planner"
+# The average daily range: the last this many finished weekday daily candles (IG's short Sunday candles left out).
+adr_weekdays = 20
+# 4-hour swings: candles each side, the move away (pips; provisional) and within how many candles.
+h4_swing_candles_each_side = 3
+h4_swing_min_move_pips = 40
+h4_swing_move_within_candles = 6
+# Daily swings: the same (pips provisional).
+daily_swing_candles_each_side = 3
+daily_swing_min_move_pips = 110
+daily_swing_move_within_candles = 6
+# How far back 4-hour and daily swings are kept as levels (weeks).
+h4_swing_lookback_weeks = 8
+daily_swing_lookback_weeks = 48
+# A structural break needs this many closes in a row at least [planner] break_beyond_pips beyond the swing.
+structure_break_closes = 1
+# Zone width: the larger of [levels] line_up_within_pips and this share of the ADR (provisional).
+zone_width_adr_share = 0.15
+# Zone classes: Major needs this many families including a daily-or-weekly level; Moderate this many.
+major_min_families = 3
+moderate_min_families = 2
+# The weakest zone class that may be an entry zone.
+min_entry_class = "Moderate"
+# The 4-hour EMA100 slope is measured over this many 4-hour candles (supporting evidence only).
+ema_slope_candles = 6
+# Momentum weakening: the 4-hour MACD histogram moving towards zero for this many candles in a row.
+macd_weakening_candles = 3
+# CORRECTION_LIKELY: no new extreme in this many finished hourly candles.
+no_new_extreme_hourly_candles = 3
+# Recorded only: a confirmed zone break closed back within this many hourly candles is a failed breakout.
+failed_breakout_within_candles = 3
+# Past recommendations shown on the dashboard panel.
+panel_history = 5
+# A confirmed close beyond a level, for the planner's zone invalidation (FC-02), 4-hour structure breaks and flipped
+# levels: a close at least this many pips beyond it (owner, 19 November 2026: the planner's own number; on main it
+# reads [hourly_read] break_beyond_pips, the hourly read's, which first-build-plus does not have).
+break_beyond_pips = 3

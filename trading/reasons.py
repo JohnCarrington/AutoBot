@@ -7,7 +7,7 @@ import re
 from decimal import Decimal
 from typing import Any
 
-from strategies.common import BOLLINGER_BOUNCE, BUY, EMA_PULLBACK, LEVEL_REVERSAL, RANGE_TRADE, SELL, SLOW_GRIND, take_profit_pips
+from strategies.common import BOLLINGER_BOUNCE, BOLLINGER_BOUNCE_5M, BUY, EMA_PULLBACK, LEVEL_REVERSAL, RANGE_TRADE, SELL, SLOW_GRIND, take_profit_pips
 
 _EVENT = re.compile(r"^\w{3} \d\d \w{3} (\d\d:\d\d) \w+\s+#\d+ (bounce|range) (buy|sell) "
                     r"(pierce|reversal|confirmation|trigger)[^:]*: ?(.*)$")
@@ -18,8 +18,9 @@ _SKIP = ("allowed at entry", "reached on the live price", "recorded, not used", 
 def one_line(idea: Any) -> str:
     """For example "bounce: pierced S2 13398.1 at 10:05, reversal 10:10, confirmed 10:15, broke it 10:20"."""
     events = [m.groups() for m in (_EVENT.match(s) for s in idea.steps) if m]
-    if events and idea.strategy in (BOLLINGER_BOUNCE, RANGE_TRADE, LEVEL_REVERSAL):
-        name = {BOLLINGER_BOUNCE: "bounce", RANGE_TRADE: "range trade", LEVEL_REVERSAL: "level reversal"}[idea.strategy]
+    if events and idea.strategy in (BOLLINGER_BOUNCE, BOLLINGER_BOUNCE_5M, RANGE_TRADE, LEVEL_REVERSAL):
+        name = {BOLLINGER_BOUNCE: "bounce", BOLLINGER_BOUNCE_5M: "bounce 5m", RANGE_TRADE: "range trade",
+                LEVEL_REVERSAL: "level reversal"}[idea.strategy]
         parts = []
         for hhmm, _version, _d, kind, note in events:
             if kind == "pierce":

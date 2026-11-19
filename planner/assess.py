@@ -52,7 +52,7 @@ if tied, the nearer. Reference entry: the zone's most significant level (D-17).
 DESTINATIONS (D-18, D-19): the support zones below the entry zone, nearest first: intermediate = the first; primary =
 the first Major; extended = the next Major. Each at the zone's near edge (its top, for a sell). No primary: no
 recommendation.
-INVALIDATION (D-20, FC-02): an hourly close at least hourly_read.break_beyond_pips (3) above the zone top; a 4-hour
+INVALIDATION (D-20, FC-02): an hourly close at least planner.break_beyond_pips (3) above the zone top; a 4-hour
 close at least 3 pips above the last lower high; the 4-hour direction no longer BEARISH; price reaching the primary
 destination before the zone.
 Missing data or indicators: no recommendation, with the reason (D-27). Nothing is guessed.
@@ -353,7 +353,7 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
     side = side_of(settings)
     pair = settings.market.pair
     near = Decimal(settings.rejection.near_level_within_pips) * ppp(settings)
-    beyond = Decimal(settings.hourly_read.break_beyond_pips) * ppp(settings)
+    beyond = Decimal(settings.planner.break_beyond_pips) * ppp(settings)
     warming = [f"{f.timeframe} {w}" for f in (snap.h1, snap.h4, snap.d1, snap.w1) for w in f.warming]
     data_utc = snap.five.end if snap.five else None
     h4_found = swings(settings, snap.h4.candles, "4h")
@@ -471,7 +471,7 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
         "destination_first_applies": ahead(price, majors[0].low, majors[0].high, toward_low=bear),
         "conditions": [
             f"an hourly close at or {'above' if bear else 'below'} {plain(zone_break)} "
-            f"({settings.hourly_read.break_beyond_pips} pips beyond the zone {'top' if bear else 'bottom'})",
+            f"({settings.planner.break_beyond_pips} pips beyond the zone {'top' if bear else 'bottom'})",
             f"a 4-hour close at or {'above' if bear else 'below'} {plain(struct_break)} "
             f"(beyond the last 4-hour swing {last_opp.kind} {plain(last_opp.price)})",
             f"the 4-hour direction no longer {dirn}",

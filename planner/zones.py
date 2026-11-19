@@ -25,7 +25,7 @@ CLASSES (D-09, P-C7), no weights:
 
 TESTS (D-25, P-C8; recorded only): a test is an hourly candle reaching the zone by the interaction rule (P-C2); the
 next one counts only after an hourly candle has been wholly more than rejection.near_level_within_pips (3) clear of
-it. FLIPPED (role change): a swing low later closed below by at least hourly_read.break_beyond_pips (3) on an hourly
+it. FLIPPED (role change): a swing low later closed below by at least planner.break_beyond_pips (3) on an hourly
 candle, now above price, is former support acting as resistance; the mirror for a swing high.
 """
 
@@ -152,7 +152,7 @@ def flipped(settings: Any, levels: list[MapLevel], hourly: Sequence[Candle], pri
     """Mark swing levels broken by an hourly close at least break_beyond_pips through them, now on the other side
     of price (support turned resistance, or the reverse)."""
     side = side_of(settings)
-    beyond = Decimal(settings.hourly_read.break_beyond_pips) * ppp(settings)
+    beyond = Decimal(settings.planner.break_beyond_pips) * ppp(settings)
     out = []
     for lv in levels:
         if lv.family in (STRUCTURE, HTF_STRUCTURE) and lv.origin_utc is not None:

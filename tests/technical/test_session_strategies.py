@@ -330,7 +330,7 @@ def _idea(name, direction=SELL, once="", stop=None):
 
 def _go(S, i, open_trades=(), used=None):
     funds = AccountFunds(D(20000), i.time - timedelta(minutes=30))
-    return decide(S, order_for(S, i), list(open_trades), funds, i.time, False, [], None, used)
+    return decide(S, order_for(S, i), list(open_trades), funds, i.time, False, [], used_once_a_day=used)   # no "day" (one view at a time is not in first-build-plus)
 
 
 @pytest.mark.parametrize("name", SESSION_STRATEGIES)

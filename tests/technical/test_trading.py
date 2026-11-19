@@ -142,7 +142,7 @@ def test_trading_on_sends_the_order_through_the_order_sender(S, monkeypatch):
     e.start(WED)
     feed(e, clock, C[:3])
     (o,) = ig.orders_sent()
-    assert o[3]["direction"] == "SELL" and o[3]["forceOpen"] is True and o[3]["stopDistance"] == 12.0
+    assert o[3]["direction"] == "SELL" and o[3]["forceOpen"] is True and o[3]["stopDistance"] == 6.0
     assert e.sender.journal.name == "orders.jsonl" and [t.strategy for t in e.manager.trades.values()] == [BREAKOUT]
 
 
@@ -171,7 +171,7 @@ def test_nothing_happens_before_the_start_up(S, monkeypatch):
 # ---- the trade manager on each candle and each price -------------------------------------------------------
 
 def test_open_trades_are_run_on_each_candle_before_new_ideas(S, monkeypatch):
-    stop = candle(WED + timedelta(minutes=15), 100, 113, 99.5, 112)          # stops the first sell (12 pips)
+    stop = candle(WED + timedelta(minutes=15), 100, 110, 99.5, 109)          # stops the first sell
     cs = C[:3] + [stop] + C[4:]
     ideas = {C[1].start: [idea(BREAKOUT, C[1].start)], stop.start: [idea(BREAKOUT, stop.start)]}
     e, ig, tracker, clock, quote = make(S, monkeypatch, cs, ideas)
@@ -477,38 +477,6 @@ def test_the_half_close_is_restored_too(S, monkeypatch):
 
 
 # ---- one view at a time (design 6; owner, 9 November 2026) -------------------------------------------------
-
-def test_the_engine_gives_the_safety_rules_the_days_direction(S, monkeypatch):
-    lr = idea(LEVEL_REVERSAL, C[1].start)                           # a sell against a trend up: a reversal
-    lr.state_direction = "up"
-    lr.context = {"stop_price": D("106")}
-    ideas = {C[1].start: [lr, idea(BREAKOUT, C[1].start)]}
-    e, ig, tracker, clock, quote = make(S, monkeypatch, C, ideas, trading_on=True)
-    monkeypatch.setattr(eng, "trend_day_at", lambda s, store, t: SimpleNamespace(direction="up"))
-    e.start(WED)
-    feed(e, clock, C[:3])
-    assert [t.strategy for t in e.manager.trades.values()] == [BREAKOUT]       # not a reversal: unchanged
-    (r,) = [r for r in journal(e) if r["event"] == "safety refused"]
-    assert r["strategy"] == LEVEL_REVERSAL and r["reasons"] == [
-        "a reversal trade against the day's direction: a trend day, direction buy"]
-
-
-def test_a_live_reversal_against_a_strong_push_is_not_sent(S, monkeypatch):
-    t0 = C[1].start
-    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {}, trading_on=True,
-                                        live={t0: [(LEVEL_REVERSAL, BUY, D("100.4"))]})
-    pushed = idea(LEVEL_REVERSAL, t0, BUY, "100.4")
-    pushed.context = {"stop_price": D("94")}
-    pushed.trend_type = "strong push"
-    monkeypatch.setattr(e.runner, "peek", lambda partial, levels=None: [pushed] if partial.start == t0 else [])
-    e.start(WED)
-    feed(e, clock, C[:1])
-    clock["t"] = t0 + timedelta(seconds=30)
-    e.on_price(SimpleNamespace(time=clock["t"], sell=D("100.5"), buy=D("102.0")))
-    assert ig.orders_sent() == [] and e.manager.trades == {}
-    assert any(r["event"] == "safety refused" and r["reasons"] == ["a reversal trade against a strong push (down)"]
-               for r in journal(e))
-
 
 # ---- a close only once IG confirms it, and the bot's trades against IG's positions (10 November 2026) ----
 

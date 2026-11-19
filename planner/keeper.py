@@ -11,7 +11,7 @@ One live recommendation per pair at most. Each run (after a new 5-minute candle)
        WAITING -> INVALIDATED     it reaches the primary destination first ("destination reached before entry");
        ACTIVE (or once ACTIVE) -> COMPLETED   it reaches the primary destination;
   2. on each hourly candle finished since the last re-plan:
-       -> INVALIDATED             it closes at least hourly_read.break_beyond_pips beyond the zone's far edge (FC-02);
+       -> INVALIDATED             it closes at least planner.break_beyond_pips beyond the zone's far edge (FC-02);
        ACTIVE -> WAITING          it stays wholly more than rejection.near_level_within_pips clear of the zone (P-F6);
        recorded only (D-24): wick sweeps beyond the far edge, closes beyond it by less than 3 pips, reclaims, and
        failed breakouts (a confirmed break closed back within planner.failed_breakout_within_candles);
@@ -310,7 +310,7 @@ class Keeper:
 
     def hourly(self, c: Candle) -> None:
         side = side_of(self.s)
-        beyond = Decimal(self.s.hourly_read.break_beyond_pips) * ppp(self.s)
+        beyond = Decimal(self.s.planner.break_beyond_pips) * ppp(self.s)
         w = self.state.get("watch_after_break")
         if w:
             w["candles"] += 1
@@ -339,7 +339,7 @@ class Keeper:
         if past > 0:
             rec["beyond_close_utc"] = _iso(c.end)
             self._event(c.end, "closed beyond", f"the {uk_short(c.start)} hourly candle closed {plain(close)}, beyond the "
-                        f"zone edge {plain(edge)} by less than {self.s.hourly_read.break_beyond_pips} pips (recorded only)")
+                        f"zone edge {plain(edge)} by less than {self.s.planner.break_beyond_pips} pips (recorded only)")
         elif rec.get("beyond_close_utc"):
             rec["beyond_close_utc"] = None
             self._event(c.end, "reclaim", f"the {uk_short(c.start)} hourly candle closed back inside the zone edge "

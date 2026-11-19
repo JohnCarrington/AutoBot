@@ -181,12 +181,11 @@ def test_the_live_copy_changes_nothing(S):
 
 # ---- the shared checks and the safety rules: nothing else holds it back -------------------------------
 
-def test_the_bounce_is_not_held_back_by_one_view_or_the_most_at_once(S):
-    from safety.rules import OpenTrade, is_reversal
+def test_the_bounce_is_not_held_back_by_the_most_at_once(S):
+    from safety.rules import OpenTrade
     from safety.rules import _limits
     idea = SimpleNamespace(strategy=BOLLINGER_BOUNCE, direction=SELL, state="trend", state_direction="up",
                            trend_type="strong push")
-    assert not is_reversal(idea)
     order = SimpleNamespace(idea=idea)
     others = [OpenTrade(s, BUY, WED, D(12), D(10)) for s in (RANGE_TRADE, LEVEL_REVERSAL, "slow grind", "breakout",
                                                               EMA_PULLBACK, EMA_PULLBACK)]
@@ -197,9 +196,10 @@ def test_the_bounce_is_not_held_back_by_one_view_or_the_most_at_once(S):
 
 def test_the_bounce_closes_nothing_at_the_band_nor_at_a_level(S):
     from strategies.common import closed_on_level_rejection
-    from trade_manager.manager import band_close_share
-    assert band_close_share(S, BOLLINGER_BOUNCE) == 0 and not closed_on_level_rejection(BOLLINGER_BOUNCE)
-    assert closed_on_level_rejection(RANGE_TRADE)
+    bounce = plan(S, "B1", BOLLINGER_BOUNCE, SELL, WED, D(100), D(100), D(12), [])
+    rng = plan(S, "R1", RANGE_TRADE, SELL, WED, D(100), D(100), D(6), [])
+    assert not bounce.half_close and not closed_on_level_rejection(BOLLINGER_BOUNCE)
+    assert rng.half_close and closed_on_level_rejection(RANGE_TRADE)     # the first build's range trade: half
 
 
 # ---- the trail -------------------------------------------------------------------------------------
@@ -304,39 +304,26 @@ def test_no_trail_without_3_candles_known(S, tmp_path):
     assert snd.moves == [D("101.6")]
 
 
-# ---- the bounce's own two switches (owner, 15 November 2026), check 5 in strategies/common.py ----------------
+# ---- the bounce's own switch BOUNCE_ONLY_NEAR_TIMES (owner, 15 November 2026) in strategies/common.py ----------
+# (the hourly-ranging switch is not in first-build-plus: it needs the hourly read; owner, 19 November 2026)
 
 def _switched(S, **on):
     from tests.technical.test_trade_manager import Over
     return Over(S, switches=on)
 
 
-def _checked(S, t, hourly_state=None, strategy=BOLLINGER_BOUNCE):
-    from analyser.hourly_read import HourlyRead
+def _checked(S, t, strategy=BOLLINGER_BOUNCE):
     from strategies.common import Candidate, check
-    hourly = HourlyRead(hourly_state, None, None, None, None, "") if hourly_state else None
     state = SimpleNamespace(state="trend", direction="down", trend_type=None)
-    return check(S, "GBPUSD", Candidate(strategy, SELL, t, D("100"), ["x"]), state, None, None, hourly)
+    return check(S, "GBPUSD", Candidate(strategy, SELL, t, D("100"), ["x"]), state, None, None)
 
 
 UKT = lambda h, m: datetime(2026, 11, 11, h, m, tzinfo=timezone.utc)   # noqa: E731  (UK = UTC in November)
 
 
-def test_both_bounce_switches_are_off_by_default_and_then_change_nothing(S):
-    from analyser.hourly_read import RALLY
-    assert not S.switches.bounce_only_when_hourly_ranging and not S.switches.bounce_only_near_times
-    assert _checked(S, UKT(12, 0), RALLY).allowed
-
-
-def test_only_when_hourly_ranging(S):
-    from analyser.hourly_read import RALLY, RANGING, SELL_OFF
-    on = _switched(S, bounce_only_when_hourly_ranging=True, hourly_read=False)
-    assert _checked(on, UKT(12, 0), RANGING).allowed
-    for state in (RALLY, SELL_OFF):
-        idea = _checked(on, UKT(12, 0), state)
-        assert not idea.allowed and f"hourly chart is in a {state}" in idea.blocked_by
-    assert not _checked(on, UKT(12, 0), None).allowed                       # not known: not allowed
-    assert _checked(on, UKT(12, 0), RALLY, strategy=LEVEL_REVERSAL).allowed  # the bounce only
+def test_the_near_times_switch_is_off_by_default_and_then_changes_nothing(S):
+    assert not S.switches.bounce_only_near_times
+    assert _checked(S, UKT(12, 0)).allowed
 
 
 @pytest.mark.parametrize("h,m,ok", [(8, 59, False), (9, 0, True), (10, 0, True), (11, 0, True), (11, 5, False),
@@ -354,11 +341,3 @@ def test_near_times_are_uk_clock_times_in_summer(S):
     on = _switched(S, bounce_only_near_times=True)
     assert _checked(on, datetime(2026, 7, 15, 8, 30, tzinfo=timezone.utc)).allowed      # 09:30 BST
     assert not _checked(on, datetime(2026, 7, 15, 10, 30, tzinfo=timezone.utc)).allowed  # 11:30 BST
-
-
-def test_both_switches_on_need_both(S):
-    from analyser.hourly_read import RALLY, RANGING
-    on = _switched(S, bounce_only_when_hourly_ranging=True, bounce_only_near_times=True)
-    assert _checked(on, UKT(14, 30), RANGING).allowed
-    assert not _checked(on, UKT(14, 30), RALLY).allowed
-    assert not _checked(on, UKT(12, 0), RANGING).allowed

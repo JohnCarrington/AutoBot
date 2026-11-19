@@ -54,6 +54,7 @@ EXPECTED = {
     },
     "limits": {
         "max_open_trades_per_strategy": 1,
+        "bollinger_bounce_extra_opposite_direction_trades": 1,
         "max_open_trades": 5,
     },
     "orders": {"folder": Path("/opt/autobot/data/orders"), "expiry": "DFB", "currency": "GBP",
@@ -114,8 +115,15 @@ EXPECTED = {
         "rollover_no_new_trades_from": time(21, 55), "rollover_no_new_trades_until": time(22, 15),
     },
     "possible_reversal": {"min_trend_move_pips": 30},
-    # the analyser control (owner, 18 November 2026)
-    "analyser_control": {"edge_within_pips": Decimal("3"), "consolidation_breakout_beyond_pips": Decimal("4")},
+    "breakout": {"trigger_within_candles": 3, "stop_loss_pips": 6, "take_profit_pips": 50},
+    "planner": {"folder": Path("/opt/autobot/data/planner"), "adr_weekdays": 20,         # owner, 17 November 2026
+                "h4_swing_candles_each_side": 3, "h4_swing_min_move_pips": 40, "h4_swing_move_within_candles": 6,
+                "daily_swing_candles_each_side": 3, "daily_swing_min_move_pips": 110,
+                "daily_swing_move_within_candles": 6, "h4_swing_lookback_weeks": 8, "daily_swing_lookback_weeks": 48,
+                "structure_break_closes": 1, "zone_width_adr_share": Decimal("0.15"), "major_min_families": 3,
+                "moderate_min_families": 2, "min_entry_class": "Moderate", "ema_slope_candles": 6,
+                "macd_weakening_candles": 3, "no_new_extreme_hourly_candles": 3, "failed_breakout_within_candles": 3,
+                "panel_history": 5, "break_beyond_pips": Decimal("3")},
     # the session strategies (owner, 16 November 2026)
     "asian_range_breakout": {"range_from": time(0, 0), "range_until": time(7, 0), "breakout_from": time(7, 0),
                              "breakout_until": time(10, 0), "stop_loss_pips": 12, "trail_from_pips": Decimal("12"),
@@ -128,28 +136,12 @@ EXPECTED = {
                                "window_from": time(13, 30), "window_until": time(15, 0), "confirmation_within_candles": 3,
                                "no_trade_if_big_news_at": time(13, 30), "stop_loss_pips": 12,
                                "trail_from_pips": Decimal("12"), "trail_candles": 3},
-    "planner": {"folder": Path("/opt/autobot/data/planner"), "adr_weekdays": 20,         # owner, 17 November 2026
-                "h4_swing_candles_each_side": 3, "h4_swing_min_move_pips": 40, "h4_swing_move_within_candles": 6,
-                "daily_swing_candles_each_side": 3, "daily_swing_min_move_pips": 110,
-                "daily_swing_move_within_candles": 6, "h4_swing_lookback_weeks": 8, "daily_swing_lookback_weeks": 48,
-                "structure_break_closes": 1, "zone_width_adr_share": Decimal("0.15"), "major_min_families": 3,
-                "moderate_min_families": 2, "min_entry_class": "Moderate", "ema_slope_candles": 6,
-                "macd_weakening_candles": 3, "no_new_extreme_hourly_candles": 3, "failed_breakout_within_candles": 3,
-                "panel_history": 5},
-    "trend_still_going": {"new_extreme_pips": Decimal("5"), "within_candles": 12,      # owner, 16 November 2026
-                          "swing_candles_each_side": 1},
-    "hourly_read": {"range_candles": 12, "break_beyond_pips": 3, "ranging_after_candles": 12, "history_candles": 600},
-    "breakout": {"trigger_within_candles": 3, "stop_loss_pips": 12, "take_profit_pips": 50},
     "trend_day": {"level_above": "R2", "level_below": "S2", "rsi_periods": 14, "rsi_above": 70, "rsi_below": 30,
                   "rsi_history_candles": 1000},
     "level_reversal": {"level_types": ("S2", "R2", "round_number"), "round_numbers_every_pips": 100, "allowance_pips_r2": 12,
                        "allowance_pips_s2": 12, "allowance_pips_round_number": 5,
-                       "stop_beyond_furthest_pips": 6, "take_profit_pips": 20,
-                       "entry_within_pips_of_level": Decimal("6")},
-    "scale_out": {"at_profit_pips": Decimal("8"), "stop_profit_pips": Decimal("2")},
-    "level_stops": {"beyond_group_pips": Decimal("5"), "widest_stop_pips": Decimal("20"),
-                    "max_spread_pips": Decimal("3")},
-    "range_trade": {"close_percent_at_opposite_band": 100, "rejection_candle_within_candles": 1,
+                       "stop_beyond_furthest_pips": 6, "take_profit_pips": 20},
+    "range_trade": {"close_percent_at_opposite_band": 50, "rejection_candle_within_candles": 1,
                     "trigger_within_candles": 1},
     "indicators": {"bollinger_periods": 20, "bollinger_std_devs": 2, "ema_periods": (7, 13, 21, 100, 200),
                    "macd_fast_periods": 35, "macd_slow_periods": 45, "macd_signal_periods": 30,
@@ -375,16 +367,7 @@ INVALID = [
     ("slow_grind", "min_pause_candles", 0, "must be between"),
     ("ema_pullback", "setup_expires_after_minutes", 0, "must be between"),
     ("possible_reversal", "min_trend_move_pips", 0, "must be between"),
-    ("analyser_control", "edge_within_pips", -1, "must be between"),
-    ("analyser_control", "consolidation_breakout_beyond_pips", 101, "must be between"),
-    ("level_reversal", "entry_within_pips_of_level", -1, "must be between"),
-    ("scale_out", "at_profit_pips", 101, "must be between"),
-    ("scale_out", "stop_profit_pips", -1, "must be between"),
-    ("level_stops", "beyond_group_pips", -1, "must be between"),
-    ("level_stops", "widest_stop_pips", 0, "must be between"),
-    ("level_stops", "max_spread_pips", -1, "must be between"),
-    ("range_trade", "close_percent_at_opposite_band", 150, "must be one of 50, 100"),
-    ("range_trade", "close_percent_at_opposite_band", 30, "must be one of 50, 100"),
+    ("range_trade", "close_percent_at_opposite_band", 150, "must be between"),
     ("bounce", "trail_from_pips", -1, "must be between"),
     ("bounce", "near_times", ["14:00", "10:00"], "in order with no repeats"),
     ("bounce", "near_times_within_minutes", -5, "must be between"),
@@ -484,7 +467,7 @@ SWITCHES_OK = {"PAIRS_ON": "GBPUSD", "NEW_TRADES_FROM": "06:00", "NEW_TRADES_UNT
                "STRATEGY_SLOW_GRIND": "on", "STRATEGY_EMA_PULLBACK": "on",
                "STRATEGY_BOLLINGER_BOUNCE": "off", "STRATEGY_RANGE_TRADE": "on",
                "STOP_LOSS_PIPS": "6", "STOP_LOSS_PIPS_EMA_PULLBACK": "12", "TAKE_PROFIT_PIPS": "100", "STRATEGY_BREAKOUT": "off",
-               "STRATEGY_LEVEL_REVERSAL": "on", "HOURLY_READ": "off", "TRADING": "off",
+               "STRATEGY_LEVEL_REVERSAL": "on", "TRADING": "off", "STRATEGY_BOLLINGER_BOUNCE_5M": "on",
                "STRATEGY_ASIAN_RANGE_BREAKOUT": "on", "STRATEGY_SESSION_SWEEP": "on",
                "STRATEGY_NEW_YORK_OPEN_REVERSAL": "on"}
 
@@ -512,8 +495,8 @@ def test_the_breakout_switch_is_required_and_cannot_be_on_before_its_stop_and_ta
     with pytest.raises(SettingsError, match="Missing switch STRATEGY_BREAKOUT"):
         load_settings(switches_from=_env(tmp_path, values))
     on = _env(tmp_path, {**SWITCHES_OK, "STRATEGY_BREAKOUT": "on"})
-    st = load_settings(switches_from=on)                       # the owner's values: 12 (10 November 2026) and 50
-    assert st.switches.breakout is True and (st.breakout.stop_loss_pips, st.breakout.take_profit_pips) == (12, 50)
+    st = load_settings(switches_from=on)                       # the owner's values: 6 and 50
+    assert st.switches.breakout is True and (st.breakout.stop_loss_pips, st.breakout.take_profit_pips) == (6, 50)
     for key in ("stop_loss_pips", "take_profit_pips"):
         data = _raw()
         data["breakout"][key] = 0                              # 0: not chosen
@@ -564,30 +547,24 @@ def test_the_level_reversal_switch_is_required_and_loads(tmp_path):
 
 
 
-def test_the_hourly_read_switch_is_required_and_loads(tmp_path):
-    values = {k: v for k, v in SWITCHES_OK.items() if k != "HOURLY_READ"}
-    with pytest.raises(SettingsError, match="Missing switch HOURLY_READ"):
-        load_settings(switches_from=_env(tmp_path, values))
-    assert load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches.hourly_read is False
-    assert load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "HOURLY_READ": "on"})).switches.hourly_read is True
-
-def test_the_bounces_two_switches_are_off_if_left_out_and_load(tmp_path):
+def test_the_bounces_near_times_switch_is_off_if_left_out_and_loads(tmp_path):
+    """BOUNCE_ONLY_NEAR_TIMES (15 November 2026). The hourly-ranging switch is not in first-build-plus: it needs the
+    hourly read (owner, 19 November 2026)."""
     sw = load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches
-    assert (sw.bounce_only_when_hourly_ranging, sw.bounce_only_near_times) == (False, False)
-    sw = load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "BOUNCE_ONLY_WHEN_HOURLY_RANGING": "on",
-                                                     "BOUNCE_ONLY_NEAR_TIMES": "on"})).switches
-    assert (sw.bounce_only_when_hourly_ranging, sw.bounce_only_near_times) == (True, True)
-    for key in ("BOUNCE_ONLY_WHEN_HOURLY_RANGING", "BOUNCE_ONLY_NEAR_TIMES"):
-        with pytest.raises(SettingsError, match=f"Invalid switch {key}.*must be on or off"):
-            load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, key: "yes"}))
+    assert sw.bounce_only_near_times is False and not hasattr(sw, "bounce_only_when_hourly_ranging")
+    sw = load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "BOUNCE_ONLY_NEAR_TIMES": "on"})).switches
+    assert sw.bounce_only_near_times is True
+    with pytest.raises(SettingsError, match="Invalid switch BOUNCE_ONLY_NEAR_TIMES.*must be on or off"):
+        load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "BOUNCE_ONLY_NEAR_TIMES": "yes"}))
 
 
-def test_the_trend_still_going_switch_is_off_if_left_out_and_loads(tmp_path):
-    assert load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches.trend_still_going is False
-    on = load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "TREND_STILL_GOING": "on"})).switches
-    assert on.trend_still_going is True
-    with pytest.raises(SettingsError, match="Invalid switch TREND_STILL_GOING.*must be on or off"):
-        load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "TREND_STILL_GOING": "yes"}))
+def test_the_first_builds_bounce_switch_is_required_and_loads(tmp_path):
+    values = {k: v for k, v in SWITCHES_OK.items() if k != "STRATEGY_BOLLINGER_BOUNCE_5M"}
+    with pytest.raises(SettingsError, match="Missing switch STRATEGY_BOLLINGER_BOUNCE_5M"):
+        load_settings(switches_from=_env(tmp_path, values))
+    assert load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches.bollinger_bounce_5m is True
+    off = {**SWITCHES_OK, "STRATEGY_BOLLINGER_BOUNCE_5M": "off"}
+    assert load_settings(switches_from=_env(tmp_path, off)).switches.bollinger_bounce_5m is False
 
 
 
@@ -646,7 +623,6 @@ def test_the_settings_alone_have_no_switches_and_no_market():
     ("STRATEGY_SLOW_GRIND", "yes", "must be on or off"),
     ("STRATEGY_RANGE_TRADE", "", "must be on or off"),
     ("STRATEGY_LEVEL_REVERSAL", "yes", "must be on or off"),
-    ("HOURLY_READ", "yes", "must be on or off"),
     ("STOP_LOSS_PIPS", "0", "must be between 1 and 100 pips"),
     ("STOP_LOSS_PIPS", "6.5", "must be a whole number of pips"),
     ("STOP_LOSS_PIPS", "six", "must be a whole number of pips"),
@@ -805,19 +781,3 @@ def test_bot_process_starts_with_good_settings(pretend_switches):
             in r.stdout)
     assert "  [prices] candle_timeframes = tick, 5m, 1h, 4h, 1d, 1w\n" in r.stdout
     assert "datetime" not in r.stdout
-
-
-@pytest.mark.parametrize("key,name", [("ANALYSER_USES_HOURLY", "analyser_uses_hourly"),
-                                      ("ANALYSER_GOVERNS_ALL", "analyser_governs_all"),
-                                      ("ONE_SIGNAL_ONE_TRADE", "one_signal_one_trade"),
-                                      ("SCALE_OUT_REVERSAL", "scale_out_reversal"),
-                                      ("TRAIL_NO_LOSS", "trail_no_loss"),
-                                      ("LR_ENTRY_NEAR_LEVEL", "lr_entry_near_level"),
-                                      ("LEVEL_STOPS", "level_stops")])
-def test_the_analyser_control_switches_are_off_if_left_out_and_load(tmp_path, key, name):
-    """The three analyser control stages each have a switch, off if left out of .env (owner, 18 November 2026)."""
-    assert getattr(load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches, name) is False
-    on = load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, key: "on"})).switches
-    assert getattr(on, name) is True
-    with pytest.raises(SettingsError, match=f"Invalid switch {key}.*must be on or off"):
-        load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, key: "yes"}))
