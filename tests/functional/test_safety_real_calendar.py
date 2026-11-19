@@ -64,3 +64,33 @@ def test_a_sixth_trade_is_refused_when_5_that_count_are_open_but_an_ema_pullback
     d = decision(S, LEVEL_REVERSAL, t, five)
     assert d.reasons == ["5 trades open that count towards the most at once (5; EMA pullback trades not counted)"]
     assert decision(S, EMA_PULLBACK, t, five).allowed
+
+
+# ---- one view at a time: the exception days of docs/research/one_view_20261109.md -----------------------
+
+def _store(S):
+    from prices.store import CandleStore
+    if not (S.candles.folder / "1d").is_dir():
+        pytest.skip("the real candle store is only on the server")
+    return CandleStore(S.candles.folder, S.candles.compress_after_days)
+
+
+@pytest.mark.parametrize("day,news,monday", [
+    (datetime(2026, 11, 5, 10, 0, tzinfo=UTC), BUY, None),          # Bank of England: expected up
+    (datetime(2026, 11, 6, 10, 0, tzinfo=UTC), SELL, None),         # payrolls: expected down
+    (datetime(2026, 11, 9, 10, 0, tzinfo=UTC), None, BUY),          # after Friday 6 November fell 107.6 pips
+    (datetime(2026, 11, 2, 10, 0, tzinfo=UTC), None, None),         # Friday 30 October moved +8.3 only
+    (datetime(2026, 10, 26, 10, 0, tzinfo=UTC), None, None),        # Friday 23 October moved -31.0 only
+    (datetime(2026, 11, 4, 10, 0, tzinfo=UTC), None, None)])
+def test_the_days_directions_found_by_the_research(S, day, news, monday):
+    from analyser.day_direction import day_directions
+    d = day_directions(S, _store(S), day)
+    assert (d.news, d.trend_day, d.monday) == (news, None, monday)
+
+
+def test_the_fridays_moves_of_the_research(S):
+    from datetime import date
+    from analyser.day_direction import friday_move_pips
+    store = _store(S)
+    assert [friday_move_pips(S, store, date(2026, 11, d)) for d in (2, 9)] == [D("8.3"), D("-107.6")]
+    assert friday_move_pips(S, store, date(2026, 10, 26)) == D("-31.0")

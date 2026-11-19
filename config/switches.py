@@ -10,6 +10,9 @@
   STRATEGY_BOLLINGER_BOUNCE   on or off (the hourly-pierce bounce of 15 November 2026)
   STRATEGY_BOLLINGER_BOUNCE_5M  on or off (the first build's 5-minute band and level bounce, kept and renamed;
                               owner, 19 November 2026)
+  ONE_SIGNAL_ONE_TRADE        on or off (off if left out; owner, 18 November 2026): one trade per rejection
+                              candle and direction; the session sweep and New York open reversal under one view at
+                              a time (safety/rules.py, rules 9 and 11)
   PLANNER_OBSERVE             on or off (off if left out): the Structural Trade Planner (planner/), OBSERVE ONLY
   BOUNCE_ONLY_NEAR_TIMES      on or off (off if left out): while on, a Bollinger bounce opens only within
                               bounce.near_times_within_minutes (60) of bounce.near_times (10:00, 14:00,
@@ -93,6 +96,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "STRATEGY_BOLLINGER_BOUNCE_5M": ("bollinger_bounce_5m", _on_off),
     "BOUNCE_ONLY_NEAR_TIMES": ("bounce_only_near_times", _on_off),
     "PLANNER_OBSERVE": ("planner_observe", _on_off),
+    "ONE_SIGNAL_ONE_TRADE": ("one_signal_one_trade", _on_off),
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
     "STRATEGY_BREAKOUT": ("breakout", _on_off),
     "STRATEGY_LEVEL_REVERSAL": ("level_reversal", _on_off),
@@ -106,7 +110,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
 }
 
 # Switches that may be left out of .env, and their value then (owner, 15 November 2026: both off by default).
-OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_NEAR_TIMES": "off", "PLANNER_OBSERVE": "off"}
+OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_NEAR_TIMES": "off", "PLANNER_OBSERVE": "off", "ONE_SIGNAL_ONE_TRADE": "off"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:

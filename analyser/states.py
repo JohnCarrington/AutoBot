@@ -499,3 +499,9 @@ class StateMachine:
         ch = self._change(f, TREND, d, want, why, [why])
         self.last_news = news
         return ch
+
+
+def switch_on(settings: Any, name: str) -> bool:
+    """A switch from .env that is off if left out, read safely (settings loaded without the switches: off). From main
+    (used by safety rules 9 and 11, brought into first-build-plus: owner, 19 November 2026)."""
+    return bool(getattr(getattr(settings, "switches", None), name, False))

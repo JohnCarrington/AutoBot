@@ -49,6 +49,7 @@ from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from typing import Any, Callable
 
+from analyser.day_direction import day_directions
 from analyser.market_state import MemoStore, StateTracker
 from analyser.trend_day import trend_day_at
 from orders.sender import OrderSender
@@ -247,7 +248,8 @@ class Trading:
         return paused
 
     def _place(self, idea: Any, td: str | None) -> Any:
-        r = self.sender.place(idea, paused=self._paused(), trend_day=td, calendar=self.calendar)
+        day = day_directions(self.s, self.store, idea.time, self.calendar, td)     # the day's directions (safety rule 9)
+        r = self.sender.place(idea, paused=self._paused(), trend_day=td, calendar=self.calendar, day=day)
         self.book.decision("order", self.now(), strategy=idea.strategy, direction=idea.direction, result=r.what,
                            reference=r.reference, reasons=r.reasons, level=r.level)
         return r

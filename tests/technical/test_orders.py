@@ -1007,3 +1007,28 @@ def test_the_once_a_day_key_is_kept_with_the_trade_and_after_a_restart(S):
     assert again.used_once_a_day() == {key}
     r = again.place(idea(ASIAN_RANGE_BREAKOUT, context={"once_a_day": key}), calendar=[])
     assert r.what == "safety refused" and any(x.startswith("once a day") for x in r.reasons)
+
+
+def test_one_signal_one_trade_the_second_strategy_on_the_same_rejection_candle_is_refused(S):
+    s = Over(S, switches={k: v for k, v in vars(S.switches).items() if not k.startswith("_")}
+             | {"bollinger_bounce": True, "level_reversal": True, "one_signal_one_trade": True})
+    sender, ig, *_ = make(s)
+    sig = {"signal": "sell 2026-11-04T09:55:00Z", "furthest": D("13404.0"), "rejection_close": D("13397.0")}
+    assert sender.place(idea(BOLLINGER_BOUNCE, SELL, context=dict(sig)), calendar=[]).ok
+    assert sender.used_signals() == {"sell 2026-11-04T09:55:00Z": BOLLINGER_BOUNCE}
+    again, *_ = make(s, ig)                                            # a restart: read back from the record
+    assert again.used_signals() == {"sell 2026-11-04T09:55:00Z": BOLLINGER_BOUNCE}
+    r = again.place(idea(LEVEL_REVERSAL, SELL, context=dict(sig, stop_price=D("13410.0"))), calendar=[])
+    assert r.what == "safety refused" and "same signal already traded by Bollinger bounce" in r.reasons
+    other = dict(sig, signal="sell 2026-11-04T10:30:00Z", stop_price=D("13410.0"))
+    assert "same signal already traded by Bollinger bounce" not in (again.place(idea(LEVEL_REVERSAL, SELL,
+                                                                    context=other), calendar=[]).reasons or [])
+
+
+def test_with_one_signal_one_trade_off_both_strategies_may_open_on_one_signal(S):
+    s = Over(S, switches={k: v for k, v in vars(S.switches).items() if not k.startswith("_")}
+             | {"bollinger_bounce": True, "level_reversal": True, "one_signal_one_trade": False})
+    sender, ig, *_ = make(s)
+    sig = {"signal": "sell 2026-11-04T09:55:00Z"}
+    assert sender.place(idea(BOLLINGER_BOUNCE, SELL, context=dict(sig)), calendar=[]).ok
+    assert sender.place(idea(LEVEL_REVERSAL, SELL, context=dict(sig, stop_price=D("13410.0"))), calendar=[]).ok

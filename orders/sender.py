@@ -108,6 +108,7 @@ class Trade:
     half_closed: bool = False
     stop_level: Decimal | None = None   # the stop as moved at IG and confirmed (the bounce's trail); None: not moved
     once_a_day: str = ""                # the idea's once-a-day key (safety rule 10; owner, 16 November 2026)
+    signal: str = ""                    # the idea's signal key (safety rule 11; owner, 18 November 2026)
 
     def as_open_trade(self, size_gbp_per_pip: Decimal) -> OpenTrade:
         part = Decimal("0.5") if self.half_closed else Decimal(1)
@@ -205,7 +206,8 @@ class OrderSender:
                 self.trades[ref] = Trade(ref, r["strategy"], r["direction"], Decimal(r["size"]), Decimal(r["stop_pips"]),
                                          datetime.fromisoformat(r["opened_utc"].replace("Z", "+00:00")),
                                          r.get("deal_id", ""), _dec(r.get("level")),
-                                         once_a_day=r.get("once_a_day") or sent.get("once_a_day") or "")
+                                         once_a_day=r.get("once_a_day") or sent.get("once_a_day") or "",
+                                         signal=r.get("signal") or sent.get("signal") or "")
             elif ev in ("refused", "not placed"):
                 self.unresolved.pop(ref, None)
             elif ev == "deal id changed" and ref in self.trades:
@@ -419,12 +421,13 @@ class OrderSender:
     def _adopt(self, ref: str, sent: dict, pos: dict, note: str) -> Trade:
         t = Trade(ref, sent["strategy"], sent["direction"], Decimal(str(pos.get("size") or sent["size"])),
                   Decimal(sent["stop_pips"]), self.now(), pos.get("dealId", ""), _dec(pos.get("level")),
-                  once_a_day=sent.get("once_a_day") or "")
+                  once_a_day=sent.get("once_a_day") or "", signal=sent.get("signal") or "")
         self.trades[ref] = t
         self.unresolved.pop(ref, None)
         self._record("adopted", reference=ref, strategy=t.strategy, direction=t.direction, size=t.size,
                      stop_pips=t.stop_pips, opened_utc=t.opened_at, deal_id=t.deal_id, level=t.level, note=note,
-                     **({"once_a_day": t.once_a_day} if t.once_a_day else {}))
+                     **({"once_a_day": t.once_a_day} if t.once_a_day else {}),
+                     **({"signal": t.signal} if t.signal else {}))
         return t
 
     def _read_funds(self, why: str) -> None:
@@ -439,6 +442,13 @@ class OrderSender:
 
     def open_trades(self) -> list[OpenTrade]:
         return [t.as_open_trade(self.size_gbp) for t in self.trades.values() if t.status == OPEN]
+
+    def used_signals(self) -> dict[str, str]:
+        """The signal keys of every trade opened (open or closed) and every order sent and not yet settled, each with
+        its strategy (safety rule 11; owner, 18 November 2026)."""
+        out = {u["signal"]: u["strategy"] for u in self.unresolved.values() if u.get("signal")}
+        out.update({t.signal: t.strategy for t in self.trades.values() if t.signal})
+        return out
 
     def used_once_a_day(self) -> set[str]:
         """The once-a-day keys of every trade opened (open or closed) and every order sent and not yet settled
@@ -488,7 +498,7 @@ class OrderSender:
         return dist, ""
 
     def place(self, idea: Any, *, paused: bool = False, trend_day: str | None = None,
-              calendar: list | None = None) -> Result:
+              calendar: list | None = None, day: Any = None) -> Result:
         """Send one market order for an idea, after the safety rules. Never sent twice."""
         with self._lock:
             now = self.now()
@@ -496,8 +506,8 @@ class OrderSender:
                 self._record("safety refused", strategy=idea.strategy, reasons=["the order sender's start-up is not done"])
                 return Result(False, "safety refused", reasons=["the order sender's start-up is not done"])
             order = order_for(self.s, idea)
-            d = decide(self.s, order, self.open_trades(), self.funds, now, paused, calendar,
-                       used_once_a_day=self.used_once_a_day())
+            d = decide(self.s, order, self.open_trades(), self.funds, now, paused, calendar, day,
+                       self.used_once_a_day(), self.used_signals())
             if not d.allowed:
                 self._record("safety refused", strategy=idea.strategy, direction=idea.direction, reasons=d.reasons)
                 return Result(False, "safety refused", reasons=d.reasons)
@@ -528,12 +538,13 @@ class OrderSender:
                 "dealReference": ref,
             }
             once = (getattr(idea, "context", None) or {}).get("once_a_day", "")
+            signal = (getattr(idea, "context", None) or {}).get("signal", "")
             self._record("sending", reference=ref, strategy=idea.strategy, direction=idea.direction,
                          size=Decimal(str(body["size"])), stop_pips=order.stop_pips, stop_distance=stop_points,
                          take_profit_pips=tp, idea_time=idea.time, idea_price=idea.entry_price, body=body,
-                         **({"once_a_day": once} if once else {}))
+                         **({"once_a_day": once} if once else {}), **({"signal": signal} if signal else {}))
             self.unresolved[ref] = {"strategy": idea.strategy, "direction": idea.direction, "size": str(body["size"]),
-                                    "stop_pips": str(stop_points / self.ppp), "once_a_day": once}
+                                    "stop_pips": str(stop_points / self.ppp), "once_a_day": once, "signal": signal}
             if self.paper:
                 return self._paper_open(ref, idea)
             try:
@@ -566,24 +577,28 @@ class OrderSender:
             return Result(False, "refused", ref, reasons=["no current price for a paper trade"])
         level = Decimal(str(q[1] if idea.direction == "buy" else q[0]))
         t = Trade(ref, idea.strategy, idea.direction, Decimal(sent["size"]), Decimal(sent["stop_pips"]), self.now(),
-                  f"PAPER-{ref}", level, once_a_day=sent.get("once_a_day") or "")
+                  f"PAPER-{ref}", level, once_a_day=sent.get("once_a_day") or "",
+                  signal=sent.get("signal") or "")
         self.trades[ref] = t
         self._record("opened", reference=ref, strategy=t.strategy, direction=t.direction, size=t.size,
                      stop_pips=t.stop_pips, opened_utc=t.opened_at, deal_id=t.deal_id, level=t.level,
-                     **({"once_a_day": t.once_a_day} if t.once_a_day else {}))
+                     **({"once_a_day": t.once_a_day} if t.once_a_day else {}),
+                     **({"signal": t.signal} if t.signal else {}))
         return Result(True, "opened", ref, t.deal_id, t.level)
 
     def _on_confirmation(self, ref: str, idea: Any, order: Any, c: dict) -> Result:
         if c.get("dealStatus") == "ACCEPTED":
             sent = self.unresolved[ref]
             t = Trade(ref, idea.strategy, idea.direction, Decimal(sent["size"]), Decimal(sent["stop_pips"]), self.now(),
-                      c.get("dealId", ""), _dec(c.get("level")), once_a_day=sent.get("once_a_day") or "")
+                      c.get("dealId", ""), _dec(c.get("level")), once_a_day=sent.get("once_a_day") or "",
+                      signal=sent.get("signal") or "")
             self.trades[ref] = t
             self.unresolved.pop(ref, None)
             self._record("opened", reference=ref, strategy=t.strategy, direction=t.direction, size=t.size,
                          stop_pips=t.stop_pips, opened_utc=t.opened_at, deal_id=t.deal_id, level=t.level,
                          stop_level=c.get("stopLevel"), limit_level=c.get("limitLevel"),
-                         **({"once_a_day": t.once_a_day} if t.once_a_day else {}))
+                         **({"once_a_day": t.once_a_day} if t.once_a_day else {}),
+                     **({"signal": t.signal} if t.signal else {}))
             self._read_funds("a trade opened")
             return Result(True, "opened", ref, t.deal_id, t.level)
         return self._refused(ref, idea, order, c.get("reason") or c.get("dealStatus") or "no reason given")
