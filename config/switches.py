@@ -18,6 +18,9 @@
   STRATEGY_BREAKOUT           on or off (never on while breakout.stop_loss_pips or
                               breakout.take_profit_pips is 0)
   STRATEGY_LEVEL_REVERSAL     on or off
+  STRATEGY_ASIAN_RANGE_BREAKOUT    on or off (owner, 16 November 2026)
+  STRATEGY_SESSION_SWEEP           on or off (owner, 16 November 2026)
+  STRATEGY_NEW_YORK_OPEN_REVERSAL  on or off (owner, 16 November 2026)
   TRADING                     the master switch, on or off: while off everything runs and is
                               recorded, but no order is ever sent to IG
   STOP_LOSS_PIPS              the stop loss sent with every trade, in pips (whole, 1 to 100),
@@ -93,6 +96,9 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
     "STRATEGY_BREAKOUT": ("breakout", _on_off),
     "STRATEGY_LEVEL_REVERSAL": ("level_reversal", _on_off),
+    "STRATEGY_ASIAN_RANGE_BREAKOUT": ("asian_range_breakout", _on_off),
+    "STRATEGY_SESSION_SWEEP": ("session_sweep", _on_off),
+    "STRATEGY_NEW_YORK_OPEN_REVERSAL": ("new_york_open_reversal", _on_off),
     "TRADING": ("trading", _on_off),
     "STOP_LOSS_PIPS": ("stop_loss_pips", _pips(1, 100)),
     "STOP_LOSS_PIPS_EMA_PULLBACK": ("stop_loss_pips_ema_pullback", _pips(1, 100)),

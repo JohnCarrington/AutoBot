@@ -12,7 +12,8 @@ a bar whose open, high, low and close are the same), in this order (as the resea
      counts only if the bar opened past the entry price or closed beyond the stop (a candle does not say
      which came first). The slow grind's lock (strategies.common.profit_lock, 15/10): once the trade has been
      lock_from pips up (in an earlier bar), the bot closes it if price comes back to lock_at pips up. The
-     Bollinger bounce's trail (owner, 15 November 2026): once the trade has been bounce.trail_from_pips up (12),
+     Bollinger bounce's trail (owner, 15 November 2026; the session strategies the same, each with its own
+     trail_from_pips and trail_candles: owner, 16 November 2026): once the trade has been bounce.trail_from_pips up (12),
      after each FINISHED 5-minute candle its stop is moved at IG to a tenth of a pip beyond the last
      bounce.trail_candles (3) finished candles (a sell: above their highest buy price; a buy: below their lowest
      sell price), only ever closer than the stop IG holds (TradeManager.on_bar with finished=True); from then on
@@ -57,8 +58,8 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
-from strategies.common import (BOLLINGER_BOUNCE, BUY, RANGE_TRADE, SELL, closed_before_big_news, closed_on_level_rejection,
-                               forced_close_at, profit_lock, take_profit_pips)
+from strategies.common import (BUY, RANGE_TRADE, SELL, closed_before_big_news, closed_on_level_rejection,
+                               forced_close_at, profit_lock, take_profit_pips, trail)
 
 UTC = timezone.utc
 # The decisions (design 4: hold, half close, close, forced close, stopped by IG, take profit hit at IG).
@@ -202,16 +203,22 @@ def plan(settings: Any, reference: str, strategy: str, direction: str, opened_at
     return ManagedTrade(reference, strategy, direction, opened_at, Decimal(entry_price), Decimal(fill), Decimal(stop_pips),
                         Decimal(tp), close_at, why, profit_lock(settings, strategy), closed_on_level_rejection(strategy),
                         strategy == RANGE_TRADE, day_news_direction(settings, pair, opened_at, calendar),
-                        trail_from=trail_from(settings, strategy), trail_candles=int(settings.bounce.trail_candles))
+                        trail_from=trail_from(settings, strategy), trail_candles=_trail_candles(settings, strategy))
 
 
 def trail_from(settings: Any, strategy: str) -> Decimal | None:
-    """The pips in profit after which a trade's stop trails behind the last candles: bounce.trail_from_pips for the
-    Bollinger bounce (owner, 15 November 2026: 12); None for every other strategy (the first build's bounce,
+    """The pips in profit after which a trade's stop trails behind the last candles (strategies.common.trail):
+    bounce.trail_from_pips for the Bollinger bounce (owner, 15 November 2026: 12), and each session strategy's own
+    trail_from_pips (owner, 16 November 2026: 12); None for every other strategy (the first build's bounce,
     Bollinger bounce 5m, has no trail, as on 9 November 2026)."""
-    if strategy != BOLLINGER_BOUNCE:
-        return None
-    return Decimal(str(settings.bounce.trail_from_pips))
+    got = trail(settings, strategy)
+    return None if got is None else got[0]
+
+
+def _trail_candles(settings: Any, strategy: str) -> int:
+    """How many finished candles the trail looks back over (3); the bounce's for a strategy without a trail."""
+    got = trail(settings, strategy)
+    return int(settings.bounce.trail_candles) if got is None else got[1]
 
 
 def step(settings: Any, t: ManagedTrade, bar: Bar, band: tuple[Decimal, Decimal] | None = None,

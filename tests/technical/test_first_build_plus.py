@@ -102,3 +102,24 @@ def test_the_planner_uses_its_own_close_beyond_setting_and_there_is_no_hourly_re
     import pathlib
     for f in pathlib.Path("planner").glob("*.py"):
         assert "hourly_read" not in f.read_text(), f
+
+
+# ---- the three session strategies, added the same day (owner, 19 November 2026) ----------------------------------
+
+def test_each_session_strategy_has_its_own_name_and_switch_and_shows_by_name():
+    from strategies.common import ASIAN_RANGE_BREAKOUT, NEW_YORK_OPEN_REVERSAL, SESSION_STRATEGIES, SESSION_SWEEP
+    from trading.reasons import one_line
+    assert SESSION_STRATEGIES == ("Asian range breakout", "session sweep", "New York open reversal")
+    names = {BOLLINGER_BOUNCE, BOLLINGER_BOUNCE_5M, *SESSION_STRATEGIES}
+    assert len(names) == 5 and len({SWITCH[n] for n in names}) == 5           # every one apart, in records too
+    for name in (ASIAN_RANGE_BREAKOUT, SESSION_SWEEP, NEW_YORK_OPEN_REVERSAL):
+        assert one_line(SimpleNamespace(strategy=name, steps=["broke the range"])).startswith(name + ":")
+
+
+def test_the_session_strategies_open_in_every_state_like_the_hourly_bounce(S):
+    from strategies.common import SESSION_STRATEGIES
+    from tests.technical.test_trade_manager import Over
+    on = Over(S, switches={"asian_range_breakout": True, "session_sweep": True, "new_york_open_reversal": True})
+    for name in SESSION_STRATEGIES:
+        for state, d in ((TREND, "up"), (RANGING, "none"), ("consolidation", "none")):
+            assert idea(on, name, SELL, state, d).allowed, (name, state)

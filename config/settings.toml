@@ -262,6 +262,58 @@ trigger_within_candles = 3
 stop_loss_pips = 6
 take_profit_pips = 50
 
+[asian_range_breakout]
+# The Asian range breakout (design 3.7; owner, 16 November 2026). UK times. The Asian range: the high and low of
+# the 5-minute candles from range_from up to range_until (sell price, as on the chart).
+range_from = "00:00"
+range_until = "07:00"
+# From breakout_from up to breakout_until a 5-minute candle closes above the Asian high (a buy) or below the
+# Asian low (a sell); the trade opens at the next candle's open. One trade each way per day.
+breakout_from = "07:00"
+breakout_until = "10:00"
+stop_loss_pips = 12
+# The trail: once this many pips in profit, after each finished 5-minute candle the stop is moved at IG to a
+# tenth of a pip beyond the last trail_candles candles (as the Bollinger bounce's).
+trail_from_pips = 12
+trail_candles = 3
+
+[session_sweep]
+# The session sweep (design 3.8; owner, 16 November 2026). UK times. The levels: the Asian high and low (the
+# 5-minute candles from asian_range_from up to asian_range_until), used from asian_range_until; the London high
+# and low (from london_range_from up to london_range_until), used from london_range_until. Sell price.
+asian_range_from = "00:00"
+asian_range_until = "07:00"
+london_range_from = "07:00"
+london_range_until = "12:00"
+# The sweep: price goes at least beyond_pips beyond the level; then a 5-minute candle closes back inside it (it
+# may be the same candle); a confirmation candle closes beyond that candle's low (sell) or high (buy) within
+# confirmation_within_candles candles of it, or the setup expires; the trade opens at the next candle's open.
+beyond_pips = 3
+confirmation_within_candles = 3
+# The stop: stop_beyond_furthest_pips beyond the sweep's furthest point, and at least min_stop_pips from the entry.
+stop_beyond_furthest_pips = 1
+min_stop_pips = 12
+trail_from_pips = 12
+trail_candles = 3
+
+[new_york_open_reversal]
+# The New York open reversal (design 3.9; owner, 16 November 2026). UK times. The move: from the open of the
+# 5-minute candle at move_from to the close of the last candle before move_until, at least min_move_pips one way.
+move_from = "07:00"
+move_until = "13:30"
+min_move_pips = 30
+# From window_from up to window_until: a rejection candle against the move (red after a rise, green after a
+# fall), then a confirmation candle closing beyond it within confirmation_within_candles candles (both candles
+# in the window); the trade opens at the next candle's open. One trade a day.
+window_from = "13:30"
+window_until = "15:00"
+confirmation_within_candles = 3
+# No New York open reversal on a day with big news for the pair released at this UK time.
+no_trade_if_big_news_at = "13:30"
+stop_loss_pips = 12
+trail_from_pips = 12
+trail_candles = 3
+
 [level_reversal]
 # Design 3.6 (owner, 8 November 2026). Rejections at these levels only (the bot's level
 # types): S2, R2 and round numbers, the round numbers only on a multiple of

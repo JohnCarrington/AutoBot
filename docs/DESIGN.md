@@ -15,7 +15,7 @@ One program, made of separate parts, each with one job:
 3. **Levels** (`levels/`): pivots, round numbers, highs and lows, turning levels, and which levels line up.
 4. **Rejection** (`rejection/`): one shared part that works out whether price has been rejected at a level or band. The analyser, the strategies and the trade manager all read the same answer.
 5. **Market analyser** (`analyser/`): decides the market state and direction, and which strategies are allowed.
-6. **Strategies** (`strategies/`): slow grind, EMA pullback, Bollinger band bounce, range trade, breakout (switched off until its stop and take profit are chosen), level reversal (3.6). Each checks its own entry rules.
+6. **Strategies** (`strategies/`): slow grind, EMA pullback, Bollinger band bounce, range trade, breakout (switched off until its stop and take profit are chosen), level reversal (3.6), and the three session strategies: Asian range breakout (3.7), session sweep (3.8) and New York open reversal (3.9). Each checks its own entry rules.
 7. **Safety rules** (`safety/`): size, number of trades, trading hours, news, total risk, pause switch.
 8. **Order sender** (`orders/`): the only part that places, changes or closes trades at IG.
 9. **Trade manager** (`trade_manager/`): looks after every open trade until it closes.
@@ -51,7 +51,7 @@ Every result gives: the market state, the direction (up, down or none), the type
 - **Possible reversal:** after a trend has been running and price has moved at least 30 pips since it started, a strong reversal candle appears, recognised by the shared rejection part with no extra size rule.
 - **Consolidation** (this includes a trend running out of steam): narrow Bollinger bands, price between them touching neither band, small candles with green and red roughly the same size, no direction. Unlike ranging, price stays in the middle. No trading. When price breaks out, the analyser moves to emerging trend.
 
-### 2.3 Direction rule (applies to every strategy except the range trade, the Bollinger band bounce, the breakout, the slow grind and the level reversal)
+### 2.3 Direction rule (applies to every strategy except the range trade, the Bollinger band bounce, the breakout, the slow grind, the level reversal and the three session strategies)
 
 - **Buy side:** price above the daily pivot and above the 5-minute 100 EMA.
 - **Sell side:** price below the daily pivot and below the 5-minute 100 EMA.
@@ -185,6 +185,40 @@ Spread spikes are ignored as in the shared rejection part (`rejection.max_spread
 6. New trades from 06:00 to 20:30 UK; closed at 20:30 UK; not opened in a big-news window and closed 15 minutes before big news, like the other strategies (section 6); one level reversal trade at a time; no close on a rejection at a level (section 4).
 7. If several of these levels were reached, the first that passes rule 2 is the level (S2 and R2 before round numbers); several setups triggering on the same candle and direction give one trade.
 
+### 3.7 Asian range breakout (owner, 16 November 2026)
+
+**Switched on** (`STRATEGY_ASIAN_RANGE_BREAKOUT=on`). UK times, sell prices as on the chart (`strategies/asian_range_breakout/`).
+
+1. **The Asian range:** the high and low of the 5-minute candles from 00:00 to 07:00 UK (`asian_range_breakout.range_from`, `range_until`).
+2. From 07:00 to 10:00 UK (`breakout_from`, `breakout_until`) a 5-minute candle **closes above the Asian high (a buy) or below the Asian low (a sell)**. A wick does not count, nor a close exactly on the line. A candle closing at 09:55 opens at 10:00.
+3. The trade opens at the **next candle's open** (live: its first price; never sent late, as the bounce).
+4. **One trade each way per day:** once a trade that way has opened that day, no more (safety rule, section 6). A close whose trade was refused (for example in a big-news window) does not use up the day: a later close beyond the range can still open it (owner's answer 4).
+
+### 3.8 Session sweep (sell; owner, 16 November 2026)
+
+**Switched on** (`STRATEGY_SESSION_SWEEP=on`). UK times, sell prices (`strategies/session_sweep/`).
+
+1. **The levels:** the Asian high and low (00:00 to 07:00, `session_sweep.asian_range_from`, `asian_range_until`), counted from 07:00; the London high and low from 07:00 to 12:00 (`london_range_from`, `london_range_until`), fixed at 12:00 and counted from then (owner's answer 5). Each level for the rest of its UK day.
+2. **The sweep:** price goes at least 3 pips above the level (`session_sweep.beyond_pips`).
+3. Then a 5-minute candle **closes back inside the level** (below it): the rejection candle. It may be the same candle that went beyond (answer 6), and price may stay beyond for any time that day (answer 7). Exactly: a candle closing below the level where the candles since the last close below it, this one included, went at least 3 pips above it.
+4. **The confirmation candle** closes below the rejection candle's low within 3 candles of it (`session_sweep.confirmation_within_candles`), or the setup expires; price going above the rejection candle's high first cancels it (as the bounce, 3.3; answer 8). While a setup waits at a level, that level starts no other.
+5. The trade opens at the **next candle's open** (live: its first price; never sent late).
+6. **Stop:** 1 pip beyond the sweep's furthest point (`session_sweep.stop_beyond_furthest_pips`; the highest price from the first move beyond the level to the entry), and **at least 12 pips** from the entry (`session_sweep.min_stop_pips`; answer 9). Sent to IG as a distance from the price at sending, as the level reversal's.
+7. **Each of the four levels at most once a day** for a trade (safety rule, section 6; answer 10).
+
+### 3.9 New York open reversal (sell after a rise; owner, 16 November 2026)
+
+**Switched on** (`STRATEGY_NEW_YORK_OPEN_REVERSAL=on`). UK times, sell prices (`strategies/new_york_open_reversal/`).
+
+1. **The move:** from the open of the 07:00 candle to the close of the last candle before 13:30 UK (`new_york_open_reversal.move_from`, `move_until`), at least 30 pips one way (`min_move_pips`; answer 11).
+2. Between 13:30 and 15:00 UK (`window_from`, `window_until`): a **rejection candle against the move**, red after a rise (green after a fall), whatever its size (answer 12). Every rejection candle starts its own setup.
+3. **The confirmation candle** closes below the rejection candle's low within 3 candles of it (`confirmation_within_candles`); price going above the rejection candle's high first cancels it (as the bounce; answer 13). Both candles are in the window.
+4. The trade opens at the **next candle's open** (live: its first price; never sent late).
+5. **One trade a day** (safety rule, section 6; answer 14).
+6. **No trade on a day with big news for the pair released at 13:30 UK** (`no_trade_if_big_news_at`; any release the news table counts as big for GBP or USD; answer 15).
+
+**What the three session strategies share** (owner, 16 November 2026, with the owner's answers 1 to 15): a 12-pip stop (`asian_range_breakout.stop_loss_pips`, `new_york_open_reversal.stop_loss_pips`; the sweep's as 3.8), then **the trail behind the last 3 candles once 12 pips up**, exactly as the bounce's (section 4; each strategy's own `trail_from_pips` and `trail_candles`); the 100-pip take profit at IG (`TAKE_PROFIT_PIPS`; answer 1); new trades 06:00 to 20:30 UK, closed at 20:30 UK, no new trade in a big-news window and open trades closed 15 minutes before big news (answer 3); one trade at a time in each direction. They **open without hindrance, like the bounce**: not the analyser's state, the direction rule, the hourly read, the trend still going, the most at once nor one view at a time. No close on a rejection at a level. Every number is a setting in `config/settings.toml` (`[asian_range_breakout]`, `[session_sweep]`, `[new_york_open_reversal]`).
+
 ---
 
 ## 4. Trade management
@@ -233,7 +267,8 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 ## 6. Limits
 
 - Size: £10 per pip.
-- Trades open at once: 1 per strategy (the slow grind and the level reversal too: one trade of each at a time, owner, 8 November 2026); the Bollinger bounce one at a time in each direction (owner, 15 November 2026). The EMA pullback is not limited to one trade at a time: it may have several trades open at once, each managed on its own (owner, 7 November 2026). Most at once: 5. EMA pullback trades do not count towards that limit (owner, 7 November 2026). The Bollinger bounce is not held back by it (its trades still count towards it for the others; owner, 15 November 2026).
+- Trades open at once: 1 per strategy (the slow grind and the level reversal too: one trade of each at a time, owner, 8 November 2026); the Bollinger bounce one at a time in each direction (owner, 15 November 2026). The EMA pullback is not limited to one trade at a time: it may have several trades open at once, each managed on its own (owner, 7 November 2026). Most at once: 5. EMA pullback trades do not count towards that limit (owner, 7 November 2026). The Bollinger bounce is not held back by it (its trades still count towards it for the others; owner, 15 November 2026). The three session strategies (3.7 to 3.9; owner, 16 November 2026) as the bounce: one at a time in each direction, not held back by the most at once, nor by one view at a time.
+- **Once a day** (owner, 16 November 2026): the Asian range breakout one trade each way per day, the session sweep one trade per level per day, the New York open reversal one trade a day. Counted from the trades that opened (or were sent and are not yet settled), never from refused ones; each trade's once-a-day key is kept in the order record, so a restart does not forget it.
 - **Total risk** (owner, 8 November 2026): every open trade's risk (its stop distance x its size) plus the new trade's may not be more than £100,000 (`safety.max_total_risk_gbp`), set so it is never reached.
 - **Available funds** (owner, 8 November 2026): a new trade is allowed only if the account's available funds are at least the margin for one trade, £5,000 at £10 a pip (`safety.margin_per_trade_gbp`). The available funds come from IG's account details, read at start-up and again whenever a trade opens or closes, never as an extra call before each trade. If IG refuses a trade for lack of funds, Johnny gets a Telegram alert (section 7).
 - **Built (stage 10, `safety/rules.py`):** the safety part decides whether a new order may go out from what it is given (the idea and its order, the open trades, the account's available funds, the time, the pause switch), giving every reason it refuses: the pause switch (blocks every new trade); the strategy's switch; each strategy's hours, news and Friday rules (above and section 4); the trades open at once (each strategy's own limit; at most 5, `limits.max_open_trades`, not counting the EMA pullback's); the size (£10 a pip); the total risk; the available funds (unknown funds refuse). It never contacts IG.
@@ -353,7 +388,7 @@ The owner approved the Structural Trade Planner's 38 architectural decisions, it
 
 This branch is the first build (f99efe1, live on the IG demo from 9 November 2026 00:09 UTC) with the market analyser
 exactly as it was then, plus only the following. Everything else after f99efe1 is left out: the hourly read, the
-analyser control, Stage 4, the session strategies, "one view at a time", the pace and target rule, "trend still going",
+analyser control, Stage 4, "one view at a time", the pace and target rule, "trend still going",
 and every other strategy change.
 
 **Kept as on main:**
@@ -397,3 +432,25 @@ Records, Telegram and the dashboard show the two bounces by their names.
 - one try per strategy, direction and candle (16 Nov);
 - trail stop moves IG can accept (17 Nov);
 - the live check waits for IG's finished candle, and journal provenance (19 Nov).
+
+**Added later the same day (owner, 19 November 2026): the three session strategies**, exactly as on main (design
+3.7 to 3.9 there):
+- the Asian range breakout (`strategies/asian_range_breakout`);
+- the session sweep (`strategies/session_sweep`);
+- the New York open reversal (`strategies/new_york_open_reversal`; the shared UK-day helpers are in
+  `strategies/sessions.py`).
+
+They come with their own rules, settings (`[asian_range_breakout]`, `[session_sweep]`, `[new_york_open_reversal]`) and
+switches (`STRATEGY_ASIAN_RANGE_BREAKOUT`, `STRATEGY_SESSION_SWEEP`, `STRATEGY_NEW_YORK_OPEN_REVERSAL`, required, as
+on main). Like the hourly-pierce bounce they:
+- open without hindrance (every analyser state, no direction rule), at the next candle's open, never sent late;
+- are limited to one each way, and not held back by the total;
+- trail with their own `trail_from_pips` and `trail_candles`.
+
+They bring their own safety rule 10, **once a day**:
+- the Asian range breakout: one each way per day;
+- the session sweep: one per level per day;
+- the New York open reversal: one a day.
+
+The New York open reversal also stays out on a day with big news at 13:30 UK. Their pivot rule is not added (a later
+step). Nothing else from main came with them.

@@ -430,6 +430,39 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "rollover_no_new_trades_from": _clock_time,
         "rollover_no_new_trades_until": _clock_time,
     },
+    "asian_range_breakout": {
+        "range_from": _clock_time,
+        "range_until": _clock_time,
+        "breakout_from": _clock_time,
+        "breakout_until": _clock_time,
+        "stop_loss_pips": _whole_number(1, 100),
+        "trail_from_pips": _decimal_number("0", "1000"),
+        "trail_candles": _whole_number(1, 50),
+    },
+    "session_sweep": {
+        "asian_range_from": _clock_time,
+        "asian_range_until": _clock_time,
+        "london_range_from": _clock_time,
+        "london_range_until": _clock_time,
+        "beyond_pips": _decimal_number("0", "100"),
+        "confirmation_within_candles": _whole_number(1, 50),
+        "stop_beyond_furthest_pips": _decimal_number("0", "100"),
+        "min_stop_pips": _whole_number(1, 100),
+        "trail_from_pips": _decimal_number("0", "1000"),
+        "trail_candles": _whole_number(1, 50),
+    },
+    "new_york_open_reversal": {
+        "move_from": _clock_time,
+        "move_until": _clock_time,
+        "min_move_pips": _decimal_number("0", "1000"),
+        "window_from": _clock_time,
+        "window_until": _clock_time,
+        "confirmation_within_candles": _whole_number(1, 50),
+        "no_trade_if_big_news_at": _clock_time,
+        "stop_loss_pips": _whole_number(1, 100),
+        "trail_from_pips": _decimal_number("0", "1000"),
+        "trail_candles": _whole_number(1, 50),
+    },
     "possible_reversal": {
         "min_trend_move_pips": _whole_number(1, 1000),
     },
@@ -692,6 +725,13 @@ def _check_switches(sw: dict[str, Any], v: dict[str, dict[str, Any]], pairs: dic
 
 def _check_together(v: dict[str, dict[str, Any]]) -> None:
     """Checks that involve more than one setting (the hours checks are with the switches)."""
+    for section, pairs in (("asian_range_breakout", (("range_from", "range_until"), ("breakout_from", "breakout_until"))),
+                           ("session_sweep", (("asian_range_from", "asian_range_until"),
+                                              ("london_range_from", "london_range_until"))),
+                           ("new_york_open_reversal", (("move_from", "move_until"), ("window_from", "window_until")))):
+        for a, b in pairs:
+            if v[section][a] >= v[section][b]:
+                raise SettingsError(f"Setting [{section}] {a} must be earlier than {b}.")
     sg = v["slow_grind"]
     if sg["lock_at_pips"] >= sg["lock_from_pips"]:
         raise SettingsError("Setting [slow_grind] lock_at_pips must be smaller than lock_from_pips.")

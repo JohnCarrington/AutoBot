@@ -10,10 +10,11 @@ only, owner 7 November 2026):
      TREND'S DIRECTION ONLY; trend only -> slow grind, IN THE TREND'S DIRECTION
      ONLY (owner, 8 November 2026); consolidation -> none. The Bollinger
      bounce is not checked against the state: it opens in every state, either
-     way (owner, 15 November 2026: "it opens without hindrance");
+     way (owner, 15 November 2026: "it opens without hindrance"); nor are the three session strategies, the Asian
+     range breakout, the session sweep and the New York open reversal (owner, 16 November 2026: "like the bounce");
   3. the direction rule allows that direction (section 2.3): a buy needs buy
      side (price above the daily pivot and the 5-minute 100 EMA), a sell needs
-     sell side. It does not apply to the range trade, the Bollinger bounce, the
+     sell side. It does not apply to the session strategies (owner, 16 November 2026), the range trade, the Bollinger bounce, the
      breakout (owner, 7 November 2026), the slow grind or the level reversal
      (owner, 8 November 2026), in any state; the rule's answer is still recorded.
      The level reversal is allowed in every state except consolidation, either way.
@@ -39,18 +40,30 @@ SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE, BREAKOUT, LEVEL_REVERSA
 # The first build's Bollinger band bounce (strategies/bollinger_bounce_5m; owner, 19 November 2026: kept, renamed,
 # alongside the hourly-pierce bounce of 15 November, so records and the dashboard tell them apart).
 BOLLINGER_BOUNCE_5M = "Bollinger bounce 5m"
+# The session strategies (design 3.7 to 3.9; owner, 16 November 2026).
+ASIAN_RANGE_BREAKOUT, SESSION_SWEEP, NEW_YORK_OPEN_REVERSAL = (
+    "Asian range breakout", "session sweep", "New York open reversal")
+SESSION_STRATEGIES = (ASIAN_RANGE_BREAKOUT, SESSION_SWEEP, NEW_YORK_OPEN_REVERSAL)
 SWITCH = {SLOW_GRIND: "slow_grind", EMA_PULLBACK: "ema_pullback", BOLLINGER_BOUNCE: "bollinger_bounce",
           RANGE_TRADE: "range_trade", BREAKOUT: "breakout", LEVEL_REVERSAL: "level_reversal",
-          BOLLINGER_BOUNCE_5M: "bollinger_bounce_5m"}
+          BOLLINGER_BOUNCE_5M: "bollinger_bounce_5m",
+          ASIAN_RANGE_BREAKOUT: "asian_range_breakout", SESSION_SWEEP: "session_sweep",
+          NEW_YORK_OPEN_REVERSAL: "new_york_open_reversal"}
+# Open without hindrance (owner, 15 and 16 November 2026): not checked against the analyser's state or the direction
+# rule; in the safety rules one at a time in each direction, not held back by the most at once.
+WITHOUT_HINDRANCE = (BOLLINGER_BOUNCE,) + SESSION_STRATEGIES
+# Open at the open of the candle after their confirmation candle: live, on that candle's first price; never sent
+# late (trading/engine.py).
+OPEN_AT_NEXT_CANDLE = (BOLLINGER_BOUNCE,) + SESSION_STRATEGIES
 # Held overnight and closed at 20:30 UK on Friday only (owner, 7 November 2026); every other
 # strategy is closed at 20:30 UK every day.
 OWN_HOURS = (EMA_PULLBACK, BREAKOUT)
 # May open in a big-news window and not closed before big news (owner, 7 and 8 November 2026).
 NEWS_ALLOWED = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND)
 # Not closed on a rejection at a level (owner, 7 and 8 November 2026).
-NO_LEVEL_CLOSE = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL, BOLLINGER_BOUNCE)
+NO_LEVEL_CLOSE = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL, BOLLINGER_BOUNCE) + SESSION_STRATEGIES
 # The direction rule (section 2.3) does not apply to these (owner, 7 and 8 November 2026).
-NO_DIRECTION_RULE = (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL, BOLLINGER_BOUNCE_5M)
+NO_DIRECTION_RULE = (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL, BOLLINGER_BOUNCE_5M) + SESSION_STRATEGIES
 BUY, SELL = "buy", "sell"
 # Section 2.2: which states allow which strategy: "any" direction, only in the trend's direction
 # ("trend"), or only against it ("against").
@@ -67,6 +80,9 @@ ALLOWED_IN = {
     # 7 November 2026); possible reversal -> either way
     BOLLINGER_BOUNCE_5M: {TREND: "against", POSSIBLE_REVERSAL: "any"},
 }
+# the session strategies: every state, either way, not checked (owner, 16 November 2026: "like the bounce")
+for _name in SESSION_STRATEGIES:
+    ALLOWED_IN[_name] = dict(ALLOWED_IN[BOLLINGER_BOUNCE])
 
 
 @dataclass
@@ -126,7 +142,8 @@ def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: lis
     slow_grind.rollover_no_new_trades_from (21:55) to slow_grind.rollover_no_new_trades_until (22:15) UK.
     Breakout: UK time from NEW_TRADES_FROM to NEW_TRADES_UNTIL; big-news windows allowed.
     Every other strategy: UK time from NEW_TRADES_FROM to NEW_TRADES_UNTIL, and not in a big-news
-    no-new-trades window."""
+    no-new-trades window. The New York open reversal also not on a day with big news for the pair released at
+    new_york_open_reversal.no_trade_if_big_news_at (13:30) UK (owner, 16 November 2026)."""
     from zoneinfo import ZoneInfo
     from news.calendar import no_new_trades
     from prices.calendar import MarketHours
@@ -169,6 +186,10 @@ def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: lis
     windows = no_new_trades(settings, pair, t, calendar)
     if windows:
         reasons.append("in a big-news window: " + ", ".join(sorted({w.event for w in windows})))
+    if strategy == NEW_YORK_OPEN_REVERSAL:
+        at = settings.new_york_open_reversal.no_trade_if_big_news_at
+        if big_news_at(settings, pair, t, at, calendar):
+            reasons.append(f"big news is released at {at:%H:%M} UK today: no {strategy} (owner, 16 November 2026)")
     return reasons
 
 
@@ -188,6 +209,39 @@ def forced_close_at(settings: Any, strategy: str, opened: datetime) -> datetime:
         if cut > lt and (strategy not in OWN_HOURS or day.weekday() == 4):
             return cut.astimezone(timezone.utc)
     raise AssertionError("no close found within a week")
+
+
+def trail(settings: Any, strategy: str) -> tuple[Decimal, int] | None:
+    """The trail behind the last candles as (from pips, candles): once a trade has been `from` pips in profit, after
+    each finished 5-minute candle its stop is moved at IG beyond the last `candles` finished candles. The Bollinger
+    bounce (bounce.trail_from_pips 12, bounce.trail_candles 3; owner, 15 November 2026) and the session strategies,
+    each with its own trail_from_pips and trail_candles (12 and 3; owner, 16 November 2026); None for every other
+    strategy."""
+    section = {BOLLINGER_BOUNCE: "bounce", ASIAN_RANGE_BREAKOUT: "asian_range_breakout",
+               SESSION_SWEEP: "session_sweep", NEW_YORK_OPEN_REVERSAL: "new_york_open_reversal"}.get(strategy)
+    if section is None:
+        return None
+    sec = getattr(settings, section)
+    return Decimal(str(sec.trail_from_pips)), int(sec.trail_candles)
+
+
+def most_trail_candles(settings: Any) -> int:
+    """The most finished candles any strategy's trail looks back over (the trade manager keeps at least these)."""
+    return max(trail(settings, n)[1] for n in WITHOUT_HINDRANCE)
+
+
+def big_news_at(settings: Any, pair: str, t: datetime, at: Any, calendar: list | None = None) -> bool:
+    """Whether a BIG release for the pair (the news table) comes out at UK clock time `at` on t's UK day."""
+    from datetime import datetime as dt, time as tm, timedelta, timezone
+    from zoneinfo import ZoneInfo
+    from news.calendar import big_news_windows
+    tz = settings.hours.timezone
+    uk = ZoneInfo(tz) if isinstance(tz, str) else tz
+    day = t.astimezone(uk).date()
+    start = dt.combine(day, tm(0, 0), tzinfo=uk).astimezone(timezone.utc)
+    end = dt.combine(day + timedelta(days=1), tm(0, 0), tzinfo=uk).astimezone(timezone.utc)
+    return any(w.release_utc.astimezone(uk).time().replace(second=0, microsecond=0) == at
+               for w in big_news_windows(settings, pair, start, end, calendar))
 
 
 def closed_before_big_news(strategy: str) -> bool:
@@ -259,10 +313,19 @@ def stop_loss_pips(settings: Any, strategy: str) -> int:
     (breakout.stop_loss_pips) and the slow grind's (slow_grind.stop_loss_pips, 15); every other
     strategy uses STOP_LOSS_PIPS. The level reversal's stop is not a distance from the entry but
     level_reversal.stop_beyond_furthest_pips (6) beyond the furthest point price reached: see
-    stop_price(); this returns that 6."""
+    stop_price(); this returns that 6. The session strategies (owner, 16 November 2026): the Asian range
+    breakout's asian_range_breakout.stop_loss_pips (12), the New York open reversal's
+    new_york_open_reversal.stop_loss_pips (12); the session sweep's stop is a price (stop_price()), at least
+    session_sweep.min_stop_pips (12) from the entry, which this returns."""
     sw = settings.switches
     if strategy == LEVEL_REVERSAL:
         return settings.level_reversal.stop_beyond_furthest_pips
+    if strategy == ASIAN_RANGE_BREAKOUT:
+        return settings.asian_range_breakout.stop_loss_pips
+    if strategy == NEW_YORK_OPEN_REVERSAL:
+        return settings.new_york_open_reversal.stop_loss_pips
+    if strategy == SESSION_SWEEP:
+        return settings.session_sweep.min_stop_pips
     if strategy == BREAKOUT:
         return settings.breakout.stop_loss_pips
     if strategy == SLOW_GRIND:
@@ -273,9 +336,11 @@ def stop_loss_pips(settings: Any, strategy: str) -> int:
 def stop_price(settings: Any, idea: Any) -> Decimal | None:
     """Design section 4: the stop as a price (chart price) when a strategy sets it from its setup:
     the level reversal's, level_reversal.stop_beyond_furthest_pips beyond the furthest point price
-    reached past (or short of) the level (the idea's context). None for every other strategy,
-    whose stop is stop_loss_pips() from the entry."""
-    if idea.strategy != LEVEL_REVERSAL:
+    reached past (or short of) the level (the idea's context); the session sweep's,
+    session_sweep.stop_beyond_furthest_pips (1) beyond the sweep's furthest point and at least
+    session_sweep.min_stop_pips (12) from the entry (worked out by the strategy, in the idea's context).
+    None for every other strategy, whose stop is stop_loss_pips() from the entry."""
+    if idea.strategy not in (LEVEL_REVERSAL, SESSION_SWEEP):
         return None
     return idea.context["stop_price"]
 
@@ -289,8 +354,8 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
     if not getattr(settings.switches, SWITCH[strategy]):
         reasons.append(f"its switch STRATEGY_{SWITCH[strategy].upper()} is off")
     ok_in = ALLOWED_IN[strategy]
-    if strategy == BOLLINGER_BOUNCE:
-        pass                                            # not checked against the state (owner, 15 November 2026)
+    if strategy in WITHOUT_HINDRANCE:
+        pass                                            # not checked against the state (owner, 15 and 16 November 2026)
     elif state.state not in ok_in:
         reasons.append(f"the analyser's state is {state.state}, which does not allow {strategy}")
     elif ok_in[state.state] in ("trend", "against"):

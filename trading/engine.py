@@ -25,6 +25,9 @@ sender and the trade manager, run inside the price service on its IG login.
     not show (a gap in the stream) is recorded as not sent. It closes nothing else when it opens. Once it has
     been 12 pips up its stop trails behind the last 3 finished candles (the trade manager, after each finished
     candle; the last candles are seeded from the store at start-up).
+  * The session strategies (design 3.7 to 3.9; owner, 16 November 2026: the Asian range breakout, the session sweep
+    and the New York open reversal) open the same way: at the next candle's open, live on its first price, never
+    sent late, with the same trail (each with its own settings).
   * The trade manager's saved state (each open trade's best pips so far, half close, watching a level) is restored
     at start-up.
   * Records (records/book.py, design 9): every trade (opened and closed, with everything section 9 lists) and every
@@ -54,7 +57,7 @@ from trading.reasons import level_note, one_line, take_profit_kind
 from levels.current import build
 from prices.calendar import floor_5m
 from prices.model import Candle
-from strategies.common import BOLLINGER_BOUNCE
+from strategies.common import OPEN_AT_NEXT_CANDLE, SESSION_STRATEGIES, most_trail_candles
 from strategies.replay import StrategyRunner
 from trade_manager.manager import Bar, Rejection, TradeManager, plan
 
@@ -138,7 +141,7 @@ class Trading:
             if not self.replay:
                 self.tracker.replay(now)
                 self.runner.step()                          # the week so far: nothing is sent for the past
-                n = self.s.bounce.trail_candles             # the last finished candles, for the bounce's trail
+                n = most_trail_candles(self.s)              # the last finished candles, for the trails
                 self.manager.recent = [Bar.of(h[0].candle) for h in self.tracker.history[-n:]]
             self._changes_seen = len(self.tracker.changes)
             self.ready = True
@@ -203,14 +206,15 @@ class Trading:
                     continue
                 if idea.allowed and not sent_live:
                     tried.add(key)
-                if idea.allowed and not sent_live and idea.strategy == BOLLINGER_BOUNCE and not self.replay:
+                if idea.allowed and not sent_live and idea.strategy in OPEN_AT_NEXT_CANDLE and not self.replay:
                     # it opens at the candle's open; the live prices did not show it: never sent late
-                    self.book.decision("bounce not sent", idea.time, strategy=idea.strategy, direction=idea.direction,
+                    self.book.decision("bounce not sent" if idea.strategy == "Bollinger bounce" else "not sent late",
+                                       idea.time, strategy=idea.strategy, direction=idea.direction,
                                        entry_price=idea.entry_price,
                                        why="its entry is the open of this candle, which the live prices did not "
                                            "show (a gap in the stream): not sent late")
-                    log.warning("Bollinger bounce %s at %s not sent: the live prices did not show its candle's open.",
-                                idea.direction, idea.time)
+                    log.warning("%s %s at %s not sent: the live prices did not show its candle's open.",
+                                idea.strategy, idea.direction, idea.time)
                 elif idea.allowed and not sent_live:
                     self._send(idea, c, band, rej)
         if new:
@@ -477,6 +481,7 @@ class Trading:
                 warnings.append(f"Trade {ref}: IG's {t.expected_at_ig[0]} expected but not yet confirmed by IG")
         allowed = list(ALLOWED.get(st.state, ())) if st is not None else []
         allowed.append("Bollinger bounce")                  # in every state (owner, 15 November 2026)
+        allowed += list(SESSION_STRATEGIES)                 # in every state (owner, 16 November 2026)
         by_name = {n.lower(): n for n in SWITCH}
         switches = {name: bool(getattr(self.s.switches, key, False)) for name, key in SWITCH.items()}
         trades = []

@@ -992,3 +992,18 @@ def test_a_minimum_ig_cannot_give_is_recorded_as_not_known_and_the_move_still_go
     m = sender.move_stop(r.reference, D("13400.5"))
     sending = next(x for x in records(sender) if x["event"] == "stop move sending")
     assert m.ok and sending["ig_min_stop_pips"] is None and "error.public-api.failure" in sending["ig_min_stop_error"]
+
+
+def test_the_once_a_day_key_is_kept_with_the_trade_and_after_a_restart(S):
+    # owner, 16 November 2026: the Asian range breakout one trade each way per day, counted from trades that opened
+    from strategies.common import ASIAN_RANGE_BREAKOUT
+    s = Over(S, switches={k: v for k, v in vars(S.switches).items() if not k.startswith("_")}
+             | {"asian_range_breakout": True})
+    sender, ig, *_ = make(s)
+    key = "Asian range breakout sell 2026-11-04"
+    assert sender.place(idea(ASIAN_RANGE_BREAKOUT, context={"once_a_day": key}), calendar=[]).ok
+    assert sender.used_once_a_day() == {key}
+    again, *_ = make(s, ig)                                            # a restart: read back from the record
+    assert again.used_once_a_day() == {key}
+    r = again.place(idea(ASIAN_RANGE_BREAKOUT, context={"once_a_day": key}), calendar=[])
+    assert r.what == "safety refused" and any(x.startswith("once a day") for x in r.reasons)
