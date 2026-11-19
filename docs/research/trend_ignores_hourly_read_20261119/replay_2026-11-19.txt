@@ -1,0 +1,42 @@
+===== TREND_IGNORES_HOURLY_READ=on (switch read back: True)
+06:10 slow grind buy 13135.8 | state: consolidation  | BLOCKED: the analyser's state is consolidation, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 1.6 pips above the swing high 13134.2 of 04:45, at 05:10); ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the trend group opens nothing
+07:00 slow grind buy 13140.9 | state: emerging trend  | BLOCKED: the analyser's state is emerging trend, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 4.9 pips above the swing high 13135.8 of 06:00, at 06:20)
+07:55 slow grind buy 13155.6 | state: trend  | ALLOWED
+      allowed at entry: slow grind in a trend up; direction rule no clear direction (price 13155.6 is below the pivot 13162.5 and above the 5m 100 EMA 13140.0: they disagree); the direction rule does not apply to slow grind; hourly sell-off: the Thu 19 Nov 03:00 GMT hourly candle closed at 13125.2, 5.4 pips below the low 13130.6 of the 12 hourly candles before it; the hourly range 13119.1 to 13153.3
+08:10 slow grind buy 13155.2 | state: trend  | ALLOWED
+      allowed at entry: slow grind in a trend up; direction rule no clear direction (price 13155.2 is below the pivot 13162.5 and above the 5m 100 EMA 13140.7: they disagree); the direction rule does not apply to slow grind; hourly sell-off: the Thu 19 Nov 03:00 GMT hourly candle closed at 13125.2, 5.4 pips below the low 13130.6 of the 12 hourly candles before it; the hourly range 13119.1 to 13157.5
+08:35 slow grind buy 13155.1 | state: trend  | BLOCKED: TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 1.0 pips above the swing high 13156.5 of 07:30, at 07:55)
+08:50 slow grind buy 13154 | state: trend  | BLOCKED: TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 1.0 pips above the swing high 13156.5 of 07:30, at 07:55)
+-- EMA pullback notes 06:00-09:30
+06:00 sell touched the 8 EMA 13134.3; the touch candle closed 13134.2 above the 21 EMA 13133.2: cancelled
+06:05 sell touched the 8 EMA 13134.3; the touch candle closed 13133.8 above the 21 EMA 13133.3: cancelled
+06:10 sell touched the 8 EMA 13134.2; the touch candle closed 13136.2 above the 21 EMA 13133.6: cancelled
+06:15 sell touched the 8 EMA 13134.6; the touch candle closed 13138.0 above the 21 EMA 13134.0: cancelled
+06:20 sell touched the 8 EMA 13135.4; the touch candle closed 13138.1 above the 21 EMA 13134.3: cancelled
+06:25 sell touched the 8 EMA 13136.0; the touch candle closed 13139.5 above the 21 EMA 13134.8: cancelled
+06:30 sell touched the 8 EMA 13136.8; the touch candle closed 13140.0 above the 21 EMA 13135.3: cancelled
+06:35 sell touched the 8 EMA 13137.5; the touch candle closed 13138.3 above the 21 EMA 13135.5: cancelled
+06:40 sell touched the 8 EMA 13137.7; the touch candle closed 13139.3 above the 21 EMA 13135.9: cancelled
+06:45 sell touched the 8 EMA 13138.0; the touch candle closed 13140.1 above the 21 EMA 13136.3: cancelled
+06:50 sell touched the 8 EMA 13138.5; the touch candle closed 13137.6 above the 21 EMA 13136.4: cancelled
+06:55 sell touched the 8 EMA 13138.3; the touch candle closed 13138.7 above the 21 EMA 13136.6: cancelled
+===== TREND_IGNORES_HOURLY_READ=off (switch read back: False)
+06:10 slow grind buy 13135.8 | state: consolidation  | BLOCKED: the analyser's state is consolidation, which does not allow slow grind; the hourly chart is in a sell-off: slow grind only sells; TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 1.6 pips above the swing high 13134.2 of 04:45, at 05:10); ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the trend group opens nothing
+07:00 slow grind buy 13140.9 | state: emerging trend  | BLOCKED: the analyser's state is emerging trend, which does not allow slow grind; the hourly chart is in a sell-off: slow grind only sells; TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 4.9 pips above the swing high 13135.8 of 06:00, at 06:20)
+07:55 slow grind buy 13155.6 | state: trend  | BLOCKED: the hourly chart is in a sell-off: slow grind only sells
+08:10 slow grind buy 13155.2 | state: trend  | BLOCKED: the hourly chart is in a sell-off: slow grind only sells
+08:35 slow grind buy 13155.1 | state: trend  | BLOCKED: the hourly chart is in a sell-off: slow grind only sells; TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 1.0 pips above the swing high 13156.5 of 07:30, at 07:55)
+08:50 slow grind buy 13154 | state: trend  | BLOCKED: the hourly chart is in a sell-off: slow grind only sells; TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 1.0 pips above the swing high 13156.5 of 07:30, at 07:55)
+-- EMA pullback notes 06:00-09:30
+06:00 sell touched the 8 EMA 13134.3; the touch candle closed 13134.2 above the 21 EMA 13133.2: cancelled
+06:05 sell touched the 8 EMA 13134.3; the touch candle closed 13133.8 above the 21 EMA 13133.3: cancelled
+06:10 sell touched the 8 EMA 13134.2; the touch candle closed 13136.2 above the 21 EMA 13133.6: cancelled
+06:15 sell touched the 8 EMA 13134.6; the touch candle closed 13138.0 above the 21 EMA 13134.0: cancelled
+06:20 sell touched the 8 EMA 13135.4; the touch candle closed 13138.1 above the 21 EMA 13134.3: cancelled
+06:25 sell touched the 8 EMA 13136.0; the touch candle closed 13139.5 above the 21 EMA 13134.8: cancelled
+06:30 sell touched the 8 EMA 13136.8; the touch candle closed 13140.0 above the 21 EMA 13135.3: cancelled
+06:35 sell touched the 8 EMA 13137.5; the touch candle closed 13138.3 above the 21 EMA 13135.5: cancelled
+06:40 sell touched the 8 EMA 13137.7; the touch candle closed 13139.3 above the 21 EMA 13135.9: cancelled
+06:45 sell touched the 8 EMA 13138.0; the touch candle closed 13140.1 above the 21 EMA 13136.3: cancelled
+06:50 sell touched the 8 EMA 13138.5; the touch candle closed 13137.6 above the 21 EMA 13136.4: cancelled
+06:55 sell touched the 8 EMA 13138.3; the touch candle closed 13138.7 above the 21 EMA 13136.6: cancelled

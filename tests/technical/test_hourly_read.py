@@ -112,8 +112,20 @@ def test_the_trend_strategies_are_the_ema_pullback_slow_grind_and_breakout():
     assert set(TREND_STRATEGIES) == {EMA_PULLBACK, SLOW_GRIND, BREAKOUT}
 
 
+class _hourly_decides:
+    """The same settings with TREND_IGNORES_HOURLY_READ off (owner, 19 November 2026: on if left out), so that the hourly
+    read still decides for the slow grind and the EMA pullback, as these tests were written for (14 November 2026)."""
+    def __init__(self, base):
+        self._base = base
+        self.switches = SimpleNamespace(**(vars(base.switches) | {"trend_ignores_hourly_read": False}))
+
+    def __getattr__(self, name):
+        return getattr(self._base, name)
+
+
 @pytest.mark.parametrize("strategy", [EMA_PULLBACK, SLOW_GRIND, BREAKOUT])
 def test_hourly_ranging_blocks_the_trend_strategies(S, strategy):
+    S = _hourly_decides(S)
     assert hourly_reasons(S, strategy, BUY, hourly(RANGING)) and hourly_reasons(S, strategy, SELL, hourly(RANGING))
     i = check(S, "GBPUSD", cand(strategy, SELL), st(DOWN), D(110), D(110), hourly(RANGING))
     assert not i.allowed
@@ -122,6 +134,7 @@ def test_hourly_ranging_blocks_the_trend_strategies(S, strategy):
 
 @pytest.mark.parametrize("strategy", [EMA_PULLBACK, SLOW_GRIND, BREAKOUT])
 def test_trend_strategies_trade_only_with_the_hourly(S, strategy):
+    S = _hourly_decides(S)
     assert hourly_reasons(S, strategy, SELL, hourly(SELL_OFF)) == []
     assert hourly_reasons(S, strategy, BUY, hourly(RALLY)) == []
     assert hourly_reasons(S, strategy, BUY, hourly(SELL_OFF)) == [f"the hourly chart is in a sell-off: {strategy} only sells"]

@@ -25,6 +25,9 @@ only, owner 7 November 2026):
          hourly_read.break_beyond_pips (3) beyond the hourly range, and such a close is what turns the read
          into a sell-off or a rally; so while the read is ranging the trend strategies open nothing;
        * hourly sell-off: the trend strategies only sell; hourly rally: they only buy;
+     while TREND_IGNORES_HOURLY_READ is on (on if left out; owner, 19 November 2026) the slow grind and the EMA
+     pullback are left out of this check, and of check 7's hourly-ranging rule: the analyser alone decides whether
+     and which way they trade (the EMA pullback's own hourly 8/13/20 EMA test, its step 0, still applies);
      the level reversal and the Bollinger bounce (and the range trade) are not affected: they may trade
      against the hourly. Nothing else in the analyser's 5-minute read changes, and open trades are not affected.
   5. the Bollinger bounce's own two switches in .env (owner, 15 November 2026; both off if left out):
@@ -45,7 +48,8 @@ only, owner 7 November 2026):
      The Asian range breakout (owner, 18 November 2026): the trend group for direction only; ranging, consolidation
      and the hourly-ranging rule below do not block it (a possible reversal's "nothing new" still does).
      And while the hourly read (analyser/hourly_read.py, after the last finished hourly candle; whatever HOURLY_READ
-     is) says ranging: the trend group nothing; the reversal group sells only at the top edge, buys only at the
+     is) says ranging: the trend group nothing (not the slow grind and the EMA pullback while
+     TREND_IGNORES_HOURLY_READ is on); the reversal group sells only at the top edge, buys only at the
      bottom edge, judged on the setup's furthest point (the candidate's context "furthest": from its piercing or
      rejection candle to its confirmation candle) within analyser_control.edge_within_pips of the hourly range high
      or above it (a sell), of its low or below it (a buy), and its rejection candle closing back inside the hourly
@@ -108,6 +112,10 @@ NO_DIRECTION_RULE = (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND, LEVEL_
 BUY, SELL = "buy", "sell"
 # The strategies the hourly read applies to (check 4 above; owner, 14 November 2026).
 TREND_STRATEGIES = (EMA_PULLBACK, SLOW_GRIND, BREAKOUT)
+# While TREND_IGNORES_HOURLY_READ is on (owner, 19 November 2026): these do not look at the hourly read at all, neither
+# check 4 nor check 7's hourly-ranging rule; the analyser alone decides. The EMA pullback's own hourly EMA test (its
+# step 0, strategies/ema_pullback) is not the hourly read and still applies.
+HOURLY_READ_IGNORED = (SLOW_GRIND, EMA_PULLBACK)
 # The two groups of check 7, while ANALYSER_GOVERNS_ALL is on (owner, 18 November 2026; design 2.10).
 TREND_GROUP = (SLOW_GRIND, EMA_PULLBACK, BREAKOUT, ASIAN_RANGE_BREAKOUT)
 REVERSAL_GROUP = (BOLLINGER_BOUNCE, LEVEL_REVERSAL, SESSION_SWEEP, NEW_YORK_OPEN_REVERSAL, RANGE_TRADE)
@@ -441,9 +449,18 @@ def stop_price(settings: Any, idea: Any) -> Decimal | None:
     return idea.context["stop_price"]
 
 
+def ignores_hourly_read(settings: Any, strategy: str) -> bool:
+    """TREND_IGNORES_HOURLY_READ (owner, 19 November 2026): the slow grind and the EMA pullback do not look at the
+    hourly read at all while the switch is on."""
+    return strategy in HOURLY_READ_IGNORED and bool(getattr(getattr(settings, "switches", None),
+                                                            "trend_ignores_hourly_read", False))
+
+
 def hourly_reasons(settings: Any, strategy: str, direction: str, hourly: Any) -> list[str]:
     """Check 4: why the hourly read does not allow this trend strategy this way (empty: allowed)."""
     if hourly is None or strategy not in TREND_STRATEGIES or not settings.switches.hourly_read:
+        return []
+    if ignores_hourly_read(settings, strategy):
         return []
     rng = f" ({plain(hourly.low)} to {plain(hourly.high)})" if hourly.low is not None else ""
     if hourly.state == HOURLY_RANGING:
@@ -596,7 +613,7 @@ def governs_reasons(settings: Any, strategy: str, direction: str, state: Any, ho
             out.append(f"ANALYSER_GOVERNS_ALL: in a possible reversal {strategy} goes against the old trend only "
                        f"while the 5-minute MACD histogram is at its biggest bar in the old trend's direction, or "
                        f"past it and shrinking ({getattr(state, 'macd_why', 'the MACD is not known')})")
-    if hourly is not None and hourly.state == HOURLY_RANGING and not arb:
+    if hourly is not None and hourly.state == HOURLY_RANGING and not arb and not ignores_hourly_read(settings, strategy):
         rng = f" ({plain(hourly.low)} to {plain(hourly.high)})" if hourly.low is not None else ""
         if trend:
             out.append(f"ANALYSER_GOVERNS_ALL: the hourly chart is ranging{rng}: {group} opens nothing")

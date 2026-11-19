@@ -603,6 +603,7 @@ def test_replay_does_not_check_when_a_setup_starts(monkeypatch, S):
 
 
 def test_replay_checks_the_hourly_read(monkeypatch, S):
+    S = over(S, "switches", trend_ignores_hourly_read=False)       # the hourly read decides (TREND_IGNORES_HOURLY_READ off)
     (i,) = fake_replay(monkeypatch, S, {0: (TREND, DOWN)}, hourly="ranging")
     assert not i.allowed and i.blocked_by.startswith("the hourly chart is ranging (100 to 110)")
     (j,) = fake_replay(monkeypatch, S, {0: (TREND, DOWN)}, hourly="rally")

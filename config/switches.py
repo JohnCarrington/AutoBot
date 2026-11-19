@@ -43,6 +43,11 @@
   LEVEL_STOPS                 on or off (off if left out; owner, 18 November 2026): the range trade, the level reversal
                               and the EMA pullback put their stop [level_stops] beyond_group_pips (5) beyond the
                               nearest level group on the stop side, refused if wider than widest_stop_pips (20)
+  TREND_IGNORES_HOURLY_READ   on or off (ON if left out; owner, 19 November 2026): the slow grind and the EMA pullback
+                              do not look at the hourly read at all (check 4, and check 7's hourly-ranging rule); the
+                              analyser alone decides whether and which way they trade. The EMA pullback's own hourly
+                              8/13/20 EMA test (its step 0) still applies; the breakout and every other strategy are
+                              unchanged (strategies/common.py)
   TRADING                     the master switch, on or off: while off everything runs and is
                               recorded, but no order is ever sent to IG
   STOP_LOSS_PIPS              the stop loss sent with every trade, in pips (whole, 1 to 100),
@@ -130,6 +135,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "TRAIL_NO_LOSS": ("trail_no_loss", _on_off),
     "LR_ENTRY_NEAR_LEVEL": ("lr_entry_near_level", _on_off),
     "LEVEL_STOPS": ("level_stops", _on_off),
+    "TREND_IGNORES_HOURLY_READ": ("trend_ignores_hourly_read", _on_off),
     "TRADING": ("trading", _on_off),
     "STOP_LOSS_PIPS": ("stop_loss_pips", _pips(1, 100)),
     "STOP_LOSS_PIPS_EMA_PULLBACK": ("stop_loss_pips_ema_pullback", _pips(1, 100)),
@@ -144,7 +150,10 @@ OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_WHEN_HOURLY_RANGING": "off", "BOUNCE_ON
                             "ANALYSER_USES_HOURLY": "off", "ANALYSER_GOVERNS_ALL": "off", "ONE_SIGNAL_ONE_TRADE": "off",
                             # stage 4, entries and exits (owner, 18 November 2026): all off by default
                             "SCALE_OUT_REVERSAL": "off", "TRAIL_NO_LOSS": "off", "LR_ENTRY_NEAR_LEVEL": "off",
-                            "LEVEL_STOPS": "off"}
+                            "LEVEL_STOPS": "off",
+                            # the hourly read no longer decides for the slow grind and EMA pullback (owner, 19 November
+                            # 2026): ON by default
+                            "TREND_IGNORES_HOURLY_READ": "on"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:
