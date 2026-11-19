@@ -69,6 +69,14 @@ def fork(strategy: Any) -> Any:
     return copy.deepcopy(strategy, memo)
 
 
+def _session_candle(strat: Any, c: Any, fast: dict, slow: dict) -> list:
+    """A session strategy's candle; the Asian range breakout also gets the 5-minute 8 and 21 EMAs after it (its
+    pullback entry, PULLBACK_ENTRY; owner, 19 November 2026)."""
+    if isinstance(strat, AsianRangeBreakout):
+        return strat.on_candle(c, fast.get(c.start), slow.get(c.start))
+    return strat.on_candle(c)
+
+
 class StrategyRunner:
     """The strategies one finished 5-minute candle at a time, exactly as the replay below runs them (the replay
     is built on it) and as the live service runs them. Give it a StateTracker; after the tracker has taken new
@@ -157,13 +165,13 @@ class StrategyRunner:
         bounce = fork(self.bounce)
         sessions = [fork(x) for x in self.sessions]
         events = watcher.on_candle(partial, band, levels if levels is not None else build(s, self.memo, partial.start))
-        cands = (breakout.on_candle(partial, None, None)
+        cands = (breakout.on_candle(partial, None, None, fast.get(partial.start), slow.get(partial.start))
                  + grind.on_candle(partial, sg_ema.get(partial.start))
                  + pullback.on_candle(partial, fast.get(partial.start), slow.get(partial.start))
                  + bounce.on_candle(partial) + bounce_5m_candidates(watcher, events)
                  + range_candidates(watcher, events)
                  + reversal.on_candle(partial, watcher, events)
-                 + [x for strat in sessions for x in strat.on_candle(partial)])
+                 + [x for strat in sessions for x in _session_candle(strat, partial, fast, slow)])
         st = self.state_after(len(self.week) - 1)
         e100 = ema100.get(self.week[-1].start)
         return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100) for cand in cands]
@@ -204,13 +212,13 @@ class StrategyRunner:
             events = self.watcher.on_candle(c, band, build(s, self.memo, c.start))
             kc = change_at.get(c.start)
             since = changes[kc[0] - 1].time if kc and kc[0] > 0 else None
-            cands = (self.breakout.on_candle(c, kc[1] if kc else None, since)
+            cands = (self.breakout.on_candle(c, kc[1] if kc else None, since, fast.get(c.start), slow.get(c.start))
                      + self.grind.on_candle(c, sg_ema.get(c.start))
                      + self.pullback.on_candle(c, fast.get(c.start), slow.get(c.start))
                      + self.bounce.on_candle(c) + bounce_5m_candidates(self.watcher, events)
                      + range_candidates(self.watcher, events)
                      + self.reversal.on_candle(c, self.watcher, events)
-                     + [x for strat in self.sessions for x in strat.on_candle(c)])
+                     + [x for strat in self.sessions for x in _session_candle(strat, c, fast, slow)])
             if cands:
                 st = self.state_after(i - 1)
                 e100 = ema100.get(self.week[i - 1].start) if i > 0 else None

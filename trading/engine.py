@@ -58,7 +58,7 @@ from trading.reasons import level_note, one_line, take_profit_kind
 from levels.current import build
 from prices.calendar import floor_5m
 from prices.model import Candle
-from strategies.common import OPEN_AT_NEXT_CANDLE, SESSION_STRATEGIES, most_trail_candles
+from strategies.common import SESSION_STRATEGIES, most_trail_candles, opens_at_next_candle
 from strategies.replay import StrategyRunner
 from trade_manager.manager import Bar, Rejection, TradeManager, plan
 
@@ -207,7 +207,7 @@ class Trading:
                     continue
                 if idea.allowed and not sent_live:
                     tried.add(key)
-                if idea.allowed and not sent_live and idea.strategy in OPEN_AT_NEXT_CANDLE and not self.replay:
+                if idea.allowed and not sent_live and opens_at_next_candle(self.s, idea.strategy) and not self.replay:
                     # it opens at the candle's open; the live prices did not show it: never sent late
                     self.book.decision("bounce not sent" if idea.strategy == "Bollinger bounce" else "not sent late",
                                        idea.time, strategy=idea.strategy, direction=idea.direction,

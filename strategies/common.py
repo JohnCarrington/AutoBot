@@ -55,6 +55,14 @@ WITHOUT_HINDRANCE = (BOLLINGER_BOUNCE,) + SESSION_STRATEGIES
 # Open at the open of the candle after their confirmation candle: live, on that candle's first price; never sent
 # late (trading/engine.py).
 OPEN_AT_NEXT_CANDLE = (BOLLINGER_BOUNCE,) + SESSION_STRATEGIES
+
+
+def opens_at_next_candle(settings: Any, strategy: str) -> bool:
+    """Whether this strategy opens at the next candle's open (never sent late). While PULLBACK_ENTRY is on (owner, 19
+    November 2026) the breakout does too, as the Asian range breakout does (strategies/pullback.py)."""
+    if strategy in OPEN_AT_NEXT_CANDLE:
+        return True
+    return strategy == BREAKOUT and bool(getattr(getattr(settings, "switches", None), "pullback_entry", False))
 # Held overnight and closed at 20:30 UK on Friday only (owner, 7 November 2026); every other
 # strategy is closed at 20:30 UK every day.
 OWN_HOURS = (EMA_PULLBACK, BREAKOUT)

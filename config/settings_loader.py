@@ -431,6 +431,9 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "rollover_no_new_trades_from": _clock_time,
         "rollover_no_new_trades_until": _clock_time,
     },
+    "pullback_entry": {
+        "wait_candles": _whole_number(1, 100),
+    },
     "asian_range_breakout": {
         "range_from": _clock_time,
         "range_until": _clock_time,

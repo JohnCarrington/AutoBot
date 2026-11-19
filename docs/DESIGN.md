@@ -173,6 +173,8 @@ Spread spikes are ignored as in the shared rejection part (`rejection.max_spread
 5. Stop loss 6 pips (`breakout.stop_loss_pips`), take profit 50 pips (`breakout.take_profit_pips`). No close on a rejection at a level.
 6. New trades only from 06:00 to 20:30 UK; it may open during a big-news window, may be held overnight and through news, and any breakout trade still open at 20:30 UK on Friday is closed (sections 4 and 6). One breakout trade open at a time.
 
+**Pullback entry** (owner, approved 19 November 2026; while the switch `PULLBACK_ENTRY` is on, on if left out): the breakout does not open on the break. The breakout candle starts a wait: a candle whose low reaches the 5-minute 8 EMA (a sell: its high), then a close above the 8 EMA (a sell: below; the same candle may do both), within `pullback_entry.wait_candles` (6) candles after the breakout candle; the trade opens at the next candle's open (the 7th at the latest), never sent late. A close below the 21 EMA (a sell: above) cancels it. The day's-move rule (4) is judged at that entry price. Stop 6, take profit and management unchanged (`strategies/pullback.py`).
+
 ### 3.6 Level reversal (sell; owner, 8 November 2026)
 
 **Switched on** (`STRATEGY_LEVEL_REVERSAL=on`). From the level reversal research of 8 November 2026 (`docs/research/level_reversal_tolerance_20261108.md`).
@@ -193,6 +195,8 @@ Spread spikes are ignored as in the shared rejection part (`rejection.max_spread
 2. From 07:00 to 10:00 UK (`breakout_from`, `breakout_until`) a 5-minute candle **closes above the Asian high (a buy) or below the Asian low (a sell)**. A wick does not count, nor a close exactly on the line. A candle closing at 09:55 opens at 10:00.
 3. The trade opens at the **next candle's open** (live: its first price; never sent late, as the bounce).
 4. **One trade each way per day:** once a trade that way has opened that day, no more (safety rule, section 6). A close whose trade was refused (for example in a big-news window) does not use up the day: a later close beyond the range can still open it (owner's answer 4).
+
+**Pullback entry** (owner, approved 19 November 2026; while the switch `PULLBACK_ENTRY` is on, on if left out): only the first close beyond the Asian range each way each day starts a wait, with the breakout's rules (a candle reaching the 5-minute 8 EMA, then a close back beyond it, within `pullback_entry.wait_candles` (6) candles; cancelled by a close beyond the 21 EMA against it); the trade opens at the next candle's open. After a wait expires or is cancelled there is no new wait that day in that direction. Stop 12, trail and once a day unchanged.
 
 ### 3.8 Session sweep (sell; owner, 16 November 2026)
 

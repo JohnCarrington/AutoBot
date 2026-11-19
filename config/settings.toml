@@ -266,6 +266,12 @@ trigger_within_candles = 3
 stop_loss_pips = 6
 take_profit_pips = 50
 
+[pullback_entry]
+# The breakout's and the Asian range breakout's pullback entry (owner, approved 19 November 2026), while the switch
+# PULLBACK_ENTRY is on: the confirming close (back beyond the 5-minute 8 EMA after price came back to it) must come
+# within this many 5-minute candles after the break candle; the trade opens at the next candle's open.
+wait_candles = 6
+
 [asian_range_breakout]
 # The Asian range breakout (design 3.7; owner, 16 November 2026). UK times. The Asian range: the high and low of
 # the 5-minute candles from range_from up to range_until (sell price, as on the chart).

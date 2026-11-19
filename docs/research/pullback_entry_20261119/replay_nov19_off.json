@@ -1,0 +1,239 @@
+{
+ "pullback": "off",
+ "trades": [
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "opened_uk": "Thu 19 Nov 00:10",
+   "entry": "13142",
+   "closed_uk": "Thu 19 Nov 00:55",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "steps": null
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "opened_uk": "Thu 19 Nov 02:55",
+   "entry": "13132",
+   "closed_uk": "Thu 19 Nov 07:10",
+   "how": "stopped by IG",
+   "pips": "-15.0",
+   "steps": null
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "opened_uk": "Thu 19 Nov 03:00",
+   "entry": "13129",
+   "closed_uk": "Thu 19 Nov 06:20",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "steps": null
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "opened_uk": "Thu 19 Nov 07:35",
+   "entry": "13155.6",
+   "closed_uk": "Thu 19 Nov 09:25",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Thu 19 Nov 07:30 GMT closed at 13155.7, above the Asian high (the Asian range 00:00 to 07:00, high 13153.3, low 13119.1)",
+    "Thu 19 Nov 07:35 GMT opens at this candle's open, 13155.6 (sell price)",
+    "allowed at entry: Asian range breakout in a trend up; direction rule no clear direction (price 13155.6 is below the pivot 13162.5 and above the 5m 100 EMA 13139.2: they disagree); the direction rule does not apply to Asian range breakout"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "opened_uk": "Thu 19 Nov 07:55",
+   "entry": "13155.6",
+   "closed_uk": "Thu 19 Nov 14:45",
+   "how": "stopped by IG",
+   "pips": "-15.0",
+   "steps": null
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "opened_uk": "Thu 19 Nov 09:20",
+   "entry": "13151.7",
+   "closed_uk": "Thu 19 Nov 10:25",
+   "how": "close",
+   "pips": "-8.1",
+   "steps": null
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "opened_uk": "Thu 19 Nov 09:30",
+   "entry": "13143.4",
+   "closed_uk": "Thu 19 Nov 10:30",
+   "how": "stopped by IG",
+   "pips": "-18.3",
+   "steps": null
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "opened_uk": "Thu 19 Nov 11:15",
+   "entry": "13165.5",
+   "closed_uk": "Thu 19 Nov 12:45",
+   "how": "close",
+   "pips": "+4.9",
+   "steps": null
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "opened_uk": "Thu 19 Nov 15:40",
+   "entry": "13116.3",
+   "closed_uk": "Thu 19 Nov 16:30",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "steps": null
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "opened_uk": "Thu 19 Nov 15:40",
+   "entry": "13119.3",
+   "closed_uk": "Thu 19 Nov 16:10",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "steps": null
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "opened_uk": "Thu 19 Nov 16:15",
+   "entry": "13110.6",
+   "closed_uk": null,
+   "how": null,
+   "pips": null,
+   "steps": null
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "opened_uk": "Thu 19 Nov 16:40",
+   "entry": "13113.8",
+   "closed_uk": "Thu 19 Nov 17:05",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "steps": null
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "opened_uk": "Thu 19 Nov 17:05",
+   "entry": "13101.4",
+   "closed_uk": "Thu 19 Nov 17:20",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "steps": null
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "opened_uk": "Thu 19 Nov 17:20",
+   "entry": "13105.9",
+   "closed_uk": "Thu 19 Nov 18:05",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "steps": null
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "opened_uk": "Thu 19 Nov 17:20",
+   "entry": "13106",
+   "closed_uk": null,
+   "how": null,
+   "pips": null,
+   "steps": null
+  }
+ ],
+ "notes": [
+  [
+   "Thu 19 Nov 06:15",
+   "breakout",
+   "buy",
+   "setup at 13138.8 (consolidation)"
+  ],
+  [
+   "Thu 19 Nov 06:20",
+   "breakout",
+   "buy",
+   "broken at 13138.8, but not above the day's open 13145.2: no trade"
+  ],
+  [
+   "Thu 19 Nov 07:30",
+   "Asian range breakout",
+   "buy",
+   "Thu 19 Nov 07:30 GMT closed at 13155.7, above the Asian high (the Asian range 00:00 to 07:00, high 13153.3, low 13119.1)"
+  ],
+  [
+   "Thu 19 Nov 07:55",
+   "Asian range breakout",
+   "buy",
+   "Thu 19 Nov 07:55 GMT closed at 13155.1, above the Asian high (the Asian range 00:00 to 07:00, high 13153.3, low 13119.1)"
+  ],
+  [
+   "Thu 19 Nov 08:10",
+   "Asian range breakout",
+   "buy",
+   "Thu 19 Nov 08:10 GMT closed at 13154, above the Asian high (the Asian range 00:00 to 07:00, high 13153.3, low 13119.1)"
+  ],
+  [
+   "Thu 19 Nov 08:35",
+   "Asian range breakout",
+   "buy",
+   "Thu 19 Nov 08:35 GMT closed at 13153.9, above the Asian high (the Asian range 00:00 to 07:00, high 13153.3, low 13119.1)"
+  ],
+  [
+   "Thu 19 Nov 08:45",
+   "Asian range breakout",
+   "buy",
+   "Thu 19 Nov 08:45 GMT closed at 13153.7, above the Asian high (the Asian range 00:00 to 07:00, high 13153.3, low 13119.1)"
+  ],
+  [
+   "Thu 19 Nov 08:50",
+   "Asian range breakout",
+   "buy",
+   "Thu 19 Nov 08:50 GMT closed at 13155.2, above the Asian high (the Asian range 00:00 to 07:00, high 13153.3, low 13119.1)"
+  ],
+  [
+   "Thu 19 Nov 08:55",
+   "Asian range breakout",
+   "buy",
+   "Thu 19 Nov 08:55 GMT closed at 13155.5, above the Asian high (the Asian range 00:00 to 07:00, high 13153.3, low 13119.1)"
+  ],
+  [
+   "Thu 19 Nov 09:00",
+   "Asian range breakout",
+   "buy",
+   "Thu 19 Nov 09:00 GMT closed at 13159.6, above the Asian high (the Asian range 00:00 to 07:00, high 13153.3, low 13119.1)"
+  ],
+  [
+   "Thu 19 Nov 09:05",
+   "Asian range breakout",
+   "buy",
+   "Thu 19 Nov 09:05 GMT closed at 13159.1, above the Asian high (the Asian range 00:00 to 07:00, high 13153.3, low 13119.1)"
+  ],
+  [
+   "Thu 19 Nov 09:10",
+   "Asian range breakout",
+   "buy",
+   "Thu 19 Nov 09:10 GMT closed at 13156.4, above the Asian high (the Asian range 00:00 to 07:00, high 13153.3, low 13119.1)"
+  ],
+  [
+   "Thu 19 Nov 09:15",
+   "Asian range breakout",
+   "buy",
+   "Thu 19 Nov 09:15 GMT closed at 13154.8, above the Asian high (the Asian range 00:00 to 07:00, high 13153.3, low 13119.1)"
+  ]
+ ]
+}

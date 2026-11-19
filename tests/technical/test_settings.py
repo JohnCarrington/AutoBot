@@ -125,6 +125,7 @@ EXPECTED = {
                 "macd_weakening_candles": 3, "no_new_extreme_hourly_candles": 3, "failed_breakout_within_candles": 3,
                 "panel_history": 5, "break_beyond_pips": Decimal("3")},
     # the session strategies (owner, 16 November 2026)
+    "pullback_entry": {"wait_candles": 6},
     "asian_range_breakout": {"range_from": time(0, 0), "range_until": time(7, 0), "breakout_from": time(7, 0),
                              "breakout_until": time(10, 0), "stop_loss_pips": 12, "trail_from_pips": Decimal("12"),
                              "trail_candles": 3},
