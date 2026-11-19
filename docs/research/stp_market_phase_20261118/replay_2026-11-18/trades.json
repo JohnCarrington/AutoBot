@@ -1,0 +1,1112 @@
+[
+ {
+  "opened_utc": "2026-11-18T07:30:02Z",
+  "strategy": "Asian range breakout",
+  "direction": "sell",
+  "pips": "21.7",
+  "result": "win",
+  "classification": "TREND_ALIGNED",
+  "reason": "SELL with the BEARISH dominant direction (phase TREND_CONTINUATION)",
+  "phase": {
+   "as_of_utc": "2026-11-18T07:30:02Z",
+   "direction": "BEARISH",
+   "v1_direction": "BEARISH",
+   "score": -5,
+   "structure_vote": -2,
+   "phase": "TREND_CONTINUATION",
+   "opportunity": "TREND_ALIGNED",
+   "opportunity_trade": "SELL",
+   "exhaustion": [
+    "extension_from_ema21",
+    "at_support"
+   ],
+   "impulse_extreme": "13168",
+   "corrective_extreme": "13227.9",
+   "first_meaningful": null,
+   "corrective_destination": null,
+   "room_pips": null,
+   "room_sufficient": null,
+   "continuation_invalidation": "13230.9",
+   "authorises": false
+  },
+  "view": {
+   "as_of_utc": "2026-11-18T07:30:02Z",
+   "direction": {
+    "direction": "BEARISH",
+    "score": -5,
+    "structure_vote": -2,
+    "ema_votes": {
+     "stack": -1,
+     "vs_ema100": -1,
+     "ema100_slope": -1
+    },
+    "evidence": [
+     "4-hour structure swing highs 13250.9 then 13224.5, swing lows 13312.2 then 13168",
+     "4-hour EMA 7/13/21: down",
+     "4-hour close 13197.8 below the EMA100 13306.9",
+     "4-hour EMA100 slope -13.7 pips over 6 candles",
+     "score -5 (structure -2, EMAs -3): BEARISH"
+    ],
+    "tolerance_pips": "10.5",
+    "highs": [
+     {
+      "kind": "high",
+      "price": "13250.9",
+      "candle_utc": "2026-11-13T12:00:00Z",
+      "known_utc": "2026-11-16T00:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13224.5",
+      "candle_utc": "2026-11-16T08:00:00Z",
+      "known_utc": "2026-11-17T00:00:00Z"
+     }
+    ],
+    "lows": [
+     {
+      "kind": "low",
+      "price": "13312.2",
+      "candle_utc": "2026-11-10T16:00:00Z",
+      "known_utc": "2026-11-11T08:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13168",
+      "candle_utc": "2026-11-17T00:00:00Z",
+      "known_utc": "2026-11-17T16:00:00Z"
+     }
+    ],
+    "marginal": null,
+    "break_of_structure": null,
+    "broken_against": null,
+    "v1_direction": "BEARISH"
+   },
+   "phase": "TREND_CONTINUATION",
+   "evidence": [
+    "correction ended: renewed hourly EMA7/13 alignment; close back through the hourly EMA21 after the correction"
+   ],
+   "exhaustion": {
+    "band_extension": false,
+    "rsi_recovery": false,
+    "macd_contraction": false,
+    "rejection_candle": false,
+    "extension_from_ema21": true,
+    "at_support": true,
+    "h4_band_extension": false
+   },
+   "facts": {
+    "price": "13179.2",
+    "impulse_start": "4h swing high 13224.5 (Mon 16 Nov 08:00 GMT)",
+    "impulse_extreme": "13168",
+    "impulse_extreme_utc": "2026-11-17T01:30:00Z",
+    "hours_since_extreme": 29.5,
+    "corrective_extreme": "13227.9",
+    "correction_pips": "59.9",
+    "impulse_pips": "56.5",
+    "retracement": "1.06",
+    "spread_pips": "1.5",
+    "extension_from_ema21_adr": "0.31",
+    "extreme_at_zone": "13162.2-13172.3 (Major)",
+    "exhaustion_count": 2,
+    "tested_zone": "13224.5-13232.2 (Major)",
+    "exhaustion_context": [
+     "extension_from_ema21",
+     "at_support"
+    ],
+    "recent_extreme": false
+   },
+   "opportunity": "TREND_ALIGNED",
+   "opportunity_trade": "SELL",
+   "countertrend": null,
+   "continuation": {
+    "trade": "SELL",
+    "corrective_extreme": "13227.9",
+    "invalidation": "an hourly close at or above 13230.9",
+    "invalidation_price": "13230.9",
+    "destination": "13168",
+    "corrective_support": "13213.7",
+    "why": "renewed hourly EMA7/13 alignment; close back through the hourly EMA21 after the correction",
+    "needs": "an independently valid strategy entry trigger and the existing risk approval",
+    "authorises": false
+   },
+   "expected_next": "SELLs toward 13168 and beyond; a new low returns the phase to TREND_IMPULSE",
+   "authorises": false
+  }
+ },
+ {
+  "opened_utc": "2026-11-18T09:30:01Z",
+  "strategy": "Bollinger bounce",
+  "direction": "buy",
+  "pips": "7.2",
+  "result": "win",
+  "classification": "COUNTERTREND_UNSUPPORTED",
+  "reason": "BUY against the BEARISH direction, a new extreme with exhaustion context (extension_from_ema21, at_support, h4_band_extension) and the strategy's reversal pattern as the turn: recognised as a correction, but only -0.7 pips to the first meaningful level 13162.2-13172.3 after the spread (needs 10.0)",
+  "phase": {
+   "as_of_utc": "2026-11-18T09:30:01Z",
+   "direction": "BEARISH",
+   "v1_direction": "NEUTRAL",
+   "score": -4,
+   "structure_vote": -1,
+   "phase": "TREND_IMPULSE",
+   "opportunity": "TREND_ALIGNED",
+   "opportunity_trade": "SELL",
+   "exhaustion": [
+    "extension_from_ema21",
+    "at_support",
+    "h4_band_extension"
+   ],
+   "impulse_extreme": "13148",
+   "corrective_extreme": "13161.9",
+   "first_meaningful": "13162.2-13172.3 Major",
+   "corrective_destination": "13162.2",
+   "room_pips": "-0.7",
+   "room_sufficient": false,
+   "continuation_invalidation": null,
+   "authorises": false
+  },
+  "view": {
+   "as_of_utc": "2026-11-18T09:30:01Z",
+   "direction": {
+    "direction": "BEARISH",
+    "score": -4,
+    "structure_vote": -1,
+    "ema_votes": {
+     "stack": -1,
+     "vs_ema100": -1,
+     "ema100_slope": -1
+    },
+    "evidence": [
+     "4-hour structure swing highs 13224.5 then 13227.9, swing lows 13312.2 then 13168: the highs differ by less than the tolerance 10.5 pips, so count as equal (a marginal violation, not a reversal)",
+     "4-hour EMA 7/13/21: down",
+     "4-hour close 13172.8 below the EMA100 13304.2",
+     "4-hour EMA100 slope -13.7 pips over 6 candles",
+     "score -4 (structure -1, EMAs -3): BEARISH"
+    ],
+    "tolerance_pips": "10.5",
+    "highs": [
+     {
+      "kind": "high",
+      "price": "13224.5",
+      "candle_utc": "2026-11-16T08:00:00Z",
+      "known_utc": "2026-11-17T00:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13227.9",
+      "candle_utc": "2026-11-17T16:00:00Z",
+      "known_utc": "2026-11-18T08:00:00Z"
+     }
+    ],
+    "lows": [
+     {
+      "kind": "low",
+      "price": "13312.2",
+      "candle_utc": "2026-11-10T16:00:00Z",
+      "known_utc": "2026-11-11T08:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13168",
+      "candle_utc": "2026-11-17T00:00:00Z",
+      "known_utc": "2026-11-17T16:00:00Z"
+     }
+    ],
+    "marginal": {
+     "highs": {
+      "raw": "higher",
+      "with_tolerance": "equal",
+      "difference_pips": "3.4"
+     }
+    },
+    "break_of_structure": null,
+    "broken_against": null,
+    "v1_direction": "NEUTRAL"
+   },
+   "phase": "TREND_IMPULSE",
+   "evidence": [
+    "new low 13148 0.33 hours ago; exhaustion signs: extension_from_ema21, at_support, h4_band_extension"
+   ],
+   "exhaustion": {
+    "band_extension": false,
+    "rsi_recovery": false,
+    "macd_contraction": false,
+    "rejection_candle": false,
+    "extension_from_ema21": true,
+    "at_support": true,
+    "h4_band_extension": true
+   },
+   "facts": {
+    "price": "13161.4",
+    "impulse_start": "4h swing high 13227.9 (Tue 17 Nov 16:00 GMT)",
+    "impulse_extreme": "13148",
+    "impulse_extreme_utc": "2026-11-18T09:05:00Z",
+    "hours_since_extreme": 0.33,
+    "corrective_extreme": "13161.9",
+    "correction_pips": "13.9",
+    "impulse_pips": "79.9",
+    "retracement": "0.17",
+    "spread_pips": "1.5",
+    "extension_from_ema21_adr": "0.63",
+    "extreme_at_zone": "13148-13157.7 (Major)",
+    "exhaustion_count": 3,
+    "exhaustion_context": [
+     "extension_from_ema21",
+     "at_support",
+     "h4_band_extension"
+    ],
+    "recent_extreme": true
+   },
+   "opportunity": "TREND_ALIGNED",
+   "opportunity_trade": "SELL",
+   "countertrend": {
+    "trade": "BUY",
+    "authorises": false,
+    "entry_zone": [
+     "13148",
+     "13154"
+    ],
+    "structural_invalidation": "an hourly close at or below 13145 (3 pips beyond the low 13148)",
+    "invalidation_price": "13145",
+    "first_obstacle": {
+     "name": "H1 Bollinger lower",
+     "price": "13167.6",
+     "family": "moving average"
+    },
+    "first_meaningful": {
+     "low": "13162.2",
+     "high": "13172.3",
+     "class": "Major",
+     "families": [
+      "higher-timeframe structure",
+      "moving average",
+      "pivot",
+      "session",
+      "structure"
+     ],
+     "levels": [
+      "daily swing low 13162.2",
+      "H1 Bollinger lower 13167.6",
+      "previous day low 13168",
+      "4-hour swing low 13168",
+      "hourly swing low 13168",
+      "daily S1 13172.3"
+     ]
+    },
+    "exhaustion_evidence": [
+     "extension_from_ema21",
+     "at_support",
+     "h4_band_extension"
+    ],
+    "inside_opposing_zone": false,
+    "room_pips_from_extreme": "12.7",
+    "corrective_destination": "13162.2",
+    "room_pips_after_spread": "-0.7",
+    "risk_pips_to_invalidation": "17.9",
+    "room_to_risk": "-0.04",
+    "room_sufficient": false,
+    "room_needed_pips": "10.0",
+    "maximum_expected": "13172.3",
+    "return_to_trend": {
+     "trade": "SELL",
+     "at": "13162.2-13172.3",
+     "needs": "rejection of that level, then an independently valid strategy SELL trigger and the existing risk approval (never a reversal of the open trade)",
+     "authorises": false
+    },
+    "needs_turn": "no turn sign yet: only a strategy's own reversal pattern could supply it"
+   },
+   "continuation": null,
+   "expected_next": "exhaustion signs would open a countertrend BUY",
+   "authorises": false
+  }
+ },
+ {
+  "opened_utc": "2026-11-18T12:37:37Z",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "pips": "-12.6",
+  "result": "loss",
+  "classification": "TREND_ALIGNED",
+  "reason": "SELL with the BEARISH dominant direction (phase RESISTANCE_TEST)",
+  "phase": {
+   "as_of_utc": "2026-11-18T12:37:37Z",
+   "direction": "BEARISH",
+   "v1_direction": "NEUTRAL",
+   "score": -4,
+   "structure_vote": -1,
+   "phase": "RESISTANCE_TEST",
+   "opportunity": "TREND_ALIGNED",
+   "opportunity_trade": "SELL",
+   "exhaustion": [
+    "band_extension",
+    "extension_from_ema21",
+    "at_support",
+    "h4_band_extension"
+   ],
+   "impulse_extreme": "13148",
+   "corrective_extreme": "13175.6",
+   "first_meaningful": null,
+   "corrective_destination": null,
+   "room_pips": null,
+   "room_sufficient": null,
+   "continuation_invalidation": null,
+   "authorises": false
+  },
+  "view": {
+   "as_of_utc": "2026-11-18T12:37:37Z",
+   "direction": {
+    "direction": "BEARISH",
+    "score": -4,
+    "structure_vote": -1,
+    "ema_votes": {
+     "stack": -1,
+     "vs_ema100": -1,
+     "ema100_slope": -1
+    },
+    "evidence": [
+     "4-hour structure swing highs 13224.5 then 13227.9, swing lows 13312.2 then 13168: the highs differ by less than the tolerance 10.5 pips, so count as equal (a marginal violation, not a reversal)",
+     "4-hour EMA 7/13/21: down",
+     "4-hour close 13157 below the EMA100 13301.3",
+     "4-hour EMA100 slope -14.1 pips over 6 candles",
+     "score -4 (structure -1, EMAs -3): BEARISH"
+    ],
+    "tolerance_pips": "10.5",
+    "highs": [
+     {
+      "kind": "high",
+      "price": "13224.5",
+      "candle_utc": "2026-11-16T08:00:00Z",
+      "known_utc": "2026-11-17T00:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13227.9",
+      "candle_utc": "2026-11-17T16:00:00Z",
+      "known_utc": "2026-11-18T08:00:00Z"
+     }
+    ],
+    "lows": [
+     {
+      "kind": "low",
+      "price": "13312.2",
+      "candle_utc": "2026-11-10T16:00:00Z",
+      "known_utc": "2026-11-11T08:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13168",
+      "candle_utc": "2026-11-17T00:00:00Z",
+      "known_utc": "2026-11-17T16:00:00Z"
+     }
+    ],
+    "marginal": {
+     "highs": {
+      "raw": "higher",
+      "with_tolerance": "equal",
+      "difference_pips": "3.4"
+     }
+    },
+    "break_of_structure": null,
+    "broken_against": null,
+    "v1_direction": "NEUTRAL"
+   },
+   "phase": "RESISTANCE_TEST",
+   "evidence": [
+    "the correction reached the meaningful resistance 13172.8-13182.1 (Moderate)"
+   ],
+   "exhaustion": {
+    "band_extension": true,
+    "rsi_recovery": false,
+    "macd_contraction": false,
+    "rejection_candle": false,
+    "extension_from_ema21": true,
+    "at_support": true,
+    "h4_band_extension": true
+   },
+   "facts": {
+    "price": "13161.1",
+    "impulse_start": "4h swing high 13227.9 (Tue 17 Nov 16:00 GMT)",
+    "impulse_extreme": "13148",
+    "impulse_extreme_utc": "2026-11-18T09:05:00Z",
+    "hours_since_extreme": 2.58,
+    "corrective_extreme": "13175.6",
+    "correction_pips": "27.6",
+    "impulse_pips": "79.9",
+    "retracement": "0.35",
+    "spread_pips": "1.5",
+    "extension_from_ema21_adr": "0.60",
+    "extreme_at_zone": "13148-13157.7 (Major)",
+    "exhaustion_count": 4,
+    "testing_zone": "13172.8-13182.1 (Moderate)",
+    "tested_zone": "13172.8-13182.1 (Moderate)",
+    "exhaustion_context": [
+     "extension_from_ema21",
+     "at_support",
+     "h4_band_extension"
+    ],
+    "recent_extreme": false
+   },
+   "opportunity": "TREND_ALIGNED",
+   "opportunity_trade": "SELL",
+   "countertrend": null,
+   "continuation": null,
+   "expected_next": "a rejection here would open a return-to-trend SELL",
+   "authorises": false
+  }
+ },
+ {
+  "opened_utc": "2026-11-18T15:44:06Z",
+  "strategy": "breakout",
+  "direction": "sell",
+  "pips": null,
+  "result": "open",
+  "classification": "TREND_ALIGNED",
+  "reason": "SELL with the BEARISH dominant direction (phase TREND_CONTINUATION)",
+  "phase": {
+   "as_of_utc": "2026-11-18T15:44:06Z",
+   "direction": "BEARISH",
+   "v1_direction": "NEUTRAL",
+   "score": -4,
+   "structure_vote": -1,
+   "phase": "TREND_CONTINUATION",
+   "opportunity": "TREND_ALIGNED",
+   "opportunity_trade": "SELL",
+   "exhaustion": [
+    "extension_from_ema21",
+    "at_support",
+    "h4_band_extension"
+   ],
+   "impulse_extreme": "13148",
+   "corrective_extreme": "13175.6",
+   "first_meaningful": null,
+   "corrective_destination": null,
+   "room_pips": null,
+   "room_sufficient": null,
+   "continuation_invalidation": "13178.6",
+   "authorises": false
+  },
+  "view": {
+   "as_of_utc": "2026-11-18T15:44:06Z",
+   "direction": {
+    "direction": "BEARISH",
+    "score": -4,
+    "structure_vote": -1,
+    "ema_votes": {
+     "stack": -1,
+     "vs_ema100": -1,
+     "ema100_slope": -1
+    },
+    "evidence": [
+     "4-hour structure swing highs 13224.5 then 13227.9, swing lows 13312.2 then 13168: the highs differ by less than the tolerance 10.5 pips, so count as equal (a marginal violation, not a reversal)",
+     "4-hour EMA 7/13/21: down",
+     "4-hour close 13157 below the EMA100 13301.3",
+     "4-hour EMA100 slope -14.1 pips over 6 candles",
+     "score -4 (structure -1, EMAs -3): BEARISH"
+    ],
+    "tolerance_pips": "10.5",
+    "highs": [
+     {
+      "kind": "high",
+      "price": "13224.5",
+      "candle_utc": "2026-11-16T08:00:00Z",
+      "known_utc": "2026-11-17T00:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13227.9",
+      "candle_utc": "2026-11-17T16:00:00Z",
+      "known_utc": "2026-11-18T08:00:00Z"
+     }
+    ],
+    "lows": [
+     {
+      "kind": "low",
+      "price": "13312.2",
+      "candle_utc": "2026-11-10T16:00:00Z",
+      "known_utc": "2026-11-11T08:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13168",
+      "candle_utc": "2026-11-17T00:00:00Z",
+      "known_utc": "2026-11-17T16:00:00Z"
+     }
+    ],
+    "marginal": {
+     "highs": {
+      "raw": "higher",
+      "with_tolerance": "equal",
+      "difference_pips": "3.4"
+     }
+    },
+    "break_of_structure": null,
+    "broken_against": null,
+    "v1_direction": "NEUTRAL"
+   },
+   "phase": "TREND_CONTINUATION",
+   "evidence": [
+    "correction ended: renewed hourly EMA7/13 alignment; close through the corrective support 13163.5"
+   ],
+   "exhaustion": {
+    "band_extension": false,
+    "rsi_recovery": false,
+    "macd_contraction": false,
+    "rejection_candle": false,
+    "extension_from_ema21": true,
+    "at_support": true,
+    "h4_band_extension": true
+   },
+   "facts": {
+    "price": "13155",
+    "impulse_start": "4h swing high 13227.9 (Tue 17 Nov 16:00 GMT)",
+    "impulse_extreme": "13148",
+    "impulse_extreme_utc": "2026-11-18T09:05:00Z",
+    "hours_since_extreme": 5.67,
+    "corrective_extreme": "13175.6",
+    "correction_pips": "27.6",
+    "impulse_pips": "79.9",
+    "retracement": "0.35",
+    "spread_pips": "1.5",
+    "extension_from_ema21_adr": "0.60",
+    "extreme_at_zone": "13147.9-13157.7 (Major)",
+    "exhaustion_count": 3,
+    "testing_zone": "13162.2-13172.3 (Major)",
+    "tested_zone": "13172.6-13182.1 (Moderate)",
+    "exhaustion_context": [
+     "extension_from_ema21",
+     "at_support",
+     "h4_band_extension"
+    ],
+    "recent_extreme": false
+   },
+   "opportunity": "TREND_ALIGNED",
+   "opportunity_trade": "SELL",
+   "countertrend": null,
+   "continuation": {
+    "trade": "SELL",
+    "corrective_extreme": "13175.6",
+    "invalidation": "an hourly close at or above 13178.6",
+    "invalidation_price": "13178.6",
+    "destination": "13148",
+    "corrective_support": "13163.5",
+    "why": "renewed hourly EMA7/13 alignment; close through the corrective support 13163.5",
+    "needs": "an independently valid strategy entry trigger and the existing risk approval",
+    "authorises": false
+   },
+   "expected_next": "SELLs toward 13148 and beyond; a new low returns the phase to TREND_IMPULSE",
+   "authorises": false
+  }
+ },
+ {
+  "opened_utc": "2026-11-18T16:20:25Z",
+  "strategy": "EMA pullback",
+  "direction": "sell",
+  "pips": "-12.0",
+  "result": "loss",
+  "classification": "TREND_ALIGNED",
+  "reason": "SELL with the BEARISH dominant direction (phase TREND_IMPULSE)",
+  "phase": {
+   "as_of_utc": "2026-11-18T16:20:25Z",
+   "direction": "BEARISH",
+   "v1_direction": "NEUTRAL",
+   "score": -4,
+   "structure_vote": -1,
+   "phase": "TREND_IMPULSE",
+   "opportunity": "TREND_ALIGNED",
+   "opportunity_trade": "SELL",
+   "exhaustion": [
+    "extension_from_ema21",
+    "at_support",
+    "h4_band_extension"
+   ],
+   "impulse_extreme": "13142.7",
+   "corrective_extreme": "13142.7",
+   "first_meaningful": "13148-13157.7 Major",
+   "corrective_destination": "13148",
+   "room_pips": "3.1",
+   "room_sufficient": false,
+   "continuation_invalidation": null,
+   "authorises": false
+  },
+  "view": {
+   "as_of_utc": "2026-11-18T16:20:25Z",
+   "direction": {
+    "direction": "BEARISH",
+    "score": -4,
+    "structure_vote": -1,
+    "ema_votes": {
+     "stack": -1,
+     "vs_ema100": -1,
+     "ema100_slope": -1
+    },
+    "evidence": [
+     "4-hour structure swing highs 13224.5 then 13227.9, swing lows 13312.2 then 13168: the highs differ by less than the tolerance 10.5 pips, so count as equal (a marginal violation, not a reversal)",
+     "4-hour EMA 7/13/21: down",
+     "4-hour close 13148.1 below the EMA100 13298.3",
+     "4-hour EMA100 slope -14.9 pips over 6 candles",
+     "score -4 (structure -1, EMAs -3): BEARISH"
+    ],
+    "tolerance_pips": "10.5",
+    "highs": [
+     {
+      "kind": "high",
+      "price": "13224.5",
+      "candle_utc": "2026-11-16T08:00:00Z",
+      "known_utc": "2026-11-17T00:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13227.9",
+      "candle_utc": "2026-11-17T16:00:00Z",
+      "known_utc": "2026-11-18T08:00:00Z"
+     }
+    ],
+    "lows": [
+     {
+      "kind": "low",
+      "price": "13312.2",
+      "candle_utc": "2026-11-10T16:00:00Z",
+      "known_utc": "2026-11-11T08:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13168",
+      "candle_utc": "2026-11-17T00:00:00Z",
+      "known_utc": "2026-11-17T16:00:00Z"
+     }
+    ],
+    "marginal": {
+     "highs": {
+      "raw": "higher",
+      "with_tolerance": "equal",
+      "difference_pips": "3.4"
+     }
+    },
+    "break_of_structure": null,
+    "broken_against": null,
+    "v1_direction": "NEUTRAL"
+   },
+   "phase": "TREND_IMPULSE",
+   "evidence": [
+    "new low 13142.7 0.0 hours ago; exhaustion signs: extension_from_ema21, at_support, h4_band_extension"
+   ],
+   "exhaustion": {
+    "band_extension": false,
+    "rsi_recovery": false,
+    "macd_contraction": false,
+    "rejection_candle": false,
+    "extension_from_ema21": true,
+    "at_support": true,
+    "h4_band_extension": true
+   },
+   "facts": {
+    "price": "13143.4",
+    "impulse_start": "4h swing high 13227.9 (Tue 17 Nov 16:00 GMT)",
+    "impulse_extreme": "13142.7",
+    "impulse_extreme_utc": "2026-11-18T16:15:00Z",
+    "hours_since_extreme": 0.0,
+    "corrective_extreme": "13142.7",
+    "correction_pips": "0.0",
+    "impulse_pips": "85.2",
+    "retracement": "0.00",
+    "spread_pips": "1.5",
+    "extension_from_ema21_adr": "0.68",
+    "extreme_at_zone": "13135.9-13143.4 (Major)",
+    "exhaustion_count": 3,
+    "exhaustion_context": [
+     "extension_from_ema21",
+     "at_support",
+     "h4_band_extension"
+    ],
+    "recent_extreme": true
+   },
+   "opportunity": "TREND_ALIGNED",
+   "opportunity_trade": "SELL",
+   "countertrend": {
+    "trade": "BUY",
+    "authorises": false,
+    "entry_zone": [
+     "13142.7",
+     "13148.7"
+    ],
+    "structural_invalidation": "an hourly close at or below 13139.7 (3 pips beyond the low 13142.7)",
+    "invalidation_price": "13139.7",
+    "first_obstacle": {
+     "name": "hourly swing low",
+     "price": "13148",
+     "family": "structure"
+    },
+    "first_meaningful": {
+     "low": "13148",
+     "high": "13157.7",
+     "class": "Major",
+     "families": [
+      "higher-timeframe structure",
+      "psychological",
+      "session",
+      "structure"
+     ],
+     "levels": [
+      "hourly swing low 13148",
+      "London session low 13148",
+      "round number 13150",
+      "daily swing low 13157.7"
+     ]
+    },
+    "exhaustion_evidence": [
+     "extension_from_ema21",
+     "at_support",
+     "h4_band_extension"
+    ],
+    "inside_opposing_zone": false,
+    "room_pips_from_extreme": "3.8",
+    "corrective_destination": "13148",
+    "room_pips_after_spread": "3.1",
+    "risk_pips_to_invalidation": "5.2",
+    "room_to_risk": "0.60",
+    "room_sufficient": false,
+    "room_needed_pips": "10.0",
+    "maximum_expected": "13157.7",
+    "return_to_trend": {
+     "trade": "SELL",
+     "at": "13148-13157.7",
+     "needs": "rejection of that level, then an independently valid strategy SELL trigger and the existing risk approval (never a reversal of the open trade)",
+     "authorises": false
+    },
+    "needs_turn": "no turn sign yet: only a strategy's own reversal pattern could supply it"
+   },
+   "continuation": null,
+   "expected_next": "exhaustion signs would open a countertrend BUY",
+   "authorises": false
+  }
+ },
+ {
+  "opened_utc": "2026-11-18T16:37:27Z",
+  "strategy": "slow grind",
+  "direction": "sell",
+  "pips": "-15.0",
+  "result": "loss",
+  "classification": "TREND_ALIGNED",
+  "reason": "SELL with the BEARISH dominant direction (phase EXHAUSTION); caution: exhaustion evidence at the extreme, a correction is likely before continuation",
+  "phase": {
+   "as_of_utc": "2026-11-18T16:37:27Z",
+   "direction": "BEARISH",
+   "v1_direction": "NEUTRAL",
+   "score": -4,
+   "structure_vote": -1,
+   "phase": "EXHAUSTION",
+   "opportunity": null,
+   "opportunity_trade": null,
+   "exhaustion": [
+    "rejection_candle",
+    "extension_from_ema21",
+    "at_support",
+    "h4_band_extension"
+   ],
+   "impulse_extreme": "13135.5",
+   "corrective_extreme": "13143",
+   "first_meaningful": "13148-13157.7 Major",
+   "corrective_destination": "13148",
+   "room_pips": "5.7",
+   "room_sufficient": false,
+   "continuation_invalidation": null,
+   "authorises": false
+  },
+  "view": {
+   "as_of_utc": "2026-11-18T16:37:27Z",
+   "direction": {
+    "direction": "BEARISH",
+    "score": -4,
+    "structure_vote": -1,
+    "ema_votes": {
+     "stack": -1,
+     "vs_ema100": -1,
+     "ema100_slope": -1
+    },
+    "evidence": [
+     "4-hour structure swing highs 13224.5 then 13227.9, swing lows 13312.2 then 13168: the highs differ by less than the tolerance 10.5 pips, so count as equal (a marginal violation, not a reversal)",
+     "4-hour EMA 7/13/21: down",
+     "4-hour close 13148.1 below the EMA100 13298.3",
+     "4-hour EMA100 slope -14.9 pips over 6 candles",
+     "score -4 (structure -1, EMAs -3): BEARISH"
+    ],
+    "tolerance_pips": "10.5",
+    "highs": [
+     {
+      "kind": "high",
+      "price": "13224.5",
+      "candle_utc": "2026-11-16T08:00:00Z",
+      "known_utc": "2026-11-17T00:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13227.9",
+      "candle_utc": "2026-11-17T16:00:00Z",
+      "known_utc": "2026-11-18T08:00:00Z"
+     }
+    ],
+    "lows": [
+     {
+      "kind": "low",
+      "price": "13312.2",
+      "candle_utc": "2026-11-10T16:00:00Z",
+      "known_utc": "2026-11-11T08:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13168",
+      "candle_utc": "2026-11-17T00:00:00Z",
+      "known_utc": "2026-11-17T16:00:00Z"
+     }
+    ],
+    "marginal": {
+     "highs": {
+      "raw": "higher",
+      "with_tolerance": "equal",
+      "difference_pips": "3.4"
+     }
+    },
+    "break_of_structure": null,
+    "broken_against": null,
+    "v1_direction": "NEUTRAL"
+   },
+   "phase": "EXHAUSTION",
+   "evidence": [
+    "new low 13135.5 0.17 hours ago; exhaustion signs: rejection_candle, extension_from_ema21, at_support, h4_band_extension"
+   ],
+   "exhaustion": {
+    "band_extension": false,
+    "rsi_recovery": false,
+    "macd_contraction": false,
+    "rejection_candle": true,
+    "extension_from_ema21": true,
+    "at_support": true,
+    "h4_band_extension": true
+   },
+   "facts": {
+    "price": "13140.8",
+    "impulse_start": "4h swing high 13227.9 (Tue 17 Nov 16:00 GMT)",
+    "impulse_extreme": "13135.5",
+    "impulse_extreme_utc": "2026-11-18T16:20:00Z",
+    "hours_since_extreme": 0.17,
+    "corrective_extreme": "13143",
+    "correction_pips": "7.5",
+    "impulse_pips": "92.4",
+    "retracement": "0.08",
+    "spread_pips": "1.5",
+    "extension_from_ema21_adr": "0.78",
+    "extreme_at_zone": "13135.5-13143.4 (Major)",
+    "exhaustion_count": 4,
+    "exhaustion_context": [
+     "extension_from_ema21",
+     "at_support",
+     "h4_band_extension"
+    ],
+    "recent_extreme": true
+   },
+   "opportunity": null,
+   "opportunity_trade": null,
+   "countertrend": {
+    "trade": "BUY",
+    "authorises": false,
+    "entry_zone": [
+     "13135.5",
+     "13141.5"
+    ],
+    "structural_invalidation": "an hourly close at or below 13132.5 (3 pips beyond the low 13135.5)",
+    "invalidation_price": "13132.5",
+    "first_obstacle": {
+     "name": "hourly swing low",
+     "price": "13148",
+     "family": "structure"
+    },
+    "first_meaningful": {
+     "low": "13148",
+     "high": "13157.7",
+     "class": "Major",
+     "families": [
+      "higher-timeframe structure",
+      "psychological",
+      "session",
+      "structure"
+     ],
+     "levels": [
+      "hourly swing low 13148",
+      "London session low 13148",
+      "round number 13150",
+      "daily swing low 13157.7"
+     ]
+    },
+    "exhaustion_evidence": [
+     "rejection_candle",
+     "extension_from_ema21",
+     "at_support",
+     "h4_band_extension"
+    ],
+    "inside_opposing_zone": false,
+    "room_pips_from_extreme": "11.0",
+    "corrective_destination": "13148",
+    "room_pips_after_spread": "5.7",
+    "risk_pips_to_invalidation": "9.8",
+    "room_to_risk": "0.58",
+    "room_sufficient": false,
+    "room_needed_pips": "10.0",
+    "maximum_expected": "13157.7",
+    "return_to_trend": {
+     "trade": "SELL",
+     "at": "13148-13157.7",
+     "needs": "rejection of that level, then an independently valid strategy SELL trigger and the existing risk approval (never a reversal of the open trade)",
+     "authorises": false
+    }
+   },
+   "continuation": null,
+   "expected_next": "SELL after a confirmed rejection at 13148-13157.7",
+   "authorises": false
+  }
+ },
+ {
+  "opened_utc": "2026-11-18T19:50:58Z",
+  "strategy": "level reversal",
+  "direction": "sell",
+  "pips": "-11.3",
+  "result": "loss",
+  "classification": "TREND_ALIGNED",
+  "reason": "SELL with the BEARISH dominant direction (phase TREND_CONTINUATION)",
+  "phase": {
+   "as_of_utc": "2026-11-18T19:50:58Z",
+   "direction": "BEARISH",
+   "v1_direction": "NEUTRAL",
+   "score": -4,
+   "structure_vote": -1,
+   "phase": "TREND_CONTINUATION",
+   "opportunity": "TREND_ALIGNED",
+   "opportunity_trade": "SELL",
+   "exhaustion": [
+    "band_extension",
+    "rsi_recovery",
+    "rejection_candle",
+    "extension_from_ema21",
+    "at_support",
+    "h4_band_extension"
+   ],
+   "impulse_extreme": "13135.5",
+   "corrective_extreme": "13157.5",
+   "first_meaningful": null,
+   "corrective_destination": null,
+   "room_pips": null,
+   "room_sufficient": null,
+   "continuation_invalidation": "13160.5",
+   "authorises": false
+  },
+  "view": {
+   "as_of_utc": "2026-11-18T19:50:58Z",
+   "direction": {
+    "direction": "BEARISH",
+    "score": -4,
+    "structure_vote": -1,
+    "ema_votes": {
+     "stack": -1,
+     "vs_ema100": -1,
+     "ema100_slope": -1
+    },
+    "evidence": [
+     "4-hour structure swing highs 13224.5 then 13227.9, swing lows 13312.2 then 13168: the highs differ by less than the tolerance 10.5 pips, so count as equal (a marginal violation, not a reversal)",
+     "4-hour EMA 7/13/21: down",
+     "4-hour close 13148.1 below the EMA100 13298.3",
+     "4-hour EMA100 slope -14.9 pips over 6 candles",
+     "score -4 (structure -1, EMAs -3): BEARISH"
+    ],
+    "tolerance_pips": "10.5",
+    "highs": [
+     {
+      "kind": "high",
+      "price": "13224.5",
+      "candle_utc": "2026-11-16T08:00:00Z",
+      "known_utc": "2026-11-17T00:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13227.9",
+      "candle_utc": "2026-11-17T16:00:00Z",
+      "known_utc": "2026-11-18T08:00:00Z"
+     }
+    ],
+    "lows": [
+     {
+      "kind": "low",
+      "price": "13312.2",
+      "candle_utc": "2026-11-10T16:00:00Z",
+      "known_utc": "2026-11-11T08:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13168",
+      "candle_utc": "2026-11-17T00:00:00Z",
+      "known_utc": "2026-11-17T16:00:00Z"
+     }
+    ],
+    "marginal": {
+     "highs": {
+      "raw": "higher",
+      "with_tolerance": "equal",
+      "difference_pips": "3.4"
+     }
+    },
+    "break_of_structure": null,
+    "broken_against": null,
+    "v1_direction": "NEUTRAL"
+   },
+   "phase": "TREND_CONTINUATION",
+   "evidence": [
+    "correction ended: renewed hourly EMA7/13 alignment; close through the corrective support 13147.2"
+   ],
+   "exhaustion": {
+    "band_extension": true,
+    "rsi_recovery": true,
+    "macd_contraction": false,
+    "rejection_candle": true,
+    "extension_from_ema21": true,
+    "at_support": true,
+    "h4_band_extension": true
+   },
+   "facts": {
+    "price": "13135.9",
+    "impulse_start": "4h swing high 13227.9 (Tue 17 Nov 16:00 GMT)",
+    "impulse_extreme": "13135.5",
+    "impulse_extreme_utc": "2026-11-18T16:20:00Z",
+    "hours_since_extreme": 2.83,
+    "corrective_extreme": "13157.5",
+    "correction_pips": "22.0",
+    "impulse_pips": "92.4",
+    "retracement": "0.24",
+    "spread_pips": "1.5",
+    "extension_from_ema21_adr": "0.56",
+    "extreme_at_zone": "13134.8-13140.2 (Major)",
+    "exhaustion_count": 6,
+    "testing_zone": "13148-13157.7 (Major)",
+    "tested_zone": "13148-13157.7 (Major)",
+    "exhaustion_context": [
+     "extension_from_ema21",
+     "at_support",
+     "h4_band_extension"
+    ],
+    "recent_extreme": false
+   },
+   "opportunity": "TREND_ALIGNED",
+   "opportunity_trade": "SELL",
+   "countertrend": null,
+   "continuation": {
+    "trade": "SELL",
+    "corrective_extreme": "13157.5",
+    "invalidation": "an hourly close at or above 13160.5",
+    "invalidation_price": "13160.5",
+    "destination": "13135.5",
+    "corrective_support": "13147.2",
+    "why": "renewed hourly EMA7/13 alignment; close through the corrective support 13147.2",
+    "needs": "an independently valid strategy entry trigger and the existing risk approval",
+    "authorises": false
+   },
+   "expected_next": "SELLs toward 13135.5 and beyond; a new low returns the phase to TREND_IMPULSE",
+   "authorises": false
+  }
+ }
+]
