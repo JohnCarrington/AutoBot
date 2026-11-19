@@ -9,9 +9,11 @@ market state at each moment is the one the service would have had). At each
     candle (the state the strategy would see while this candle forms);
   * each strategy is given the candle; when its entry price is reached, the
     candidate is checked (strategies/common.py: switch, state, direction rule);
-  * the bounce and range trade run their OWN rejection watcher with only the
-    rules of design 3.3 and 3.4 (design_only); the analyser's watcher is not
-    changed.
+  * the first build's bounce (Bollinger bounce 5m), the range trade and the level reversal run their OWN
+    rejection watcher with only the rules of design 3.3, 3.4 and 3.6 (design_only); the analyser's watcher is not
+    changed;
+  * the hourly-pierce Bollinger bounce keeps its own hourly chart (prices/hourly_chart.py), built from the same
+    5-minute candles, the warm-up candles included.
 With stored candles there are no ticks, so an entry is shown at the start of
 the candle it was reached in.
 """
@@ -19,7 +21,7 @@ the candle it was reached in.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timedelta
 from types import SimpleNamespace
 from typing import Any
 
@@ -30,9 +32,11 @@ from config.pairs import check_same_pair
 from levels.current import build
 from levels.rules import PIVOT
 from prices.indicators import Band, ema
+from prices.calendar import MarketHours
 from prices.store import CandleStore
 from rejection.watch import RejectionWatcher
-from strategies.bollinger_bounce.strategy import candidates as bounce_candidates
+from strategies.bollinger_bounce.strategy import BollingerBounce
+from strategies.bollinger_bounce_5m.strategy import candidates as bounce_5m_candidates
 from strategies.common import Idea, check
 from strategies.ema_pullback.strategy import EmaPullback, HourlyTrendReader
 from strategies.range_trade.strategy import candidates as range_candidates
@@ -65,12 +69,23 @@ class StrategyRunner:
     candles, step() runs the strategies on each of them and returns their ideas (checked: switch, state,
     direction rule), with the candle each came from. A new week starts everything again from its open.
     `hourly_end`: build the hourly trend reader once from the hourly candles up to it (a replay); otherwise it
-    is read again for each candle (live)."""
+    is read again for each candle (live).
 
-    def __init__(self, settings: Any, memo: Any, tracker: Any, hourly_end: datetime | None = None):
-        self.s, self.memo, self.tracker, self.hourly_end = settings, memo, tracker, hourly_end
+    `store`: the candle store. Like the analyser (StateTracker.advance), every step() and peek() reads it afresh
+    through a new MemoStore, so the strategies always see the latest candles and levels: never a copy kept from
+    an earlier call (owner, 11 November 2026: the live strategies had kept the store as it was at start-up, so
+    after a restart they never saw a new day's file, nor new candles in a day's file already read)."""
+
+    def __init__(self, settings: Any, store: Any, tracker: Any, hourly_end: datetime | None = None):
+        self.s, self.store, self.tracker, self.hourly_end = settings, store, tracker, hourly_end
+        self.memo = MemoStore(store)                        # this call's view of the store (renewed every call)
+        self.hours = MarketHours(settings.market_hours)
         self.week_open = None
         self.done = 0
+
+    def _fresh(self) -> None:
+        """A new view of the candle store for this call, as the analyser takes for each of its calls."""
+        self.memo = MemoStore(self.store)
 
     def _new_week(self) -> None:
         s = self.s
@@ -84,6 +99,8 @@ class StrategyRunner:
         self.watcher = RejectionWatcher(s, design_only=True)
         self.breakout = Breakout(s)
         self.reversal = LevelReversal(s)
+        self.bounce = BollingerBounce(s)
+        self.bounce.warm(self.warm)
 
     def _hourly(self, end: datetime) -> HourlyTrendReader:
         return HourlyTrendReader(self.s, last_candles(self.memo, "1h", end, self.s.ema_pullback.hourly_history_candles))
@@ -95,11 +112,16 @@ class StrategyRunner:
         return (SimpleNamespace(state=before[-1].state, direction=before[-1].direction, trend_type=before[-1].trend_type)
                 if before else SimpleNamespace(state=CONSOLIDATION, direction=NONE, trend_type=None))
 
-    def pivot_at(self, t: datetime):
-        if t not in self.pivots:
-            got = [lv.price for lv in build(self.s, self.memo, t).levels if lv.type == PIVOT]
-            self.pivots[t] = got[0] if got else None
-        return self.pivots[t]
+    def pivot_at(self, t: datetime, keep: bool = True):
+        """The pivot at t. Kept for a finished candle (step); the live check (keep=False) only reads one already
+        kept, so a pivot worked out before that candle's data was all stored is never kept."""
+        if t in self.pivots:
+            return self.pivots[t]
+        got = [lv.price for lv in build(self.s, self.memo, t).levels if lv.type == PIVOT]
+        p = got[0] if got else None
+        if keep:
+            self.pivots[t] = p
+        return p
 
     def peek(self, partial: Any, levels: Any = None) -> list[Idea]:
         """The live check (design 3: a trade opens as soon as the live price reaches its trigger): the strategies'
@@ -112,6 +134,9 @@ class StrategyRunner:
             return []
         if partial.start <= self.week[-1].start:
             return []
+        if self.waiting_for_finished_candle(partial.start):
+            return []
+        self._fresh()
         allc = self.warm + self.week + [partial]
         sg_ema = ema(allc, side, s.slow_grind.ema_periods)
         fast, slow = ema(allc, side, s.ema_pullback.fast_ema_periods), ema(allc, side, s.ema_pullback.slow_ema_periods)
@@ -120,19 +145,34 @@ class StrategyRunner:
         band = Band(partial.start, f.middle, f.upper, f.lower) if f.upper is not None else None
         watcher = fork(self.watcher)
         breakout, grind, pullback, reversal = fork(self.breakout), fork(self.grind), fork(self.pullback), fork(self.reversal)
+        bounce = fork(self.bounce)
         events = watcher.on_candle(partial, band, levels if levels is not None else build(s, self.memo, partial.start))
         cands = (breakout.on_candle(partial, None, None)
                  + grind.on_candle(partial, sg_ema.get(partial.start))
                  + pullback.on_candle(partial, fast.get(partial.start), slow.get(partial.start))
-                 + bounce_candidates(watcher, events) + range_candidates(watcher, events)
+                 + bounce.on_candle(partial) + bounce_5m_candidates(watcher, events)
+                 + range_candidates(watcher, events)
                  + reversal.on_candle(partial, watcher, events))
         st = self.state_after(len(self.week) - 1)
         e100 = ema100.get(self.week[-1].start)
-        return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start), e100) for cand in cands]
+        return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100) for cand in cands]
+
+    def waiting_for_finished_candle(self, start: datetime) -> bool:
+        """True while the 5-minute candle before the forming one (starting at `start`) is not yet taken: in the
+        market's hours and newer than the last finished candle the strategies have. At each candle's turn the live
+        prices of the new candle arrive before IG's finished candle is stored (18 November 2026: a breakout idea at
+        15:45:00, before the 15:40 candle was stored at 15:45:00); the strategies' copies would otherwise be given
+        the new candle straight after the one before last, missing a candle: a setup already triggered or cancelled
+        in it could trigger again. The live check waits (only seconds, normally) until that candle is stored and
+        taken; nothing in the strategies' rules changes. A candle IG never sends pauses the live check for one
+        candle; the candle-close step still sends what it finds then, as for a gap in the live prices."""
+        prev = start - timedelta(minutes=5)
+        return self.week[-1].start < prev and self.hours.is_open(prev)
 
     def step(self) -> list[tuple[Any, Idea]]:
         """Run the strategies on every candle the tracker has taken since the last call: [(candle, idea)]."""
         s, side = self.s, self.s.chart.price
+        self._fresh()
         if self.tracker.week_open != self.week_open:
             self._new_week()
         hist = self.tracker.history
@@ -156,7 +196,8 @@ class StrategyRunner:
             cands = (self.breakout.on_candle(c, kc[1] if kc else None, since)
                      + self.grind.on_candle(c, sg_ema.get(c.start))
                      + self.pullback.on_candle(c, fast.get(c.start), slow.get(c.start))
-                     + bounce_candidates(self.watcher, events) + range_candidates(self.watcher, events)
+                     + self.bounce.on_candle(c) + bounce_5m_candidates(self.watcher, events)
+                     + range_candidates(self.watcher, events)
                      + self.reversal.on_candle(c, self.watcher, events))
             if cands:
                 st = self.state_after(i - 1)
@@ -177,7 +218,8 @@ def run(settings: Any, store: CandleStore, start: datetime, end: datetime) -> Re
     runner = StrategyRunner(settings, memo, tracker, hourly_end=end)
     ideas = [idea for c, idea in runner.step() if start <= c.start < end]
     out = Replay(ideas, states={c.start: runner.state_after(i) for i, c in enumerate(runner.week)})
-    out.notes = {"slow grind": runner.grind.notes, "EMA pullback": runner.pullback.notes, "breakout": runner.breakout.notes}
+    out.notes = {"slow grind": runner.grind.notes, "EMA pullback": runner.pullback.notes, "breakout": runner.breakout.notes,
+                 "Bollinger bounce": runner.bounce.notes}
     out.watcher = runner.watcher
     return out
 

@@ -317,6 +317,8 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "unclear_check_wait_seconds": _whole_number(0, 60),
         "confirm_attempts": _whole_number(1, 20),
         "confirm_wait_seconds": _whole_number(0, 60),
+        "close_retry_seconds": _whole_number(5, 600),
+        "stop_move_attempts": _whole_number(1, 20),
     },
     "trade_manager": {
         "folder": _absolute_folder,
@@ -367,9 +369,36 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "minutes_before": _whole_number(0, 120),
         "minutes_after": _whole_number(0, 120),
     },
+    "planner": {
+        "folder": _absolute_folder,
+        "adr_weekdays": _whole_number(1, 500),
+        "h4_swing_candles_each_side": _whole_number(1, 20),
+        "h4_swing_min_move_pips": _whole_number(0, 1000),
+        "h4_swing_move_within_candles": _whole_number(1, 100),
+        "daily_swing_candles_each_side": _whole_number(1, 20),
+        "daily_swing_min_move_pips": _whole_number(0, 2000),
+        "daily_swing_move_within_candles": _whole_number(1, 100),
+        "h4_swing_lookback_weeks": _whole_number(1, 520),
+        "daily_swing_lookback_weeks": _whole_number(1, 520),
+        "structure_break_closes": _whole_number(1, 10),
+        "zone_width_adr_share": _decimal_number("0", "1"),
+        "major_min_families": _whole_number(1, 6),
+        "moderate_min_families": _whole_number(1, 6),
+        "min_entry_class": _one_of("Major", "Moderate", "Minor"),
+        "ema_slope_candles": _whole_number(1, 100),
+        "macd_weakening_candles": _whole_number(1, 50),
+        "no_new_extreme_hourly_candles": _whole_number(1, 100),
+        "failed_breakout_within_candles": _whole_number(1, 100),
+        "panel_history": _whole_number(1, 100),
+        "break_beyond_pips": _decimal_number("0", "100"),
+    },
     "bounce": {
-        "reversal_candle_within_candles_of_pierce": _whole_number(1, 50),
-        "confirmation_candle_within_candles_of_reversal": _whole_number(1, 50),
+        "pierce_beyond_pips": _decimal_number("0", "100"),
+        "confirmation_within_candles": _whole_number(1, 50),
+        "trail_from_pips": _decimal_number("0", "1000"),
+        "trail_candles": _whole_number(1, 50),
+        "near_times": _clock_times,
+        "near_times_within_minutes": _whole_number(0, 720),
     },
     "slow_grind": {
         "min_pause_candles": _whole_number(1, 100),
@@ -398,6 +427,8 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "hourly_min_gap_fast_mid_pips": _decimal_number("0", "100"),
         "hourly_min_gap_mid_slow_pips": _decimal_number("0", "100"),
         "hourly_history_candles": _whole_number(50, 5000),
+        "rollover_no_new_trades_from": _clock_time,
+        "rollover_no_new_trades_until": _clock_time,
     },
     "possible_reversal": {
         "min_trend_move_pips": _whole_number(1, 1000),
@@ -484,6 +515,8 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "candle_timeframe": _one_of("5m", "1h", "4h"),
         "near_level_within_pips": _whole_number(0, 50),
         "max_spread_pips": _whole_number(1, 100),
+        "reversal_candle_within_candles_of_pierce": _whole_number(1, 50),
+        "confirmation_candle_within_candles_of_reversal": _whole_number(1, 50),
     },
     "market_hours": {
         "opens_day": _weekday,
@@ -664,6 +697,10 @@ def _check_together(v: dict[str, dict[str, Any]]) -> None:
         raise SettingsError("Setting [slow_grind] lock_at_pips must be smaller than lock_from_pips.")
     if sg["rollover_no_new_trades_from"] >= sg["rollover_no_new_trades_until"]:
         raise SettingsError("Setting [slow_grind] rollover_no_new_trades_from must be earlier than "
+                            "rollover_no_new_trades_until.")
+    ep = v["ema_pullback"]
+    if ep["rollover_no_new_trades_from"] >= ep["rollover_no_new_trades_until"]:
+        raise SettingsError("Setting [ema_pullback] rollover_no_new_trades_from must be earlier than "
                             "rollover_no_new_trades_until.")
 
 

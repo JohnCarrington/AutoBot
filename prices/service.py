@@ -262,9 +262,15 @@ def _feed(ps: Any, now: Callable[[], datetime], on_store_problem: Callable[[str]
           extra: tuple = ()) -> PriceFeed:
     """One pair's store, feed and levels (ps: settings.for_pair(...)); `extra`: more parts after each new candle."""
     store = CandleStore(ps.candles.folder, ps.candles.compress_after_days)
+    # The Structural Trade Planner (planner/; OBSERVE ONLY), only while PLANNER_OBSERVE is on: LAST, after the trading
+    # engine, and it only starts the planner in its own low-priority process, so it never holds the prices or trading up.
+    planner = ()
+    if getattr(getattr(ps, "switches", None), "planner_observe", False):
+        from planner.keeper import PlannerUpdater
+        planner = (PlannerUpdater(ps),)
     feed: PriceFeed = PriceFeed(ps, store, now=now, disk_check=lambda: check_free_space(
         ps.candles.folder, ps.housekeeping.min_free_disk_mb, feed.warn),
-        after_new_candle=_after_candle(LevelsUpdater(ps, store), StatesUpdater(ps, store), *extra),
+        after_new_candle=_after_candle(LevelsUpdater(ps, store), StatesUpdater(ps, store), *extra, *planner),
         on_store_problem=on_store_problem)
     return feed
 

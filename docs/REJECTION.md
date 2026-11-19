@@ -1,6 +1,6 @@
 # Rejections
 
-How AutoBot decides that price has been rejected at a level or at a Bollinger band. The agreed design is in `docs/DESIGN.md`, sections 3.3 (Bollinger band bounce), 3.4 (range trade), 4 (trade management: the reversal watch times) and 5 (levels). Every rule below is checked by a test (listed at the end).
+How AutoBot decides that price has been rejected at a level or at a Bollinger band. The agreed design is in `docs/DESIGN.md`, sections 3.4 (range trade), 3.6 (level reversal), 4 (trade management: the reversal watch times) and 5 (levels). Every rule below is checked by a test (listed at the end).
 
 There is **one** rejection part (`rejection/`), shared by the analyser, the strategies and the trade manager, so all three read the same answer. It **never contacts IG** and **never places, changes or closes a trade**. Every number comes from `config/settings.toml`.
 
@@ -26,12 +26,14 @@ There is **one** rejection part (`rejection/`), shared by the analyser, the stra
 - The levels are the current list from the levels part (`docs/LEVELS.md`), **as it stood at the start of the candle**. Every kind of level counts.
 - One candle can reach several things at once (the band and several levels). They all go into the same setup.
 
-## Version 1: the bounce (design 3.3)
+## Version 1: the bounce
+
+This is the shared rejection part's bounce version, used by the analyser and the level reversal (design 3.6). Since 15 November 2026 the Bollinger band bounce strategy (design 3.3) no longer uses it: it has its own rules on the hourly band (`strategies/bollinger_bounce/strategy.py`).
 
 1. **Pierce:** a candle pierces the upper band or reaches a level (above).
-2. **Reversal candle:** the first red candle after the pierce, **within 3 candles** of it (`bounce.reversal_candle_within_candles_of_pierce`). There is no size rule. If none comes, the setup **expires**.
+2. **Reversal candle:** the first red candle after the pierce, **within 3 candles** of it (`rejection.reversal_candle_within_candles_of_pierce`). There is no size rule. If none comes, the setup **expires**.
    - If another candle pierces again (and is not red) while waiting, it becomes the piercing candle and the 3-candle count starts again.
-3. **Confirmation candle:** a later candle that **closes** below the reversal candle's low, **within 3 candles** of the reversal candle (`bounce.confirmation_candle_within_candles_of_reversal`). A wick below without a close does not count. If none comes, the setup **expires**.
+3. **Confirmation candle:** a later candle that **closes** below the reversal candle's low, **within 3 candles** of the reversal candle (`rejection.confirmation_candle_within_candles_of_reversal`). A wick below without a close does not count. If none comes, the setup **expires**.
 4. **Trigger:** the live price goes below the confirmation candle's low. There is no time limit for this.
 5. **Cancelled:** if price goes above the reversal candle's high at any point after the reversal candle.
 
@@ -61,7 +63,7 @@ There is **one** rejection part (`rejection/`), shared by the analyser, the stra
 
 ## The strategies' own watcher
 
-The analyser uses the watcher as described above. The strategies (`strategies/replay.py`) run a second watcher with `design_only=True`, which has only the rules written in design 3.3 and 3.4 (owner, 7 November 2026):
+The analyser uses the watcher as described above. The strategies (`strategies/replay.py`) run a second watcher with `design_only=True`, which has only the rules written in design 3.4 and the bounce rules above (owner, 7 November 2026); the range trade and the level reversal read it:
 - every pierce starts its own setup: no limit of one setup per version and direction;
 - a pierce while a setup waits for its reversal candle does not start that setup's count again (it starts a new setup);
 - a level is reached when the candle's high-low range touches it or comes within `rejection.near_level_within_pips` of it, whichever side the candle opened on.

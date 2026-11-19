@@ -61,6 +61,11 @@ class PretendIG:
         self.journal_at_post = None
         self.journal = None
         self.next_deal = 1
+        self.activity = []                                  # IG's activity history (GET /history/activity)
+        self.positions_fail = False
+        self.move_answer = "accept"                         # PUT /positions/otc/{dealId}: accept, reject, http-400, ...
+        self.min_stop = 8.0                                 # IG's minimum stop distance (points) from GET /markets
+        self.min_stop_fails = False
 
     def login(self):
         raise AssertionError("the order sender must never log in")
@@ -76,7 +81,11 @@ class PretendIG:
     def request(self, method, path, version, body=None, *, what, headers=None):
         self.calls.append((method, path, version, body, headers))
         if method == "GET" and path == "/positions":
+            if self.positions_fail:
+                raise IGRequestError(what, 500, "error.public-api.failure")
             return Reply({"positions": self.positions})
+        if method == "GET" and path.startswith("/history/activity"):
+            return Reply({"activities": self.activity})
         if method == "GET" and path.startswith("/confirms/"):
             ref = path.split("/")[-1]
             got = self.confirms.get(ref)
@@ -86,7 +95,9 @@ class PretendIG:
                 raise IGRequestError(what, 404, "error.confirms.deal-not-found")
             return Reply(got)
         if method == "GET" and path.startswith("/markets/"):
-            return Reply({"dealingRules": {"minNormalStopOrLimitDistance": {"unit": "POINTS", "value": 8.0}}})
+            if self.min_stop_fails:
+                raise IGRequestError(what, 500, "error.public-api.failure")
+            return Reply({"dealingRules": {"minNormalStopOrLimitDistance": {"unit": "POINTS", "value": self.min_stop}}})
         if method == "GET" and path.startswith("/positions/"):
             deal = path.split("/")[-1]
             p = next((p for p in self.positions if p["position"]["dealId"] == deal), None)
@@ -115,6 +126,8 @@ class PretendIG:
         if method == "POST" and path == "/positions/otc" and headers.get("_method") == "DELETE":   # a close
             if self.close_answer == "timeout":
                 raise IGRequestError(what, None, "ReadTimeout")
+            if self.close_answer == "notional":                 # IG's answer at 20:30 UK on 10 November 2026
+                raise IGRequestError(what, 400, "error.service.marketdata.position.notional.details.null.error")
             if self.close_answer == "timeout-done":
                 self._close(body)
                 raise IGRequestError(what, None, "ReadTimeout")
@@ -124,6 +137,30 @@ class PretendIG:
             else:
                 self._close(body)
                 self.confirms[ref] = {"dealStatus": "ACCEPTED", "level": 13390.0, "profit": 100.0}
+            return Reply({"dealReference": ref})
+        if method == "PUT" and path.startswith("/positions/otc/"):      # moving a stop
+            deal = path.split("/")[-1]
+            p = next(p for p in self.positions if p["position"]["dealId"] == deal)
+            if self.move_answer == "http-400":
+                raise IGRequestError(what, 400, "error.service.otc.invalid.stop")
+            if self.move_answer in ("timeout", "timeout-done"):
+                if self.move_answer == "timeout-done":
+                    p["position"]["stopLevel"] = body["stopLevel"]
+                raise IGRequestError(what, None, "ReadTimeout")
+            ref = f"MOVE{len(self.calls)}"
+            mk = p.get("market") or {}
+            if "offer" in mk and "bid" in mk:                   # as IG: a stop inside the minimum is refused
+                short = p["position"]["direction"] == "SELL"
+                gap = (body["stopLevel"] - mk["offer"]) if short else (mk["bid"] - body["stopLevel"])
+                if gap < self.min_stop - 1e-9:
+                    self.confirms[ref] = {"dealStatus": "REJECTED", "reason": "ATTACHED_ORDER_LEVEL_ERROR"}
+                    return Reply({"dealReference": ref})
+            if self.move_answer == "reject":
+                self.confirms[ref] = {"dealStatus": "REJECTED", "reason": "ATTACHED_ORDER_LEVEL_ERROR"}
+            else:
+                p["position"]["stopLevel"], p["position"]["limitLevel"] = body["stopLevel"], body["limitLevel"]
+                self.confirms[ref] = {"dealStatus": "ACCEPTED", "stopLevel": body["stopLevel"],
+                                      "limitLevel": body["limitLevel"], "dealReference": ref}
             return Reply({"dealReference": ref})
         raise AssertionError(f"unexpected call {method} {path}")
 
@@ -146,16 +183,31 @@ class PretendIG:
             self.next_deal += 1
             self.positions.append(rest)
 
+    def system_close(self, deal, level, when, channel="SYSTEM", stop=None, limit=None):
+        """A position closed at IG without the bot. Channel SYSTEM not at its stop or limit is the owner closing it by
+        hand (as on 9 and 10 November); SYSTEM at its stop or limit is IG's stop or limit; another channel is a
+        close made some other way."""
+        p = next(p for p in self.positions if p["position"]["dealId"] == deal)
+        self.positions.remove(p)
+        self.activity.append({"date": when, "epic": EPIC, "dealId": "DISYS" + deal[-4:], "channel": channel,
+                              "type": "POSITION", "status": "ACCEPTED", "description": f"Position/s closed: {deal[-8:]}",
+                              "details": {"actions": [{"actionType": "POSITION_CLOSED", "affectedDealId": deal}],
+                                          "direction": "BUY", "level": level, "size": 10, "stopLevel": stop,
+                                          "limitLevel": limit}})
+
     def orders_sent(self):
         return [c for c in self.calls if c[0] == "POST" and c[1] == "/positions/otc" and "_method" not in c[4]]
 
 
 class FakeAlerts:
     def __init__(self):
-        self.sent = []
+        self.sent, self.infos = [], []
 
     def problem(self, key, text):
         self.sent.append((key, text))
+
+    def info(self, text, key=None, html=False):
+        self.infos.append(text)
 
 
 def idea(strategy, direction=SELL, t=WED, price="13400.0", context=None):
@@ -521,10 +573,12 @@ def test_an_unclear_half_close_finds_the_rest_under_its_new_deal_id(S):
 
 
 def test_only_the_range_trade_closes_by_half(S):
-    sender, ig, *_ = make(S)
-    r = sender.place(idea(BREAKOUT), calendar=[])
-    c = sender.close(r.reference, half=True)
-    assert not c.ok and "only a range trade" in c.reasons[0] and not closes(ig)
+    """The Bollinger bounce no longer closes half at the opposite band (owner, 15 November 2026)."""
+    for strategy in (BREAKOUT, BOLLINGER_BOUNCE):
+        sender, ig, *_ = make(S)
+        r = sender.place(idea(strategy), calendar=[])
+        c = sender.close(r.reference, half=True)
+        assert not c.ok and "only a range trade is closed by half" in c.reasons[0] and not closes(ig)
 
 
 def test_it_never_closes_a_position_it_did_not_open(S):
@@ -539,7 +593,10 @@ def test_a_refused_close_is_recorded_and_alerted(S):
     r = sender.place(idea(BREAKOUT), calendar=[])
     ig.close_answer = "reject"
     c = sender.close(r.reference)
-    assert c.what == "close refused" and alerts.sent[-1][0] == "close-refused" and len(sender.open_trades()) == 1
+    assert c.what == "close refused" and len(sender.open_trades()) == 1
+    key, text = alerts.sent[-1]
+    assert key == f"close-refused-{r.deal_id}"             # each trade its own alert: never held back by another's
+    assert "still open at IG" in text and "tried again" in text
 
 
 def test_an_unclear_close_is_checked_on_the_position(S):
@@ -637,3 +694,301 @@ def test_the_reference_ig_echoes_is_the_one_confirmed(S):
     r = sender.place(idea(BREAKOUT), calendar=[])
     assert r.ok and any(c[1] == "/confirms/IGECHO1" for c in ig.calls)
     assert [x for x in records(sender) if x["event"] == "reference echoed"][0]["ig_reference"] == "IGECHO1"
+
+
+# ---- IG refused the closes of positions it had already closed (10 November 2026) -----------------------
+
+def test_a_close_of_a_position_ig_already_closed_is_recorded_with_igs_own_close(S):
+    sender, ig, alerts, *_ = make(S)
+    r = sender.place(idea(SLOW_GRIND), calendar=[])
+    ig.system_close(r.deal_id, 13335.2, "2026-11-04T09:56:27", "WEB")      # closed at IG some other way
+    ig.close_answer = "notional"
+    c = sender.close(r.reference, why="20:30 UK close")
+    assert (c.ok, c.what, c.level) == (True, "gone at IG", D("13335.2"))
+    assert c.closed_utc == U(2026, 11, 4, 9, 56, 27) and "already closed" in c.reasons[0]
+    gone = [x for x in records(sender) if x["event"] == "gone at IG"][0]
+    assert gone["ig_level"] == "13335.2" and gone["ig_channel"] == "WEB" and gone["ig_time_utc"] == "2026-11-04T09:56:27Z"
+    assert "close refused" in events(sender) and sender.open_trades() == []
+    key, text = alerts.sent[-1]
+    assert key == f"gone-at-ig-{r.deal_id}" and "13335.2" in text and "did not close it" in text
+    n = len(closes(ig))
+    assert sender.close(r.reference) is c and len(closes(ig)) == n       # never sent again
+    again, *_ = make(S, ig)                                                 # and after a restart
+    assert again.close(r.reference).level == D("13335.2")
+
+
+def test_a_refused_close_of_a_position_still_open_keeps_the_trade_open_and_alerts_igs_error(S):
+    sender, ig, alerts, *_ = make(S)
+    a = sender.place(idea(SLOW_GRIND), calendar=[])
+    b = sender.place(idea(BOLLINGER_BOUNCE, BUY), calendar=[])
+    ig.close_answer = "notional"
+    for t in (a, b):
+        c = sender.close(t.reference)
+        assert (c.ok, c.what) == (False, "close refused")
+    assert len(sender.open_trades()) == 2 and "closed" not in events(sender)
+    assert [k for k, _ in alerts.sent[-2:]] == [f"close-refused-{a.deal_id}", f"close-refused-{b.deal_id}"]
+    assert all("error.service.marketdata.position.notional.details.null.error" in t for _, t in alerts.sent[-2:])
+    ig.close_answer = "accept"                                              # tried again: IG confirms it
+    assert sender.close(a.reference).what == "closed"
+
+
+def test_the_regular_check_finds_every_difference_with_igs_open_positions(S):
+    sender, ig, alerts, *_ = make(S)
+    a = sender.place(idea(SLOW_GRIND), calendar=[])
+    b = sender.place(idea(BREAKOUT), calendar=[])
+    c = sender.place(idea(RANGE_TRADE, BUY), calendar=[])
+    assert sender.reconcile() == [] and alerts.sent == []                  # all the same: nothing said
+    ig.system_close(a.deal_id, 13390.0, "2026-11-04T10:30:00", "WEB")
+    ig.positions.append(theirs())
+    next(p for p in ig.positions if p["position"]["dealId"] == c.deal_id)["position"]["size"] = 5.0
+    gone = sender.reconcile()
+    assert [(g.reference, g.level) for g in gone] == [(a.reference, D("13390.0"))]
+    assert sender.take_gone() == gone and sender.take_gone() == []
+    keys = [k for k, _ in alerts.sent]
+    assert keys == [f"gone-at-ig-{a.deal_id}", f"size-differs-{c.deal_id}", "position-not-ours"]
+    assert {t.deal_id for t in sender.trades.values() if t.status == "open"} == {b.deal_id, c.deal_id}
+    assert sender.reconcile() == [] and len(alerts.sent) == 3              # each difference alerted once
+
+
+def test_the_regular_check_never_closes_anything_on_a_guess(S):
+    sender, ig, alerts, *_ = make(S)
+    a = sender.place(idea(SLOW_GRIND), calendar=[])
+    ig.positions_fail = True                                                # IG's list cannot be read
+    assert sender.reconcile() == [] and alerts.sent[-1][0] == "positions-not-read"
+    assert len(sender.open_trades()) == 1
+    ig.positions_fail = False
+    real = list(ig.positions)
+    ig.positions.clear()                                                    # missing from the list only...
+    orig = ig.request
+
+    def single_still_there(method, path, version, body=None, *, what, headers=None):
+        if method == "GET" and path == f"/positions/{a.deal_id}":          # ...IG still has it
+            return orig(method, "/positions", version, what=what, headers=headers)
+        return orig(method, path, version, body, what=what, headers=headers)
+    ig.request = single_still_there
+    assert sender.reconcile() == [] and len(sender.open_trades()) == 1
+    ig.request, ig.positions = orig, real
+    assert not any(c[0] == "POST" for c in ig.calls if c[1] == "/positions/otc" and (c[4] or {}).get("_method"))
+
+
+def test_at_start_up_a_trade_ig_closed_while_the_bot_was_away_is_alerted_with_igs_close(S):
+    sender, ig, *_ = make(S)
+    a = sender.place(idea(SLOW_GRIND), calendar=[])
+    ig.system_close(a.deal_id, 13404.1, "2026-11-04T15:21:00", "WEB")
+    again, ig, alerts, *_ = make(S, ig)
+    assert again.open_trades() == []
+    (g,) = again.take_gone()
+    assert (g.reference, g.level) == (a.reference, D("13404.1"))
+    assert alerts.sent[0][0] == f"gone-at-ig-{a.deal_id}" and "15:21" in alerts.sent[0][1]
+
+
+def test_the_regular_check_is_live_only(S):
+    ig = PretendIG()
+    sender = OrderSender(S, ig, FakeAlerts(), now=lambda: WED, paper=True)
+    sender.start()
+    sender.place(idea(SLOW_GRIND), calendar=[])
+    before = list(ig.calls)
+    assert sender.reconcile() == [] and ig.calls == before                 # nothing asked of IG
+
+
+def test_a_stop_at_ig_is_recorded_at_igs_own_level_not_the_bots(S):
+    sender, ig, *_ = make(S)
+    r = sender.place(idea(SLOW_GRIND), calendar=[])
+    ig.system_close(r.deal_id, 13411.5, "2026-11-04T13:30:03", stop=13411.5)   # IG's stop filled at 13411.5
+    c = sender.closed_at_ig(r.reference, "stopped by IG", D("13418.8"))     # the bot's own price said 13418.8
+    assert (c.ok, c.level, c.closed_utc) == (True, D("13411.5"), U(2026, 11, 4, 13, 30, 3))
+    rec = [x for x in records(sender) if x["event"] == "closed at IG"][0]
+    assert rec["level"] == "13411.5" and rec["ig_level"] == "13411.5"
+
+
+# ---- the owner's closes by hand (owner, 11 November 2026) ----------------------------------------------------------
+
+def test_a_system_close_not_at_the_stop_or_limit_is_the_owners_with_a_short_message_not_a_warning(S):
+    sender, ig, alerts, *_ = make(S)
+    r = sender.place(idea(SLOW_GRIND), calendar=[])                         # a sell
+    t = sender.trades[r.reference]
+    ig.system_close(r.deal_id, float(t.level) - 37.8, "2026-11-04T17:56:27", stop=float(t.level) + 15,
+                    limit=float(t.level) - 100)
+    (g,) = sender.reconcile()
+    assert (g.what, g.level, g.closed_utc) == ("closed by owner", t.level - D("37.8"), U(2026, 11, 4, 17, 56, 27))
+    assert alerts.sent == []                                                # no warning
+    (msg,) = alerts.infos
+    assert "you closed the slow grind sell" in msg and "+37.8 pips" in msg and "£378.00" in msg and "17:56 UK" in msg
+    assert "not counted" in msg
+    rec = [x for x in records(sender) if x["event"] == "closed by owner"][0]
+    assert rec["ig_channel"] == "SYSTEM" and rec["ig_time_utc"] == "2026-11-04T17:56:27Z"
+    assert sender.open_trades() == []
+    again, *_ = make(S, ig)                                                 # after a restart: still the owner's
+    assert again.close(r.reference).what == "closed by owner"
+
+
+def test_a_system_close_at_the_stop_or_take_profit_or_beyond_is_igs_not_the_owners(S):
+    from orders.sender import closed_by_owner
+    sys = {"ig_channel": "SYSTEM", "ig_stop_level": D("13388"), "ig_limit_level": D("13273")}
+    assert not closed_by_owner("sell", sys | {"ig_level": D("13388")})      # at the stop
+    assert not closed_by_owner("sell", sys | {"ig_level": D("13389.5")})    # a stop filled worse
+    assert not closed_by_owner("sell", sys | {"ig_level": D("13273")})      # at the take profit
+    assert closed_by_owner("sell", sys | {"ig_level": D("13335.2")})        # in between: the owner
+    buy = {"ig_channel": "SYSTEM", "ig_stop_level": D("13317.7"), "ig_limit_level": D("13423.7")}
+    assert not closed_by_owner("buy", buy | {"ig_level": D("13317.0")})
+    assert not closed_by_owner("buy", buy | {"ig_level": D("13423.7")})
+    assert closed_by_owner("buy", buy | {"ig_level": D("13324.3")})
+    assert not closed_by_owner("buy", buy | {"ig_level": D("13324.3"), "ig_channel": "WEB"})   # not SYSTEM
+    assert not closed_by_owner("buy", {})                                   # IG's activity did not show it
+
+
+def test_a_stop_the_bot_expected_but_the_owner_closed_first_is_the_owners(S):
+    sender, ig, alerts, *_ = make(S)
+    r = sender.place(idea(LEVEL_REVERSAL), calendar=[])
+    t = sender.trades[r.reference]
+    ig.system_close(r.deal_id, float(t.level) + 14.6, "2026-11-04T17:56:34", stop=float(t.level) + 20.2)
+    c = sender.closed_at_ig(r.reference, "stopped by IG", t.level + D("20.2"))
+    assert (c.ok, c.what, c.level) == (True, "closed by owner", t.level + D("14.6"))
+    assert "closed at IG" not in events(sender) and alerts.sent == [] and len(alerts.infos) == 1
+
+
+def test_a_refused_close_of_a_position_the_owner_had_closed_is_the_owners(S):
+    sender, ig, alerts, *_ = make(S)
+    r = sender.place(idea(BOLLINGER_BOUNCE, BUY), calendar=[])
+    ig.system_close(r.deal_id, 13400.6, "2026-11-04T17:12:04")
+    ig.close_answer = "notional"
+    c = sender.close(r.reference, why="20:30 UK close")
+    assert (c.ok, c.what) == (True, "closed by owner") and alerts.sent == [] and len(alerts.infos) == 1
+
+
+# ---- moving the Bollinger bounce's stop to break-even (owner, 13 November 2026) ----------------------------------
+
+def moves(ig):
+    return [c for c in ig.calls if c[0] == "PUT"]
+
+
+def bounce_at_ig(S, bid=13412.0, offer=13413.5, **kw):
+    """A bounce buy filled at 13400.5, with its stop (12 below) and take profit (100 above) as IG holds them, and
+    IG's prices now (in its position's market snapshot): by default 11.5 pips up, so a stop at 13400.5 is 11.5 pips
+    below IG's sell price, outside IG's minimum (8)."""
+    sender, ig, alerts, sleeps, clock = make(S, **kw)
+    r = sender.place(idea(BOLLINGER_BOUNCE, BUY), calendar=[])
+    p = next(p for p in ig.positions if p["position"]["dealId"] == r.deal_id)
+    p["position"]["stopLevel"], p["position"]["limitLevel"] = 13388.5, 13500.5
+    p["market"].update(bid=bid, offer=offer)
+    return sender, ig, alerts, r
+
+
+def test_the_stop_is_moved_at_ig_with_the_take_profit_kept_and_counts_once_ig_confirms_it(S):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    m = sender.move_stop(r.reference, D("13400.5"), why="6 pips up")
+    assert (m.ok, m.what, m.level) == (True, "stop moved", D("13400.5"))
+    (method, path, version, body, headers), = moves(ig)
+    assert (path, version, headers) == (f"/positions/otc/{r.deal_id}", "2",
+                                        {"VERSION": "2", "Content-Type": "application/json"})
+    assert body == {"stopLevel": 13400.5, "limitLevel": 13500.5, "trailingStop": False, "trailingStopDistance": None,
+                    "trailingStopIncrement": None, "guaranteedStop": False}       # the take profit is never removed
+    assert ("GET", f"/positions/{r.deal_id}") in [c[:2] for c in ig.calls]      # IG's position read first
+    assert events(sender)[-2:] == ["stop move sending", "stop moved"]
+    moved = records(sender)[-1]
+    assert (moved["stop_level"], moved["how"]) == ("13400.5", "confirmed")
+    assert sender.trades[r.reference].stop_level == D("13400.5") and alerts.sent == []
+
+
+def test_a_moved_stop_is_known_again_after_a_restart(S):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    sender.move_stop(r.reference, D("13400.5"))
+    again, *_ = make(S, ig)
+    assert again.trades[r.reference].stop_level == D("13400.5")
+
+
+@pytest.mark.parametrize("answer, reason", [("reject", "ATTACHED_ORDER_LEVEL_ERROR"),
+                                            ("http-400", "error.service.otc.invalid.stop"),
+                                            ("timeout", "no clear answer")])
+def test_a_move_ig_does_not_confirm_keeps_the_old_stop_and_leaves_the_alert_to_the_trade_manager(S, answer, reason):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    ig.move_answer = answer
+    m = sender.move_stop(r.reference, D("13400.5"))
+    assert (m.ok, m.what, m.level) == (False, "stop not moved", D("13400.5")) and reason in m.reasons[0]
+    assert sender.trades[r.reference].stop_level is None
+    assert next(p for p in ig.positions if p["position"]["dealId"] == r.deal_id)["position"]["stopLevel"] == 13388.5
+    assert alerts.sent == []        # owner, 17 November 2026: one alert, from the trade manager, when it gives up
+    assert events(sender)[-1] == "stop not moved"
+
+
+def test_an_unclear_answer_with_the_new_stop_at_ig_counts_as_moved(S):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    ig.move_answer = "timeout-done"
+    m = sender.move_stop(r.reference, D("13400.5"))
+    assert m.ok and records(sender)[-1]["how"] == "IG's position shows the new stop" and alerts.sent == []
+
+
+def test_a_stop_already_there_is_not_sent_again(S):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    next(p for p in ig.positions if p["position"]["dealId"] == r.deal_id)["position"]["stopLevel"] = 13400.5
+    m = sender.move_stop(r.reference, D("13400.5"))
+    assert m.ok and moves(ig) == [] and records(sender)[-1]["how"] == "already at IG"
+
+
+def test_no_move_for_a_position_ig_no_longer_has_and_no_alert(S):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    ig.positions = []
+    m = sender.move_stop(r.reference, D("13400.5"))
+    assert not m.ok and moves(ig) == [] and alerts.sent == [] and events(sender)[-1] == "stop not moved"
+
+
+def test_paper_records_the_move_and_sends_nothing(S):
+    ig = PretendIG()
+    sender = OrderSender(S, ig, FakeAlerts(), now=lambda: WED, sleep=lambda s: None,
+                         quote=lambda: (D("13400.0"), D("13401.5")), paper=True)
+    sender.start()
+    r = sender.place(idea(BOLLINGER_BOUNCE, BUY), calendar=[])
+    m = sender.move_stop(r.reference, D("13401.5"))
+    assert m.ok and moves(ig) == [] and records(sender)[-1]["how"] == "paper"
+
+
+# ---- a stop move IG cannot accept, and what is recorded with every move (owner, 17 November 2026) -----------------
+
+def test_every_stop_move_records_igs_buy_and_sell_prices_and_its_minimum_stop_distance(S):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    sender.move_stop(r.reference, D("13400.5"))
+    sending = next(x for x in records(sender) if x["event"] == "stop move sending")
+    assert (sending["ig_bid"], sending["ig_offer"], sending["prices_from"]) == ("13412.0", "13413.5", "IG's position")
+    assert (sending["ig_min_stop_value"], sending["ig_min_stop_unit"], sending["ig_min_stop_pips"]) == (8.0, "POINTS", "8.0")
+    assert (sending["rule_level"], sending["stop_level"], sending["distance_from_market_pips"]) == \
+        ("13400.5", "13400.5", "11.5")
+    assert ("GET", "/markets/CS.D.GBPUSD.TODAY.IP") in [c[:2] for c in ig.calls]
+
+
+def test_a_level_inside_igs_minimum_is_sent_as_the_nearest_level_ig_allows(S):
+    # a buy: at least 8 below IG's sell price 13405.0, so 13397.0, not the 13400.5 asked for (4.5 below)
+    sender, ig, alerts, r = bounce_at_ig(S, bid=13405.0, offer=13406.5)
+    m = sender.move_stop(r.reference, D("13400.5"))
+    assert (m.ok, m.level) == (True, D("13397.0"))
+    sending = next(x for x in records(sender) if x["event"] == "stop move sending")
+    assert (sending["rule_level"], sending["stop_level"], sending["distance_from_market_pips"]) == \
+        ("13400.5", "13397.0", "8.0")
+
+
+def test_a_level_on_the_wrong_side_of_the_price_is_sent_as_the_nearest_level_ig_allows(S):
+    sender, ig, alerts, r = bounce_at_ig(S, bid=13399.0, offer=13400.5)    # the asked-for stop is above IG's sell price
+    m = sender.move_stop(r.reference, D("13400.5"))
+    assert (m.ok, m.level) == (True, D("13391.0"))
+
+
+def test_no_move_when_the_nearest_level_ig_allows_is_not_closer_than_its_stop(S):
+    sender, ig, alerts, r = bounce_at_ig(S, bid=13395.0, offer=13396.5)    # allowed: 13387.0, below the stop 13388.5
+    m = sender.move_stop(r.reference, D("13400.5"))
+    assert (m.ok, m.what) == (False, "stop not moved") and "not closer" in m.reasons[0]
+    assert moves(ig) == [] and records(sender)[-1]["ig_bid"] == "13395.0"
+
+
+def test_without_igs_prices_in_the_position_the_price_streams_are_used(S):
+    sender, ig, alerts, r = bounce_at_ig(S, quote=(D("13412.0"), D("13413.5")))
+    next(p for p in ig.positions if p["position"]["dealId"] == r.deal_id)["market"].pop("bid")
+    sender.move_stop(r.reference, D("13400.5"))
+    sending = next(x for x in records(sender) if x["event"] == "stop move sending")
+    assert (sending["ig_bid"], sending["prices_from"]) == ("13412.0", "the price stream")
+
+
+def test_a_minimum_ig_cannot_give_is_recorded_as_not_known_and_the_move_still_goes(S):
+    sender, ig, alerts, r = bounce_at_ig(S)
+    ig.min_stop_fails = True
+    m = sender.move_stop(r.reference, D("13400.5"))
+    sending = next(x for x in records(sender) if x["event"] == "stop move sending")
+    assert m.ok and sending["ig_min_stop_pips"] is None and "error.public-api.failure" in sending["ig_min_stop_error"]

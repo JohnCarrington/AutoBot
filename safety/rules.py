@@ -10,9 +10,9 @@ It gives EVERY reason it refuses (an empty list: the order may go out):
   3. the strategy's switch in .env is off (checked again here: a strategy cannot bypass it);
   4. the strategy's own hours, news rules and Friday rules (strategies.common.may_open);
   5. trades open at once: the strategy's own limit (limits.max_open_trades_per_strategy, 1; the
-     Bollinger bounce limits.bollinger_bounce_extra_opposite_direction_trades more in the opposite
-     direction; the EMA pullback no limit), and at most limits.max_open_trades (5) in total not counting
-     the EMA pullback's (strategies.common.counts_towards_most_at_once);
+     Bollinger bounce 1 in each direction, owner, 15 November 2026; the EMA pullback no limit), and at
+     most limits.max_open_trades (5) in total not counting the EMA pullback's
+     (strategies.common.counts_towards_most_at_once); the Bollinger bounce is not held back by that total;
   6. the size is trade.size_gbp_per_pip (£10 a pip);
   7. total risk: every open trade's risk (its stop distance x its size) plus the new trade's, at most
      safety.max_total_risk_gbp (£100,000; owner, 8 November 2026: set so it is never reached);
@@ -29,7 +29,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Any
 
-from strategies.common import (BOLLINGER_BOUNCE, EMA_PULLBACK, SWITCH, counts_towards_most_at_once, may_open,
+from strategies.common import (BOLLINGER_BOUNCE, BOLLINGER_BOUNCE_5M, EMA_PULLBACK, SWITCH, counts_towards_most_at_once, may_open,
                                stop_loss_pips, stop_price)
 
 
@@ -95,7 +95,12 @@ def _limits(settings: Any, order: Order, open_trades: list[OpenTrade]) -> list[s
     out = []
     if idea.strategy != EMA_PULLBACK:
         mine = [t for t in open_trades if t.strategy == idea.strategy]
-        if idea.strategy == BOLLINGER_BOUNCE:
+        if idea.strategy == BOLLINGER_BOUNCE:            # one at a time in each direction (owner, 15 November 2026)
+            same = [t for t in mine if t.direction == idea.direction]
+            if len(same) >= lim.max_open_trades_per_strategy:
+                out.append(f"{idea.strategy} already has {len(same)} {idea.direction} trade(s) open "
+                           f"(at most {lim.max_open_trades_per_strategy} each way)")
+        elif idea.strategy == BOLLINGER_BOUNCE_5M:         # the first build's bounce, as on 9 November 2026
             same = [t for t in mine if t.direction == idea.direction]
             most = lim.max_open_trades_per_strategy + lim.bollinger_bounce_extra_opposite_direction_trades
             if len(same) >= lim.max_open_trades_per_strategy:
@@ -106,7 +111,9 @@ def _limits(settings: Any, order: Order, open_trades: list[OpenTrade]) -> list[s
         elif len(mine) >= lim.max_open_trades_per_strategy:
             out.append(f"{idea.strategy} already has {len(mine)} trade(s) open "
                        f"(at most {lim.max_open_trades_per_strategy})")
-    if counts_towards_most_at_once(idea.strategy):
+    # the Bollinger bounce is not held back by the most at once (owner, 15 November 2026: nothing else blocks it);
+    # its open trades still count towards it for the other strategies
+    if counts_towards_most_at_once(idea.strategy) and idea.strategy != BOLLINGER_BOUNCE:
         counted = [t for t in open_trades if counts_towards_most_at_once(t.strategy)]
         if len(counted) >= lim.max_open_trades:
             out.append(f"{len(counted)} trades open that count towards the most at once ({lim.max_open_trades}; "

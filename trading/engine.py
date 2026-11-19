@@ -15,10 +15,16 @@ sender and the trade manager, run inside the price service on its IG login.
     sending anything for the past, so they carry on from where the week is.
   * Live entries (design 3: a trade opens as soon as the live price reaches its trigger): on every live price the
     5-minute candle forming so far is given to COPIES of the strategies (StrategyRunner.peek, the same code as for
-    a finished candle); an idea whose entry price it has reached goes to the order sender at once. When that
+    a finished candle), once the candle before it has been stored and taken (at each candle's turn the live prices
+    arrive before IG's finished candle; StrategyRunner.waiting_for_finished_candle); an idea whose entry price it has reached goes to the order sender at once. When that
     candle finishes, the strategies take it as always (so their state, and the replay, are unchanged) and an idea
     already sent live is not sent again; one the live prices did not show (a gap in the stream) is sent then.
     A trade opened during a candle is not run on that candle's earlier prices.
+  * The Bollinger bounce (design 3.3; owner, 15 November 2026) opens at the open of the candle after its
+    confirmation candle: live, on that candle's first price. It is never sent late: an entry the live prices did
+    not show (a gap in the stream) is recorded as not sent. It closes nothing else when it opens. Once it has
+    been 12 pips up its stop trails behind the last 3 finished candles (the trade manager, after each finished
+    candle; the last candles are seeded from the store at start-up).
   * The trade manager's saved state (each open trade's best pips so far, half close, watching a level) is restored
     at start-up.
   * Records (records/book.py, design 9): every trade (opened and closed, with everything section 9 lists) and every
@@ -48,6 +54,7 @@ from trading.reasons import level_note, one_line, take_profit_kind
 from levels.current import build
 from prices.calendar import floor_5m
 from prices.model import Candle
+from strategies.common import BOLLINGER_BOUNCE
 from strategies.replay import StrategyRunner
 from trade_manager.manager import Bar, Rejection, TradeManager, plan
 
@@ -84,9 +91,10 @@ class Trading:
         the candle it opened in, as the research. `calendar`: the economic calendar (None: the one on disk)."""
         self.s, self.store, self.alerts, self.now = settings, store, alerts, now
         self.trading_on, self.calendar, self.replay = trading_on, calendar, replay_end is not None
-        self.memo = MemoStore(store)
-        self.tracker = StateTracker(settings, self.memo)
-        self.runner = StrategyRunner(settings, self.memo, self.tracker, hourly_end=replay_end)
+        # The analyser and the strategies each read the store afresh on every call (never a copy kept from
+        # start-up; owner, 11 November 2026)
+        self.tracker = StateTracker(settings, store)
+        self.runner = StrategyRunner(settings, store, self.tracker, hourly_end=replay_end)
         self.quote = quote
         kw = {"sleep": sleep} if sleep is not None else {}
         self.sender = OrderSender(settings, client, alerts, now=now, quote=quote, paper=not trading_on, **kw)
@@ -112,19 +120,26 @@ class Trading:
         with self._lock:
             now = now or self.now()
             self.sender.start()
+            self._rebuild_meta()
             saved = self.manager.load_state()
             for t in [t for t in self.sender.trades.values() if t.status == "open"]:
                 mt = plan(self.s, t.reference, t.strategy, t.direction, t.opened_at, t.level, t.level, t.stop_pips,
                           self.calendar, self._trend_day(t.opened_at))
                 if t.half_closed:
                     mt.half_done, mt.state = True, "half close"
+                if t.stop_level is not None:                # the bounce's stop already moved by its trail at IG
+                    mt.stop_level = t.stop_level
                 mt.bars = 1                                 # already open: no entry-candle rule
                 if self.manager.restore(mt, saved):         # its best pips so far, half close, watching
                     log.info("Trade %s: its saved best (%s pips) restored.", t.reference, mt.best)
                 self.manager.add(mt)
+            self._take_gone()                               # trades IG closed while the bot was away
+            self._after_bars()
             if not self.replay:
                 self.tracker.replay(now)
                 self.runner.step()                          # the week so far: nothing is sent for the past
+                n = self.s.bounce.trail_candles             # the last finished candles, for the bounce's trail
+                self.manager.recent = [Bar.of(h[0].candle) for h in self.tracker.history[-n:]]
             self._changes_seen = len(self.tracker.changes)
             self.ready = True
             log.info("Trading %s: %d open trade(s) taken over; the strategies are up to %s.",
@@ -150,7 +165,11 @@ class Trading:
                                    trend_type=ch.trend_type, line=ch.line() if hasattr(ch, "line") else str(ch))
             self._changes_seen = len(self.tracker.changes)
             self._take_new_candles()
+            self._levels = None                             # the forming candle's levels again, with this candle stored
             self._sync_ig()
+            if self.trading_on:
+                self.sender.reconcile("after the candle")   # the bot's open trades against IG's open positions
+            self._take_gone()
             self._after_bars()
 
     def _take_new_candles(self) -> None:
@@ -167,14 +186,32 @@ class Trading:
             band = (hist[i - 1][0].upper, hist[i - 1][0].lower) if i > 0 and hist[i - 1][0].upper is not None else None
             rej = analyser_rejections(self.tracker.watcher, c.start)
             before = [ref for ref, t in self.manager.trades.items() if t.open and t.opened_at <= c.start]
-            self.manager.on_bar(Bar.of(c), band, rej, watching if k == len(new) - 1 else frozenset(), only=before)
+            self.manager.on_bar(Bar.of(c), band, rej, watching if k == len(new) - 1 else frozenset(), only=before,
+                                finished=True)
             self._after_bars()
-            for idea in ideas_by_candle.get(c.start, []):
-                sent_live = (idea.strategy, idea.direction, c.start) in self.fired
+            tried: set = set()          # one try per strategy, direction and candle, as the live prices give (owner,
+            for idea in ideas_by_candle.get(c.start, []):          # 16 November 2026: no second EMA pullback)
+                key = (idea.strategy, idea.direction, c.start)
+                sent_live = key in self.fired
                 self.book.decision("idea", idea.time, strategy=idea.strategy, direction=idea.direction,
                                    entry_price=idea.entry_price, allowed=idea.allowed, blocked_by=idea.blocked_by,
                                    state=idea.state, already_sent_live=sent_live)
+                if idea.allowed and not sent_live and key in tried:
+                    self.book.decision("idea not sent again", idea.time, strategy=idea.strategy,
+                                       direction=idea.direction, entry_price=idea.entry_price,
+                                       why="this strategy already had a try in this direction on this candle")
+                    continue
                 if idea.allowed and not sent_live:
+                    tried.add(key)
+                if idea.allowed and not sent_live and idea.strategy == BOLLINGER_BOUNCE and not self.replay:
+                    # it opens at the candle's open; the live prices did not show it: never sent late
+                    self.book.decision("bounce not sent", idea.time, strategy=idea.strategy, direction=idea.direction,
+                                       entry_price=idea.entry_price,
+                                       why="its entry is the open of this candle, which the live prices did not "
+                                           "show (a gap in the stream): not sent late")
+                    log.warning("Bollinger bounce %s at %s not sent: the live prices did not show its candle's open.",
+                                idea.direction, idea.time)
+                elif idea.allowed and not sent_live:
                     self._send(idea, c, band, rej)
         if new:
             last = new[-1].candle.start
@@ -189,9 +226,10 @@ class Trading:
         r = self._place(idea, td)
         if not r.ok:
             return
-        self._opened(idea, r, candle.start if self.replay else self.now(), td)
+        opened_at = candle.start if self.replay else self.now()
+        self._opened(idea, r, opened_at, td)
         if self.replay:                                     # as the research: it may close in the candle it opened in
-            self.manager.on_bar(Bar.of(candle), band, rej, only=[r.reference])
+            self.manager.on_bar(Bar.of(candle), band, rej, only=[r.reference], finished=True)
             self._after_bars()
 
     def _paused(self) -> bool:
@@ -240,7 +278,7 @@ class Trading:
                            rec["market_state"], Decimal(rec["open_price"]), Decimal(rec["stop_price"]),
                            Decimal(rec["take_profit_price"]), rec["opened_utc"], self.s.market.price_scale,
                            rec["reference"], Decimal(rec["stop_pips"]), Decimal(rec["take_profit_pips"]),
-                           rec["take_profit_kind"], rec["reason"], rec["level"])
+                           rec["take_profit_kind"], rec["reason"], rec["level"], self.s.market.epic)
 
     def _after_bars(self) -> None:
         """Every trade the trade manager has just finished: to the records, and Telegram (real trades)."""
@@ -252,6 +290,14 @@ class Trading:
                 continue
             last = mt.decisions[-1]
             pips = mt.total_pips()
+            # the owner's closes by hand are kept apart from the bot's own exits (owner, 11 November 2026)
+            by = "owner" if last.kind == "closed by owner" else "bot"
+            if pips is None:                                # closed at IG at a level IG's activity did not give
+                rec |= {"closed": True}
+                self.book.closed({k: v for k, v in rec.items() if k not in ("closed", "steps")} | {
+                    "closed_utc": last.at or self.now(), "close_price": None, "how_closed": last.kind,
+                    "close_reason": last.why, "pips": None, "gbp": None, "result": "unknown", "closed_by": by})
+                continue
             gbp = (pips * size).quantize(Decimal("0.01"))
             half = rest = None
             if mt.half_pips is not None:
@@ -268,12 +314,56 @@ class Trading:
                 "pips": pips, "gbp": gbp, "result": "win" if gbp > 0 else "loss" if gbp < 0 else "break even",
                 "minutes_open": int((closed_at - rec["opened_utc"]).total_seconds() // 60), "best_pips": best,
                 "levels_lined_up": lined,
-                "half_close": None if half is None else vars(half), "rest": None if rest is None else vars(rest)}
+                "half_close": None if half is None else vars(half), "rest": None if rest is None else vars(rest),
+                "closed_by": by}
             self.book.closed(row)
-            if self.trading_on:
+            if self.trading_on and by == "bot":            # the owner's close: the order sender's short message
                 today = self.book.today(closed_at)
                 self.alerts.trade_closed(TradeClosed(self._opened_message(rec), last.price, closed_at, last.why, gbp,
                                                      pips, best, half, rest, today.trades, today.pips))
+
+    def _rebuild_meta(self) -> None:
+        """After a restart: what the records and messages need for each trade opened before it and not yet
+        closed in the records (otherwise its close could never be recorded)."""
+        opened, closed = {}, set()
+        if self.book.trades_file.exists():
+            import json
+            for line in self.book.trades_file.read_text().splitlines():
+                r = json.loads(line)
+                if r.get("event") == "opened":
+                    opened[r["reference"]] = r
+                elif r.get("event") == "closed":
+                    closed.add(r["reference"])
+        for ref, r in opened.items():
+            if ref in closed or ref in self.meta:
+                continue
+            rec = {k: v for k, v in r.items() if k not in ("event", "paper")}
+            rec["opened_utc"] = datetime.fromisoformat(str(r["opened_utc"]).replace("Z", "+00:00"))
+            self.meta[ref] = rec
+        self._closed_before = closed
+
+    def _take_gone(self) -> None:
+        """Trades the order sender found closed at IG without the bot (start-up, a refused close, the regular
+        check): finished by the trade manager at IG's level, then recorded once."""
+        for f in self.sender.take_gone():
+            ref = f.reference
+            if ref not in self.manager.trades:
+                t = self.sender.trades.get(ref)
+                if t is None:
+                    continue
+                mt = plan(self.s, ref, t.strategy, t.direction, t.opened_at, t.level, t.level, t.stop_pips,
+                          self.calendar, self._trend_day(t.opened_at))
+                mt.bars = 1
+                self.manager.add(mt)
+            if ref in getattr(self, "_closed_before", set()) and ref not in self.meta:
+                # already closed in the records before this start (by the bot's own reading): IG's close is
+                # recorded as a decision, the record is not written twice
+                kind = "closed by owner" if f.what == "closed by owner" else "closed at IG"
+                self.book.decision(kind, self.now(), reference=ref, level=f.level,
+                                   ig_time_utc=f.closed_utc, note="; ".join(f.reasons))
+                self.manager.trades[ref].state = kind
+                continue
+            self.manager.gone_at_ig(f)
 
     def _sync_ig(self) -> None:
         """Live: a trade whose stop or take profit the trade manager expected IG to have closed, but IG had not yet,
@@ -283,7 +373,9 @@ class Trading:
         for ref, mt in self.manager.trades.items():
             if mt.open and getattr(mt, "expected_at_ig", None):
                 r = self.sender.closed_at_ig(ref, mt.expected_at_ig[0], mt.expected_at_ig[1])
-                if r.ok:
+                if r.ok and r.what == "closed by owner":     # not IG's stop or limit: the owner closed it
+                    self.manager.gone_at_ig(r)              # (found again in _take_gone: already finished)
+                elif r.ok:
                     self.manager.closed_at_ig(ref)
 
     def daily_summary(self, now: datetime) -> None:
@@ -304,7 +396,7 @@ class Trading:
         s = self.book.write_daily(day)
         from datetime import timedelta as td_
         week = self.book.summary(day - td_(days=day.weekday()), day)
-        self.alerts.info(daily_text(self.s.market.pair, day, s, week, self.book.paper))
+        self.alerts.info(daily_text(self.s.market.pair, day, s, week, self.book.paper), html=True)
         Path(marker).parent.mkdir(parents=True, exist_ok=True)
         marker.write_text(json.dumps({"day": day.isoformat()}) + "\n")
 
@@ -347,7 +439,7 @@ class Trading:
         import dataclasses
         p = self._forming(tick)
         if self._levels is None or self._levels[0] != p.start:
-            self._levels = (p.start, build(self.s, self.memo, p.start))
+            self._levels = (p.start, build(self.s, MemoStore(self.store), p.start))
         for idea in self.runner.peek(p, self._levels[1]):
             key = (idea.strategy, idea.direction, p.start)
             if not idea.allowed or key in self.fired:
@@ -384,6 +476,7 @@ class Trading:
             if t.open and t.expected_at_ig:
                 warnings.append(f"Trade {ref}: IG's {t.expected_at_ig[0]} expected but not yet confirmed by IG")
         allowed = list(ALLOWED.get(st.state, ())) if st is not None else []
+        allowed.append("Bollinger bounce")                  # in every state (owner, 15 November 2026)
         by_name = {n.lower(): n for n in SWITCH}
         switches = {name: bool(getattr(self.s.switches, key, False)) for name, key in SWITCH.items()}
         trades = []

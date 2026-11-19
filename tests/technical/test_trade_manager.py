@@ -11,7 +11,7 @@ import pytest
 from config.settings_loader import load_settings
 from strategies.common import (BOLLINGER_BOUNCE, BREAKOUT, BUY, EMA_PULLBACK, LEVEL_REVERSAL, RANGE_TRADE, SELL,
                                SLOW_GRIND)
-from trade_manager.manager import (CLOSE, FORCED_CLOSE, HALF_CLOSE, STOPPED_BY_IG, TAKE_PROFIT_AT_IG, Bar, Rejection,
+from trade_manager.manager import (CLOSE, FORCED_CLOSE, HALF_CLOSE, STOP_MOVED, STOP_NOT_MOVED, STOPPED_BY_IG, TAKE_PROFIT_AT_IG, Bar, Rejection,
                                    TradeManager, plan, step)
 
 U = lambda *a: datetime(*a, tzinfo=timezone.utc)  # noqa: E731
@@ -138,38 +138,30 @@ def test_the_range_trade_closes_half_at_the_opposite_band(S):
     assert tr.state == TAKE_PROFIT_AT_IG or tr.open             # the rest goes on to its own exits
 
 
-def test_the_rest_of_the_range_trade_and_its_total(S):
-    tr = trade(S, RANGE_TRADE, SELL)
-    band = (D("110"), D("90"))
-    run(S, tr, [(100, 100.5, 95, 96), (96, 96, 89, 90)], band=band)
-    (d,) = run(S, tr, [(90, 107, 90, 106)], t0=WED + timedelta(minutes=10), band=band)    # stopped at 106
-    assert d.kind == STOPPED_BY_IG and d.part == D("0.5") and tr.total_pips() == D("8.5") * D("0.5") + D("-6") * D("0.5")
-
-
-def test_only_the_range_trade_closes_by_half(S):
-    for name in (BOLLINGER_BOUNCE, BREAKOUT, EMA_PULLBACK):
+def test_no_other_strategy_closes_at_the_opposite_band(S):
+    for name in (BREAKOUT, EMA_PULLBACK, SLOW_GRIND, LEVEL_REVERSAL, BOLLINGER_BOUNCE):   # the bounce: 15 November 2026
         tr = trade(S, name, SELL, stop="20")
-        assert all(d.kind != HALF_CLOSE for d in run(S, tr, [(100, 100.5, 95, 96), (96, 96, 89, 90)],
-                                                     band=(D("110"), D("90"))))
+        assert all(d.why != "the opposite Bollinger band"
+                   for d in run(S, tr, [(100, 100.5, 95, 96), (96, 96, 89, 90)], band=(D("110"), D("90"))))
 
 
 # ---- the close on a rejection at a level ---------------------------------------------------------------------
 
 def test_a_rejection_at_a_level_against_the_trade_closes_it(S):
-    tr = trade(S, BOLLINGER_BOUNCE, SELL)
+    tr = trade(S, RANGE_TRADE, SELL)
     rej = {1: [Rejection(BUY, D("97.0"), "S2 96.8")]}            # a bounce up: against a sell
     (d,) = run(S, tr, [(100, 100.5, 98, 99), (99, 99.5, 96.5, 97.5)], rejections=rej)
     assert (d.kind, d.price, d.pips) == (CLOSE, D("98.5"), D("1.5")) and "S2 96.8" in d.why     # closed on the buy price
 
 
 def test_not_in_the_entry_bar_and_not_one_in_the_trades_direction(S):
-    tr = trade(S, BOLLINGER_BOUNCE, SELL)
+    tr = trade(S, RANGE_TRADE, SELL)
     assert run(S, tr, [(100, 100.5, 98, 99)], rejections={0: [Rejection(BUY, D("99"))]}) == []
-    tr = trade(S, BOLLINGER_BOUNCE, SELL)
+    tr = trade(S, RANGE_TRADE, SELL)
     assert run(S, tr, [(100, 100.5, 98, 99), (99, 99.5, 97, 98)], rejections={1: [Rejection(SELL, D("98"))]}) == []
 
 
-@pytest.mark.parametrize("strategy,closes", [(BOLLINGER_BOUNCE, True), (RANGE_TRADE, True), (EMA_PULLBACK, False),
+@pytest.mark.parametrize("strategy,closes", [(BOLLINGER_BOUNCE, False), (RANGE_TRADE, True), (EMA_PULLBACK, False),
                                              (BREAKOUT, False), (SLOW_GRIND, False), (LEVEL_REVERSAL, False)])
 def test_only_the_strategies_the_design_says(S, strategy, closes):
     tr = trade(S, strategy, SELL, stop="10")
@@ -179,10 +171,10 @@ def test_only_the_strategies_the_design_says(S, strategy, closes):
 
 def test_the_expected_news_direction_takes_precedence_on_a_big_news_day(S):
     thu = U(2026, 11, 5, 8, 0)                                   # BoE expected up: a buy is kept open
-    tr = trade(S, BOLLINGER_BOUNCE, BUY, t=thu, calendar=BOE_CAL)
+    tr = trade(S, RANGE_TRADE, BUY, t=thu, calendar=BOE_CAL)
     assert tr.news_direction == BUY
     assert run(S, tr, [(100, 101, 99.5, 100.5), (100.5, 101, 99, 100)], rejections={1: [Rejection(SELL, D("99.5"))]}) == []
-    tr = trade(S, BOLLINGER_BOUNCE, SELL, t=thu, calendar=BOE_CAL)   # a sell against it is closed
+    tr = trade(S, RANGE_TRADE, SELL, t=thu, calendar=BOE_CAL)   # a sell against it is closed
     ds = run(S, tr, [(100, 100.5, 98, 99), (99, 99.5, 97, 98)], rejections={1: [Rejection(BUY, D("97.5"))]})
     assert ds[0].kind == CLOSE
 
@@ -286,7 +278,7 @@ from trade_manager.manager import HOLD, WATCHING  # noqa: E402
 
 def test_watching_a_level_while_a_rejection_setup_runs_against_the_trade(S):
     m = TradeManager(S, PretendSender(), now=lambda: WED)
-    tr = trade(S, BOLLINGER_BOUNCE, SELL)
+    tr = trade(S, RANGE_TRADE, SELL)
     m.add(tr)
     bs = bars_from(WED, [(100, 100.5, 99, 99.5), (99.5, 100, 98.5, 99), (99, 99.5, 98, 98.5)])
     m.on_bar(bs[0], watching=set())
@@ -301,7 +293,7 @@ def test_watching_a_level_while_a_rejection_setup_runs_against_the_trade(S):
 
 def test_not_watching_for_a_setup_the_same_way_or_a_strategy_without_the_level_close(S):
     m = TradeManager(S, PretendSender(), now=lambda: WED)
-    bb, ep = trade(S, BOLLINGER_BOUNCE, SELL), trade(S, EMA_PULLBACK, SELL)
+    bb, ep = trade(S, RANGE_TRADE, SELL), trade(S, EMA_PULLBACK, SELL)
     bb.reference, ep.reference = "BB", "EP"
     m.add(bb)
     m.add(ep)
@@ -351,3 +343,166 @@ def test_only_some_trades_can_be_stepped(S):
     m.add(b)
     m.on_bar(bar(WED, 100, 100.5, 99, 99.5), only=["B"])
     assert (a.bars, b.bars) == (0, 1)
+
+
+# ---- live: a close is never recorded unless IG confirms it (owner, 10 November 2026) -------------------
+
+from trade_manager.manager import CLOSE_NOT_DONE, CLOSED_AT_IG  # noqa: E402
+
+
+class AnswerSender(PretendSender):
+    """Answers each close from a script: "refused", "closed", or a gone-at-IG result."""
+    def __init__(self, answers):
+        super().__init__()
+        self.answers = list(answers)
+
+    def close(self, reference, *, half=False, why="", price=None):
+        self.closes.append((reference, half, why))
+        a = self.answers.pop(0)
+        if a == "refused":
+            return SimpleNamespace(ok=False, what="close refused",
+                                   reasons=["error.service.marketdata.position.notional.details.null.error"])
+        if a == "closed":
+            return SimpleNamespace(ok=True, what="half closed" if half else "closed", reasons=[])
+        return a
+
+
+def tm_rows(S):
+    return [json.loads(x) for x in (S.trade_manager.folder / "GBPUSD" / "decisions.jsonl").read_text().splitlines()]
+
+
+def test_live_a_close_ig_refuses_leaves_the_trade_open_and_is_tried_again(S):
+    clock = {"t": U(2026, 11, 10, 20, 30)}
+    sender = AnswerSender(["refused", "closed"])
+    m = TradeManager(S, sender, now=lambda: clock["t"], ig_confirms=True)
+    tr = trade(S, BOLLINGER_BOUNCE, BUY, t=U(2026, 11, 10, 20, 25), stop="30")
+    tr.bars = 1
+    m.add(tr)
+    m.on_bar(bar(U(2026, 11, 10, 20, 30), 100, 100.5, 99.5, 100))          # 20:30: the forced close
+    assert tr.open and tr.state == HOLD and tr.decisions == [] and tr.close_attempts == 1
+    (row,) = tm_rows(S)
+    assert row["decision"] == CLOSE_NOT_DONE and "notional.details.null" in row["why"] and "stays open" in row["why"]
+    clock["t"] = U(2026, 11, 10, 20, 30, 10)                                 # 10 seconds later: not yet again
+    m.on_bar(bar(clock["t"], 100, 100, 100, 100))
+    assert len(sender.closes) == 1 and tr.open
+    clock["t"] = U(2026, 11, 10, 20, 30, 31)                                 # after close_retry_seconds (30)
+    m.on_bar(bar(clock["t"], 100, 100, 100, 100))
+    assert len(sender.closes) == 2 and not tr.open and tr.state == FORCED_CLOSE
+    assert [r["decision"] for r in tm_rows(S)] == [CLOSE_NOT_DONE, FORCED_CLOSE]
+
+
+def test_live_a_refused_half_close_is_undone_and_tried_again(S):
+    clock = {"t": WED}
+    sender = AnswerSender(["refused", "closed"])
+    half = Over(S, range_trade={"close_percent_at_opposite_band": 50})
+    m = TradeManager(half, sender, now=lambda: clock["t"], ig_confirms=True)
+    tr = trade(half, RANGE_TRADE, SELL)                          # set to close by half at the opposite band
+    tr.bars = 1
+    m.add(tr)
+    band = (D("110"), D("90"))
+    m.on_bar(bar(WED + timedelta(minutes=5), 96, 96, 89, 90), band)
+    assert not tr.half_done and tr.half_pips is None and tr.state == HOLD and tr.decisions == []
+    clock["t"] = WED + timedelta(minutes=10)
+    m.on_bar(bar(clock["t"], 90, 91, 89, 90), band)
+    assert tr.half_done and tr.state == HALF_CLOSE and [d.kind for d in tr.decisions] == [HALF_CLOSE]
+
+
+def test_live_a_trade_ig_already_closed_is_finished_at_igs_level_and_time(S):
+    gone = SimpleNamespace(ok=True, what="gone at IG", reference="REF1", level=D("13335.2"),
+                           closed_utc=U(2026, 11, 10, 17, 56, 27), reasons=["IG refused the close because it had already closed it"])
+    sender = AnswerSender([gone])
+    m = TradeManager(S, sender, now=lambda: U(2026, 11, 10, 20, 30), ig_confirms=True)
+    tr = plan(S, "REF1", SLOW_GRIND, SELL, U(2026, 11, 10, 15, 19), D("13373.2"), D("13373.0"), D("15"), [])
+    tr.bars = 1
+    m.add(tr)
+    m.on_bar(bar(U(2026, 11, 10, 20, 30), 13346, 13346, 13346, 13346))
+    assert not tr.open and tr.state == CLOSED_AT_IG
+    d = tr.decisions[-1]
+    assert (d.price, d.pips, d.at) == (D("13335.2"), D("37.8"), U(2026, 11, 10, 17, 56, 27))
+    assert tr.total_pips() == D("37.8") and tm_rows(S)[-1]["order_sender"] == "gone at IG"
+
+
+def test_the_regular_check_finishes_a_trade_ig_closed(S):
+    m = TradeManager(S, PretendSender(), now=lambda: WED, ig_confirms=True)
+    tr = trade(S, EMA_PULLBACK, BUY)
+    m.add(tr)
+    found = SimpleNamespace(what="gone at IG", reference="REF1", level=tr.fill - D("4"), closed_utc=WED, reasons=["x"])
+    assert m.gone_at_ig(found) and not tr.open and tr.total_pips() == D("-4")
+    assert not m.gone_at_ig(found)                                           # only once
+
+
+def test_live_igs_stop_is_recorded_at_igs_level(S):
+    class Confirmed(IGSender):
+        def closed_at_ig(self, reference, kind, price=None):
+            self.asked.append((reference, kind))
+            return SimpleNamespace(ok=True, what="closed at IG", level=D("94.0"), closed_utc=WED + timedelta(minutes=7))
+    m = TradeManager(S, Confirmed(True), now=lambda: WED, ig_confirms=True)
+    tr = trade(S, BOLLINGER_BOUNCE, BUY)                                    # fill 101.5
+    m.add(tr)
+    for b in bars_from(WED, [(100.5, 101, 100, 100.5), (100.5, 100.5, 95, 96)]):
+        m.on_bar(b)
+    d = tr.decisions[-1]
+    assert not tr.open and (d.kind, d.price, d.pips, d.at) == (STOPPED_BY_IG, D("94.0"), D("-7.5"), WED + timedelta(minutes=7))
+    assert tm_rows(S)[-1]["price"] == "94.0"
+
+
+# ---- the Bollinger bounce's break-even (owner, 13 November 2026) ----------------------------------------------
+
+class MovingSender(PretendSender):
+    """Moves a stop at IG: answers from a list (True: IG confirms; False: IG refuses), then confirms."""
+    def __init__(self, answers=()):
+        super().__init__()
+        self.answers, self.moves = list(answers), []
+        self.alerts = SimpleNamespace(infos=[], info=lambda text, key=None, html=False: self.alerts.infos.append(text))
+
+    def move_stop(self, reference, level, why=""):
+        self.moves.append((reference, level))
+        ok = self.answers.pop(0) if self.answers else True
+        return SimpleNamespace(ok=ok, what="stop moved" if ok else "stop not moved",
+                               reasons=[] if ok else ["error.service.otc.invalid.stop"])
+
+
+def decisions(S):
+    return [json.loads(x) for x in (S.trade_manager.folder / "GBPUSD" / "decisions.jsonl").read_text().splitlines()]
+
+
+def test_only_the_bounce_trails_and_from_the_settings(S):
+    assert trade(S, BOLLINGER_BOUNCE, BUY).trail_from == D("12")
+    for strategy in (EMA_PULLBACK, SLOW_GRIND, BREAKOUT, RANGE_TRADE, LEVEL_REVERSAL):
+        assert trade(S, strategy, BUY).trail_from is None
+    assert trade(Over(S, bounce={"trail_from_pips": D("15")}), BOLLINGER_BOUNCE, BUY).trail_from == D("15")
+
+
+def test_live_a_refused_trail_move_keeps_the_old_stop_and_is_tried_again_after_the_wait(S):
+    clock = {"t": WED}
+    sender = MovingSender([False, True])
+    m = TradeManager(S, sender, now=lambda: clock["t"], ig_confirms=True)
+    for b in bars_from(WED - timedelta(minutes=15), [(100, 100.5, 99.5, 100)] * 3):
+        m.candle_finished(b)
+    tr = trade(S, BOLLINGER_BOUNCE, SELL)                        # fill 100; stop 6 (the pretend STOP_LOSS_PIPS)
+    m.add(tr)
+    m.on_bar(bar(WED, 100, 100, 87, 88), finished=True)          # 11.5 up on the buy price: not yet
+    assert sender.moves == []
+    m.on_bar(bar(WED + timedelta(minutes=5), 88, 88, 86, 87), finished=True)    # 12.5 up: the trail
+    assert sender.moves == [("REF1", D("102.1"))] and tr.stop_level is None   # buy highs 102, 101.5, 89.5
+    clock["t"] = WED + timedelta(seconds=10)
+    m.on_bar(bar(clock["t"], 87, 87, 87, 87))                    # before orders.close_retry_seconds: not tried
+    assert len(sender.moves) == 1
+    clock["t"] = WED + timedelta(seconds=5 + S.orders.close_retry_seconds)
+    m.on_bar(bar(clock["t"], 87, 87, 87, 87))                    # tried again: IG confirms
+    assert len(sender.moves) == 2 and tr.stop_level == D("102.1")
+    assert [r["decision"] for r in decisions(S)] == [STOP_NOT_MOVED, STOP_MOVED]
+    assert "error.service.otc.invalid.stop" in decisions(S)[0]["why"]
+    assert sender.alerts.infos and "102.1" in sender.alerts.infos[0]
+
+
+def test_a_refused_trail_move_leaves_the_trade_to_its_old_stop(S):
+    sender = MovingSender([False] * 5)
+    m = TradeManager(S, sender, now=lambda: WED, ig_confirms=True)
+    for b in bars_from(WED - timedelta(minutes=15), [(100, 100.5, 99.5, 100)] * 3):
+        m.candle_finished(b)
+    tr = trade(S, BOLLINGER_BOUNCE, SELL)
+    m.add(tr)
+    m.on_bar(bar(WED, 100, 100, 86, 87), finished=True)
+    m.on_bar(bar(WED + timedelta(minutes=5), 87, 102, 87, 101), finished=True)  # buy high 103.5: past the 102.1 asked
+    assert tr.stop_level is None and tr.open                    # IG refused it: still the old stop at 106

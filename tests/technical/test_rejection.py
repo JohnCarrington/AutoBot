@@ -125,7 +125,7 @@ def test_no_red_candle_within_3_candles_of_the_pierce_expires():
     cs = [C(0, 105, 112, 104, 109)] + [C(i, 109, 109.5, 108, 109.2) for i in (1, 2, 3)]
     _, evs = run(cs, bands={c.start: band(c, upper=200) for c in cs[1:]}, only=(BOUNCE, SELL))
     assert [(e.kind, e.time) for e in evs] == [(PIERCE, cs[0].start), (EXPIRED, cs[3].start)]
-    s = settings(bounce={"reversal_candle_within_candles_of_pierce": 4})
+    s = settings(rejection={"reversal_candle_within_candles_of_pierce": 4})
     cs.append(C(4, 109, 109.5, 107, 108))
     _, evs = run(cs, bands={c.start: band(c, upper=200) for c in cs[1:]}, s=s, only=(BOUNCE, SELL))
     assert [e.kind for e in evs] == [PIERCE, REVERSAL]

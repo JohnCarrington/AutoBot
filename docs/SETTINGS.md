@@ -35,7 +35,7 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `news.country_currencies` | Finnhub's country code for each currency, so a release can be matched to the currencies of each pair switched on. | GB and UK = GBP, US = USD, EU and EMU = EUR, JP = JPY, CH = CHF, CA = CAD, AU = AUD, NZ = NZD |
 | `news.table_impacts` | Big, medium and small news come from AutoBot's news table, `config/news_table.toml` (see "News table" below). As on AutoBot 161, the table is applied only to releases Finnhub marks with one of these impacts; every other release is small. | high |
 | `limits.max_open_trades_per_strategy` | How many trades each strategy may have open at once. | 1 |
-| `limits.bollinger_bounce_extra_opposite_direction_trades` | The Bollinger band bounce may also have this many trades open in the opposite direction (so up to 1 buy and 1 sell). | 1 |
+| `limits.bollinger_bounce_extra_opposite_direction_trades` | The first build's bounce (Bollinger bounce 5m) may also have this many trades open in the opposite direction (so up to 1 buy and 1 sell), as on 9 November 2026. | 1 |
 | `limits.max_open_trades` | The most trades open at once, not counting the EMA pullback's (design 6). The safety part refuses a new trade that would go over it. | 5 |
 | `orders.folder` | The order sender's record: every order, confirmation, refusal and close in `<folder>/<PAIR>/orders.jsonl`, from which the open trades are rebuilt after a restart (design 7). | /opt/autobot/data/orders |
 | `orders.expiry` | IG's expiry for the orders (a daily funded spread bet). From the market search of 6 November 2026. | DFB |
@@ -45,6 +45,8 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `orders.unclear_check_wait_seconds` | The wait between those checks. **Starting value.** | 2 seconds |
 | `orders.confirm_attempts` | IG's confirmation of a new order or a close (`GET /confirms/{reference}`) is asked for up to this many times while IG answers 404 (not there yet), as AutoBot 161's `open_sb_now.py`. | 5 |
 | `orders.confirm_wait_seconds` | The wait between those attempts, as AutoBot 161. | 1 second |
+| `orders.close_retry_seconds` | A close that IG refuses, or does not answer clearly, never closes the trade in the records: the trade stays open and the trade manager tries the close again after this many seconds, for as long as the position is open at IG (each refusal is a Telegram alert with IG's error). **Starting value.** | 30 seconds |
+| `orders.stop_move_attempts` | A trail's stop move that IG refuses, or does not answer clearly, is tried again every `orders.close_retry_seconds`, this many attempts in all at that level. Then the bot gives up on that level (one Telegram alert), keeps the stop IG has, and works the trail out again after the next finished 5-minute candle; a later candle's level replaces one still being tried. **Owner's value, 17 November 2026.** | 3 |
 | `trade_manager.folder` | Where the trade manager records every decision it makes: `<folder>/<PAIR>/decisions.jsonl` (design 4). | /opt/autobot/data/trade_manager |
 | `records.folder` | The bot's records, kept for good (design 9): `<folder>/<PAIR>/trades.jsonl` (every trade, opened and closed), `decisions.jsonl` (every decision), `summaries/daily/` and `summaries/weekly/`; paper trades (while `TRADING` is off) in `<folder>/<PAIR>/paper/`. | /opt/autobot/data/records |
 | `trading.daily_summary_at` | The daily summary is written and sent on Telegram each weekday at this UK time. **Owner's value, 8 November 2026.** | 20:35 |
@@ -78,8 +80,12 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `reversal_watch.times` | Times of day when a reversal is watched for. | 10:00, 11:00, 13:00, 14:00, 16:00, 17:00 |
 | `reversal_watch.minutes_before` | The watch starts this many minutes before each time. | 20 minutes |
 | `reversal_watch.minutes_after` | The watch ends this many minutes after each time. | 20 minutes |
-| `bounce.reversal_candle_within_candles_of_pierce` | A bounce needs a reversal candle within this many candles of the candle that pierced the band or reached a level. | 3 candles |
-| `bounce.confirmation_candle_within_candles_of_reversal` | A bounce needs a confirmation candle within this many candles of the reversal candle. | 3 candles |
+| `bounce.pierce_beyond_pips` | The Bollinger bounce (design 3.3): a 5-minute candle's high must go MORE than this many pips above the hourly upper Bollinger band (20, 2), as the hourly chart showed the band at that moment (its low below the lower band, for a buy). That candle, red for a sell (green for a buy), is the rejection candle. **Owner's value, 15 November 2026.** | 3 pips |
+| `bounce.confirmation_within_candles` | The confirmation candle must close beyond the rejection candle's low (sell) or high (buy) within this many candles of it, or the setup expires. **Owner's value, 15 November 2026.** | 3 candles |
+| `bounce.trail_from_pips` | Once a Bollinger bounce has been this many pips in profit, its stop trails: after each finished 5-minute candle it is moved at IG to a tenth of a pip beyond the last `bounce.trail_candles` candles (a sell: above their highest buy price; a buy: below their lowest sell price), only ever closer. **Owner's value, 15 November 2026.** | 12 pips |
+| `bounce.trail_candles` | The number of finished 5-minute candles the trail follows. **Owner's value, 15 November 2026.** | 3 candles |
+| `bounce.near_times` | While the switch `BOUNCE_ONLY_NEAR_TIMES` is on, a Bollinger bounce opens only near one of these UK clock times (judged at the moment it opens). **Owner's times, 15 November 2026.** | 10:00, 14:00, 16:00 |
+| `bounce.near_times_within_minutes` | How near: this many minutes either side of one of `bounce.near_times`, both ends included (60: 09:00 to 11:00, 13:00 to 17:00). **Owner's value, 15 November 2026.** | 60 minutes |
 | `slow_grind.min_pause_candles` | A slow grind's pause must last at least this many candles. **Owner's value, 8 November 2026.** | 2 candles |
 | `slow_grind.ema_periods` | The EMA a slow grind's pause must stay below (above, for a buy); a candle closing beyond it cancels the setup (design 3.1). | 21 |
 | `slow_grind.stop_loss_pips` | The slow grind's own stop loss, sent to IG with each of its trades (design 4). **Owner's value, 8 November 2026.** | 15 pips |
@@ -104,6 +110,8 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `ema_pullback.hourly_min_gap_fast_mid_pips` | The hourly 8 and 13 EMAs must be at least this far apart. 161's value. | 0.25 pips |
 | `ema_pullback.hourly_min_gap_mid_slow_pips` | The hourly 13 and 20 EMAs must be at least this far apart. 161's value. | 0.20 pips |
 | `ema_pullback.hourly_history_candles` | Stored hourly candles read to work out the hourly EMAs (enough for them to settle). | 600 hourly candles |
+| `ema_pullback.rollover_no_new_trades_from` | No new EMA pullback trade from this UK time... | 21:55 |
+| `ema_pullback.rollover_no_new_trades_until` | ...until this UK time (the 22:00 rollover, when IG's spread jumps to about 17 pips). **Owner's decision, 13 November 2026.** | 22:15 |
 | `possible_reversal.min_trend_move_pips` | A possible reversal only counts if the trend before it moved at least this far. | 30 pips |
 | `range_trade.close_percent_at_opposite_band` | Share of a range trade closed when price reaches the opposite band. | 50% |
 | `range_trade.rejection_candle_within_candles` | Range trade (and the shared rejection part's range version): the red rejection candle must come within this many candles after the candle that pierced the band. 1 means the very next candle, as the design says. | 1 candle |
@@ -172,6 +180,8 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `rejection.candle_timeframe` | The candle size the shared rejection part watches for pierces, reversal and confirmation candles. | `5m` |
 | `rejection.near_level_within_pips` | A candle that comes within this many pips of a level counts the same as a pierce of that level (for a sell: it opens at or below the level and its high gets to within this many pips of it; a buy is the mirror image). Levels only: the Bollinger band needs a real pierce. | 3 pips |
 | `rejection.max_spread_pips` | When IG's spread on a candle (the widest buy-minus-sell gap of its open, high, low and close) is over this, the spread is abnormally wide (the 22:00 rollover, news) and that candle's sell highs and lows cannot start a setup or cancel one. The candle is still stored. Chosen from the 2,880 stored candles: normal is 0.9 or 1.5; everything over 3 is at the rollover or at news (`docs/REJECTION.md`). **Starting value, for Johnny to confirm.** | 3 pips |
+| `rejection.reversal_candle_within_candles_of_pierce` | The shared rejection part's bounce setups (the level reversal and the analyser; not the Bollinger bounce) need a reversal candle within this many candles of the candle that pierced the band or reached a level. | 3 candles |
+| `rejection.confirmation_candle_within_candles_of_reversal` | The same setups need a confirmation candle within this many candles of the reversal candle. | 3 candles |
 | `ig.demo_base_url` | IG's demo address. Every IG call goes here. Only the demo address is allowed; the bot refuses to start with any other. | `https://demo-api.ig.com/gateway/deal` |
 | `ig.slowed_down_waits_seconds` | When IG slows the bot down, how long to wait before each try again, in order. If IG is still slowing it down after the last wait, the bot stops. | 60, 90, 120, 180 seconds |
 | `ig.request_timeout_seconds` | How long to wait for IG to reply to one call before giving up on it. | 30 seconds |
@@ -207,6 +217,32 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `history.min_ig_allowance_remaining` | Safety floor: a history request is refused if IG's last reported remaining allowance, less the request, would fall below this. | 2000 points |
 | `history.max_points_per_request` | The biggest history request allowed. | 500 points |
 | `history.min_block_hours` | After IG refuses a history request because the allowance is used up, nothing more is asked for at least this long (longer if IG's reset time is later). | 24 hours |
+
+### The Structural Trade Planner (`[planner]`, observe only)
+
+| Setting | What it does | Value |
+|---|---|---|
+| `planner.folder` | Where the Structural Trade Planner (observe only) writes its recommendation (`<folder>/<PAIR>/current.json`) and its full history (`recommendations.jsonl`, append-only). | `/opt/autobot/data/planner` |
+| `planner.adr_weekdays` | The planner's average daily range: the average sell high-to-low range of this many finished weekday daily candles, IG's short Sunday candles left out (P-A8). Context only, never a limit. **Owner's value, 17 November 2026.** | 20 |
+| `planner.h4_swing_candles_each_side` | A 4-hour swing high is higher than the highs of this many 4-hour candles before it and not lower than this many after it (a low: the mirror), the existing turning-level rule (P-B2). **Owner's value, 17 November 2026.** | 3 |
+| `planner.h4_swing_min_move_pips` | ... and price then moves at least this many pips away from it (P-B3). **Owner's provisional value, 17 November 2026**; turns held back only by it are recorded. | 40 pips |
+| `planner.h4_swing_move_within_candles` | ... within this many 4-hour candles (P-B4). **Owner's value, 17 November 2026.** | 6 |
+| `planner.daily_swing_candles_each_side` | The same for daily swings (P-B5). **Owner's value, 17 November 2026.** | 3 |
+| `planner.daily_swing_min_move_pips` | The move for a daily swing (P-B6). **Owner's provisional value, 17 November 2026**; turns held back only by it are recorded. | 110 pips |
+| `planner.daily_swing_move_within_candles` | ... within this many daily candles (P-B7). **Owner's value, 17 November 2026.** | 6 |
+| `planner.h4_swing_lookback_weeks` | 4-hour swings from this many weeks back are levels on the planner's map (P-B8); the direction always uses the latest swings. **Owner's value, 17 November 2026.** | 8 |
+| `planner.daily_swing_lookback_weeks` | The same for daily swings (P-B9). **Owner's value, 17 November 2026.** | 48 |
+| `planner.structure_break_closes` | A 4-hour structural break needs this many closes in a row at least `planner.break_beyond_pips` beyond the last swing (P-B11). **Owner's value, 17 November 2026.** | 1 |
+| `planner.zone_width_adr_share` | A zone holds the levels within the larger of `levels.line_up_within_pips` and this share of the ADR of its lowest level (P-C3). **Owner's provisional value, 17 November 2026.** | 0.15 |
+| `planner.major_min_families` | A Major zone has at least this many families of evidence, including a daily-or-weekly level (P-C7). **Owner's value, 17 November 2026.** | 3 |
+| `planner.moderate_min_families` | A Moderate zone has at least this many families (P-C7). **Owner's value, 17 November 2026.** | 2 |
+| `planner.min_entry_class` | The weakest zone class that may be the entry zone (P-C7). **Owner's value, 17 November 2026.** | Moderate |
+| `planner.ema_slope_candles` | The 4-hour EMA100 slope (supporting evidence) is over this many 4-hour candles (P-D1). **Owner's value, 17 November 2026.** | 6 |
+| `planner.macd_weakening_candles` | Momentum weakening: the 4-hour MACD histogram moves towards zero for this many candles in a row (P-D6). **Owner's value, 17 November 2026.** | 3 |
+| `planner.no_new_extreme_hourly_candles` | CORRECTION_LIKELY: no new extreme in this many finished hourly candles (P-D9). **Owner's value, 17 November 2026.** | 3 |
+| `planner.failed_breakout_within_candles` | Recorded only: a confirmed zone break that closes back within this many hourly candles is a failed breakout (P-F7). **Owner's value, 17 November 2026.** | 3 |
+| `planner.panel_history` | Past recommendations shown on the dashboard's planner panel (P-G3). **Owner's value, 17 November 2026.** | 5 |
+| `planner.break_beyond_pips` | A confirmed close beyond a level, for the planner: zone invalidation (FC-02), 4-hour structure breaks and flipped levels need a close at least this many pips beyond. On main the planner reads `hourly_read.break_beyond_pips`; here it is the planner's own setting (owner, 19 November 2026). | 3 pips |
 
 ## Where the market hours come from
 
@@ -400,11 +436,14 @@ These live in `.env` (not in `config/settings.toml`), next to the IG secrets, so
 | `NEW_TRADES_UNTIL` | Trading hours: the latest UK time a new trade may be opened, `HH:MM`. Must not be later than `hours.close_all_trades_at`. | 20:30 |
 | `STRATEGY_SLOW_GRIND` | The slow grind strategy (design 3.1), `on` or `off`. Switched off by the owner on 7 November 2026; **switched on** on 8 November 2026. | on |
 | `STRATEGY_EMA_PULLBACK` | The EMA pullback strategy, `on` or `off`. | on |
-| `STRATEGY_BOLLINGER_BOUNCE` | The Bollinger band bounce strategy, `on` or `off`. | on |
+| `STRATEGY_BOLLINGER_BOUNCE` | The hourly-pierce Bollinger band bounce (15 November 2026; `strategies/bollinger_bounce`), `on` or `off`. | on |
+| `STRATEGY_BOLLINGER_BOUNCE_5M` | The first build's Bollinger band bounce (5-minute band and levels; `strategies/bollinger_bounce_5m`, recorded as "Bollinger bounce 5m"), `on` or `off`. Kept and renamed alongside the hourly-pierce bounce (owner, 19 November 2026). Required. | on |
+| `PLANNER_OBSERVE` | The Structural Trade Planner (`planner/`), `on` or `off`. On: after each new 5-minute candle the price service starts the planner in a separate, low-priority process (never on the price feed's thread): it re-plans on each completed hourly candle and checks its zone on each 5-minute candle, writing `planner.folder`. **Observe only:** it never authorises, refuses, opens, changes or closes a trade, and the dashboard panel says so. Off if left out of `.env`. **Off until the owner approves installation.** | off |
 | `STRATEGY_RANGE_TRADE` | The range trade strategy, `on` or `off`. | on |
 | `STRATEGY_BREAKOUT` | The breakout strategy (design 3.5), `on` or `off`. The bot refuses to start with it on while `breakout.stop_loss_pips` or `breakout.take_profit_pips` is 0. Switched on by the owner, 7 November 2026. | on |
 | `TRADING` | The master switch, `on` or `off` (design 13). While it is off, the strategies, safety rules, order sender and trade manager all run inside the price service and everything is recorded, but no order is ever sent to IG: trades are paper trades, recorded in `data/orders/<PAIR>/paper_orders.jsonl`. **Owner's switch, 8 November 2026.** | off |
 | `STRATEGY_LEVEL_REVERSAL` | The level reversal strategy (design 3.6), `on` or `off`. Added and switched on by the owner, 8 November 2026. | on |
-| `STOP_LOSS_PIPS` | The stop loss sent with every trade, for every strategy except the EMA pullback (which has `STOP_LOSS_PIPS_EMA_PULLBACK`), the breakout (`breakout.stop_loss_pips`), the slow grind (`slow_grind.stop_loss_pips`) and the level reversal (`level_reversal.stop_beyond_furthest_pips`), in pips: a whole number from 1 to 100. Turned into IG's points per pair (`pairs.PAIR.pip_size` x `pairs.PAIR.price_scale`). Moved from `trade.stop_loss_pips` in `config/settings.toml` on 7 November 2026. | 6 |
+| `BOUNCE_ONLY_NEAR_TIMES` | The Bollinger bounce (design 3.3), `on` or `off`. On: a bounce opens only within `bounce.near_times_within_minutes` (60) of `bounce.near_times` (10:00, 14:00, 16:00 UK). Off if left out of `.env`. **Owner's switch, off, 15 November 2026.** | off |
+| `STOP_LOSS_PIPS` | The stop loss sent with every trade, for every strategy except the EMA pullback (which has `STOP_LOSS_PIPS_EMA_PULLBACK`), the breakout (`breakout.stop_loss_pips`), the slow grind (`slow_grind.stop_loss_pips`) and the level reversal (`level_reversal.stop_beyond_furthest_pips`): today that is the Bollinger bounce and the range trade. In pips: a whole number from 1 to 100. Turned into IG's points per pair (`pairs.PAIR.pip_size` x `pairs.PAIR.price_scale`). Moved from `trade.stop_loss_pips` in `config/settings.toml` on 7 November 2026. **Owner's value 12, 10 November 2026** (6 before), set in `.env`. | 12 |
 | `STOP_LOSS_PIPS_EMA_PULLBACK` | The EMA pullback's stop loss, sent with each of its trades, in pips: a whole number from 1 to 100. Turned into IG's points per pair like `STOP_LOSS_PIPS`. **Owner's value, 7 November 2026.** | 12 |
 | `TAKE_PROFIT_PIPS` | The take profit sent to IG with every trade, in pips: a whole number from 1 to 1000. The bot may close earlier itself; this is the backstop. Moved from `trade.take_profit_pips` on 7 November 2026. | 100 |

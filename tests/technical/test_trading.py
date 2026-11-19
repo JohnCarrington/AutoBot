@@ -9,7 +9,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from strategies.common import BOLLINGER_BOUNCE, BREAKOUT, BUY, EMA_PULLBACK, SELL, SLOW_GRIND, Idea
+from strategies.common import (BOLLINGER_BOUNCE, BREAKOUT, BUY, EMA_PULLBACK, LEVEL_REVERSAL, RANGE_TRADE, SELL,
+                               SLOW_GRIND, Idea)
 from tests.technical.test_orders import Over, PretendIG  # noqa: F401
 from trading import engine as eng
 
@@ -99,7 +100,7 @@ def make(S, monkeypatch, candles, ideas, trading_on=False, ig=None, clock=None, 
     clock = clock or {"t": WED}
     quote = {"q": (D("100.0"), D("101.5"))}
     alerts = SimpleNamespace(sent=[], infos=[], opened=[], closed=[], problem=lambda k, t: alerts.sent.append((k, t)),
-                             info=lambda t, key=None: alerts.infos.append(t),
+                             info=lambda t, key=None, html=False: alerts.infos.append(t),
                              trade_opened=lambda t: alerts.opened.append(t), trade_closed=lambda c: alerts.closed.append(c))
     e_alerts = alerts
     e = eng.Trading(S, None, ig, alerts, trading_on=trading_on, now=lambda: clock["t"], quote=lambda: quote["q"],
@@ -153,12 +154,12 @@ def test_a_blocked_idea_is_never_sent(S, monkeypatch):
 
 
 def test_the_safety_rules_decide_before_anything_is_sent(S, monkeypatch):
-    two = {C[1].start: [idea(BOLLINGER_BOUNCE, C[1].start)], C[2].start: [idea(BOLLINGER_BOUNCE, C[2].start)]}
+    two = {C[1].start: [idea(RANGE_TRADE, C[1].start)], C[2].start: [idea(RANGE_TRADE, C[2].start)]}
     e, ig, tracker, clock, quote = make(S, monkeypatch, C, two, trading_on=True)
     e.start(WED)
     feed(e, clock, C[:4])
-    assert len(ig.orders_sent()) == 1                                  # the second sell bounce: its own limit
-    assert any(r["event"] == "safety refused" and "already has 1 sell" in r["reasons"][0] for r in journal(e))
+    assert len(ig.orders_sent()) == 1                                  # the second range trade: its own limit
+    assert any(r["event"] == "safety refused" and "already has 1 trade" in r["reasons"][0] for r in journal(e))
 
 
 def test_nothing_happens_before_the_start_up(S, monkeypatch):
@@ -208,7 +209,7 @@ def test_the_same_price_is_not_taken_twice(S, monkeypatch):
 
 
 def test_watching_a_level_comes_from_the_analysers_rejection_part(S, monkeypatch):
-    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {C[1].start: [idea(BOLLINGER_BOUNCE, C[1].start)]})
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {C[1].start: [idea(RANGE_TRADE, C[1].start)]})
     e.start(WED)
     feed(e, clock, C[:2])
     (t,) = e.manager.trades.values()
@@ -221,8 +222,8 @@ def test_watching_a_level_comes_from_the_analysers_rejection_part(S, monkeypatch
     assert t.decision == "hold"
 
 
-def test_a_rejection_at_a_level_from_the_analyser_closes_a_bounce(S, monkeypatch):
-    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {C[1].start: [idea(BOLLINGER_BOUNCE, C[1].start)]})
+def test_a_rejection_at_a_level_from_the_analyser_closes_a_range_trade(S, monkeypatch):
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {C[1].start: [idea(RANGE_TRADE, C[1].start)]})
     e.start(WED)
     feed(e, clock, C[:2])
     tracker.watcher.setups.append(SimpleNamespace(version="bounce", status="triggered", counts=True, direction=BUY,
@@ -438,6 +439,23 @@ def test_the_best_pips_so_far_are_restored_after_a_restart_so_the_lock_carries_o
     assert not t2.open and t2.state == "close" and "profit lock" in t2.decisions[-1].why
 
 
+def test_a_bounces_trailed_stop_at_ig_is_known_after_a_restart(S, monkeypatch):
+    t0 = C[1].start
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {}, trading_on=True,
+                                        live={t0: [(BOLLINGER_BOUNCE, SELL, D("100.4"))]})
+    e.start(WED)
+    feed(e, clock, C[:1])
+    clock["t"] = t0 + timedelta(seconds=2)
+    e.on_price(tick(clock["t"], 100.0))                           # the live entry
+    (t,) = e.manager.trades.values()
+    moved = e.sender.move_stop(t.reference, t.fill + 2, why="the trail")
+    assert moved.ok
+    again, *_ = make(S, monkeypatch, C[2:], {}, trading_on=True, ig=ig)    # a restart
+    again.start(clock["t"])
+    (t2,) = again.manager.trades.values()
+    assert t2.stop_level == t.fill + 2 and t2.trail_from == D("12")
+
+
 def test_without_saved_state_a_trade_starts_from_nothing(S, monkeypatch):
     from trade_manager.manager import TradeManager, plan
     m = TradeManager(S, None)
@@ -456,3 +474,170 @@ def test_the_half_close_is_restored_too(S, monkeypatch):
     back = plan(S, "R1", RANGE_TRADE, SELL, WED, D(100), D(100), D(6), [])
     assert m.restore(back, m.load_state())
     assert (back.best, back.half_done, back.half_pips, back.state) == (D("9"), True, D("8.5"), "half close")
+
+
+# ---- one view at a time (design 6; owner, 9 November 2026) -------------------------------------------------
+
+# ---- a close only once IG confirms it, and the bot's trades against IG's positions (10 November 2026) ----
+
+def trades_rows(e):
+    f = e.book.trades_file
+    return [json.loads(x) for x in f.read_text().splitlines()] if f.exists() else []
+
+
+def at_2015(S, monkeypatch, ig=None):
+    t0 = U(2026, 11, 4, 20, 15)
+    cs = [candle(t0 + timedelta(minutes=5 * k), 13400, 13400.5, 13399.5, 13400) for k in range(4)]
+    e, ig, tracker, clock, quote = make(S, monkeypatch, cs, {cs[0].start: [idea(SLOW_GRIND, cs[0].start, price="13400")]},
+                                        trading_on=True, ig=ig, clock={"t": t0})
+    e.start(t0)
+    feed(e, clock, cs[:1])
+    return e, ig, clock, cs
+
+
+def test_tonights_refused_20_30_close_keeps_the_trade_open_alerts_and_is_tried_again(S, monkeypatch):
+    e, ig, clock, cs = at_2015(S, monkeypatch)
+    (t,) = e.manager.trades.values()
+    deal = e.sender.trades[t.reference].deal_id
+    ig.close_answer = "notional"                                            # IG refuses; the position is still open
+    tick = SimpleNamespace(time=U(2026, 11, 4, 20, 30, 2), buy=D("13401.0"), sell=D("13399.5"))
+    clock["t"] = tick.time
+    e.on_price(tick)
+    assert t.open and [r["event"] for r in trades_rows(e)] == ["opened"]   # never recorded closed
+    assert e.alerts.closed == []                                            # no "TRADE CLOSED" message
+    assert e.alerts.sent[-1][0] == f"close-refused-{deal}"
+    assert "error.service.marketdata.position.notional.details.null.error" in e.alerts.sent[-1][1]
+    ig.close_answer = "accept"
+    tick2 = SimpleNamespace(time=U(2026, 11, 4, 20, 30, 33), buy=D("13401.0"), sell=D("13399.5"))
+    clock["t"] = tick2.time
+    e.on_price(tick2)                                                       # tried again after 30 seconds
+    assert not t.open and [r["event"] for r in trades_rows(e)] == ["opened", "closed"] and len(e.alerts.closed) == 1
+
+
+def test_a_trade_ig_closed_by_itself_is_found_after_the_next_candle_and_recorded_at_igs_level(S, monkeypatch):
+    e, ig, clock, cs = at_2015(S, monkeypatch)
+    (t,) = e.manager.trades.values()
+    deal = e.sender.trades[t.reference].deal_id
+    ig.system_close(deal, 13398.7, "2026-11-04T20:22:10", "WEB")
+    feed(e, clock, cs[1:2])                                                 # the next candle: the regular check
+    assert not t.open and t.state == "closed at IG"
+    closed = [r for r in trades_rows(e) if r["event"] == "closed"]
+    assert len(closed) == 1 and closed[0]["close_price"] == "13398.7" and closed[0]["how_closed"] == "closed at IG"
+    assert closed[0]["closed_utc"] == "2026-11-04T20:22:10Z" and closed[0]["pips"] == "1.8"   # a sell from 13400.5
+    assert any(k == f"gone-at-ig-{deal}" for k, _ in e.alerts.sent) and len(e.alerts.closed) == 1
+
+
+def test_after_a_restart_a_trade_ig_closed_meanwhile_is_recorded_once(S, monkeypatch):
+    e, ig, clock, cs = at_2015(S, monkeypatch)
+    (t,) = e.manager.trades.values()
+    ig.system_close(e.sender.trades[t.reference].deal_id, 13399.0, "2026-11-04T20:21:00", "WEB")
+    again, *_ = make(S, monkeypatch, cs[1:], {}, trading_on=True, ig=ig, clock=clock)
+    again.start(U(2026, 11, 4, 20, 22))
+    closed = [r for r in trades_rows(again) if r["event"] == "closed"]
+    assert len(closed) == 1 and closed[0]["close_price"] == "13399.0" and closed[0]["how_closed"] == "closed at IG"
+    third, *_ = make(S, monkeypatch, cs[1:], {}, trading_on=True, ig=ig, clock=clock)
+    third.start(U(2026, 11, 4, 20, 23))
+    assert len([r for r in trades_rows(third) if r["event"] == "closed"]) == 1      # never twice
+
+
+def test_after_a_restart_a_trade_taken_over_gets_its_close_recorded(S, monkeypatch):
+    e, ig, clock, cs = at_2015(S, monkeypatch)
+    (t,) = e.manager.trades.values()
+    again, *_ = make(S, monkeypatch, cs[1:], {}, trading_on=True, ig=ig, clock=clock)
+    again.start(U(2026, 11, 4, 20, 22))
+    tick = SimpleNamespace(time=U(2026, 11, 4, 20, 30, 2), buy=D("13401.0"), sell=D("13399.5"))
+    clock["t"] = tick.time
+    again.on_price(tick)                                                    # the 20:30 close, confirmed by IG
+    closed = [r for r in trades_rows(again) if r["event"] == "closed"]
+    assert len(closed) == 1 and closed[0]["reference"] == t.reference and closed[0]["how_closed"] == "forced close"
+
+
+def test_a_trade_the_owner_closed_by_hand_is_recorded_apart_and_never_counted_for_the_bot(S, monkeypatch):
+    e, ig, clock, cs = at_2015(S, monkeypatch)
+    (t,) = e.manager.trades.values()
+    deal = e.sender.trades[t.reference].deal_id
+    ig.system_close(deal, 13398.7, "2026-11-04T20:22:10")                  # SYSTEM, not at the stop or limit
+    feed(e, clock, cs[1:2])
+    assert not t.open and t.state == "closed by owner"
+    (closed,) = [r for r in trades_rows(e) if r["event"] == "closed"]
+    assert closed["closed_by"] == "owner" and closed["how_closed"] == "closed by owner"
+    assert closed["close_price"] == "13398.7" and closed["closed_utc"] == "2026-11-04T20:22:10Z"
+    assert e.alerts.closed == [] and e.alerts.sent == []                    # no trade-closed message, no warning
+    assert any("you closed" in m for m in e.alerts.infos)
+    today = e.book.today(U(2026, 11, 4, 20, 25))
+    assert (today.trades, today.pips) == (0, D(0)) and (today.owner_trades, today.owner_pips) == (1, D("1.8"))
+
+
+def test_the_bots_own_close_is_recorded_at_igs_confirmed_price_and_time(S, monkeypatch):
+    e, ig, clock, cs = at_2015(S, monkeypatch)
+    (t,) = e.manager.trades.values()                                        # a sell from 13400.5
+    tick = SimpleNamespace(time=U(2026, 11, 4, 20, 30, 2), buy=D("13401.0"), sell=D("13399.5"))
+    clock["t"] = tick.time
+    e.on_price(tick)                                                        # the 20:30 close: IG confirms 13390.0
+    (closed,) = [r for r in trades_rows(e) if r["event"] == "closed"]
+    assert closed["close_price"] == "13390.0" and closed["pips"] == "10.5" and closed["gbp"] == "105.00"
+    assert closed["closed_utc"] == "2026-11-04T20:30:02Z" and closed["closed_by"] == "bot"
+
+
+# ---- the Bollinger bounce (owner, 15 November 2026) -------------------------------------------------------------
+
+def decisions(e):
+    f = e.book.decisions_file
+    return [json.loads(x) for x in f.read_text().splitlines()] if f.exists() else []
+
+
+def test_a_live_bounce_opens_against_open_trend_trades_and_closes_nothing(S, monkeypatch):
+    forming = C[2].start
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {C[1].start: [idea(EMA_PULLBACK, C[1].start)]},
+                                        trading_on=True, live={forming: [(BOLLINGER_BOUNCE, BUY, D("100.5"))]})
+    e.start(WED)
+    feed(e, clock, C[:2])
+    clock["t"] = forming + timedelta(seconds=1)
+    e.on_price(tick(clock["t"], 100.6))                            # the candle's first price: the bounce opens
+    by = {t.strategy: t for t in e.manager.trades.values()}
+    assert by[BOLLINGER_BOUNCE].open and by[EMA_PULLBACK].open and len(ig.orders_sent()) == 2
+    feed(e, clock, C[2:4])
+    assert by[EMA_PULLBACK].open and "closed" not in [r["event"] for r in trades_rows(e)]
+
+
+def test_a_bounce_the_live_prices_did_not_show_is_never_sent_late(S, monkeypatch):
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {C[2].start: [idea(BOLLINGER_BOUNCE, C[2].start)]},
+                                        trading_on=True)
+    e.start(WED)
+    feed(e, clock, C[:4])                                          # only seen when its candle finished
+    assert ig.orders_sent() == [] and e.manager.trades == {}
+    (d,) = [d for d in decisions(e) if d["kind"] == "bounce not sent"]
+    assert "not sent late" in d["why"] and d["time_utc"] == "2026-11-04T10:10:00Z"
+
+
+def test_a_live_bounce_is_not_sent_again_when_its_candle_finishes(S, monkeypatch):
+    forming = C[2].start
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, {forming: [idea(BOLLINGER_BOUNCE, forming, BUY, "100.5")]},
+                                        trading_on=True, live={forming: [(BOLLINGER_BOUNCE, BUY, D("100.5"))]})
+    e.start(WED)
+    feed(e, clock, C[:2])
+    clock["t"] = forming + timedelta(seconds=1)
+    e.on_price(tick(clock["t"], 100.6))
+    feed(e, clock, C[2:3])
+    assert len(ig.orders_sent()) == 1 and not any(d["kind"] == "bounce not sent" for d in decisions(e))
+
+
+def test_two_setups_of_one_strategy_on_one_candle_give_one_trade(S, monkeypatch):
+    # owner, 16 November 2026: the replay opened the same EMA pullback 2 or 3 times on one candle; live gives one
+    # try per strategy, direction and candle, and so does the finished candle now
+    two = {C[1].start: [idea(EMA_PULLBACK, C[1].start), idea(EMA_PULLBACK, C[1].start),
+                        idea(EMA_PULLBACK, C[1].start, BUY)]}
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, two, trading_on=True)
+    e.start(WED)
+    feed(e, clock, C[:3])
+    assert sorted(t.direction for t in e.manager.trades.values()) == [BUY, SELL] and len(ig.orders_sent()) == 2
+    (d,) = [d for d in decisions(e) if d["kind"] == "idea not sent again"]
+    assert d["direction"] == SELL and "already had a try" in d["why"]
+
+
+def test_a_blocked_setup_does_not_use_up_the_candles_try(S, monkeypatch):
+    two = {C[1].start: [idea(EMA_PULLBACK, C[1].start, allowed=False), idea(EMA_PULLBACK, C[1].start)]}
+    e, ig, tracker, clock, quote = make(S, monkeypatch, C, two, trading_on=True)
+    e.start(WED)
+    feed(e, clock, C[:3])
+    assert len(ig.orders_sent()) == 1

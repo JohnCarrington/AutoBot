@@ -41,12 +41,12 @@ Every result gives: the market state, the direction (up, down or none), the type
 | --- | --- |
 | Ranging | Range trade; level reversal (3.6), either way |
 | Emerging trend | EMA pullback, breakout (3.5), in the trend's direction only. Not the slow grind (owner, 8 November 2026). Level reversal (3.6), either way |
-| Trend | Slow grind (either type of trend, slow grind or strong push; owner, 8 November 2026), EMA pullback, breakout (3.5), in the trend's direction only; Bollinger band bounce against the trend's direction only (owner, 7 November 2026); level reversal (3.6), either way |
-| Possible reversal | Bollinger band bounce; level reversal (3.6), either way |
+| Trend | Slow grind (either type of trend, slow grind or strong push; owner, 8 November 2026), EMA pullback, breakout (3.5), in the trend's direction only; level reversal (3.6), either way |
+| Possible reversal | Level reversal (3.6), either way |
 | Consolidation | None (not even the level reversal). Watch and wait for a break |
 
 - **Ranging:** the Bollinger bands are flat and close together, and price bounces between the upper and lower band. The EMAs weave back and forth instead of staying stacked, and the 100 EMA is flat. In numbers (owner, 7 November 2026): close together is a band width of at least 6 and at most 18 pips; flat is the upper band and the lower band each moving less than 0.2 pips a candle, measured over 6 candles; price bounces between the bands when both bands have been reached within 24 candles.
-- **Emerging trend:** a direction is starting to form. Its main job is to stop bounces against the new direction early. The Bollinger band bounce does not trade in an emerging trend (owner, 7 November 2026).
+- **Emerging trend:** a direction is starting to form. Its main job is to stop bounces against the new direction early.
 - **Trend:** an established direction, either a slow grind or a strong push. Both are recognised from price action.
 - **Possible reversal:** after a trend has been running and price has moved at least 30 pips since it started, a strong reversal candle appears, recognised by the shared rejection part with no extra size rule.
 - **Consolidation** (this includes a trend running out of steam): narrow Bollinger bands, price between them touching neither band, small candles with green and red roughly the same size, no direction. Unlike ranging, price stays in the middle. No trading. When price breaks out, the analyser moves to emerging trend.
@@ -145,13 +145,9 @@ Price moves in a staircase: it pauses rather than bouncing back to the middle of
 
 EMAs: 8, 13 and 21 on the 5-minute chart. No fanning rule.
 
-### 3.3 Bollinger band bounce (sell)
+### 3.3 Bollinger band bounce (sell) (owner, 15 November 2026)
 
-1. Price pierces a level or the Bollinger band. For a level, a candle that comes within 3 pips of it counts the same as a pierce (a setting). The Bollinger band needs a real pierce.
-2. The reversal candle is the first red candle after the pierce, with no size rule. If none appears within 3 candles, the setup expires.
-3. A later confirmation candle closes below the reversal candle's low, within 3 candles of it, or the setup expires. A wick below without a close does not count.
-4. The sell opens as soon as the live price goes below the confirmation candle's low.
-5. If price goes above the reversal candle's high at any point, the setup is cancelled.
+The bounce off the **hourly** Bollinger band, entered on the 5-minute chart. It replaced the earlier bounce (the 5-minute band or a level, the half close at the opposite band, the break-even, the close on a rejection at a level and the pace and target rule all went, owner, 15 November 2026). `strategies/bollinger_bounce/strategy.py`.
 
 The bot records, for each bounce, how big the reversal candle was compared with the piercing candle, for later review. It never filters on it.
 
@@ -166,7 +162,7 @@ Spread spikes are ignored: when IG's spread on a candle is abnormally wide (over
 
 Half the trade closes when price reaches the other band.
 
-Spread spikes are ignored in the same way as for the bounce (3.3).
+Spread spikes are ignored as in the shared rejection part (`rejection.max_spread_pips`).
 
 ### 3.5 Breakout (owner, 7 November 2026)
 
@@ -237,12 +233,12 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 ## 6. Limits
 
 - Size: £10 per pip.
-- Trades open at once: 1 per strategy (the slow grind and the level reversal too: one trade of each at a time, owner, 8 November 2026); the bounce may also have 1 in the opposite direction. The EMA pullback is not limited to one trade at a time: it may have several trades open at once, each managed on its own (owner, 7 November 2026). Most at once: 5. EMA pullback trades do not count towards that limit (owner, 7 November 2026).
+- Trades open at once: 1 per strategy (the slow grind and the level reversal too: one trade of each at a time, owner, 8 November 2026); the Bollinger bounce one at a time in each direction (owner, 15 November 2026). The EMA pullback is not limited to one trade at a time: it may have several trades open at once, each managed on its own (owner, 7 November 2026). Most at once: 5. EMA pullback trades do not count towards that limit (owner, 7 November 2026). The Bollinger bounce is not held back by it (its trades still count towards it for the others; owner, 15 November 2026).
 - **Total risk** (owner, 8 November 2026): every open trade's risk (its stop distance x its size) plus the new trade's may not be more than £100,000 (`safety.max_total_risk_gbp`), set so it is never reached.
 - **Available funds** (owner, 8 November 2026): a new trade is allowed only if the account's available funds are at least the margin for one trade, £5,000 at £10 a pip (`safety.margin_per_trade_gbp`). The available funds come from IG's account details, read at start-up and again whenever a trade opens or closes, never as an extra call before each trade. If IG refuses a trade for lack of funds, Johnny gets a Telegram alert (section 7).
 - **Built (stage 10, `safety/rules.py`):** the safety part decides whether a new order may go out from what it is given (the idea and its order, the open trades, the account's available funds, the time, the pause switch), giving every reason it refuses: the pause switch (blocks every new trade); the strategy's switch; each strategy's hours, news and Friday rules (above and section 4); the trades open at once (each strategy's own limit; at most 5, `limits.max_open_trades`, not counting the EMA pullback's); the size (£10 a pip); the total risk; the available funds (unknown funds refuse). It never contacts IG.
 - Trading hours (UK clock time): new trades from 06:00 to 20:30 (switches in `.env`, section 13). Any trade open at 20:30 is closed. Nothing held overnight. A trade opened just before 20:30 is simply closed at 20:30.
-- **EMA pullback hours** (owner, 7 November 2026): the EMA pullback may open at any time the market is open, not only 06:00 to 20:30, except after 20:30 UK on Friday: no new EMA pullback trade opens then, so none is ever held over the weekend. It may be held overnight: it is not closed at 20:30, except on Friday, when any EMA pullback trade still open at 20:30 UK is closed. All other strategies keep the hours above.
+- **EMA pullback hours** (owner, 7 November 2026): the EMA pullback may open at any time the market is open, not only 06:00 to 20:30, except after 20:30 UK on Friday: no new EMA pullback trade opens then, so none is ever held over the weekend. Nor from 21:55 to 22:15 UK (`ema_pullback.rollover_no_new_trades_from`, `ema_pullback.rollover_no_new_trades_until`; owner, 13 November 2026): IG's spread jumps to about 17 pips at the 22:00 rollover, and an EMA pullback opened then was stopped at once. It may be held overnight: it is not closed at 20:30, except on Friday, when any EMA pullback trade still open at 20:30 UK is closed. All other strategies keep the hours above.
 - **Slow grind hours** (owner, 8 November 2026): the slow grind may open at any time the market is open, not only 06:00 to 20:30, except: from 20:30 UK to midnight every day (`hours.close_all_trades_at` to midnight); in the first 15 minutes after the market opens on Sunday (`slow_grind.week_open_no_new_trades_minutes`); and from 21:55 to 22:15 UK (`slow_grind.rollover_no_new_trades_from`, `slow_grind.rollover_no_new_trades_until`). With today's market hours (open Sunday 21:00 UK) the last two fall inside 20:30 to midnight; they are kept so they still hold if either changes. Any slow grind trade still open at 20:30 UK is closed, every day, so none is held overnight. It may open during a big-news window and is not closed before big news.
 - **Level reversal hours** (owner, 8 November 2026): the hours above (new trades 06:00 to 20:30 UK, closed at 20:30 UK, nothing held overnight) and the big-news rule below (no new trade in the window, open trades closed 15 minutes before). It counts towards "most at once: 5".
 - **Breakout hours** (owner, 7 November 2026): new breakout trades only from 06:00 to 20:30 UK, like the other strategies; it may open during a big-news window, may be held overnight, and any breakout trade still open at 20:30 UK on Friday is closed. One breakout trade open at a time (it counts towards "most at once: 5").
@@ -259,6 +255,9 @@ Example: on 5 November 2026 the fall from 07:00 stopped at about 1.3446 to 1.345
 - **Stop check** (owner, 8 November 2026): IG's dealing rules are not fetched before trades; the bot assumes each strategy's own stop meets IG's minimum stop distance. Only if IG refuses a trade because of its stop does the bot fetch IG's current minimum once, record it (`safety.folder`), and send Johnny a Telegram alert with the strategy, its stop and IG's minimum (`safety/refusals.py`). Never widen the stop quietly.
 - **Lack of funds:** if IG refuses a trade for lack of funds, Johnny gets a Telegram alert (`safety/refusals.py`).
 - **Built (stage 11, `orders/sender.py`):** the order sender does all of the above using the price service's IG login (never a second one), on the demo account only. It records its own deal reference before each order, counts a trade only once IG confirms it, checks with IG by that reference on a timeout or unclear answer and never sends a trade twice (`orders.unclear_checks`), runs the safety rules before each order, reads the available funds at start-up and whenever a trade opens or closes, recovers its own trades at start-up before any new trade (positions it did not open are left alone and reported), and closes trades in full or by half (the range trade), confirmed with IG. Every order, confirmation, refusal and close is recorded (`orders.folder`). Its open and confirm requests match AutoBot 161's `open_sb_now.py` exactly (owner, 8 November 2026): `POST /positions/otc` with `VERSION: 2` and `Content-Type: application/json`, the same 17 body fields (force open always true, the stop always `stopDistance`: the level reversal's stop price becomes a distance from the current price when the order is sent); `GET /confirms/{reference}` with `VERSION: 1`, up to 5 times a second apart while IG answers 404. Its close matches AutoBot 161's `close_sb_now.py`: `POST /positions/otc` with `VERSION: 1` and `_method: DELETE`, the body `dealId`, `direction` (the opposite), `orderType` MARKET and `size` only, never the epic or expiry; a part close (the range trade's half) sends the smaller size, and since IG leaves the rest as a position with a new deal ID, the order sender finds it among the open positions and records the new deal ID. Not yet called by the strategies: the trade manager will call it. The owner's one test order runs inside the price service from a request file (`orders/test_order.py`), and so do the owner's extras (a) restart recovery, (b) half close and (c) stop refusal, one at a time from a queue, and a read-only check of IG's own records (`orders/ig_records.py`).
+- **Closes only when IG confirms them, and the bot's trades checked against IG (owner, 10 November 2026):** at 20:30 UK on 10 November IG refused the bot's two 20:30 closes (`error.service.marketdata.position.notional.details.null.error`) and the bot recorded both trades as closed anyway. IG's own records showed why IG refused: both positions were already closed (17:12 and 17:56 UK, channel SYSTEM, not their stops or limits; the owner had closed them by hand, as three others on 9 November at 15:21), and the bot had not noticed. The request itself was the same as AutoBot 161's `close_sb_now.py`. Now (a) a trade is closed in the records only once IG confirms the close: a refused or unclear close leaves it open, alerts the owner at once with IG's error and is tried again every `orders.close_retry_seconds`; (b) after a refused close IG is asked whether the position still exists, and one IG had already closed is recorded with IG's own close level and time from IG's activity; (c) at start-up and after every 5-minute candle the order sender compares the bot's open trades with IG's open positions and alerts every difference (a trade IG no longer has, a size that differs, a position the bot did not open); (d) IG's stops and take profits are recorded at IG's level; (e) after a restart, a trade taken over gets its close recorded (before, the records could only close trades opened since the last start).
+- **The owner's closes by hand are kept apart (owner, 11 November 2026):** a trade IG shows closed on channel SYSTEM but not at its stop or take profit (at or beyond either counts as the stop or limit) was closed by the owner by hand. It is recorded "closed by owner" (`closed_by: owner` in `trades.jsonl`) at IG's price and time, the owner gets a short Telegram message rather than a warning, and it is never counted in the bot's trades, wins, losses, pips or £: the daily and weekly summaries and the dashboard's trading history show it on its own line ("closed by you, not counted"), and research on live trades leaves it out. The six closes of 9 and 10 November were corrected in `trades.jsonl` to IG's figures (the original kept as `trades.jsonl.before-2026-11-11-correction`).
+- **Every live close at IG's price and time (owner, 11 November 2026):** the bot's own closes (close, forced close, half close) are recorded at IG's confirmed level and the time IG confirmed them, no longer at the trade manager's decision price and the start of the 5-minute candle (on 10 November the 10:40 and 14:55 closes were IG's 10:45:02 at 13430.9 and 15:00:02 at 13375.1); IG's stops and take profits already were. The bot's older closes of 9 to 11 November were corrected to IG's figures in `trades.jsonl` (the file before kept as `trades.jsonl.before-2026-11-11-ig-prices`): 22 trades of the bot's own, 5 won, 17 lost, -40.6 pips (-£406.00), equal to IG's booked results.
 - **IG login rules:** stop on any login failure; never retry in a loop. Exceptions: being slowed down by IG (wait 60, 90, 120, 180 seconds, then stop) and client-token-invalid (one controlled re-login). A 412 on the account switch is harmless. Switch account without changing IG's default. Exit code 78 means do not restart.
 - The new AutoBot is now the only bot using this IG account. The FXi briefing on 178 runs separately.
 
@@ -343,3 +342,58 @@ Remaining, in three rounds:
 - **Limits** will be per pair plus a total across all pairs (section 6). Not built yet.
 - **Switches in `.env`**, checked at start-up and documented in `docs/SETTINGS.md`: the pairs switched on (`PAIRS_ON`, GBPUSD only for now), the trading hours (`NEW_TRADES_FROM` 06:00, `NEW_TRADES_UNTIL` 20:30) the master switch `TRADING` (off: everything runs and is recorded, but no order is sent to IG), each strategy on or off (`STRATEGY_SLOW_GRIND` on, `STRATEGY_EMA_PULLBACK`, `STRATEGY_BOLLINGER_BOUNCE`, `STRATEGY_RANGE_TRADE`, `STRATEGY_BREAKOUT` off, `STRATEGY_LEVEL_REVERSAL`), and the stop loss and take profit sent to IG (`STOP_LOSS_PIPS` 6, the EMA pullback's own `STOP_LOSS_PIPS_EMA_PULLBACK` 12, `TAKE_PROFIT_PIPS` 100). Everything else stays in `config/settings.toml`.
 - More detail: `docs/PAIRS.md`.
+
+## Structural Trade Planner V1 (owner, 17 November 2026): observe only
+
+The owner approved the Structural Trade Planner's 38 architectural decisions, its seven parameter groups and FC-01 to FC-13 (with three adjustments: a recommendation is issued on the first analysis with all the evidence; the 4-hour 40-pip and daily 110-pip swing moves are provisional and turns they hold back are recorded; the zone width, the larger of 5 pips and 0.15 x the 20-day ADR, is provisional). The full design and registers are in `/home/autobot/research/structural_trade_planner_v1/` (also in the reports repository). This stage is **observe only**: the planner (`planner/`) forecasts and records but does not authorise, refuse, open, change or close any trade, and nothing in the trading path reads it. It runs only while the switch `PLANNER_OBSERVE` is on (off until the owner approves installation). Letting it authorise hourly-pierce bounces is a later stage needing separate, explicit approval.
+
+---
+
+## first-build-plus (owner, 19 November 2026)
+
+This branch is the first build (f99efe1, live on the IG demo from 9 November 2026 00:09 UTC) with the market analyser
+exactly as it was then, plus only the following. Everything else after f99efe1 is left out: the hourly read, the
+analyser control, Stage 4, the session strategies, "one view at a time", the pace and target rule, "trend still going",
+and every other strategy change.
+
+**Kept as on main:**
+
+1. **The dashboard** (`dashboard/`), with the STP tab.
+2. **The Structural Trade Planner** (`planner/`, observe only, `PLANNER_OBSERVE`, off if left out), unchanged, except
+   that its "confirmed close beyond a level" number is its own setting, `[planner] break_beyond_pips` (3). On main
+   it reads `[hourly_read] break_beyond_pips`, which this branch does not have. Its "link to the bounce"
+   (`PLANNER_AUTHORISES_BOUNCE`) was never built on main either, so there is none here.
+3. **The hourly-pierce Bollinger bounce** of 15 November (section 3.3 as on main; `strategies/bollinger_bounce`,
+   recorded as "Bollinger bounce"), with what it needs:
+   - its hourly chart (`prices/hourly_chart.py`);
+   - opening at the next candle's first live price, never sent late (`trading/engine.py`);
+   - in every analyser state;
+   - one each way, not held back by the total;
+   - its 12-pip trail behind the last 3 finished candles, with stop moves at IG that IG can accept (3 attempts);
+   - `BOUNCE_ONLY_NEAR_TIMES`.
+   
+   Its `BOUNCE_ONLY_WHEN_HOURLY_RANGING` switch is left out, because it needs the hourly read.
+
+**Kept, renamed:** the first build's own bounce, **"Bollinger bounce 5m"** (`strategies/bollinger_bounce_5m`, switch
+`STRATEGY_BOLLINGER_BOUNCE_5M`, required). These are exactly its 9 November rules:
+- a 5-minute rejection at a level or the 5-minute band;
+- trend: against the trend's direction only; possible reversal: either way;
+- 1 each way, plus 1 more in the opposite direction (`limits.bollinger_bounce_extra_opposite_direction_trades`);
+- closed on a confirmed rejection at a level;
+- no trail.
+
+Its two candle limits are now `[rejection] reversal_candle_within_candles_of_pierce` and
+`confirmation_candle_within_candles_of_reversal` (same values), because `[bounce]` holds the new bounce's settings.
+Records, Telegram and the dashboard show the two bounces by their names.
+
+**Safety and plumbing fixes added:**
+- the Telegram format (9 Nov);
+- a close counts only when IG confirms it, and trades are checked against IG's positions (10 Nov);
+- your closes by hand recorded apart (11 Nov);
+- every close recorded at IG's price (11 Nov);
+- the strategies read the candle store afresh (11 Nov);
+- no new EMA pullback over the rollover, 21:55–22:15 UK (13 Nov);
+- the analyser journal stays the live record (13 Nov);
+- one try per strategy, direction and candle (16 Nov);
+- trail stop moves IG can accept (17 Nov);
+- the live check waits for IG's finished candle, and journal provenance (19 Nov).

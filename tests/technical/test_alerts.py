@@ -13,7 +13,7 @@ from types import SimpleNamespace
 import pytest
 
 from alerts.ready import ReadyAlerts, ReadyContext, run_checks
-from alerts.telegram import Alerts, Telegram, TelegramCredentials, TelegramNotSetUp, load_telegram
+from alerts.telegram import Alerts, Telegram, TelegramCredentials, TelegramNotSetUp, as_plain, load_telegram
 from alerts.trades import TradeClosed, TradeOpened, closed_text, opened_text
 from ig.allowance_status import HistoryStatus
 from prices.model import Candle
@@ -380,43 +380,60 @@ def trade(pair="GBPUSD", direction="sell", scale=10000, open_=D("13388.2"), sl=D
 def test_the_trade_opened_message_shows_everything():
     text = opened_text(trade())
     assert text.splitlines() == [
-        "AutoBot TRADE OPENED: GBPUSD SELL",
-        "Time: Fri 06 Nov 13:05 GMT",
-        "Size: £10 per pip",
-        "Strategy: slow grind",
-        "Market state: trend (slow grind)",
-        "Open price: 13388.2 (1.33882) at Fri 06 Nov 13:05 GMT",
-        "Stop loss: 13394.2 (1.33942)",
-        "Take profit: 13288.2 (1.32882)"]
+        "[AutoBot] 🎯 TRADE OPENED",
+        "<b>Time:</b> Fri 06 Nov 13:05 GMT",
+        "<b>Epic:</b> GBPUSD",
+        "<b>Strategy:</b> slow grind",
+        "<b>Dir:</b> SELL | <b>Size:</b> £10/pip",
+        "<b>Market state:</b> trend (slow grind)",
+        "<b>Entry:</b> 13388.2 (1.33882)",
+        "<b>SL:</b> 13394.2 (1.33942)",
+        "<b>TP:</b> 13288.2 (1.32882) | <b>TP kind:</b> normal"]
 
 
-def test_the_trade_closed_message_shows_the_result_profit_or_loss_and_win_or_loss():
+def test_the_trade_closed_message_shows_green_for_a_profit_red_for_a_loss():
     win = TradeClosed(trade(), D("13348.2"), T(2026, 11, 6, 15, 40), "take profit moved to S3; closed at 20:30 rule",
                       D("400"))
-    text = closed_text(win)
-    assert text.splitlines()[0] == "AutoBot TRADE CLOSED: GBPUSD SELL - WIN +£400.00"
-    for line in ("Close price: 13348.2 (1.33482) at Fri 06 Nov 15:40 GMT",
-                 "Reason: take profit moved to S3; closed at 20:30 rule", "Profit or loss: +£400.00 (win)",
-                 "Open price: 13388.2 (1.33882) at Fri 06 Nov 13:05 GMT", "Stop loss: 13394.2 (1.33942)"):
-        assert line in text
+    lines = closed_text(win).splitlines()
+    assert lines[0] == "[AutoBot] 🟢 TRADE CLOSED"
+    for line in ("<b>Entry:</b> 13388.2 (1.33882) → <b>Exit:</b> 13348.2 (1.33482)",
+                 "<b>Closed:</b> Fri 06 Nov 15:40 GMT",
+                 "<b>Reason:</b> take profit moved to S3; closed at 20:30 rule", "<b>PnL:</b> +£400.00",
+                 "<b>SL:</b> 13394.2 (1.33942)"):
+        assert line in lines, line
     loss = TradeClosed(trade(direction="buy"), D("13382.2"), T(2026, 11, 6, 13, 20), "stop loss", D("-60"))
-    assert closed_text(loss).splitlines()[0] == "AutoBot TRADE CLOSED: GBPUSD BUY - LOSS -£60.00"
-    assert "Profit or loss: -£60.00 (loss)" in closed_text(loss)
+    assert closed_text(loss).splitlines()[0] == "[AutoBot] 🔴 TRADE CLOSED"
+    assert "<b>PnL:</b> -£60.00" in closed_text(loss).splitlines()
     even = TradeClosed(trade(), D("13388.2"), T(2026, 11, 6, 13, 20), "closed by hand", D("0"))
-    assert even.result == "BREAK EVEN"
+    assert even.result == "BREAK EVEN" and closed_text(even).splitlines()[0] == "[AutoBot] ⚪ TRADE CLOSED"
 
 
 def test_trade_prices_use_each_pairs_own_scale():
     jpy = trade(pair="EURJPY", scale=1000, open_=D("162345"), sl=D("162405"), tp=D("161345"))
-    assert "Open price: 162345 (162.345)" in opened_text(jpy)
+    assert "<b>Entry:</b> 162345 (162.345)" in opened_text(jpy)
     with pytest.raises(ValueError, match="buy or sell"):
         trade(direction="long")
 
 
-def test_trade_alerts_go_through_telegram(st):
+def test_values_in_trade_messages_are_escaped():
+    text = opened_text(TradeOpened(**(vars(trade()) | {"reason": "close < 21 EMA & falling"})))
+    assert "<b>Reason:</b> close &lt; 21 EMA &amp; falling" in text.splitlines()
+    assert "Reason: close < 21 EMA & falling" in as_plain(text).splitlines()
+
+
+def test_trade_alerts_go_through_telegram_as_html(st):
     http = PretendTelegram()
     a = sent_alerts(st, http, Clock(T(2026, 11, 6, 13, 5)))
     a.trade_opened(trade())
     a.trade_closed(TradeClosed(trade(), D("13348.2"), T(2026, 11, 6, 15, 40), "take profit", D("400")))
-    assert [t.splitlines()[0] for t in http.texts] == ["AutoBot TRADE OPENED: GBPUSD SELL",
-                                                       "AutoBot TRADE CLOSED: GBPUSD SELL - WIN +£400.00"]
+    assert [t.splitlines()[0] for t in http.texts] == ["[AutoBot] 🎯 TRADE OPENED", "[AutoBot] 🟢 TRADE CLOSED"]
+    assert [j.get("parse_mode") for _, j, _ in http.posts] == ["HTML", "HTML"]
+    a.info("AutoBot: plain")
+    assert "parse_mode" not in http.posts[-1][1]                       # other messages stay plain text
+
+
+def test_an_html_message_telegram_refuses_is_sent_again_as_plain_text(st):
+    http = PretendTelegram(Reply(400, {"ok": False, "description": "Bad Request: can't parse entities"}))
+    r = tg(st, http).send("[AutoBot] 🎯 TRADE OPENED\n<b>Dir:</b> SELL", html=True)
+    assert r.sent and http.texts == ["[AutoBot] 🎯 TRADE OPENED\n<b>Dir:</b> SELL", "[AutoBot] 🎯 TRADE OPENED\nDir: SELL"]
+    assert "parse_mode" not in http.posts[1][1]

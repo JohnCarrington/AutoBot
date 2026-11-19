@@ -5,9 +5,11 @@ States and the strategies they allow (section 2.2):
   ranging            range trade; level reversal
   emerging trend     EMA pullback, breakout, in the trend's direction only; level reversal
   trend              slow grind, EMA pullback, breakout, in the trend's direction only;
-                     Bollinger bounce against it; level reversal; with the type of trend: slow grind or strong push
-  possible reversal  Bollinger bounce; level reversal
+                     Bollinger bounce 5m against it; level reversal; with the type of trend: slow grind or strong push
+  possible reversal  Bollinger bounce 5m; level reversal
   consolidation      none: watch and wait for a break
+The hourly-pierce Bollinger bounce does not depend on the state: it opens in every state (owner, 15 November
+2026). The first build's bounce (Bollinger bounce 5m) keeps its 9 November 2026 states above.
 
 How it moves (sections 2.5 to 2.7). Changes caused by something price DID on
 this candle happen at once (they are proof in the price itself):
@@ -64,9 +66,9 @@ SLOW_GRIND, STRONG_PUSH = "slow grind", "strong push"
 ALLOWED = {
     RANGING: ("range trade", "level reversal"),
     EMERGING: ("EMA pullback", "breakout", "level reversal"),
-    TREND: ("slow grind", "EMA pullback", "breakout", "Bollinger band bounce (against the trend's direction only)",
+    TREND: ("slow grind", "EMA pullback", "breakout", "Bollinger bounce 5m (against the trend's direction only)",
             "level reversal"),
-    POSSIBLE_REVERSAL: ("Bollinger band bounce", "level reversal"),
+    POSSIBLE_REVERSAL: ("Bollinger bounce 5m", "level reversal"),
     CONSOLIDATION: (),
 }
 TRENDING = (EMERGING, TREND)

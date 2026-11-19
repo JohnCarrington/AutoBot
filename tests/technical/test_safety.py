@@ -136,15 +136,18 @@ def test_one_trade_at_a_time_for_each_strategy(S, strategy):
                                   if s != strategy]).allowed
 
 
-def test_the_bounce_may_have_one_each_way(S):
+def test_one_bounce_at_a_time_in_each_direction(S):
+    """Owner, 15 November 2026: one bounce at a time in each direction (the extra trade went)."""
     assert go(S, idea(BOLLINGER_BOUNCE, SELL), [opened(BOLLINGER_BOUNCE, BUY)]).allowed
     d = go(S, idea(BOLLINGER_BOUNCE, BUY), [opened(BOLLINGER_BOUNCE, BUY)])
     assert d.reasons == ["Bollinger bounce already has 1 buy trade(s) open (at most 1 each way)"]
     d = go(S, idea(BOLLINGER_BOUNCE, SELL), [opened(BOLLINGER_BOUNCE, BUY), opened(BOLLINGER_BOUNCE, SELL)])
-    assert not d.allowed
-    s = Over(S, limits=vars(S.limits) | {"bollinger_bounce_extra_opposite_direction_trades": 0})
-    assert "Bollinger bounce already has 1 trade(s) open (at most 1)" in \
-        go(s, idea(BOLLINGER_BOUNCE, SELL), [opened(BOLLINGER_BOUNCE, BUY)]).reasons
+    assert d.reasons == ["Bollinger bounce already has 1 sell trade(s) open (at most 1 each way)"]
+
+
+def test_the_bounce_is_not_held_back_by_the_most_at_once(S):
+    full = [opened(RANGE_TRADE), opened(BREAKOUT), opened(SLOW_GRIND), opened(LEVEL_REVERSAL), opened(BOLLINGER_BOUNCE, BUY)]
+    assert go(S, idea(BOLLINGER_BOUNCE, SELL), full).allowed
 
 
 def test_the_ema_pullback_has_no_limit_of_its_own(S):

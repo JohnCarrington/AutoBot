@@ -8,7 +8,9 @@ deploy/autobot-dashboard.nginx) and serves the page (dashboard/static/index.html
                       dashboard.login_failures_per_minute wrong ones in a minute.
   POST /logout        ends the session.
   GET  /auth-check    200 with a genuine session, else 401 (nginx's auth_request for every gated address).
-  GET  /api/status    the trading engine's status (data/trading/<PAIR>/status.json, written by the price service
+  GET  /api/status    (also "planner", only while PLANNER_OBSERVE is on: the Structural Trade Planner's panel, from its
+                      own file; observe only)
+                      the trading engine's status (data/trading/<PAIR>/status.json, written by the price service
                       every few seconds): the analyser's state and direction, the strategies allowed now, the open
                       trades with live pips, today's trades and pips, warnings, whether TRADING is on, the pause
                       switch, and this session's csrf token. A status older than dashboard.status_stale_seconds
@@ -16,6 +18,14 @@ deploy/autobot-dashboard.nginx) and serves the page (dashboard/static/index.html
   POST /api/pause     {"paused": true|false}: the pause switch (the file trading.pause_file). Needs the session, its
                       csrf token in X-CSRF-Token, and no Origin from another site. Each change is recorded
                       (records/book.py) and sent on Telegram.
+  GET  /api/stp/...   the Structural Trade Planner tab (dashboard/stp.py; read only, observe only): overview, candles,
+                      history, recommendation, evaluation, and the vendored chart library. Needs the session. A failure
+                      there answers that request only, never the status or the pause switch.
+  GET  /api/history   ?from=YYYY-MM-DD&to=YYYY-MM-DD (UK days, both included; neither: every trade) &paper=1 (also
+                      the paper trades): the bot's own trade records (records.folder/<PAIR>/trades.jsonl, and
+                      paper/trades.jsonl), never IG, so it goes back to the very first trade: the trades closed in
+                      those days (newest first), their totals (trades, wins, losses, pips, £) and the same by
+                      strategy, and the UK day of the first trade recorded. Read only. Needs the session.
 It never contacts IG and never places, changes or closes a trade.
 """
 
@@ -27,7 +37,8 @@ import sys
 import threading
 import time
 from collections import deque
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
+from decimal import Decimal, InvalidOperation
 from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -94,8 +105,132 @@ class Dashboard:
             if age > self.d.status_stale_seconds:
                 warnings.append(f"The trading engine's status is {int(age)} seconds old (is the price service running?)")
         paused = Path(self.s.trading.pause_file).exists()
-        return st | {"paused": paused, "warnings": warnings + list(st.get("warnings", [])),
+        extra = {}
+        if getattr(getattr(self.s, "switches", None), "planner_observe", False):
+            # the planner's panel (observe only), only while PLANNER_OBSERVE is on (owner's R3, 17 November 2026):
+            # its own file, read only. Off: the status has no "planner" at all and the page shows nothing of it.
+            try:
+                from planner.panel import panel
+                extra["planner"] = panel(self.s, self.now())
+                try:                                    # the compact card for the main dashboard (STP tab's summary)
+                    from dashboard.stp import card
+                    extra["planner"]["card"] = card(self.s, self.now())
+                except Exception:                       # noqa: BLE001  the panel still shows without it
+                    pass
+            except Exception as e:                      # noqa: BLE001  never breaks the status
+                extra["planner"] = {"label": "OBSERVE ONLY — DOES NOT CONTROL TRADING", "available": False,
+                                    "message": f"The planner's file could not be read ({type(e).__name__})."}
+        return st | extra | {"paused": paused, "warnings": warnings + list(st.get("warnings", [])),
                      "csrf": session["csrf"], "served_utc": self.now().strftime("%Y-%m-%dT%H:%M:%SZ")}
+
+    # ---- the trading history (the bot's own trade records) -----------------------------------------------------
+
+    HISTORY_FIELDS = ("reference", "strategy", "direction", "opened_utc", "closed_utc", "open_price", "close_price",
+                      "pips", "gbp", "result", "how_closed", "close_reason", "best_pips", "minutes_open", "market_state")
+
+    def _closed_trades(self, paper: bool) -> list[dict]:
+        base = Path(self.s.records.folder) / self.s.market.pair
+        out = []
+        for path, is_paper in [(base / "trades.jsonl", False)] + ([(base / "paper" / "trades.jsonl", True)] if paper else []):
+            try:
+                lines = path.read_text().splitlines()
+            except FileNotFoundError:
+                continue
+            for line in lines:
+                try:
+                    r = json.loads(line)
+                    if r.get("event") != "closed":
+                        continue
+                    closed = datetime.fromisoformat(r["closed_utc"].replace("Z", "+00:00"))
+                    pips, gbp = Decimal(str(r["pips"])), Decimal(str(r["gbp"]))
+                except (ValueError, KeyError, TypeError, InvalidOperation, AttributeError):
+                    continue                                # a line that cannot be read is left out, never guessed
+                out.append((closed, pips, gbp, is_paper, r))
+        return out
+
+    @staticmethod
+    def _query(text: str) -> dict:
+        """name=value pairs after the "?" (plain dates and 0/1 only: nothing needs decoding)."""
+        out: dict = {}
+        for part in text.split("&"):
+            name, eq, value = part.partition("=")
+            if name and eq:
+                out.setdefault(name, []).append(value)
+        return out
+
+    def history(self, query: str) -> tuple[int, dict]:
+        from zoneinfo import ZoneInfo
+        q = self._query(query)
+        tz = self.s.hours.timezone
+        uk = ZoneInfo(tz) if isinstance(tz, str) else tz
+        try:
+            first = date.fromisoformat(q["from"][0]) if "from" in q else None
+            last = date.fromisoformat(q["to"][0]) if "to" in q else None
+        except ValueError:
+            return 400, {"ok": False, "error": "from and to must be dates (YYYY-MM-DD)"}
+        if first and last and first > last:
+            return 400, {"ok": False, "error": "from is after to"}
+        paper = q.get("paper", ["0"])[0] == "1"
+        rows = self._closed_trades(paper)
+        days = [c.astimezone(uk).date() for c, *_ in rows]
+        chosen = [(c, p, g, pp, r) for (c, p, g, pp, r), d in zip(rows, days)
+                  if (first is None or d >= first) and (last is None or d <= last)]
+        chosen.sort(key=lambda x: x[0], reverse=True)
+
+        def totals(items):
+            return {"trades": len(items), "wins": sum(g > 0 for _, _, g, _, _ in items),
+                    "losses": sum(g < 0 for _, _, g, _, _ in items),
+                    "pips": str(sum((p for _, p, _, _, _ in items), Decimal(0))),
+                    "gbp": str(sum((g for _, _, g, _, _ in items), Decimal(0)))}
+        # the owner's closes by hand are kept apart: never in the bot's totals (owner, 11 November 2026)
+        from records.book import is_owner_close
+        owner = [x for x in chosen if is_owner_close(x[4])]
+        bot = [x for x in chosen if not is_owner_close(x[4])]
+        by: dict = {}
+        for x in bot:
+            by.setdefault(x[4].get("strategy", "?"), []).append(x)
+        strategies = sorted(({"strategy": k} | totals(v) for k, v in by.items()), key=lambda b: (-b["trades"], b["strategy"]))
+        trades = [{k: r.get(k) for k in self.HISTORY_FIELDS} | {"paper": pp, "half_closed": bool(r.get("half_close")),
+                                                                 "closed_by": "owner" if is_owner_close(r) else "bot"}
+                  for _, _, _, pp, r in chosen]
+        return 200, {"ok": True, "from": first.isoformat() if first else None, "to": last.isoformat() if last else None,
+                     "paper": paper, "first_day": min(days).isoformat() if days else None,
+                     "paper_trades": sum(1 for x in chosen if x[3]),
+                     "totals": totals(bot), "closed_by_owner": totals(owner), "by_strategy": strategies,
+                     "trades": trades}
+
+    # ---- the Structural Trade Planner tab (read only) --------------------------------------------------------------
+
+    def stp(self, path: str, query: str) -> tuple[int, Any, str]:
+        """(status, JSON data or bytes, content type) for GET /api/stp/<name>. Never raises."""
+        from dashboard import stp
+        name = path[len("/api/stp/"):]
+        try:
+            if name.startswith("lib/"):
+                f = stp.STATIC.get(name[4:])            # a fixed list of file names: nothing else is served
+                if f is None:
+                    return 404, {"ok": False}, "application/json"
+                return 200, f.read_bytes(), ("text/css; charset=utf-8" if f.suffix == ".css"
+                                             else "application/javascript; charset=utf-8")
+            if not getattr(getattr(self.s, "switches", None), "planner_observe", False):
+                # as the panel (owner's R3): nothing of the planner while PLANNER_OBSERVE is off
+                return 404, {"ok": False, "error": "the Structural Trade Planner is off (PLANNER_OBSERVE)"}, "application/json"
+            if name == "overview":
+                return 200, stp.overview(self.s, self.now()), "application/json"
+            if name == "evaluation":
+                return 200, stp.evaluation(self.s, self.now()), "application/json"
+            if name == "candles":
+                code, data = stp.candles(self.s, query, self.now())
+            elif name == "history":
+                code, data = stp.history(self.s, query)
+            elif name == "recommendation":
+                code, data = stp.recommendation(self.s, query, self.now())
+            else:
+                return 404, {"ok": False}, "application/json"
+            return code, data, "application/json"
+        except Exception as e:                          # noqa: BLE001  the STP tab never breaks the dashboard
+            log.warning("Dashboard STP %s failed: %s", name, type(e).__name__)
+            return 500, {"ok": False, "error": f"the planner's data could not be read ({type(e).__name__})"}, "application/json"
 
     # ---- the pause switch -------------------------------------------------------------------------------
 
@@ -150,6 +285,15 @@ def handler_for(app: Dashboard):
             self.end_headers()
             self.wfile.write(body)
 
+        def _send_bytes(self, code: int, body: bytes, ctype: str) -> None:
+            self.send_response(code)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
         def _body(self) -> dict:
             n = int(self.headers.get("Content-Length") or 0)
             if n > 10_000:
@@ -166,6 +310,19 @@ def handler_for(app: Dashboard):
                 return self._send(200 if sess else 401)
             if self.path == "/api/status":
                 return self._send(200, app.status(sess)) if sess else self._send(401, {"ok": False})
+            path, _, query = self.path.partition("?")
+            if path.startswith("/api/stp/"):
+                if not sess:
+                    return self._send(401, {"ok": False})
+                code, data, ctype = app.stp(path, query)
+                if isinstance(data, bytes):
+                    return self._send_bytes(code, data, ctype)
+                return self._send(code, data)
+            if path == "/api/history":
+                if not sess:
+                    return self._send(401, {"ok": False})
+                code, data = app.history(query)
+                return self._send(code, data)
             return self._send(404, {"ok": False})
 
         def do_POST(self):

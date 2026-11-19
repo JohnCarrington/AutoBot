@@ -63,6 +63,7 @@ country_currencies = ["GB=GBP", "UK=GBP", "US=USD", "EU=EUR", "EMU=EUR", "JP=JPY
 
 [limits]
 max_open_trades_per_strategy = 1
+# The first build's bounce (Bollinger bounce 5m): this many more open in the opposite direction (as on 9 November 2026).
 bollinger_bounce_extra_opposite_direction_trades = 1
 # Most trades open at once (design 6: 5), not counting the EMA pullback's.
 max_open_trades = 5
@@ -85,6 +86,13 @@ unclear_check_wait_seconds = 2
 # many times, this many seconds apart, while IG answers 404 (not there yet): as AutoBot 161.
 confirm_attempts = 5
 confirm_wait_seconds = 1
+# A close IG refuses (or does not answer clearly) leaves the trade open; the trade manager tries the
+# close again after this many seconds, for as long as the position is open at IG.
+close_retry_seconds = 30
+# A trail's stop move IG refuses (or does not answer clearly) is tried again every close_retry_seconds, this
+# many attempts in all at that level; then the bot gives up on it (one alert), keeps the stop IG has, and works
+# the trail out again after the next finished 5-minute candle. Owner's value, 17 November 2026.
+stop_move_attempts = 3
 
 [trade_manager]
 # Where the trade manager records every decision it makes (design 4).
@@ -171,8 +179,23 @@ minutes_before = 20
 minutes_after = 20
 
 [bounce]
-reversal_candle_within_candles_of_pierce = 3
-confirmation_candle_within_candles_of_reversal = 3
+# The Bollinger band bounce (design 3.3; owner, 15 November 2026). The pierce: a 5-minute candle's high goes MORE
+# than this many pips above the hourly upper Bollinger band (20, 2; [indicators]) as the hourly chart showed it at
+# that moment (a low below the lower band for a buy); that candle, red for a sell (green for a buy), is the
+# rejection candle.
+pierce_beyond_pips = 3
+# The confirmation candle must close beyond the rejection candle's low (sell) or high (buy) within this many
+# candles of it, or the setup expires.
+confirmation_within_candles = 3
+# The trail: once a bounce has been this many pips in profit, after each finished 5-minute candle its stop is moved
+# at IG to a tenth of a pip beyond the last trail_candles candles (a sell: above their highest buy price; a buy:
+# below their lowest sell price), only ever closer. The stop before that is STOP_LOSS_PIPS (12) in .env.
+trail_from_pips = 12
+trail_candles = 3
+# While the switch BOUNCE_ONLY_NEAR_TIMES is on (.env; off by default), a bounce opens only within this many minutes
+# either side of one of these UK times, both ends included, judged at the moment it opens (owner, 15 November 2026).
+near_times = ["10:00", "14:00", "16:00"]
+near_times_within_minutes = 60
 
 [slow_grind]
 # Design 3.1 (owner, 8 November 2026: result 13 of the slow grind research, holding rule 2).
@@ -221,6 +244,11 @@ hourly_min_gap_fast_mid_pips = 0.25
 hourly_min_gap_mid_slow_pips = 0.20
 # Stored hourly candles read to work out the hourly EMAs.
 hourly_history_candles = 600
+# No new EMA pullback trade from rollover_no_new_trades_from to rollover_no_new_trades_until UK:
+# IG's spread jumps to about 17 pips at the 22:00 rollover, so a trade opened then is stopped at
+# once (owner, 13 November 2026; the slow grind's window, design 6).
+rollover_no_new_trades_from = "21:55"
+rollover_no_new_trades_until = "22:15"
 
 [possible_reversal]
 min_trend_move_pips = 30
@@ -394,6 +422,10 @@ near_level_within_pips = 3
 # start or cancel a setup. Normal is 0.9 to 1.5; the 22:00 rollover and news
 # reach 4 to 26. STARTING VALUE (docs/REJECTION.md).
 max_spread_pips = 3
+# The shared rejection part's bounce setups (the level reversal and the analyser; not the Bollinger bounce): the
+# reversal candle must come within this many candles of the pierce, and the confirmation within this many of it.
+reversal_candle_within_candles_of_pierce = 3
+confirmation_candle_within_candles_of_reversal = 3
 
 [ig]
 demo_base_url = "https://demo-api.ig.com/gateway/deal"
@@ -518,3 +550,47 @@ sunday_ready_within_minutes = 30
 # no more than this many minutes ago.
 candles_arriving_within_minutes = 10
 
+[planner]
+# The Structural Trade Planner V1 (planner/; owner's approval of 17 November 2026). OBSERVE ONLY: it forecasts and
+# records; it never authorises, refuses, opens, changes or closes a trade. It runs only while the switch
+# PLANNER_OBSERVE in .env is on (off if left out). Other numbers it uses are the existing ones, reused as approved:
+# hourly swings [levels] turning_*, the 3-pip level allowance [rejection] near_level_within_pips, the 5-pip grouping [levels] line_up_within_pips, the 150-pip window
+# [levels] round_numbers_within_pips, freshness [analyser] out_of_date_after_minutes, the indicators [indicators].
+# Where it writes its recommendation (folder/<PAIR>/current.json) and its history (recommendations.jsonl).
+folder = "/opt/autobot/data/planner"
+# The average daily range: the last this many finished weekday daily candles (IG's short Sunday candles left out).
+adr_weekdays = 20
+# 4-hour swings: candles each side, the move away (pips; provisional) and within how many candles.
+h4_swing_candles_each_side = 3
+h4_swing_min_move_pips = 40
+h4_swing_move_within_candles = 6
+# Daily swings: the same (pips provisional).
+daily_swing_candles_each_side = 3
+daily_swing_min_move_pips = 110
+daily_swing_move_within_candles = 6
+# How far back 4-hour and daily swings are kept as levels (weeks).
+h4_swing_lookback_weeks = 8
+daily_swing_lookback_weeks = 48
+# A structural break needs this many closes in a row at least [planner] break_beyond_pips beyond the swing.
+structure_break_closes = 1
+# Zone width: the larger of [levels] line_up_within_pips and this share of the ADR (provisional).
+zone_width_adr_share = 0.15
+# Zone classes: Major needs this many families including a daily-or-weekly level; Moderate this many.
+major_min_families = 3
+moderate_min_families = 2
+# The weakest zone class that may be an entry zone.
+min_entry_class = "Moderate"
+# The 4-hour EMA100 slope is measured over this many 4-hour candles (supporting evidence only).
+ema_slope_candles = 6
+# Momentum weakening: the 4-hour MACD histogram moving towards zero for this many candles in a row.
+macd_weakening_candles = 3
+# CORRECTION_LIKELY: no new extreme in this many finished hourly candles.
+no_new_extreme_hourly_candles = 3
+# Recorded only: a confirmed zone break closed back within this many hourly candles is a failed breakout.
+failed_breakout_within_candles = 3
+# Past recommendations shown on the dashboard panel.
+panel_history = 5
+# A confirmed close beyond a level, for the planner's zone invalidation (FC-02), 4-hour structure breaks and flipped
+# levels: a close at least this many pips beyond it (owner, 19 November 2026: the planner's own number; on main it
+# reads [hourly_read] break_beyond_pips, the hourly read's, which first-build-plus does not have).
+break_beyond_pips = 3

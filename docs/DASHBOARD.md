@@ -13,6 +13,7 @@ address, and the dashboard's data service listens only on 127.0.0.1.
   minute in nginx). The session cookie is signed with `DASHBOARD_SECRET_KEY` (HMAC-SHA256), lasts 30 days, HttpOnly,
   SameSite=Strict. The pause switch also needs the session's csrf token and refuses another site's Origin. Without
   both secrets the service does not start (exit code 78; systemd does not restart it).
+- **Trading history** (owner, 9 November 2026): AutoBot 161's date picker, its layout, style and behaviour copied exactly: the Day / Week / Month / All period buttons; the date bar with its label, the date button that opens 161's month-grid calendar on a computer (Monday first, today outlined, later days greyed out, ‹ › for months, Today and Close; Escape or a click outside closes it) and the phone's own date picker on a touch screen; a month box for Month; "● Live" for the current period, or a Today button and "Historical view" for an earlier one. The one difference: it reads the bot's own trade records (`data/records/<PAIR>/trades.jsonl`, through the data service's `GET /api/history`), not IG, so it goes back to the very first trade with no 30-day limit. For the chosen day or period: the totals (pips, £, trades, wins and losses), a breakdown by strategy, and the trades in the same rows as the open trades (newest first). Real trades only by default; the **Show paper trades** switch adds the paper trades (`paper/trades.jsonl`), each marked paper. A trade the owner closed by hand at IG (owner, 11 November 2026) is listed, marked "closed by you · not counted", but never counted in the totals or the breakdown by strategy; the subtitle under the trades gives their number and pips. Today is the default view, and it refreshes every 5 seconds while it shows the current period. A trade counts on the UK day it closed (as the Today card and the daily summary); a week is Monday to Sunday and a month a calendar month, both in UK days.
 - **The status** comes from the price service (`data/trading/<PAIR>/status.json`, every 5 seconds); the dashboard
   warns when it is missing or more than 30 seconds old.
 - **nginx** (`deploy/autobot-dashboard.nginx`): `listen <Tailscale address>:3000`; the page is public, `/api/` is
@@ -38,7 +39,8 @@ address, and the dashboard's data service listens only on 127.0.0.1.
       sed "s/TAILSCALE_IP/$TSIP/" /opt/autobot/deploy/autobot-dashboard.nginx | sudo tee /etc/nginx/sites-available/autobot-dashboard > /dev/null
       sudo nginx -t && sudo systemctl reload nginx
 
-- **The data service** (`dashboard/server.py`, `dashboard/auth.py`): `sudo systemctl restart autobot-dashboard`
+- **The data service** (`dashboard/server.py`, `dashboard/auth.py`; for example a new `/api/` address such as
+  `/api/history`): `sudo systemctl restart autobot-dashboard`
   (logged-in sessions stay valid while `DASHBOARD_SECRET_KEY` is unchanged).
 
 ## Setting it up (needs sudo)
@@ -82,3 +84,18 @@ address, and the dashboard's data service listens only on 127.0.0.1.
    on 127.0.0.1. If the firewall (ufw) is on: `sudo ufw allow in on tailscale0 to any port 3000 proto tcp`.
 
 Then, on a device logged in to the same Tailscale network, open `http://<100.x.y.z>:3000`.
+
+## Structural Trade Planner panel (observe only)
+
+**Only while the switch `PLANNER_OBSERVE` is on** (owner, 17 November 2026), `/api/status` also carries `"planner"`: the panel built by `planner/panel.py` from the planner's own file (`planner.folder/<PAIR>/current.json`). With it off, the status has no `"planner"` at all and the page keeps the whole planner section hidden, so the dashboard is exactly as before. Nothing else is read for it, and a missing or unreadable file shows "no forecast", never an error. The panel is labelled **OBSERVE ONLY — DOES NOT CONTROL TRADING** and keeps apart what is observed now (4-hour structure, MACD, RSI 3, Bollinger, today's range against the ADR, pivots, the direction rule), the forecast (dominant direction, condition, expected movement, opportunity), the recommendation (trade, entry zone and class, reference entry, reachability, next obstacle, destinations, status, structural evidence) and the invalidation, with the time of the last analysis, whether the recommendation is current and the last few recommendations.
+
+## Structural Trade Planner tab (owner's brief, 17 November 2026)
+
+The page has two tabs: **Operations** (everything above) and **Structural Trade Planner** (shown only while
+`PLANNER_OBSERVE` is on). On the Operations tab the large planner panel is replaced by a compact card (dominant
+direction, expected next movement, recommendation status, last analysis, data freshness, and an **Open Structural
+Trade Planner** button). The tab itself, its read-only routes (`GET /api/stp/...`), the chart and the evaluation are
+described in `docs/STP_DASHBOARD.md`. Its script, style and chart library are served by the data service behind the
+session, so nginx is unchanged; a new version of `dashboard/stp.py` or `dashboard/server.py` needs the data service
+restarted, as any `/api/` change.
+

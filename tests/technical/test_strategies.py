@@ -15,7 +15,6 @@ from prices.indicators import Band
 from prices.model import Candle
 from rejection.watch import RejectionWatcher
 from strategies import replay as replay_mod
-from strategies.bollinger_bounce.strategy import candidates as bounce_candidates
 from strategies.common import (BOLLINGER_BOUNCE, BUY, EMA_PULLBACK, RANGE_TRADE, SELL, SLOW_GRIND, Candidate,
                                check)
 from strategies.ema_pullback.strategy import EmaPullback, HourlyTrend, HourlyTrendReader
@@ -93,11 +92,11 @@ def test_a_strategy_switched_off_has_no_ideas(S):
 
 # Section 2.2, every state against every strategy (a sell, with the state's direction down)
 @pytest.mark.parametrize("st,allowed", [
-    (RANGING, {RANGE_TRADE}),
-    (EMERGING, {EMA_PULLBACK}),                    # the slow grind: trend only (owner, 8 November 2026)
-    (TREND, {SLOW_GRIND, EMA_PULLBACK}),           # a sell in a down trend: the bounce only against it
+    (RANGING, {RANGE_TRADE, BOLLINGER_BOUNCE}),    # the bounce: every state (owner, 15 November 2026)
+    (EMERGING, {EMA_PULLBACK, BOLLINGER_BOUNCE}),  # the slow grind: trend only (owner, 8 November 2026)
+    (TREND, {SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE}),
     (POSSIBLE_REVERSAL, {BOLLINGER_BOUNCE}),
-    (CONSOLIDATION, set()),
+    (CONSOLIDATION, {BOLLINGER_BOUNCE}),
 ])
 def test_which_states_allow_which_strategies(S, st, allowed):
     for name in (SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE):
@@ -113,30 +112,26 @@ def test_in_a_trend_only_the_trends_direction(S, name, st):
     assert check(S, "GBPUSD", cand(name, BUY, 120), state(st, UP), PIVOT, EMA100).allowed
 
 
-def test_a_bounce_in_a_trend_only_against_the_trends_direction(S):
-    assert check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, BUY, 120), state(TREND, DOWN), PIVOT, EMA100).allowed
-    assert check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, SELL, 100), state(TREND, UP), PIVOT, EMA100).allowed
-    with_ = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, SELL, 100), state(TREND, DOWN), PIVOT, EMA100)
-    assert not with_.allowed and "Bollinger bounce only against the trend's direction" in with_.blocked_by
+@pytest.mark.parametrize("st,d", [(RANGING, NONE), (EMERGING, UP), (EMERGING, DOWN), (TREND, UP), (TREND, DOWN),
+                                  (POSSIBLE_REVERSAL, UP), (CONSOLIDATION, NONE)])
+def test_the_bounce_opens_in_every_state_either_way(S, st, d):
+    """Owner, 15 November 2026: "it opens without hindrance", including the analyser's state."""
+    for direction, price in ((BUY, 120), (SELL, 100), (BUY, 100), (SELL, 120)):
+        i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, direction, price), state(st, d, "strong push"), PIVOT, EMA100)
+        assert i.allowed, (st, d, direction, i.blocked_by)
 
 
-@pytest.mark.parametrize("st,d", [(EMERGING, UP), (EMERGING, DOWN), (RANGING, NONE)])
-def test_no_bounce_in_an_emerging_trend_or_ranging(S, st, d):
-    for direction, price in ((BUY, 120), (SELL, 100)):
-        i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, direction, price), state(st, d), PIVOT, EMA100)
-        assert not i.allowed and f"the analyser's state is {st}, which does not allow Bollinger bounce" in i.blocked_by
+def test_the_bounce_still_needs_its_switch(S):
+    s = changed(S, "switches", bollinger_bounce=False)
+    i = check(s, "GBPUSD", cand(BOLLINGER_BOUNCE, SELL), state(POSSIBLE_REVERSAL, UP), PIVOT, EMA100)
+    assert not i.allowed and "STRATEGY_BOLLINGER_BOUNCE is off" in i.blocked_by
 
 
-def test_the_analysers_list_for_the_bounce_matches(S):
+def test_the_analysers_list_has_only_the_first_builds_bounce(S):
+    """The hourly-pierce bounce opens in every state (it is added to the status by the engine); the analyser's own
+    list keeps the first build's bounce, renamed (first-build-plus, owner, 19 November 2026)."""
     from analyser.states import ALLOWED
-    assert not any("bounce" in x for x in ALLOWED[RANGING] + ALLOWED[EMERGING])
-    assert "Bollinger band bounce (against the trend's direction only)" in ALLOWED[TREND]
-    assert ALLOWED[POSSIBLE_REVERSAL] == ("Bollinger band bounce", "level reversal")
-
-
-def test_a_bounce_in_consolidation_is_still_not_allowed(S):
-    i = check(S, "GBPUSD", cand(BOLLINGER_BOUNCE, SELL, 100), state(CONSOLIDATION), PIVOT, EMA100)
-    assert not i.allowed and "does not allow Bollinger bounce" in i.blocked_by
+    assert all(x.startswith("Bollinger bounce 5m") for v in ALLOWED.values() for x in v if "bounce" in x)
 
 
 def test_the_ema_pullback_has_its_own_stop_loss(S):
@@ -443,7 +438,8 @@ def test_hourly_trend_uses_only_finished_hourly_candles(S):
     assert HourlyTrendReader(S, candles).at(candles[2].end).why == "not enough hourly candles"
 
 
-# ---- 3.3 and 3.4: the strategies' own rejection watcher (design_only) -----------------------
+# ---- 3.4 and 3.6: the strategies' own rejection watcher (design_only) -----------------------
+# (its bounce setups are the level reversal's; the Bollinger bounce has its own: test_bounce.py)
 
 def band(c, upper=110, lower=90):
     return Band(c.start, D(100), D(upper), D(lower))
@@ -459,23 +455,8 @@ def watch(s, candles, bands=None):
     w, out = RejectionWatcher(s, design_only=True), []
     for k, c in enumerate(candles):
         ev = w.on_candle(c, band(c, upper=bands[k]) if bands else band(c), None)
-        out += bounce_candidates(w, ev) + range_candidates(w, ev)
+        out += range_candidates(w, ev)
     return out
-
-
-def test_bollinger_bounce_takes_the_trigger(S):
-    got = [x for x in watch(S, BOUNCE_SELL) if x.strategy == BOLLINGER_BOUNCE]
-    assert len(got) == 1
-    x = got[0]
-    assert (x.direction, x.entry_price, x.time) == (SELL, D(100), BOUNCE_SELL[3].start)
-    text = " | ".join(x.steps)
-    for word in ("pierce", "reversal", "confirmation", "trigger", "recorded, not used", "counts"):
-        assert word in text, word
-
-
-def test_bollinger_bounce_cancelled_above_the_reversal_high_has_no_idea(S):
-    candles = BOUNCE_SELL[:3] + [C(3, 101, 109.5, 101, 109)]
-    assert [x for x in watch(S, candles) if x.strategy == BOLLINGER_BOUNCE] == []
 
 
 TWO_BOUNCES = [C(0, 106, 112, 105, 108),       # pierce 1 (band 110)
@@ -595,6 +576,14 @@ def test_the_ema_pullback_may_open_at_any_time_the_market_is_open(S, t):
         assert "outside the trading hours 06:00 to 20:30 UK" in may_open(S, "GBPUSD", name, t, [])
 
 
+def test_the_ema_pullback_does_not_open_in_the_rollover(S):
+    # 21:55 to 22:15 UK (GMT here, and BST on 21 October): no new EMA pullback (owner, 13 November 2026)
+    for t in (U(2026, 11, 5, 21, 55), U(2026, 11, 5, 22, 0), U(2026, 11, 12, 22, 14), U(2026, 10, 21, 21, 0)):
+        assert any("(the rollover)" in r for r in may_open(S, "GBPUSD", EMA_PULLBACK, t, [])), t
+    for t in (U(2026, 11, 5, 21, 50), U(2026, 11, 5, 22, 15), U(2026, 10, 21, 21, 15)):
+        assert may_open(S, "GBPUSD", EMA_PULLBACK, t, []) == [], t
+
+
 @pytest.mark.parametrize("t", [U(2026, 11, 7, 12, 0), U(2026, 11, 1, 20, 0), U(2026, 11, 6, 22, 0)])
 def test_nothing_opens_while_the_market_is_closed(S, t):
     for name in (EMA_PULLBACK,) + OTHERS:
@@ -637,7 +626,8 @@ def test_the_ema_pullback_is_held_overnight_and_closed_only_on_friday_at_20_30_u
 
 def test_the_ema_pullback_is_not_closed_on_a_rejection_at_a_level(S):
     assert closed_on_level_rejection(EMA_PULLBACK) is False
-    assert all(closed_on_level_rejection(n) for n in OTHERS)
+    assert closed_on_level_rejection(RANGE_TRADE) is True
+    assert closed_on_level_rejection(BOLLINGER_BOUNCE) is False      # owner, 15 November 2026
 
 
 def test_the_ema_pullback_trades_in_a_trend_and_an_emerging_trend(S):
@@ -669,7 +659,7 @@ def test_no_ema_pullback_opens_after_20_30_uk_on_friday(S, t):
 def test_the_ema_pullback_still_opens_on_friday_before_20_30_uk_and_thursday_night(S):
     assert may_open(S, "GBPUSD", EMA_PULLBACK, U(2026, 10, 23, 19, 25), []) == []      # 20:25 BST
     assert may_open(S, "GBPUSD", EMA_PULLBACK, U(2026, 11, 6, 20, 25), []) == []      # 20:25 GMT
-    assert may_open(S, "GBPUSD", EMA_PULLBACK, U(2026, 11, 5, 22, 0), []) == []       # Thursday 22:00
+    assert may_open(S, "GBPUSD", EMA_PULLBACK, U(2026, 11, 5, 22, 15), []) == []      # Thursday 22:15, after the rollover
 
 
 # ---- the EMA pullback's take profit on big-news days (design section 4) ----------------------

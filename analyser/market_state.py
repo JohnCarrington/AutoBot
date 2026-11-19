@@ -11,7 +11,23 @@ LIVE: advance(now) takes each new finished 5-minute candle in turn.
 RECORDS: with record=True, every state change is appended to
 <market_states.folder>/<PAIR>/state_changes.jsonl (time, state, direction,
 type of trend, reason and evidence), each change once, even after a restart,
-and the current state is written to current.json.
+and the current state is written to current.json. The journal stays the live
+record in time order: a restart's replay adds only changes newer than its last
+line; where the replay calls earlier candles differently (a rule changed), the
+differences go to replay_differences_<date>.jsonl, never into the journal.
+
+PROVENANCE (owner's investigation brief, 19 November 2026): every line written from now on says how it was made
+and when it was written. "time_utc" stays the event time (the start of the candle the change came from);
+"recorded_utc" is the moment the line was written; "run_started_utc" is when that run of the analyser started;
+"provenance" is one of:
+  * LIVE_DECISION: made by the running analyser from a newly finished candle (not the start-up replay);
+  * HISTORICAL_REPLAY: made by the start-up replay for a time the last run was covering live (or when it cannot
+    be shown that it was not): worked out afterwards, possibly under newer rules; the live bot did NOT act on it;
+  * RECONSTRUCTED: made by the start-up replay for a time after the last run's last live candle (the service
+    was stopped then): no live decision existed, so it is filled in from the stored candles.
+A line without "provenance" (written before 19 November 2026) is UNKNOWN_LEGACY (provenance_of): never assumed
+live. Existing lines are never rewritten or relabelled. current.json carries "live_through_utc", the end of the
+last candle taken live, so the next start-up can tell HISTORICAL_REPLAY from RECONSTRUCTED.
 
 Reads the candle store only; never contacts IG.
 """
@@ -19,6 +35,7 @@ Reads the candle store only; never contacts IG.
 from __future__ import annotations
 
 import json
+import logging
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -36,6 +53,11 @@ from rejection.watch import RejectionWatcher
 UTC = timezone.utc
 JOURNAL = "state_changes.jsonl"
 CURRENT = "current.json"
+DIFFERENCES = "replay_differences_{date}.jsonl"
+LIVE_DECISION, HISTORICAL_REPLAY, RECONSTRUCTED, UNKNOWN_LEGACY = (
+    "LIVE_DECISION", "HISTORICAL_REPLAY", "RECONSTRUCTED", "UNKNOWN_LEGACY")
+REPLAY_ONLY = "replayed, not in the live record"
+RECORD_ONLY = "in the live record, not replayed"
 
 
 class MemoStore(CandleStore):
@@ -70,6 +92,11 @@ class StateTracker:
         self.done = 0                     # candles of this week already stepped
         self.history: list = []           # (features, state after the candle) for each candle stepped
         self.folder = Path(settings.market_states.folder) / settings.market.pair
+        self.clock = lambda: datetime.now(UTC)  # the wall clock, for "recorded_utc" (a test can set it)
+        self.run_started: datetime | None = None
+        self.live_from = 0                # changes before this index came from the start-up replay
+        self.live_through: datetime | None = None     # end of the last candle taken live in this run
+        self.prior_live_through: str | None = None    # the last run's, read from current.json at start-up
 
     # ---- the week and its candles ----------------------------------------------------------
 
@@ -86,6 +113,7 @@ class StateTracker:
     def replay(self, as_of: datetime) -> MarketState:
         """Start-up: run the week from its open up to as_of."""
         self.week_open = None
+        self.run_started = None                  # a start-up replay: its changes are not live decisions
         return self.advance(as_of)
 
     def advance(self, as_of: datetime) -> MarketState:
@@ -98,16 +126,40 @@ class StateTracker:
             self.watcher = RejectionWatcher(self.s)
             self.done = 0
             self.history = []
+            self.live_from = 0                   # a new week while running: its changes are all live
         memo = MemoStore(self.store)
         warm, week = self._candles(memo, week_open, as_of)
+        start_up = self.run_started is None
+        if start_up:                              # this run's first call: the start-up replay
+            self.run_started = self.clock()
+            self.prior_live_through = self._prior_live_through() if self.record else None
         if len(week) > self.done:
             feats = compute(warm + week, self.s)[len(warm):]
             for c, f in zip(week[self.done:], feats[self.done:]):
                 self._step(memo, f)
             self.done = len(week)
+            if not start_up:
+                self.live_through = week[-1].end
+        if start_up:
+            self.live_from = len(self.changes)
         if self.record:
-            self._write()
+            self._write(as_of)
         return self.machine.now
+
+    def _prior_live_through(self) -> str | None:
+        try:
+            v = json.loads((self.folder / CURRENT).read_text()).get("live_through_utc")
+            return v if isinstance(v, str) else None
+        except (OSError, ValueError, AttributeError):
+            return None
+
+    def provenance(self, k: int, r: dict) -> str:
+        """How the k-th change of this week (r: its as_dict) was made, in this run."""
+        if k >= self.live_from:
+            return LIVE_DECISION
+        if self.prior_live_through is not None and r["time_utc"] >= self.prior_live_through:
+            return RECONSTRUCTED
+        return HISTORICAL_REPLAY
 
     def _step(self, store: CandleStore, f: Features) -> StateChange | None:
         from prices.indicators import Band
@@ -134,21 +186,72 @@ class StateTracker:
             return []
         return [json.loads(x) for x in p.read_text().splitlines() if x.strip()]
 
-    def _write(self) -> None:
+    def _write(self, as_of: datetime) -> None:
+        """The journal is the live record, kept in time order: only changes newer than its last line are appended.
+        A change at or before that time which the record does not have (a restart's replay calling the week
+        differently, after a rule changed) goes to replay_differences_<date of the restart>.jsonl instead, with
+        each recorded change of the replayed span that the replay no longer makes; each difference once."""
         self.folder.mkdir(parents=True, exist_ok=True)
-        have = {(r["time_utc"], r["state"], r["direction"], r.get("trend_type")) for r in self.recorded()}
-        new = [ch.as_dict() for ch in self.changes]
-        new = [r for r in new if (r["time_utc"], r["state"], r["direction"], r.get("trend_type")) not in have]
+        rows = self.recorded()
+        have = {_key(r) for r in rows}
+        last = max((r["time_utc"] for r in rows), default="")
+        made = [ch.as_dict() for ch in self.changes]
+        new = [(k, r) for k, r in enumerate(made) if _key(r) not in have and r["time_utc"] > last]
         if new:
+            recorded = _utc(self.clock())
             with (self.folder / JOURNAL).open("a") as fh:
-                for r in new:
-                    fh.write(json.dumps(r) + "\n")
+                for k, r in new:
+                    fh.write(json.dumps({**r, "provenance": self.provenance(k, r), "recorded_utc": recorded,
+                                         "run_started_utc": _utc(self.run_started)}) + "\n")
                 fh.flush()
+        self._differences(as_of, rows, made, last)
         now = self.machine.now
         safe_write(self.folder / CURRENT, (json.dumps({
             "state": now.state, "direction": now.direction, "trend_type": now.trend_type,
             "since_utc": now.since.strftime("%Y-%m-%dT%H:%M:%SZ"), "evidence": now.evidence,
-            "strategies_allowed": list(now.strategies_allowed)}, indent=1) + "\n").encode())
+            "strategies_allowed": list(now.strategies_allowed),
+            "live_through_utc": _utc(self.live_through) if self.live_through else self.prior_live_through},
+            indent=1) + "\n").encode())
+
+    def _differences(self, as_of: datetime, rows: list[dict], made: list[dict], last: str) -> None:
+        week_from = self.week_open.strftime("%Y-%m-%dT%H:%M:%SZ")
+        made_keys = {_key(r) for r in made}
+        rec_keys = {_key(r) for r in rows}
+        diff = [{"difference": REPLAY_ONLY, **r} for r in made if r["time_utc"] <= last and _key(r) not in rec_keys]
+        diff += [{"difference": RECORD_ONLY, **r} for r in rows
+                 if week_from <= r["time_utc"] <= last and _key(r) not in made_keys]
+        if not diff:
+            return
+        seen = set()
+        for p in self.folder.glob(DIFFERENCES.format(date="*")):
+            seen |= {(x.get("difference"), *_key(x)) for x in
+                     (json.loads(y) for y in p.read_text().splitlines() if y.strip())}
+        diff = sorted((d for d in diff if (d["difference"], *_key(d)) not in seen),
+                      key=lambda d: (d["time_utc"], d["difference"]))
+        if not diff:
+            return
+        p = self.folder / DIFFERENCES.format(date=as_of.astimezone(UTC).strftime("%Y-%m-%d"))
+        with p.open("a") as fh:
+            for d in diff:
+                fh.write(json.dumps(d) + "\n")
+        logging.getLogger("autobot.analyser").warning(
+            "[%s] The week's replay differs from the live record in %d state change(s) at or before %s (a rule "
+            "changed?); not added to %s, written to %s.", self.s.market.pair, len(diff), last, JOURNAL, p)
+
+
+def _utc(t: datetime) -> str:
+    return t.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def provenance_of(r: dict) -> str:
+    """A journal line's provenance: UNKNOWN_LEGACY for a line written before provenance was recorded (never
+    assumed to be a live decision)."""
+    p = r.get("provenance")
+    return p if p in (LIVE_DECISION, HISTORICAL_REPLAY, RECONSTRUCTED) else UNKNOWN_LEGACY
+
+
+def _key(r: dict) -> tuple:
+    return (r["time_utc"], r["state"], r["direction"], r.get("trend_type"))
 
 
 class StatesUpdater:

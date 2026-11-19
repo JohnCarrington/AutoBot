@@ -7,7 +7,13 @@
                               in settings.toml, or the same)
   STRATEGY_SLOW_GRIND         on or off
   STRATEGY_EMA_PULLBACK       on or off
-  STRATEGY_BOLLINGER_BOUNCE   on or off
+  STRATEGY_BOLLINGER_BOUNCE   on or off (the hourly-pierce bounce of 15 November 2026)
+  STRATEGY_BOLLINGER_BOUNCE_5M  on or off (the first build's 5-minute band and level bounce, kept and renamed;
+                              owner, 19 November 2026)
+  PLANNER_OBSERVE             on or off (off if left out): the Structural Trade Planner (planner/), OBSERVE ONLY
+  BOUNCE_ONLY_NEAR_TIMES      on or off (off if left out): while on, a Bollinger bounce opens only within
+                              bounce.near_times_within_minutes (60) of bounce.near_times (10:00, 14:00,
+                              16:00 UK) in settings.toml
   STRATEGY_RANGE_TRADE        on or off
   STRATEGY_BREAKOUT           on or off (never on while breakout.stop_loss_pips or
                               breakout.take_profit_pips is 0)
@@ -81,6 +87,9 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "STRATEGY_SLOW_GRIND": ("slow_grind", _on_off),
     "STRATEGY_EMA_PULLBACK": ("ema_pullback", _on_off),
     "STRATEGY_BOLLINGER_BOUNCE": ("bollinger_bounce", _on_off),
+    "STRATEGY_BOLLINGER_BOUNCE_5M": ("bollinger_bounce_5m", _on_off),
+    "BOUNCE_ONLY_NEAR_TIMES": ("bounce_only_near_times", _on_off),
+    "PLANNER_OBSERVE": ("planner_observe", _on_off),
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
     "STRATEGY_BREAKOUT": ("breakout", _on_off),
     "STRATEGY_LEVEL_REVERSAL": ("level_reversal", _on_off),
@@ -89,6 +98,9 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "STOP_LOSS_PIPS_EMA_PULLBACK": ("stop_loss_pips_ema_pullback", _pips(1, 100)),
     "TAKE_PROFIT_PIPS": ("take_profit_pips", _pips(1, 1000)),
 }
+
+# Switches that may be left out of .env, and their value then (owner, 15 November 2026: both off by default).
+OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_NEAR_TIMES": "off", "PLANNER_OBSERVE": "off"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:
@@ -102,6 +114,9 @@ def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:
     out: dict[str, Any] = {}
     problems: list[str] = []
     for key, (name, check) in SWITCHES.items():
+        if key not in values and key in OPTIONAL:
+            out[name] = check(OPTIONAL[key])
+            continue
         if key not in values:
             problems.append(f"Missing switch {key} in {path}.")
             continue

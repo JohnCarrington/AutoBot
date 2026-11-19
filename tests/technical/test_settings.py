@@ -59,7 +59,8 @@ EXPECTED = {
     },
     "orders": {"folder": Path("/opt/autobot/data/orders"), "expiry": "DFB", "currency": "GBP",
                "deal_reference_prefix": "AB", "unclear_checks": 3, "unclear_check_wait_seconds": 2,
-               "confirm_attempts": 5, "confirm_wait_seconds": 1},
+               "confirm_attempts": 5, "confirm_wait_seconds": 1, "close_retry_seconds": 30,
+               "stop_move_attempts": 3},
     "trade_manager": {"folder": Path("/opt/autobot/data/trade_manager")},
     "records": {"folder": Path("/opt/autobot/data/records")},
     "dashboard": {"port": 8766, "session_days": 30, "login_failures_per_minute": 5,
@@ -91,8 +92,12 @@ EXPECTED = {
         "minutes_after": 20,
     },
     "bounce": {
-        "reversal_candle_within_candles_of_pierce": 3,
-        "confirmation_candle_within_candles_of_reversal": 3,
+        "pierce_beyond_pips": Decimal("3"),         # owner, 15 November 2026
+        "confirmation_within_candles": 3,
+        "trail_from_pips": Decimal("12"),
+        "trail_candles": 3,
+        "near_times": (time(10, 0), time(14, 0), time(16, 0)),
+        "near_times_within_minutes": 60,
     },
     "slow_grind": {"min_pause_candles": 2, "ema_periods": 21, "stop_loss_pips": 15, "take_profit_pips": 20,
                    "lock_from_pips": 15, "lock_at_pips": 10, "week_open_no_new_trades_minutes": 15,
@@ -107,9 +112,18 @@ EXPECTED = {
         "hourly_slope_candles": 3, "hourly_min_slope_pips_per_hour": Decimal("0.16"),
         "hourly_min_gap_fast_mid_pips": Decimal("0.25"), "hourly_min_gap_mid_slow_pips": Decimal("0.20"),
         "hourly_history_candles": 600,
+        "rollover_no_new_trades_from": time(21, 55), "rollover_no_new_trades_until": time(22, 15),
     },
     "possible_reversal": {"min_trend_move_pips": 30},
     "breakout": {"trigger_within_candles": 3, "stop_loss_pips": 6, "take_profit_pips": 50},
+    "planner": {"folder": Path("/opt/autobot/data/planner"), "adr_weekdays": 20,         # owner, 17 November 2026
+                "h4_swing_candles_each_side": 3, "h4_swing_min_move_pips": 40, "h4_swing_move_within_candles": 6,
+                "daily_swing_candles_each_side": 3, "daily_swing_min_move_pips": 110,
+                "daily_swing_move_within_candles": 6, "h4_swing_lookback_weeks": 8, "daily_swing_lookback_weeks": 48,
+                "structure_break_closes": 1, "zone_width_adr_share": Decimal("0.15"), "major_min_families": 3,
+                "moderate_min_families": 2, "min_entry_class": "Moderate", "ema_slope_candles": 6,
+                "macd_weakening_candles": 3, "no_new_extreme_hourly_candles": 3, "failed_breakout_within_candles": 3,
+                "panel_history": 5, "break_beyond_pips": Decimal("3")},
     "trend_day": {"level_above": "R2", "level_below": "S2", "rsi_periods": 14, "rsi_above": 70, "rsi_below": 30,
                   "rsi_history_candles": 1000},
     "level_reversal": {"level_types": ("S2", "R2", "round_number"), "round_numbers_every_pips": 100, "allowance_pips_r2": 12,
@@ -122,7 +136,8 @@ EXPECTED = {
                    "rsi_periods": 3, "rsi_upper_line": 70, "rsi_lower_line": 30, "timeframes": ("5m", "1h"),
                    "history_candles": 2000, "warm_up_seed_weight_percent": 2},
     "analyser": {"direction_ema_timeframe": "5m", "direction_ema_periods": 100, "out_of_date_after_minutes": 10},
-    "rejection": {"candle_timeframe": "5m", "near_level_within_pips": 3, "max_spread_pips": 3},
+    "rejection": {"candle_timeframe": "5m", "near_level_within_pips": 3, "max_spread_pips": 3,
+                  "reversal_candle_within_candles_of_pierce": 3, "confirmation_candle_within_candles_of_reversal": 3},
     "market_hours": {
         "opens_day": 6,              # Sunday (Monday is 0)
         "opens_at": time(21, 0),
@@ -335,11 +350,15 @@ INVALID = [
     ("reversal_watch", "times", ["11:00", "10:00"], "in order with no repeats"),
     ("reversal_watch", "times", [], "non-empty list"),
     ("reversal_watch", "minutes_before", 500, "must be between"),
-    ("bounce", "reversal_candle_within_candles_of_pierce", 0, "must be between"),
+    ("rejection", "reversal_candle_within_candles_of_pierce", 0, "must be between"),
+    ("bounce", "confirmation_within_candles", 0, "must be between"),
     ("slow_grind", "min_pause_candles", 0, "must be between"),
     ("ema_pullback", "setup_expires_after_minutes", 0, "must be between"),
     ("possible_reversal", "min_trend_move_pips", 0, "must be between"),
     ("range_trade", "close_percent_at_opposite_band", 150, "must be between"),
+    ("bounce", "trail_from_pips", -1, "must be between"),
+    ("bounce", "near_times", ["14:00", "10:00"], "in order with no repeats"),
+    ("bounce", "near_times_within_minutes", -5, "must be between"),
     ("range_trade", "trigger_within_candles", 0, "must be between"),
     ("indicators", "bollinger_periods", 1, "must be between"),
     ("indicators", "bollinger_std_devs", 2.5, "must be a whole number"),
@@ -436,7 +455,7 @@ SWITCHES_OK = {"PAIRS_ON": "GBPUSD", "NEW_TRADES_FROM": "06:00", "NEW_TRADES_UNT
                "STRATEGY_SLOW_GRIND": "on", "STRATEGY_EMA_PULLBACK": "on",
                "STRATEGY_BOLLINGER_BOUNCE": "off", "STRATEGY_RANGE_TRADE": "on",
                "STOP_LOSS_PIPS": "6", "STOP_LOSS_PIPS_EMA_PULLBACK": "12", "TAKE_PROFIT_PIPS": "100", "STRATEGY_BREAKOUT": "off",
-               "STRATEGY_LEVEL_REVERSAL": "on", "TRADING": "off"}
+               "STRATEGY_LEVEL_REVERSAL": "on", "TRADING": "off", "STRATEGY_BOLLINGER_BOUNCE_5M": "on"}
 
 
 def _env(tmp_path, values, secrets=True):
@@ -481,6 +500,15 @@ def test_the_slow_grind_settings_load_with_the_owners_values():
         15, time(21, 55), time(22, 15))
 
 
+def test_the_ema_pullback_rollover_window_loads_and_must_make_sense(tmp_path):
+    ep = load_settings().ema_pullback
+    assert (ep.rollover_no_new_trades_from, ep.rollover_no_new_trades_until) == (time(21, 55), time(22, 15))
+    data = _raw()
+    data["ema_pullback"]["rollover_no_new_trades_until"] = "21:55"
+    with pytest.raises(SettingsError, match=r"\[ema_pullback\] rollover_no_new_trades_from must be earlier"):
+        load_settings(_write(tmp_path, data))
+
+
 def test_the_slow_grind_lock_and_rollover_window_must_make_sense(tmp_path):
     data = _raw()
     data["slow_grind"]["lock_at_pips"] = 15
@@ -503,6 +531,36 @@ def test_the_level_reversal_switch_is_required_and_loads(tmp_path):
     assert load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches.level_reversal is True
     assert load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "STRATEGY_LEVEL_REVERSAL": "off"})).switches.level_reversal is False
 
+
+
+def test_the_bounces_near_times_switch_is_off_if_left_out_and_loads(tmp_path):
+    """BOUNCE_ONLY_NEAR_TIMES (15 November 2026). The hourly-ranging switch is not in first-build-plus: it needs the
+    hourly read (owner, 19 November 2026)."""
+    sw = load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches
+    assert sw.bounce_only_near_times is False and not hasattr(sw, "bounce_only_when_hourly_ranging")
+    sw = load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "BOUNCE_ONLY_NEAR_TIMES": "on"})).switches
+    assert sw.bounce_only_near_times is True
+    with pytest.raises(SettingsError, match="Invalid switch BOUNCE_ONLY_NEAR_TIMES.*must be on or off"):
+        load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "BOUNCE_ONLY_NEAR_TIMES": "yes"}))
+
+
+def test_the_first_builds_bounce_switch_is_required_and_loads(tmp_path):
+    values = {k: v for k, v in SWITCHES_OK.items() if k != "STRATEGY_BOLLINGER_BOUNCE_5M"}
+    with pytest.raises(SettingsError, match="Missing switch STRATEGY_BOLLINGER_BOUNCE_5M"):
+        load_settings(switches_from=_env(tmp_path, values))
+    assert load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches.bollinger_bounce_5m is True
+    off = {**SWITCHES_OK, "STRATEGY_BOLLINGER_BOUNCE_5M": "off"}
+    assert load_settings(switches_from=_env(tmp_path, off)).switches.bollinger_bounce_5m is False
+
+
+
+def test_the_planner_observe_switch_is_off_if_left_out_and_loads(tmp_path):
+    """The Structural Trade Planner runs only while PLANNER_OBSERVE is on; off if left out (owner, 17 November 2026)."""
+    assert load_settings(switches_from=_env(tmp_path, SWITCHES_OK)).switches.planner_observe is False
+    on = load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "PLANNER_OBSERVE": "on"})).switches
+    assert on.planner_observe is True
+    with pytest.raises(SettingsError, match="Invalid switch PLANNER_OBSERVE.*must be on or off"):
+        load_settings(switches_from=_env(tmp_path, {**SWITCHES_OK, "PLANNER_OBSERVE": "yes"}))
 
 @pytest.mark.parametrize("key,bad", [("level_above", "S2"), ("level_above", "R4"), ("level_below", "R2"), ("rsi_above", 40),
                                      ("rsi_below", 60), ("rsi_periods", 1)])
@@ -604,7 +662,7 @@ def test_load_or_exit_reads_the_switches(tmp_path, monkeypatch):
     monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {**SWITCHES_OK, "NEW_TRADES_FROM": "07:15"})))
     assert load_or_exit().switches.new_trades_from == time(7, 15)
     monkeypatch.setenv(ENV_PATH_VAR, str(_env(tmp_path, {"PAIRS_ON": "GBPUSD"})))
-    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 12 problem"):
+    with pytest.raises(SystemExit, match="AutoBot cannot start: The switches have 13 problem"):
         load_or_exit()
 
 

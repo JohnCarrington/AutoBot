@@ -6,7 +6,10 @@ Reads the candle store and the calendar; never contacts IG (a pretend IG gives t
 temporary folder.
 
     .venv/bin/python -m trading.replay_check
-Exit code 0 when every trade matches, 1 otherwise.
+Exit code 0 when everything matches, 1 otherwise.
+
+Since 15 November 2026 the Bollinger bounce is the owner's hourly-band bounce (design 3.3), so this check no longer
+matches the research it compares with (written for the earlier bounce); its helpers are still used by research/.
 """
 
 from __future__ import annotations

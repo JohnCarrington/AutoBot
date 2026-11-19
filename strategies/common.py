@@ -8,9 +8,9 @@ only, owner 7 November 2026):
   2. the analyser's current state allows the strategy (section 2.2): ranging ->
      range trade; emerging trend and trend -> EMA pullback and breakout IN THE
      TREND'S DIRECTION ONLY; trend only -> slow grind, IN THE TREND'S DIRECTION
-     ONLY (owner, 8 November 2026); trend -> also Bollinger bounce, AGAINST THE
-     TREND'S DIRECTION ONLY (owner, 7 November 2026); possible reversal ->
-     Bollinger bounce, either way; consolidation -> none;
+     ONLY (owner, 8 November 2026); consolidation -> none. The Bollinger
+     bounce is not checked against the state: it opens in every state, either
+     way (owner, 15 November 2026: "it opens without hindrance");
   3. the direction rule allows that direction (section 2.3): a buy needs buy
      side (price above the daily pivot and the 5-minute 100 EMA), a sell needs
      sell side. It does not apply to the range trade, the Bollinger bounce, the
@@ -32,32 +32,40 @@ from decimal import Decimal
 from typing import Any
 
 from analyser.direction import BUY_SIDE, SELL_SIDE, decide
-from analyser.states import DOWN, EMERGING, POSSIBLE_REVERSAL, RANGING, TREND, UP
+from analyser.states import CONSOLIDATION, DOWN, EMERGING, POSSIBLE_REVERSAL, RANGING, TREND, UP
 
 SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE, BREAKOUT, LEVEL_REVERSAL = (
     "slow grind", "EMA pullback", "Bollinger bounce", "range trade", "breakout", "level reversal")
+# The first build's Bollinger band bounce (strategies/bollinger_bounce_5m; owner, 19 November 2026: kept, renamed,
+# alongside the hourly-pierce bounce of 15 November, so records and the dashboard tell them apart).
+BOLLINGER_BOUNCE_5M = "Bollinger bounce 5m"
 SWITCH = {SLOW_GRIND: "slow_grind", EMA_PULLBACK: "ema_pullback", BOLLINGER_BOUNCE: "bollinger_bounce",
-          RANGE_TRADE: "range_trade", BREAKOUT: "breakout", LEVEL_REVERSAL: "level_reversal"}
+          RANGE_TRADE: "range_trade", BREAKOUT: "breakout", LEVEL_REVERSAL: "level_reversal",
+          BOLLINGER_BOUNCE_5M: "bollinger_bounce_5m"}
 # Held overnight and closed at 20:30 UK on Friday only (owner, 7 November 2026); every other
 # strategy is closed at 20:30 UK every day.
 OWN_HOURS = (EMA_PULLBACK, BREAKOUT)
 # May open in a big-news window and not closed before big news (owner, 7 and 8 November 2026).
 NEWS_ALLOWED = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND)
 # Not closed on a rejection at a level (owner, 7 and 8 November 2026).
-NO_LEVEL_CLOSE = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL)
+NO_LEVEL_CLOSE = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL, BOLLINGER_BOUNCE)
 # The direction rule (section 2.3) does not apply to these (owner, 7 and 8 November 2026).
-NO_DIRECTION_RULE = (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL)
+NO_DIRECTION_RULE = (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL, BOLLINGER_BOUNCE_5M)
 BUY, SELL = "buy", "sell"
 # Section 2.2: which states allow which strategy: "any" direction, only in the trend's direction
 # ("trend"), or only against it ("against").
 ALLOWED_IN = {
     SLOW_GRIND: {TREND: "trend"},                      # trend only (owner, 8 November 2026)
     EMA_PULLBACK: {EMERGING: "trend", TREND: "trend"},
-    BOLLINGER_BOUNCE: {TREND: "against", POSSIBLE_REVERSAL: "any"},
+    # the Bollinger bounce: every state, either way (owner, 15 November 2026); not checked
+    BOLLINGER_BOUNCE: {RANGING: "any", EMERGING: "any", TREND: "any", POSSIBLE_REVERSAL: "any", CONSOLIDATION: "any"},
     RANGE_TRADE: {RANGING: "any"},
     BREAKOUT: {EMERGING: "trend", TREND: "trend"},
     # every state except consolidation, either way (owner, 8 November 2026)
     LEVEL_REVERSAL: {RANGING: "any", EMERGING: "any", TREND: "any", POSSIBLE_REVERSAL: "any"},
+    # the first build's bounce, as on 9 November 2026: trend -> against the trend's direction only (owner,
+    # 7 November 2026); possible reversal -> either way
+    BOLLINGER_BOUNCE_5M: {TREND: "against", POSSIBLE_REVERSAL: "any"},
 }
 
 
@@ -110,7 +118,8 @@ def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: lis
     """Every reason a new trade of this strategy may not open at t (empty: hours and news allow it).
     EMA pullback: any time the market is open, big-news windows included, except after
     hours.close_all_trades_at (20:30) UK on Friday, so none is held over the weekend (owner,
-    7 November 2026).
+    7 November 2026), and from ema_pullback.rollover_no_new_trades_from (21:55) to
+    ema_pullback.rollover_no_new_trades_until (22:15) UK, the rollover (owner, 13 November 2026).
     Slow grind (owner, 8 November 2026): any time the market is open, big-news windows included,
     except from hours.close_all_trades_at (20:30) to midnight UK every day, in the first
     slow_grind.week_open_no_new_trades_minutes (15) after the week opens, and from
@@ -146,6 +155,10 @@ def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: lis
         if lt.weekday() == 4 and lt.time() >= settings.hours.close_all_trades_at:
             reasons.append(f"after {settings.hours.close_all_trades_at:%H:%M} UK on Friday: "
                            f"no {strategy} trade is held over the weekend")
+        ep = settings.ema_pullback
+        if ep.rollover_no_new_trades_from <= lt.time() < ep.rollover_no_new_trades_until:
+            reasons.append(f"from {ep.rollover_no_new_trades_from:%H:%M} to {ep.rollover_no_new_trades_until:%H:%M} UK "
+                           f"(the rollover): no new {strategy} trade")
         return reasons
     lt = t.astimezone(ZoneInfo(tz) if isinstance(tz, str) else tz).time()
     sw = settings.switches
@@ -184,8 +197,8 @@ def closed_before_big_news(strategy: str) -> bool:
 
 
 def closed_on_level_rejection(strategy: str) -> bool:
-    """Section 4's close on a confirmed rejection at a level, for every strategy except the EMA pullback,
-    the breakout and the slow grind."""
+    """Section 4's close on a confirmed rejection at a level: the range trade only (not the EMA pullback, the
+    breakout, the slow grind, the level reversal, nor the Bollinger bounce: owner, 15 November 2026)."""
     return strategy not in NO_LEVEL_CLOSE
 
 
@@ -268,7 +281,7 @@ def stop_price(settings: Any, idea: Any) -> Decimal | None:
 
 
 def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state: Any, pivot: Decimal | None,
-            ema100: Decimal | None) -> tuple[list[str], Any]:
+            ema100: Decimal | None, t: datetime | None = None) -> tuple[list[str], Any]:
     """Every reason the switch, the state (2.2) or the direction rule (2.3) does not allow
     this strategy in this direction at this price (empty: allowed), and the direction rule."""
     rule = decide(price, "the price", pivot, ema100, "5m 100 EMA", ema100 is not None)
@@ -276,7 +289,9 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
     if not getattr(settings.switches, SWITCH[strategy]):
         reasons.append(f"its switch STRATEGY_{SWITCH[strategy].upper()} is off")
     ok_in = ALLOWED_IN[strategy]
-    if state.state not in ok_in:
+    if strategy == BOLLINGER_BOUNCE:
+        pass                                            # not checked against the state (owner, 15 November 2026)
+    elif state.state not in ok_in:
         reasons.append(f"the analyser's state is {state.state}, which does not allow {strategy}")
     elif ok_in[state.state] in ("trend", "against"):
         want = SELL if state.direction == DOWN else BUY if state.direction == UP else None
@@ -288,13 +303,49 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
     need = BUY_SIDE if direction == BUY else SELL_SIDE
     if rule.side != need and strategy not in NO_DIRECTION_RULE:
         reasons.append(f"the direction rule says {rule.side} ({rule.reason})")
+    reasons += bounce_reasons(settings, strategy, t)
     return reasons, rule
+
+
+def bounce_reasons(settings: Any, strategy: str, t: datetime | None) -> list[str]:
+    """The Bollinger bounce's own switch in .env (owner, 15 November 2026; off if left out): BOUNCE_ONLY_NEAR_TIMES,
+    it opens only within bounce.near_times_within_minutes (60) of one of bounce.near_times (10:00, 14:00, 16:00 UK),
+    both ends included, judged at the moment it opens. (The 15 November BOUNCE_ONLY_WHEN_HOURLY_RANGING switch needs
+    the hourly read, which first-build-plus does not have: owner, 19 November 2026.)"""
+    if strategy != BOLLINGER_BOUNCE or not getattr(settings.switches, "bounce_only_near_times", False):
+        return []
+    b = settings.bounce
+    if t is None or not near_times(settings, t):
+        names = ", ".join(f"{x:%H:%M}" for x in b.near_times)
+        return [f"BOUNCE_ONLY_NEAR_TIMES is on and it is not within {b.near_times_within_minutes} minutes of {names} UK"]
+    return []
+
+
+def near_times(settings: Any, t: datetime) -> bool:
+    """t is within bounce.near_times_within_minutes of one of bounce.near_times (UK clock time), both ends included."""
+    from datetime import datetime as dt, timedelta
+    from zoneinfo import ZoneInfo
+    tz = settings.hours.timezone
+    uk = ZoneInfo(tz) if isinstance(tz, str) else tz
+    lt = t.astimezone(uk)
+    within = timedelta(minutes=int(settings.bounce.near_times_within_minutes))
+    return any(abs(lt - dt.combine(lt.date(), x, tzinfo=uk)) <= within for x in settings.bounce.near_times)
+
+
+def signal_context(direction: str, rejection_start: datetime, furthest: Decimal | None,
+                   rejection_close: Decimal | None = None) -> dict:
+    """What a reversal-group candidate carries (from main, 18 November 2026, kept because the hourly-pierce bounce
+    passes it on every idea): "furthest", the setup's furthest point, and "signal", its direction and the start of its
+    rejection candle. In first-build-plus nothing decides on it: it is recorded with the idea only."""
+    return {"furthest": furthest, "rejection_close": rejection_close,
+            "rejection_candle": rejection_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "signal": f"{direction} {rejection_start.strftime('%Y-%m-%dT%H:%M:%SZ')}"}
 
 
 def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | None,
           ema100: Decimal | None) -> Idea:
     """Turn a candidate into an idea, or a blocked one with every reason."""
-    reasons, rule = allowed(settings, c.strategy, c.direction, c.entry_price, state, pivot, ema100)
+    reasons, rule = allowed(settings, c.strategy, c.direction, c.entry_price, state, pivot, ema100, c.time)
     idea = Idea(pair, c.strategy, c.direction, c.time, c.entry_price, state.state, state.direction,
                 state.trend_type, rule.side, list(c.steps), context=dict(c.context))
     if reasons:

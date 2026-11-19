@@ -28,13 +28,71 @@ The same problem never sends more than one message every 10 minutes (`alerts.sam
 | Any candle store problem: a check problem, or a gap (including a gap since the last candle at start-up) | each pair's price feed |
 | A history block marker being written | the history door, in the fill tools (`prices.history_fill`, `prices.long_history`) |
 | The price service crashing | the price service (systemd restarts it after 30 seconds) |
+| IG refused to close a trade (with IG's error). The trade stays open and the close is tried again every `orders.close_retry_seconds`. Each trade has its own alert, so a second trade's refusal is never held back by the first | the order sender (`close-refused-<deal ID>`) |
+| A trail's stop move IG did not confirm after `orders.stop_move_attempts` (3) attempts (owner, 17 November 2026): the level asked for, IG's error, and the stop that stays at IG. One alert per trade; the trail is worked out again after the next finished candle. IG's buy and sell prices and minimum stop distance at each attempt are in the order record | the trade manager (`stop-move-gave-up-<reference>`) |
+| A trade the bot did not close is no longer open at IG (IG's stop or limit not expected, a close made some other way, or a close IG refused because it had already closed it; not the owner's closes by hand, below), with IG's own close level and time from IG's activity; the trade is then closed in the records at IG's level | the order sender, at start-up, after a refused close, and in the regular check after every 5-minute candle (`gone-at-ig-<deal ID>`) |
+| A trade the owner closed by hand at IG (owner, 11 November 2026): IG's channel SYSTEM, not at the stop or take profit (at or beyond either is IG's stop or limit). A short message, not a warning: the trade, IG's price and UK time, pips and £, and that it is not counted in the bot's results. No TRADE CLOSED message is sent for it | the order sender, wherever a trade is found gone at IG (start-up, the regular check, a refused close, a stop or take profit being confirmed) |
+| An open position at IG the bot did not open, or a trade whose size at IG differs from the bot's records (once each) | the order sender's check of its open trades against IG's open positions, at start-up and after every 5-minute candle |
+| IG's open positions could not be read for that check | the order sender (`positions-not-read`) |
 
-## Trade messages (for the order sender; `alerts/trades.py`)
+## Trade messages and the daily summary (`alerts/trades.py`, `records/book.py`)
 
-Built and tested with pretend trades; **connected to the order sender when it is built** (`Alerts.trade_opened`, `Alerts.trade_closed`).
+Sent by the trading engine for every real trade (`Alerts.trade_opened`, `Alerts.trade_closed`) and each weekday at
+20:35 UK (the daily summary). **AutoBot 161's format** (owner, 9 November 2026): a first line, then one item per line,
+the label in bold followed by a colon. Sent as Telegram HTML (`parse_mode` HTML, every value escaped); if Telegram
+refuses the HTML, the same message is sent again as plain text with the bold taken out. Prices are IG's points with
+the real rate in brackets.
 
-- **Trade opened:** pair, direction, size (£ per pip), strategy, market state, open price, stop loss, take profit (prices as IG's points and as the real rate, using the pair's price scale).
-- **Trade closed:** the same, plus close price, reason, profit or loss in pounds, and WIN, LOSS or BREAK EVEN.
+```
+[AutoBot] 🎯 TRADE OPENED
+Time: Wed 04 Nov 10:20 GMT
+Deal ref: AB261104102005-1a2b3c4d
+Epic: CS.D.GBPUSD.TODAY.IP
+Strategy: level reversal
+Dir: SELL | Size: £10/pip
+Market state: trend up
+Entry: 13394.5 (1.33945)
+SL: 6 pips @ 13400.5 (1.34005) | Risk: £60.00
+TP: 20 pips @ 13374.5 (1.33745) | TP kind: normal
+Reason: level reversal: pierced R2 13398.1 at 10:05, confirmed 10:15
+Level: R2 13398.1; price went 4.4 pips past it
+```
+
+```
+[AutoBot] 🟢 TRADE CLOSED
+Opened: Wed 04 Nov 10:20 GMT
+Deal ref: AB261104102005-1a2b3c4d
+Epic: CS.D.GBPUSD.TODAY.IP
+Strategy: level reversal
+Dir: SELL | Size: £10/pip
+Market state: trend up
+Entry: 13394.5 (1.33945) → Exit: 13383.2 (1.33832)
+Closed: Wed 04 Nov 11:55 GMT
+SL: 6 pips @ 13400.5 (1.34005) | Risk: £60.00
+TP: 20 pips @ 13374.5 (1.33745) | TP kind: normal
+Reason opened: level reversal: pierced R2 13398.1 at 10:05, confirmed 10:15
+Level: R2 13398.1; price went 4.4 pips past it
+Reason closed: a confirmed rejection at a level: S2 13383.0
+PnL: +11.3 pips | +£113.00
+Duration: 1 h 34 min
+Best: +14.2 pips
+Today: 3 trades | +8.4 pips
+```
+
+A close at a loss starts "[AutoBot] 🔴 TRADE CLOSED" (break even: ⚪). A range trade's close adds "Half close: ... | PnL: ... / ..." and "Rest: ... | PnL: ... / ..." lines before "Today".
+
+`TP kind` is `normal`, `100 for a big-news day` or `100 for a trend day`.
+
+```
+[AutoBot] 📊 DAILY SUMMARY
+Date: Wed 04 Nov 2026
+Pair: GBPUSD
+Mode: paper trades (TRADING is off)       (only while TRADING is off)
+Trades: 2 | Won: 1 | Lost: 1
+PnL: +14 pips | +£140.00
+breakout: 1 trade | -6 pips | -£60.00     (one line per strategy)
+Week so far: 3 trades | +64 pips | +£640.00
+```
 
 ## Checking it by hand
 

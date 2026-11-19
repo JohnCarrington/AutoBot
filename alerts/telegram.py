@@ -18,8 +18,10 @@ the log and the bot carries on.
 
 from __future__ import annotations
 
+import html as html_lib
 import json
 import logging
+import re
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -34,6 +36,11 @@ UTC = timezone.utc
 REQUIRED = ("TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID")
 STATE_FILE = "sent.json"
 MAX_LENGTH = 4000          # Telegram's limit is 4096 characters a message
+
+
+def as_plain(text: str) -> str:
+    """Telegram's HTML as plain text: the tags taken out, &amp; &lt; &gt; put back."""
+    return html_lib.unescape(re.sub(r"</?b>", "", text))
 
 
 class TelegramNotSetUp(Exception):
@@ -98,9 +105,11 @@ class Telegram:
 
     # ---- sending -------------------------------------------------------------------
 
-    def send(self, text: str, key: str | None = None) -> SendResult:
+    def send(self, text: str, key: str | None = None, html: bool = False) -> SendResult:
         """Send one message. With a key, at most one message per key every
-        alerts.same_problem_every_minutes; the rest are held back and counted."""
+        alerts.same_problem_every_minutes; the rest are held back and counted.
+        html: the text is Telegram's HTML (bold labels); if Telegram refuses it,
+        it is sent again as plain text with the tags taken out."""
         now = self.now()
         state = self._state()
         if key is not None:
@@ -116,16 +125,19 @@ class Telegram:
             held = entry.get("held_back", 0)
             if held:
                 text += f"\n({held} more like this held back since {last[:16].replace('T', ' ')} UTC)"
-        result = self._post(text[:MAX_LENGTH])
+        result = self._post(text[:MAX_LENGTH], html)
+        if html and not result.sent and result.why.startswith("Telegram refused it: HTTP 400"):
+            result = self._post(as_plain(text)[:MAX_LENGTH])
         if key is not None and result.sent:
             state[key] = {"last_sent_utc": now.isoformat(), "held_back": 0}
             self._save(state)
         return result
 
-    def _post(self, text: str) -> SendResult:
+    def _post(self, text: str, html: bool = False) -> SendResult:
         url = f"{self.s.telegram_url}/bot{self._creds.token}/sendMessage"
+        body = {"chat_id": self._creds.chat_id, "text": text} | ({"parse_mode": "HTML"} if html else {})
         try:
-            r = self._http.post(url, json={"chat_id": self._creds.chat_id, "text": text},
+            r = self._http.post(url, json=body,
                                 timeout=self.s.request_timeout_seconds)
         except Exception as e:      # the error text may hold the address (and so the token): kind only
             why = f"no reply from Telegram ({type(e).__name__})"
@@ -137,7 +149,7 @@ class Telegram:
             body = {}
         if r.status_code == 200 and body.get("ok"):
             mid = (body.get("result") or {}).get("message_id")
-            log.info("Telegram message sent (message %s): %s", mid, text.splitlines()[0])
+            log.info("Telegram message sent (message %s): %s", mid, as_plain(text).splitlines()[0])
             return SendResult(True, "accepted by Telegram", mid)
         desc = str(body.get("description") or "")[:200]
         why = f"Telegram refused it: HTTP {r.status_code}" + (f" ({desc})" if desc else "")
@@ -165,17 +177,19 @@ class Alerts:
         msg = f"AutoBot PROBLEM: {text}"
         return self.telegram.send(msg, key) if self.telegram else SendResult(False, "Telegram not set up")
 
-    def info(self, text: str, key: str | None = None) -> SendResult:
-        log.info("ALERT: %s", text.splitlines()[0])
-        return self.telegram.send(text, key) if self.telegram else SendResult(False, "Telegram not set up")
+    def info(self, text: str, key: str | None = None, html: bool = False) -> SendResult:
+        log.info("ALERT: %s", (as_plain(text) if html else text).splitlines()[0])
+        if not self.telegram:
+            return SendResult(False, "Telegram not set up")
+        return self.telegram.send(text, key, html=True) if html else self.telegram.send(text, key)
 
     def trade_opened(self, trade: Any) -> SendResult:
         """For the order sender (not built yet): every trade opened (alerts/trades.py)."""
         from alerts.trades import opened_text
-        return self.info(opened_text(trade))
+        return self.info(opened_text(trade), html=True)
 
     def trade_closed(self, closed: Any) -> SendResult:
         """For the order sender (not built yet): every trade closed (alerts/trades.py)."""
         from alerts.trades import closed_text
-        return self.info(closed_text(closed))
+        return self.info(closed_text(closed), html=True)
 

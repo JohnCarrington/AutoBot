@@ -277,7 +277,7 @@ class RejectionWatcher:
         sell = st.direction == SELL
         turn = _red if sell else _green
         if st.stage == "reversal":
-            limit = (self.s.bounce.reversal_candle_within_candles_of_pierce if st.version == BOUNCE
+            limit = (self.s.rejection.reversal_candle_within_candles_of_pierce if st.version == BOUNCE
                      else self.s.range_trade.rejection_candle_within_candles)
             if turn(c, self.side):
                 st.reversal, st.stage, st.waited = c, ("confirmation" if st.version == BOUNCE else "trigger"), 0
@@ -320,7 +320,7 @@ class RejectionWatcher:
                            f"{'below' if sell else 'above'} {plain(st.trigger_price)}")
                 return
             st.waited += 1
-            limit = self.s.bounce.confirmation_candle_within_candles_of_reversal
+            limit = self.s.rejection.confirmation_candle_within_candles_of_reversal
             if st.waited >= limit:
                 self._emit(st, EXPIRED, c.start, None,
                            f"no close {'below the reversal low' if sell else 'above the reversal high'} within "
