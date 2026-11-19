@@ -268,6 +268,9 @@ def _state(st, d="none"):
 
 @pytest.mark.parametrize("name", SESSION_STRATEGIES)
 def test_no_analyser_state_no_direction_rule(S, name):
+    # DIRECTION_RULE_SESSIONS off (owner, 19 November 2026: on if left out): the 16 November rule, no direction rule
+    S = Over(S, switches={"asian_range_breakout": True, "session_sweep": True, "new_york_open_reversal": True,
+                          "direction_rule_sessions": False})
     for st, d in (("consolidation", "none"), ("ranging", "none"), ("trend", "up"), ("emerging trend", "down"),
                   ("possible reversal", "up")):
         for direction in (BUY, SELL):

@@ -1,0 +1,108 @@
+===== 2026-11-19 DIRECTION_RULE_SESSIONS=on (read back True)
+07:35 Asian range breakout buy 13155.6 | rule: no clear direction | BLOCKED: the direction rule says no clear direction (price 13155.6 is below the pivot 13162.5 and above the 5m 100 EMA 13139.2: they disagree)
+07:45 session sweep sell 13146.4 | rule: no clear direction | BLOCKED: the direction rule says no clear direction (price 13146.4 is below the pivot 13162.5 and above the 5m 100 EMA 13139.6: they disagree); ANALYSER_GOVERNS_ALL: the trend is up: session sweep only in the trend's direction
+08:00 Asian range breakout buy 13154.9 | rule: no clear direction | BLOCKED: the direction rule says no clear direction (price 13154.9 is below the pivot 13162.5 and above the 5m 100 EMA 13140.3: they disagree)
+08:15 Asian range breakout buy 13154.1 | rule: no clear direction | BLOCKED: the direction rule says no clear direction (price 13154.1 is below the pivot 13162.5 and above the 5m 100 EMA 13141.0: they disagree)
+08:40 Asian range breakout buy 13154 | rule: no clear direction | BLOCKED: the direction rule says no clear direction (price 13154 is below the pivot 13162.5 and above the 5m 100 EMA 13142.1: they disagree)
+08:50 Asian range breakout buy 13153.4 | rule: no clear direction | BLOCKED: the direction rule says no clear direction (price 13153.4 is below the pivot 13162.5 and above the 5m 100 EMA 13142.5: they disagree)
+08:55 Asian range breakout buy 13155.1 | rule: no clear direction | BLOCKED: the direction rule says no clear direction (price 13155.1 is below the pivot 13162.5 and above the 5m 100 EMA 13142.7: they disagree)
+09:00 Asian range breakout buy 13154.9 | rule: no clear direction | BLOCKED: the direction rule says no clear direction (price 13154.9 is below the pivot 13162.5 and above the 5m 100 EMA 13143.0: they disagree)
+09:05 Asian range breakout buy 13159.8 | rule: no clear direction | BLOCKED: the direction rule says no clear direction (price 13159.8 is below the pivot 13162.5 and above the 5m 100 EMA 13143.3: they disagree)
+09:10 Asian range breakout buy 13159.2 | rule: no clear direction | BLOCKED: the direction rule says no clear direction (price 13159.2 is below the pivot 13162.5 and above the 5m 100 EMA 13143.6: they disagree)
+09:15 Asian range breakout buy 13156.3 | rule: no clear direction | BLOCKED: the direction rule says no clear direction (price 13156.3 is below the pivot 13162.5 and above the 5m 100 EMA 13143.9: they disagree)
+09:20 Asian range breakout buy 13154.7 | rule: no clear direction | BLOCKED: the direction rule says no clear direction (price 13154.7 is below the pivot 13162.5 and above the 5m 100 EMA 13144.1: they disagree)
+09:30 session sweep sell 13143.4 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the trend is up: session sweep only in the trend's direction
+===== 2026-11-19 DIRECTION_RULE_SESSIONS=off (read back False)
+07:35 Asian range breakout buy 13155.6 | rule: no clear direction | ALLOWED
+07:45 session sweep sell 13146.4 | rule: no clear direction | BLOCKED: ANALYSER_GOVERNS_ALL: the trend is up: session sweep only in the trend's direction
+08:00 Asian range breakout buy 13154.9 | rule: no clear direction | ALLOWED
+08:15 Asian range breakout buy 13154.1 | rule: no clear direction | ALLOWED
+08:40 Asian range breakout buy 13154 | rule: no clear direction | ALLOWED
+08:50 Asian range breakout buy 13153.4 | rule: no clear direction | ALLOWED
+08:55 Asian range breakout buy 13155.1 | rule: no clear direction | ALLOWED
+09:00 Asian range breakout buy 13154.9 | rule: no clear direction | ALLOWED
+09:05 Asian range breakout buy 13159.8 | rule: no clear direction | ALLOWED
+09:10 Asian range breakout buy 13159.2 | rule: no clear direction | ALLOWED
+09:15 Asian range breakout buy 13156.3 | rule: no clear direction | ALLOWED
+09:20 Asian range breakout buy 13154.7 | rule: no clear direction | ALLOWED
+09:30 session sweep sell 13143.4 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the trend is up: session sweep only in the trend's direction
+== 2026-11-19: other strategies' ideas identical on/off: True (11 ideas)
+===== 2026-11-18 DIRECTION_RULE_SESSIONS=on (read back True)
+07:05 Asian range breakout sell 13177.1 | rule: sell side | ALLOWED
+07:10 Asian range breakout sell 13175 | rule: sell side | ALLOWED
+07:15 Asian range breakout sell 13177.2 | rule: sell side | ALLOWED
+07:20 Asian range breakout sell 13181.8 | rule: sell side | ALLOWED
+07:25 Asian range breakout sell 13178.7 | rule: sell side | ALLOWED
+07:30 Asian range breakout sell 13179.3 | rule: sell side | ALLOWED
+07:35 Asian range breakout sell 13176.9 | rule: sell side | ALLOWED
+07:40 Asian range breakout sell 13174 | rule: sell side | ALLOWED
+07:45 Asian range breakout sell 13173.1 | rule: sell side | ALLOWED
+07:50 Asian range breakout sell 13174.1 | rule: sell side | ALLOWED
+07:55 Asian range breakout sell 13171.9 | rule: sell side | ALLOWED
+08:00 Asian range breakout sell 13172.9 | rule: sell side | ALLOWED
+08:05 Asian range breakout sell 13172.5 | rule: sell side | ALLOWED
+08:10 Asian range breakout sell 13171.3 | rule: sell side | ALLOWED
+08:15 Asian range breakout sell 13169.8 | rule: sell side | ALLOWED
+08:20 Asian range breakout sell 13162 | rule: sell side | ALLOWED
+08:25 Asian range breakout sell 13162.7 | rule: sell side | ALLOWED
+08:30 Asian range breakout sell 13160.5 | rule: sell side | ALLOWED
+08:35 Asian range breakout sell 13163 | rule: sell side | ALLOWED
+08:40 Asian range breakout sell 13160.3 | rule: sell side | ALLOWED
+08:45 Asian range breakout sell 13163.6 | rule: sell side | ALLOWED
+08:50 Asian range breakout sell 13157.6 | rule: sell side | ALLOWED
+08:55 Asian range breakout sell 13153 | rule: sell side | ALLOWED
+09:00 Asian range breakout sell 13153.2 | rule: sell side | ALLOWED
+09:05 Asian range breakout sell 13151 | rule: sell side | ALLOWED
+09:10 Asian range breakout sell 13153.7 | rule: sell side | ALLOWED
+09:15 Asian range breakout sell 13153.5 | rule: sell side | ALLOWED
+09:20 Asian range breakout sell 13151.4 | rule: sell side | ALLOWED
+09:25 Asian range breakout sell 13155.7 | rule: sell side | ALLOWED
+09:30 Asian range breakout sell 13161.8 | rule: sell side | ALLOWED
+09:35 Asian range breakout sell 13163.8 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the analyser's state is possible reversal: the trend group opens nothing new
+09:40 Asian range breakout sell 13167.4 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction
+09:45 Asian range breakout sell 13168.6 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction
+09:50 Asian range breakout sell 13163.7 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction
+09:55 Asian range breakout sell 13165.8 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction
+10:00 Asian range breakout sell 13170.6 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction
+17:00 session sweep buy 13150.3 | rule: sell side | BLOCKED: the direction rule says sell side (price 13150.3 is below the pivot 13200.1 and below the 5m 100 EMA 13162.1); ANALYSER_GOVERNS_ALL: the trend is down: session sweep only in the trend's direction
+17:25 session sweep buy 13151.2 | rule: sell side | BLOCKED: the direction rule says sell side (price 13151.2 is below the pivot 13200.1 and below the 5m 100 EMA 13160.8); ANALYSER_GOVERNS_ALL: the trend is down: session sweep only in the trend's direction
+===== 2026-11-18 DIRECTION_RULE_SESSIONS=off (read back False)
+07:05 Asian range breakout sell 13177.1 | rule: sell side | ALLOWED
+07:10 Asian range breakout sell 13175 | rule: sell side | ALLOWED
+07:15 Asian range breakout sell 13177.2 | rule: sell side | ALLOWED
+07:20 Asian range breakout sell 13181.8 | rule: sell side | ALLOWED
+07:25 Asian range breakout sell 13178.7 | rule: sell side | ALLOWED
+07:30 Asian range breakout sell 13179.3 | rule: sell side | ALLOWED
+07:35 Asian range breakout sell 13176.9 | rule: sell side | ALLOWED
+07:40 Asian range breakout sell 13174 | rule: sell side | ALLOWED
+07:45 Asian range breakout sell 13173.1 | rule: sell side | ALLOWED
+07:50 Asian range breakout sell 13174.1 | rule: sell side | ALLOWED
+07:55 Asian range breakout sell 13171.9 | rule: sell side | ALLOWED
+08:00 Asian range breakout sell 13172.9 | rule: sell side | ALLOWED
+08:05 Asian range breakout sell 13172.5 | rule: sell side | ALLOWED
+08:10 Asian range breakout sell 13171.3 | rule: sell side | ALLOWED
+08:15 Asian range breakout sell 13169.8 | rule: sell side | ALLOWED
+08:20 Asian range breakout sell 13162 | rule: sell side | ALLOWED
+08:25 Asian range breakout sell 13162.7 | rule: sell side | ALLOWED
+08:30 Asian range breakout sell 13160.5 | rule: sell side | ALLOWED
+08:35 Asian range breakout sell 13163 | rule: sell side | ALLOWED
+08:40 Asian range breakout sell 13160.3 | rule: sell side | ALLOWED
+08:45 Asian range breakout sell 13163.6 | rule: sell side | ALLOWED
+08:50 Asian range breakout sell 13157.6 | rule: sell side | ALLOWED
+08:55 Asian range breakout sell 13153 | rule: sell side | ALLOWED
+09:00 Asian range breakout sell 13153.2 | rule: sell side | ALLOWED
+09:05 Asian range breakout sell 13151 | rule: sell side | ALLOWED
+09:10 Asian range breakout sell 13153.7 | rule: sell side | ALLOWED
+09:15 Asian range breakout sell 13153.5 | rule: sell side | ALLOWED
+09:20 Asian range breakout sell 13151.4 | rule: sell side | ALLOWED
+09:25 Asian range breakout sell 13155.7 | rule: sell side | ALLOWED
+09:30 Asian range breakout sell 13161.8 | rule: sell side | ALLOWED
+09:35 Asian range breakout sell 13163.8 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the analyser's state is possible reversal: the trend group opens nothing new
+09:40 Asian range breakout sell 13167.4 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction
+09:45 Asian range breakout sell 13168.6 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction
+09:50 Asian range breakout sell 13163.7 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction
+09:55 Asian range breakout sell 13165.8 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction
+10:00 Asian range breakout sell 13170.6 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the emerging trend is up: Asian range breakout only in the trend's direction
+17:00 session sweep buy 13150.3 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the trend is down: session sweep only in the trend's direction
+17:25 session sweep buy 13151.2 | rule: sell side | BLOCKED: ANALYSER_GOVERNS_ALL: the trend is down: session sweep only in the trend's direction
+== 2026-11-18: other strategies' ideas identical on/off: True (40 ideas)

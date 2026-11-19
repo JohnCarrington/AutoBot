@@ -1,0 +1,278 @@
+{
+ "extra": {
+  "SCALE_OUT_REVERSAL": "on",
+  "TRAIL_NO_LOSS": "on",
+  "LR_ENTRY_NEAR_LEVEL": "on",
+  "LEVEL_STOPS": "on",
+  "TREND_IGNORES_HOURLY_READ": "on",
+  "DIRECTION_RULE_SESSIONS": "on"
+ },
+ "trades": [
+  {
+   "opened": "07:55",
+   "strategy": "slow grind",
+   "direction": "buy",
+   "entry": "13155.6",
+   "pips": null,
+   "closed": "still open at the day's end"
+  }
+ ],
+ "blocked": [
+  [
+   "00:10",
+   "EMA pullback",
+   "sell",
+   "the analyser's state is consolidation, which does not allow EMA pullback; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 1.6 pips below the swing low 13145.3 of 23:35, at 00:00); ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the trend group opens nothing"
+  ],
+  [
+   "00:30",
+   "slow grind",
+   "sell",
+   "the analyser's state is ranging, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 3.4 pips below the swing low 13145.3 of 23:35, at 00:15); ANALYSER_GOVERNS_ALL: the analyser's state is ranging: the trend group opens nothing"
+  ],
+  [
+   "00:40",
+   "range trade",
+   "buy",
+   "ANALYSER_GOVERNS_ALL: the hourly chart is ranging (13135.5 to 13172.6): a buy opens only at the bottom edge (furthest point within 3 pips of the hourly low or beyond it, and the rejection candle closing back inside the hourly range); the setup's furthest point 13141.7, its rejection candle's close 13144.9"
+  ],
+  [
+   "00:45",
+   "range trade",
+   "buy",
+   "ANALYSER_GOVERNS_ALL: the hourly chart is ranging (13135.5 to 13172.6): a buy opens only at the bottom edge (furthest point within 3 pips of the hourly low or beyond it, and the rejection candle closing back inside the hourly range); the setup's furthest point 13142.1, its rejection candle's close 13147.8"
+  ],
+  [
+   "00:55",
+   "breakout",
+   "buy",
+   "the hourly chart is ranging (13135.5 to 13172.6): breakout waits for a 5-minute close (ANALYSER_USES_HOURLY) at least 3 pips beyond the hourly range; ANALYSER_GOVERNS_ALL: the hourly chart is ranging (13135.5 to 13172.6): the trend group opens nothing"
+  ],
+  [
+   "01:15",
+   "range trade",
+   "sell",
+   "the analyser's state is consolidation, which does not allow range trade; ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the reversal group opens nothing; ANALYSER_GOVERNS_ALL: the hourly chart is ranging (13135.5 to 13172.6): a sell opens only at the top edge (furthest point within 3 pips of the hourly high or beyond it, and the rejection candle closing back inside the hourly range); the setup's furthest point 13152.9, its rejection candle's close 13147"
+  ],
+  [
+   "01:50",
+   "slow grind",
+   "sell",
+   "the analyser's state is ranging, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 1.0 pips below the swing low 13141.8 of 01:20, at 01:30); ANALYSER_GOVERNS_ALL: the analyser's state is ranging: the trend group opens nothing"
+  ],
+  [
+   "02:20",
+   "breakout",
+   "sell",
+   "the analyser's state is consolidation, which does not allow breakout; the hourly chart is ranging (13135.5 to 13169.1): breakout waits for a 5-minute close (ANALYSER_USES_HOURLY) at least 3 pips beyond the hourly range; ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the trend group opens nothing; ANALYSER_GOVERNS_ALL: the hourly chart is ranging (13135.5 to 13169.1): the trend group opens nothing"
+  ],
+  [
+   "02:20",
+   "slow grind",
+   "sell",
+   "the analyser's state is consolidation, which does not allow slow grind; ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the trend group opens nothing"
+  ],
+  [
+   "02:55",
+   "slow grind",
+   "sell",
+   "the analyser's state is consolidation, which does not allow slow grind; ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the trend group opens nothing"
+  ],
+  [
+   "03:00",
+   "EMA pullback",
+   "sell",
+   "the analyser's state is consolidation, which does not allow EMA pullback; ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the trend group opens nothing"
+  ],
+  [
+   "03:20",
+   "range trade",
+   "buy",
+   "the analyser's state is emerging trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the emerging trend is down: range trade only in the trend's direction"
+  ],
+  [
+   "03:25",
+   "range trade",
+   "buy",
+   "the analyser's state is emerging trend, which does not allow range trade"
+  ],
+  [
+   "05:00",
+   "slow grind",
+   "buy",
+   "the analyser's state is emerging trend, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 2.9 pips above the swing high 13131.3 of 04:20, at 04:45); ANALYSER_GOVERNS_ALL: the emerging trend is down: slow grind only in the trend's direction"
+  ],
+  [
+   "05:25",
+   "slow grind",
+   "buy",
+   "the analyser's state is emerging trend, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 2.9 pips above the swing high 13131.3 of 04:20, at 04:45); ANALYSER_GOVERNS_ALL: the emerging trend is down: slow grind only in the trend's direction"
+  ],
+  [
+   "06:10",
+   "slow grind",
+   "buy",
+   "the analyser's state is consolidation, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 1.6 pips above the swing high 13134.2 of 04:45, at 05:10); ANALYSER_GOVERNS_ALL: the analyser's state is consolidation: the trend group opens nothing"
+  ],
+  [
+   "06:40",
+   "range trade",
+   "sell",
+   "the analyser's state is emerging trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the emerging trend is up: range trade only in the trend's direction"
+  ],
+  [
+   "07:00",
+   "slow grind",
+   "buy",
+   "the analyser's state is emerging trend, which does not allow slow grind; TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 4.9 pips above the swing high 13135.8 of 06:00, at 06:20)"
+  ],
+  [
+   "07:35",
+   "Asian range breakout",
+   "buy",
+   "the direction rule says no clear direction (price 13155.6 is below the pivot 13162.5 and above the 5m 100 EMA 13139.2: they disagree)"
+  ],
+  [
+   "07:40",
+   "range trade",
+   "sell",
+   "the analyser's state is trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the trend is up: range trade only in the trend's direction"
+  ],
+  [
+   "07:45",
+   "session sweep",
+   "sell",
+   "the direction rule says no clear direction (price 13146.4 is below the pivot 13162.5 and above the 5m 100 EMA 13139.6: they disagree); ANALYSER_GOVERNS_ALL: the trend is up: session sweep only in the trend's direction"
+  ],
+  [
+   "08:00",
+   "Asian range breakout",
+   "buy",
+   "the direction rule says no clear direction (price 13154.9 is below the pivot 13162.5 and above the 5m 100 EMA 13140.3: they disagree)"
+  ],
+  [
+   "08:15",
+   "Asian range breakout",
+   "buy",
+   "the direction rule says no clear direction (price 13154.1 is below the pivot 13162.5 and above the 5m 100 EMA 13141.0: they disagree)"
+  ],
+  [
+   "08:35",
+   "slow grind",
+   "buy",
+   "TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 1.0 pips above the swing high 13156.5 of 07:30, at 07:55)"
+  ],
+  [
+   "08:40",
+   "Asian range breakout",
+   "buy",
+   "the direction rule says no clear direction (price 13154 is below the pivot 13162.5 and above the 5m 100 EMA 13142.1: they disagree)"
+  ],
+  [
+   "08:50",
+   "slow grind",
+   "buy",
+   "TREND_STILL_GOING is on and the trend is not still going: no new high at least 5 pips above the previous high in the last 12 five-minute candles (the most: 1.0 pips above the swing high 13156.5 of 07:30, at 07:55)"
+  ],
+  [
+   "08:50",
+   "Asian range breakout",
+   "buy",
+   "the direction rule says no clear direction (price 13153.4 is below the pivot 13162.5 and above the 5m 100 EMA 13142.5: they disagree)"
+  ],
+  [
+   "08:55",
+   "Asian range breakout",
+   "buy",
+   "the direction rule says no clear direction (price 13155.1 is below the pivot 13162.5 and above the 5m 100 EMA 13142.7: they disagree)"
+  ],
+  [
+   "09:00",
+   "Asian range breakout",
+   "buy",
+   "the direction rule says no clear direction (price 13154.9 is below the pivot 13162.5 and above the 5m 100 EMA 13143.0: they disagree)"
+  ],
+  [
+   "09:05",
+   "Asian range breakout",
+   "buy",
+   "the direction rule says no clear direction (price 13159.8 is below the pivot 13162.5 and above the 5m 100 EMA 13143.3: they disagree)"
+  ],
+  [
+   "09:10",
+   "range trade",
+   "sell",
+   "the analyser's state is trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the trend is up: range trade only in the trend's direction"
+  ],
+  [
+   "09:10",
+   "Asian range breakout",
+   "buy",
+   "the direction rule says no clear direction (price 13159.2 is below the pivot 13162.5 and above the 5m 100 EMA 13143.6: they disagree)"
+  ],
+  [
+   "09:15",
+   "range trade",
+   "sell",
+   "the analyser's state is trend, which does not allow range trade; ANALYSER_GOVERNS_ALL: the trend is up: range trade only in the trend's direction"
+  ],
+  [
+   "09:15",
+   "Asian range breakout",
+   "buy",
+   "the direction rule says no clear direction (price 13156.3 is below the pivot 13162.5 and above the 5m 100 EMA 13143.9: they disagree)"
+  ],
+  [
+   "09:20",
+   "Asian range breakout",
+   "buy",
+   "the direction rule says no clear direction (price 13154.7 is below the pivot 13162.5 and above the 5m 100 EMA 13144.1: they disagree)"
+  ],
+  [
+   "09:30",
+   "session sweep",
+   "sell",
+   "ANALYSER_GOVERNS_ALL: the trend is up: session sweep only in the trend's direction"
+  ],
+  [
+   "09:35",
+   "range trade",
+   "buy",
+   "the analyser's state is trend, which does not allow range trade"
+  ]
+ ],
+ "refused": [
+  [
+   "03:25",
+   "Bollinger bounce",
+   "buy",
+   [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  ],
+  [
+   "04:05",
+   "Bollinger bounce",
+   "buy",
+   [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  ],
+  [
+   "08:10",
+   "slow grind",
+   "buy",
+   [
+    "slow grind already has 1 trade(s) open (at most 1)"
+   ]
+  ],
+  [
+   "11:00",
+   "slow grind",
+   "buy",
+   [
+    "slow grind already has 1 trade(s) open (at most 1)"
+   ]
+  ]
+ ]
+}

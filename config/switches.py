@@ -48,6 +48,10 @@
                               analyser alone decides whether and which way they trade. The EMA pullback's own hourly
                               8/13/20 EMA test (its step 0) still applies; the breakout and every other strategy are
                               unchanged (strategies/common.py)
+  DIRECTION_RULE_SESSIONS     on or off (ON if left out; owner, 19 November 2026): the Asian range breakout, the session
+                              sweep and the New York open reversal use the direction rule (a buy only on the buy side:
+                              price above the daily pivot and the 5-minute 100 EMA; a sell only on the sell side), the
+                              same rule as the strategies that already use it (strategies/common.py)
   TRADING                     the master switch, on or off: while off everything runs and is
                               recorded, but no order is ever sent to IG
   STOP_LOSS_PIPS              the stop loss sent with every trade, in pips (whole, 1 to 100),
@@ -136,6 +140,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "LR_ENTRY_NEAR_LEVEL": ("lr_entry_near_level", _on_off),
     "LEVEL_STOPS": ("level_stops", _on_off),
     "TREND_IGNORES_HOURLY_READ": ("trend_ignores_hourly_read", _on_off),
+    "DIRECTION_RULE_SESSIONS": ("direction_rule_sessions", _on_off),
     "TRADING": ("trading", _on_off),
     "STOP_LOSS_PIPS": ("stop_loss_pips", _pips(1, 100)),
     "STOP_LOSS_PIPS_EMA_PULLBACK": ("stop_loss_pips_ema_pullback", _pips(1, 100)),
@@ -153,7 +158,9 @@ OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_WHEN_HOURLY_RANGING": "off", "BOUNCE_ON
                             "LEVEL_STOPS": "off",
                             # the hourly read no longer decides for the slow grind and EMA pullback (owner, 19 November
                             # 2026): ON by default
-                            "TREND_IGNORES_HOURLY_READ": "on"}
+                            "TREND_IGNORES_HOURLY_READ": "on",
+                            # the session strategies use the direction rule (owner, 19 November 2026): ON by default
+                            "DIRECTION_RULE_SESSIONS": "on"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:

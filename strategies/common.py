@@ -16,7 +16,9 @@ only, owner 7 November 2026):
      side (price above the daily pivot and the 5-minute 100 EMA), a sell needs
      sell side. It does not apply to the session strategies (owner, 16 November 2026), the range trade, the Bollinger bounce, the
      breakout (owner, 7 November 2026), the slow grind or the level reversal
-     (owner, 8 November 2026), in any state; the rule's answer is still recorded.
+     (owner, 8 November 2026), in any state; the rule's answer is still recorded. While the switch
+     DIRECTION_RULE_SESSIONS is on (on if left out; owner, 19 November 2026) the three session strategies use it too,
+     exactly as the strategies that already did.
      The level reversal is allowed in every state except consolidation, either way.
   4. the hourly read (analyser/hourly_read.py; owner, 14 November 2026) allows it, only while the switch
      HOURLY_READ is on (off: this check is skipped). It applies only to the
@@ -109,6 +111,15 @@ NEWS_ALLOWED = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND)
 NO_LEVEL_CLOSE = (EMA_PULLBACK, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL, BOLLINGER_BOUNCE) + SESSION_STRATEGIES
 # The direction rule (section 2.3) does not apply to these (owner, 7 and 8 November 2026).
 NO_DIRECTION_RULE = (RANGE_TRADE, BOLLINGER_BOUNCE, BREAKOUT, SLOW_GRIND, LEVEL_REVERSAL) + SESSION_STRATEGIES
+
+
+def skips_direction_rule(settings: Any, strategy: str) -> bool:
+    """Whether the direction rule (section 2.3) does not apply to this strategy. While DIRECTION_RULE_SESSIONS is on
+    (owner, 19 November 2026) the session strategies use it, as every strategy outside NO_DIRECTION_RULE does."""
+    if strategy in SESSION_STRATEGIES and getattr(getattr(settings, "switches", None), "direction_rule_sessions", False):
+        return False
+    return strategy in NO_DIRECTION_RULE
+
 BUY, SELL = "buy", "sell"
 # The strategies the hourly read applies to (check 4 above; owner, 14 November 2026).
 TREND_STRATEGIES = (EMA_PULLBACK, SLOW_GRIND, BREAKOUT)
@@ -665,7 +676,7 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
             how = "in" if ok_in[state.state] == "trend" else "against"
             reasons.append(f"the {state.state} is {state.direction}: {strategy} only {how} the trend's direction")
     need = BUY_SIDE if direction == BUY else SELL_SIDE
-    if rule.side != need and strategy not in NO_DIRECTION_RULE:
+    if rule.side != need and not skips_direction_rule(settings, strategy):
         reasons.append(f"the direction rule says {rule.side} ({rule.reason})")
     reasons += hourly_reasons(settings, strategy, direction, seen)
     reasons += bounce_reasons(settings, strategy, t, hourly)
@@ -687,7 +698,7 @@ def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | N
     if reasons:
         idea.allowed, idea.blocked_by = False, "; ".join(reasons)
     else:
-        exempt = c.strategy in NO_DIRECTION_RULE
+        exempt = skips_direction_rule(settings, c.strategy)
         idea.steps.append(f"allowed at entry: {c.strategy} in a {state.state} {state.direction}; direction rule "
                           f"{rule.side} ({rule.reason.replace('the price', 'the entry price')})"
                           + (f"; the direction rule does not apply to {c.strategy}" if exempt else "")

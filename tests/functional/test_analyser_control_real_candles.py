@@ -41,9 +41,10 @@ pytestmark = pytest.mark.skipif(not (BASE.candles.folder / "5m").is_dir(),
 
 @lru_cache(maxsize=None)
 def day(d: date, on: bool):
-    # TREND_IGNORES_HOURLY_READ off (owner, 19 November 2026: on if left out): these tests were written, and their trades
-    # agreed with the owner, while the hourly read still decided for the slow grind and the EMA pullback.
-    return ideas_day(d, on, TREND_IGNORES_HOURLY_READ="off")
+    # TREND_IGNORES_HOURLY_READ and DIRECTION_RULE_SESSIONS off (owner, 19 November 2026: both on if left out): these
+    # tests were written, and their trades agreed with the owner, while the hourly read still decided for the slow grind
+    # and the EMA pullback and the session strategies skipped the direction rule.
+    return ideas_day(d, on, TREND_IGNORES_HOURLY_READ="off", DIRECTION_RULE_SESSIONS="off")
 
 
 def hm(t: datetime) -> str:
