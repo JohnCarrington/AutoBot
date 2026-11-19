@@ -175,6 +175,8 @@ Spread spikes are ignored as in the shared rejection part (`rejection.max_spread
 
 **Pullback entry** (owner, approved 19 November 2026; while the switch `PULLBACK_ENTRY` is on, on if left out): the breakout does not open on the break. The breakout candle starts a wait: a candle whose low reaches the 5-minute 8 EMA (a sell: its high), then a close above the 8 EMA (a sell: below; the same candle may do both), within `pullback_entry.wait_candles` (6) candles after the breakout candle; the trade opens at the next candle's open (the 7th at the latest), never sent late. A close below the 21 EMA (a sell: above) cancels it. The day's-move rule (4) is judged at that entry price. Stop 6, take profit and management unchanged (`strategies/pullback.py`).
 
+**Room to level** (owner, approved 19 November 2026; while the switch `ROOM_TO_LEVEL` is on, on if left out): the breakout and the Asian range breakout do not open when the nearest daily pivot, R1-R3 or S1-S3 ahead of the entry price (a buy: at or above it; a sell: at or below it; a level exactly at the entry counts, at 0 pips), from the bot's own levels as they stand when the trade would open, is nearer than the strategy's own stop (6 and 12 pips); the refusal names the level and the distance. No such level ahead: it opens as normal (`strategies/common.py` `room_reasons`).
+
 ### 3.6 Level reversal (sell; owner, 8 November 2026)
 
 **Switched on** (`STRATEGY_LEVEL_REVERSAL=on`). From the level reversal research of 8 November 2026 (`docs/research/level_reversal_tolerance_20261108.md`).
@@ -197,6 +199,8 @@ Spread spikes are ignored as in the shared rejection part (`rejection.max_spread
 4. **One trade each way per day:** once a trade that way has opened that day, no more (safety rule, section 6). A close whose trade was refused (for example in a big-news window) does not use up the day: a later close beyond the range can still open it (owner's answer 4).
 
 **Pullback entry** (owner, approved 19 November 2026; while the switch `PULLBACK_ENTRY` is on, on if left out): only the first close beyond the Asian range each way each day starts a wait, with the breakout's rules (a candle reaching the 5-minute 8 EMA, then a close back beyond it, within `pullback_entry.wait_candles` (6) candles; cancelled by a close beyond the 21 EMA against it); the trade opens at the next candle's open. After a wait expires or is cancelled there is no new wait that day in that direction. Stop 12, trail and once a day unchanged.
+
+**Room to level** (owner, approved 19 November 2026; while the switch `ROOM_TO_LEVEL` is on, on if left out): the breakout and the Asian range breakout do not open when the nearest daily pivot, R1-R3 or S1-S3 ahead of the entry price (a buy: at or above it; a sell: at or below it; a level exactly at the entry counts, at 0 pips), from the bot's own levels as they stand when the trade would open, is nearer than the strategy's own stop (6 and 12 pips); the refusal names the level and the distance. No such level ahead: it opens as normal (`strategies/common.py` `room_reasons`).
 
 ### 3.8 Session sweep (sell; owner, 16 November 2026)
 

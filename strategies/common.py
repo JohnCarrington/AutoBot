@@ -33,6 +33,7 @@ from decimal import Decimal
 from typing import Any
 
 from analyser.direction import BUY_SIDE, SELL_SIDE, decide
+from prices.model import plain
 from analyser.states import CONSOLIDATION, DOWN, EMERGING, POSSIBLE_REVERSAL, RANGING, TREND, UP
 
 SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE, BREAKOUT, LEVEL_REVERSAL = (
@@ -415,10 +416,48 @@ def signal_context(direction: str, rejection_start: datetime, furthest: Decimal 
             "signal": f"{direction} {rejection_start.strftime('%Y-%m-%dT%H:%M:%SZ')}"}
 
 
+# ROOM_TO_LEVEL (owner, approved 19 November 2026; on if left out): the strategies it applies to, and the levels.
+ROOM_TO_LEVEL_STRATEGIES = (BREAKOUT, ASIAN_RANGE_BREAKOUT)
+ROOM_LEVEL_TYPES = ("pivot", "R1", "R2", "R3", "S1", "S2", "S3")     # levels.rules PIVOT, R1-R3, S1-S3
+
+
+def room_to_level_context(strategy: str, direction: str, entry: Decimal, levels: Any, ppp: Decimal) -> dict:
+    """The nearest daily pivot, R1-R3 or S1-S3 ahead of the entry price in the trade's direction (a buy: at or
+    above it; a sell: at or below it; a level exactly at the entry counts, at 0 pips: the owner's answer, 19 November
+    2026), from the bot's own level list as it stands when the trade would open. Sell price. {} for other
+    strategies; {"room_level": None} when there is no such level ahead."""
+    if strategy not in ROOM_TO_LEVEL_STRATEGIES:
+        return {}
+    ahead = [lv for lv in (getattr(levels, "levels", None) or []) if lv.type in ROOM_LEVEL_TYPES
+             and (lv.price >= entry if direction == BUY else lv.price <= entry)]
+    if not ahead:
+        return {"room_level": None}
+    lv = min(ahead, key=lambda x: abs(x.price - entry))
+    return {"room_level": f"{lv.type} {plain(lv.price)}", "room_level_price": lv.price,
+            "room_pips": abs(lv.price - entry) / ppp}
+
+
+def room_reasons(settings: Any, c: Any) -> list[str]:
+    """ROOM_TO_LEVEL: the breakout and the Asian range breakout do not open when that level is nearer than the
+    strategy's own stop (breakout.stop_loss_pips, asian_range_breakout.stop_loss_pips)."""
+    if c.strategy not in ROOM_TO_LEVEL_STRATEGIES or not getattr(settings.switches, "room_to_level", False):
+        return []
+    room = (c.context or {}).get("room_pips")
+    if room is None:
+        return []
+    stop = stop_loss_pips(settings, c.strategy)
+    if room < stop:
+        return [f"ROOM_TO_LEVEL: {c.context['room_level']} is {plain(room.quantize(Decimal('0.1')))} pips "
+                f"{'above' if c.direction == BUY else 'below'} the entry {plain(c.entry_price)}, less than its "
+                f"{stop}-pip stop"]
+    return []
+
+
 def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | None,
           ema100: Decimal | None) -> Idea:
     """Turn a candidate into an idea, or a blocked one with every reason."""
     reasons, rule = allowed(settings, c.strategy, c.direction, c.entry_price, state, pivot, ema100, c.time)
+    reasons += room_reasons(settings, c)
     idea = Idea(pair, c.strategy, c.direction, c.time, c.entry_price, state.state, state.direction,
                 state.trend_type, rule.side, list(c.steps), context=dict(c.context))
     if reasons:

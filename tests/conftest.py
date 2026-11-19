@@ -42,7 +42,8 @@ def no_real_network(monkeypatch):
 # (GBPUSD only, 06:00 to 20:30, every strategy on except the three session strategies (their own tests switch
 # them on), stop 6 pips (EMA pullback 12), take profit 100), unless it sets its own.
 # PULLBACK_ENTRY off (owner, 19 November 2026: on if left out): the existing tests were written for the breakout and
-# the Asian range breakout entering on the break; the pullback entry has its own tests with it on.
+# the Asian range breakout entering on the break; the pullback entry has its own tests with it on. ROOM_TO_LEVEL off
+# (owner, 19 November 2026: on if left out) likewise; it has its own tests with it on.
 PRETEND_SWITCHES = """\
 PAIRS_ON=GBPUSD
 NEW_TRADES_FROM=06:00
@@ -58,6 +59,7 @@ STRATEGY_ASIAN_RANGE_BREAKOUT=off
 STRATEGY_SESSION_SWEEP=off
 STRATEGY_NEW_YORK_OPEN_REVERSAL=off
 PULLBACK_ENTRY=off
+ROOM_TO_LEVEL=off
 TRADING=off
 STOP_LOSS_PIPS=6
 STOP_LOSS_PIPS_EMA_PULLBACK=12

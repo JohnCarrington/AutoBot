@@ -69,6 +69,17 @@ def fork(strategy: Any) -> Any:
     return copy.deepcopy(strategy, memo)
 
 
+def with_room_to_level(settings: Any, cands: list, levels: Any) -> None:
+    """ROOM_TO_LEVEL (owner, approved 19 November 2026): each breakout and Asian range breakout candidate gets the
+    nearest daily pivot, R1-R3 or S1-S3 ahead of its entry, from the levels of the candle it opens on (as they stand
+    at that candle's start). Recorded whatever the switch; it refuses only while the switch is on."""
+    from decimal import Decimal
+    from strategies.common import room_to_level_context
+    ppp = Decimal(settings.market.points_per_pip)
+    for cand in cands:
+        cand.context.update(room_to_level_context(cand.strategy, cand.direction, cand.entry_price, levels, ppp))
+
+
 def _session_candle(strat: Any, c: Any, fast: dict, slow: dict) -> list:
     """A session strategy's candle; the Asian range breakout also gets the 5-minute 8 and 21 EMAs after it (its
     pullback entry, PULLBACK_ENTRY; owner, 19 November 2026)."""
@@ -164,7 +175,8 @@ class StrategyRunner:
         breakout, grind, pullback, reversal = fork(self.breakout), fork(self.grind), fork(self.pullback), fork(self.reversal)
         bounce = fork(self.bounce)
         sessions = [fork(x) for x in self.sessions]
-        events = watcher.on_candle(partial, band, levels if levels is not None else build(s, self.memo, partial.start))
+        lv = levels if levels is not None else build(s, self.memo, partial.start)
+        events = watcher.on_candle(partial, band, lv)
         cands = (breakout.on_candle(partial, None, None, fast.get(partial.start), slow.get(partial.start))
                  + grind.on_candle(partial, sg_ema.get(partial.start))
                  + pullback.on_candle(partial, fast.get(partial.start), slow.get(partial.start))
@@ -174,6 +186,7 @@ class StrategyRunner:
                  + [x for strat in sessions for x in _session_candle(strat, partial, fast, slow)])
         st = self.state_after(len(self.week) - 1)
         e100 = ema100.get(self.week[-1].start)
+        with_room_to_level(s, cands, lv)
         return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100) for cand in cands]
 
     def waiting_for_finished_candle(self, start: datetime) -> bool:
@@ -209,7 +222,8 @@ class StrategyRunner:
             changes = self.tracker.changes
             change_at = {ch.time: (k, ch) for k, ch in enumerate(changes)}
             band = Band(c.start, f.middle, f.upper, f.lower) if f.upper is not None else None
-            events = self.watcher.on_candle(c, band, build(s, self.memo, c.start))
+            lv = build(s, self.memo, c.start)
+            events = self.watcher.on_candle(c, band, lv)
             kc = change_at.get(c.start)
             since = changes[kc[0] - 1].time if kc and kc[0] > 0 else None
             cands = (self.breakout.on_candle(c, kc[1] if kc else None, since, fast.get(c.start), slow.get(c.start))
@@ -223,6 +237,7 @@ class StrategyRunner:
                 st = self.state_after(i - 1)
                 e100 = ema100.get(self.week[i - 1].start) if i > 0 else None
                 for cand in cands:
+                    with_room_to_level(s, [cand], lv)
                     out.append((c, check(s, s.market.pair, cand, st, self.pivot_at(c.start), e100)))
         self.done = len(hist)
         return out
