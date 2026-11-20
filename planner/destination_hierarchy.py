@@ -132,8 +132,7 @@ def research_target_forecast(price, zones, direction, observations, *, condition
     if not aligned:
         return dict(base, research_status="directional_momentum_not_confirmed",
                     evidence=["H4 EMA 7/13/21 stack does not align with directional thesis"])
-    if condition not in ("CONTINUATION", "CONTINUATION_CONFIRMED", "CORRECTION_ACTIVE",
-                         "CORRECTION_LIKELY", "EMERGING_TREND", "STRONG_TREND"):
+    if condition is None or condition in ("EXHAUSTION", "INDETERMINATE"):
         return dict(base, research_status="condition_not_confirmed", evidence=[])
     # Conservative feasibility gate: the hypothesis cannot assume an extension
     # exceeding remaining normal daily range. Evaluate its missed-trend rate offline.
