@@ -12,6 +12,13 @@ from tests.functional.test_planner_scenarios import (
 
 
 def _check_journeys(plan):
+    outlook = plan["observations"]["destination_first_outlook"]
+    assert isinstance(outlook, list)
+    for destination in outlook:
+        assert destination["class"] == "Major"
+        assert destination["destination_forecast"] == "not established by structural eligibility alone"
+        assert destination["countermove_forecast"] == "not established by structural eligibility alone"
+        assert isinstance(destination["candidate_entries"], list)
     journeys = plan["observations"]["conditional_journeys"]
     assert journeys, "A classified opportunity with qualifying zones must inspect journeys"
     for journey in journeys:
