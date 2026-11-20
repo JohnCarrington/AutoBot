@@ -16,6 +16,7 @@ from pathlib import Path
 from config.settings_loader import load_settings
 from planner.assess import plan_at
 from planner.forward_outcomes import score_journey
+from planner.target_outcomes import score_target_ladder
 from prices.store import CandleStore
 
 
@@ -44,6 +45,10 @@ def replay(settings, store):
             if c.start >= at and c.end <= future_end
         ]
         outcome = score_journey(plan, future, require_contiguous_m5=True)
+        ladder = (plan.get("observations") or {}).get("target_ladder") or {}
+        target_outcome = score_target_ladder(
+            ladder, future, at, plan.get("trade"), require_contiguous_m5=True
+        )
         rows.append({
             "assessment_utc": raw,
             "fresh": plan.get("fresh"),
@@ -55,6 +60,7 @@ def replay(settings, store):
             "observations": plan.get("observations"),
             "no_recommendation": plan.get("no_recommendation"),
             "outcome_24h": outcome,
+            "target_outcome_24h": target_outcome,
             "plan": plan,
         })
     return {"source": "actual AutoBot candle store, as-of historical replay",
@@ -75,7 +81,9 @@ def main():
         target = (row["destinations"] or {}).get("primary")
         print(row["assessment_utc"], "direction=", row["direction"],
               "entry=", row["entry_zone"], "target=", target,
-              "outcome=", row["outcome_24h"]["status"])
+              "outcome=", row["outcome_24h"]["status"],
+              "targets=", row["target_outcome_24h"].get("targets",
+                         row["target_outcome_24h"]["status"]))
 
 
 if __name__ == "__main__":
