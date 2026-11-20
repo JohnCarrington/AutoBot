@@ -39,7 +39,10 @@ def stamp(ts):
 
 
 def parse_tick(row):
-    ts = datetime.fromisoformat(row["timestamp"].strip()).replace(tzinfo=UTC)
+    parsed = datetime.fromisoformat(row["timestamp"].strip())
+    if parsed.tzinfo is not None:
+        raise ValueError("source timestamps must be timezone-naive")
+    ts = parsed.replace(tzinfo=UTC)
     bid, ask = Decimal(row["bid"]), Decimal(row["ask"])
     if not (bid.is_finite() and ask.is_finite() and 0 < bid <= ask):
         raise ValueError("invalid bid/ask")
@@ -88,7 +91,7 @@ class Writer:
             if path.exists():
                 raise FileExistsError(f"refusing to overwrite {path}")
             handle = gzip.open(path, "wt", newline="")
-            writer = csv.writer(handle, lineterminator="\\n")
+            writer = csv.writer(handle, lineterminator="\n")
             writer.writerow(HEADER)
             self.handles[key] = (handle, writer)
         self.handles[key][1].writerow(row)
@@ -165,7 +168,7 @@ def convert(inputs, output):
         "last_tick_utc": stamp(previous) if previous else None,
         "warning": "incomplete sessions and candle gaps must be audited before replay",
     }
-    (output / "import_manifest.json").write_text(json.dumps(manifest, indent=2) + "\\n")
+    (output / "import_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return manifest
 
 
