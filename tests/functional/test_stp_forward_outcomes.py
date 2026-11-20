@@ -59,3 +59,35 @@ def test_no_entry_plan_is_not_scorable():
 def test_stale_candle_cannot_change_outcome():
     stale = candle(-1, "1.3000", "1.3110")
     assert score_journey(plan(), [stale, candle(0, "1.3050", "1.3060")])["status"] == "NEITHER_CENSORED"
+
+
+def test_zone_invalidation_before_entry_is_not_success():
+    p = plan()
+    p["invalidation"] = {"zone_break_close": "1.3120"}
+    # Candle closes above the sell-zone break without touching the entry zone.
+    assert score_journey(p, [candle(0, "1.3125", "1.3130")])["status"] == "ZONE_INVALIDATED_BEFORE_ENTRY"
+
+
+def test_zone_invalidation_after_entry_is_not_success():
+    p = plan()
+    p["invalidation"] = {"zone_break_close": "1.3120"}
+    result = score_journey(p, [candle(0, "1.3100", "1.3110"),
+                               candle(1, "1.3120", "1.3130"),
+                               candle(2, "1.3000", "1.3010")])
+    assert result["status"] == "ZONE_INVALIDATED_AFTER_ENTRY"
+
+
+def test_target_and_invalidation_same_candle_is_ambiguous():
+    p = plan()
+    p["invalidation"] = {"zone_break_close": "1.3120"}
+    result = score_journey(p, [candle(0, "1.3100", "1.3110"),
+                               candle(1, "1.3000", "1.3130")])
+    assert result["status"] == "AMBIGUOUS_TARGET_OR_INVALIDATION"
+
+
+def test_buy_invalidation_mirrors_sell():
+    p = plan("BUY")
+    p["invalidation"] = {"zone_break_close": "1.2990"}
+    result = score_journey(p, [candle(0, "1.3000", "1.3010"),
+                               candle(1, "1.2980", "1.2985")])
+    assert result["status"] == "ZONE_INVALIDATED_AFTER_ENTRY"
