@@ -463,7 +463,7 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
     # ladder separately from the nearest primary target. A Major level is an
     # obstacle, NOT proof of the ultimate destination. No order or trade decision
     # is changed by this diagnostic.
-    from planner.destination_hierarchy import destination_hierarchy, target_ladder
+    from planner.destination_hierarchy import destination_hierarchy, research_target_forecast
     plan.observations["destination_hierarchy"] = destination_hierarchy(
         price,
         [
@@ -475,7 +475,7 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
     )
     # Report the three-tier target model without manufacturing a preferred
     # destination or changing the existing STP trading recommendation.
-    plan.observations["target_ladder"] = target_ladder(
+    plan.observations["target_ladder"] = research_target_forecast(
         price,
         [
             {"low": plain(z.low), "high": plain(z.high),
@@ -483,6 +483,8 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
             for z in zs
         ],
         "SELL" if bear else "BUY",
+        plan.observations,
+        condition=cond,
     )
     # Assess the COMPLETE journey for each eligible entry, not only the strongest/nearest entry.
     # This does not predict that the countermove will happen. It preserves the existing Major
