@@ -1,0 +1,5 @@
+timestamps compared 1003 of 2778
+decision differences none
+reason text changed only by the 150-pip wording {'B': 58, 'C': 54}
+B plans 924 primary distance pips median 13.9 p90 39.5 max 213.7 | ADR median 0.17 p90 0.45 max 2.71 | >150 pips 5
+C plans 906 primary distance pips median 13.3 p90 39.5 max 213.7 | ADR median 0.16 p90 0.44 max 2.71 | >150 pips 5

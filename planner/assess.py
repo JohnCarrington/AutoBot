@@ -51,7 +51,8 @@ ENTRY ZONE (D-16, FC-03): among NEAR or PLAUSIBLE zones of at least planner.min_
 if tied, the nearer. Reference entry: the zone's most significant level (D-17).
 DESTINATIONS (D-18, D-19): the support zones below the entry zone, nearest first: intermediate = the first; primary =
 the first Major; extended = the next Major. Each at the zone's near edge (its top, for a sell). No primary: no
-recommendation.
+recommendation. Since 9210ca5 (owner, 20 November 2026) zones are not clipped to the 150-pip round-number radius, so
+no distance limit applies to destinations; the primary's distance (pips and ADR) is recorded as context only.
 INVALIDATION (D-20, FC-02): an hourly close at least planner.break_beyond_pips (3) above the zone top; a 4-hour
 close at least 3 pips above the last lower high; the 4-hour direction no longer BEARISH; price reaching the primary
 destination before the zone.
@@ -428,8 +429,7 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
     majors = [o for o in dests if o.klass == MAJOR]
     if not majors:
         plan.no_recommendation = (f"no Major {'support' if bear else 'resistance'} zone "
-                                  f"{'below' if bear else 'above'} the entry zone within the "
-                                  f"{settings.levels.round_numbers_within_pips}-pip window for the primary destination")
+                                  f"{'below' if bear else 'above'} the entry zone for the primary destination")
         plan.candidates = [_zone_dict(zz, i) for zz, _, _, i in looked]
         return plan
     # D-1 correction (owner's approval, 18 November 2026): admission uses the same price-reachability test as the
@@ -483,6 +483,10 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
     risk = abs(zone_break - ref)
     if risk > 0:
         plan.observations["reward_to_invalidation"] = plain((abs(ref - edge(majors[0])) / risk).quantize(Decimal("0.1")))
+    # context only (no rule uses it): how far the primary destination is from price, in pips and ADR
+    to_primary = abs(price - edge(majors[0]))
+    plan.observations["primary_distance_pips"] = plain(pips(settings, to_primary))
+    plan.observations["primary_distance_adr"] = plain((to_primary / snap.adr).quantize(Decimal("0.01")))
     return plan
 
 
