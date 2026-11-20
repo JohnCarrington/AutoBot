@@ -124,6 +124,8 @@ def test_destination_first_decision_is_consistent_with_published_plan():
         _, plan = at_end(store)
         decision = plan["observations"]["destination_first_selection"]
         assert decision["conditional_only"] is True
+        assert decision["execution_authorised"] is False
+        assert decision["entry_confirmation"] == "not assessed by structural planner"
         assert decision["mode"] in (
             "nearest_untouched_major_ahead", "legacy_entry_rank_fallback",
         )
