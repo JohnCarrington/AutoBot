@@ -78,6 +78,9 @@ class Writer:
     def write(self, tf, row):
         day = row[0][:10]
         key = (tf, day)
+        for old_key in list(self.handles):
+            if old_key[0] == tf and old_key != key:
+                self.handles.pop(old_key)[0].close()
         if key not in self.handles:
             directory = self.root / tf
             directory.mkdir(parents=True, exist_ok=True)
@@ -139,8 +142,6 @@ def convert(inputs, output):
                     if bid == ask:
                         quality["zero_spread_ticks"] += 1
                     quality["ticks"] += 1
-                    if "first_tick" not in quality:
-                        pass
                     key = bucket(ts, "5m")
                     if current is None or key != current.start:
                         if current is not None:
