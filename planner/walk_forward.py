@@ -52,6 +52,11 @@ def audit(settings, store, start: datetime, end: datetime, stride: timedelta,
                 if c.start >= at and c.end <= at + horizon
             ]
             result = score_journey(plan, future, require_contiguous_m5=True)
+            if result["status"] in ("ENTRY_ONLY_CENSORED", "NEITHER_CENSORED"):
+                m5 = [c for c in future if c.timeframe == "5m"]
+                if not m5 or max(c.end for c in m5) < at + horizon:
+                    result = {"status": "DATA_GAP_CENSORED",
+                              "reason": "incomplete M5 coverage at end of observation window"}
             rows.append({"as_of_utc": at.isoformat(), "direction": plan["trade"],
                          "entry": plan["entry_zone"], "primary": plan["destinations"]["primary"],
                          "condition": plan["condition"], **result})
