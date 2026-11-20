@@ -1,0 +1,94 @@
+{
+ "n": 484,
+ "errors": 0,
+ "categories": [
+  [
+   "direction NEUTRAL",
+   161
+  ],
+  [
+   "PLAN",
+   160
+  ],
+  [
+   "direction TRANSITIONAL",
+   60
+  ],
+  [
+   "D-1",
+   42
+  ],
+  [
+   "condition INDETERMINATE",
+   41
+  ],
+  [
+   "no Major destination",
+   8
+  ],
+  [
+   "condition REVERSAL_RISK",
+   7
+  ],
+  [
+   "data not fresh (reported)",
+   4
+  ],
+  [
+   "no defensible entry zone",
+   1
+  ]
+ ],
+ "with_direction": 262,
+ "with_structure_zones": 214,
+ "leak_check": [
+  {
+   "t": "2025-04-16T12:00:00+00:00",
+   "identical": true
+  },
+  {
+   "t": "2025-07-25T12:00:00+00:00",
+   "identical": true
+  },
+  {
+   "t": "2025-06-09T12:00:00+00:00",
+   "identical": true
+  },
+  {
+   "t": "2025-03-05T12:00:00+00:00",
+   "identical": true
+  },
+  {
+   "t": "2024-12-30T12:00:00+00:00",
+   "identical": true
+  },
+  {
+   "t": "2025-10-30T12:00:00+00:00",
+   "identical": true
+  },
+  {
+   "t": "2024-11-01T12:00:00+00:00",
+   "identical": true
+  },
+  {
+   "t": "2025-10-24T12:00:00+00:00",
+   "identical": true
+  },
+  {
+   "t": "2024-09-10T12:00:00+00:00",
+   "identical": true
+  },
+  {
+   "t": "2025-03-27T12:00:00+00:00",
+   "identical": true
+  },
+  {
+   "t": "2024-08-16T12:00:00+00:00",
+   "identical": true
+  },
+  {
+   "t": "2026-03-25T12:00:00+00:00",
+   "identical": true
+  }
+ ]
+}

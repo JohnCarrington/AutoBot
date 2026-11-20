@@ -144,7 +144,9 @@ class Prices:
 
     def text(self, s: str | None) -> str | None:
         """A planner sentence with its prices (13213.5, 13200) written as 1.32135, 1.32000. Only numbers of the
-        pair's points size (4-5 digits before an optional decimal) are converted; times and counts are left alone."""
+        pair's points size (4-5 digits before an optional decimal) are converted; times and counts are left alone. Both
+        ends of a range are converted ("13193.2-13202.5"), as well as "13193.2–13202.5"; a minus sign not preceded by a
+        digit still keeps its number as it is."""
         if not s:
             return s
         lo, hi = 5000, 50000                              # GBPUSD points; years (2026) and counts are left alone
@@ -156,7 +158,7 @@ class Prices:
             if lo <= v < hi and self.scale == 10000:
                 return self.real(v) or m.group(0)
             return m.group(0)
-        return re.sub(r"(?<![\d:.\-])\d{4,5}(?:\.\d+)?(?![\d:])", rep, s)
+        return re.sub(r"(?<![\d:.])(?<!(?<!\d)-)\d{4,5}(?:\.\d+)?(?![\d:])", rep, s)
 
 
 def read_state(settings: Any) -> dict | None:
