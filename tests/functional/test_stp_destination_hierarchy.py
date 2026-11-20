@@ -35,3 +35,22 @@ def test_inverted_zone_rejected():
     import pytest
     with pytest.raises(ValueError, match="inverted"):
         destination_hierarchy("13400", [{"low": "13410", "high": "13400"}], "SELL")
+
+
+def test_invalid_forecast_probability_is_rejected():
+    import pytest
+    for invalid in ("-0.1", "1.1", "NaN"):
+        with pytest.raises(ValueError, match="forecast_probability"):
+            destination_hierarchy("13400", [
+                {"low": "13330", "high": "13340",
+                 "forecast_probability": invalid}
+            ], "SELL")
+
+
+def test_touching_zone_is_not_a_future_destination():
+    result = destination_hierarchy("13450", [
+        {"low": "13445", "high": "13455", "class": "Major"},
+        {"low": "13400", "high": "13410", "class": "Major"},
+    ], "SELL")
+    assert len(result["obstacles"]) == 1
+    assert result["obstacles"][0]["low"] == "13400"
