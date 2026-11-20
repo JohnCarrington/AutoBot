@@ -11,7 +11,8 @@ from typing import Any, Sequence
 from prices.model import Candle, parse_iso
 
 
-def score_journey(plan: dict[str, Any], candles: Sequence[Candle]) -> dict[str, Any]:
+def score_journey(plan: dict[str, Any], candles: Sequence[Candle], *,
+                  require_contiguous_m5: bool = False) -> dict[str, Any]:
     """Score a frozen conditional path using completed candles of each timeframe.
 
     5m candles establish zone touches. H1 closes establish zone-break
@@ -60,7 +61,7 @@ def score_journey(plan: dict[str, Any], candles: Sequence[Candle]) -> dict[str, 
                 gap_at = previous
         last_end[candle.timeframe] = candle.end
 
-    if gap_at is not None:
+    if require_contiguous_m5 and gap_at is not None:
         # A missing M5 interval can hide either entry, target or invalidation.
         # Refuse to score the sequence across that hole, including weekends.
         return {"status": "DATA_GAP_CENSORED", "first_gap_at": gap_at.isoformat()}
