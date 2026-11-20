@@ -8,7 +8,7 @@ low, round numbers, London and New York session highs and lows, hourly turning l
     planner.daily_swing_lookback_weeks (planner/structure.py);
   * moving-average levels (P-C9): hourly EMA100 and EMA200, 4-hour EMA100, 4-hour EMA200 once warmed up, and the
     4-hour Bollinger middle band.
-Zones within levels.round_numbers_within_pips (150) of price are kept (P-C5).
+Structural zones are retained regardless of distance from spot; levels.round_numbers_within_pips only controls round-number discovery (P-C5).
 
 FAMILIES (D-08): PIVOT, SESSION, STRUCTURE, HTF_STRUCTURE (daily swings), MOVING_AVERAGE, PSYCHOLOGICAL. Several
 levels of one family in a zone count once. "Daily-or-weekly" levels: daily or weekly pivots and R/S, the previous
@@ -304,8 +304,8 @@ def zones(settings: Any, levels: Sequence[MapLevel], adr: Decimal, hourly: Seque
     """The zones. Built from the FIXED levels first (anchored at each zone's lowest level), so that moving levels
     (moving averages, a running session's high or low) never reshape a zone (FC-05); each moving level then joins the
     nearest zone it fits in (every member still within the width of every other), and the moving levels left over make
-    zones of their own. Zones are built from every level and then kept only within levels.round_numbers_within_pips of
-    `price` (P-C5), so the window's edge cannot shift the zones near price."""
+    zones of their own. All discovered structural zones are retained; the round-number discovery radius
+    does not constrain structural destinations."""
     width = zone_width(settings, adr)
     groups = _anchored([lv for lv in levels if lv.fixed], width)
     spare = []
@@ -318,9 +318,9 @@ def zones(settings: Any, levels: Sequence[MapLevel], adr: Decimal, hourly: Seque
         else:
             spare.append(lv)
     groups = sorted(groups + _anchored(spare, width), key=lambda g: g[0].price)
-    if price is not None:
-        window = Decimal(settings.levels.round_numbers_within_pips) * ppp(settings)
-        groups = [g for g in groups if g[0].price <= price + window and g[-1].price >= price - window]
+    # Retain the complete structural map. The round-number discovery radius is
+    # not a structural destination horizon; filtering here could remove valid
+    # Major targets before the planner evaluates them.
     out = []
     for g in groups:
         fams = {m.family for m in g}
