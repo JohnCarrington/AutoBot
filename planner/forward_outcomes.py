@@ -5,20 +5,26 @@ No orders, no prediction probabilities, no interpolation within a candle.
 """
 from __future__ import annotations
 
+from datetime import datetime
 from decimal import Decimal
-from typing import Any, Sequence
+from typing import Any, Callable, Iterable, Sequence
 
 from prices.model import Candle, parse_iso
 
 
 def score_journey(plan: dict[str, Any], candles: Sequence[Candle], *,
-                  require_contiguous_m5: bool = False) -> dict[str, Any]:
+                  require_contiguous_m5: bool = False,
+                  open_slots: Callable[[datetime, datetime], Iterable[datetime]] | None = None) -> dict[str, Any]:
     """Score a frozen conditional path using completed candles of each timeframe.
 
     5m candles establish zone touches. H1 closes establish zone-break
     invalidation; H4 closes establish structure-break invalidation. All events
     with the same closing timestamp are assessed together to avoid inventing
     their order. This measures structural sequences, never actual fills/P&L.
+
+    open_slots(start, end), when given, lists the 5-minute candle starts the market was open for in [start, end)
+    (prices.calendar.MarketHours.open_slots). A break between two 5-minute candles is then a data gap only if the
+    market was open during it: the weekend closure is not missing data. Without it every break is treated as a gap.
     """
     from itertools import groupby
 
@@ -63,7 +69,8 @@ def score_journey(plan: dict[str, Any], candles: Sequence[Candle], *,
         events = list(events_iter)
         touches = [c for c in events if c.timeframe == "5m"]
         for c in sorted(touches, key=lambda candle: candle.start):
-            if require_contiguous_m5 and c.start > last_m5_end:
+            if (require_contiguous_m5 and c.start > last_m5_end
+                    and (open_slots is None or any(True for _ in open_slots(last_m5_end, c.start)))):
                 # Stop only when the gap precedes the observed outcome;
                 # gaps AFTER a completed journey do not erase its evidence.
                 return {"status": "DATA_GAP_CENSORED", "first_gap_at": last_m5_end.isoformat()}

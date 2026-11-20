@@ -6,6 +6,7 @@ from unittest.mock import patch
 import pytest
 
 from planner.walk_forward import audit
+from tests.functional.test_planner_scenarios import S
 
 T = datetime(2026, 11, 20, 12, tzinfo=timezone.utc)
 
@@ -37,7 +38,7 @@ def test_no_plan_is_not_scored():
     store = FakeStore(T + timedelta(hours=48))
     plan = {"fresh": True, "entry_zone": None, "no_recommendation": "no Major destination"}
     with patch("planner.walk_forward.plan_at", return_value=SimpleNamespace(as_dict=lambda: plan)):
-        result = audit(None, store, T, T + timedelta(hours=4),
+        result = audit(S, store, T, T + timedelta(hours=4),
                        timedelta(hours=4), timedelta(hours=24))
     assert result["counts"] == {"NO_PLAN": 1}
     assert not store.future_reads
@@ -47,7 +48,7 @@ def test_stale_plan_is_not_scored():
     store = FakeStore(T + timedelta(hours=48))
     plan = {"fresh": False, "entry_zone": None}
     with patch("planner.walk_forward.plan_at", return_value=SimpleNamespace(as_dict=lambda: plan)):
-        result = audit(None, store, T, T + timedelta(hours=4),
+        result = audit(S, store, T, T + timedelta(hours=4),
                        timedelta(hours=4), timedelta(hours=24))
     assert result["counts"] == {"STALE_DATA": 1}
     assert not store.future_reads
