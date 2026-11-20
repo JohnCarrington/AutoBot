@@ -48,12 +48,22 @@ def score_journey(plan: dict[str, Any], candles: Sequence[Candle]) -> dict[str, 
     future = sorted((c for c in candles if c.start >= as_of and c.end > as_of),
                     key=lambda c: (c.end, c.start, c.timeframe))
     last_end: dict[str, Any] = {}
+    gap_at = None
     for candle in future:
         if candle.timeframe not in ("5m", "1h", "4h"):
             raise ValueError(f"unsupported scoring timeframe: {candle.timeframe}")
         if candle.start < last_end.get(candle.timeframe, as_of):
             raise ValueError("overlapping forward candles")
+        if candle.timeframe == "5m":
+            previous = last_end.get("5m", as_of)
+            if candle.start > previous and gap_at is None:
+                gap_at = previous
         last_end[candle.timeframe] = candle.end
+
+    if gap_at is not None:
+        # A missing M5 interval can hide either entry, target or invalidation.
+        # Refuse to score the sequence across that hole, including weekends.
+        return {"status": "DATA_GAP_CENSORED", "first_gap_at": gap_at.isoformat()}
 
     for end, events_iter in groupby(future, key=lambda c: c.end):
         events = list(events_iter)
