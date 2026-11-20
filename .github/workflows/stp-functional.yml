@@ -1,0 +1,38 @@
+name: STP isolated functional verification
+on:
+  pull_request:
+    paths:
+      - 'planner/**'
+      - 'tests/functional/**'
+      - 'tests/technical/test_stp*.py'
+      - '.github/workflows/stp-functional.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  stp-functional:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: Compile planner
+        run: python -m compileall -q planner
+      - name: Planner technical and functional regression
+        run: >-
+          python -m pytest -q
+          tests/technical/test_planner.py
+          tests/technical/test_stp_corrections.py
+          tests/technical/test_stp_targeted.py
+          tests/technical/test_stp_dashboard.py
+          tests/functional/test_planner_scenarios.py
+          tests/functional/test_stp_conditional_journeys.py
+          tests/functional/test_stp_forward_outcomes.py
+          tests/functional/test_stp_walk_forward.py
+          tests/functional/test_stp_dashboard_scenarios.py

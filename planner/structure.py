@@ -12,7 +12,21 @@ completed it (the later of the N-th candle after it and the first candle that ma
 Structure (P-B12): from the last two confirmed swing highs and the last two confirmed swing lows:
   up    both higher;   down    both lower;   otherwise mixed.
 A confirmed break (P-B10, P-B11): planner.structure_break_closes candle close(s) in a row at least
-hourly_read.break_beyond_pips (3) beyond the level (the hourly read's own rule, verified). Wicks never count.
+planner.break_beyond_pips (3) beyond the level (the hourly read's rule on main, given its own setting here: owner, 19 November 2026). Wicks never count.
+
+Dominant structure (owner's approval of candidate C, 19 November 2026; D-20, design 6.2/6.3): `structure` above is
+the OBSERVED swing sequence and is never changed; `dominant_structure` is the CONFIRMED one used for the 4-hour
+direction. They differ only in this case: the observed sequence is mixed because the latest swing high went above the
+previous swing high by a wick only (no confirmed close at least 3 pips above the previous high, the P-B10/P-B11
+rule), while the swings before it made a down structure (an established trend). Then:
+  unresolved   no confirmed close either way since the sweep: it stays mixed (NEUTRAL), with the reason
+               "sweep unresolved". A sweep never establishes a direction by itself;
+  rejected     a confirmed close (the same rule) at least 3 pips below the last swing low made before the sweep, on a
+               candle after the sweep candle: down again. The swings are kept as found: the sweep high stays the
+               last swing high (the impulse starts from it; a confirmed close above it is a structural break);
+  confirmed    a close at least 3 pips above the previous swing high: a real higher high, the observed (mixed)
+               sequence stands.
+The mirror image applies to a wick-only lower low in an up structure. No new number; the daily chart is unaffected.
 
 Threshold misses (owner's adjustment 2, 17 November 2026): a turn that passes the candles-each-side test but not the
 minimum move, and is the most extreme price since the last confirmed swing of its kind, is recorded with the move it
@@ -98,13 +112,14 @@ class Structure:
     lows: list[Swing]
     broken: tuple[str, Candle, Swing] | None   # ("up"/"down", the breaking candle, the swing it broke)
     why: str
+    sweep: dict | None = None           # dominant_structure only: a wick-only sweep, "unresolved" or "rejected"
 
 
 def broke(settings: Any, candles: Sequence[Candle], after: Swing, direction: str) -> Candle | None:
     """The first candle after the swing that completes structure_break_closes closes in a row at least
     break_beyond_pips beyond it (`direction` up: above a swing high; down: below a swing low)."""
     side = side_of(settings)
-    beyond = Decimal(settings.hourly_read.break_beyond_pips) * ppp(settings)
+    beyond = Decimal(settings.planner.break_beyond_pips) * ppp(settings)
     need = settings.planner.structure_break_closes
     run = 0
     for c in candles[after.index + 1:]:
@@ -133,6 +148,59 @@ def structure(settings: Any, candles: Sequence[Candle], timeframe: str, found: l
         b = broke(settings, candles, lows[1], DOWN)
         return Structure(timeframe, UP, highs, lows, (DOWN, b, lows[1]) if b else None, "higher highs and higher lows: " + said)
     return Structure(timeframe, MIXED, highs, lows, None, "mixed: " + said)
+
+
+def _sweep(settings: Any, candles: Sequence[Candle], timeframe: str, found: list[Swing], st: Structure,
+           bear: bool) -> Structure | None:
+    """The dominant structure when `st` is mixed only by a wick-only sweep against an established trend (see the
+    module text), else None. bear: a swing high above the previous one in a down structure; otherwise the mirror."""
+    h0, h1 = st.highs
+    l0, l1 = st.lows
+    if not (h1.price > h0.price and l1.price < l0.price):
+        return None
+    sw, held = (h1, h0) if bear else (l1, l0)
+    if broke(settings, candles, held, UP if bear else DOWN) is not None:
+        return None                                    # a confirmed close beyond the earlier swing: a real break
+    prior = structure(settings, candles, timeframe, [s for s in found if s is not sw])
+    if prior.sequence != (DOWN if bear else UP):
+        return None                                    # no established trend before the sweep: mixed stands
+    other = [s for s in found if s.kind == ("low" if bear else "high") and s.candle_utc < sw.candle_utc]
+    if not other:
+        return None
+    anchor = other[-1]                                 # the last swing on the other side made before the sweep
+    after_sweep = Swing(anchor.kind, anchor.price, anchor.timeframe, anchor.candle_utc, anchor.known_utc,
+                        max(anchor.index, sw.index))   # closes on candles after the sweep candle only
+    c = broke(settings, candles, after_sweep, DOWN if bear else UP)
+    said = (f"swing {sw.kind} {plain(sw.price)} went {'above' if bear else 'below'} the previous swing {sw.kind} "
+            f"{plain(held.price)} by a wick only (no 4-hour close 3 pips beyond it)")
+    info = {"swing": sw.kind, "price": plain(sw.price), "beyond": plain(held.price),
+            "candle_utc": sw.candle_utc.strftime("%Y-%m-%dT%H:%M:%SZ"), "resolve_beyond": plain(anchor.price)}
+    if c is None:
+        return Structure(timeframe, MIXED, st.highs, st.lows, None,
+                         f"{st.why}; {said}: sweep unresolved (no confirmed close either way yet; it resolves on a "
+                         f"confirmed close beyond the swing {anchor.kind} {plain(anchor.price)})",
+                         info | {"state": "unresolved"})
+    side = side_of(settings)
+    return Structure(timeframe, DOWN if bear else UP, st.highs, st.lows, None,
+                     f"{'lower highs and lower lows' if bear else 'higher highs and higher lows'} confirmed: {said}; "
+                     f"then the {uk_short(c.start)} 4-hour candle closed {plain(cl(c, side))}, beyond the swing "
+                     f"{anchor.kind} {plain(anchor.price)}: the sweep was rejected (observed swings: {st.why[7:]})",
+                     info | {"state": "rejected", "rejected_by_close_utc": c.start.strftime("%Y-%m-%dT%H:%M:%SZ")})
+
+
+def dominant_structure(settings: Any, candles: Sequence[Candle], timeframe: str,
+                       found: list[Swing] | None = None) -> Structure:
+    """The confirmed structure for the dominant direction (see the module text): the observed structure, except a
+    mixed one caused only by a wick-only sweep of an established trend."""
+    found = swings(settings, candles, timeframe) if found is None else found
+    st = structure(settings, candles, timeframe, found)
+    if st.sequence != MIXED or len(st.highs) < 2 or len(st.lows) < 2:
+        return st
+    for bear in (True, False):
+        r = _sweep(settings, candles, timeframe, found, st, bear)
+        if r is not None:
+            return r
+    return st
 
 
 def threshold_misses(settings: Any, candles: Sequence[Candle], timeframe: str, confirmed: list[Swing]) -> list[dict]:

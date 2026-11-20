@@ -269,6 +269,7 @@ def test_the_engine_writes_the_dashboards_status(S, monkeypatch):
     sessions = ("Asian range breakout", "session sweep", "New York open reversal")   # in every state; off in these tests
     assert "EMA pullback" in names and all(a["switched_on"] for a in st["strategies_allowed"] if a["name"] not in sessions)
     assert [a["switched_on"] for a in st["strategies_allowed"] if a["name"] in sessions] == [False, False, False]
+    assert "Bollinger bounce" in names                         # the hourly-pierce bounce: in every state
     assert st["price"] == {"bid": "98.0", "offer": "99.5", "time_utc": t.strftime("%Y-%m-%dT%H:%M:%SZ")}
 
 

@@ -8,13 +8,12 @@ market state at each moment is the one the service would have had). At each
   * "the current state" is the analyser's state after the previous finished
     candle (the state the strategy would see while this candle forms);
   * each strategy is given the candle; when its entry price is reached, the
-    candidate is checked (strategies/common.py: switch, state, direction rule,
-    and the hourly read after the last hourly candle finished by the candle's start);
-  * the range trade and the level reversal run their OWN rejection watcher with
-    only the rules of design 3.4 and 3.6 (design_only); the analyser's watcher is
-    not changed;
-  * the Bollinger bounce keeps its own hourly chart (prices/hourly_chart.py),
-    built from the same 5-minute candles, the warm-up candles included;
+    candidate is checked (strategies/common.py: switch, state, direction rule);
+  * the first build's bounce (Bollinger bounce 5m), the range trade and the level reversal run their OWN
+    rejection watcher with only the rules of design 3.3, 3.4 and 3.6 (design_only); the analyser's watcher is not
+    changed;
+  * the hourly-pierce Bollinger bounce keeps its own hourly chart (prices/hourly_chart.py), built from the same
+    5-minute candles, the warm-up candles included;
   * the session strategies (the Asian range breakout, the session sweep and the
     New York open reversal) keep their own UK-day ranges from the same candles,
     the warm-up candles included.
@@ -26,24 +25,22 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from decimal import Decimal
 from types import SimpleNamespace
 from typing import Any
 
-from analyser.hourly_read import HourlyReader
 from analyser.indicators import last_candles
 from analyser.market_state import MemoStore, StateTracker
-from analyser.states import CONSOLIDATION, NONE, POSSIBLE_REVERSAL, switch_on
+from analyser.states import CONSOLIDATION, NONE
 from config.pairs import check_same_pair
 from levels.current import build
 from levels.rules import PIVOT
 from prices.indicators import Band, ema
 from prices.calendar import MarketHours
-from prices.model import plain
 from prices.store import CandleStore
 from rejection.watch import RejectionWatcher
 from strategies.bollinger_bounce.strategy import BollingerBounce
-from strategies.common import Idea, check, level_stop_context
+from strategies.bollinger_bounce_5m.strategy import candidates as bounce_5m_candidates
+from strategies.common import Idea, check
 from strategies.ema_pullback.strategy import EmaPullback, HourlyTrendReader
 from strategies.range_trade.strategy import candidates as range_candidates
 from strategies.slow_grind.strategy import SlowGrind
@@ -52,38 +49,6 @@ from strategies.level_reversal.strategy import LevelReversal
 from strategies.asian_range_breakout.strategy import AsianRangeBreakout
 from strategies.session_sweep.strategy import SessionSweep
 from strategies.new_york_open_reversal.strategy import NewYorkOpenReversal
-
-def reversal_macd(tracker: Any, i: int, new_direction: str) -> tuple[bool, str]:
-    """Check 7's MACD rule in a possible reversal (owner, 18 November 2026, with the owner's answers): the 5-minute
-    MACD (35, 45, 30) histogram of the last finished candle (week candle i), against the bars since the old trend
-    started (the start of its emerging trend, which the analyser keeps). Allowed while the bar is the biggest in the
-    old trend's direction, or smaller than both that biggest bar and the bar before it, or on the other side of zero
-    (or at zero): then it is past its biggest. (allowed, why)."""
-    from prices.model import uk_short
-    hist, extras = tracker.history, tracker.extras
-    if i < 0 or i >= len(hist) or i >= len(extras):
-        return False, "the MACD is not known"
-    start = extras[i]["trend_start"]
-    sign = Decimal(-1) if new_direction == "up" else Decimal(1)   # the old trend: down (new up) bars are negative
-    bars = [(h[0].candle.start, h[0].macd_hist) for h in hist[:i + 1] if start is None or h[0].candle.start >= start]
-    bars = [(t, sign * x) for t, x in bars if x is not None]
-    if not bars:
-        return False, "the 5-minute MACD histogram is not known"
-    now = bars[-1][1]
-    since = f"since the old trend started at {uk_short(start)}" if start is not None else "this week"
-    q = lambda x: plain((sign * x).quantize(Decimal("0.01")))   # noqa: E731
-    if now <= 0:
-        return True, f"the histogram {q(now)} has crossed zero: past its biggest bar in the old direction"
-    big_t, big = max(bars, key=lambda b: b[1])
-    if now >= big:
-        return True, f"the histogram {q(now)} is its biggest bar in the old direction {since}"
-    prev = bars[-2][1] if len(bars) >= 2 else None
-    if prev is not None and now < prev:
-        return True, (f"the histogram {q(now)} is past its biggest bar {q(big)} ({uk_short(big_t)}) {since} and "
-                      f"shrinking (the bar before {q(prev)})")
-    return False, (f"the histogram {q(now)} is not its biggest bar {q(big)} ({uk_short(big_t)}) {since}, and not "
-                   f"shrinking" + (f" (the bar before {q(prev)})" if prev is not None else ""))
-
 
 @dataclass
 class Replay:
@@ -137,7 +102,6 @@ class StrategyRunner:
         self.pivots: dict = {}
         self.grind = SlowGrind(s)
         self.pullback = EmaPullback(s, self._hourly(self.hourly_end or self.week_open))
-        self.hourly_read = self._hourly_read(self.hourly_end or self.week_open)
         self.watcher = RejectionWatcher(s, design_only=True)
         self.breakout = Breakout(s)
         self.reversal = LevelReversal(s)
@@ -150,30 +114,12 @@ class StrategyRunner:
     def _hourly(self, end: datetime) -> HourlyTrendReader:
         return HourlyTrendReader(self.s, last_candles(self.memo, "1h", end, self.s.ema_pullback.hourly_history_candles))
 
-    def _hourly_read(self, end: datetime) -> HourlyReader:
-        """The hourly read (analyser/hourly_read.py) from the stored hourly candles finished by `end`."""
-        return HourlyReader(self.s, last_candles(self.memo, "1h", end, self.s.hourly_read.history_candles))
-
     def state_after(self, i: int):
-        """The analyser's state after week candle i (before the week's first candle: consolidation). In a possible
-        reversal, while ANALYSER_GOVERNS_ALL is on, also `macd_ok` and `macd_why`: check 7's MACD rule at that candle
-        (owner, 18 November 2026; design 2.10)."""
+        """The analyser's state after week candle i (before the week's first candle: consolidation)."""
         t = self.week[i].start if i >= 0 else None
         before = [ch for ch in self.tracker.changes if t is not None and ch.time <= t]
-        st = (SimpleNamespace(state=before[-1].state, direction=before[-1].direction, trend_type=before[-1].trend_type)
-              if before else SimpleNamespace(state=CONSOLIDATION, direction=NONE, trend_type=None))
-        if st.state == POSSIBLE_REVERSAL and switch_on(self.s, "analyser_governs_all"):
-            st.macd_ok, st.macd_why = reversal_macd(self.tracker, i, st.direction)
-        return st
-
-    def trend_hourly(self, i: int, hr: Any):
-        """The hourly read `hr` as the analyser and the trend group see it after week candle i, while
-        ANALYSER_USES_HOURLY is on: a 5-minute break of the hourly range standing after that candle's close counts
-        as a rally or a sell-off (analyser.hourly_read.with_break; owner, 18 November 2026); None while it is off."""
-        if not switch_on(self.s, "analyser_uses_hourly") or i < 0 or i >= len(self.tracker.extras):
-            return None
-        from analyser.hourly_read import with_break
-        return with_break(hr, self.tracker.extras[i].get("break"))
+        return (SimpleNamespace(state=before[-1].state, direction=before[-1].direction, trend_type=before[-1].trend_type)
+                if before else SimpleNamespace(state=CONSOLIDATION, direction=NONE, trend_type=None))
 
     def pivot_at(self, t: datetime, keep: bool = True):
         """The pivot at t. Kept for a finished candle (step); the live check (keep=False) only reads one already
@@ -210,22 +156,17 @@ class StrategyRunner:
         breakout, grind, pullback, reversal = fork(self.breakout), fork(self.grind), fork(self.pullback), fork(self.reversal)
         bounce = fork(self.bounce)
         sessions = [fork(x) for x in self.sessions]
-        levels = levels if levels is not None else build(s, self.memo, partial.start)
-        events = watcher.on_candle(partial, band, levels)
+        events = watcher.on_candle(partial, band, levels if levels is not None else build(s, self.memo, partial.start))
         cands = (breakout.on_candle(partial, None, None)
                  + grind.on_candle(partial, sg_ema.get(partial.start))
                  + pullback.on_candle(partial, fast.get(partial.start), slow.get(partial.start))
-                 + bounce.on_candle(partial) + range_candidates(watcher, events)
+                 + bounce.on_candle(partial) + bounce_5m_candidates(watcher, events)
+                 + range_candidates(watcher, events)
                  + reversal.on_candle(partial, watcher, events)
                  + [x for strat in sessions for x in strat.on_candle(partial)])
         st = self.state_after(len(self.week) - 1)
         e100 = ema100.get(self.week[-1].start)
-        hr = self.hourly_read.at(partial.start)
-        th = self.trend_hourly(len(self.week) - 1, hr)
-        with_level_stops(s, cands, levels)
-        done = self.warm + self.week                        # the finished candles before the forming one
-        return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100, hr, done, th)
-                for cand in cands]
+        return [check(s, s.market.pair, cand, st, self.pivot_at(partial.start, keep=False), e100) for cand in cands]
 
     def waiting_for_finished_candle(self, start: datetime) -> bool:
         """True while the 5-minute candle before the forming one (starting at `start`) is not yet taken: in the
@@ -257,39 +198,26 @@ class StrategyRunner:
             ema100 = ema(allc, side, s.analyser.direction_ema_periods)
             if self.hourly_end is None:
                 self.pullback.hourly = self._hourly(c.end)
-                self.hourly_read = self._hourly_read(c.end)
             changes = self.tracker.changes
             change_at = {ch.time: (k, ch) for k, ch in enumerate(changes)}
             band = Band(c.start, f.middle, f.upper, f.lower) if f.upper is not None else None
-            levels = build(s, self.memo, c.start)
-            events = self.watcher.on_candle(c, band, levels)
+            events = self.watcher.on_candle(c, band, build(s, self.memo, c.start))
             kc = change_at.get(c.start)
             since = changes[kc[0] - 1].time if kc and kc[0] > 0 else None
             cands = (self.breakout.on_candle(c, kc[1] if kc else None, since)
                      + self.grind.on_candle(c, sg_ema.get(c.start))
                      + self.pullback.on_candle(c, fast.get(c.start), slow.get(c.start))
-                     + self.bounce.on_candle(c) + range_candidates(self.watcher, events)
+                     + self.bounce.on_candle(c) + bounce_5m_candidates(self.watcher, events)
+                     + range_candidates(self.watcher, events)
                      + self.reversal.on_candle(c, self.watcher, events)
                      + [x for strat in self.sessions for x in strat.on_candle(c)])
             if cands:
                 st = self.state_after(i - 1)
                 e100 = ema100.get(self.week[i - 1].start) if i > 0 else None
-                hr = self.hourly_read.at(c.start)
-                th = self.trend_hourly(i - 1, hr)
-                with_level_stops(s, cands, levels)
-                done = allc[:-1]                            # the finished candles before this one
                 for cand in cands:
-                    out.append((c, check(s, s.market.pair, cand, st, self.pivot_at(c.start), e100, hr, done, th)))
+                    out.append((c, check(s, s.market.pair, cand, st, self.pivot_at(c.start), e100)))
         self.done = len(hist)
         return out
-
-
-def with_level_stops(settings: Any, cands: list, levels: Any) -> None:
-    """LEVEL_STOPS (owner, 18 November 2026): each range trade, level reversal and EMA pullback candidate gets the
-    nearest level group beyond its entry on the stop side (strategies.common.level_stop_context), from the levels of the
-    candle it is checked on. Nothing while the switch is off."""
-    for cand in cands:
-        cand.context.update(level_stop_context(settings, cand.strategy, cand.direction, cand.entry_price, levels))
 
 
 def run(settings: Any, store: CandleStore, start: datetime, end: datetime) -> Replay:

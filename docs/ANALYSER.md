@@ -33,29 +33,13 @@ IG does not publish exactly how its chart starts an EMA or smooths the RSI. Thes
 
 Price is the live sell price when there is one. With stored candles (a replay or a test), it is the close of the latest finished 5-minute candle: at 13:00, the 12:55 candle's close. The EMA is the one at that candle. The pivot is today's daily pivot from the levels part (`docs/LEVELS.md`). It applies to every strategy, including bounces in a possible reversal.
 
-## The hourly read (design section 2.9; owner, 14 November 2026)
-
-Code: `analyser/hourly_read.py`. The analyser first looks at the hourly chart (sell price) to see the context. Decided each time an hourly candle closes, from the last 600 stored hourly candles (`hourly_read.history_candles`), and held until the next hourly candle closes:
-
-| Read | When |
-| --- | --- |
-| **Sell-off** | An hourly candle closes at least 3 pips (`hourly_read.break_beyond_pips`) below the lowest low of the 12 hourly candles before it (`hourly_read.range_candles`). |
-| **Rally** | An hourly candle closes at least 3 pips above the highest high of the 12 hourly candles before it. |
-| **Ranging** | 12 more hourly candles (`hourly_read.ranging_after_candles`) have closed with no new break (or no break yet in the candles read). The hourly range is the high and low of the last 12 hourly candles, updated every hour. |
-
-A break the other way switches a sell-off straight to a rally, or back; a new break the same way starts the count of 12 again. The candles are counted in order, so the weekend does not count.
-
-It acts only while the switch `HOURLY_READ` in `.env` is on; the owner set it **off** on 15 November 2026, so for now it is worked out and shown but gates nothing. When on, it acts on the **trend strategies only** (EMA pullback, slow grind, breakout), in the shared check at entry (`strategies/common.py`, check 4): nothing while the hourly is ranging (a 5-minute trend counts only after an hourly close at least 3 pips beyond the hourly range, which turns the read into a sell-off or a rally), only sells in a sell-off, only buys in a rally. The level reversal, the Bollinger bounce and the range trade may trade against it. The five 5-minute states below are unchanged.
-
-Functional test (`tests/functional/test_hourly_read_real_candles.py`): Friday 13 November 2026, the owner's textbook range from 08:40 to 13:00 UK, reads ranging (from 04:00 to 17:00 UK; range low about 13217 to 13222, high about 13240 to 13251); the 16:00 candle's close 6.1 pips below 13217.4 starts a sell-off; Friday 6 November is a sell-off and Monday 9 November a rally.
-
 ## Checking a time against the chart
 
 ```
 .venv/bin/python -m analyser 2026-11-06T13:00:00Z [more UTC times ...] [--pair GBPUSD]
 ```
 
-Prints the direction and why, the data status, every indicator on the 5-minute and hourly candles (`*` marks one still warming up), and the hourly read with its reason and the hourly range. Contacts nobody.
+Prints the direction and why, the data status, and every indicator on the 5-minute and hourly candles (`*` marks one still warming up). Contacts nobody.
 
 ## Functional tests (`tests/functional/test_analyser_real_candles.py`)
 
@@ -82,7 +66,7 @@ Each result gives the state, the direction (up, down or none), the type of trend
 | **Consolidation** | Bands narrow: **14 pips or less, or narrowing for 6 candles in a row** (owner's rule, 7 November 2026), and flat (middle band under 0.5 pips a candle over 6); **no candle closed outside the bands for 6 candles** (owner's rule); average body at most 3 pips; green and red bodies within 2 times of each other. Also the state at each week's open ("watch and wait"), and where a trend ends with no range. |
 | **Ranging** | Design 2.2 exactly (owner's values, 7 November 2026): bands 6 to 18 pips apart (close together), the upper and the lower band each moving less than 0.2 pips a candle over 6 candles (flat), both bands reached within 24 candles (price bounces between them), the 7/13/21 EMAs changing order within 12 (weaving), the 100 EMA moving under 3 pips over 12 (flat). |
 | **Emerging trend** | Started at once by: a level rejection (the shared rejection part confirms a bounce rejection at a **strong level**: the pivot, R1 to R3, S1 to S3, a round number 00 or 50, the previous day's high or low, or a turning level that lines up with one of those; `market_states.strong_level_types`, owner's rule, 7 November 2026; a turning level on its own does not), a close beyond a band out of consolidation, or 2 closes beyond the same band out of a range, or a possible reversal being confirmed. |
-| **Trend** | An emerging trend becomes a trend at the moment of the proof in section 2.5: a bounce failed at or under the 21 EMA and middle band, then, on a later candle, price makes a new extreme on the outer band (never both on one candle; owner, 12 November 2026), with the 7/13/21 EMAs stacked for 3 candles, price beyond them and the 100 EMA, and the outer band sloping. **Strong push** when, over 6 candles, 70% of the total candle body size is in the trend's colour (by size, not by count: owner's rule, 7 November 2026), the bands are at least 1.5 times as wide as 12 candles before, the 7 and 21 EMAs are at least 6 pips apart and at least 3 closes are on the band; otherwise **slow grind**. |
+| **Trend** | An emerging trend becomes a trend at the moment of the proof in section 2.5: a bounce failed at or under the 21 EMA and middle band, then price makes a new extreme on the outer band, with the 7/13/21 EMAs stacked for 3 candles, price beyond them and the 100 EMA, and the outer band sloping. **Strong push** when, over 6 candles, 70% of the total candle body size is in the trend's colour (by size, not by count: owner's rule, 7 November 2026), the bands are at least 1.5 times as wide as 12 candles before, the 7 and 21 EMAs are at least 6 pips apart and at least 3 closes are on the band; otherwise **slow grind**. |
 | **Possible reversal** | In an emerging trend or trend that has moved at least 30 pips since it started, **and** the shared rejection part confirms a rejection at a level against it (a single opposite candle, or a rejection at the band only, is not enough; owner's rule, 7 November 2026). Section 2.6's signs (MACD still showing the move, RSI, the time of day, a level) are recorded as evidence; none is waited for. When that rejection triggers, it becomes an emerging trend the new way. |
 
 **How it moves on** (sections 2.5 to 2.7). What price *did* on a candle acts at once: a level rejection, a breakout, the trend proof, a confirmed level rejection after a 30-pip move (possible reversal), the old trend making a new extreme or the reversal setup being cancelled or expiring (back to the trend), the reversal triggering (emerging trend the new way).
@@ -101,13 +85,3 @@ Anything that depends on a **condition** needs it for **2 candles in a row** (fl
 
 **This week (2 to 6 November) with the strong-level rule:** 220 state changes (130 inside trading hours, 90 outside); median length 20 minutes; 70 lasted under 15 minutes, 116 from 15 to 60 minutes, 34 over an hour. Many short consolidation and emerging-trend spells: a known issue to check in the no-trading run (design section 12).
 
-
-## The analyser in charge again (owner, 18 November 2026; design 2.10)
-
-Three switches in `.env`, all off until the owner switches them on:
-
-- `ANALYSER_USES_HOURLY` (stage 1, `analyser/states.py`, `analyser/market_state.py`): while the hourly read says ranging, a level rejection starts or flips an emerging trend only at the edge of the hourly range (its furthest point within `analyser_control.edge_within_pips` of the hourly high for a sell, of the low for a buy, or beyond it, and its rejection candle closing back inside the hourly range); ranging can end an emerging trend; a breakout from consolidation needs a close at least `analyser_control.consolidation_breakout_beyond_pips` beyond the band; every state change records `hourly_position` (top edge, bottom edge, middle), also in `current.json` and on the dashboard. Stage 1b (owner, 18 November 2026): in ranging or consolidation the existing trend proof (design 2.5) is watched both ways, the new extreme against the highest high / lowest low since that state began, moving straight to trend, with the trend's start at the opposite extreme of that state; and while the hourly read says ranging, a 5-minute close at least `hourly_read.break_beyond_pips` beyond the hourly range counts, for the analyser and the trend group (check 4 and stage 2's hourly-ranging rule), as the hourly range breaking that way (a rally or a sell-off), with the range kept as at the break, until 2 closes in a row back inside it. And while the trend is a strong push, a rejection at a level does not turn it into a possible reversal (a slow grind as before).
-- `ANALYSER_GOVERNS_ALL` (stage 2, `strategies/common.py` check 7): every strategy asks the analyser by the table of design 2.10.
-- `ONE_SIGNAL_ONE_TRADE` (stage 3, `safety/rules.py` rules 9 and 11): one trade per rejection candle and direction; the session sweep and the New York open reversal under one view at a time.
-
-`python -m research.analyser_control_days <day> [on|off [edge_pips]]` replays a UK day through the full wired path with the three switches on or off (writes only to a temporary folder).

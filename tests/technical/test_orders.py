@@ -262,7 +262,7 @@ def test_no_order_before_the_start_up_is_done(S):
 # ---- the order -----------------------------------------------------------------------------------
 
 @pytest.mark.parametrize("strategy,stop,limit", [(EMA_PULLBACK, 12, 30), (BOLLINGER_BOUNCE, 6, 100), (RANGE_TRADE, 6, 100),
-                                                 (BREAKOUT, 12, 50), (SLOW_GRIND, 15, 20)])
+                                                 (BREAKOUT, 6, 50), (SLOW_GRIND, 15, 20)])
 def test_a_market_order_with_its_strategys_stop_and_take_profit_and_force_open(S, strategy, stop, limit):
     sender, ig, *_ = make(S)
     r = sender.place(idea(strategy), calendar=[])
@@ -942,21 +942,6 @@ def test_paper_records_the_move_and_sends_nothing(S):
     assert m.ok and moves(ig) == [] and records(sender)[-1]["how"] == "paper"
 
 
-def test_the_once_a_day_key_is_kept_with_the_trade_and_after_a_restart(S):
-    # owner, 16 November 2026: the Asian range breakout one trade each way per day, counted from trades that opened
-    from strategies.common import ASIAN_RANGE_BREAKOUT
-    s = Over(S, switches={k: v for k, v in vars(S.switches).items() if not k.startswith("_")}
-             | {"asian_range_breakout": True})
-    sender, ig, *_ = make(s)
-    key = "Asian range breakout sell 2026-11-04"
-    assert sender.place(idea(ASIAN_RANGE_BREAKOUT, context={"once_a_day": key}), calendar=[]).ok
-    assert sender.used_once_a_day() == {key}
-    again, *_ = make(s, ig)                                            # a restart: read back from the record
-    assert again.used_once_a_day() == {key}
-    r = again.place(idea(ASIAN_RANGE_BREAKOUT, context={"once_a_day": key}), calendar=[])
-    assert r.what == "safety refused" and any(x.startswith("once a day") for x in r.reasons)
-
-
 # ---- a stop move IG cannot accept, and what is recorded with every move (owner, 17 November 2026) -----------------
 
 def test_every_stop_move_records_igs_buy_and_sell_prices_and_its_minimum_stop_distance(S):
@@ -1009,7 +994,20 @@ def test_a_minimum_ig_cannot_give_is_recorded_as_not_known_and_the_move_still_go
     assert m.ok and sending["ig_min_stop_pips"] is None and "error.public-api.failure" in sending["ig_min_stop_error"]
 
 
-# ---- one signal, one trade (owner, 18 November 2026; safety rule 11) -------------------------------------------------
+def test_the_once_a_day_key_is_kept_with_the_trade_and_after_a_restart(S):
+    # owner, 16 November 2026: the Asian range breakout one trade each way per day, counted from trades that opened
+    from strategies.common import ASIAN_RANGE_BREAKOUT
+    s = Over(S, switches={k: v for k, v in vars(S.switches).items() if not k.startswith("_")}
+             | {"asian_range_breakout": True})
+    sender, ig, *_ = make(s)
+    key = "Asian range breakout sell 2026-11-04"
+    assert sender.place(idea(ASIAN_RANGE_BREAKOUT, context={"once_a_day": key}), calendar=[]).ok
+    assert sender.used_once_a_day() == {key}
+    again, *_ = make(s, ig)                                            # a restart: read back from the record
+    assert again.used_once_a_day() == {key}
+    r = again.place(idea(ASIAN_RANGE_BREAKOUT, context={"once_a_day": key}), calendar=[])
+    assert r.what == "safety refused" and any(x.startswith("once a day") for x in r.reasons)
+
 
 def test_one_signal_one_trade_the_second_strategy_on_the_same_rejection_candle_is_refused(S):
     s = Over(S, switches={k: v for k, v in vars(S.switches).items() if not k.startswith("_")}

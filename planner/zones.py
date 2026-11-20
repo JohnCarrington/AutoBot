@@ -8,7 +8,7 @@ low, round numbers, London and New York session highs and lows, hourly turning l
     planner.daily_swing_lookback_weeks (planner/structure.py);
   * moving-average levels (P-C9): hourly EMA100 and EMA200, 4-hour EMA100, 4-hour EMA200 once warmed up, and the
     4-hour Bollinger middle band.
-Zones within levels.round_numbers_within_pips (150) of price are kept (P-C5).
+Structural zones are retained regardless of distance from spot; levels.round_numbers_within_pips only controls round-number discovery (P-C5).
 
 FAMILIES (D-08): PIVOT, SESSION, STRUCTURE, HTF_STRUCTURE (daily swings), MOVING_AVERAGE, PSYCHOLOGICAL. Several
 levels of one family in a zone count once. "Daily-or-weekly" levels: daily or weekly pivots and R/S, the previous
@@ -25,7 +25,7 @@ CLASSES (D-09, P-C7), no weights:
 
 TESTS (D-25, P-C8; recorded only): a test is an hourly candle reaching the zone by the interaction rule (P-C2); the
 next one counts only after an hourly candle has been wholly more than rejection.near_level_within_pips (3) clear of
-it. FLIPPED (role change): a swing low later closed below by at least hourly_read.break_beyond_pips (3) on an hourly
+it. FLIPPED (role change): a swing low later closed below by at least planner.break_beyond_pips (3) on an hourly
 candle, now above price, is former support acting as resistance; the mirror for a swing high.
 """
 
@@ -152,7 +152,7 @@ def flipped(settings: Any, levels: list[MapLevel], hourly: Sequence[Candle], pri
     """Mark swing levels broken by an hourly close at least break_beyond_pips through them, now on the other side
     of price (support turned resistance, or the reverse)."""
     side = side_of(settings)
-    beyond = Decimal(settings.hourly_read.break_beyond_pips) * ppp(settings)
+    beyond = Decimal(settings.planner.break_beyond_pips) * ppp(settings)
     out = []
     for lv in levels:
         if lv.family in (STRUCTURE, HTF_STRUCTURE) and lv.origin_utc is not None:
@@ -304,8 +304,8 @@ def zones(settings: Any, levels: Sequence[MapLevel], adr: Decimal, hourly: Seque
     """The zones. Built from the FIXED levels first (anchored at each zone's lowest level), so that moving levels
     (moving averages, a running session's high or low) never reshape a zone (FC-05); each moving level then joins the
     nearest zone it fits in (every member still within the width of every other), and the moving levels left over make
-    zones of their own. Zones are built from every level and then kept only within levels.round_numbers_within_pips of
-    `price` (P-C5), so the window's edge cannot shift the zones near price."""
+    zones of their own. All discovered structural zones are retained; the round-number discovery radius
+    does not constrain structural destinations."""
     width = zone_width(settings, adr)
     groups = _anchored([lv for lv in levels if lv.fixed], width)
     spare = []
@@ -318,9 +318,9 @@ def zones(settings: Any, levels: Sequence[MapLevel], adr: Decimal, hourly: Seque
         else:
             spare.append(lv)
     groups = sorted(groups + _anchored(spare, width), key=lambda g: g[0].price)
-    if price is not None:
-        window = Decimal(settings.levels.round_numbers_within_pips) * ppp(settings)
-        groups = [g for g in groups if g[0].price <= price + window and g[-1].price >= price - window]
+    # Retain the complete structural map. The round-number discovery radius is
+    # not a structural destination horizon; filtering here could remove valid
+    # Major targets before the planner evaluates them.
     out = []
     for g in groups:
         fams = {m.family for m in g}

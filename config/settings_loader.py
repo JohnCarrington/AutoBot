@@ -125,14 +125,6 @@ def _one_of(*allowed: str) -> Callable[[Any], str]:
     return check
 
 
-def _whole_number_of(*allowed: int) -> Callable[[Any], int]:
-    def check(v: Any) -> int:
-        if isinstance(v, bool) or not isinstance(v, int) or v not in allowed:
-            raise ValueError(f"must be one of {', '.join(str(x) for x in allowed)}, got {v!r}")
-        return v
-    return check
-
-
 def _yes_no(v: Any) -> bool:
     if not isinstance(v, bool):
         raise ValueError(f"must be true or false, got {v!r}")
@@ -313,6 +305,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     },
     "limits": {
         "max_open_trades_per_strategy": _whole_number(1, 10),
+        "bollinger_bounce_extra_opposite_direction_trades": _whole_number(0, 10),
         "max_open_trades": _whole_number(1, 50),
     },
     "orders": {
@@ -346,12 +339,12 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "status_stale_seconds": _whole_number(5, 3600),
     },
     "safety": {
+        "big_friday_move_pips": _whole_number(1, 1000),
         "max_total_risk_gbp": _whole_number(1, 10_000_000),
         "margin_per_trade_gbp": _whole_number(0, 10_000_000),
         "ig_stop_refusal_reasons": _names,
         "ig_funds_refusal_reasons": _names,
         "folder": _absolute_folder,
-        "big_friday_move_pips": _whole_number(1, 1000),
     },
     "chart": {
         "price": _one_of("sell", "buy"),
@@ -376,6 +369,29 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "times": _clock_times,
         "minutes_before": _whole_number(0, 120),
         "minutes_after": _whole_number(0, 120),
+    },
+    "planner": {
+        "folder": _absolute_folder,
+        "adr_weekdays": _whole_number(1, 500),
+        "h4_swing_candles_each_side": _whole_number(1, 20),
+        "h4_swing_min_move_pips": _whole_number(0, 1000),
+        "h4_swing_move_within_candles": _whole_number(1, 100),
+        "daily_swing_candles_each_side": _whole_number(1, 20),
+        "daily_swing_min_move_pips": _whole_number(0, 2000),
+        "daily_swing_move_within_candles": _whole_number(1, 100),
+        "h4_swing_lookback_weeks": _whole_number(1, 520),
+        "daily_swing_lookback_weeks": _whole_number(1, 520),
+        "structure_break_closes": _whole_number(1, 10),
+        "zone_width_adr_share": _decimal_number("0", "1"),
+        "major_min_families": _whole_number(1, 6),
+        "moderate_min_families": _whole_number(1, 6),
+        "min_entry_class": _one_of("Major", "Moderate", "Minor"),
+        "ema_slope_candles": _whole_number(1, 100),
+        "macd_weakening_candles": _whole_number(1, 50),
+        "no_new_extreme_hourly_candles": _whole_number(1, 100),
+        "failed_breakout_within_candles": _whole_number(1, 100),
+        "panel_history": _whole_number(1, 100),
+        "break_beyond_pips": _decimal_number("0", "100"),
     },
     "bounce": {
         "pierce_beyond_pips": _decimal_number("0", "100"),
@@ -448,45 +464,8 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "trail_from_pips": _decimal_number("0", "1000"),
         "trail_candles": _whole_number(1, 50),
     },
-    "planner": {
-        "folder": _absolute_folder,
-        "adr_weekdays": _whole_number(1, 500),
-        "h4_swing_candles_each_side": _whole_number(1, 20),
-        "h4_swing_min_move_pips": _whole_number(0, 1000),
-        "h4_swing_move_within_candles": _whole_number(1, 100),
-        "daily_swing_candles_each_side": _whole_number(1, 20),
-        "daily_swing_min_move_pips": _whole_number(0, 2000),
-        "daily_swing_move_within_candles": _whole_number(1, 100),
-        "h4_swing_lookback_weeks": _whole_number(1, 520),
-        "daily_swing_lookback_weeks": _whole_number(1, 520),
-        "structure_break_closes": _whole_number(1, 10),
-        "zone_width_adr_share": _decimal_number("0", "1"),
-        "major_min_families": _whole_number(1, 6),
-        "moderate_min_families": _whole_number(1, 6),
-        "min_entry_class": _one_of("Major", "Moderate", "Minor"),
-        "ema_slope_candles": _whole_number(1, 100),
-        "macd_weakening_candles": _whole_number(1, 50),
-        "no_new_extreme_hourly_candles": _whole_number(1, 100),
-        "failed_breakout_within_candles": _whole_number(1, 100),
-        "panel_history": _whole_number(1, 100),
-    },
-    "trend_still_going": {
-        "new_extreme_pips": _decimal_number("0", "100"),
-        "within_candles": _whole_number(1, 100),
-        "swing_candles_each_side": _whole_number(1, 10),
-    },
-    "hourly_read": {
-        "range_candles": _whole_number(1, 200),
-        "break_beyond_pips": _whole_number(0, 1000),
-        "ranging_after_candles": _whole_number(1, 200),
-        "history_candles": _whole_number(50, 5000),
-    },
     "possible_reversal": {
         "min_trend_move_pips": _whole_number(1, 1000),
-    },
-    "analyser_control": {
-        "edge_within_pips": _decimal_number("0", "100"),
-        "consolidation_breakout_beyond_pips": _decimal_number("0", "100"),
     },
     "breakout": {
         "trigger_within_candles": _whole_number(1, 50),
@@ -501,16 +480,6 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "allowance_pips_round_number": _whole_number(0, 100),
         "stop_beyond_furthest_pips": _whole_number(1, 100),
         "take_profit_pips": _whole_number(1, 1000),
-        "entry_within_pips_of_level": _decimal_number("0", "100"),
-    },
-    "level_stops": {
-        "beyond_group_pips": _decimal_number("0", "100"),
-        "widest_stop_pips": _decimal_number("1", "1000"),
-        "max_spread_pips": _decimal_number("0", "100"),
-    },
-    "scale_out": {
-        "at_profit_pips": _decimal_number("0", "100"),
-        "stop_profit_pips": _decimal_number("0", "100"),
     },
     "trend_day": {
         "level_above": _one_of("R1", "R2", "R3"),
@@ -521,7 +490,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "rsi_history_candles": _whole_number(50, 5000),
     },
     "range_trade": {
-        "close_percent_at_opposite_band": _whole_number_of(50, 100),
+        "close_percent_at_opposite_band": _whole_number(1, 100),
         "rejection_candle_within_candles": _whole_number(1, 10),
         "trigger_within_candles": _whole_number(1, 10),
     },

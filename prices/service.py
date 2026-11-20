@@ -109,7 +109,6 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
 
     log.info("AutoBot price service starting for %s.",
              ", ".join(f"{f.pair} ({epic})" for epic, f in feeds.items()))
-    log.info("%s", switches_line(settings))
     for f in feeds.values():
         f.start_up()   # store check, newest candle, gap recorded; no history asked for
 
@@ -229,25 +228,6 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
         log.info("Exiting with code 75 so systemd restarts the service (%s).", restart["why"])
         return 75
     return 0
-
-
-def switches_line(settings: Any) -> str:
-    """One line listing every .env switch and its setting (owner, 18 November 2026), in the order of
-    config/switches.py: on/off switches as on or off, the others as their value."""
-    from config.switches import SWITCHES
-    sw = getattr(settings, "switches", None)
-    parts = []
-    def show(v: Any) -> str:
-        if isinstance(v, bool):
-            return "on" if v else "off"
-        if isinstance(v, (tuple, list)):
-            return ",".join(str(x) for x in v)
-        if hasattr(v, "strftime"):
-            return v.strftime("%H:%M")
-        return "-" if v is None else str(v)
-    for name, (attr, _) in SWITCHES.items():
-        parts.append(f"{name}={show(getattr(sw, attr, None))}")
-    return "Switches from .env: " + ", ".join(parts)
 
 
 def _after_candle(*parts: Callable[[datetime], None]) -> Callable[[datetime], None]:

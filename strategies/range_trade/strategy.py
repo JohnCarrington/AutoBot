@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from strategies.common import BUY, RANGE_TRADE, SELL, Candidate, signal_context
+from strategies.common import BUY, RANGE_TRADE, SELL, Candidate
 
 
 def from_rejection(watcher: Any, events: list, version: str, strategy: str) -> list[Candidate]:
@@ -30,9 +30,7 @@ def from_rejection(watcher: Any, events: list, version: str, strategy: str) -> l
         if st.size and st.size.get("body_ratio") is not None:
             steps.append(f"recorded, not used: reversal/piercing candle body {st.size['body_ratio']:.2f}x, "
                          f"high-low {st.size.get('range_ratio') or 0:.2f}x")
-        out.append(Candidate(strategy, SELL if e.direction == "sell" else BUY, e.time, e.price, steps,
-                             signal_context(e.direction, st.reversal.start, st.furthest,
-                                            watcher._c(st.reversal))))
+        out.append(Candidate(strategy, SELL if e.direction == "sell" else BUY, e.time, e.price, steps, {}))
     return out
 
 

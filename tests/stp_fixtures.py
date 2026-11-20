@@ -99,7 +99,18 @@ def superseded(tmp):
 
 
 def identical_zones(tmp):
-    """The 17 November shape: one completes, the next hourly analysis issues the same zone again under a new id."""
+    """One completes, the next hourly analysis issues the same zone again under a new id. Since the duplicate rule
+    (owner's approval of 19 November 2026) the same zone AND the same primary destination is not issued again, so the
+    second one here aims at another primary destination (a genuinely new opportunity on the same zone)."""
+    sc = completed(tmp)
+    t = NOW + timedelta(hours=1, minutes=1)
+    sc.run(t, [plan_dict(primary=13150)], extra5=[TOUCH(NOW), DEST(NOW + timedelta(minutes=5))])
+    return sc
+
+
+def duplicate_after_completion(tmp):
+    """The 19 November rec 11 / rec 12 shape: one completes, the next analysis finds the same zone and the same primary
+    destination: not issued again."""
     sc = completed(tmp)
     t = NOW + timedelta(hours=1, minutes=1)
     sc.run(t, [plan_dict()], extra5=[TOUCH(NOW), DEST(NOW + timedelta(minutes=5))])
@@ -144,6 +155,6 @@ def stale(tmp):
 
 
 SCENARIOS = {"waiting": waiting, "active": active, "completed": completed, "destination_first": destination_first,
-             "invalidated_break": invalidated_break, "superseded": superseded, "identical_zones": identical_zones,
+             "invalidated_break": invalidated_break, "superseded": superseded, "identical_zones": identical_zones, "duplicate_after_completion": duplicate_after_completion,
              "continued": continued, "no_rec_directional": no_rec_directional, "no_rec_indeterminate": no_rec_indeterminate,
              "bullish": bullish, "stale": stale}

@@ -49,8 +49,8 @@ from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from typing import Any, Callable
 
-from analyser.market_state import MemoStore, StateTracker
 from analyser.day_direction import day_directions
+from analyser.market_state import MemoStore, StateTracker
 from analyser.trend_day import trend_day_at
 from orders.sender import OrderSender
 from records.book import Book, daily_text
@@ -136,12 +136,6 @@ class Trading:
                 mt.bars = 1                                 # already open: no entry-candle rule
                 if self.manager.restore(mt, saved):         # its best pips so far, half close, watching
                     log.info("Trade %s: its saved best (%s pips) restored.", t.reference, mt.best)
-                if mt.scale_out is not None and mt.half_done:   # SCALE_OUT_REVERSAL (owner, 18 November 2026)
-                    mt.scaled = True
-                    if mt.stop_level is None:               # its half closed but the stop not yet moved: move it
-                        from trade_manager.manager import scale_out_stop
-                        self.manager._want_stop(mt, scale_out_stop(self.s, mt), "the scale-out (after a restart): the "
-                                                f"stop on the rest moves to {mt.scale_out[1]} pips in profit")
                 self.manager.add(mt)
             self._take_gone()                               # trades IG closed while the bot was away
             self._after_bars()
@@ -232,11 +226,8 @@ class Trading:
         td = self._trend_day(idea.time)
         if self.replay:
             sell = idea.direction == "sell"
-            spread = candle.buy_open - candle.sell_open
-            fill = idea.entry_price if sell else idea.entry_price + spread
-            # the research's fill: the entry, plus the spread for a buy; as (bid, offer), so a sell's spread is known
-            bid, offer = (fill, fill + spread) if sell else (fill - spread, fill)
-            self.sender.quote = lambda: (bid, offer)
+            fill = idea.entry_price if sell else idea.entry_price + (candle.buy_open - candle.sell_open)
+            self.sender.quote = lambda: (fill, fill)        # the research's fill: the entry, plus the spread for a buy
         r = self._place(idea, td)
         if not r.ok:
             return
@@ -257,7 +248,7 @@ class Trading:
         return paused
 
     def _place(self, idea: Any, td: str | None) -> Any:
-        day = day_directions(self.s, self.store, idea.time, self.calendar, td)
+        day = day_directions(self.s, self.store, idea.time, self.calendar, td)     # the day's directions (safety rule 9)
         r = self.sender.place(idea, paused=self._paused(), trend_day=td, calendar=self.calendar, day=day)
         self.book.decision("order", self.now(), strategy=idea.strategy, direction=idea.direction, result=r.what,
                            reference=r.reference, reasons=r.reasons, level=r.level)
@@ -490,16 +481,9 @@ class Trading:
         for ref, t in self.manager.trades.items():
             if t.open and t.expected_at_ig:
                 warnings.append(f"Trade {ref}: IG's {t.expected_at_ig[0]} expected but not yet confirmed by IG")
-        from analyser.states import switch_on
-        from strategies.common import governed_allowed
-        if switch_on(self.s, "analyser_governs_all"):       # check 7 (owner, 18 November 2026; design 2.10)
-            allowed = governed_allowed(st.state) if st is not None else []
-        else:
-            allowed = list(ALLOWED.get(st.state, ())) if st is not None else []
-            allowed.append("Bollinger bounce")              # in every state (owner, 15 November 2026)
-            allowed += list(SESSION_STRATEGIES)             # in every state (owner, 16 November 2026)
-        extras = getattr(self.tracker, "extras", None) or []
-        position = extras[-1].get("position") if extras else None
+        allowed = list(ALLOWED.get(st.state, ())) if st is not None else []
+        allowed.append("Bollinger bounce")                  # in every state (owner, 15 November 2026)
+        allowed += list(SESSION_STRATEGIES)                 # in every state (owner, 16 November 2026)
         by_name = {n.lower(): n for n in SWITCH}
         switches = {name: bool(getattr(self.s.switches, key, False)) for name, key in SWITCH.items()}
         trades = []
@@ -521,9 +505,7 @@ class Trading:
                 "trading_on": self.trading_on, "paused": self._paused(),
                 "analyser": None if st is None else {"state": st.state, "direction": st.direction,
                                                     "trend_type": st.trend_type,
-                                                    "since_utc": st.since.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                                                    # ANALYSER_USES_HOURLY (owner, 18 November 2026; design 2.10)
-                                                    **({"hourly_position": position} if position else {})},
+                                                    "since_utc": st.since.strftime("%Y-%m-%dT%H:%M:%SZ")},
                 "strategies_allowed": [{"name": a, "switched_on": switches.get(by_name.get(a.split(" (")[0].lower().replace(
                     "bollinger band bounce", "bollinger bounce"), ""), True)} for a in allowed],
                 "price": None if tick is None else {"bid": str(tick.sell), "offer": str(tick.buy),

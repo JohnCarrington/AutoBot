@@ -46,7 +46,7 @@ from decimal import Decimal
 from typing import Any
 
 from analyser.states import EMERGING, POSSIBLE_REVERSAL, STRONG_PUSH, TREND
-from strategies.common import (EMA_PULLBACK, LEVEL_REVERSAL, NEW_YORK_OPEN_REVERSAL, SESSION_SWEEP, SWITCH,
+from strategies.common import (BOLLINGER_BOUNCE_5M, EMA_PULLBACK, LEVEL_REVERSAL, NEW_YORK_OPEN_REVERSAL, SESSION_SWEEP, SWITCH,
                                WITHOUT_HINDRANCE, counts_towards_most_at_once, may_open, stop_loss_pips, stop_price)
 
 
@@ -117,6 +117,14 @@ def _limits(settings: Any, order: Order, open_trades: list[OpenTrade]) -> list[s
             if len(same) >= lim.max_open_trades_per_strategy:
                 out.append(f"{idea.strategy} already has {len(same)} {idea.direction} trade(s) open "
                            f"(at most {lim.max_open_trades_per_strategy} each way)")
+        elif idea.strategy == BOLLINGER_BOUNCE_5M:         # the first build's bounce, as on 9 November 2026
+            same = [t for t in mine if t.direction == idea.direction]
+            most = lim.max_open_trades_per_strategy + lim.bollinger_bounce_extra_opposite_direction_trades
+            if len(same) >= lim.max_open_trades_per_strategy:
+                out.append(f"{idea.strategy} already has {len(same)} {idea.direction} trade(s) open "
+                           f"(at most {lim.max_open_trades_per_strategy} each way)")
+            elif len(mine) >= most:
+                out.append(f"{idea.strategy} already has {len(mine)} trade(s) open (at most {most})")
         elif len(mine) >= lim.max_open_trades_per_strategy:
             out.append(f"{idea.strategy} already has {len(mine)} trade(s) open "
                        f"(at most {lim.max_open_trades_per_strategy})")

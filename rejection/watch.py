@@ -113,10 +113,6 @@ class Setup:
     trigger_price: Decimal | None = None
     status: str = "running"             # running, triggered, cancelled, expired
     size: dict = field(default_factory=dict)   # reversal candle size compared with the piercing candle
-    # the furthest price (a sell: highest high; a buy: lowest low) from the (last) piercing candle to the confirmation
-    # candle (the range version: to its rejection candle), measured as the level reversal's allowance is (owner,
-    # 18 November 2026: the edge of the hourly range, design 2.10)
-    furthest: Decimal | None = None
 
 
 def _red(c: Candle, side: str) -> bool:
@@ -243,7 +239,6 @@ class RejectionWatcher:
 
     def _set_pierce(self, st: Setup, c: Candle, pierced, levels, first: bool) -> None:
         st.pierce, st.waited = c, 0
-        st.furthest = self._h(c) if st.direction == SELL else self._l(c)
         d = self.s.levels.level_decimals          # band prices are shown like levels (exact ones are compared)
         shown = [{"what": p["what"], "price": to_decimals(p["price"], d) if p["level"] is None else p["price"],
                   "level": p["level"], "how": p.get("how", "through")} for p in pierced]
@@ -281,8 +276,6 @@ class RejectionWatcher:
     def _advance(self, st: Setup, c: Candle, band, levels) -> None:
         sell = st.direction == SELL
         turn = _red if sell else _green
-        if st.stage in ("reversal", "confirmation"):      # up to the confirmation (range: rejection) candle
-            st.furthest = max(st.furthest, self._h(c)) if sell else min(st.furthest, self._l(c))
         if st.stage == "reversal":
             limit = (self.s.rejection.reversal_candle_within_candles_of_pierce if st.version == BOUNCE
                      else self.s.range_trade.rejection_candle_within_candles)

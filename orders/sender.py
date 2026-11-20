@@ -47,12 +47,11 @@
     IG's buy and sell prices (from that position read) and its minimum stop distance (GET /markets/{epic}) are read
     and recorded with it, and a level on the wrong side of IG's price or inside the minimum is sent as the nearest
     level IG allows (owner, 17 November 2026). Paper: recorded, nothing sent.
-  * It closes trades when the trade manager says so, in full, or by half (a range trade at the opposite band, if
-    set to half), and confirms each close with IG. The close matches AutoBot 161's
-    close_sb_now.py exactly: POST /positions/otc with VERSION 1 and _method DELETE, the body dealId, direction
-    (the opposite), orderType MARKET and size only (never the epic or expiry: IG refuses dealId with either).
-    After a part close IG leaves the rest as a position with a new deal ID: it is found among the open
-    positions and recorded.
+  * It closes trades when the trade manager says so, in full, or by half for the range trade, and confirms
+    each close with IG. The close matches AutoBot 161's close_sb_now.py exactly: POST /positions/otc with
+    VERSION 1 and _method DELETE, the body dealId, direction (the opposite), orderType MARKET and size only
+    (never the epic or expiry: IG refuses dealId with either). After a part close IG leaves the rest as a
+    position with a new deal ID: it is found among the open positions and recorded.
   * Every order, confirmation, refusal and close is recorded in orders.folder/<PAIR>/orders.jsonl (one JSON
     line per event, written and flushed before the next step). The open trades are rebuilt from it.
   * PAPER mode (the master switch TRADING=off, design 13): everything runs and is recorded, in
@@ -78,8 +77,7 @@ from typing import Any, Callable
 from ig.errors import IGRequestError
 from safety.refusals import min_stop_pips, on_refusal
 from safety.rules import AccountFunds, OpenTrade, decide, order_for
-from prices.model import plain
-from strategies.common import RANGE_TRADE, level_stop_price, stop_price, take_profit_pips
+from strategies.common import RANGE_TRADE, stop_price, take_profit_pips
 
 log = logging.getLogger("autobot.orders")
 
@@ -88,8 +86,6 @@ def _headers(version: str, **more: str) -> dict:
     """The headers AutoBot 161 sends (besides the API key and the session tokens, which the IG client adds)."""
     return {"VERSION": version, "Content-Type": "application/json", **more}
 UTC = timezone.utc
-# The strategies the trade manager may close by half at the opposite band (owner, 11 November 2026).
-HALF_CLOSED = (RANGE_TRADE,)
 OPEN, CLOSED = "open", "closed"
 
 
@@ -494,24 +490,11 @@ class OrderSender:
         if not q:
             return None, f"no current price to turn the {idea.strategy}'s stop price into a distance"
         bid, offer = (Decimal(str(x)) for x in q)
-        level = level_stop_price(self.s, idea)
-        if level is not None and idea.direction == "sell":
-            # LEVEL_STOPS: plus the spread for a sell, at most level_stops.max_spread_pips (owner, 18 November 2026)
-            sp = Decimal(sp) + min(offer - bid, Decimal(self.s.level_stops.max_spread_pips) * self.ppp)
         dist = (Decimal(sp) - bid) if idea.direction == "sell" else (offer - Decimal(sp))
         dist = dist.quantize(Decimal("0.1"))
         if dist <= 0:
             return None, (f"the price ({bid if idea.direction == 'sell' else offer}) is already past the "
                           f"{idea.strategy}'s stop price ({sp})")
-        if level is not None:
-            most = Decimal(self.s.level_stops.widest_stop_pips) * self.ppp
-            if dist > most:                                 # the widest stop (owner, 18 November 2026)
-                ctx = idea.context
-                return None, (f"LEVEL_STOPS: the stop {plain(sp)}, {self.s.level_stops.beyond_group_pips} pips beyond "
-                              f"the level group {ctx.get('level_stop_group')}"
-                              f"{' plus the spread (at most ' + plain(self.s.level_stops.max_spread_pips) + ')' if idea.direction == 'sell' else ''}, is "
-                              f"{plain((dist / self.ppp).quantize(Decimal('0.1')))} pips from the entry, more than "
-                              f"{self.s.level_stops.widest_stop_pips}")
         return dist, ""
 
     def place(self, idea: Any, *, paused: bool = False, trend_day: str | None = None,
@@ -688,8 +671,7 @@ class OrderSender:
                           datetime.fromisoformat(when.replace("Z", "+00:00")) if when else None)
 
     def close(self, reference: str, *, half: bool = False, why: str = "", price: Decimal | None = None) -> Result:
-        """Close one of the bot's trades in full, or by half (the range trade at the opposite
-        band: trade_manager.manager.band_close_share), when the trade manager says so.
+        """Close one of the bot's trades in full, or by half (the range trade only), when the trade manager says so.
         `price`: the trade manager's price (a paper close is recorded at it)."""
         with self._lock:
             if reference in self.gone:
@@ -697,7 +679,7 @@ class OrderSender:
             t = self.trades.get(reference)
             if t is None or t.status != OPEN:
                 return Result(False, "not open", reference, reasons=["not one of the bot's open trades"])
-            if half and (t.strategy not in HALF_CLOSED or t.half_closed):
+            if half and (t.strategy != RANGE_TRADE or t.half_closed):
                 return Result(False, "refused", reference, t.deal_id,
                               reasons=["only a range trade is closed by half, and only once"])
             size = (t.size / 2) if half else t.size

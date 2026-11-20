@@ -8,6 +8,10 @@ DIRECTION (D-03, P-B10/B11): the 4-hour structure decides.
   BULLISH       the mirror image;
   TRANSITIONAL  the structure is still down (up) but a confirmed 4-hour close went beyond the last opposite swing;
   NEUTRAL       mixed swings, or too few.
+  The structure used is planner/structure.py dominant_structure (candidate C, owner's approval of 19 November 2026):
+  the observed swings, except that a wick-only sweep of an established trend is "unresolved" (NEUTRAL) until a
+  confirmed 4-hour close beyond the last swing on the other side rejects it (the trend is restored); a confirmed
+  close beyond the swept swing makes the higher high (lower low) real and the observed mixed sequence stands.
   Daily and weekly are context (shown, never deciding). The 4-hour EMA100 slope (P-D1) and EMA stack support.
 
 CONDITION (D-10; FC-12; P-D6, P-D9), from the 4-hour RSI 3, MACD 35/45/30 and Bollinger (P-D7: the 4-hour decides).
@@ -29,7 +33,9 @@ candles finished since the last 4-hour candle.
                      of: RSI 3 back above its lower line after being below it in the impulse; a 4-hour close back inside
                      the lower band after a close below it in the impulse;
   CONTINUATION       a new low in the impulse, the histogram below zero and falling, the close below the middle band;
-  INDETERMINATE      otherwise, or the 4-hour MACD, RSI or Bollinger not warmed up.
+  INDETERMINATE      otherwise, or the 4-hour MACD, RSI or Bollinger not warmed up. "Otherwise" (data ready, no recipe
+                     matched) is marked condition_unclassified: it stops a NEW recommendation, but a live one keeps
+                     its structural basis and is kept (planner/keeper.py; owner's approval of 19 November 2026).
 OPPORTUNITY TYPE (D-16, modified; FC-04 exactly, owner's R1 of 17 November 2026): a label only, by condition class:
 "healthy-trend pullback" for CONTINUATION; "corrective reversal" for EXHAUSTION, CORRECTION_LIKELY or
 CORRECTION_ACTIVE. Zone choice, invalidation and everything else are the same for both. No
@@ -46,7 +52,7 @@ if tied, the nearer. Reference entry: the zone's most significant level (D-17).
 DESTINATIONS (D-18, D-19): the support zones below the entry zone, nearest first: intermediate = the first; primary =
 the first Major; extended = the next Major. Each at the zone's near edge (its top, for a sell). No primary: no
 recommendation.
-INVALIDATION (D-20, FC-02): an hourly close at least hourly_read.break_beyond_pips (3) above the zone top; a 4-hour
+INVALIDATION (D-20, FC-02): an hourly close at least planner.break_beyond_pips (3) above the zone top; a 4-hour
 close at least 3 pips above the last lower high; the 4-hour direction no longer BEARISH; price reaching the primary
 destination before the zone.
 Missing data or indicators: no recommendation, with the reason (D-27). Nothing is guessed.
@@ -60,7 +66,7 @@ from decimal import Decimal
 from typing import Any
 
 from planner.measure import Snapshot, cl, hi, lo, op, pips, ppp, side_of, snapshot
-from planner.structure import DOWN, MIXED, UP, Structure, structure, swings, threshold_misses
+from planner.structure import DOWN, MIXED, UP, Structure, dominant_structure, structure, swings, threshold_misses
 from planner.zones import CLASS_RANK, MAJOR, Zone, ahead, interacts, label, level_map, reached, zones
 from prices.model import UK, plain, uk_short
 
@@ -99,6 +105,7 @@ class Plan:
     threshold_misses: list[dict] = field(default_factory=list)
     h4_last_swing: dict | None = None
     destination_reached: dict | None = None     # D-1 correction: the primary destination was already reached
+    condition_unclassified: bool = False        # INDETERMINATE only because no class recipe matched (data ready)
     structure: dict | None = None               # reporting only: every level, zone and swing the plan saw
 
     @property
@@ -121,6 +128,7 @@ class Plan:
             "no_recommendation": self.no_recommendation, "warming_up": self.warming_up,
             "threshold_misses": self.threshold_misses, "h4_last_swing": self.h4_last_swing,
             "destination_reached": self.destination_reached, "structure": self.structure,
+            "condition_unclassified": self.condition_unclassified,
         }
 
 
@@ -262,6 +270,7 @@ def condition(settings: Any, snap: Snapshot, st: Structure, d1: Structure, h1_sw
         return EXHAUSTION, ev + ["exhaustion: a new extreme that momentum does not confirm"], facts
     if new_extreme and away and beyond_mid:
         return CONTINUATION, ev + [f"continuation: new {word}s, momentum building, close {'below' if bear else 'above'} the middle band"], facts
+    facts["unclassified"] = True     # data ready, no class recipe matched (not "data not ready"): 19 November 2026
     return INDETERMINATE, ev + ["the evidence does not fit one condition"], facts
 
 
@@ -344,13 +353,13 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
     side = side_of(settings)
     pair = settings.market.pair
     near = Decimal(settings.rejection.near_level_within_pips) * ppp(settings)
-    beyond = Decimal(settings.hourly_read.break_beyond_pips) * ppp(settings)
+    beyond = Decimal(settings.planner.break_beyond_pips) * ppp(settings)
     warming = [f"{f.timeframe} {w}" for f in (snap.h1, snap.h4, snap.d1, snap.w1) for w in f.warming]
     data_utc = snap.five.end if snap.five else None
     h4_found = swings(settings, snap.h4.candles, "4h")
     d1_found = swings(settings, snap.d1.candles, "1d")
     h1_found = swings(settings, snap.h1.candles[-400:], "1h")
-    st = structure(settings, snap.h4.candles, "4h", h4_found)
+    st = dominant_structure(settings, snap.h4.candles, "4h", h4_found)    # candidate C (19 November 2026)
     d1 = structure(settings, snap.d1.candles, "1d", d1_found)
     dirn, dir_ev = direction(settings, st)
     misses = threshold_misses(settings, snap.h4.candles, "4h", h4_found) + \
@@ -358,18 +367,25 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
     plan = Plan(pair, snap.as_of, data_utc, snap.fresh, dirn, dir_ev, INDETERMINATE, [], warming_up=warming,
                 threshold_misses=misses)
     plan.observations = observations(settings, snap, st, d1, existing_levels, calendar, five_minute_rule)
+    if st.sweep is not None:
+        plan.observations["h4_sweep"] = st.sweep
     dir_ev += plan.observations.get("supporting", [])
     if snap.price is None or snap.h4.last is None:
         plan.no_recommendation = "no finished candles to work from"
         return plan
     if dirn not in (BEARISH, BULLISH):
-        plan.no_recommendation = f"the 4-hour direction is {dirn}: no recommendation until it is BEARISH or BULLISH"
+        unresolved = st.sweep is not None and st.sweep["state"] == "unresolved"
+        plan.no_recommendation = (f"the 4-hour direction is {dirn}"
+                                  + (f" (the wick-only sweep of {st.sweep['beyond']} by {st.sweep['price']} is unresolved)"
+                                     if unresolved else "")
+                                  + ": no recommendation until it is BEARISH or BULLISH")
         return plan
     bear = dirn == BEARISH
     last_opp = (st.highs if bear else st.lows)[-1]
     plan.h4_last_swing = {"kind": last_opp.kind, "price": plain(last_opp.price), "candle_utc": _iso(last_opp.candle_utc)}
     cond, cond_ev, facts = condition(settings, snap, st, d1, h1_found)
     plan.condition, plan.condition_evidence = cond, cond_ev
+    plan.condition_unclassified = cond == INDETERMINATE and bool(facts.get("unclassified"))
     if facts.get("impulse_size_points") is not None and snap.adr:
         plan.observations["impulse_pips"] = plain(pips(settings, facts["impulse_size_points"]))
         plan.observations["impulse_adr"] = plain((facts["impulse_size_points"] / snap.adr).quantize(Decimal("0.01")))
@@ -394,50 +410,250 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
                                   + f" zone of at least {settings.planner.min_entry_class} class that is NEAR or PLAUSIBLE"
                                   + f" before the last 4-hour swing {last_opp.kind} {plain(last_opp.price)}")
         return plan
-    z, reach, dist, info = good[0]
+    # Destination-first view: enumerate structural destinations independently of
+    # the entry ranking. This is diagnostic, not an unsupported probability forecast.
+    # A destination is not an actionable prediction merely because it is Major.
+    destination_outlooks = []
+    for target in sorted(
+        (o for o in zs if o.klass == MAJOR),
+        key=lambda o: (-o.high if bear else o.low),
+    ):
+        potential_entries = [
+            entry for entry, _, _, _ in good
+            if (target.high < entry.low if bear else target.low > entry.high)
+        ]
+        destination_outlooks.append({
+            "zone": [plain(target.low), plain(target.high)],
+            "class": target.klass,
+            "relative_to_price": (
+                "ahead" if ahead(price, target.low, target.high, toward_low=bear)
+                else "behind_or_containing_price"
+            ),
+            "candidate_entries": [
+                [plain(entry.low), plain(entry.high)] for entry in potential_entries
+            ],
+            # Explicitly record the sequence PIA-style analysis would require.
+            # This is a conditional scenario, not a prediction that each leg occurs.
+            "journeys": [
+                {
+                    "sequence": (
+                        ["current_price", "corrective_rally_to_entry", "sell_toward_destination"]
+                        if bear else
+                        ["current_price", "corrective_decline_to_entry", "buy_toward_destination"]
+                    ),
+                    "entry": [plain(entry.low), plain(entry.high)],
+                    "destination": [plain(target.low), plain(target.high)],
+                    "countermove_pips": plain(pips(
+                        settings, max(Decimal(0), entry.low - price) if bear
+                        else max(Decimal(0), price - entry.high)
+                    )),
+                    "directional_distance_pips": plain(pips(
+                        settings, entry.low - target.high if bear else target.low - entry.high
+                    )),
+                    "conditional_only": True,
+                    "invalidation_reference": plain(last_opp.price),
+                }
+                for entry in potential_entries
+            ],
+            "destination_forecast": "not established by structural eligibility alone",
+            "countermove_forecast": "not established by structural eligibility alone",
+        })
+    plan.observations["destination_first_outlook"] = destination_outlooks
+    # Research-only horizon: preserve the complete ahead-of-price support/resistance
+    # ladder separately from the nearest primary target. A Major level is an
+    # obstacle, NOT proof of the ultimate destination. No order or trade decision
+    # is changed by this diagnostic.
+    from planner.destination_hierarchy import destination_hierarchy, research_target_forecast
+    plan.observations["destination_hierarchy"] = destination_hierarchy(
+        price,
+        [
+            {"low": plain(z.low), "high": plain(z.high),
+             "class": z.klass, "evidence": list(z.families)}
+            for z in zs
+        ],
+        "SELL" if bear else "BUY",
+    )
+    # Report the three-tier target model without manufacturing a preferred
+    # destination or changing the existing STP trading recommendation.
+    plan.observations["target_ladder"] = research_target_forecast(
+        price,
+        [
+            {"low": plain(z.low), "high": plain(z.high),
+             "class": z.klass, "evidence": list(z.families)}
+            for z in zs
+        ],
+        "SELL" if bear else "BUY",
+        plan.observations,
+        condition=cond,
+    )
+    # Assess the COMPLETE journey for each eligible entry, not only the strongest/nearest entry.
+    # This does not predict that the countermove will happen. It preserves the existing Major
+    # destination and D-1 touch rules, and records why each proposed journey is unsupported.
+    journeys = []
+    selected = None
+    for candidate, candidate_reach, candidate_dist, candidate_info in good:
+        destinations = sorted(
+            [o for o in zs if o.high < candidate.low], key=lambda o: -o.high
+        ) if bear else sorted(
+            [o for o in zs if o.low > candidate.high], key=lambda o: o.low
+        )
+        major_destinations = [o for o in destinations if o.klass == MAJOR]
+        inside = candidate.low <= price <= candidate.high
+        counter_pips = pips(settings, candidate_dist)
+        # Evidence-based, qualitative countermove assessment. An active hourly
+        # correction is stronger evidence of movement toward an entry than a
+        # 4-hour exhaustion signal; continuation alone supplies no such evidence.
+        # Never present this as a calibrated probability.
+        if inside:
+            counter_state = "AT_ENTRY_NOW"
+            counter_evidence = ["current price is already inside the proposed entry zone"]
+        elif cond == CORRECTION_ACTIVE:
+            counter_state = "CORRECTION_OBSERVED"
+            counter_evidence = list(cond_ev)
+        elif cond == CORRECTION_LIKELY:
+            counter_state = "CORRECTION_INDICATED"
+            counter_evidence = list(cond_ev)
+        elif cond == EXHAUSTION:
+            counter_state = "EXHAUSTION_ONLY"
+            counter_evidence = list(cond_ev)
+        else:
+            counter_state = "UNCONFIRMED_PULLBACK"
+            counter_evidence = ["4-hour continuation does not establish a corrective move toward the entry"]
+        record = {
+            "entry": [plain(candidate.low), plain(candidate.high)],
+            "entry_class": candidate.klass,
+            "reachability": candidate_reach,
+            "countermove_pips": plain(counter_pips),
+            "countermove_status": "already in zone" if inside else "possible, not predicted",
+            "countermove_evidence_state": counter_state,
+            "countermove_evidence": counter_evidence,
+            "countermove_probability": None,
+            "destination": None,
+            "decision": "rejected",
+            "reason": None,
+        }
+        if not major_destinations:
+            record["reason"] = "no Major destination beyond this entry"
+        else:
+            primary = major_destinations[0]
+            record["destination"] = [plain(primary.low), plain(primary.high)]
+            touched = reached(settings, snap.five, price, primary.low, primary.high, toward_low=bear)
+            if touched:
+                record["reason"] = f"primary destination already touched: {touched}"
+                if plan.destination_reached is None:
+                    plan.destination_reached = {
+                        "primary": plain(primary.high if bear else primary.low),
+                        "zone": [plain(primary.low), plain(primary.high)],
+                        "zone_candidate": [plain(candidate.low), plain(candidate.high)],
+                        "how": touched,
+                        "candle_utc": _iso(snap.five.start) if snap.five else None,
+                    }
+            else:
+                record["decision"] = "eligible"
+                record["reason"] = "structurally eligible; countermove remains unconfirmed"
+                if selected is None:
+                    selected = (candidate, candidate_reach, candidate_dist, candidate_info,
+                                destinations, major_destinations)
+        journeys.append(record)
+    plan.observations["conditional_journeys"] = journeys
+    plan.candidates = [_zone_dict(zz, i) for zz, _, _, i in looked]
+    if selected is None:
+        # Retain the established public reason contract for existing dashboards,
+        # functional tests, and Keeper while exposing all candidate failures above.
+        if plan.destination_reached is not None:
+            plan.no_recommendation = (
+                f"the primary destination {plan.destination_reached['primary']} is already reached "
+                f"({plan.destination_reached['how']}); no recommendation is issued"
+            )
+        elif all(r["reason"] == "no Major destination beyond this entry" for r in journeys):
+            plan.no_recommendation = (
+                f"no Major {'support' if bear else 'resistance'} zone "
+                "below the entry zone" if bear else
+                "no Major resistance zone above the entry zone"
+            )
+        else:
+            plan.no_recommendation = "no complete eligible entry-to-destination journey: " + "; ".join(
+                f"{r['entry'][0]}-{r['entry'][1]}: {r['reason']}" for r in journeys
+            )
+        return plan
+
+    # Destination-first decision: prefer a complete, untouched Major target that
+    # lies ahead of current price in the trend direction. Rank its associated
+    # conditional entries by the existing approved class/distance order.
+    # Preserve the established entry-first choice when no ahead target exists.
+    # This does not assert that the corrective leg will occur.
+    eligible_by_target = []
+    for candidate, candidate_reach, candidate_dist, candidate_info in good:
+        destinations = sorted(
+            [o for o in zs if o.high < candidate.low], key=lambda o: -o.high
+        ) if bear else sorted(
+            [o for o in zs if o.low > candidate.high], key=lambda o: o.low
+        )
+        majors_for_entry = [o for o in destinations if o.klass == MAJOR]
+        if not majors_for_entry:
+            continue
+        primary = majors_for_entry[0]
+        if reached(settings, snap.five, price, primary.low, primary.high, toward_low=bear):
+            continue
+        if ahead(price, primary.low, primary.high, toward_low=bear):
+            eligible_by_target.append((
+                primary, candidate, candidate_reach, candidate_dist,
+                candidate_info, destinations, majors_for_entry,
+            ))
+    if eligible_by_target:
+        # Nearest untapped Major target first, then the already-approved
+        # ranking of qualifying entries for that target.
+        eligible_by_target.sort(key=lambda item: (
+            (price - item[0].high) if bear else (item[0].low - price),
+            -CLASS_RANK[item[1].klass],
+            item[3],
+        ))
+        _, cz, cr, cd, ci, ds, ms = eligible_by_target[0]
+        selected = (cz, cr, cd, ci, ds, ms)
+        plan.observations["destination_first_selection"] = {
+            "mode": "nearest_untouched_major_ahead",
+            "target": [plain(ms[0].low), plain(ms[0].high)],
+            "entry": [plain(cz.low), plain(cz.high)],
+            "conditional_only": True,
+            "entry_confirmation": "not assessed by structural planner",
+            "execution_authorised": False,
+        }
+    else:
+        plan.observations["destination_first_selection"] = {
+            "mode": "legacy_entry_rank_fallback",
+            "reason": "no untouched Major destination wholly ahead of current price",
+            "conditional_only": True,
+            "entry_confirmation": "not assessed by structural planner",
+            "execution_authorised": False,
+        }
+    # A rejected alternative must not retire an otherwise eligible plan.
+    plan.destination_reached = None
+    z, reach, dist, info, dests, majors = selected
     for zz, r, d, i in looked:
         if zz is z:
             i["chosen"] = True
         elif zz in [g[0] for g in good]:
-            i["rejected_because"] = (f"{zz.klass} is weaker than the chosen {z.klass} zone" if CLASS_RANK[zz.klass] < CLASS_RANK[z.klass]
-                                     else "same class as the chosen zone, but further away")
+            i["rejected_because"] = (
+                "another complete eligible journey ranked higher" if any(
+                    j["entry"] == [plain(zz.low), plain(zz.high)] and j["decision"] == "eligible"
+                    for j in journeys
+                ) else "no eligible destination for this entry"
+            )
     plan.candidates = [_zone_dict(zz, i) for zz, _, _, i in looked]
-    if len(good) > 1:
-        a = good[1][0]
-        plan.alternative = _zone_dict(a, {"reachability": good[1][1]})
-    # destinations: zones beyond the entry zone in the trade's direction, nearest first
-    dests = sorted([o for o in zs if (o.high < z.low) if bear], key=lambda o: -o.high) if bear else \
-        sorted([o for o in zs if o.low > z.high], key=lambda o: o.low)
+    other = next((g for g in good if g[0] is not z), None)
+    if other is not None:
+        plan.alternative = _zone_dict(other[0], {"reachability": other[1]})
     edge = (lambda o: o.high) if bear else (lambda o: o.low)
-    majors = [o for o in dests if o.klass == MAJOR]
-    if not majors:
-        plan.no_recommendation = (f"no Major {'support' if bear else 'resistance'} zone "
-                                  f"{'below' if bear else 'above'} the entry zone within the "
-                                  f"{settings.levels.round_numbers_within_pips}-pip window for the primary destination")
-        plan.candidates = [_zone_dict(zz, i) for zz, _, _, i in looked]
-        return plan
-    # D-1 correction (owner's approval, 18 November 2026): admission uses the same price-reachability test as the
-    # lifecycle's "destination reached" rule (planner/zones.py reached: a destination wholly beyond price that the
-    # latest finished 5-minute candle already reached by the existing one-sided 3-pip touch rule). A recommendation
-    # the next touch would end as "destination reached before entry" is not issued. (Before: admission compared the last close with the destination edge
-    # by more than 3 pips, while the lifecycle used the candle's extreme, so a recommendation could be issued with its
-    # destination already touched, and be invalidated by the next candle; 17 November 2026, 22:00.)
-    hit = reached(settings, snap.five, price, majors[0].low, majors[0].high, toward_low=bear)
-    if hit:
-        plan.destination_reached = {"primary": plain(edge(majors[0])), "zone": [plain(majors[0].low), plain(majors[0].high)],
-                                    "zone_candidate": [plain(z.low), plain(z.high)], "how": hit,
-                                    "candle_utc": _iso(snap.five.start) if snap.five else None}
-        plan.no_recommendation = (f"the primary destination {plain(edge(majors[0]))} is already reached ({hit}); no "
-                                  f"recommendation is issued for a destination price has already reached (D-1 "
-                                  f"correction), so the zone {plain(z.low)}-{plain(z.high)} is not recommended")
-        plan.candidates = [_zone_dict(zz, i) for zz, _, _, i in looked]
-        return plan
     plan.zone, plan.reachability = z, reach
     families = ", ".join(z.families)
-    plan.selection_reason = (f"{z.klass} zone ({len(z.families)} families: {families}) "
-                             f"{'containing price' if dist == 0 else plain(pips(settings, dist)) + ' pips away'}, {reach}; "
-                             f"the strongest class among the reachable zones" + (", and the nearer of equals" if
-                                                                                  sum(1 for g in good if g[0].klass == z.klass) > 1 else ""))
+    plan.selection_reason = (
+        f"{z.klass} zone ({len(z.families)} families: {families}) "
+        f"{'containing price' if dist == 0 else plain(pips(settings, dist)) + ' pips away'}, {reach}; "
+        + ("destination-first: nearest untouched Major target ahead, then entry class/distance; "
+         if plan.observations["destination_first_selection"]["mode"] == "nearest_untouched_major_ahead"
+         else "entry-class/distance fallback: no untouched Major target ahead; ")
+        + "the countermove is conditional, not a forecast of certainty"
+    )
     plan.destinations = {
         "intermediate": {"price": plain(edge(dests[0])), "zone": _zone_dict(dests[0], {})},
         "primary": {"price": plain(edge(majors[0])), "zone": _zone_dict(majors[0], {})},
@@ -455,7 +671,7 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
         "destination_first_applies": ahead(price, majors[0].low, majors[0].high, toward_low=bear),
         "conditions": [
             f"an hourly close at or {'above' if bear else 'below'} {plain(zone_break)} "
-            f"({settings.hourly_read.break_beyond_pips} pips beyond the zone {'top' if bear else 'bottom'})",
+            f"({settings.planner.break_beyond_pips} pips beyond the zone {'top' if bear else 'bottom'})",
             f"a 4-hour close at or {'above' if bear else 'below'} {plain(struct_break)} "
             f"(beyond the last 4-hour swing {last_opp.kind} {plain(last_opp.price)})",
             f"the 4-hour direction no longer {dirn}",
