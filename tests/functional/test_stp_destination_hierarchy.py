@@ -95,3 +95,26 @@ def test_extended_requires_preferred_and_explicit_rationale():
     with pytest.raises(ValueError, match="evidence rationale"):
         target_ladder("13460", zones, "SELL",
             preferred={"low": "13330", "high": "13340"})
+
+
+def test_research_preferred_target_needs_h4_alignment_and_adr_room():
+    from planner.destination_hierarchy import research_target_forecast
+    zones = [
+        {"low": "13440", "high": "13450", "class": "Major", "evidence": ["H4"]},
+        {"low": "13400", "high": "13410", "class": "Major", "evidence": ["H4", "pivot"]},
+        {"low": "13350", "high": "13360", "class": "Major", "evidence": ["H4", "daily"]},
+    ]
+    observations = {"adr_pips": "120", "today_range_pips": "20",
+                    "h4_ema_stack": "7 < 13 < 21 (down)"}
+    result = research_target_forecast("13460", zones, "SELL", observations,
+                                      condition="CORRECTION_ACTIVE")
+    assert result["immediate"]["low"] == "13440"
+    assert result["preferred"]["low"] == "13350"
+    assert result["preferred_selection_status"] == "uncalibrated_research_hypothesis"
+    assert result["execution_authorised"] is False
+    opposing = dict(observations, h4_ema_stack="7 > 13 > 21 (up)")
+    assert research_target_forecast("13460", zones, "SELL", opposing,
+                                    condition="CORRECTION_ACTIVE")["preferred"] is None
+    exhausted = dict(observations, today_range_pips="115")
+    assert research_target_forecast("13460", zones, "SELL", exhausted,
+                                    condition="CORRECTION_ACTIVE")["preferred"] is None
