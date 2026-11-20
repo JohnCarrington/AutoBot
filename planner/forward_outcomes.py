@@ -61,6 +61,8 @@ def score_journey(plan: dict[str, Any], candles: Sequence[Candle], *,
                 gap_at = previous
         last_end[candle.timeframe] = candle.end
 
+    if require_contiguous_m5 and not any(c.timeframe == "5m" for c in future):
+        return {"status": "DATA_GAP_CENSORED", "reason": "no future M5 candles"}
     if require_contiguous_m5 and gap_at is not None:
         # A missing M5 interval can hide either entry, target or invalidation.
         # Refuse to score the sequence across that hole, including weekends.
