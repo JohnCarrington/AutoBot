@@ -61,27 +61,41 @@ def test_stale_candle_cannot_change_outcome():
     assert score_journey(plan(), [stale, candle(0, "1.3050", "1.3060")])["status"] == "NEITHER_CENSORED"
 
 
+def hourly(n, low, high):
+    a, b = D(str(low)), D(str(high))
+    return Candle("1h", T + timedelta(hours=n), T + timedelta(hours=n+1),
+                  a, b, a, b, a, b, a, b)
+
+
+def four_hour(n, low, high):
+    a, b = D(str(low)), D(str(high))
+    return Candle("4h", T + timedelta(hours=4*n), T + timedelta(hours=4*(n+1)),
+                  a, b, a, b, a, b, a, b)
+
+
 def test_zone_invalidation_before_entry_is_not_success():
     p = plan()
     p["invalidation"] = {"zone_break_close": "1.3120"}
-    # Candle closes above the sell-zone break without touching the entry zone.
-    assert score_journey(p, [candle(0, "1.3125", "1.3130")])["status"] == "ZONE_INVALIDATED_BEFORE_ENTRY"
+    result = score_journey(p, [hourly(0, "1.3125", "1.3130"),
+                               candle(12, "1.3100", "1.3110")])
+    assert result["status"] == "STRUCTURE_INVALIDATED_BEFORE_ENTRY"
 
 
 def test_zone_invalidation_after_entry_is_not_success():
     p = plan()
     p["invalidation"] = {"zone_break_close": "1.3120"}
     result = score_journey(p, [candle(0, "1.3100", "1.3110"),
-                               candle(1, "1.3120", "1.3130"),
-                               candle(2, "1.3000", "1.3010")])
-    assert result["status"] == "ZONE_INVALIDATED_AFTER_ENTRY"
+                               hourly(0, "1.3120", "1.3130"),
+                               candle(12, "1.3000", "1.3010")])
+    assert result["status"] == "STRUCTURE_INVALIDATED_AFTER_ENTRY"
 
 
-def test_target_and_invalidation_same_candle_is_ambiguous():
+def test_target_and_invalidation_same_close_is_ambiguous():
     p = plan()
     p["invalidation"] = {"zone_break_close": "1.3120"}
     result = score_journey(p, [candle(0, "1.3100", "1.3110"),
-                               candle(1, "1.3000", "1.3130")])
+                               hourly(0, "1.3120", "1.3130"),
+                               candle(11, "1.3000", "1.3010")])
     assert result["status"] == "AMBIGUOUS_TARGET_OR_INVALIDATION"
 
 
@@ -89,8 +103,26 @@ def test_buy_invalidation_mirrors_sell():
     p = plan("BUY")
     p["invalidation"] = {"zone_break_close": "1.2990"}
     result = score_journey(p, [candle(0, "1.3000", "1.3010"),
-                               candle(1, "1.2980", "1.2985")])
-    assert result["status"] == "ZONE_INVALIDATED_AFTER_ENTRY"
+                               hourly(0, "1.2980", "1.2985")])
+    assert result["status"] == "STRUCTURE_INVALIDATED_AFTER_ENTRY"
+
+
+def test_h4_structure_break_uses_h4_close_not_m5():
+    p = plan()
+    p["invalidation"] = {"structure_break_close": "1.3200"}
+    result = score_journey(p, [candle(0, "1.3100", "1.3110"),
+                               candle(1, "1.3210", "1.3220"),
+                               four_hour(0, "1.3205", "1.3210")])
+    assert result["status"] == "STRUCTURE_INVALIDATED_AFTER_ENTRY"
+
+
+def test_m5_close_alone_does_not_falsely_invalidate_h1_rule():
+    p = plan()
+    p["invalidation"] = {"zone_break_close": "1.3120"}
+    result = score_journey(p, [candle(0, "1.3100", "1.3110"),
+                               candle(1, "1.3125", "1.3130"),
+                               candle(2, "1.3000", "1.3010")])
+    assert result["status"] == "ENTRY_THEN_DESTINATION"
 
 
 def test_at_entry_now_counts_as_initial_touch_without_retest():
