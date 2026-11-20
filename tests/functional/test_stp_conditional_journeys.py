@@ -19,6 +19,17 @@ def _check_journeys(plan):
         assert destination["destination_forecast"] == "not established by structural eligibility alone"
         assert destination["countermove_forecast"] == "not established by structural eligibility alone"
         assert isinstance(destination["candidate_entries"], list)
+        assert len(destination["journeys"]) == len(destination["candidate_entries"])
+        for path in destination["journeys"]:
+            assert path["conditional_only"] is True
+            assert path["entry"] in destination["candidate_entries"]
+            assert path["destination"] == destination["zone"]
+            assert D(path["countermove_pips"]) >= 0
+            assert D(path["directional_distance_pips"]) > 0
+            assert path["sequence"] in (
+                ["current_price", "corrective_rally_to_entry", "sell_toward_destination"],
+                ["current_price", "corrective_decline_to_entry", "buy_toward_destination"],
+            )
     journeys = plan["observations"]["conditional_journeys"]
     assert journeys, "A classified opportunity with qualifying zones must inspect journeys"
     for journey in journeys:
