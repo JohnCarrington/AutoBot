@@ -157,17 +157,13 @@ def research_target_forecast(price, zones, direction, observations, *, condition
     if not candidates:
         diagnostic["rejections"].append("no deeper multi-family Major zone")
         return dict(base, research_status="no_deeper_major", diagnostic=diagnostic)
-    # Do not enforce remaining ADR as a hard gate: trends regularly exceed ADR.
-    # Limit the speculative horizon to 1.5x ADR from the current price when known.
-    horizon = adr * Decimal("1.5") if adr is not None else None
-    feasible = [z for z in candidates if horizon is None or
-                Decimal(z["distance_pips"]) <= horizon]
-    if not feasible:
-        diagnostic["rejections"].append("deeper Major zones beyond 1.5 ADR horizon")
-        return dict(base, research_status="beyond_research_horizon", diagnostic=diagnostic)
-    # Prefer the deepest *supported* zone inside the horizon. This is a testable
-    # scenario, not a claim that it is the statistically most likely endpoint.
-    preferred = feasible[-1]
+    # ADR describes typical movement, not a structural-zone discovery boundary.
+    # Preserve a deeper Major destination as an explicit multi-session hypothesis
+    # even when it is farther than 1.5 ADR. Do not imply it will be reached today.
+    feasible = candidates
+    # Select the nearest deeper Major destination as the preferred hypothesis.
+    # More distant zones remain conditional extensions, not today's prediction.
+    preferred = feasible[0]
     further = [z for z in multifamily if Decimal(z["distance_pips"]) >
                Decimal(preferred["distance_pips"])]
     extension = further[0] if further else None
@@ -176,7 +172,7 @@ def research_target_forecast(price, zones, direction, observations, *, condition
     diagnostic["selected_distance_pips"] = preferred["distance_pips"]
     diagnostic["candidate_count"] = len(feasible)
     return dict(base,
-        preferred=hypothesis(preferred, "confirmed H4 structural direction; multi-family Major zone; research horizon"),
+        preferred=hypothesis(preferred, "confirmed H4 structural direction; next deeper multi-family Major zone; timeframe uncalibrated"),
         extended=(hypothesis(extension, "conditional continuation beyond preferred structural destination")
                   if extension else None),
         intermediate_obstacles=[z for z in ladder if
