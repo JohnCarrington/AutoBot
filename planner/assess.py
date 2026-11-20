@@ -410,50 +410,77 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
                                   + f" zone of at least {settings.planner.min_entry_class} class that is NEAR or PLAUSIBLE"
                                   + f" before the last 4-hour swing {last_opp.kind} {plain(last_opp.price)}")
         return plan
-    z, reach, dist, info = good[0]
+    # Assess the COMPLETE journey for each eligible entry, not only the strongest/nearest entry.
+    # This does not predict that the countermove will happen. It preserves the existing Major
+    # destination and D-1 touch rules, and records why each proposed journey is unsupported.
+    journeys = []
+    selected = None
+    for candidate, candidate_reach, candidate_dist, candidate_info in good:
+        destinations = sorted(
+            [o for o in zs if o.high < candidate.low], key=lambda o: -o.high
+        ) if bear else sorted(
+            [o for o in zs if o.low > candidate.high], key=lambda o: o.low
+        )
+        major_destinations = [o for o in destinations if o.klass == MAJOR]
+        inside = candidate.low <= price <= candidate.high
+        counter_pips = pips(settings, candidate_dist)
+        record = {
+            "entry": [plain(candidate.low), plain(candidate.high)],
+            "entry_class": candidate.klass,
+            "reachability": candidate_reach,
+            "countermove_pips": plain(counter_pips),
+            "countermove_status": "already in zone" if inside else "possible, not predicted",
+            "destination": None,
+            "decision": "rejected",
+            "reason": None,
+        }
+        if not major_destinations:
+            record["reason"] = "no Major destination beyond this entry"
+        else:
+            primary = major_destinations[0]
+            record["destination"] = [plain(primary.low), plain(primary.high)]
+            touched = reached(settings, snap.five, price, primary.low, primary.high, toward_low=bear)
+            if touched:
+                record["reason"] = f"primary destination already touched: {touched}"
+            else:
+                record["decision"] = "eligible"
+                record["reason"] = "structurally eligible; countermove remains unconfirmed"
+                if selected is None:
+                    selected = (candidate, candidate_reach, candidate_dist, candidate_info,
+                                destinations, major_destinations)
+        journeys.append(record)
+    plan.observations["conditional_journeys"] = journeys
+    plan.candidates = [_zone_dict(zz, i) for zz, _, _, i in looked]
+    if selected is None:
+        plan.no_recommendation = "no complete eligible entry-to-destination journey: " + "; ".join(
+            f"{r['entry'][0]}-{r['entry'][1]}: {r['reason']}" for r in journeys
+        )
+        return plan
+
+    z, reach, dist, info, dests, majors = selected
     for zz, r, d, i in looked:
         if zz is z:
             i["chosen"] = True
         elif zz in [g[0] for g in good]:
-            i["rejected_because"] = (f"{zz.klass} is weaker than the chosen {z.klass} zone" if CLASS_RANK[zz.klass] < CLASS_RANK[z.klass]
-                                     else "same class as the chosen zone, but further away")
+            i["rejected_because"] = (
+                "another complete eligible journey ranked higher" if any(
+                    j["entry"] == [plain(zz.low), plain(zz.high)] and j["decision"] == "eligible"
+                    for j in journeys
+                ) else "no eligible destination for this entry"
+            )
     plan.candidates = [_zone_dict(zz, i) for zz, _, _, i in looked]
-    if len(good) > 1:
-        a = good[1][0]
-        plan.alternative = _zone_dict(a, {"reachability": good[1][1]})
-    # destinations: zones beyond the entry zone in the trade's direction, nearest first
-    dests = sorted([o for o in zs if (o.high < z.low) if bear], key=lambda o: -o.high) if bear else \
-        sorted([o for o in zs if o.low > z.high], key=lambda o: o.low)
+    other = next((g for g in good if g[0] is not z), None)
+    if other is not None:
+        plan.alternative = _zone_dict(other[0], {"reachability": other[1]})
     edge = (lambda o: o.high) if bear else (lambda o: o.low)
-    majors = [o for o in dests if o.klass == MAJOR]
-    if not majors:
-        plan.no_recommendation = (f"no Major {'support' if bear else 'resistance'} zone "
-                                  f"{'below' if bear else 'above'} the entry zone within the "
-                                  f"{settings.levels.round_numbers_within_pips}-pip window for the primary destination")
-        plan.candidates = [_zone_dict(zz, i) for zz, _, _, i in looked]
-        return plan
-    # D-1 correction (owner's approval, 18 November 2026): admission uses the same price-reachability test as the
-    # lifecycle's "destination reached" rule (planner/zones.py reached: a destination wholly beyond price that the
-    # latest finished 5-minute candle already reached by the existing one-sided 3-pip touch rule). A recommendation
-    # the next touch would end as "destination reached before entry" is not issued. (Before: admission compared the last close with the destination edge
-    # by more than 3 pips, while the lifecycle used the candle's extreme, so a recommendation could be issued with its
-    # destination already touched, and be invalidated by the next candle; 17 November 2026, 22:00.)
-    hit = reached(settings, snap.five, price, majors[0].low, majors[0].high, toward_low=bear)
-    if hit:
-        plan.destination_reached = {"primary": plain(edge(majors[0])), "zone": [plain(majors[0].low), plain(majors[0].high)],
-                                    "zone_candidate": [plain(z.low), plain(z.high)], "how": hit,
-                                    "candle_utc": _iso(snap.five.start) if snap.five else None}
-        plan.no_recommendation = (f"the primary destination {plain(edge(majors[0]))} is already reached ({hit}); no "
-                                  f"recommendation is issued for a destination price has already reached (D-1 "
-                                  f"correction), so the zone {plain(z.low)}-{plain(z.high)} is not recommended")
-        plan.candidates = [_zone_dict(zz, i) for zz, _, _, i in looked]
-        return plan
     plan.zone, plan.reachability = z, reach
     families = ", ".join(z.families)
-    plan.selection_reason = (f"{z.klass} zone ({len(z.families)} families: {families}) "
-                             f"{'containing price' if dist == 0 else plain(pips(settings, dist)) + ' pips away'}, {reach}; "
-                             f"the strongest class among the reachable zones" + (", and the nearer of equals" if
-                                                                                  sum(1 for g in good if g[0].klass == z.klass) > 1 else ""))
+    plan.selection_reason = (
+        f"{z.klass} zone ({len(z.families)} families: {families}) "
+        f"{'containing price' if dist == 0 else plain(pips(settings, dist)) + ' pips away'}, {reach}; "
+        "first complete eligible entry/destination journey by zone class and distance; "
+        "the countermove is conditional, not a forecast of certainty"
+    )
     plan.destinations = {
         "intermediate": {"price": plain(edge(dests[0])), "zone": _zone_dict(dests[0], {})},
         "primary": {"price": plain(edge(majors[0])), "zone": _zone_dict(majors[0], {})},
