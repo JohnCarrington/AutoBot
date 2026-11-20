@@ -52,7 +52,7 @@ MAJOR, MODERATE, MINOR = "Major", "Moderate", "Minor"
 CLASS_RANK = {MAJOR: 3, MODERATE: 2, MINOR: 1}
 
 # The most significant level in a zone (D-17): the brief's priority order (daily pivots first, EMAs last).
-PRIORITY = ("daily pivot", "weekly pivot", "daily R/S", "weekly R/S", "previous day high/low", "previous week high/low",
+PRIORITY = ("daily pivot", "weekly pivot", "daily R/S", "weekly R/S", "previous day high/low", "previous week high/low", "today high/low",
             "psychological", "daily swing", "4-hour swing", "hourly swing", "session high/low", "moving average")
 
 
@@ -118,6 +118,36 @@ def weekly_levels(settings: Any, snap: Snapshot) -> list[MapLevel]:
                             wk.start, True, True, src))
     out.append(MapLevel(hi(wk, side), "previous week high", SESSION, "weekly", "previous week high/low", wk.start, True, True, src))
     out.append(MapLevel(lo(wk, side), "previous week low", SESSION, "weekly", "previous week high/low", wk.start, True, True, src))
+    return out
+
+
+def recent_week_extremes(settings: Any, snap: Snapshot, count: int = 4) -> list[MapLevel]:
+    """Completed weekly highs/lows, not merely the last week. Never use a running candle."""
+    side = side_of(settings)
+    finished = [c for c in snap.w1.candles if c.end <= snap.as_of]
+    out: list[MapLevel] = []
+    for offset, c in enumerate(reversed(finished[-count:]), start=1):
+        if offset == 1:
+            continue  # weekly_levels() already supplies the previous week's levels
+        for kind, value in (("high", hi(c, side)), ("low", lo(c, side))):
+            out.append(MapLevel(value, f"{offset} weeks ago {kind}", SESSION, "weekly",
+                                "previous week high/low", c.start, True, True,
+                                f"completed weekly candle {uk_short(c.start)}"))
+    return out
+
+
+def today_extremes(settings: Any, snap: Snapshot) -> list[MapLevel]:
+    """Intraday high/low so far, from FINISHED five-minute candles only."""
+    side = side_of(settings)
+    today = [c for c in snap.fives if snap.day_start <= c.start and c.end <= snap.as_of]
+    if not today:
+        return []
+    out = []
+    for kind, value in (("high", max(hi(c, side) for c in today)),
+                        ("low", min(lo(c, side) for c in today))):
+        out.append(MapLevel(value, f"today {kind} (so far)", SESSION, "intraday",
+                            "today high/low", snap.day_start, False, False,
+                            f"finished 5m candles through {today[-1].end.isoformat()}"))
     return out
 
 
@@ -195,7 +225,7 @@ def level_map(settings: Any, snap: Snapshot, existing: Any, h4_swings: Sequence[
     if snap.price is None:
         return []
     p = settings.planner
-    levels = from_existing(existing) + weekly_levels(settings, snap)
+    levels = from_existing(existing) + weekly_levels(settings, snap) + recent_week_extremes(settings, snap)\n    levels += today_extremes(settings, snap)
     levels += swing_levels(h4_swings, snap.as_of, p.h4_swing_lookback_weeks)
     levels += swing_levels(d1_swings, snap.as_of, p.daily_swing_lookback_weeks)
     levels += historical_swing_levels(d1_swings, snap.as_of, p.daily_swing_lookback_weeks,
