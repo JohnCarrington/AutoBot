@@ -634,7 +634,8 @@ def forecast(settings: Any, snap: Snapshot, existing: Any, plan: dict) -> dict:
         return out
     h4_found = swings(settings, snap.h4.candles, "4h")
     d1_found = swings(settings, snap.d1.candles, "1d")
-    lmap = level_map(settings, snap, existing, h4_found, d1_found,\n                     include_intraday_opportunity_levels=True)
+    lmap = level_map(settings, snap, existing, h4_found, d1_found,
+                     include_intraday_opportunity_levels=True)
     zs = zones(settings, lmap, snap.adr, snap.h1.candles, snap.price)
     half = zone_width(settings, snap.adr) / 2
     near = Decimal(settings.rejection.near_level_within_pips) * ppp(settings)
