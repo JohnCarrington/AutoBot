@@ -143,3 +143,14 @@ def test_at_entry_now_does_not_override_different_candidate():
         "countermove_evidence_state": "AT_ENTRY_NOW",
     }]}
     assert score_journey(p, [candle(0, "1.3000", "1.3010")])["status"] == "DESTINATION_BEFORE_ENTRY"
+
+
+def test_strict_historical_scoring_censors_missing_five_minute_candles():
+    result = score_journey(plan(), [candle(0, "1.3100", "1.3110"),
+                                    candle(3, "1.3000", "1.3010")],
+                           require_contiguous_m5=True)
+    assert result["status"] == "DATA_GAP_CENSORED"
+
+
+def test_strict_historical_scoring_requires_any_future_m5_coverage():
+    assert score_journey(plan(), [], require_contiguous_m5=True)["status"] == "DATA_GAP_CENSORED"
