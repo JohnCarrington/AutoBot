@@ -460,9 +460,23 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
     plan.observations["conditional_journeys"] = journeys
     plan.candidates = [_zone_dict(zz, i) for zz, _, _, i in looked]
     if selected is None:
-        plan.no_recommendation = "no complete eligible entry-to-destination journey: " + "; ".join(
-            f"{r['entry'][0]}-{r['entry'][1]}: {r['reason']}" for r in journeys
-        )
+        # Retain the established public reason contract for existing dashboards,
+        # functional tests, and Keeper while exposing all candidate failures above.
+        if plan.destination_reached is not None:
+            plan.no_recommendation = (
+                f"the primary destination {plan.destination_reached['primary']} is already reached "
+                f"({plan.destination_reached['how']}); no recommendation is issued"
+            )
+        elif all(r["reason"] == "no Major destination beyond this entry" for r in journeys):
+            plan.no_recommendation = (
+                f"no Major {'support' if bear else 'resistance'} zone "
+                "below the entry zone" if bear else
+                "no Major resistance zone above the entry zone"
+            )
+        else:
+            plan.no_recommendation = "no complete eligible entry-to-destination journey: " + "; ".join(
+                f"{r['entry'][0]}-{r['entry'][1]}: {r['reason']}" for r in journeys
+            )
         return plan
 
     # The selected journey has an untouched destination. A rejected alternative
