@@ -34,4 +34,5 @@ jobs:
           tests/functional/test_planner_scenarios.py
           tests/functional/test_stp_conditional_journeys.py
           tests/functional/test_stp_forward_outcomes.py
+          tests/functional/test_stp_walk_forward.py
           tests/functional/test_stp_dashboard_scenarios.py
