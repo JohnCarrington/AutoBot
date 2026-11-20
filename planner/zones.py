@@ -6,6 +6,11 @@ low, round numbers, London and New York session highs and lows, hourly turning l
   * the previous week's high and low (that same weekly candle);
   * 4-hour swings from the last planner.h4_swing_lookback_weeks, daily swings from the last
     planner.daily_swing_lookback_weeks (planner/structure.py);
+  * historical daily swings (20 November 2026): daily swings OLDER than planner.daily_swing_lookback_weeks, back to
+    planner.historical_daily_swing_lookback_weeks (0 = none), named "historical daily swing low/high". Same family
+    (HTF_STRUCTURE) and daily-or-weekly status as the recent daily swings. Only swings already confirmed at the
+    assessment time (known_utc <= as_of) count. The direction never uses them: it is decided from the latest swings
+    exactly as before (dominant_structure);
   * moving-average levels (P-C9): hourly EMA100 and EMA200, 4-hour EMA100, 4-hour EMA200 once warmed up, and the
     4-hour Bollinger middle band.
 Structural zones are retained regardless of distance from spot; levels.round_numbers_within_pips only controls round-number discovery (P-C5).
@@ -131,6 +136,22 @@ def swing_levels(found: Sequence[Swing], as_of: datetime, weeks: int) -> list[Ma
     return out
 
 
+def historical_swing_levels(found: Sequence[Swing], as_of: datetime, recent_weeks: int,
+                            historical_weeks: int) -> list[MapLevel]:
+    """Daily swings older than the recent look-back (recent_weeks) and no older than historical_weeks, confirmed by
+    as_of. Empty when historical_weeks is 0 or not beyond recent_weeks."""
+    if not historical_weeks or historical_weeks <= recent_weeks:
+        return []
+    recent, since = as_of - timedelta(weeks=recent_weeks), as_of - timedelta(weeks=historical_weeks)
+    out = []
+    for s in found:
+        if s.timeframe != "1d" or not (since <= s.candle_utc < recent) or s.known_utc > as_of:
+            continue
+        out.append(MapLevel(s.price, f"historical daily swing {s.kind}", HTF_STRUCTURE, "daily", "daily swing",
+                            s.candle_utc, True, True, s.describe()))
+    return out
+
+
 def average_levels(snap: Snapshot, decimals: int = 1) -> list[MapLevel]:
     """Moving-average levels, written to levels.level_decimals like every other level."""
     q = lambda v: rules.to_decimals(v, decimals)        # noqa: E731
@@ -177,6 +198,8 @@ def level_map(settings: Any, snap: Snapshot, existing: Any, h4_swings: Sequence[
     levels = from_existing(existing) + weekly_levels(settings, snap)
     levels += swing_levels(h4_swings, snap.as_of, p.h4_swing_lookback_weeks)
     levels += swing_levels(d1_swings, snap.as_of, p.daily_swing_lookback_weeks)
+    levels += historical_swing_levels(d1_swings, snap.as_of, p.daily_swing_lookback_weeks,
+                                      getattr(p, "historical_daily_swing_lookback_weeks", 0))
     levels += average_levels(snap, settings.levels.level_decimals)
     levels = flipped(settings, levels, snap.h1.candles, snap.price)
     return sorted(levels, key=lambda lv: (lv.price, PRIORITY.index(lv.kind), lv.name))

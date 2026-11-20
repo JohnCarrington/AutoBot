@@ -381,6 +381,7 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "daily_swing_move_within_candles": _whole_number(1, 100),
         "h4_swing_lookback_weeks": _whole_number(1, 520),
         "daily_swing_lookback_weeks": _whole_number(1, 520),
+        "historical_daily_swing_lookback_weeks": _whole_number(0, 1040),
         "structure_break_closes": _whole_number(1, 10),
         "zone_width_adr_share": _decimal_number("0", "1"),
         "major_min_families": _whole_number(1, 6),

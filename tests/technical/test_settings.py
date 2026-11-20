@@ -120,6 +120,7 @@ EXPECTED = {
                 "h4_swing_candles_each_side": 3, "h4_swing_min_move_pips": 40, "h4_swing_move_within_candles": 6,
                 "daily_swing_candles_each_side": 3, "daily_swing_min_move_pips": 110,
                 "daily_swing_move_within_candles": 6, "h4_swing_lookback_weeks": 8, "daily_swing_lookback_weeks": 48,
+                "historical_daily_swing_lookback_weeks": 156,
                 "structure_break_closes": 1, "zone_width_adr_share": Decimal("0.15"), "major_min_families": 3,
                 "moderate_min_families": 2, "min_entry_class": "Moderate", "ema_slope_candles": 6,
                 "macd_weakening_candles": 3, "no_new_extreme_hourly_candles": 3, "failed_breakout_within_candles": 3,

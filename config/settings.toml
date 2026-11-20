@@ -633,6 +633,10 @@ daily_swing_move_within_candles = 6
 # How far back 4-hour and daily swings are kept as levels (weeks).
 h4_swing_lookback_weeks = 8
 daily_swing_lookback_weeks = 48
+# Historical daily swings (20 November 2026, structural-history correction; awaiting the owner's approval): daily
+# swings older than daily_swing_lookback_weeks are also kept as levels, back this many weeks (0 = none). They give a
+# map below a fresh low (above a fresh high) where the 48-week window has nothing. Never used for the direction.
+historical_daily_swing_lookback_weeks = 156
 # A structural break needs this many closes in a row at least [planner] break_beyond_pips beyond the swing.
 structure_break_closes = 1
 # Zone width: the larger of [levels] line_up_within_pips and this share of the ADR (provisional).

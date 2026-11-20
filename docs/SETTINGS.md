@@ -261,6 +261,7 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `planner.daily_swing_move_within_candles` | ... within this many daily candles (P-B7). **Owner's value, 17 November 2026.** | 6 |
 | `planner.h4_swing_lookback_weeks` | 4-hour swings from this many weeks back are levels on the planner's map (P-B8); the direction always uses the latest swings. **Owner's value, 17 November 2026.** | 8 |
 | `planner.daily_swing_lookback_weeks` | The same for daily swings (P-B9). **Owner's value, 17 November 2026.** | 48 |
+| `planner.historical_daily_swing_lookback_weeks` | Historical daily swings: daily swings older than `daily_swing_lookback_weeks` are also kept as levels ("historical daily swing low/high"), back this many weeks; 0 = none. Never used for the direction. **Provisional (structural-history correction, 20 November 2026); awaiting the owner's approval.** | 156 |
 | `planner.structure_break_closes` | A 4-hour structural break needs this many closes in a row at least `planner.break_beyond_pips` beyond the last swing (P-B11). **Owner's value, 17 November 2026.** | 1 |
 | `planner.zone_width_adr_share` | A zone holds the levels within the larger of `levels.line_up_within_pips` and this share of the ADR of its lowest level (P-C3). **Owner's provisional value, 17 November 2026.** | 0.15 |
 | `planner.major_min_families` | A Major zone has at least this many families of evidence, including a daily-or-weekly level (P-C7). **Owner's value, 17 November 2026.** | 3 |

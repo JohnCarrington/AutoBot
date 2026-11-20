@@ -1,0 +1,73 @@
+11-18T00 BEAR CORRECTION_A | A: NO: the primary destination 13202.5 is already reached (the Tue  | C: = 
+11-18T01 BEAR CORRECTION_A | A: SELL 13193.2-13202.5 → 13172.8 () inv 13205.5 | C: SELL 13193.2-13202.5 → 13189.7 (historical daily swing low 13179.6) inv 13205.5  **
+       C outcome: ENTRY→INVALIDATED (entry 18 01:05, dest 18 05:35, 1h break 18 02:00)
+11-18T02 BEAR CORRECTION_A | A: NO: the primary destination 13202.5 is already reached (the Wed  | C: = 
+11-18T03 BEAR CORRECTION_A | A: SELL 13193.2-13202.5 → 13172.8 () inv 13205.5 | C: SELL 13193.2-13202.5 → 13189.7 (historical daily swing low 13179.6) inv 13205.5  **
+       C outcome: ENTRY→DEST (entry 18 03:05, dest 18 05:35, 1h break -)
+11-18T04 BEAR CORRECTION_A | A: SELL 13193.2-13202.5 → 13172.8 () inv 13205.5 | C: SELL 13193.2-13202.5 → 13189.7 (historical daily swing low 13179.6) inv 13205.5  **
+       C outcome: ENTRY→DEST (entry 18 04:05, dest 18 05:35, 1h break -)
+11-18T05 BEAR CORRECTION_A | A: SELL 13193.2-13202.5 → 13172.8 () inv 13205.5 | C: SELL 13193.2-13202.5 → 13189.7 (historical daily swing low 13179.6) inv 13205.5  **
+       C outcome: ENTRY→DEST (entry 18 05:05, dest 18 05:35, 1h break -)
+11-18T06 BEAR CORRECTION_A | A: SELL 13193.2-13202.5 → 13172.8 () inv 13205.5 | C: NO: the primary destination 13189.7 is already reached (the Wed   **
+11-18T07 BEAR CORRECTION_A | A: SELL 13193.2-13202.5 → 13172.8 () inv 13205.5 | C: NO: the primary destination 13189.7 is already reached (the Wed   **
+11-18T08 NEUT INDETERMINAT | A: NO: the 4-hour direction is NEUTRAL (the wick-only sweep of 1322 | C: = 
+11-18T09 NEUT INDETERMINAT | A: NO: the 4-hour direction is NEUTRAL (the wick-only sweep of 1322 | C: = 
+11-18T10 NEUT INDETERMINAT | A: NO: the 4-hour direction is NEUTRAL (the wick-only sweep of 1322 | C: = 
+11-18T11 NEUT INDETERMINAT | A: NO: the 4-hour direction is NEUTRAL (the wick-only sweep of 1322 | C: = 
+11-18T12 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-18T13 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-18T14 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-18T15 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-18T16 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-18T17 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-18T18 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-18T19 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-18T20 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: = 
+11-18T21 BEAR CONTINUATION | A: SELL 13148-13158.5 → 13140.2 () inv 13161.5 | C: SELL 13148-13158.5 → 13140.2 (historical daily swing low 13139.4,histo) inv 13161.5  **
+       C outcome: ENTRY→DEST (entry 18 21:05, dest 18 22:05, 1h break 19 11:00)
+11-18T22 BEAR CONTINUATION | A: NO: the primary destination 13140.2 is already reached (the Wed  | C: = 
+11-18T23 BEAR CONTINUATION | A: SELL 13148-13158.5 → 13140.2 () inv 13161.5 | C: SELL 13148-13158.5 → 13140.2 (historical daily swing low 13139.4,histo) inv 13161.5  **
+       C outcome: ENTRY→DEST (entry 18 23:05, dest 19 02:00, 1h break 19 11:00)
+11-19T00 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-19T01 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-19T02 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-19T03 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-19T04 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: = 
+11-19T05 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: = 
+11-19T06 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: = 
+11-19T07 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: = 
+11-19T08 BEAR CORRECTION_A | A: SELL 13148-13158.5 → 13139.9 () inv 13161.5 | C: SELL 13148-13158.5 → 13139.9 (historical daily swing low 13139.4,histo) inv 13161.5  **
+       C outcome: ENTRY→INVALIDATED (entry 19 08:05, dest 19 14:55, 1h break 19 11:00)
+11-19T09 BEAR CORRECTION_A | A: SELL 13148-13158.5 → 13139.9 () inv 13161.5 | C: SELL 13148-13158.5 → 13139.9 (historical daily swing low 13139.4,histo) inv 13161.5  **
+       C outcome: ENTRY→INVALIDATED (entry 19 09:05, dest 19 14:55, 1h break 19 11:00)
+11-19T10 BEAR CORRECTION_A | A: SELL 13148-13158.5 → 13139.9 () inv 13161.5 | C: SELL 13148-13158.5 → 13139.9 (historical daily swing low 13139.4,histo) inv 13161.5  **
+       C outcome: ENTRY→INVALIDATED (entry 19 10:05, dest 19 14:55, 1h break 19 11:00)
+11-19T11 BEAR CORRECTION_A | A: SELL 13162.5-13172.8 → 13158.5 () inv 13175.8 | C: = 
+11-19T12 BEAR CORRECTION_A | A: SELL 13148-13158.5 → 13139.9 () inv 13161.5 | C: SELL 13148-13158.5 → 13139.9 (historical daily swing low 13139.4,histo) inv 13161.5  **
+       C outcome: ENTRY→DEST (entry 19 12:05, dest 19 14:55, 1h break -)
+11-19T13 BEAR CORRECTION_A | A: NO: the primary destination 13158.5 is already reached (the Thu  | C: = 
+11-19T14 BEAR CORRECTION_A | A: SELL 13148-13158.5 → 13143.7 () inv 13161.5 | C: SELL 13148-13158.5 → 13143.7 (historical daily swing low 13139.4,histo) inv 13161.5  **
+       C outcome: ENTRY→DEST (entry 19 14:05, dest 19 14:50, 1h break -)
+11-19T15 BEAR CORRECTION_A | A: NO: the primary destination 13139.9 is already reached (the Thu  | C: = 
+11-19T16 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: = 
+11-19T17 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: = 
+11-19T18 BEAR CONTINUATION | A: NO: the primary destination 13100 is already reached (the Thu 19 | C: NO: no Major support zone below the entry zone within the 150-pi  **
+11-19T19 BEAR CONTINUATION | A: SELL 13135.5-13139.9 → 13100 () inv 13142.9 | C: SELL 13135.5-13139.9 → 13094.8 (historical daily swing low 13084.1) inv 13142.9  **
+       C outcome: DEST w/o ENTRY (entry -, dest 19 19:55, 1h break -)
+11-19T20 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: NO: the primary destination 13092.2 is already reached (the Thu   **
+11-19T21 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: SELL 13135.5-13139.9 → 13092.2 (historical daily swing low 13084.1) inv 13142.9  **
+       C outcome: DEST w/o ENTRY (entry -, dest 19 21:20, 1h break -)
+11-19T22 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: = 
+11-19T23 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: = 
+11-20T00 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: = 
+11-20T01 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: = 
+11-20T02 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: = 
+11-20T03 BEAR CONTINUATION | A: NO: no Major support zone below the entry zone within the 150-pi | C: = 
+11-20T04 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-20T05 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-20T06 BEAR INDETERMINAT | A: NO: condition INDETERMINATE: no opportunity | C: = 
+11-20T07 BEAR CORRECTION_A | A: NO: no Major support zone below the entry zone within the 150-pi | C: SELL 13135.5-13145.7 → 13084.1 (historical daily swing low 13084.1) inv 13148.7  **
+       C outcome: no entry yet (entry -, dest -, 1h break -)
+11-20T08 BEAR CORRECTION_A | A: NO: no Major support zone below the entry zone within the 150-pi | C: SELL 13111.2-13121.9 → 13084.1 (historical daily swing low 13084.1) inv 13124.9  **
+       C outcome: ENTRY, open (entry 20 08:05, dest -, 1h break -)
+A plans 15 C plans 16
