@@ -65,7 +65,33 @@ def replay(settings, store):
         })
     return {"source": "actual AutoBot candle store, as-of historical replay",
             "execution": "none; offline structural assessment only",
-            "assessments": rows}
+            "assessments": rows, "target_summary": target_summary(rows)}
+
+
+def target_summary(rows):
+    """Counts forecast coverage and observed hits without treating absent forecasts as misses."""
+    result = {}
+    for name in ("immediate", "preferred", "extended"):
+        counts = {"forecast": 0, "reached": 0, "not_reached": 0,
+                  "data_gap_censored": 0, "not_forecast": 0, "not_scorable": 0}
+        for row in rows:
+            target = ((row.get("observations") or {}).get("target_ladder") or {}).get(name)
+            if target is None:
+                counts["not_forecast"] += 1
+                continue
+            counts["forecast"] += 1
+            outcome = row.get("target_outcome_24h") or {}
+            status = (outcome.get("targets") or {}).get(name, {}).get("status")
+            if status == "REACHED":
+                counts["reached"] += 1
+            elif status == "NOT_REACHED":
+                counts["not_reached"] += 1
+            elif status == "DATA_GAP_CENSORED" or outcome.get("status") == "DATA_GAP_CENSORED":
+                counts["data_gap_censored"] += 1
+            else:
+                counts["not_scorable"] += 1
+        result[name] = counts
+    return result
 
 
 def main():
