@@ -91,3 +91,23 @@ def test_buy_invalidation_mirrors_sell():
     result = score_journey(p, [candle(0, "1.3000", "1.3010"),
                                candle(1, "1.2980", "1.2985")])
     assert result["status"] == "ZONE_INVALIDATED_AFTER_ENTRY"
+
+
+def test_at_entry_now_counts_as_initial_touch_without_retest():
+    p = plan()
+    p["observations"] = {"conditional_journeys": [{
+        "entry": ["1.3100", "1.3110"],
+        "countermove_evidence_state": "AT_ENTRY_NOW",
+    }]}
+    result = score_journey(p, [candle(0, "1.3000", "1.3010")])
+    assert result["status"] == "ENTRY_THEN_DESTINATION"
+    assert result["entry_at"] == p["as_of_utc"].replace("Z", "+00:00")
+
+
+def test_at_entry_now_does_not_override_different_candidate():
+    p = plan()
+    p["observations"] = {"conditional_journeys": [{
+        "entry": ["1.3200", "1.3210"],
+        "countermove_evidence_state": "AT_ENTRY_NOW",
+    }]}
+    assert score_journey(p, [candle(0, "1.3000", "1.3010")])["status"] == "DESTINATION_BEFORE_ENTRY"
