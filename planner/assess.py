@@ -588,12 +588,16 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
             "target": [plain(ms[0].low), plain(ms[0].high)],
             "entry": [plain(cz.low), plain(cz.high)],
             "conditional_only": True,
+            "entry_confirmation": "not assessed by structural planner",
+            "execution_authorised": False,
         }
     else:
         plan.observations["destination_first_selection"] = {
             "mode": "legacy_entry_rank_fallback",
             "reason": "no untouched Major destination wholly ahead of current price",
             "conditional_only": True,
+            "entry_confirmation": "not assessed by structural planner",
+            "execution_authorised": False,
         }
     # A rejected alternative must not retire an otherwise eligible plan.
     plan.destination_reached = None
