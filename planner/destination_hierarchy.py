@@ -108,59 +108,82 @@ def target_ladder(price, zones, direction, *, preferred=None, extended=None):
 
 
 def research_target_forecast(price, zones, direction, observations, *, condition=None):
-    """As-of, uncalibrated destination hypothesis for walk-forward evaluation.
+    """As-of structural destination hypothesis; NEVER a calibrated probability.
 
-    Uses only contemporaneous ADR/range, H4 EMA stack and structural confluence.
-    Does NOT assert a likelihood or override execution/legacy destinations.
+    Direction is determined upstream by confirmed H4 swings. An EMA stack is
+    supporting evidence, not a veto: a lagging EMA must not erase an otherwise
+    valid directional structure. ADR is a reference, not a maximum move.
     """
     base = target_ladder(price, zones, direction)
-    obstacles = base["immediate"]
     ladder = destination_hierarchy(price, zones, direction)["obstacles"]
+    diagnostic = {"zone_count_ahead": len(ladder), "major_count_ahead": 0,
+                  "multifamily_major_count": 0, "ema_alignment": "unknown",
+                  "adr_remaining_pips": None, "rejections": []}
     if not ladder:
-        return dict(base, research_status="no_ahead_zones", evidence=[])
+        return dict(base, research_status="no_ahead_zones", diagnostic=diagnostic)
+    stack = str(observations.get("h4_ema_stack") or "")
+    aligned = ("down" in stack) if direction == "SELL" else ("up" in stack)
+    diagnostic["ema_alignment"] = "aligned" if aligned else ("mixed_or_opposed" if stack else "unavailable")
     adr = observations.get("adr_pips")
     used = observations.get("today_range_pips")
-    if adr is None or used is None:
-        return dict(base, research_status="insufficient_as_of_adr", evidence=[])
-    adr, used = Decimal(str(adr)), Decimal(str(used))
-    if adr <= 0 or used < 0:
-        return dict(base, research_status="invalid_as_of_adr", evidence=[])
-    # ADR is a *soft* feasibility reference, not a hard ceiling on trend days.
-    room = max(Decimal("0"), adr - used)
-    stack = observations.get("h4_ema_stack", "")
-    aligned = ("down" in stack) if direction == "SELL" else ("up" in stack)
-    if not aligned:
-        return dict(base, research_status="directional_momentum_not_confirmed",
-                    evidence=["H4 EMA 7/13/21 stack does not align with directional thesis"])
-    if condition is None or condition in ("EXHAUSTION", "INDETERMINATE"):
-        return dict(base, research_status="condition_not_confirmed", evidence=[])
-    # Conservative feasibility gate: the hypothesis cannot assume an extension
-    # exceeding remaining normal daily range. Evaluate its missed-trend rate offline.
-    feasible = [z for z in ladder if Decimal(z["distance_pips"]) <= room]
-    if len(feasible) < 2:
-        return dict(base, research_status="no_supported_beyond_immediate", evidence=[
-            "normal ADR remaining does not support a deeper target"])
-    # Among feasible destinations prefer the farthest multi-family Major zone;
-    # intermediate levels remain obstacles rather than automatic final targets.
-    ranked = [z for z in feasible[1:] if str(z["class"]).lower() == "major"
-              and len(z.get("evidence") or []) >= 2]
-    if not ranked:
-        return dict(base, research_status="no_multifamily_preferred", evidence=[])
-    preferred = ranked[-1]
-    extension = next((z for z in ladder if Decimal(z["distance_pips"]) >
-                      Decimal(preferred["distance_pips"]) and
-                      str(z["class"]).lower() == "major"), None)
-    def hypothesis(z, rationale):
-        return dict(z, rationale=rationale, status="uncalibrated_research_hypothesis")
+    if adr is not None and used is not None:
+        adr, used = Decimal(str(adr)), Decimal(str(used))
+        if adr.is_finite() and used.is_finite() and adr > 0 and used >= 0:
+            diagnostic["adr_remaining_pips"] = str(max(Decimal("0"), adr - used))
+        else:
+            adr = None
+    else:
+        adr = None
+    # Use families supplied by the structural-zone builder; do not mistake
+    # the absence of a separately computed probability for absent structure.
+    major = [z for z in ladder if str(z.get("class") or "").lower() == "major"]
+    diagnostic["major_count_ahead"] = len(major)
+    multifamily = [z for z in major if len(set(z.get("evidence") or [])) >= 2]
+    diagnostic["multifamily_major_count"] = len(multifamily)
+    if len(ladder) < 2:
+        diagnostic["rejections"].append("only one structural obstacle ahead")
+    if len(multifamily) < 1:
+        diagnostic["rejections"].append("no multi-family Major destination")
+    if condition is None:
+        diagnostic["rejections"].append("no classified market condition")
+    if diagnostic["rejections"]:
+        return dict(base, research_status="insufficient_structural_evidence",
+                    diagnostic=diagnostic)
+    # Candidate must be BEYOND the immediate obstacle, and preferably beyond
+    # a meaningful fraction of ADR. Avoid picking the first zone by default.
+    first_distance = Decimal(ladder[0]["distance_pips"])
+    candidates = [z for z in multifamily
+                  if Decimal(z["distance_pips"]) > first_distance]
+    if not candidates:
+        diagnostic["rejections"].append("no deeper multi-family Major zone")
+        return dict(base, research_status="no_deeper_major", diagnostic=diagnostic)
+    # Do not enforce remaining ADR as a hard gate: trends regularly exceed ADR.
+    # Limit the speculative horizon to 1.5x ADR from the current price when known.
+    horizon = adr * Decimal("1.5") if adr is not None else None
+    feasible = [z for z in candidates if horizon is None or
+                Decimal(z["distance_pips"]) <= horizon]
+    if not feasible:
+        diagnostic["rejections"].append("deeper Major zones beyond 1.5 ADR horizon")
+        return dict(base, research_status="beyond_research_horizon", diagnostic=diagnostic)
+    # Prefer the deepest *supported* zone inside the horizon. This is a testable
+    # scenario, not a claim that it is the statistically most likely endpoint.
+    preferred = feasible[-1]
+    further = [z for z in multifamily if Decimal(z["distance_pips"]) >
+               Decimal(preferred["distance_pips"])]
+    extension = further[0] if further else None
+    def hypothesis(z, why):
+        return dict(z, rationale=why, status="uncalibrated_research_hypothesis")
+    diagnostic["selected_distance_pips"] = preferred["distance_pips"]
+    diagnostic["candidate_count"] = len(feasible)
     return dict(base,
-        preferred=hypothesis(preferred, "H4 EMA aligned; multi-family Major zone; within remaining ADR"),
-        extended=(hypothesis(extension, "conditional extension beyond ADR feasibility")
+        preferred=hypothesis(preferred, "confirmed H4 structural direction; multi-family Major zone; research horizon"),
+        extended=(hypothesis(extension, "conditional continuation beyond preferred structural destination")
                   if extension else None),
-        intermediate_obstacles=[z for z in ladder
-            if Decimal(z["distance_pips"]) < Decimal(preferred["distance_pips"])],
+        intermediate_obstacles=[z for z in ladder if
+            Decimal(z["distance_pips"]) < Decimal(preferred["distance_pips"])],
         preferred_selection_status="uncalibrated_research_hypothesis",
-        research_status="candidate_generated",
-        evidence=["H4 EMA stack aligned", "multi-family Major structural confluence",
-                  "remaining ADR feasibility"],
-        adr_remaining_pips=str(room),
+        research_status="candidate_generated", diagnostic=diagnostic,
+        evidence=["confirmed structural direction", "multi-family Major destination",
+                  "EMA alignment: " + diagnostic["ema_alignment"],
+                  "ADR is contextual, not a hard veto"],
         execution_authorised=False)
