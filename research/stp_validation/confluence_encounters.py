@@ -15,7 +15,7 @@ from pathlib import Path
 
 from prices.store import CandleStore
 
-PIP = Decimal("10")  # native IG points for GBPUSD
+PIP = Decimal("1")  # GBPUSD native IG points: 1.2500 -> 12500, so 1 pip = 1 point
 UTC = timezone.utc
 
 
