@@ -442,6 +442,14 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
             touched = reached(settings, snap.five, price, primary.low, primary.high, toward_low=bear)
             if touched:
                 record["reason"] = f"primary destination already touched: {touched}"
+                if plan.destination_reached is None:
+                    plan.destination_reached = {
+                        "primary": plain(primary.high if bear else primary.low),
+                        "zone": [plain(primary.low), plain(primary.high)],
+                        "zone_candidate": [plain(candidate.low), plain(candidate.high)],
+                        "how": touched,
+                        "candle_utc": _iso(snap.five.start) if snap.five else None,
+                    }
             else:
                 record["decision"] = "eligible"
                 record["reason"] = "structurally eligible; countermove remains unconfirmed"
@@ -457,6 +465,9 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
         )
         return plan
 
+    # The selected journey has an untouched destination. A rejected alternative
+    # must not cause Keeper to retire the selected plan as destination-reached.
+    plan.destination_reached = None
     z, reach, dist, info, dests, majors = selected
     for zz, r, d, i in looked:
         if zz is z:
