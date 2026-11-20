@@ -57,3 +57,51 @@ def destination_hierarchy(price, zones, direction, *, minimum_reward_pips=Decima
                    if eligible else
                    "structural levels alone do not establish a likely destination"),
     }
+
+
+def target_ladder(price, zones, direction, *, preferred=None, extended=None):
+    """Three-tier *research* destination model, no implied probability.
+
+    Immediate = nearest untouched structural obstacle.
+    Preferred/extended require independently justified, explicit zone selection.
+    Passing a zone identifier is a scenario hypothesis, not a calibrated forecast.
+    All levels are expressed in IG points and must be ahead of the as-of price.
+    """
+    hierarchy = destination_hierarchy(price, zones, direction)
+    obstacles = hierarchy["obstacles"]
+    immediate = obstacles[0] if obstacles else None
+
+    def resolve(choice, label):
+        if choice is None:
+            return None
+        if not isinstance(choice, dict) or not choice.get("rationale"):
+            raise ValueError(label + " requires an explicit evidence rationale")
+        matches = [o for o in obstacles
+                   if o["low"] == str(Decimal(str(choice["low"])))
+                   and o["high"] == str(Decimal(str(choice["high"])))]
+        if len(matches) != 1:
+            raise ValueError(label + " must match one ahead-of-price structural zone")
+        return dict(matches[0], rationale=choice["rationale"],
+                    status="hypothesis_not_calibrated")
+
+    primary = resolve(preferred, "preferred")
+    extension = resolve(extended, "extended")
+    if primary and immediate and Decimal(primary["distance_pips"]) < Decimal(immediate["distance_pips"]):
+        raise ValueError("preferred must not precede immediate")
+    if extension and not primary:
+        raise ValueError("extended requires a preferred target")
+    if extension and Decimal(extension["distance_pips"]) <= Decimal(primary["distance_pips"]):
+        raise ValueError("extended must be beyond preferred")
+    return {
+        "immediate": immediate,
+        "preferred": primary,
+        "extended": extension,
+        "intermediate_obstacles": [
+            o for o in obstacles
+            if primary is not None and Decimal(o["distance_pips"]) < Decimal(primary["distance_pips"])
+        ],
+        "preferred_selection_status": (
+            "explicit_unvalidated_hypothesis" if primary else "not_established"
+        ),
+        "execution_authorised": False,
+    }
