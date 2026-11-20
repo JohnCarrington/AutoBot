@@ -432,6 +432,29 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
             "candidate_entries": [
                 [plain(entry.low), plain(entry.high)] for entry in potential_entries
             ],
+            # Explicitly record the sequence PIA-style analysis would require.
+            # This is a conditional scenario, not a prediction that each leg occurs.
+            "journeys": [
+                {
+                    "sequence": (
+                        ["current_price", "corrective_rally_to_entry", "sell_toward_destination"]
+                        if bear else
+                        ["current_price", "corrective_decline_to_entry", "buy_toward_destination"]
+                    ),
+                    "entry": [plain(entry.low), plain(entry.high)],
+                    "destination": [plain(target.low), plain(target.high)],
+                    "countermove_pips": plain(pips(
+                        settings, max(Decimal(0), entry.low - price) if bear
+                        else max(Decimal(0), price - entry.high)
+                    )),
+                    "directional_distance_pips": plain(pips(
+                        settings, entry.low - target.high if bear else target.low - entry.high
+                    )),
+                    "conditional_only": True,
+                    "invalidation_reference": plain(last_opp.price),
+                }
+                for entry in potential_entries
+            ],
             "destination_forecast": "not established by structural eligibility alone",
             "countermove_forecast": "not established by structural eligibility alone",
         })
