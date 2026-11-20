@@ -54,3 +54,44 @@ def test_touching_zone_is_not_a_future_destination():
     ], "SELL")
     assert len(result["obstacles"]) == 1
     assert result["obstacles"][0]["low"] == "13400"
+
+
+def test_three_tier_targets_are_separate_and_ordered():
+    from planner.destination_hierarchy import target_ladder
+    zones = [
+        {"low": "13440", "high": "13450", "class": "Major"},
+        {"low": "13390", "high": "13400", "class": "Major"},
+        {"low": "13330", "high": "13340", "class": "Major"},
+    ]
+    result = target_ladder("13460", zones, "SELL",
+        preferred={"low": "13390", "high": "13400", "rationale": "independent H4 thesis"},
+        extended={"low": "13330", "high": "13340", "rationale": "conditional breakdown"})
+    assert result["immediate"]["low"] == "13440"
+    assert result["preferred"]["low"] == "13390"
+    assert result["extended"]["low"] == "13330"
+    assert len(result["intermediate_obstacles"]) == 1
+    assert result["execution_authorised"] is False
+
+
+def test_no_preferred_target_is_invented():
+    from planner.destination_hierarchy import target_ladder
+    result = target_ladder("13460", [
+        {"low": "13440", "high": "13450", "class": "Major"},
+        {"low": "13330", "high": "13340", "class": "Major"},
+    ], "SELL")
+    assert result["immediate"] is not None
+    assert result["preferred"] is None
+    assert result["extended"] is None
+
+
+def test_extended_requires_preferred_and_explicit_rationale():
+    from planner.destination_hierarchy import target_ladder
+    import pytest
+    zones = [{"low": "13440", "high": "13450"},
+             {"low": "13330", "high": "13340"}]
+    with pytest.raises(ValueError, match="requires a preferred"):
+        target_ladder("13460", zones, "SELL",
+            extended={"low": "13330", "high": "13340", "rationale": "conditional"})
+    with pytest.raises(ValueError, match="evidence rationale"):
+        target_ladder("13460", zones, "SELL",
+            preferred={"low": "13330", "high": "13340"})
