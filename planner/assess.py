@@ -459,6 +459,20 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
             "countermove_forecast": "not established by structural eligibility alone",
         })
     plan.observations["destination_first_outlook"] = destination_outlooks
+    # Research-only horizon: preserve the complete ahead-of-price support/resistance
+    # ladder separately from the nearest primary target. A Major level is an
+    # obstacle, NOT proof of the ultimate destination. No order or trade decision
+    # is changed by this diagnostic.
+    from planner.destination_hierarchy import destination_hierarchy
+    plan.observations["destination_hierarchy"] = destination_hierarchy(
+        price,
+        [
+            {"low": plain(z.low), "high": plain(z.high),
+             "class": z.klass, "evidence": list(z.families)}
+            for z in zs
+        ],
+        "SELL" if bear else "BUY",
+    )
     # Assess the COMPLETE journey for each eligible entry, not only the strongest/nearest entry.
     # This does not predict that the countermove will happen. It preserves the existing Major
     # destination and D-1 touch rules, and records why each proposed journey is unsupported.
