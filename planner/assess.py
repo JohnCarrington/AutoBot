@@ -410,6 +410,32 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
                                   + f" zone of at least {settings.planner.min_entry_class} class that is NEAR or PLAUSIBLE"
                                   + f" before the last 4-hour swing {last_opp.kind} {plain(last_opp.price)}")
         return plan
+    # Destination-first view: enumerate structural destinations independently of
+    # the entry ranking. This is diagnostic, not an unsupported probability forecast.
+    # A destination is not an actionable prediction merely because it is Major.
+    destination_outlooks = []
+    for target in sorted(
+        (o for o in zs if o.klass == MAJOR),
+        key=lambda o: (-o.high if bear else o.low),
+    ):
+        potential_entries = [
+            entry for entry, _, _, _ in good
+            if (target.high < entry.low if bear else target.low > entry.high)
+        ]
+        destination_outlooks.append({
+            "zone": [plain(target.low), plain(target.high)],
+            "class": target.klass,
+            "relative_to_price": (
+                "ahead" if ahead(price, target.low, target.high, toward_low=bear)
+                else "behind_or_containing_price"
+            ),
+            "candidate_entries": [
+                [plain(entry.low), plain(entry.high)] for entry in potential_entries
+            ],
+            "destination_forecast": "not established by structural eligibility alone",
+            "countermove_forecast": "not established by structural eligibility alone",
+        })
+    plan.observations["destination_first_outlook"] = destination_outlooks
     # Assess the COMPLETE journey for each eligible entry, not only the strongest/nearest entry.
     # This does not predict that the countermove will happen. It preserves the existing Major
     # destination and D-1 touch rules, and records why each proposed journey is unsupported.
