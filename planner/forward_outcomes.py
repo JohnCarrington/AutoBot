@@ -12,16 +12,18 @@ from prices.model import Candle, parse_iso
 
 
 def score_journey(plan: dict[str, Any], candles: Sequence[Candle]) -> dict[str, Any]:
-    """Measure whether entry preceded destination, with honest same-bar ambiguity.
+    """Score a frozen conditional path using completed candles of each timeframe.
 
-    No execution assumptions: OHLC cannot establish which level traded first
-    when both are touched in one candle. A destination hit before entry is a
-    failed conditional sequence, not a winning trade. Untouched = censored.
+    5m candles establish zone touches. H1 closes establish zone-break
+    invalidation; H4 closes establish structure-break invalidation. All events
+    with the same closing timestamp are assessed together to avoid inventing
+    their order. This measures structural sequences, never actual fills/P&L.
     """
+    from itertools import groupby
+
     direction = plan.get("trade")
     entry = plan.get("entry_zone")
-    destinations = plan.get("destinations") or {}
-    target = (destinations.get("primary") or {}).get("zone")
+    target = ((plan.get("destinations") or {}).get("primary") or {}).get("zone")
     if direction not in ("BUY", "SELL") or not entry or not target:
         return {"status": "NOT_SCORABLE", "reason": "no complete entry and primary destination"}
     lo_e, hi_e = Decimal(str(entry["low"])), Decimal(str(entry["high"]))
@@ -30,61 +32,67 @@ def score_journey(plan: dict[str, Any], candles: Sequence[Candle]) -> dict[str, 
         raise ValueError("invalid zone boundaries")
     if (direction == "SELL" and hi_t >= lo_e) or (direction == "BUY" and lo_t <= hi_e):
         return {"status": "NOT_SCORABLE", "reason": "destination not beyond entry"}
+
     as_of = parse_iso(plan["as_of_utc"])
-    invalidation = plan.get("invalidation") or {}
-    # The structural rules are CLOSE-based. This scorer applies those
-    # thresholds to M5 closes as a conservative diagnostic, not as a claim
-    # that the H1/H4 structural-close condition has been satisfied.
-    # Only the zone-break level is checked here; higher-timeframe structural
-    # invalidation needs completed H1/H4 candles in a separate audit.
-    zone_break = invalidation.get("zone_break_close")
-    zone_break = Decimal(str(zone_break)) if zone_break is not None else None
+    inv = plan.get("invalidation") or {}
+    zone_break = Decimal(str(inv["zone_break_close"])) if inv.get("zone_break_close") is not None else None
+    structure_break = (Decimal(str(inv["structure_break_close"]))
+                       if inv.get("structure_break_close") is not None else None)
     entry_at = None
-    # An as-of snapshot already inside the selected zone is an observed
-    # structural entry touch, not a hypothetical later touch. Do not require
-    # a second visit to the zone to score the subsequent journey.
     for journey in (plan.get("observations") or {}).get("conditional_journeys", []):
         if (journey.get("entry") == [entry["low"], entry["high"]]
                 and journey.get("countermove_evidence_state") == "AT_ENTRY_NOW"):
             entry_at = as_of.isoformat()
             break
-    seen = None
-    for candle in sorted(candles, key=lambda c: c.start):
-        # Require strictly future, fully closed candles; reject any overlapping
-        # or stale candle instead of accidentally using look-ahead information.
-        if candle.start < as_of:
-            continue
-        if seen is not None and candle.start < seen:
+
+    future = sorted((c for c in candles if c.start >= as_of and c.end > as_of),
+                    key=lambda c: (c.end, c.start, c.timeframe))
+    last_end: dict[str, Any] = {}
+    for candle in future:
+        if candle.timeframe not in ("5m", "1h", "4h"):
+            raise ValueError(f"unsupported scoring timeframe: {candle.timeframe}")
+        if candle.start < last_end.get(candle.timeframe, as_of):
             raise ValueError("overlapping forward candles")
-        seen = candle.end
-        low, high = candle.sell_low, candle.sell_high
-        hits_entry = low <= hi_e and high >= lo_e
-        hits_target = low <= hi_t and high >= lo_t
-        zone_invalidated = (
-            zone_break is not None and (
-                candle.sell_close >= zone_break if direction == "SELL"
-                else candle.sell_close <= zone_break
+        last_end[candle.timeframe] = candle.end
+
+    for end, events_iter in groupby(future, key=lambda c: c.end):
+        events = list(events_iter)
+        touches = [c for c in events if c.timeframe == "5m"]
+        hits_entry = any(c.sell_low <= hi_e and c.sell_high >= lo_e for c in touches)
+        hits_target = any(c.sell_low <= hi_t and c.sell_high >= lo_t for c in touches)
+        invalidated = any(
+            (
+                c.timeframe == "1h" and zone_break is not None
+                and (c.sell_close >= zone_break if direction == "SELL" else c.sell_close <= zone_break)
+            ) or (
+                c.timeframe == "4h" and structure_break is not None
+                and (c.sell_close >= structure_break if direction == "SELL"
+                     else c.sell_close <= structure_break)
             )
+            for c in events
         )
+        when = end.isoformat()
         if entry_at is None:
             if hits_entry and hits_target:
-                return {"status": "AMBIGUOUS_SAME_CANDLE", "at": candle.end.isoformat()}
+                return {"status": "AMBIGUOUS_SAME_CANDLE", "at": when}
             if hits_target:
-                return {"status": "DESTINATION_BEFORE_ENTRY", "at": candle.end.isoformat()}
-            if zone_invalidated:
-                return {"status": "ZONE_INVALIDATED_BEFORE_ENTRY", "at": candle.end.isoformat()}
+                return {"status": "DESTINATION_BEFORE_ENTRY", "at": when}
+            if invalidated and hits_entry:
+                return {"status": "AMBIGUOUS_ENTRY_OR_INVALIDATION", "at": when}
+            if invalidated:
+                return {"status": "STRUCTURE_INVALIDATED_BEFORE_ENTRY", "at": when}
             if hits_entry:
-                entry_at = candle.end.isoformat()
+                entry_at = when
         else:
-            if hits_target and zone_invalidated:
+            if hits_target and invalidated:
                 return {"status": "AMBIGUOUS_TARGET_OR_INVALIDATION",
-                        "entry_at": entry_at, "at": candle.end.isoformat()}
-            if zone_invalidated:
-                return {"status": "ZONE_INVALIDATED_AFTER_ENTRY",
-                        "entry_at": entry_at, "at": candle.end.isoformat()}
+                        "entry_at": entry_at, "at": when}
+            if invalidated:
+                return {"status": "STRUCTURE_INVALIDATED_AFTER_ENTRY",
+                        "entry_at": entry_at, "at": when}
             if hits_target:
                 return {"status": "ENTRY_THEN_DESTINATION", "entry_at": entry_at,
-                        "destination_at": candle.end.isoformat()}
+                        "destination_at": when}
     if entry_at is not None:
         return {"status": "ENTRY_ONLY_CENSORED", "entry_at": entry_at}
     return {"status": "NEITHER_CENSORED"}
