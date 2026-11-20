@@ -25,6 +25,14 @@ def _check_journeys(plan):
         assert journey["decision"] in ("eligible", "rejected")
         assert journey["countermove_status"] in ("already in zone", "possible, not predicted")
         assert D(journey["countermove_pips"]) >= 0
+        assert journey["countermove_probability"] is None
+        assert journey["countermove_evidence_state"] in {
+            "AT_ENTRY_NOW", "CORRECTION_OBSERVED", "CORRECTION_INDICATED",
+            "EXHAUSTION_ONLY", "UNCONFIRMED_PULLBACK",
+        }
+        assert journey["countermove_evidence"]
+        if journey["countermove_evidence_state"] == "AT_ENTRY_NOW":
+            assert journey["countermove_status"] == "already in zone"
         if journey["decision"] == "eligible":
             assert journey["destination"] is not None
             assert journey["reason"] == "structurally eligible; countermove remains unconfirmed"
