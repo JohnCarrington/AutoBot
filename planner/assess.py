@@ -450,12 +450,34 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
         major_destinations = [o for o in destinations if o.klass == MAJOR]
         inside = candidate.low <= price <= candidate.high
         counter_pips = pips(settings, candidate_dist)
+        # Evidence-based, qualitative countermove assessment. An active hourly
+        # correction is stronger evidence of movement toward an entry than a
+        # 4-hour exhaustion signal; continuation alone supplies no such evidence.
+        # Never present this as a calibrated probability.
+        if inside:
+            counter_state = "AT_ENTRY_NOW"
+            counter_evidence = ["current price is already inside the proposed entry zone"]
+        elif cond == CORRECTION_ACTIVE:
+            counter_state = "CORRECTION_OBSERVED"
+            counter_evidence = list(cond_ev)
+        elif cond == CORRECTION_LIKELY:
+            counter_state = "CORRECTION_INDICATED"
+            counter_evidence = list(cond_ev)
+        elif cond == EXHAUSTION:
+            counter_state = "EXHAUSTION_ONLY"
+            counter_evidence = list(cond_ev)
+        else:
+            counter_state = "UNCONFIRMED_PULLBACK"
+            counter_evidence = ["4-hour continuation does not establish a corrective move toward the entry"]
         record = {
             "entry": [plain(candidate.low), plain(candidate.high)],
             "entry_class": candidate.klass,
             "reachability": candidate_reach,
             "countermove_pips": plain(counter_pips),
             "countermove_status": "already in zone" if inside else "possible, not predicted",
+            "countermove_evidence_state": counter_state,
+            "countermove_evidence": counter_evidence,
+            "countermove_probability": None,
             "destination": None,
             "decision": "rejected",
             "reason": None,
