@@ -32,7 +32,30 @@ def significant_levels(history, today):
     recent = [c for day in days[-10:] for c in by_day[day]]
     # Completed previous five-session block; calendar weeks may contain holidays.
     last_five = [c for day in days[-5:] for c in by_day[day]]
-    return [
+    prev_hi = max(c.sell_high for c in previous)
+    prev_lo = min(c.sell_low for c in previous)
+    pivot = (prev_hi + prev_lo + previous[-1].sell_close) / Decimal(3)
+    spread = prev_hi - prev_lo
+    pivot_levels = [
+        ("R1", 2*pivot-prev_lo, "resistance"),
+        ("R2", pivot+spread, "resistance"),
+        ("R3", prev_hi+2*(pivot-prev_lo), "resistance"),
+        ("S1", 2*pivot-prev_hi, "support"),
+        ("S2", pivot-spread, "support"),
+        ("S3", prev_lo-2*(prev_hi-pivot), "support"),
+        ("P_RESISTANCE", pivot, "resistance"),
+        ("P_SUPPORT", pivot, "support"),
+    ]
+    # Confirmed daily swing: both adjacent completed sessions exist.
+    daily = [(max(c.sell_high for c in by_day[d]),
+              min(c.sell_low for c in by_day[d])) for d in days[-12:]]
+    swing_levels = []
+    for i in range(1, len(daily)-1):
+        if daily[i][0] > max(daily[i-1][0], daily[i+1][0]):
+            swing_levels.append((f"SWING_HIGH_{i}", daily[i][0], "resistance"))
+        if daily[i][1] < min(daily[i-1][1], daily[i+1][1]):
+            swing_levels.append((f"SWING_LOW_{i}", daily[i][1], "support"))
+    return pivot_levels + swing_levels + [
         ("PDH", max(c.sell_high for c in previous), "resistance"),
         ("PDL", min(c.sell_low for c in previous), "support"),
         ("5D_HIGH", max(c.sell_high for c in last_five), "resistance"),
@@ -40,6 +63,16 @@ def significant_levels(history, today):
         ("10D_HIGH", max(c.sell_high for c in recent), "resistance"),
         ("10D_LOW", min(c.sell_low for c in recent), "support"),
     ]
+
+
+def family(name):
+    if name.startswith(("R1","R2","R3","S1","S2","S3","P_")):
+        return "PIVOT"
+    if name.startswith("SWING"):
+        return "SWING"
+    if name.startswith("PD"):
+        return "PREVIOUS_DAY"
+    return "ROLLING_EXTREME"
 
 
 def clusters(levels, tolerance):
@@ -51,7 +84,7 @@ def clusters(levels, tolerance):
             groups[-1].append(item)
         else:
             groups.append([item])
-    return [g for g in groups if len({x[0] for x in g}) >= 2]
+    return [g for g in groups if len({family(x[0]) for x in g}) >= 2]
 
 
 def outcome(bars, encounter_idx, side, barrier, horizon=288):
@@ -109,21 +142,45 @@ def run(store, start, end, tolerance_pips=5, excursion_pips=20):
             if hit is None:
                 continue
             result = outcome(today_bars, hit, side, barrier)
+            # Descriptive, strictly pre-encounter momentum; no fitted classifier.
+            past = today_bars[:hit]
+            delta_1h = past[-1].sell_close - past[-13].sell_close if len(past) >= 13 else None
+            delta_3h = past[-1].sell_close - past[-37].sell_close if len(past) >= 37 else None
+            aligned = (delta_1h is not None and delta_3h is not None
+                       and delta_1h * delta_3h > 0
+                       and (delta_1h > 0) == (side == "resistance"))
             rows.append({
                 "day": str(day), "as_of": today_bars[hit].end.isoformat(),
                 "side": side, "zone_low": str(low), "zone_high": str(high),
                 "levels": [x[0] for x in group],
+                "families": sorted({family(x[0]) for x in group}),
+                "family_count": len({family(x[0]) for x in group}),
+                "approach_momentum_1h_points": str(delta_1h) if delta_1h is not None else None,
+                "approach_momentum_3h_points": str(delta_3h) if delta_3h is not None else None,
+                "approach_trend_aligned": aligned,
                 "outcome": result,
                 "barrier_pips": excursion_pips,
                 "note": "M5 first-passage proxy; not an executable trade",
             })
     counts = Counter(r["outcome"] for r in rows)
     resolved = counts["REVERSAL"] + counts["CONTINUATION"]
+    by_alignment = {}
+    for state in (True, False):
+        sample = [r for r in rows if r["approach_trend_aligned"] is state]
+        tally = Counter(r["outcome"] for r in sample)
+        denominator = tally["REVERSAL"] + tally["CONTINUATION"]
+        by_alignment[str(state).lower()] = {
+            "encounters": len(sample), "counts": dict(tally),
+            "reversal_rate_resolved": tally["REVERSAL"] / denominator if denominator else None,
+        }
     return {
-        "method": "structural confluence; previous-day and rolling 5/10 session extrema",
+        "method": "as-of classic pivots, confirmed daily swings, previous-day and rolling 5/10-session extrema",
+        "by_approach_trend_alignment": by_alignment,
         "caveats": [
             "Exploratory, not a predictive model or PIA First replication.",
-            "No pivots, swing detection, EMA, MACD or Bollinger confluence yet.",
+            "Classic daily pivots and confirmed daily swings included; H1/H4 swings, EMA, MACD and Bollinger not yet included.",
+            "Pivot session is UTC-day proxy; must verify against PIA/IG pivot session.",
+            "Momentum is descriptive, not a trained trending-day classifier.",
             "No session calendar normalization; 5/10 sessions are observed UTC days.",
             "First-passage measured after encounter candle close; same-bar ambiguity is censored.",
             "24h proxy is capped at remaining same-day candles; overnight moves not assessed.",
