@@ -38,9 +38,16 @@ def destination_hierarchy(price, zones, direction, *, minimum_reward_pips=Decima
     ordered.sort(key=lambda z: Decimal(z["distance_pips"]))
     # Do not manufacture a long-range destination from the list of obstacles.
     # A calibrated forecast model must explicitly supply the probability.
-    eligible = [z for z in ordered if
-                Decimal(z["distance_pips"]) >= minimum and
-                z["forecast_probability"] is not None]
+    eligible = []
+    for z in ordered:
+        probability = z["forecast_probability"]
+        if probability is None:
+            continue
+        probability = Decimal(str(probability))
+        if not probability.is_finite() or not Decimal("0") <= probability <= Decimal("1"):
+            raise ValueError("forecast_probability must be finite and between 0 and 1")
+        if Decimal(z["distance_pips"]) >= minimum:
+            eligible.append(z)
     return {
         "obstacles": ordered,
         "forecast": max(eligible, key=lambda z: (
