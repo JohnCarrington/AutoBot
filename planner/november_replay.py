@@ -103,13 +103,16 @@ def main():
     result = replay(settings, store)
     args.output.write_text(json.dumps(result, indent=2, default=str) + "\n")
     print(f"Saved {len(result['assessments'])} historical snapshots to {args.output}")
+    print("Target summary:", json.dumps(result["target_summary"], sort_keys=True))
     for row in result["assessments"]:
         target = (row["destinations"] or {}).get("primary")
         print(row["assessment_utc"], "direction=", row["direction"],
               "entry=", row["entry_zone"], "target=", target,
               "outcome=", row["outcome_24h"]["status"],
               "targets=", row["target_outcome_24h"].get("targets",
-                         row["target_outcome_24h"]["status"]))
+                         row["target_outcome_24h"]["status"]),
+              "forecast_diagnostic=", ((row.get("observations") or {}).get("target_ladder") or {}).get("diagnostic"),
+              "research_status=", ((row.get("observations") or {}).get("target_ladder") or {}).get("research_status"))
 
 
 if __name__ == "__main__":
