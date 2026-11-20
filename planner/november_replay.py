@@ -128,6 +128,7 @@ def daily_target_summary(rows):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=Path("/tmp/stp_nov_9_10.json"))
+    parser.add_argument("--historical-store", type=Path, help="read-only isolated GBPUSD candle store; never the production folder")
     parser.add_argument("--start-date", help="inclusive UTC date YYYY-MM-DD")
     parser.add_argument("--end-date", help="inclusive UTC date YYYY-MM-DD")
     args = parser.parse_args()
@@ -138,7 +139,14 @@ def main():
     except ValueError as exc:
         parser.error(str(exc))
     settings = load_settings().for_pair("GBPUSD")
-    store = CandleStore(settings.candles.folder, settings.candles.compress_after_days)
+    folder = args.historical_store or settings.candles.folder
+    if args.historical_store:
+        folder = folder.resolve()
+        if folder == settings.candles.folder.resolve():
+            parser.error("historical store must be separate from production")
+        if not (folder / "rebuild_manifest.json").exists():
+            parser.error("historical store requires rebuild_manifest.json: run offline native-boundary rebuild first")
+    store = CandleStore(folder, settings.candles.compress_after_days)
     result = replay(settings, store, start_date=args.start_date, end_date=args.end_date)
     args.output.write_text(json.dumps(result, indent=2, default=str) + "\n")
     print(f"Saved {len(result['assessments'])} historical snapshots to {args.output}")
