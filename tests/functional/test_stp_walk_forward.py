@@ -59,3 +59,21 @@ def test_invalid_audit_windows_rejected():
         audit(None, store, T, T, timedelta(hours=4), timedelta(hours=24))
     with pytest.raises(ValueError):
         audit(None, store, T, T + timedelta(hours=4), timedelta(0), timedelta(hours=24))
+
+
+def test_walk_forward_runs_end_to_end_on_candle_built_synthetic_market():
+    from tests.functional.test_planner_scenarios import S, corrective_market
+    store = corrective_market()
+    end = store.newest("5m").end
+    at = end - timedelta(hours=1)
+    result = audit(S, store, at, at + timedelta(hours=1),
+                   timedelta(hours=1), timedelta(hours=1))
+    assert len(result["samples"]) == 1
+    assert sum(result["counts"].values()) == 1
+    assert result["samples"][0]["status"] in {
+        "NO_PLAN", "STALE_DATA", "ENTRY_THEN_DESTINATION",
+        "DESTINATION_BEFORE_ENTRY", "AMBIGUOUS_SAME_CANDLE",
+        "AMBIGUOUS_ENTRY_OR_INVALIDATION", "AMBIGUOUS_TARGET_OR_INVALIDATION",
+        "STRUCTURE_INVALIDATED_BEFORE_ENTRY", "STRUCTURE_INVALIDATED_AFTER_ENTRY",
+        "ENTRY_ONLY_CENSORED", "NEITHER_CENSORED", "DATA_GAP_CENSORED",
+    }
