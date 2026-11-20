@@ -51,7 +51,7 @@ def audit(settings, store, start: datetime, end: datetime, stride: timedelta,
                 for c in store.read_range(tf, at, at + horizon)
                 if c.start >= at and c.end <= at + horizon
             ]
-            result = score_journey(plan, future)
+            result = score_journey(plan, future, require_contiguous_m5=True)
             rows.append({"as_of_utc": at.isoformat(), "direction": plan["trade"],
                          "entry": plan["entry_zone"], "primary": plan["destinations"]["primary"],
                          "condition": plan["condition"], **result})
