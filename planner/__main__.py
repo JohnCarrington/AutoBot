@@ -5,6 +5,9 @@
                                                                (writes planner.folder/<PAIR>/ only)
     .venv/bin/python -m planner show [--pair GBPUSD] [--at 2026-11-17T07:32:00Z]
                                                                the plan at a moment, printed; writes nothing
+    .venv/bin/python -m planner technical [--pair GBPUSD] [--at 2026-11-20T09:00:05Z]
+                                                               the technical forecast (planner/technical.py, issue #3)
+                                                               at a moment, printed; writes nothing
 
 Only one run at a time: a run that finds another still going leaves at once (a lock file in planner.folder/<PAIR>/).
 """
@@ -54,7 +57,7 @@ def describe(p: dict) -> list[str]:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="planner")
-    ap.add_argument("what", choices=("run", "show"))
+    ap.add_argument("what", choices=("run", "show", "technical"))
     ap.add_argument("--pair", default="GBPUSD")
     ap.add_argument("--at", default=None)
     a = ap.parse_args(argv)
@@ -65,6 +68,11 @@ def main(argv: list[str] | None = None) -> int:
         from planner.assess import plan_at
         at = parse_iso(a.at) if a.at else datetime.now(UTC)
         print("\n".join(describe(plan_at(settings, store, at).as_dict())))
+        return 0
+    if a.what == "technical":
+        from planner import technical
+        at = parse_iso(a.at) if a.at else datetime.now(UTC)
+        print("\n".join(technical.describe(technical.technical_at(settings, store, at))))
         return 0
     from housekeeping.logs import setup_logging
     from planner.keeper import Keeper
@@ -82,6 +90,11 @@ def main(argv: list[str] | None = None) -> int:
         except Exception:                               # noqa: BLE001  logged; trading is never affected
             log.exception("Planner run failed; the previous planner files are kept. Trading is not affected.")
             return 1
+        try:                                            # observe only, after the keeper, never part of its lifecycle
+            from planner import technical
+            technical.write(settings, store, datetime.now(UTC))
+        except Exception:                               # noqa: BLE001
+            log.exception("Technical forecast failed; the recommendation files are unaffected. Trading is not affected.")
     return 0
 
 

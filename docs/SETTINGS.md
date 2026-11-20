@@ -261,7 +261,7 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `planner.daily_swing_move_within_candles` | ... within this many daily candles (P-B7). **Owner's value, 17 November 2026.** | 6 |
 | `planner.h4_swing_lookback_weeks` | 4-hour swings from this many weeks back are levels on the planner's map (P-B8); the direction always uses the latest swings. **Owner's value, 17 November 2026.** | 8 |
 | `planner.daily_swing_lookback_weeks` | The same for daily swings (P-B9). **Owner's value, 17 November 2026.** | 48 |
-| `planner.historical_daily_swing_lookback_weeks` | Historical daily swings: daily swings older than `daily_swing_lookback_weeks` are also kept as levels ("historical daily swing low/high"), back this many weeks; 0 = none. Never used for the direction. **Provisional (structural-history correction, 20 November 2026); awaiting the owner's approval.** | 156 |
+| `planner.historical_daily_swing_lookback_weeks` | Historical daily swings: daily swings older than `daily_swing_lookback_weeks` are also kept as levels ("historical daily swing low/high"), back this many weeks; 0 = none. Never used for the direction. **Owner's approval, 20 November 2026 (structural-history correction).** | 156 |
 | `planner.structure_break_closes` | A 4-hour structural break needs this many closes in a row at least `planner.break_beyond_pips` beyond the last swing (P-B11). **Owner's value, 17 November 2026.** | 1 |
 | `planner.zone_width_adr_share` | A zone holds the levels within the larger of `levels.line_up_within_pips` and this share of the ADR of its lowest level (P-C3). **Owner's provisional value, 17 November 2026.** | 0.15 |
 | `planner.major_min_families` | A Major zone has at least this many families of evidence, including a daily-or-weekly level (P-C7). **Owner's value, 17 November 2026.** | 3 |
@@ -273,6 +273,17 @@ The settings live in `config/settings.toml`, except a few **switches**, which li
 | `planner.failed_breakout_within_candles` | Recorded only: a confirmed zone break that closes back within this many hourly candles is a failed breakout (P-F7). **Owner's value, 17 November 2026.** | 3 |
 | `planner.panel_history` | Past recommendations shown on the dashboard's planner panel (P-G3). **Owner's value, 17 November 2026.** | 5 |
 | `planner.break_beyond_pips` | A confirmed close beyond a level, for the planner: zone invalidation (FC-02), 4-hour structure breaks and flipped levels need a close at least this many pips beyond. On main the planner reads `hourly_read.break_beyond_pips`; here it is the planner's own setting (owner, 19 November 2026). | 3 pips |
+| `stp_technical.enabled` | Write the STP technical forecast (planner/technical.py, observe only) to `planner.folder/<PAIR>/technical.json` and `technical.jsonl` on each planner run. It never feeds the recommendation lifecycle, IG or orders. **Provisional (issue #3, 20 November 2026), for the owner to approve.** | false |
+| `stp_technical.h1_ema_period` | The H1 EMA a pullback is measured against (the issue names H1 EMA20), worked out with the bot's own EMA code. **Provisional (issue #3, 20 November 2026), for the owner to approve.** | 20 |
+| `stp_technical.rsi_periods` | The RSI period for RSI direction and turns in the technical forecast (the chart's RSI 3 is left as it is). **Provisional (issue #3, 20 November 2026), for the owner to approve.** | 14 |
+| `stp_technical.trend_candles` | The H1 EMA trend is its change over this many H1 candles. **Provisional (issue #3, 20 November 2026), for the owner to approve.** | 12 |
+| `stp_technical.avg_range_candles` | The H1 average range (the forecast's volatility unit) is the average high-to-low of this many H1 candles. **Provisional (issue #3, 20 November 2026), for the owner to approve.** | 14 |
+| `stp_technical.stop_buffer_range_share` | A forecast's stop sits this share of the H1 average range beyond the entry zone, at least `planner.break_beyond_pips`; hypothesised from the PIA First example of 20 November 2026. **Provisional (issue #3, 20 November 2026), for the owner to approve.** | 0.3 |
+| `stp_technical.range_lookback_candles` | A range (the grey box) is looked for over this many H1 candles. **Provisional (issue #3, 20 November 2026), for the owner to approve.** | 48 |
+| `stp_technical.range_min_tests` | ... its top and bottom each reached at least this many separate times. **Provisional (issue #3, 20 November 2026), for the owner to approve.** | 2 |
+| `stp_technical.range_max_ema_drift_share` | ... with the H1 EMA drifting less than this share of the range height. **Provisional (issue #3, 20 November 2026), for the owner to approve.** | 0.25 |
+| `stp_technical.min_evidence` | A technical forecast needs at least this many evidence points; below it there is no forecast. **Provisional (issue #3, 20 November 2026), for the owner to approve.** | 4 |
+| `stp_technical.validity_hours` | A technical forecast lapses if price has not reached its entry zone within this many hours (lifecycle and replay). **Provisional (issue #3, 20 November 2026), for the owner to approve.** | 8 |
 
 ## Where the market hours come from
 

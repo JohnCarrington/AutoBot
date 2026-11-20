@@ -633,7 +633,7 @@ daily_swing_move_within_candles = 6
 # How far back 4-hour and daily swings are kept as levels (weeks).
 h4_swing_lookback_weeks = 8
 daily_swing_lookback_weeks = 48
-# Historical daily swings (20 November 2026, structural-history correction; awaiting the owner's approval): daily
+# Historical daily swings (20 November 2026, structural-history correction; approved by the owner 20 November 2026): daily
 # swings older than daily_swing_lookback_weeks are also kept as levels, back this many weeks (0 = none). They give a
 # map below a fresh low (above a fresh high) where the 48-week window has nothing. Never used for the direction.
 historical_daily_swing_lookback_weeks = 156
@@ -660,3 +660,30 @@ panel_history = 5
 # levels: a close at least this many pips beyond it (owner, 19 November 2026: the planner's own number; on main it
 # reads [hourly_read] break_beyond_pips, the hourly read's, which first-build-plus does not have).
 break_beyond_pips = 3
+
+[stp_technical]
+# STP technical opportunities (GitHub issue #3, 20 November 2026; planner/technical.py). OBSERVE ONLY: it never feeds
+# the recommendation lifecycle, never contacts IG and never places an order. Every number here is PROVISIONAL, for the
+# owner to approve. It reuses the planner's zone width, 3-pip touch and break rules and minimum entry class.
+# Write the technical forecast (planner.folder/<PAIR>/technical.json and technical.jsonl) on each planner run.
+enabled = false
+# The H1 EMA the pullback is measured against (the issue: H1 EMA20).
+h1_ema_period = 20
+# The RSI period used for RSI direction and turns (the chart's RSI 3 is too quick for direction).
+rsi_periods = 14
+# The H1 EMA trend is its change over this many H1 candles.
+trend_candles = 12
+# The H1 average range (volatility unit) is the average high-low of this many H1 candles.
+avg_range_candles = 14
+# The stop sits this share of the H1 average range beyond the entry zone (at least [planner] break_beyond_pips).
+stop_buffer_range_share = 0.3
+# A range is looked for over this many H1 candles ...
+range_lookback_candles = 48
+# ... with its top and bottom each reached at least this many separate times ...
+range_min_tests = 2
+# ... and the H1 EMA drifting less than this share of the range height over it.
+range_max_ema_drift_share = 0.25
+# A forecast needs at least this many evidence points; below it there is no forecast (no forcing).
+min_evidence = 4
+# How long a forecast waits for price to reach its entry zone before it lapses (hours; lifecycle and replay).
+validity_hours = 8

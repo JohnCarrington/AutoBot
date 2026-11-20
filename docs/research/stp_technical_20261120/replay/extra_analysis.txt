@@ -1,0 +1,23 @@
+TEST by type: forecasts, entry zone reached, winners' MAE p50/p75/p90, losers' MFE p50, hours p50
+PULLBACK 1876 entered 1061 56.6% winMAE 3.7 7.8 11.7 loseMFE 4.1 hrs 1.4
+REVERSAL 606 entered 495 81.7% winMAE 2.7 6.8 10.9 loseMFE 2.7 hrs 0.8
+FAILED_BREAKOUT 534 entered 399 74.7% winMAE 4.7 9.2 13.2 loseMFE 3.9 hrs 1.6
+BREAKOUT 12 entered 7 58.3% winMAE 6.1 6.1 6.1 loseMFE 6.6 hrs 1.7
+RANGE_REVERSAL 2 entered 2 100.0% winMAE None None None loseMFE 1.7 hrs 0.2
+ALL 3030 entered 1964 64.8% winMAE 3.7 7.9 12.2 loseMFE 3.9 hrs 1.2
+
+8-15-pip targets (weekly-block bootstrap)
+DEV PULLBACK {'n': 97, 'won_pct': 59.8, 'expected_pct': 58.3, 'edge_pts': 1.5, 'ci95_pts': [-10.9, 12.6]}
+DEV REVERSAL {'n': 63, 'won_pct': 58.7, 'expected_pct': 59.4, 'edge_pts': -0.7, 'ci95_pts': [-14.1, 11.3]}
+DEV FAILED_BREAKOUT {'n': 55, 'won_pct': 78.2, 'expected_pct': 64.6, 'edge_pts': 13.6, 'ci95_pts': [4.9, 21.6]}
+DEV BREAKOUT {'n': 1, 'won_pct': 0.0, 'expected_pct': 41.7, 'edge_pts': -41.7, 'ci95_pts': [-41.7, -41.7]}
+DEV new-only {'n': 123, 'won_pct': 69.1, 'expected_pct': 61.4, 'edge_pts': 7.7, 'ci95_pts': [0.1, 15.1]}
+TEST PULLBACK {'n': 356, 'won_pct': 47.2, 'expected_pct': 50.0, 'edge_pts': -2.8, 'ci95_pts': [-9.0, 3.2]}
+TEST REVERSAL {'n': 162, 'won_pct': 54.9, 'expected_pct': 52.8, 'edge_pts': 2.1, 'ci95_pts': [-6.1, 9.9]}
+TEST FAILED_BREAKOUT {'n': 180, 'won_pct': 66.7, 'expected_pct': 61.6, 'edge_pts': 5.1, 'ci95_pts': [-1.7, 11.3]}
+TEST RANGE_REVERSAL {'n': 1, 'won_pct': 0.0, 'expected_pct': 67.0, 'edge_pts': -67.0, 'ci95_pts': [-67.0, -67.0]}
+TEST new-only {'n': 369, 'won_pct': 56.4, 'expected_pct': 56.2, 'edge_pts': 0.1, 'ci95_pts': [-5.0, 5.1]}
+
+TEST head-to-head at shared 4-hour timestamps: {'shared': 2011, '-/-': 367, 'stp/tech': 501, 'agree': 478, '-/tech': 1011, 'stp/-': 132, 'disagree': 23}
+agree technical forecast: {'n': 348, 'won_pct': 53.4, 'expected_pct': 51.9, 'edge_pts': 1.6, 'ci95_pts': [-3.3, 6.6]}
+disagree technical forecast: {'n': 12, 'won_pct': 41.7, 'expected_pct': 59.0, 'edge_pts': -17.3, 'ci95_pts': [-39.5, 6.5]}
