@@ -58,7 +58,8 @@ Reaching a destination is not a profitable trade.
 | Production checkout | `/opt/autobot`, detached at `26c06fc` (pullback-entry, owner's restart pending), `main` `02f6c7e`; other sessions' untracked files left alone |
 | Services | `autobot-prices`, `autobot-dashboard` running, not touched |
 | Development branch | fetched `origin/stp-conditional-journeys-20261120` at `032191f` (42 commits on top of `main` `02f6c7e`) into a new worktree; nothing in `/opt/autobot` was changed |
-| Code under test | `planner/assess.py` (destination-first selection, conditional journeys), `planner/forward_outcomes.py`, `planner/walk_forward.py` at `032191f`, plus the two audit fixes below |
+| Code under test | `planner/assess.py` (destination-first selection, conditional journeys), `planner/forward_outcomes.py`, `planner/walk_forward.py` at `032191f`, plus the audit fixes below |
+| Later remote commits | 26 commits (`b4c80ce`..`2f21e58`, 02:46–03:25 UTC) arrived on the branch during this work. My commits are rebased on top of them. In `planner/assess.py` they only add research-only observations (`destination_hierarchy`, `target_ladder`); trade, entry, destination and invalidation are unchanged, so these results still describe the decision path. **The new "preferred target" ladder was not validated here** and should be judged with the same random-walk calibration. |
 
 ## 2. Data quality
 
