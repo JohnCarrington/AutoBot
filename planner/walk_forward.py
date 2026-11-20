@@ -46,8 +46,11 @@ def audit(settings, store, start: datetime, end: datetime, stride: timedelta,
             rows.append({"as_of_utc": at.isoformat(), "status": "NO_PLAN",
                          "reason": plan["no_recommendation"]})
         else:
-            future = [c for c in store.read_range("5m", at, at + horizon)
-                      if c.start >= at and c.end <= at + horizon]
+            future = [
+                c for tf in ("5m", "1h", "4h")
+                for c in store.read_range(tf, at, at + horizon)
+                if c.start >= at and c.end <= at + horizon
+            ]
             result = score_journey(plan, future)
             rows.append({"as_of_utc": at.isoformat(), "direction": plan["trade"],
                          "entry": plan["entry_zone"], "primary": plan["destinations"]["primary"],
