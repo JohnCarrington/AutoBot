@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date, timedelta
 from pathlib import Path
 
 from config.settings_loader import load_settings
@@ -30,14 +30,34 @@ TIMES = (
 )
 
 
-def replay(settings, store):
+def assessment_times(start_date=None, end_date=None):
+    """UTC weekday checkpoints; retain the original six cases by default."""
+    if start_date is None and end_date is None:
+        return TIMES
+    if not start_date or not end_date:
+        raise ValueError("both start_date and end_date are required")
+    start, end = date.fromisoformat(start_date), date.fromisoformat(end_date)
+    if end < start or (end - start).days > 90:
+        raise ValueError("date range must be ordered and at most 91 calendar days")
+    checkpoints = []
+    day = start
+    while day <= end:
+        if day.weekday() < 5:
+            checkpoints.extend(
+                f"{day.isoformat()}T{hour:02d}:00:00+00:00"
+                for hour in (7, 9, 12)
+            )
+        day += timedelta(days=1)
+    return tuple(checkpoints)
+
+
+def replay(settings, store, *, start_date=None, end_date=None):
     rows = []
-    for raw in TIMES:
+    for raw in assessment_times(start_date, end_date):
         at = datetime.fromisoformat(raw)
         # Snapshot is generated as of each historic timestamp, not today.
         plan = plan_at(settings, store, at, calendar=[]).as_dict()
         future_end = at.replace(tzinfo=timezone.utc)
-        from datetime import timedelta
         future_end += timedelta(hours=24)
         future = [
             c for tf in ("5m", "1h", "4h")
@@ -65,7 +85,8 @@ def replay(settings, store):
         })
     return {"source": "actual AutoBot candle store, as-of historical replay",
             "execution": "none; offline structural assessment only",
-            "assessments": rows, "target_summary": target_summary(rows)}
+            "assessments": rows, "target_summary": target_summary(rows),
+            "daily_target_summary": daily_target_summary(rows)}
 
 
 def target_summary(rows):
@@ -94,16 +115,35 @@ def target_summary(rows):
     return result
 
 
+def daily_target_summary(rows):
+    """Daily buckets keep correlated intraday observations visible."""
+    days = sorted({row["assessment_utc"][:10] for row in rows})
+    return {
+        day: target_summary([row for row in rows
+                             if row["assessment_utc"].startswith(day)])
+        for day in days
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=Path("/tmp/stp_nov_9_10.json"))
+    parser.add_argument("--start-date", help="inclusive UTC date YYYY-MM-DD")
+    parser.add_argument("--end-date", help="inclusive UTC date YYYY-MM-DD")
     args = parser.parse_args()
+    if bool(args.start_date) != bool(args.end_date):
+        parser.error("--start-date and --end-date must be provided together")
+    try:
+        assessment_times(args.start_date, args.end_date)
+    except ValueError as exc:
+        parser.error(str(exc))
     settings = load_settings().for_pair("GBPUSD")
     store = CandleStore(settings.candles.folder, settings.candles.compress_after_days)
-    result = replay(settings, store)
+    result = replay(settings, store, start_date=args.start_date, end_date=args.end_date)
     args.output.write_text(json.dumps(result, indent=2, default=str) + "\n")
     print(f"Saved {len(result['assessments'])} historical snapshots to {args.output}")
     print("Target summary:", json.dumps(result["target_summary"], sort_keys=True))
+    print("Daily target summary:", json.dumps(result["daily_target_summary"], sort_keys=True))
     for row in result["assessments"]:
         target = (row["destinations"] or {}).get("primary")
         print(row["assessment_utc"], "direction=", row["direction"],
