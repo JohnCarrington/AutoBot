@@ -220,12 +220,15 @@ def flipped(settings: Any, levels: list[MapLevel], hourly: Sequence[Candle], pri
 
 
 def level_map(settings: Any, snap: Snapshot, existing: Any, h4_swings: Sequence[Swing],
-              d1_swings: Sequence[Swing]) -> list[MapLevel]:
+              d1_swings: Sequence[Swing], *, include_intraday_opportunity_levels: bool = False) -> list[MapLevel]:
     """Every level within the distance window of price, sorted by price."""
     if snap.price is None:
         return []
     p = settings.planner
-    levels = from_existing(existing) + weekly_levels(settings, snap) + recent_week_extremes(settings, snap)\n    levels += today_extremes(settings, snap)
+    levels = from_existing(existing) + weekly_levels(settings, snap)
+    if include_intraday_opportunity_levels:
+        levels += recent_week_extremes(settings, snap)
+        levels += today_extremes(settings, snap)
     levels += swing_levels(h4_swings, snap.as_of, p.h4_swing_lookback_weeks)
     levels += swing_levels(d1_swings, snap.as_of, p.daily_swing_lookback_weeks)
     levels += historical_swing_levels(d1_swings, snap.as_of, p.daily_swing_lookback_weeks,
