@@ -40,6 +40,14 @@ def score_journey(plan: dict[str, Any], candles: Sequence[Candle]) -> dict[str, 
     zone_break = invalidation.get("zone_break_close")
     zone_break = Decimal(str(zone_break)) if zone_break is not None else None
     entry_at = None
+    # An as-of snapshot already inside the selected zone is an observed
+    # structural entry touch, not a hypothetical later touch. Do not require
+    # a second visit to the zone to score the subsequent journey.
+    for journey in (plan.get("observations") or {}).get("conditional_journeys", []):
+        if (journey.get("entry") == [entry["low"], entry["high"]]
+                and journey.get("countermove_evidence_state") == "AT_ENTRY_NOW"):
+            entry_at = as_of.isoformat()
+            break
     seen = None
     for candle in sorted(candles, key=lambda c: c.start):
         # Require strictly future, fully closed candles; reject any overlapping
