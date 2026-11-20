@@ -1,0 +1,1281 @@
+{
+ "week_open": "2026-11-08T21:00:00+00:00",
+ "end": "2026-11-13T22:00:00+00:00",
+ "trades": [
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "idea_time": "2026-11-09T05:25:00+00:00",
+   "entry": "13378.7",
+   "stop_pips": "15",
+   "closed": "2026-11-09T08:10:00+00:00",
+   "close_kind": "take profit hit at IG",
+   "pips": "20.0",
+   "steps": [
+    "Mon 09 Nov 05:10 GMT: the last high made: 13378.7",
+    "Mon 09 Nov 05:15 GMT to 05:20 GMT: a pause: 2 candles in a row without a new high, closing above the 21 EMA; its highest point 13378.7",
+    "Mon 09 Nov 05:25 GMT: price broke above it (during this candle)",
+    "allowed at entry: slow grind in a trend up; direction rule buy side (price 13378.7 is above the pivot 13351.7 and above the 5m 100 EMA 13367.3); the direction rule does not apply to slow grind"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-09T06:10:00+00:00",
+   "entry": "13383.6",
+   "stop_pips": "12.6",
+   "closed": "2026-11-09T08:15:00+00:00",
+   "close_kind": "take profit hit at IG",
+   "pips": "20.0",
+   "steps": [
+    "Mon 09 Nov 06:10 GMT  #172 bounce buy trigger 13383.6: price went above 13383.6 (during this candle)",
+    "R2 13379.4: furthest low 13378.5 from Mon 09 Nov 05:55 GMT to 06:05 GMT, 0.9 pips past the level (allowance 12)",
+    "stop 13372.5: 6 pips below the furthest point; take profit 20 pips",
+    "allowed at entry: level reversal in a emerging trend up; direction rule buy side (price 13383.6 is above the pivot 13351.7 and above the 5m 100 EMA 13369.5); the direction rule does not apply to level reversal"
+   ]
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "idea_time": "2026-11-09T07:30:00+00:00",
+   "entry": "13388.5",
+   "stop_pips": "12",
+   "closed": "2026-11-09T08:50:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "18.9",
+   "steps": [
+    "Mon 09 Nov 07:25 GMT closed at 13388.3, above the Asian high (the Asian range 00:00 to 07:00, high 13386.8, low 13358.1)",
+    "Mon 09 Nov 07:30 GMT opens at this candle's open, 13388.5 (sell price)",
+    "allowed at entry: Asian range breakout in a consolidation none; direction rule buy side (price 13388.5 is above the pivot 13351.7 and above the 5m 100 EMA 13373.8); the direction rule does not apply to Asian range breakout"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "buy",
+   "idea_time": "2026-11-09T07:55:00+00:00",
+   "entry": "13391.3",
+   "stop_pips": "6",
+   "closed": "2026-11-09T21:00:00+00:00",
+   "close_kind": "take profit hit at IG",
+   "pips": "50.0",
+   "steps": [
+    "entry: above the breakout candle high 13391.3, within 3 candles",
+    "Mon 09 Nov 07:55 GMT: price broke above 13391.3 (during this candle)",
+    "the day's move: 13391.3 is above the day's 00:00 UK open 13359.5",
+    "allowed at entry: breakout in a emerging trend up; direction rule buy side (price 13391.3 is above the pivot 13351.7 and above the 5m 100 EMA 13375.3); the direction rule does not apply to breakout"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-09T08:25:00+00:00",
+   "entry": "13413.2",
+   "stop_pips": "25.1",
+   "closed": "2026-11-09T19:35:00+00:00",
+   "close_kind": "take profit hit at IG",
+   "pips": "20.0",
+   "steps": [
+    "Mon 09 Nov 08:25 GMT  #227 bounce buy trigger 13413.2: price went above 13413.2 (during this candle)",
+    "round number 13400: furthest low 13395.6 from Mon 09 Nov 08:10 GMT to 08:20 GMT, 4.4 pips past the level (allowance 5)",
+    "stop 13389.6: 6 pips below the furthest point; take profit 20 pips",
+    "allowed at entry: level reversal in a emerging trend up; direction rule buy side (price 13413.2 is above the pivot 13351.7 and above the 5m 100 EMA 13378.2); the direction rule does not apply to level reversal"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "idea_time": "2026-11-09T09:00:00+00:00",
+   "entry": "13408.9",
+   "stop_pips": "12",
+   "closed": "2026-11-09T10:15:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Mon 09 Nov 08:45 GMT pierce and rejection candle: its high 13415.1 went 13.1 pips above the upper hourly Bollinger band (13402.0 at that moment), and it closed red (13413.3 to 13409.2)",
+    "Mon 09 Nov 08:55 GMT confirmation candle: closed at 13408.8, below the rejection candle's low (13409.2)",
+    "Mon 09 Nov 09:00 GMT opens at this candle's open, 13408.9 (sell price)",
+    "allowed at entry: Bollinger bounce in a trend up; direction rule buy side (price 13408.9 is above the pivot 13351.7 and above the 5m 100 EMA 13382.5); the direction rule does not apply to Bollinger bounce"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-09T09:00:00+00:00",
+   "entry": "13408.2",
+   "stop_pips": "12",
+   "closed": "2026-11-09T09:30:00+00:00",
+   "close_kind": "close",
+   "pips": "-6.0",
+   "steps": [
+    "Mon 09 Nov 09:00 GMT  #241 bounce sell trigger 13408.2: price went below 13408.2 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 2.56x, high-low 1.51x",
+    "reversal watch window: outside; the setup counts (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a trend up; direction rule buy side (price 13408.2 is above the pivot 13351.7 and above the 5m 100 EMA 13382.5); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "idea_time": "2026-11-09T09:35:00+00:00",
+   "entry": "13415.1",
+   "stop_pips": "15",
+   "closed": "2026-11-09T15:25:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-15.0",
+   "steps": [
+    "Mon 09 Nov 08:40 GMT: the last high made: 13415.5",
+    "Mon 09 Nov 08:45 GMT to 09:30 GMT: a pause: 10 candles in a row without a new high, closing above the 21 EMA; its highest point 13415.1",
+    "Mon 09 Nov 09:35 GMT: price broke above it (during this candle)",
+    "allowed at entry: slow grind in a trend up; direction rule buy side (price 13415.1 is above the pivot 13351.7 and above the 5m 100 EMA 13386.0); the direction rule does not apply to slow grind"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "buy",
+   "idea_time": "2026-11-09T10:30:00+00:00",
+   "entry": "13422.8",
+   "stop_pips": "12",
+   "closed": "2026-11-09T12:00:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Mon 09 Nov 10:25 GMT: price dropped to the 5-minute 8 EMA 13417.1 (low 13416.6); closed 13420.4, above the 21 EMA 13413.4",
+    "entry 13422.8: 3 pips above the highest high of the 5 candles before the touch candle (10:00 GMT to 10:20 GMT); expires 20 minutes after the touch",
+    "Mon 09 Nov 10:30 GMT: price reached the entry 13422.8 (during this candle)",
+    "allowed at entry: EMA pullback in a trend up; direction rule buy side (price 13422.8 is above the pivot 13351.7 and above the 5m 100 EMA 13392.2)"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "idea_time": "2026-11-09T10:40:00+00:00",
+   "entry": "13418.7",
+   "stop_pips": "12",
+   "closed": "2026-11-09T16:05:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "12.6",
+   "steps": [
+    "Mon 09 Nov 10:30 GMT pierce and rejection candle: its high 13422.9 went 4.1 pips above the upper hourly Bollinger band (13418.8 at that moment), and it closed red (13420.5 to 13419.6)",
+    "Mon 09 Nov 10:35 GMT confirmation candle: closed at 13418.6, below the rejection candle's low (13419.4)",
+    "Mon 09 Nov 10:40 GMT opens at this candle's open, 13418.7 (sell price)",
+    "allowed at entry: Bollinger bounce in a possible reversal down; direction rule buy side (price 13418.7 is above the pivot 13351.7 and above the 5m 100 EMA 13393.2); the direction rule does not apply to Bollinger bounce"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-09T10:55:00+00:00",
+   "entry": "13417.1",
+   "stop_pips": "12",
+   "closed": "2026-11-09T11:05:00+00:00",
+   "close_kind": "close",
+   "pips": "-7.2",
+   "steps": [
+    "Mon 09 Nov 10:55 GMT  #281 bounce sell trigger 13417.1: price went below 13417.1 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 4.50x, high-low 1.75x",
+    "reversal watch window: inside; the setup counts (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a possible reversal down; direction rule buy side (price 13417.1 is above the pivot 13351.7 and above the 5m 100 EMA 13394.8); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  },
+  {
+   "strategy": "range trade",
+   "direction": "buy",
+   "idea_time": "2026-11-09T13:55:00+00:00",
+   "entry": "13417",
+   "stop_pips": "12",
+   "closed": "2026-11-09T14:45:00+00:00",
+   "close_kind": "close",
+   "pips": "-7.7",
+   "steps": [
+    "Mon 09 Nov 13:50 GMT  #371 range buy reversal 13416.8: rejection candle O 13410.3 H 13417 L 13410.3 C 13416.8; size against the piercing candle: body 5.42x, high-low 1.49x",
+    "Mon 09 Nov 13:55 GMT  #371 range buy trigger 13417: price went above 13417 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 5.42x, high-low 1.49x",
+    "allowed at entry: range trade in a ranging none; direction rule buy side (price 13417 is above the pivot 13351.7 and above the 5m 100 EMA 13405.7); the direction rule does not apply to range trade"
+   ]
+  },
+  {
+   "strategy": "range trade",
+   "direction": "buy",
+   "idea_time": "2026-11-09T14:55:00+00:00",
+   "entry": "13414.2",
+   "stop_pips": "12",
+   "closed": "2026-11-09T15:20:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Mon 09 Nov 14:50 GMT  #395 range buy reversal 13414.2: rejection candle O 13409.6 H 13414.2 L 13408.2 C 13414.2; size against the piercing candle: body 7.67x, high-low 0.90x",
+    "Mon 09 Nov 14:55 GMT  #395 range buy trigger 13414.2: price went above 13414.2 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 7.67x, high-low 0.90x",
+    "allowed at entry: range trade in a ranging none; direction rule buy side (price 13414.2 is above the pivot 13351.7 and above the 5m 100 EMA 13407.8); the direction rule does not apply to range trade"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "idea_time": "2026-11-09T15:45:00+00:00",
+   "entry": "13401.4",
+   "stop_pips": "15",
+   "closed": "2026-11-09T16:15:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-15.0",
+   "steps": [
+    "Mon 09 Nov 15:30 GMT: the last low made: 13397.7",
+    "Mon 09 Nov 15:35 GMT to 15:40 GMT: a pause: 2 candles in a row without a new low, closing below the 21 EMA; its lowest point 13401.4",
+    "Mon 09 Nov 15:45 GMT: price broke below it (during this candle)",
+    "allowed at entry: slow grind in a trend down; direction rule no clear direction (price 13401.4 is above the pivot 13351.7 and below the 5m 100 EMA 13407.3: they disagree); the direction rule does not apply to slow grind"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "idea_time": "2026-11-09T19:55:00+00:00",
+   "entry": "13437",
+   "stop_pips": "15",
+   "closed": "2026-11-09T20:30:00+00:00",
+   "close_kind": "forced close",
+   "pips": "-2.1",
+   "steps": [
+    "Mon 09 Nov 19:40 GMT: the last high made: 13441.9",
+    "Mon 09 Nov 19:45 GMT to 19:50 GMT: a pause: 2 candles in a row without a new high, closing above the 21 EMA; its highest point 13437",
+    "Mon 09 Nov 19:55 GMT: price broke above it (during this candle)",
+    "allowed at entry: slow grind in a trend up; direction rule buy side (price 13437 is above the pivot 13351.7 and above the 5m 100 EMA 13416.6); the direction rule does not apply to slow grind"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "buy",
+   "idea_time": "2026-11-09T21:00:00+00:00",
+   "entry": "13442.7",
+   "stop_pips": "12",
+   "closed": "2026-11-09T22:00:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Mon 09 Nov 20:45 GMT: price dropped to the 5-minute 8 EMA 13436.9 (low 13435.8); closed 13435.9, above the 21 EMA 13433.7",
+    "entry 13442.7: 3 pips above the highest high of the 5 candles before the touch candle (20:20 GMT to 20:40 GMT); expires 20 minutes after the touch",
+    "Mon 09 Nov 21:00 GMT: price reached the entry 13442.7 (during this candle)",
+    "allowed at entry: EMA pullback in a trend up; direction rule buy side (price 13442.7 is above the pivot 13351.7 and above the 5m 100 EMA 13421.5)"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "buy",
+   "idea_time": "2026-11-10T05:00:00+00:00",
+   "entry": "13449.2",
+   "stop_pips": "12",
+   "closed": "2026-11-10T09:00:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Tue 10 Nov 04:50 GMT: price dropped to the 5-minute 8 EMA 13444.7 (low 13444.7); closed 13445.8, above the 21 EMA 13444.0",
+    "entry 13449.2: 3 pips above the highest high of the 5 candles before the touch candle (04:25 GMT to 04:45 GMT); expires 20 minutes after the touch",
+    "Tue 10 Nov 05:00 GMT: price reached the entry 13449.2 (during this candle)",
+    "allowed at entry: EMA pullback in a emerging trend up; direction rule buy side (price 13449.2 is above the pivot 13413.8 and above the 5m 100 EMA 13438.4)"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "buy",
+   "idea_time": "2026-11-10T06:10:00+00:00",
+   "entry": "13451.1",
+   "stop_pips": "12",
+   "closed": "2026-11-10T09:00:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Tue 10 Nov 06:00 GMT: price dropped to the 5-minute 8 EMA 13445.5 (low 13444.8); closed 13446.2, above the 21 EMA 13445.6",
+    "entry 13451.1: 3 pips above the highest high of the 5 candles before the touch candle (05:35 GMT to 05:55 GMT); expires 20 minutes after the touch",
+    "Tue 10 Nov 06:10 GMT: price reached the entry 13451.1 (during this candle)",
+    "allowed at entry: EMA pullback in a emerging trend up; direction rule buy side (price 13451.1 is above the pivot 13413.8 and above the 5m 100 EMA 13440.4)"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "buy",
+   "idea_time": "2026-11-10T07:20:00+00:00",
+   "entry": "13454.5",
+   "stop_pips": "12",
+   "closed": "2026-11-10T09:00:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Tue 10 Nov 07:10 GMT: price dropped to the 5-minute 8 EMA 13448.1 (low 13447.3); closed 13449.6, above the 21 EMA 13447.9",
+    "entry 13454.5: 3 pips above the highest high of the 5 candles before the touch candle (06:45 GMT to 07:05 GMT); expires 20 minutes after the touch",
+    "Tue 10 Nov 07:20 GMT: price reached the entry 13454.5 (during this candle)",
+    "allowed at entry: EMA pullback in a emerging trend up; direction rule buy side (price 13454.5 is above the pivot 13413.8 and above the 5m 100 EMA 13442.6)"
+   ]
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "idea_time": "2026-11-10T07:25:00+00:00",
+   "entry": "13452.6",
+   "stop_pips": "12",
+   "closed": "2026-11-10T09:00:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Tue 10 Nov 07:20 GMT closed at 13453.1, above the Asian high (the Asian range 00:00 to 07:00, high 13452.7, low 13430.7)",
+    "Tue 10 Nov 07:25 GMT opens at this candle's open, 13452.6 (sell price)",
+    "allowed at entry: Asian range breakout in a emerging trend up; direction rule buy side (price 13452.6 is above the pivot 13413.8 and above the 5m 100 EMA 13442.8); the direction rule does not apply to Asian range breakout"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-10T07:55:00+00:00",
+   "entry": "13450.3",
+   "stop_pips": "12",
+   "closed": "2026-11-10T08:30:00+00:00",
+   "close_kind": "close",
+   "pips": "-6.8",
+   "steps": [
+    "Tue 10 Nov 07:55 GMT  #760 bounce sell trigger 13450.3: price went below 13450.3 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 0.50x, high-low 0.62x",
+    "reversal watch window: outside; the setup counts (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a trend up; direction rule buy side (price 13450.3 is above the pivot 13413.8 and above the 5m 100 EMA 13444.1); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-10T08:45:00+00:00",
+   "entry": "13453.7",
+   "stop_pips": "12",
+   "closed": "2026-11-10T10:40:00+00:00",
+   "close_kind": "close",
+   "pips": "21.8",
+   "steps": [
+    "Tue 10 Nov 08:45 GMT  #786 bounce sell trigger 13453.7: price went below 13453.7 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 0.57x, high-low 0.52x",
+    "reversal watch window: outside; the setup counts (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a trend up; direction rule buy side (price 13453.7 is above the pivot 13413.8 and above the 5m 100 EMA 13445.7); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "idea_time": "2026-11-10T09:05:00+00:00",
+   "entry": "13435.8",
+   "stop_pips": "23.8",
+   "closed": "2026-11-10T10:00:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "5.6",
+   "steps": [
+    "Tue 10 Nov 08:50 GMT swept the Asian high 13452.7, price went 5.9 pips above it (furthest 13458.6), and this candle closed back below it at 13451.1, the rejection candle (high 13456.1, low 13450.9)",
+    "Tue 10 Nov 09:00 GMT confirmation candle, closed at 13435.9, below the rejection candle's low (13450.9)",
+    "Tue 10 Nov 09:05 GMT opens at this candle's open, 13435.8 (sell price); stop 13459.6, 23.8 pips (at least 12; 1 beyond the furthest point 13458.6)",
+    "allowed at entry: session sweep in a emerging trend down; direction rule no clear direction (price 13435.8 is above the pivot 13413.8 and below the 5m 100 EMA 13446.0: they disagree); the direction rule does not apply to session sweep"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "idea_time": "2026-11-10T09:10:00+00:00",
+   "entry": "13432.6",
+   "stop_pips": "6",
+   "closed": "2026-11-10T09:20:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-6.0",
+   "steps": [
+    "entry: below the breakout candle low 13432.6, within 3 candles",
+    "Tue 10 Nov 09:10 GMT: price broke below 13432.6 (during this candle)",
+    "the day's move: 13432.6 is below the day's 00:00 UK open 13439.3",
+    "allowed at entry: breakout in a emerging trend down; direction rule no clear direction (price 13432.6 is above the pivot 13413.8 and below the 5m 100 EMA 13445.7: they disagree); the direction rule does not apply to breakout"
+   ]
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "idea_time": "2026-11-10T09:40:00+00:00",
+   "entry": "13430.3",
+   "stop_pips": "12",
+   "closed": "2026-11-10T13:15:00+00:00",
+   "close_kind": "forced close",
+   "pips": "11.2",
+   "steps": [
+    "Tue 10 Nov 09:35 GMT closed at 13430.2, below the Asian low (the Asian range 00:00 to 07:00, high 13452.7, low 13430.7)",
+    "Tue 10 Nov 09:40 GMT opens at this candle's open, 13430.3 (sell price)",
+    "allowed at entry: Asian range breakout in a consolidation none; direction rule no clear direction (price 13430.3 is above the pivot 13413.8 and below the 5m 100 EMA 13444.2: they disagree); the direction rule does not apply to Asian range breakout"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "idea_time": "2026-11-10T11:50:00+00:00",
+   "entry": "13422.8",
+   "stop_pips": "6",
+   "closed": "2026-11-10T12:00:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-6.0",
+   "steps": [
+    "entry: below the breakout candle low 13422.8, within 3 candles",
+    "Tue 10 Nov 11:50 GMT: price broke below 13422.8 (during this candle)",
+    "the day's move: 13422.8 is below the day's 00:00 UK open 13439.3",
+    "allowed at entry: breakout in a emerging trend down; direction rule no clear direction (price 13422.8 is above the pivot 13413.8 and below the 5m 100 EMA 13437.3: they disagree); the direction rule does not apply to breakout"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "idea_time": "2026-11-10T13:10:00+00:00",
+   "entry": "13420.2",
+   "stop_pips": "6",
+   "closed": "2026-11-10T13:25:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-6.0",
+   "steps": [
+    "entry: below the breakout candle low 13420.2, within 3 candles",
+    "Tue 10 Nov 13:10 GMT: price broke below 13420.2 (during this candle)",
+    "the day's move: 13420.2 is below the day's 00:00 UK open 13439.3",
+    "allowed at entry: breakout in a emerging trend down; direction rule no clear direction (price 13420.2 is above the pivot 13413.8 and below the 5m 100 EMA 13433.9: they disagree); the direction rule does not apply to breakout"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "idea_time": "2026-11-10T13:30:00+00:00",
+   "entry": "13418.5",
+   "stop_pips": "15",
+   "closed": "2026-11-10T16:30:00+00:00",
+   "close_kind": "take profit hit at IG",
+   "pips": "100.0",
+   "steps": [
+    "Tue 10 Nov 13:15 GMT: the last low made: 13415.9",
+    "Tue 10 Nov 13:20 GMT to 13:25 GMT: a pause: 2 candles in a row without a new low, closing below the 21 EMA; its lowest point 13418.5",
+    "Tue 10 Nov 13:30 GMT: price broke below it (during this candle)",
+    "allowed at entry: slow grind in a trend down; direction rule no clear direction (price 13418.5 is above the pivot 13413.8 and below the 5m 100 EMA 13432.8: they disagree); the direction rule does not apply to slow grind"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-10T14:05:00+00:00",
+   "entry": "13389.1",
+   "stop_pips": "18.4",
+   "closed": "2026-11-10T15:25:00+00:00",
+   "close_kind": "take profit hit at IG",
+   "pips": "20.0",
+   "steps": [
+    "Tue 10 Nov 14:05 GMT  #922 bounce sell trigger 13389.1: price went below 13389.1 (during this candle)",
+    "round number 13400: furthest high 13401.5 from Tue 10 Nov 13:35 GMT to 13:55 GMT, 1.5 pips past the level (allowance 5)",
+    "stop 13407.5: 6 pips above the furthest point; take profit 20 pips",
+    "allowed at entry: level reversal in a trend down; direction rule sell side (price 13389.1 is below the pivot 13413.8 and below the 5m 100 EMA 13427.9); the direction rule does not apply to level reversal"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-10T16:25:00+00:00",
+   "entry": "13321.5",
+   "stop_pips": "20.0",
+   "closed": "2026-11-10T18:35:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-20.0",
+   "steps": [
+    "Tue 10 Nov 16:25 GMT  #988 bounce sell trigger 13321.5: price went below 13321.5 (during this candle)",
+    "S2 13328.7: furthest high 13335.5 from Tue 10 Nov 16:00 GMT to 16:20 GMT, 6.8 pips past the level (allowance 12)",
+    "stop 13341.5: 6 pips above the furthest point; take profit 20 pips",
+    "allowed at entry: level reversal in a trend down; direction rule sell side (price 13321.5 is below the pivot 13413.8 and below the 5m 100 EMA 13399.5); the direction rule does not apply to level reversal"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-10T16:55:00+00:00",
+   "entry": "13319.8",
+   "stop_pips": "12",
+   "closed": "2026-11-10T19:05:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "19.2",
+   "steps": [
+    "Tue 10 Nov 16:45 GMT pierce and rejection candle: its low 13315 went 31.5 pips below the lower hourly Bollinger band (13346.5 at that moment), and it closed green (13315.1 to 13318.5)",
+    "Tue 10 Nov 16:50 GMT confirmation candle: closed at 13320, above the rejection candle's high (13319.1)",
+    "Tue 10 Nov 16:55 GMT opens at this candle's open, 13319.8 (sell price)",
+    "allowed at entry: Bollinger bounce in a possible reversal up; direction rule sell side (price 13319.8 is below the pivot 13413.8 and below the 5m 100 EMA 13390.3); the direction rule does not apply to Bollinger bounce"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-10T17:00:00+00:00",
+   "entry": "13321.9",
+   "stop_pips": "12",
+   "closed": "2026-11-10T20:30:00+00:00",
+   "close_kind": "forced close",
+   "pips": "21.3",
+   "steps": [
+    "Tue 10 Nov 17:00 GMT  #1002 bounce buy trigger 13321.9: price went above 13321.9 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 0.94x, high-low 0.64x",
+    "reversal watch window: outside; the setup does not count (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a possible reversal up; direction rule sell side (price 13321.9 is below the pivot 13413.8 and below the 5m 100 EMA 13389.0); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-11T06:55:00+00:00",
+   "entry": "13334.3",
+   "stop_pips": "12",
+   "closed": "2026-11-11T07:30:00+00:00",
+   "close_kind": "close",
+   "pips": "0.4",
+   "steps": [
+    "Wed 11 Nov 06:55 GMT  #1238 bounce buy trigger 13334.3: price went above 13334.3 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 0.31x, high-low 0.65x",
+    "reversal watch window: outside; the setup counts (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a trend down; direction rule sell side (price 13334.3 is below the pivot 13372.5 and below the 5m 100 EMA 13345.5); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-11T07:30:00+00:00",
+   "entry": "13330.9",
+   "stop_pips": "12",
+   "closed": "2026-11-11T13:20:00+00:00",
+   "close_kind": "take profit hit at IG",
+   "pips": "30.0",
+   "steps": [
+    "Wed 11 Nov 07:25 GMT: price rose to the 5-minute 8 EMA 13339.3 (high 13340.4); closed 13336.4, below the 21 EMA 13339.4",
+    "entry 13330.9: 3 pips below the lowest low of the 5 candles before the touch candle (07:00 GMT to 07:20 GMT); expires 20 minutes after the touch",
+    "Wed 11 Nov 07:30 GMT: price reached the entry 13330.9 (during this candle)",
+    "allowed at entry: EMA pullback in a trend down; direction rule sell side (price 13330.9 is below the pivot 13372.5 and below the 5m 100 EMA 13344.7)"
+   ]
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "idea_time": "2026-11-11T07:40:00+00:00",
+   "entry": "13329",
+   "stop_pips": "12",
+   "closed": "2026-11-11T08:35:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "2.9",
+   "steps": [
+    "Wed 11 Nov 07:35 GMT closed at 13329.2, below the Asian low (the Asian range 00:00 to 07:00, high 13355.7, low 13331)",
+    "Wed 11 Nov 07:40 GMT opens at this candle's open, 13329 (sell price)",
+    "allowed at entry: Asian range breakout in a trend down; direction rule sell side (price 13329 is below the pivot 13372.5 and below the 5m 100 EMA 13344.2); the direction rule does not apply to Asian range breakout"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "idea_time": "2026-11-11T08:10:00+00:00",
+   "entry": "13326.7",
+   "stop_pips": "15",
+   "closed": "2026-11-11T12:45:00+00:00",
+   "close_kind": "close",
+   "pips": "10.0",
+   "steps": [
+    "Wed 11 Nov 07:45 GMT: the last low made: 13326.1",
+    "Wed 11 Nov 07:50 GMT to 08:05 GMT: a pause: 4 candles in a row without a new low, closing below the 21 EMA; its lowest point 13326.7",
+    "Wed 11 Nov 08:10 GMT: price broke below it (during this candle)",
+    "allowed at entry: slow grind in a trend down; direction rule sell side (price 13326.7 is below the pivot 13372.5 and below the 5m 100 EMA 13342.4); the direction rule does not apply to slow grind"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-11T08:15:00+00:00",
+   "entry": "13323.1",
+   "stop_pips": "12",
+   "closed": "2026-11-11T13:50:00+00:00",
+   "close_kind": "take profit hit at IG",
+   "pips": "30.0",
+   "steps": [
+    "Wed 11 Nov 08:00 GMT: price rose to the 5-minute 8 EMA 13331.1 (high 13331.7); closed 13330.0, below the 21 EMA 13334.5",
+    "entry 13323.1: 3 pips below the lowest low of the 5 candles before the touch candle (07:35 GMT to 07:55 GMT); expires 20 minutes after the touch",
+    "Wed 11 Nov 08:15 GMT: price reached the entry 13323.1 (during this candle)",
+    "allowed at entry: EMA pullback in a trend down; direction rule sell side (price 13323.1 is below the pivot 13372.5 and below the 5m 100 EMA 13342.1)"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-11T08:35:00+00:00",
+   "entry": "13324.5",
+   "stop_pips": "12",
+   "closed": "2026-11-11T09:30:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Wed 11 Nov 08:35 GMT  #1283 bounce buy trigger 13324.5: price went above 13324.5 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 0.38x, high-low 0.64x",
+    "reversal watch window: outside; the setup counts (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a trend down; direction rule sell side (price 13324.5 is below the pivot 13372.5 and below the 5m 100 EMA 13340.3); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-11T09:50:00+00:00",
+   "entry": "13320",
+   "stop_pips": "12",
+   "closed": "2026-11-11T10:45:00+00:00",
+   "close_kind": "close",
+   "pips": "0.5",
+   "steps": [
+    "Wed 11 Nov 09:50 GMT  #1301 bounce buy trigger 13320: price went above 13320 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 0.39x, high-low 0.43x",
+    "reversal watch window: outside; the setup counts (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a trend down; direction rule sell side (price 13320 is below the pivot 13372.5 and below the 5m 100 EMA 13334.6); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-11T10:50:00+00:00",
+   "entry": "13317.4",
+   "stop_pips": "12",
+   "closed": "2026-11-11T13:55:00+00:00",
+   "close_kind": "take profit hit at IG",
+   "pips": "30.0",
+   "steps": [
+    "Wed 11 Nov 10:40 GMT: price rose to the 5-minute 8 EMA 13324.2 (high 13324.4); closed 13322.7, below the 21 EMA 13323.0",
+    "entry 13317.4: 3 pips below the lowest low of the 5 candles before the touch candle (10:15 GMT to 10:35 GMT); expires 20 minutes after the touch",
+    "Wed 11 Nov 10:50 GMT: price reached the entry 13317.4 (during this candle)",
+    "allowed at entry: EMA pullback in a trend down; direction rule sell side (price 13317.4 is below the pivot 13372.5 and below the 5m 100 EMA 13332.3)"
+   ]
+  },
+  {
+   "strategy": "range trade",
+   "direction": "buy",
+   "idea_time": "2026-11-11T11:10:00+00:00",
+   "entry": "13316.7",
+   "stop_pips": "12",
+   "closed": "2026-11-11T11:55:00+00:00",
+   "close_kind": "close",
+   "pips": "-9.5",
+   "steps": [
+    "Wed 11 Nov 11:05 GMT  #1324 range buy reversal 13315.3: rejection candle O 13313.6 H 13316.7 L 13313 C 13315.3; size against the piercing candle: body 0.33x, high-low 0.59x",
+    "Wed 11 Nov 11:10 GMT  #1324 range buy trigger 13316.7: price went above 13316.7 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 0.33x, high-low 0.59x",
+    "allowed at entry: range trade in a ranging none; direction rule sell side (price 13316.7 is below the pivot 13372.5 and below the 5m 100 EMA 13331.1); the direction rule does not apply to range trade"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-11T11:45:00+00:00",
+   "entry": "13313",
+   "stop_pips": "12",
+   "closed": "2026-11-11T13:15:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Wed 11 Nov 11:35 GMT pierce and rejection candle: its low 13308.1 went 4.5 pips below the lower hourly Bollinger band (13312.6 at that moment), and it closed green (13309.8 to 13310.4)",
+    "Wed 11 Nov 11:40 GMT confirmation candle: closed at 13312.2, above the rejection candle's high (13310.6)",
+    "Wed 11 Nov 11:45 GMT opens at this candle's open, 13313 (sell price)",
+    "allowed at entry: Bollinger bounce in a emerging trend up; direction rule sell side (price 13313 is below the pivot 13372.5 and below the 5m 100 EMA 13328.7); the direction rule does not apply to Bollinger bounce"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "idea_time": "2026-11-11T13:10:00+00:00",
+   "entry": "13305.7",
+   "stop_pips": "6",
+   "closed": "2026-11-12T02:35:00+00:00",
+   "close_kind": "take profit hit at IG",
+   "pips": "50.0",
+   "steps": [
+    "entry: below the breakout candle low 13305.8, within 3 candles",
+    "Wed 11 Nov 13:10 GMT: price broke below 13305.8 (the candle opened past it, at 13305.7)",
+    "the day's move: 13305.7 is below the day's 00:00 UK open 13346.3",
+    "allowed at entry: breakout in a emerging trend down; direction rule sell side (price 13305.7 is below the pivot 13372.5 and below the 5m 100 EMA 13323.6); the direction rule does not apply to breakout"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-11T13:40:00+00:00",
+   "entry": "13294.3",
+   "stop_pips": "13.0",
+   "closed": "2026-11-11T14:20:00+00:00",
+   "close_kind": "take profit hit at IG",
+   "pips": "20.0",
+   "steps": [
+    "Wed 11 Nov 13:40 GMT  #1383 bounce sell trigger 13294.3: price went below 13294.3 (during this candle)",
+    "round number 13300: furthest high 13301.3 from Wed 11 Nov 13:20 GMT to 13:35 GMT, 1.3 pips past the level (allowance 5)",
+    "stop 13307.3: 6 pips above the furthest point; take profit 20 pips",
+    "allowed at entry: level reversal in a trend down; direction rule sell side (price 13294.3 is below the pivot 13372.5 and below the 5m 100 EMA 13320.9); the direction rule does not apply to level reversal"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "idea_time": "2026-11-11T14:45:00+00:00",
+   "entry": "13269.6",
+   "stop_pips": "15",
+   "closed": "2026-11-11T15:10:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-15.0",
+   "steps": [
+    "Wed 11 Nov 14:30 GMT: the last low made: 13267.8",
+    "Wed 11 Nov 14:35 GMT to 14:40 GMT: a pause: 2 candles in a row without a new low, closing below the 21 EMA; its lowest point 13269.6",
+    "Wed 11 Nov 14:45 GMT: price broke below it (during this candle)",
+    "allowed at entry: slow grind in a trend down; direction rule sell side (price 13269.6 is below the pivot 13372.5 and below the 5m 100 EMA 13311.2); the direction rule does not apply to slow grind"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-11T15:10:00+00:00",
+   "entry": "13277.5",
+   "stop_pips": "12",
+   "closed": "2026-11-11T20:30:00+00:00",
+   "close_kind": "forced close",
+   "pips": "-1.1",
+   "steps": [
+    "Wed 11 Nov 15:00 GMT pierce and rejection candle: its low 13265.6 went 9.5 pips below the lower hourly Bollinger band (13275.1 at that moment), and it closed green (13269 to 13270.3)",
+    "Wed 11 Nov 15:05 GMT confirmation candle: closed at 13277.4, above the rejection candle's high (13271.6)",
+    "Wed 11 Nov 15:10 GMT opens at this candle's open, 13277.5 (sell price)",
+    "allowed at entry: Bollinger bounce in a possible reversal up; direction rule sell side (price 13277.5 is below the pivot 13372.5 and below the 5m 100 EMA 13307.4); the direction rule does not apply to Bollinger bounce"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-11T15:10:00+00:00",
+   "entry": "13277.4",
+   "stop_pips": "12",
+   "closed": "2026-11-11T16:55:00+00:00",
+   "close_kind": "close",
+   "pips": "-0.2",
+   "steps": [
+    "Wed 11 Nov 15:10 GMT  #1422 bounce buy trigger 13277.4: price went above 13277.4 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 1.08x, high-low 1.43x",
+    "reversal watch window: outside; the setup does not count (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a possible reversal up; direction rule sell side (price 13277.4 is below the pivot 13372.5 and below the 5m 100 EMA 13307.4); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "idea_time": "2026-11-11T17:35:00+00:00",
+   "entry": "13272.4",
+   "stop_pips": "15",
+   "closed": "2026-11-11T20:30:00+00:00",
+   "close_kind": "forced close",
+   "pips": "-7.0",
+   "steps": [
+    "Wed 11 Nov 17:20 GMT: the last low made: 13268.9",
+    "Wed 11 Nov 17:25 GMT to 17:30 GMT: a pause: 2 candles in a row without a new low, closing below the 21 EMA; its lowest point 13272.4",
+    "Wed 11 Nov 17:35 GMT: price broke below it (during this candle)",
+    "allowed at entry: slow grind in a trend down; direction rule sell side (price 13272.4 is below the pivot 13372.5 and below the 5m 100 EMA 13295.1); the direction rule does not apply to slow grind"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-11T18:45:00+00:00",
+   "entry": "13273.5",
+   "stop_pips": "12",
+   "closed": "2026-11-11T22:00:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Wed 11 Nov 18:40 GMT: price rose to the 5-minute 8 EMA 13277.0 (high 13277.9); closed 13276.7, below the 21 EMA 13276.9",
+    "entry 13273.5: 3 pips below the lowest low of the 5 candles before the touch candle (18:15 GMT to 18:35 GMT); expires 20 minutes after the touch",
+    "Wed 11 Nov 18:45 GMT: price reached the entry 13273.5 (during this candle)",
+    "allowed at entry: EMA pullback in a trend down; direction rule sell side (price 13273.5 is below the pivot 13372.5 and below the 5m 100 EMA 13290.5)"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-11T21:05:00+00:00",
+   "entry": "13271.9",
+   "stop_pips": "12",
+   "closed": "2026-11-11T22:00:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Wed 11 Nov 20:50 GMT: price rose to the 5-minute 8 EMA 13276.6 (high 13276.8); closed 13276.3, below the 21 EMA 13276.6",
+    "entry 13271.9: 3 pips below the lowest low of the 5 candles before the touch candle (20:25 GMT to 20:45 GMT); expires 20 minutes after the touch",
+    "Wed 11 Nov 21:05 GMT: price reached the entry 13271.9 (during this candle)",
+    "allowed at entry: EMA pullback in a emerging trend down; direction rule sell side (price 13271.9 is below the pivot 13372.5 and below the 5m 100 EMA 13284.2)"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "idea_time": "2026-11-12T02:55:00+00:00",
+   "entry": "13255.2",
+   "stop_pips": "15",
+   "closed": "2026-11-12T07:40:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-15.0",
+   "steps": [
+    "Thu 12 Nov 02:35 GMT: the last low made: 13253.1",
+    "Thu 12 Nov 02:40 GMT to 02:50 GMT: a pause: 3 candles in a row without a new low, closing below the 21 EMA; its lowest point 13255.2",
+    "Thu 12 Nov 02:55 GMT: price broke below it (during this candle)",
+    "allowed at entry: slow grind in a trend down; direction rule sell side (price 13255.2 is below the pivot 13294.9 and below the 5m 100 EMA 13275.1); the direction rule does not apply to slow grind"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-12T08:10:00+00:00",
+   "entry": "13266.9",
+   "stop_pips": "12",
+   "closed": "2026-11-12T09:05:00+00:00",
+   "close_kind": "close",
+   "pips": "-9.1",
+   "steps": [
+    "Thu 12 Nov 08:10 GMT  #1537 bounce sell trigger 13266.9: price went below 13266.9 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 0.75x, high-low 1.96x",
+    "reversal watch window: outside; the setup counts (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a trend up; direction rule no clear direction (price 13266.9 is below the pivot 13294.9 and above the 5m 100 EMA 13264.4: they disagree); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "idea_time": "2026-11-12T08:30:00+00:00",
+   "entry": "13273.3",
+   "stop_pips": "15",
+   "closed": "2026-11-12T12:25:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-15.0",
+   "steps": [
+    "Thu 12 Nov 07:50 GMT: the last high made: 13273.6",
+    "Thu 12 Nov 07:55 GMT to 08:25 GMT: a pause: 7 candles in a row without a new high, closing above the 21 EMA; its highest point 13273.3",
+    "Thu 12 Nov 08:30 GMT: price broke above it (during this candle)",
+    "allowed at entry: slow grind in a trend up; direction rule no clear direction (price 13273.3 is below the pivot 13294.9 and above the 5m 100 EMA 13264.6: they disagree); the direction rule does not apply to slow grind"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-12T09:20:00+00:00",
+   "entry": "13270.2",
+   "stop_pips": "12",
+   "closed": "2026-11-12T11:40:00+00:00",
+   "close_kind": "close",
+   "pips": "-1.3",
+   "steps": [
+    "Thu 12 Nov 09:20 GMT  #1571 bounce sell trigger 13270.2: price went below 13270.2 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 0.76x, high-low 0.80x",
+    "reversal watch window: outside; the setup does not count (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a trend up; direction rule no clear direction (price 13270.2 is below the pivot 13294.9 and above the 5m 100 EMA 13265.9: they disagree); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "buy",
+   "idea_time": "2026-11-12T10:20:00+00:00",
+   "entry": "13277.4",
+   "stop_pips": "6",
+   "closed": "2026-11-12T10:40:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-6.0",
+   "steps": [
+    "entry: above the breakout candle high 13277.4, within 3 candles",
+    "Thu 12 Nov 10:20 GMT: price broke above 13277.4 (during this candle)",
+    "the day's move: 13277.4 is above the day's 00:00 UK open 13276.3",
+    "allowed at entry: breakout in a emerging trend up; direction rule no clear direction (price 13277.4 is below the pivot 13294.9 and above the 5m 100 EMA 13267.1: they disagree); the direction rule does not apply to breakout"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "idea_time": "2026-11-12T11:30:00+00:00",
+   "entry": "13264.8",
+   "stop_pips": "6",
+   "closed": "2026-11-12T11:35:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-6.0",
+   "steps": [
+    "entry: below the breakout candle low 13265.1, within 3 candles",
+    "Thu 12 Nov 11:30 GMT: price broke below 13265.1 (the candle opened past it, at 13264.8)",
+    "the day's move: 13264.8 is below the day's 00:00 UK open 13276.3",
+    "allowed at entry: breakout in a emerging trend down; direction rule sell side (price 13264.8 is below the pivot 13294.9 and below the 5m 100 EMA 13268.5); the direction rule does not apply to breakout"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "idea_time": "2026-11-12T12:30:00+00:00",
+   "entry": "13259.6",
+   "stop_pips": "6",
+   "closed": "2026-11-12T12:45:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-6.0",
+   "steps": [
+    "entry: below the breakout candle low 13259.6, within 3 candles",
+    "Thu 12 Nov 12:30 GMT: price broke below 13259.6 (during this candle)",
+    "the day's move: 13259.6 is below the day's 00:00 UK open 13276.3",
+    "allowed at entry: breakout in a emerging trend down; direction rule sell side (price 13259.6 is below the pivot 13294.9 and below the 5m 100 EMA 13268.1); the direction rule does not apply to breakout"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-12T12:45:00+00:00",
+   "entry": "13263.5",
+   "stop_pips": "12",
+   "closed": "2026-11-12T13:10:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Thu 12 Nov 12:45 GMT  #1627 bounce buy trigger 13263.5: price went above 13263.5 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 1.30x, high-low 1.57x",
+    "reversal watch window: outside; the setup counts (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a trend down; direction rule sell side (price 13263.5 is below the pivot 13294.9 and below the 5m 100 EMA 13267.7); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-12T13:40:00+00:00",
+   "entry": "13264.3",
+   "stop_pips": "12",
+   "closed": "2026-11-12T13:45:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Thu 12 Nov 13:40 GMT  #1653 bounce buy trigger 13264.3: price went above 13264.3 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 0.44x, high-low 0.51x",
+    "reversal watch window: inside; the setup counts (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a trend down; direction rule sell side (price 13264.3 is below the pivot 13294.9 and below the 5m 100 EMA 13266.1); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "idea_time": "2026-11-12T15:00:00+00:00",
+   "entry": "13245.2",
+   "stop_pips": "6",
+   "closed": "2026-11-12T22:30:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-6.0",
+   "steps": [
+    "entry: below the breakout candle low 13245.2, within 3 candles",
+    "Thu 12 Nov 15:00 GMT: price broke below 13245.2 (during this candle)",
+    "the day's move: 13245.2 is below the day's 00:00 UK open 13276.3",
+    "allowed at entry: breakout in a emerging trend down; direction rule sell side (price 13245.2 is below the pivot 13294.9 and below the 5m 100 EMA 13264.6); the direction rule does not apply to breakout"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-12T15:55:00+00:00",
+   "entry": "13230.9",
+   "stop_pips": "12",
+   "closed": "2026-11-12T20:30:00+00:00",
+   "close_kind": "forced close",
+   "pips": "3.8",
+   "steps": [
+    "Thu 12 Nov 15:45 GMT pierce and rejection candle: its low 13223.7 went 15.7 pips below the lower hourly Bollinger band (13239.4 at that moment), and it closed green (13225 to 13225.5)",
+    "Thu 12 Nov 15:50 GMT confirmation candle: closed at 13231, above the rejection candle's high (13228.7)",
+    "Thu 12 Nov 15:55 GMT opens at this candle's open, 13230.9 (sell price)",
+    "allowed at entry: Bollinger bounce in a emerging trend down; direction rule sell side (price 13230.9 is below the pivot 13294.9 and below the 5m 100 EMA 13258.0); the direction rule does not apply to Bollinger bounce"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-12T19:00:00+00:00",
+   "entry": "13225.7",
+   "stop_pips": "12",
+   "closed": "2026-11-12T20:00:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Thu 12 Nov 18:45 GMT: price rose to the 5-minute 8 EMA 13230.2 (high 13230.7); closed 13229.0, below the 21 EMA 13230.8",
+    "entry 13225.7: 3 pips below the lowest low of the 5 candles before the touch candle (18:20 GMT to 18:40 GMT); expires 20 minutes after the touch",
+    "Thu 12 Nov 19:00 GMT: price reached the entry 13225.7 (during this candle)",
+    "allowed at entry: EMA pullback in a emerging trend down; direction rule sell side (price 13225.7 is below the pivot 13294.9 and below the 5m 100 EMA 13244.2)"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-12T23:45:00+00:00",
+   "entry": "13229.6",
+   "stop_pips": "12",
+   "closed": "2026-11-13T07:00:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Thu 12 Nov 23:35 GMT: price rose to the 5-minute 8 EMA 13233.2 (high 13233.8); closed 13232.2, below the 21 EMA 13232.2",
+    "entry 13229.6: 3 pips below the lowest low of the 5 candles before the touch candle (23:10 GMT to 23:30 GMT); expires 20 minutes after the touch",
+    "Thu 12 Nov 23:45 GMT: price reached the entry 13229.6 (during this candle)",
+    "allowed at entry: EMA pullback in a emerging trend down; direction rule sell side (price 13229.6 is below the pivot 13294.9 and below the 5m 100 EMA 13236.3)"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "buy",
+   "idea_time": "2026-11-13T06:40:00+00:00",
+   "entry": "13231.9",
+   "stop_pips": "6",
+   "closed": "2026-11-13T06:40:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-6.0",
+   "steps": [
+    "entry: above the breakout candle high 13231.9, within 3 candles",
+    "Fri 13 Nov 06:40 GMT: price broke above 13231.9 (during this candle)",
+    "the day's move: 13231.9 is above the day's 00:00 UK open 13229.7",
+    "allowed at entry: breakout in a emerging trend up; direction rule no clear direction (price 13231.9 is below the pivot 13243.5 and above the 5m 100 EMA 13231.7: they disagree); the direction rule does not apply to breakout"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "buy",
+   "idea_time": "2026-11-13T07:00:00+00:00",
+   "entry": "13234.6",
+   "stop_pips": "6",
+   "closed": "2026-11-13T07:35:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-6.0",
+   "steps": [
+    "entry: above the breakout candle high 13234.6, within 3 candles",
+    "Fri 13 Nov 07:00 GMT: price broke above 13234.6 (during this candle)",
+    "the day's move: 13234.6 is above the day's 00:00 UK open 13229.7",
+    "allowed at entry: breakout in a emerging trend up; direction rule no clear direction (price 13234.6 is below the pivot 13243.5 and above the 5m 100 EMA 13231.5: they disagree); the direction rule does not apply to breakout"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "buy",
+   "idea_time": "2026-11-13T08:20:00+00:00",
+   "entry": "13242.3",
+   "stop_pips": "6",
+   "closed": "2026-11-13T08:25:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-6.0",
+   "steps": [
+    "entry: above the breakout candle high 13242.3, within 3 candles",
+    "Fri 13 Nov 08:20 GMT: price broke above 13242.3 (during this candle)",
+    "the day's move: 13242.3 is above the day's 00:00 UK open 13229.7",
+    "allowed at entry: breakout in a emerging trend up; direction rule no clear direction (price 13242.3 is below the pivot 13243.5 and above the 5m 100 EMA 13232.3: they disagree); the direction rule does not apply to breakout"
+   ]
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "idea_time": "2026-11-13T08:20:00+00:00",
+   "entry": "13241.8",
+   "stop_pips": "12",
+   "closed": "2026-11-13T08:45:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Fri 13 Nov 08:15 GMT closed at 13242.2, above the Asian high (the Asian range 00:00 to 07:00, high 13240, low 13219.8)",
+    "Fri 13 Nov 08:20 GMT opens at this candle's open, 13241.8 (sell price)",
+    "allowed at entry: Asian range breakout in a emerging trend up; direction rule no clear direction (price 13241.8 is below the pivot 13243.5 and above the 5m 100 EMA 13232.3: they disagree); the direction rule does not apply to Asian range breakout"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "idea_time": "2026-11-13T08:40:00+00:00",
+   "entry": "13235.1",
+   "stop_pips": "12.0",
+   "closed": "2026-11-13T10:55:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "9.4",
+   "steps": [
+    "Fri 13 Nov 08:20 GMT swept the Asian high 13240, price went 3.2 pips above it (furthest 13243.2), and this candle closed back below it at 13238.3, the rejection candle (high 13243.2, low 13236.2)",
+    "Fri 13 Nov 08:35 GMT confirmation candle, closed at 13235.2, below the rejection candle's low (13236.2)",
+    "Fri 13 Nov 08:40 GMT opens at this candle's open, 13235.1 (sell price); stop 13247.1, 12.0 pips (at least 12; 1 beyond the furthest point 13243.2)",
+    "allowed at entry: session sweep in a emerging trend down; direction rule no clear direction (price 13235.1 is below the pivot 13243.5 and above the 5m 100 EMA 13232.7: they disagree); the direction rule does not apply to session sweep"
+   ]
+  },
+  {
+   "strategy": "range trade",
+   "direction": "buy",
+   "idea_time": "2026-11-13T09:55:00+00:00",
+   "entry": "13232.7",
+   "stop_pips": "12",
+   "closed": "2026-11-13T10:35:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Fri 13 Nov 09:50 GMT  #1920 range buy reversal 13232.6: rejection candle O 13230.8 H 13232.7 L 13230.2 C 13232.6; size against the piercing candle: body 6.00x, high-low 0.53x",
+    "Fri 13 Nov 09:55 GMT  #1920 range buy trigger 13232.7: price went above 13232.7 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 6.00x, high-low 0.53x",
+    "allowed at entry: range trade in a ranging none; direction rule sell side (price 13232.7 is below the pivot 13243.5 and below the 5m 100 EMA 13233.3); the direction rule does not apply to range trade"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "idea_time": "2026-11-13T10:25:00+00:00",
+   "entry": "13225.3",
+   "stop_pips": "6",
+   "closed": "2026-11-13T11:20:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-6.0",
+   "steps": [
+    "entry: below the breakout candle low 13225.3, within 3 candles",
+    "Fri 13 Nov 10:25 GMT: price broke below 13225.3 (during this candle)",
+    "the day's move: 13225.3 is below the day's 00:00 UK open 13229.7",
+    "allowed at entry: breakout in a emerging trend down; direction rule sell side (price 13225.3 is below the pivot 13243.5 and below the 5m 100 EMA 13232.9); the direction rule does not apply to breakout"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-13T10:25:00+00:00",
+   "entry": "13225.2",
+   "stop_pips": "12",
+   "closed": "2026-11-13T13:30:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Fri 13 Nov 10:10 GMT: price rose to the 5-minute 8 EMA 13231.9 (high 13233.6); closed 13231.3, below the 21 EMA 13233.3",
+    "entry 13225.2: 3 pips below the lowest low of the 5 candles before the touch candle (09:45 GMT to 10:05 GMT); expires 20 minutes after the touch",
+    "Fri 13 Nov 10:25 GMT: price reached the entry 13225.2 (during this candle)",
+    "allowed at entry: EMA pullback in a emerging trend down; direction rule sell side (price 13225.2 is below the pivot 13243.5 and below the 5m 100 EMA 13232.9)"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-13T11:00:00+00:00",
+   "entry": "13223.7",
+   "stop_pips": "12",
+   "closed": "2026-11-13T13:50:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "9.3",
+   "steps": [
+    "Fri 13 Nov 10:50 GMT pierce and rejection candle: its low 13218.8 went 3.8 pips below the lower hourly Bollinger band (13222.6 at that moment), and it closed green (13219.6 to 13221.6)",
+    "Fri 13 Nov 10:55 GMT confirmation candle: closed at 13223.9, above the rejection candle's high (13221.7)",
+    "Fri 13 Nov 11:00 GMT opens at this candle's open, 13223.7 (sell price)",
+    "allowed at entry: Bollinger bounce in a trend down; direction rule sell side (price 13223.7 is below the pivot 13243.5 and below the 5m 100 EMA 13231.6); the direction rule does not apply to Bollinger bounce"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-13T11:00:00+00:00",
+   "entry": "13225.3",
+   "stop_pips": "12",
+   "closed": "2026-11-13T12:20:00+00:00",
+   "close_kind": "close",
+   "pips": "-1.7",
+   "steps": [
+    "Fri 13 Nov 11:00 GMT  #1934 bounce buy trigger 13225.3: price went above 13225.3 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 20.00x, high-low 0.85x",
+    "reversal watch window: outside; the setup counts (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a trend down; direction rule sell side (price 13225.3 is below the pivot 13243.5 and below the 5m 100 EMA 13231.6); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "idea_time": "2026-11-13T12:50:00+00:00",
+   "entry": "13218.3",
+   "stop_pips": "6",
+   "closed": "2026-11-13T12:55:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-6.0",
+   "steps": [
+    "entry: below the breakout candle low 13218.3, within 3 candles",
+    "Fri 13 Nov 12:50 GMT: price broke below 13218.3 (during this candle)",
+    "the day's move: 13218.3 is below the day's 00:00 UK open 13229.7",
+    "allowed at entry: breakout in a emerging trend down; direction rule sell side (price 13218.3 is below the pivot 13243.5 and below the 5m 100 EMA 13230.4); the direction rule does not apply to breakout"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "idea_time": "2026-11-13T13:45:00+00:00",
+   "entry": "13240.3",
+   "stop_pips": "12",
+   "closed": "2026-11-13T14:30:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "6.2",
+   "steps": [
+    "Fri 13 Nov 13:35 GMT pierce and rejection candle: its high 13250.3 went 6.5 pips above the upper hourly Bollinger band (13243.8 at that moment), and it closed red (13247.2 to 13242.9)",
+    "Fri 13 Nov 13:40 GMT confirmation candle: closed at 13240.4, below the rejection candle's low (13241.5)",
+    "Fri 13 Nov 13:45 GMT opens at this candle's open, 13240.3 (sell price)",
+    "allowed at entry: Bollinger bounce in a emerging trend up; direction rule no clear direction (price 13240.3 is below the pivot 13243.5 and above the 5m 100 EMA 13230.7: they disagree); the direction rule does not apply to Bollinger bounce"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "idea_time": "2026-11-13T15:05:00+00:00",
+   "entry": "13242.3",
+   "stop_pips": "12",
+   "closed": "2026-11-13T16:20:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "17.9",
+   "steps": [
+    "Fri 13 Nov 14:50 GMT pierce and rejection candle: its high 13250.9 went 6.9 pips above the upper hourly Bollinger band (13244.0 at that moment), and it closed red (13248.1 to 13245)",
+    "Fri 13 Nov 15:00 GMT confirmation candle: closed at 13242.4, below the rejection candle's low (13243.9)",
+    "Fri 13 Nov 15:05 GMT opens at this candle's open, 13242.3 (sell price)",
+    "allowed at entry: Bollinger bounce in a emerging trend down; direction rule no clear direction (price 13242.3 is below the pivot 13243.5 and above the 5m 100 EMA 13232.2: they disagree); the direction rule does not apply to Bollinger bounce"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "idea_time": "2026-11-13T15:10:00+00:00",
+   "entry": "13235.8",
+   "stop_pips": "16.1",
+   "closed": "2026-11-13T16:20:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "11.4",
+   "steps": [
+    "Fri 13 Nov 15:00 GMT swept the London high 13243.2, price went 7.7 pips above it (furthest 13250.9), and this candle closed back below it at 13242.4, the rejection candle (high 13246.4, low 13241.1)",
+    "Fri 13 Nov 15:05 GMT confirmation candle, closed at 13236.4, below the rejection candle's low (13241.1)",
+    "Fri 13 Nov 15:10 GMT opens at this candle's open, 13235.8 (sell price); stop 13251.9, 16.1 pips (at least 12; 1 beyond the furthest point 13250.9)",
+    "allowed at entry: session sweep in a emerging trend down; direction rule no clear direction (price 13235.8 is below the pivot 13243.5 and above the 5m 100 EMA 13232.3: they disagree); the direction rule does not apply to session sweep"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "idea_time": "2026-11-13T16:10:00+00:00",
+   "entry": "13217.9",
+   "stop_pips": "15",
+   "closed": "2026-11-13T20:30:00+00:00",
+   "close_kind": "forced close",
+   "pips": "5.4",
+   "steps": [
+    "Fri 13 Nov 15:55 GMT: the last low made: 13217.5",
+    "Fri 13 Nov 16:00 GMT to 16:05 GMT: a pause: 2 candles in a row without a new low, closing below the 21 EMA; its lowest point 13217.9",
+    "Fri 13 Nov 16:10 GMT: price broke below it (during this candle)",
+    "allowed at entry: slow grind in a trend down; direction rule sell side (price 13217.9 is below the pivot 13243.5 and below the 5m 100 EMA 13231.2); the direction rule does not apply to slow grind"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-13T18:05:00+00:00",
+   "entry": "13207.1",
+   "stop_pips": "12",
+   "closed": "2026-11-13T20:30:00+00:00",
+   "close_kind": "forced close",
+   "pips": "2.4",
+   "steps": [
+    "Fri 13 Nov 17:45 GMT pierce and rejection candle: its low 13204.3 went 7.1 pips below the lower hourly Bollinger band (13211.4 at that moment), and it closed green (13205.3 to 13205.8)",
+    "Fri 13 Nov 18:00 GMT confirmation candle: closed at 13207, above the rejection candle's high (13206.7)",
+    "Fri 13 Nov 18:05 GMT opens at this candle's open, 13207.1 (sell price)",
+    "allowed at entry: Bollinger bounce in a trend down; direction rule sell side (price 13207.1 is below the pivot 13243.5 and below the 5m 100 EMA 13223.7); the direction rule does not apply to Bollinger bounce"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-13T18:05:00+00:00",
+   "entry": "13207.8",
+   "stop_pips": "12",
+   "closed": "2026-11-13T18:35:00+00:00",
+   "close_kind": "close",
+   "pips": "0.6",
+   "steps": [
+    "Fri 13 Nov 18:05 GMT  #2035 bounce buy trigger 13207.8: price went above 13207.8 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 0.62x, high-low 1.85x",
+    "reversal watch window: outside; the setup counts (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a trend down; direction rule sell side (price 13207.8 is below the pivot 13243.5 and below the 5m 100 EMA 13223.7); the direction rule does not apply to Bollinger bounce 5m"
+   ]
+  }
+ ]
+}

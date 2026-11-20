@@ -1,0 +1,1173 @@
+{
+ "week_open": "2026-11-15T21:00:00+00:00",
+ "restart": null,
+ "end": "2026-11-19T18:43:54+00:00",
+ "trades": [
+  {
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "idea_time": "2026-11-16T09:05:00+00:00",
+   "entry": "13219.1",
+   "stop_pips": "12",
+   "closed": "2026-11-16T09:20:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Mon 16 Nov 09:00 GMT closed at 13219, above the Asian high (the Asian range 00:00 to 07:00, high 13218.5, low 13195.4)",
+    "Mon 16 Nov 09:05 GMT opens at this candle's open, 13219.1 (sell price)",
+    "allowed at entry: Asian range breakout in a trend up; direction rule buy side (price 13219.1 is above the pivot 13211.7 and above the 5m 100 EMA 13207.9); the direction rule does not apply to Asian range breakout; hourly sell-off: the Mon 16 Nov 06:00 GMT hourly candle closed at 13195.7, 4.2 pips below the low 13199.9 of the 12 hourly candles before it; the hourly range 13195.4 to 13220.9"
+   ]
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "idea_time": "2026-11-16T09:35:00+00:00",
+   "entry": "13192.1",
+   "stop_pips": "12",
+   "closed": "2026-11-16T12:20:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Mon 16 Nov 09:30 GMT closed at 13192, below the Asian low (the Asian range 00:00 to 07:00, high 13218.5, low 13195.4)",
+    "Mon 16 Nov 09:35 GMT opens at this candle's open, 13192.1 (sell price)",
+    "allowed at entry: Asian range breakout in a emerging trend down; direction rule sell side (price 13192.1 is below the pivot 13211.7 and below the 5m 100 EMA 13207.7); the direction rule does not apply to Asian range breakout; hourly sell-off: the Mon 16 Nov 06:00 GMT hourly candle closed at 13195.7, 4.2 pips below the low 13199.9 of the 12 hourly candles before it; the hourly range 13195.4 to 13220.9"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T10:45:00+00:00",
+   "entry": "13190.9",
+   "stop_pips": "15.6",
+   "closed": "2026-11-16T13:30:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-15.6",
+   "steps": [
+    "S2 13196.3: the piercing candle opened at 13192.7, below it: price rose into it",
+    "S2 13196.3: furthest high 13199.8 from Mon 16 Nov 10:20 GMT to 10:40 GMT, 3.5 pips past the level (allowance 12)",
+    "stop 13205.8: 6 pips above the furthest point; take profit 20 pips",
+    "allowed at entry: level reversal in a emerging trend down; direction rule sell side (price 13190.9 is below the pivot 13211.7 and below the 5m 100 EMA 13203.8); the direction rule does not apply to level reversal; hourly sell-off: the Mon 16 Nov 09:00 GMT hourly candle closed at 13188.7, 6.7 pips below the low 13195.4 of the 12 hourly candles before it; the hourly range 13185.5 to 13224.5"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-16T14:05:00+00:00",
+   "entry": "13200.8",
+   "stop_pips": "11.0",
+   "closed": "2026-11-16T14:25:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-11.0",
+   "steps": [
+    "S2 13196.3: the piercing candle opened at 13199.5, above it: price fell into it",
+    "S2 13196.3: furthest low 13193.5 from Mon 16 Nov 13:40 GMT to 14:00 GMT, 2.8 pips past the level (allowance 12)",
+    "stop 13187.5: 6 pips below the furthest point; take profit 20 pips",
+    "allowed at entry: level reversal in a emerging trend up; direction rule no clear direction (price 13200.8 is below the pivot 13211.7 and above the 5m 100 EMA 13199.0: they disagree); the direction rule does not apply to level reversal; hourly sell-off: the Mon 16 Nov 09:00 GMT hourly candle closed at 13188.7, 6.7 pips below the low 13195.4 of the 12 hourly candles before it; the hourly range 13182.1 to 13224.5"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "idea_time": "2026-11-16T15:45:00+00:00",
+   "entry": "13187.2",
+   "stop_pips": "15",
+   "closed": "2026-11-16T20:30:00+00:00",
+   "close_kind": "forced close",
+   "pips": "1.0",
+   "steps": [
+    "Mon 16 Nov 15:30 GMT: the last low made: 13186.1",
+    "Mon 16 Nov 15:35 GMT to 15:40 GMT: a pause: 2 candles in a row without a new low, closing below the 21 EMA; its lowest point 13187.2",
+    "Mon 16 Nov 15:45 GMT: price broke below it (during this candle)",
+    "allowed at entry: slow grind in a trend down; direction rule sell side (price 13187.2 is below the pivot 13211.7 and below the 5m 100 EMA 13196.8); the direction rule does not apply to slow grind; hourly sell-off: the Mon 16 Nov 09:00 GMT hourly candle closed at 13188.7, 6.7 pips below the low 13195.4 of the 12 hourly candles before it; the hourly range 13182.1 to 13224.5"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-16T15:50:00+00:00",
+   "entry": "13183.1",
+   "stop_pips": "8.0",
+   "closed": "2026-11-16T16:05:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-8.0",
+   "steps": [
+    "Mon 16 Nov 15:35 GMT: price rose to the 5-minute 8 EMA 13190.8 (high 13191.5); closed 13187.6, below the 21 EMA 13192.4",
+    "entry 13183.1: 3 pips below the lowest low of the 5 candles before the touch candle (15:10 GMT to 15:30 GMT); expires 20 minutes after the touch",
+    "Mon 16 Nov 15:50 GMT: price reached the entry 13183.1 (during this candle)",
+    "allowed at entry: EMA pullback in a trend down; direction rule sell side (price 13183.1 is below the pivot 13211.7 and below the 5m 100 EMA 13196.5); hourly sell-off: the Mon 16 Nov 09:00 GMT hourly candle closed at 13188.7, 6.7 pips below the low 13195.4 of the 12 hourly candles before it; the hourly range 13182.1 to 13224.5"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-16T16:50:00+00:00",
+   "entry": "13182.6",
+   "stop_pips": "14.4",
+   "closed": "2026-11-16T17:10:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-14.4",
+   "steps": [
+    "Mon 16 Nov 16:35 GMT: price rose to the 5-minute 8 EMA 13187.7 (high 13189); closed 13185.8, below the 21 EMA 13188.9",
+    "entry 13182.6: 3 pips below the lowest low of the 5 candles before the touch candle (16:10 GMT to 16:30 GMT); expires 20 minutes after the touch",
+    "Mon 16 Nov 16:50 GMT: price reached the entry 13182.6 (during this candle)",
+    "allowed at entry: EMA pullback in a trend down; direction rule sell side (price 13182.6 is below the pivot 13211.7 and below the 5m 100 EMA 13194.5); hourly sell-off: the Mon 16 Nov 09:00 GMT hourly candle closed at 13188.7, 6.7 pips below the low 13195.4 of the 12 hourly candles before it; the hourly range 13179.1 to 13224.5"
+   ]
+  },
+  {
+   "strategy": "range trade",
+   "direction": "sell",
+   "idea_time": "2026-11-16T17:25:00+00:00",
+   "entry": "13193.8",
+   "stop_pips": "12.7",
+   "closed": "2026-11-16T18:15:00+00:00",
+   "close_kind": "close",
+   "pips": "9.75",
+   "steps": [
+    "Mon 16 Nov 17:20 GMT  #462 range sell reversal 13194.5: rejection candle O 13195.4 H 13197.9 L 13193.8 C 13194.5; size against the piercing candle: body 0.64x, high-low 0.85x",
+    "Mon 16 Nov 17:25 GMT  #462 range sell trigger 13193.8: price went below 13193.8 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 0.64x, high-low 0.85x",
+    "allowed at entry: range trade in a ranging none; direction rule sell side (price 13193.8 is below the pivot 13211.7 and below the 5m 100 EMA 13193.9); the direction rule does not apply to range trade; hourly sell-off: the Mon 16 Nov 09:00 GMT hourly candle closed at 13188.7, 6.7 pips below the low 13195.4 of the 12 hourly candles before it; the hourly range 13179.1 to 13224.5"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T17:35:00+00:00",
+   "entry": "13193.1",
+   "stop_pips": "13.4",
+   "closed": "2026-11-16T19:25:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "5.00",
+   "steps": [
+    "S2 13196.3: the piercing candle opened at 13195.4, below it: price rose into it",
+    "S2 13196.3: furthest high 13197.9 from Mon 16 Nov 17:20 GMT to 17:30 GMT, 1.6 pips past the level (allowance 12)",
+    "stop 13203.9: 6 pips above the furthest point; take profit 20 pips",
+    "allowed at entry: level reversal in a emerging trend down; direction rule sell side (price 13193.1 is below the pivot 13211.7 and below the 5m 100 EMA 13193.8); the direction rule does not apply to level reversal; hourly sell-off: the Mon 16 Nov 09:00 GMT hourly candle closed at 13188.7, 6.7 pips below the low 13195.4 of the 12 hourly candles before it; the hourly range 13179.1 to 13224.5"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-17T06:00:00+00:00",
+   "entry": "13198.8",
+   "stop_pips": "7.7",
+   "closed": "2026-11-17T06:45:00+00:00",
+   "close_kind": "forced close",
+   "pips": "3.2",
+   "steps": [
+    "round number 13200: the piercing candle opened at 13197.7, below it: price rose into it",
+    "round number 13200: furthest high 13202.5 from Tue 17 Nov 05:35 GMT to 05:55 GMT, 2.5 pips past the level (allowance 5)",
+    "stop 13208.5: 6 pips above the furthest point; take profit 20 pips",
+    "allowed at entry: level reversal in a possible reversal down; direction rule buy side (price 13198.8 is above the pivot 13194.4 and above the 5m 100 EMA 13188.5); the direction rule does not apply to level reversal; hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13168 to 13202.5; as the analyser and the trend group see it: hourly rally: the Tue 17 Nov 05:45 GMT 5-minute candle closed at 13202.4, at least the break distance above the hourly range high 13198.1 (ANALYSER_USES_HOURLY: the hourly range broke without waiting for the hourly close; the hourly read itself says ranging); the hourly range 13168 to 13198.1"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "idea_time": "2026-11-17T10:05:00+00:00",
+   "entry": "13190.3",
+   "stop_pips": "12",
+   "closed": "2026-11-17T13:50:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "8.7",
+   "steps": [
+    "Tue 17 Nov 09:55 GMT pierce and rejection candle: its high 13203.6 went 3.6 pips above the upper hourly Bollinger band (13200.0 at that moment), and it closed red (13202.8 to 13197.4)",
+    "Tue 17 Nov 10:00 GMT confirmation candle: closed at 13190.5, below the rejection candle's low (13195.2)",
+    "Tue 17 Nov 10:05 GMT opens at this candle's open, 13190.3 (sell price)",
+    "allowed at entry: Bollinger bounce in a emerging trend down; direction rule sell side (price 13190.3 is below the pivot 13194.4 and below the 5m 100 EMA 13191.2); the direction rule does not apply to Bollinger bounce; hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13168 to 13204.4"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "idea_time": "2026-11-17T16:45:00+00:00",
+   "entry": "13218.4",
+   "stop_pips": "15",
+   "closed": "2026-11-17T20:30:00+00:00",
+   "close_kind": "forced close",
+   "pips": "-10.3",
+   "steps": [
+    "Tue 17 Nov 16:25 GMT: the last high made: 13220.7",
+    "Tue 17 Nov 16:30 GMT to 16:40 GMT: a pause: 3 candles in a row without a new high, closing above the 21 EMA; its highest point 13218.4",
+    "Tue 17 Nov 16:45 GMT: price broke above it (during this candle)",
+    "allowed at entry: slow grind in a trend up; direction rule buy side (price 13218.4 is above the pivot 13194.4 and above the 5m 100 EMA 13195.8); the direction rule does not apply to slow grind; hourly ranging: 12 hourly candles have closed with no new break since the Mon 16 Nov 09:00 GMT candle; the hourly range 13172.8 to 13210.4; as the analyser and the trend group see it: hourly rally: the Tue 17 Nov 16:15 GMT 5-minute candle closed at 13214.7, at least the break distance above the hourly range high 13210.4 (ANALYSER_USES_HOURLY: the hourly range broke without waiting for the hourly close; the hourly read itself says ranging); the hourly range 13172.8 to 13210.4"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "buy",
+   "idea_time": "2026-11-17T17:15:00+00:00",
+   "entry": "13223.3",
+   "stop_pips": "10.0",
+   "closed": "2026-11-17T19:55:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-10.0",
+   "steps": [
+    "Tue 17 Nov 17:00 GMT: price dropped to the 5-minute 8 EMA 13214.6 (low 13213.7); closed 13217.5, above the 21 EMA 13209.8",
+    "entry 13223.3: 3 pips above the highest high of the 5 candles before the touch candle (16:35 GMT to 16:55 GMT); expires 20 minutes after the touch",
+    "Tue 17 Nov 17:15 GMT: price reached the entry 13223.3 (during this candle)",
+    "allowed at entry: EMA pullback in a trend up; direction rule buy side (price 13223.3 is above the pivot 13194.4 and above the 5m 100 EMA 13198.1); hourly rally: the Tue 17 Nov 16:00 GMT hourly candle closed at 13215.3, 4.9 pips above the high 13210.4 of the 12 hourly candles before it; the hourly range 13172.8 to 13220.7"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "idea_time": "2026-11-17T18:35:00+00:00",
+   "entry": "13219.7",
+   "stop_pips": "12",
+   "closed": "2026-11-17T20:30:00+00:00",
+   "close_kind": "forced close",
+   "pips": "8.6",
+   "steps": [
+    "Tue 17 Nov 18:25 GMT pierce and rejection candle: its high 13223.4 went 3.6 pips above the upper hourly Bollinger band (13219.8 at that moment), and it closed red (13222.8 to 13221.9)",
+    "Tue 17 Nov 18:30 GMT confirmation candle: closed at 13219.5, below the rejection candle's low (13221.1)",
+    "Tue 17 Nov 18:35 GMT opens at this candle's open, 13219.7 (sell price)",
+    "allowed at entry: Bollinger bounce in a possible reversal down; direction rule buy side (price 13219.7 is above the pivot 13194.4 and above the 5m 100 EMA 13204.9); the direction rule does not apply to Bollinger bounce; hourly rally: the Tue 17 Nov 17:00 GMT hourly candle closed at 13224, 3.3 pips above the high 13220.7 of the 12 hourly candles before it; the hourly range 13172.8 to 13226.3"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-18T07:05:00+00:00",
+   "entry": "13177.1",
+   "stop_pips": "10.7",
+   "closed": null,
+   "close_kind": null,
+   "pips": null,
+   "steps": [
+    "Wed 18 Nov 07:00 GMT: price rose to the 5-minute 8 EMA 13190.0 (high 13192.7); closed 13176.7, below the 21 EMA 13189.9",
+    "entry 13183.8: 3 pips below the lowest low of the 5 candles before the touch candle (06:35 GMT to 06:55 GMT); expires 20 minutes after the touch",
+    "Wed 18 Nov 07:05 GMT: price reached the entry 13183.8 (the candle opened past it, at 13177.1)",
+    "allowed at entry: EMA pullback in a trend down; direction rule sell side (price 13177.1 is below the pivot 13200.1 and below the 5m 100 EMA 13197.1); hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6; as the analyser and the trend group see it: hourly sell-off: the Wed 18 Nov 07:00 GMT 5-minute candle closed at 13176.7, at least the break distance below the hourly range low 13186.8 (ANALYSER_USES_HOURLY: the hourly range broke without waiting for the hourly close; the hourly read itself says ranging); the hourly range 13186.8 to 13219.6"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "idea_time": "2026-11-18T07:25:00+00:00",
+   "entry": "13177.2",
+   "stop_pips": "15",
+   "closed": "2026-11-18T09:35:00+00:00",
+   "close_kind": "close",
+   "pips": "10.0",
+   "steps": [
+    "Wed 18 Nov 07:10 GMT: the last low made: 13171.9",
+    "Wed 18 Nov 07:15 GMT to 07:20 GMT: a pause: 2 candles in a row without a new low, closing below the 21 EMA; its lowest point 13177.2",
+    "Wed 18 Nov 07:25 GMT: price broke below it (during this candle)",
+    "allowed at entry: slow grind in a trend down; direction rule sell side (price 13177.2 is below the pivot 13200.1 and below the 5m 100 EMA 13195.7); the direction rule does not apply to slow grind; hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6; as the analyser and the trend group see it: hourly sell-off: the Wed 18 Nov 07:00 GMT 5-minute candle closed at 13176.7, at least the break distance below the hourly range low 13186.8 (ANALYSER_USES_HOURLY: the hourly range broke without waiting for the hourly close; the hourly read itself says ranging); the hourly range 13186.8 to 13219.6"
+   ]
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "idea_time": "2026-11-18T07:30:00+00:00",
+   "entry": "13179.3",
+   "stop_pips": "12",
+   "closed": "2026-11-18T09:25:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "21.5",
+   "steps": [
+    "Wed 18 Nov 07:25 GMT closed at 13179.2, below the Asian low (the Asian range 00:00 to 07:00, high 13206.9, low 13186.8)",
+    "Wed 18 Nov 07:30 GMT opens at this candle's open, 13179.3 (sell price)",
+    "allowed at entry: Asian range breakout in a trend down; direction rule sell side (price 13179.3 is below the pivot 13200.1 and below the 5m 100 EMA 13195.4); the direction rule does not apply to Asian range breakout; hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6; as the analyser and the trend group see it: hourly sell-off: the Wed 18 Nov 07:00 GMT 5-minute candle closed at 13176.7, at least the break distance below the hourly range low 13186.8 (ANALYSER_USES_HOURLY: the hourly range broke without waiting for the hourly close; the hourly read itself says ranging); the hourly range 13186.8 to 13219.6"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-18T08:05:00+00:00",
+   "entry": "13167.1",
+   "stop_pips": "12.2",
+   "closed": null,
+   "close_kind": null,
+   "pips": null,
+   "steps": [
+    "Wed 18 Nov 08:00 GMT: price rose to the 5-minute 8 EMA 13174.9 (high 13175.4); closed 13172.6, below the 21 EMA 13179.6",
+    "entry 13167.1: 3 pips below the lowest low of the 5 candles before the touch candle (07:35 GMT to 07:55 GMT); expires 20 minutes after the touch",
+    "Wed 18 Nov 08:05 GMT: price reached the entry 13167.1 (during this candle)",
+    "allowed at entry: EMA pullback in a trend down; direction rule sell side (price 13167.1 is below the pivot 13200.1 and below the 5m 100 EMA 13192.5); hourly sell-off: the Wed 18 Nov 07:00 GMT hourly candle closed at 13172.8, 14.0 pips below the low 13186.8 of the 12 hourly candles before it; the hourly range 13170.1 to 13215.3"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-18T09:35:00+00:00",
+   "entry": "13163.8",
+   "stop_pips": "12",
+   "closed": "2026-11-18T12:45:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Wed 18 Nov 09:25 GMT pierce and rejection candle: its low 13155.7 went 5.4 pips below the lower hourly Bollinger band (13161.1 at that moment), and it closed green (13155.7 to 13161.4)",
+    "Wed 18 Nov 09:30 GMT confirmation candle: closed at 13163.4, above the rejection candle's high (13161.9)",
+    "Wed 18 Nov 09:35 GMT opens at this candle's open, 13163.8 (sell price)",
+    "allowed at entry: Bollinger bounce in a possible reversal up; direction rule sell side (price 13163.8 is below the pivot 13200.1 and below the 5m 100 EMA 13182.3); the direction rule does not apply to Bollinger bounce; hourly sell-off: the Wed 18 Nov 08:00 GMT hourly candle closed at 13153.3, 16.8 pips below the low 13170.1 of the 12 hourly candles before it; the hourly range 13150.6 to 13211.1"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-18T12:35:00+00:00",
+   "entry": "13156.2",
+   "stop_pips": "18.3",
+   "closed": null,
+   "close_kind": null,
+   "pips": null,
+   "steps": [
+    "Wed 18 Nov 12:30 GMT: price rose to the 5-minute 8 EMA 13163.2 (high 13164.5); closed 13161.1, below the 21 EMA 13164.2",
+    "entry 13156.2: 3 pips below the lowest low of the 5 candles before the touch candle (12:05 GMT to 12:25 GMT); expires 20 minutes after the touch",
+    "Wed 18 Nov 12:35 GMT: price reached the entry 13156.2 (during this candle)",
+    "allowed at entry: EMA pullback in a emerging trend down; direction rule sell side (price 13156.2 is below the pivot 13200.1 and below the 5m 100 EMA 13174.1); hourly sell-off: the Wed 18 Nov 08:00 GMT hourly candle closed at 13153.3, 16.8 pips below the low 13170.1 of the 12 hourly candles before it; the hourly range 13148 to 13206.9"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "idea_time": "2026-11-18T15:40:00+00:00",
+   "entry": "13153.7",
+   "stop_pips": "12",
+   "closed": "2026-11-19T10:35:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "entry: below the breakout candle low 13153.7, within 3 candles",
+    "Wed 18 Nov 15:40 GMT: price broke below 13153.7 (during this candle)",
+    "the day's move: 13153.7 is below the day's 00:00 UK open 13205.2",
+    "allowed at entry: breakout in a emerging trend down; direction rule sell side (price 13153.7 is below the pivot 13200.1 and below the 5m 100 EMA 13168.1); the direction rule does not apply to breakout; hourly sell-off: the Wed 18 Nov 08:00 GMT hourly candle closed at 13153.3, 16.8 pips below the low 13170.1 of the 12 hourly candles before it; the hourly range 13148 to 13201.9"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-18T16:20:00+00:00",
+   "entry": "13140.8",
+   "stop_pips": "8.4",
+   "closed": "2026-11-18T16:50:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-8.4",
+   "steps": [
+    "Wed 18 Nov 16:15 GMT: price rose to the 5-minute 8 EMA 13151.6 (high 13152.4); closed 13143.4, below the 21 EMA 13155.2",
+    "entry 13140.8: 3 pips below the lowest low of the 5 candles before the touch candle (15:50 GMT to 16:10 GMT); expires 20 minutes after the touch",
+    "Wed 18 Nov 16:20 GMT: price reached the entry 13140.8 (during this candle)",
+    "allowed at entry: EMA pullback in a trend down; direction rule sell side (price 13140.8 is below the pivot 13200.1 and below the 5m 100 EMA 13165.4); hourly sell-off: the Wed 18 Nov 08:00 GMT hourly candle closed at 13153.3, 16.8 pips below the low 13170.1 of the 12 hourly candles before it; the hourly range 13148 to 13198.6"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "idea_time": "2026-11-18T16:35:00+00:00",
+   "entry": "13138.2",
+   "stop_pips": "15",
+   "closed": "2026-11-18T16:55:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-15.0",
+   "steps": [
+    "Wed 18 Nov 16:20 GMT: the last low made: 13135.5",
+    "Wed 18 Nov 16:25 GMT to 16:30 GMT: a pause: 2 candles in a row without a new low, closing below the 21 EMA; its lowest point 13138.2",
+    "Wed 18 Nov 16:35 GMT: price broke below it (during this candle)",
+    "allowed at entry: slow grind in a trend down; direction rule sell side (price 13138.2 is below the pivot 13200.1 and below the 5m 100 EMA 13163.9); the direction rule does not apply to slow grind; hourly sell-off: the Wed 18 Nov 08:00 GMT hourly candle closed at 13153.3, 16.8 pips below the low 13170.1 of the 12 hourly candles before it; the hourly range 13148 to 13198.6"
+   ]
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "idea_time": "2026-11-19T07:35:00+00:00",
+   "entry": "13155.6",
+   "stop_pips": "12",
+   "closed": "2026-11-19T09:25:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Thu 19 Nov 07:30 GMT closed at 13155.7, above the Asian high (the Asian range 00:00 to 07:00, high 13153.3, low 13119.1)",
+    "Thu 19 Nov 07:35 GMT opens at this candle's open, 13155.6 (sell price)",
+    "allowed at entry: Asian range breakout in a trend up; direction rule no clear direction (price 13155.6 is below the pivot 13162.5 and above the 5m 100 EMA 13139.2: they disagree); the direction rule does not apply to Asian range breakout; hourly sell-off: the Thu 19 Nov 03:00 GMT hourly candle closed at 13125.2, 5.4 pips below the low 13130.6 of the 12 hourly candles before it; the hourly range 13119.1 to 13153.3"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "idea_time": "2026-11-19T11:00:00+00:00",
+   "entry": "13169.7",
+   "stop_pips": "15",
+   "closed": "2026-11-19T11:55:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-15.0",
+   "steps": [
+    "Thu 19 Nov 10:45 GMT: the last high made: 13171.9",
+    "Thu 19 Nov 10:50 GMT to 10:55 GMT: a pause: 2 candles in a row without a new high, closing above the 21 EMA; its highest point 13169.7",
+    "Thu 19 Nov 11:00 GMT: price broke above it (during this candle)",
+    "allowed at entry: slow grind in a trend up; direction rule buy side (price 13169.7 is above the pivot 13162.5 and above the 5m 100 EMA 13147.8); the direction rule does not apply to slow grind; hourly rally: the Thu 19 Nov 10:00 GMT hourly candle closed at 13169.1, 8.4 pips above the high 13160.7 of the 12 hourly candles before it; the hourly range 13119.1 to 13171.9"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "idea_time": "2026-11-19T12:10:00+00:00",
+   "entry": "13151.1",
+   "stop_pips": "21.8",
+   "closed": "2026-11-19T15:50:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "29.2",
+   "steps": [
+    "Thu 19 Nov 12:00 GMT swept the Asian high 13153.3, price went 18.6 pips above it (furthest 13171.9), and this candle closed back below it at 13153, the rejection candle (high 13156.2, low 13152.8)",
+    "Thu 19 Nov 12:05 GMT confirmation candle, closed at 13151, below the rejection candle's low (13152.8)",
+    "Thu 19 Nov 12:10 GMT opens at this candle's open, 13151.1 (sell price); stop 13172.9, 21.8 pips (at least 12; 1 beyond the furthest point 13171.9)",
+    "allowed at entry: session sweep in a emerging trend down; direction rule no clear direction (price 13151.1 is below the pivot 13162.5 and above the 5m 100 EMA 13151.0: they disagree); the direction rule does not apply to session sweep; hourly rally: the Thu 19 Nov 10:00 GMT hourly candle closed at 13169.1, 8.4 pips above the high 13160.7 of the 12 hourly candles before it; the hourly range 13119.1 to 13171.9"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-19T15:40:00+00:00",
+   "entry": "13116.3",
+   "stop_pips": "12",
+   "closed": "2026-11-19T16:30:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Thu 19 Nov 15:25 GMT pierce and rejection candle: its low 13108.3 went 9.2 pips below the lower hourly Bollinger band (13117.5 at that moment), and it closed green (13110.2 to 13114.5)",
+    "Thu 19 Nov 15:35 GMT confirmation candle: closed at 13116.7, above the rejection candle's high (13116.4)",
+    "Thu 19 Nov 15:40 GMT opens at this candle's open, 13116.3 (sell price)",
+    "allowed at entry: Bollinger bounce in a possible reversal up; direction rule sell side (price 13116.3 is below the pivot 13162.5 and below the 5m 100 EMA 13147.3); the direction rule does not apply to Bollinger bounce; hourly rally: the Thu 19 Nov 10:00 GMT hourly candle closed at 13169.1, 8.4 pips above the high 13160.7 of the 12 hourly candles before it; the hourly range 13119.1 to 13171.9"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-19T17:20:00+00:00",
+   "entry": "13105.9",
+   "stop_pips": "12",
+   "closed": "2026-11-19T18:05:00+00:00",
+   "close_kind": "stopped by IG",
+   "pips": "-12.0",
+   "steps": [
+    "Thu 19 Nov 17:10 GMT pierce and rejection candle: its low 13100.5 went 6.7 pips below the lower hourly Bollinger band (13107.2 at that moment), and it closed green (13102.4 to 13103)",
+    "Thu 19 Nov 17:15 GMT confirmation candle: closed at 13105.8, above the rejection candle's high (13104.2)",
+    "Thu 19 Nov 17:20 GMT opens at this candle's open, 13105.9 (sell price)",
+    "allowed at entry: Bollinger bounce in a emerging trend up; direction rule sell side (price 13105.9 is below the pivot 13162.5 and below the 5m 100 EMA 13135.6); the direction rule does not apply to Bollinger bounce; hourly rally: the Thu 19 Nov 10:00 GMT hourly candle closed at 13169.1, 8.4 pips above the high 13160.7 of the 12 hourly candles before it; the hourly range 13104.4 to 13171.9"
+   ]
+  }
+ ],
+ "safety_refused": [
+  {
+   "time_utc": "2026-11-16T04:40:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-16T09:40:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-16"
+   ]
+  },
+  {
+   "time_utc": "2026-11-16T09:45:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-16"
+   ]
+  },
+  {
+   "time_utc": "2026-11-16T09:50:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-16"
+   ]
+  },
+  {
+   "time_utc": "2026-11-16T09:55:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-16"
+   ]
+  },
+  {
+   "time_utc": "2026-11-16T10:00:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-16"
+   ]
+  },
+  {
+   "time_utc": "2026-11-16T12:35:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "level reversal already has 1 trade(s) open (at most 1)"
+   ]
+  },
+  {
+   "time_utc": "2026-11-16T16:35:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "reasons": [
+    "slow grind already has 1 trade(s) open (at most 1)"
+   ]
+  },
+  {
+   "time_utc": "2026-11-16T17:30:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "same signal already traded by range trade"
+   ]
+  },
+  {
+   "time_utc": "2026-11-17T17:10:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "buy",
+   "reasons": [
+    "slow grind already has 1 trade(s) open (at most 1)"
+   ]
+  },
+  {
+   "time_utc": "2026-11-17T18:00:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "buy",
+   "reasons": [
+    "slow grind already has 1 trade(s) open (at most 1)"
+   ]
+  },
+  {
+   "time_utc": "2026-11-17T18:20:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "buy",
+   "reasons": [
+    "slow grind already has 1 trade(s) open (at most 1)"
+   ]
+  },
+  {
+   "time_utc": "2026-11-17T18:40:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "reasons": [
+    "Bollinger bounce already has 1 sell trade(s) open (at most 1 each way)"
+   ]
+  },
+  {
+   "time_utc": "2026-11-17T22:05:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "session sweep",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T00:15:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T03:55:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T04:05:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T07:05:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "in a big-news window: Core Inflation Rate MoM, Inflation Rate YoY"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T07:10:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "in a big-news window: Core Inflation Rate MoM, Inflation Rate YoY"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T07:15:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "in a big-news window: Core Inflation Rate MoM, Inflation Rate YoY"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T07:20:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "in a big-news window: Core Inflation Rate MoM, Inflation Rate YoY"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T07:25:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "in a big-news window: Core Inflation Rate MoM, Inflation Rate YoY"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T07:35:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T07:40:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T07:45:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T07:50:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T07:55:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T08:00:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T08:05:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "reasons": [
+    "slow grind already has 1 trade(s) open (at most 1)"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T08:05:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T08:10:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T08:15:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T08:20:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T08:25:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T08:30:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T08:35:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T08:40:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T08:45:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T08:50:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T08:55:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T09:00:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T09:05:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T09:10:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T09:15:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T09:20:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "Asian range breakout already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T09:25:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "once a day: a Asian range breakout trade has already opened for sell 2026-11-18"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T03:25:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T04:05:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T08:00:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "reasons": [
+    "Asian range breakout already has 1 buy trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for buy 2026-11-19"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T08:15:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "reasons": [
+    "Asian range breakout already has 1 buy trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for buy 2026-11-19"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T08:40:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "reasons": [
+    "Asian range breakout already has 1 buy trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for buy 2026-11-19"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T08:50:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "reasons": [
+    "Asian range breakout already has 1 buy trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for buy 2026-11-19"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T08:55:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "reasons": [
+    "Asian range breakout already has 1 buy trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for buy 2026-11-19"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T09:00:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "reasons": [
+    "Asian range breakout already has 1 buy trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for buy 2026-11-19"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T09:05:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "reasons": [
+    "Asian range breakout already has 1 buy trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for buy 2026-11-19"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T09:10:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "reasons": [
+    "Asian range breakout already has 1 buy trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for buy 2026-11-19"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T09:15:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "reasons": [
+    "Asian range breakout already has 1 buy trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for buy 2026-11-19"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T09:20:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "reasons": [
+    "Asian range breakout already has 1 buy trade(s) open (at most 1 each way)",
+    "once a day: a Asian range breakout trade has already opened for buy 2026-11-19"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T14:40:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "session sweep",
+   "direction": "sell",
+   "reasons": [
+    "session sweep already has 1 sell trade(s) open (at most 1 each way)",
+    "once a day: a session sweep trade has already opened for Asian high 2026-11-19"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T17:20:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "same signal already traded by Bollinger bounce"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T17:25:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "reasons": [
+    "Bollinger bounce already has 1 buy trade(s) open (at most 1 each way)"
+   ]
+  }
+ ]
+}

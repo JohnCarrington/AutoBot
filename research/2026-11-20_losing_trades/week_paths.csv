@@ -1,0 +1,52 @@
+period,opened_utc,closed_utc,strategy,direction,ig_open,ig_stop_distance,tp_pips,close_price_ig,ig_pips,how_closed,closed_by,market_state,best_pips,first15_best,first15_worst,best_candle,best_after_min,worst_candle,minutes_open
+B hourly read,2026-11-16T06:50:29Z,2026-11-16T07:15:30Z,level reversal,sell,13197.5,11.5,20,13209.0,-11.5,stopped by IG,bot,emerging trend down,0.6,0.6,6.6,0.6,4,12.2,25
+B hourly read,2026-11-16T08:40:06Z,2026-11-16T09:33:42Z,level reversal,buy,13210.4,16.4,20,13194.0,-16.4,stopped by IG,bot,emerging trend up,14.1,10.5,2.4,14.1,19,18.4,53
+B hourly read,2026-11-16T09:50:07Z,2026-11-16T12:20:21Z,level reversal,sell,13186.5,17.8,20,13204.3,-17.8,stopped by IG,bot,emerging trend down,2.9,0.0,3.9,2.9,74,17.9,150
+B hourly read,2026-11-16T10:25:00Z,2026-11-16T10:52:36Z,Bollinger bounce,buy,13198.3,12,100,13186.3,-12.0,stopped by IG,bot,emerging trend down,1.5,1.5,2.9,1.5,0,14.1,27
+B hourly read,2026-11-16T10:50:10Z,2026-11-16T12:12:21Z,EMA pullback,sell,13187.1,12,30,13199.1,-12.0,stopped by IG,bot,emerging trend down,3.5,1.9,4.3,3.5,14,14.5,82
+B hourly read,2026-11-16T12:37:06Z,2026-11-16T20:30:03Z,level reversal,sell,13194.5,14.4,20,13186.2,8.3,forced close,bot,emerging trend down,15.6,0.0,5.6,15.6,362,12.2,472
+B hourly read,2026-11-16T14:26:00Z,2026-11-17T09:48:55Z,EMA pullback,sell,13192.1,12,30,13204.1,-12.0,stopped by IG,bot,emerging trend down,22.6,0.5,7.5,22.6,664,13.8,1162
+B hourly read,2026-11-16T14:57:56Z,2026-11-16T15:16:57Z,EMA pullback,sell,13187.3,12,30,13199.3,-12.0,stopped by IG,bot,"trend down, slow grind",1.2,1.2,5.5,1.2,2,15.2,19
+B hourly read,2026-11-16T15:47:06Z,2026-11-16T20:30:04Z,slow grind,sell,13187.1,15,20,13186.5,0.6,forced close,bot,"trend down, slow grind",8.2,6.8,5.7,8.2,172,12.5,282
+B hourly read,2026-11-16T15:50:41Z,2026-11-16T16:09:45Z,EMA pullback,sell,13183.2,12,30,13195.2,-12.0,stopped by IG,bot,"trend down, slow grind",2.9,2.9,7.5,2.9,-1,12.6,19
+B hourly read,2026-11-16T16:53:48Z,2026-11-16T17:11:19Z,EMA pullback,sell,13182.5,12,30,13194.5,-12.0,stopped by IG,bot,"trend down, slow grind",-1.0,0.0,8.3,0.0,,15.1,17
+B hourly read,2026-11-16T17:27:43Z,2026-11-16T18:19:12Z,range trade,sell,13193.7,12,100,13182.1,11.6,close,bot,ranging none,11.6,2.7,3.3,12.1,47,3.3,51
+B hourly read,2026-11-16T20:00:03Z,2026-11-16T22:04:53Z,EMA pullback,sell,13184.7,12,30,13196.7,-12.0,stopped by IG,bot,emerging trend down,6.2,0.1,2.9,6.2,69,13.0,124
+B hourly read,2026-11-17T06:03:34Z,2026-11-17T06:45:01Z,level reversal,sell,13198.7,9.8,20,13195.7,3.0,forced close,bot,"trend up, slow grind",7.4,3.8,4.0,7.5,41,4.0,41
+B hourly read,2026-11-17T07:35:11Z,2026-11-17T09:49:00Z,level reversal,sell,13191.7,13.4,20,13205.1,-13.4,stopped by IG,bot,emerging trend down,7.0,2.6,3.1,7.0,24,14.2,133
+B hourly read,2026-11-17T08:59:02Z,2026-11-17T09:48:34Z,range trade,sell,13190.4,12,100,13202.4,-12.0,stopped by IG,bot,ranging none,1.2,0.8,5.6,1.2,25,15.5,49
+B hourly read,2026-11-17T10:05:01Z,2026-11-17T14:06:00Z,Bollinger bounce,sell,13189.9,12,100,13193.2,-3.3,stopped by IG,bot,emerging trend down,15.6,4.0,3.0,15.6,209,10.1,240
+B hourly read,2026-11-17T10:05:02Z,2026-11-17T15:45:18Z,level reversal,sell,13189.5,20.8,20,13210.3,-20.8,stopped by IG,bot,emerging trend down,15.2,3.6,3.4,15.2,209,22.4,340
+B hourly read,2026-11-17T14:00:02Z,2026-11-17T14:37:44Z,session sweep,buy,13188.8,17.1,100,13193.9,5.1,stopped by IG,bot,emerging trend up,12.2,8.8,7.0,12.2,29,7.0,37
+B hourly read,2026-11-17T16:22:53Z,2026-11-17T20:30:03Z,level reversal,buy,13218.8,22.5,20,13209.6,-9.2,forced close,bot,"trend up, slow grind",9.1,1.9,7.8,9.1,97,10.5,247
+B hourly read,2026-11-17T16:35:01Z,2026-11-17T17:16:22Z,Bollinger bounce,sell,13215.1,12,100,13227.1,-12.0,stopped by IG,bot,"trend up, strong push",1.7,0.1,6.7,1.7,14,12.7,41
+B hourly read,2026-11-17T16:46:09Z,2026-11-17T20:30:04Z,slow grind,buy,13220,15,100,13209.6,-10.4,forced close,bot,"trend up, strong push",7.9,0.3,8.1,7.9,73,11.7,223
+B hourly read,2026-11-17T17:16:00Z,2026-11-17T19:59:26Z,EMA pullback,buy,13225.1,12,100,13213.1,-12.0,stopped by IG,bot,"trend up, slow grind",2.8,1.2,5.0,2.8,44,12.5,163
+B hourly read,2026-11-17T17:45:03Z,2026-11-17T20:30:05Z,Bollinger bounce,sell,13221.1,12,100,13210.9,10.2,forced close,bot,"trend up, slow grind",11.3,0.3,5.6,11.3,149,8.3,165
+B hourly read,2026-11-18T07:30:02Z,2026-11-18T09:25:12Z,Asian range breakout,sell,13180.2,12,100,13158.5,21.7,stopped by IG,bot,emerging trend up,30.7,6.5,2.9,30.7,94,2.9,115
+B hourly read,2026-11-18T09:30:01Z,2026-11-18T11:03:23Z,Bollinger bounce,buy,13163.1,12,100,13170.3,7.2,stopped by IG,bot,"trend down, slow grind",12.5,8.5,2.0,12.5,74,2.0,93
+B hourly read,2026-11-18T12:37:37Z,2026-11-18T13:07:56Z,EMA pullback,sell,13156.4,12,100,13168.4,-12.0,stopped by IG,bot,"trend down, slow grind",5.2,5.2,7.8,5.2,7,15.5,30
+C analyser control,2026-11-18T15:44:06Z,2026-11-18T22:58:18Z,breakout,sell,13152.9,12,50,13164.9,-12.0,stopped by IG,bot,emerging trend down,16.1,2.0,5.7,16.1,35,12.3,434
+C analyser control,2026-11-18T16:20:25Z,2026-11-18T16:58:29Z,EMA pullback,sell,13141.1,12,100,13153.1,-12.0,stopped by IG,bot,"trend down, strong push",4.3,4.3,3.8,4.3,-1,12.7,38
+C analyser control,2026-11-18T16:37:27Z,2026-11-18T16:58:29Z,slow grind,sell,13138.1,15,100,13153.1,-15.0,stopped by IG,bot,"trend down, strong push",0.5,0.5,8.5,0.5,2,15.7,21
+C analyser control,2026-11-18T19:50:58Z,2026-11-18T20:19:49Z,level reversal,sell,13135.8,11.3,20,13147.1,-11.3,stopped by IG,bot,"trend down, slow grind",-1.3,0.0,6.1,0.0,,11.8,28
+C analyser control,2026-11-19T07:35:02Z,2026-11-19T09:27:19Z,Asian range breakout,buy,13156.5,12,100,13144.5,-12.0,stopped by IG,bot,"trend up, strong push",4.2,0.0,10.6,4.2,84,13.5,112
+D stage 4,2026-11-19T11:00:17Z,2026-11-19T11:57:50Z,slow grind,buy,13170,15,20,13155.0,-15.0,stopped by IG,bot,"trend up, strong push",0.8,0.8,4.5,0.8,-1,15.9,57
+D stage 4,2026-11-19T12:10:01Z,2026-11-19T15:50:43Z,session sweep,sell,13150.9,22,100,13122.0,28.9,stopped by IG,bot,emerging trend down,42.2,0.0,9.7,42.2,189,15.0,220
+D stage 4,2026-11-19T15:40:00Z,2026-11-19T16:29:37Z,Bollinger bounce,buy,13118.8,12,100,13106.8,-12.0,stopped by IG,bot,possible reversal up,5.3,3.9,4.3,5.3,15,12.1,49
+D stage 4,2026-11-19T17:20:03Z,2026-11-19T17:52:12Z,Bollinger bounce,buy,13107.4,12,100,13107.8,0.4,closed by owner,owner,emerging trend up,5.9,5.9,2.8,5.9,-1,2.8,32
+E first-build-plus,2026-11-19T19:33:16Z,2026-11-19T20:16:50Z,level reversal,buy,13104.4,12.6,20,13100.9,-3.5,closed by owner,owner,emerging trend up,-0.3,0.0,5.0,0.0,,12.2,43
+E first-build-plus,2026-11-19T19:51:09Z,2026-11-19T20:16:54Z,EMA pullback,sell,13094.5,12,30,13102.4,-7.9,closed by owner,owner,emerging trend down,0.8,0.8,7.7,0.8,-2,9.9,25
+E first-build-plus,2026-11-20T06:07:42Z,2026-11-20T11:59:15Z,level reversal,buy,13111.4,17.3,20,13094.1,-17.3,stopped by IG,bot,emerging trend up,10.5,3.3,4.2,10.5,62,18.4,351
+E first-build-plus,2026-11-20T07:15:01Z,2026-11-20T08:00:46Z,Asian range breakout,buy,13122.3,12,100,13110.3,-12.0,stopped by IG,bot,"trend up, slow grind",-0.9,0.0,8.9,0.0,,16.5,45
+E first-build-plus,2026-11-20T07:25:06Z,2026-11-20T07:45:02Z,Bollinger bounce 5m,sell,13114.8,12,100,13116.5,-1.7,close,bot,possible reversal down,2.0,2.0,5.8,2.0,4,8.0,19
+E first-build-plus,2026-11-20T07:30:00Z,2026-11-20T09:13:00Z,session sweep,sell,13113.5,12,100,13106.0,7.5,stopped by IG,bot,emerging trend down,13.6,0.7,7.6,13.6,80,9.3,103
+E first-build-plus,2026-11-20T13:10:24Z,2026-11-20T16:11:44Z,level reversal,buy,13127.7,34.3,20,13101.6,-26.1,closed by owner,owner,emerging trend up,0.9,0.9,10.3,0.9,-1,31.5,181
+E first-build-plus,2026-11-20T13:25:12Z,2026-11-20T13:41:36Z,slow grind,buy,13128.3,15,20,13113.3,-15.0,stopped by IG,bot,"trend up, slow grind",-1.1,0.0,14.6,0.0,,16.4,16
+E first-build-plus,2026-11-20T13:30:03Z,2026-11-20T14:32:00Z,Bollinger bounce,sell,13120.1,12,100,13117.2,2.9,stopped by IG,bot,"trend up, slow grind",13.0,6.7,3.6,13.0,34,3.6,61
+E first-build-plus,2026-11-20T13:32:09Z,2026-11-20T14:35:03Z,Bollinger bounce 5m,sell,13118.1,12,100,13118.1,-0.0,close,bot,"trend up, slow grind",11.0,4.7,5.6,11.0,32,5.6,62
+E first-build-plus,2026-11-20T13:35:02Z,2026-11-20T15:14:00Z,session sweep,sell,13116.1,12,100,13115.2,0.9,stopped by IG,bot,"trend up, slow grind",12.1,2.7,5.1,12.1,89,6.8,98
+E first-build-plus,2026-11-20T14:45:07Z,2026-11-20T15:44:03Z,Bollinger bounce 5m,sell,13107.1,12,100,13119.1,-12.0,stopped by IG,bot,"trend up, slow grind",3.1,1.3,6.0,3.1,19,13.2,58
+E first-build-plus,2026-11-20T17:55:30Z,2026-11-20T18:43:28Z,level reversal,sell,13096,13,20,13093.1,2.9,closed by owner,owner,emerging trend down,4.8,0.0,6.4,4.8,44,6.4,47
+E first-build-plus,2026-11-20T18:42:26Z,2026-11-20T18:43:24Z,EMA pullback,sell,13091.4,12,30,13092.8,-1.4,closed by owner,owner,emerging trend down,0.2,0.2,4.4,0.2,-3,4.4,0
+E first-build-plus,2026-11-20T18:45:03Z,OPEN,level reversal,sell,13088.9,14.4,20,,,,,emerging trend down,,0.0,9.6,0.0,,9.6,14

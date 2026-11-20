@@ -1,0 +1,384 @@
+{
+ "week_open": "2026-11-15T21:00:00+00:00",
+ "restart": "2026-11-19T18:44:38Z",
+ "end": "2026-11-20T19:26:53.272241+00:00",
+ "trades": [],
+ "safety_refused": [
+  {
+   "time_utc": "2026-11-19T19:30:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "no current price to turn the level reversal's stop price into a distance"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T19:50:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "no current price to turn the level reversal's stop price into a distance"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T20:05:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "no current price to turn the level reversal's stop price into a distance"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T20:35:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T21:05:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "breakout",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T21:15:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T21:20:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T21:30:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T21:40:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T21:40:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK",
+    "a reversal trade against a strong push (down)"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T21:55:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "reasons": [
+    "from 20:30 UK to midnight: no new slow grind trade",
+    "from 21:55 to 22:15 UK (the rollover): no new slow grind trade"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T22:00:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T22:20:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "reasons": [
+    "from 20:30 UK to midnight: no new slow grind trade"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T22:40:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "reasons": [
+    "from 20:30 UK to midnight: no new slow grind trade"
+   ]
+  },
+  {
+   "time_utc": "2026-11-19T23:55:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T00:00:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T01:50:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "breakout",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T04:00:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T04:15:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T04:20:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T04:25:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T05:50:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T05:55:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T06:05:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "no current price to turn the level reversal's stop price into a distance"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T06:10:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "no current price to turn the level reversal's stop price into a distance"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T09:30:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "no current price to turn the level reversal's stop price into a distance"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T09:40:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "no current price to turn the level reversal's stop price into a distance"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T11:15:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "no current price to turn the level reversal's stop price into a distance"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T11:25:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "no current price to turn the level reversal's stop price into a distance"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T13:10:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "no current price to turn the level reversal's stop price into a distance"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T17:55:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "no current price to turn the level reversal's stop price into a distance"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T18:25:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "no current price to turn the level reversal's stop price into a distance"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T18:30:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "no current price to turn the level reversal's stop price into a distance"
+   ]
+  },
+  {
+   "time_utc": "2026-11-20T18:45:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "no current price to turn the level reversal's stop price into a distance"
+   ]
+  }
+ ]
+}
