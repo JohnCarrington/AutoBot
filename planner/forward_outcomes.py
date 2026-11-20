@@ -8,7 +8,7 @@ from __future__ import annotations
 from decimal import Decimal
 from typing import Any, Sequence
 
-from prices.model import Candle, plain
+from prices.model import Candle, parse_iso
 
 
 def score_journey(plan: dict[str, Any], candles: Sequence[Candle]) -> dict[str, Any]:
@@ -30,12 +30,13 @@ def score_journey(plan: dict[str, Any], candles: Sequence[Candle]) -> dict[str, 
         raise ValueError("invalid zone boundaries")
     if (direction == "SELL" and hi_t >= lo_e) or (direction == "BUY" and lo_t <= hi_e):
         return {"status": "NOT_SCORABLE", "reason": "destination not beyond entry"}
+    as_of = parse_iso(plan['as_of_utc'])
     entry_at = None
     seen = None
     for candle in sorted(candles, key=lambda c: c.start):
         # Require strictly future, fully closed candles; reject any overlapping
         # or stale candle instead of accidentally using look-ahead information.
-        if candle.start < plan["as_of"]:
+        if candle.start < as_of:
             continue
         if seen is not None and candle.start < seen:
             raise ValueError("overlapping forward candles")
