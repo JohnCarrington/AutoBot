@@ -117,3 +117,24 @@ def test_continuation_does_not_claim_an_observed_countermove():
         if j["countermove_evidence_state"] != "AT_ENTRY_NOW":
             assert j["countermove_evidence_state"] == "UNCONFIRMED_PULLBACK"
             assert j["countermove_probability"] is None
+
+
+def test_destination_first_decision_is_consistent_with_published_plan():
+    for store in (corrective_market(), mirrored(corrective_market())):
+        _, plan = at_end(store)
+        decision = plan["observations"]["destination_first_selection"]
+        assert decision["conditional_only"] is True
+        assert decision["mode"] in (
+            "nearest_untouched_major_ahead", "legacy_entry_rank_fallback",
+        )
+        if decision["mode"] == "nearest_untouched_major_ahead":
+            assert decision["entry"] == [
+                plan["entry_zone"]["low"], plan["entry_zone"]["high"]
+            ]
+            assert decision["target"] == [
+                plan["destinations"]["primary"]["zone"]["low"],
+                plan["destinations"]["primary"]["zone"]["high"],
+            ]
+            assert "destination-first" in plan["selection_reason"]
+        else:
+            assert "fallback" in plan["selection_reason"]
