@@ -125,7 +125,7 @@ EXPECTED = {
                 "moderate_min_families": 2, "min_entry_class": "Moderate", "ema_slope_candles": 6,
                 "macd_weakening_candles": 3, "no_new_extreme_hourly_candles": 3, "failed_breakout_within_candles": 3,
                 "panel_history": 5, "break_beyond_pips": Decimal("3")},
-    "stp_technical": {"enabled": False, "h1_ema_period": 20, "rsi_periods": 14, "trend_candles": 12,   # issue #3, provisional
+    "stp_technical": {"enabled": True, "h1_ema_period": 20, "rsi_periods": 14, "trend_candles": 12,   # issue #3, provisional
                       "avg_range_candles": 14, "stop_buffer_range_share": Decimal("0.3"), "range_lookback_candles": 48,
                       "range_min_tests": 2, "range_max_ema_drift_share": Decimal("0.25"), "min_evidence": 4,
                       "validity_hours": 8},

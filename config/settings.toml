@@ -666,7 +666,8 @@ break_beyond_pips = 3
 # the recommendation lifecycle, never contacts IG and never places an order. Every number here is PROVISIONAL, for the
 # owner to approve. It reuses the planner's zone width, 3-pip touch and break rules and minimum entry class.
 # Write the technical forecast (planner.folder/<PAIR>/technical.json and technical.jsonl) on each planner run.
-enabled = false
+# Switched on by the observe-only deployment of 20 Nov 2026 (deploy/stp-technical-20261120); false switches it off.
+enabled = true
 # The H1 EMA the pullback is measured against (the issue: H1 EMA20).
 h1_ema_period = 20
 # The RSI period used for RSI direction and turns (the chart's RSI 3 is too quick for direction).

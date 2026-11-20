@@ -136,9 +136,10 @@ def test_a_target_price_is_already_inside_is_not_used(monkeypatch):
 
 # ---- lifecycle: separate files, off by default --------------------------------------------------------------------------
 
-def test_writing_is_off_by_default_and_writes_nothing(tmp_path):
-    s = with_folder(S, tmp_path)
-    assert S.stp_technical.enabled is False
+def test_writing_is_off_when_switched_off_and_writes_nothing(tmp_path):
+    # The deployment (deploy/stp-technical-20261120) switches it on in settings.toml; switched off, it writes nothing.
+    s = Over(with_folder(S, tmp_path), stp_technical=section(S.stp_technical, enabled=False))
+    assert s.stp_technical.enabled is False
     assert T.write(s, pullback_market(), end(pullback_market())) is None
     assert not any(tmp_path.rglob("*"))
 
