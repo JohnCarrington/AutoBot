@@ -49,28 +49,25 @@ def score_journey(plan: dict[str, Any], candles: Sequence[Candle], *,
     future = sorted((c for c in candles if c.start >= as_of and c.end > as_of),
                     key=lambda c: (c.end, c.start, c.timeframe))
     last_end: dict[str, Any] = {}
-    gap_at = None
     for candle in future:
         if candle.timeframe not in ("5m", "1h", "4h"):
             raise ValueError(f"unsupported scoring timeframe: {candle.timeframe}")
         if candle.start < last_end.get(candle.timeframe, as_of):
             raise ValueError("overlapping forward candles")
-        if candle.timeframe == "5m":
-            previous = last_end.get("5m", as_of)
-            if candle.start > previous and gap_at is None:
-                gap_at = previous
         last_end[candle.timeframe] = candle.end
 
     if require_contiguous_m5 and not any(c.timeframe == "5m" for c in future):
         return {"status": "DATA_GAP_CENSORED", "reason": "no future M5 candles"}
-    if require_contiguous_m5 and gap_at is not None:
-        # A missing M5 interval can hide either entry, target or invalidation.
-        # Refuse to score the sequence across that hole, including weekends.
-        return {"status": "DATA_GAP_CENSORED", "first_gap_at": gap_at.isoformat()}
-
+    last_m5_end = as_of
     for end, events_iter in groupby(future, key=lambda c: c.end):
         events = list(events_iter)
         touches = [c for c in events if c.timeframe == "5m"]
+        for c in sorted(touches, key=lambda candle: candle.start):
+            if require_contiguous_m5 and c.start > last_m5_end:
+                # Stop only when the gap precedes the observed outcome;
+                # gaps AFTER a completed journey do not erase its evidence.
+                return {"status": "DATA_GAP_CENSORED", "first_gap_at": last_m5_end.isoformat()}
+            last_m5_end = c.end
         hits_entry = any(c.sell_low <= hi_e and c.sell_high >= lo_e for c in touches)
         hits_target = any(c.sell_low <= hi_t and c.sell_high >= lo_t for c in touches)
         invalidated = any(
