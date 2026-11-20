@@ -97,7 +97,7 @@ def test_extended_requires_preferred_and_explicit_rationale():
             preferred={"low": "13330", "high": "13340"})
 
 
-def test_research_preferred_target_needs_h4_alignment_and_adr_room():
+def test_research_preferred_target_uses_structure_without_ema_or_adr_veto():
     from planner.destination_hierarchy import research_target_forecast
     zones = [
         {"low": "13440", "high": "13450", "class": "Major", "evidence": ["H4"]},
@@ -110,11 +110,26 @@ def test_research_preferred_target_needs_h4_alignment_and_adr_room():
                                       condition="CORRECTION_ACTIVE")
     assert result["immediate"]["low"] == "13440"
     assert result["preferred"]["low"] == "13350"
-    assert result["preferred_selection_status"] == "uncalibrated_research_hypothesis"
     assert result["execution_authorised"] is False
     opposing = dict(observations, h4_ema_stack="7 > 13 > 21 (up)")
-    assert research_target_forecast("13460", zones, "SELL", opposing,
-                                    condition="CORRECTION_ACTIVE")["preferred"] is None
+    opposed = research_target_forecast("13460", zones, "SELL", opposing,
+                                       condition="CORRECTION_ACTIVE")
+    assert opposed["preferred"]["low"] == "13350"
+    assert opposed["diagnostic"]["ema_alignment"] == "mixed_or_opposed"
     exhausted = dict(observations, today_range_pips="115")
-    assert research_target_forecast("13460", zones, "SELL", exhausted,
-                                    condition="CORRECTION_ACTIVE")["preferred"] is None
+    exhausted_result = research_target_forecast("13460", zones, "SELL", exhausted,
+                                                condition="CORRECTION_ACTIVE")
+    assert exhausted_result["preferred"]["low"] == "13350"
+    assert exhausted_result["diagnostic"]["adr_remaining_pips"] == "5"
+
+
+def test_research_target_explains_missing_deeper_major():
+    from planner.destination_hierarchy import research_target_forecast
+    result = research_target_forecast(
+        "13460",
+        [{"low": "13440", "high": "13450", "class": "Major",
+          "evidence": ["H4", "daily"]}],
+        "SELL", {"adr_pips": "120", "today_range_pips": "20"},
+        condition="CORRECTION_ACTIVE")
+    assert result["preferred"] is None
+    assert "only one structural obstacle ahead" in result["diagnostic"]["rejections"]
