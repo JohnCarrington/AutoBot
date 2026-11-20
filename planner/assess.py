@@ -618,8 +618,10 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
     plan.selection_reason = (
         f"{z.klass} zone ({len(z.families)} families: {families}) "
         f"{'containing price' if dist == 0 else plain(pips(settings, dist)) + ' pips away'}, {reach}; "
-        "first complete eligible entry/destination journey by zone class and distance; "
-        "the countermove is conditional, not a forecast of certainty"
+        ("destination-first: nearest untouched Major target ahead, then entry class/distance; "
+         if plan.observations["destination_first_selection"]["mode"] == "nearest_untouched_major_ahead"
+         else "entry-class/distance fallback: no untouched Major target ahead; ")
+        + "the countermove is conditional, not a forecast of certainty"
     )
     plan.destinations = {
         "intermediate": {"price": plain(edge(dests[0])), "zone": _zone_dict(dests[0], {})},
