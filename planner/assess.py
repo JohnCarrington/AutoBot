@@ -550,8 +550,52 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
             )
         return plan
 
-    # The selected journey has an untouched destination. A rejected alternative
-    # must not cause Keeper to retire the selected plan as destination-reached.
+    # Destination-first decision: prefer a complete, untouched Major target that
+    # lies ahead of current price in the trend direction. Rank its associated
+    # conditional entries by the existing approved class/distance order.
+    # Preserve the established entry-first choice when no ahead target exists.
+    # This does not assert that the corrective leg will occur.
+    eligible_by_target = []
+    for candidate, candidate_reach, candidate_dist, candidate_info in good:
+        destinations = sorted(
+            [o for o in zs if o.high < candidate.low], key=lambda o: -o.high
+        ) if bear else sorted(
+            [o for o in zs if o.low > candidate.high], key=lambda o: o.low
+        )
+        majors_for_entry = [o for o in destinations if o.klass == MAJOR]
+        if not majors_for_entry:
+            continue
+        primary = majors_for_entry[0]
+        if reached(settings, snap.five, price, primary.low, primary.high, toward_low=bear):
+            continue
+        if ahead(price, primary.low, primary.high, toward_low=bear):
+            eligible_by_target.append((
+                primary, candidate, candidate_reach, candidate_dist,
+                candidate_info, destinations, majors_for_entry,
+            ))
+    if eligible_by_target:
+        # Nearest untapped Major target first, then the already-approved
+        # ranking of qualifying entries for that target.
+        eligible_by_target.sort(key=lambda item: (
+            (price - item[0].high) if bear else (item[0].low - price),
+            -CLASS_RANK[item[1].klass],
+            item[3],
+        ))
+        _, cz, cr, cd, ci, ds, ms = eligible_by_target[0]
+        selected = (cz, cr, cd, ci, ds, ms)
+        plan.observations["destination_first_selection"] = {
+            "mode": "nearest_untouched_major_ahead",
+            "target": [plain(ms[0].low), plain(ms[0].high)],
+            "entry": [plain(cz.low), plain(cz.high)],
+            "conditional_only": True,
+        }
+    else:
+        plan.observations["destination_first_selection"] = {
+            "mode": "legacy_entry_rank_fallback",
+            "reason": "no untouched Major destination wholly ahead of current price",
+            "conditional_only": True,
+        }
+    # A rejected alternative must not retire an otherwise eligible plan.
     plan.destination_reached = None
     z, reach, dist, info, dests, majors = selected
     for zz, r, d, i in looked:
