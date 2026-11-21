@@ -33,7 +33,7 @@ from decimal import Decimal
 from typing import Any
 
 from analyser.direction import BUY_SIDE, SELL_SIDE, decide
-from analyser.states import CONSOLIDATION, DOWN, EMERGING, POSSIBLE_REVERSAL, RANGING, TREND, UP
+from analyser.states import CONSOLIDATION, DOWN, EMERGING, POSSIBLE_REVERSAL, RANGING, TREND, UP, switch_on
 
 SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, RANGE_TRADE, BREAKOUT, LEVEL_REVERSAL = (
     "slow grind", "EMA pullback", "Bollinger bounce", "range trade", "breakout", "level reversal")
@@ -143,7 +143,9 @@ def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: lis
     EMA pullback: any time the market is open, big-news windows included, except after
     hours.close_all_trades_at (20:30) UK on Friday, so none is held over the weekend (owner,
     7 November 2026), and from ema_pullback.rollover_no_new_trades_from (21:55) to
-    ema_pullback.rollover_no_new_trades_until (22:15) UK, the rollover (owner, 13 November 2026).
+    ema_pullback.rollover_no_new_trades_until (22:15) UK, the rollover (owner, 13 November 2026); while
+    EMA_PULLBACK_TRADING_HOURS is on, also only within the trading hours NEW_TRADES_FROM to NEW_TRADES_UNTIL UK
+    (trading_hours_reasons, as every other strategy; owner, 21 November 2026).
     Slow grind (owner, 8 November 2026): any time the market is open, big-news windows included,
     except from hours.close_all_trades_at (20:30) to midnight UK every day, in the first
     slow_grind.week_open_no_new_trades_minutes (15) after the week opens, and from
@@ -184,11 +186,10 @@ def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: lis
         if ep.rollover_no_new_trades_from <= lt.time() < ep.rollover_no_new_trades_until:
             reasons.append(f"from {ep.rollover_no_new_trades_from:%H:%M} to {ep.rollover_no_new_trades_until:%H:%M} UK "
                            f"(the rollover): no new {strategy} trade")
+        if switch_on(settings, "ema_pullback_trading_hours"):     # the other strategies' trading hours (21 Nov 2026)
+            reasons += trading_hours_reasons(settings, t)
         return reasons
-    lt = t.astimezone(ZoneInfo(tz) if isinstance(tz, str) else tz).time()
-    sw = settings.switches
-    if not (sw.new_trades_from <= lt < sw.new_trades_until):
-        reasons.append(f"outside the trading hours {sw.new_trades_from:%H:%M} to {sw.new_trades_until:%H:%M} UK")
+    reasons += trading_hours_reasons(settings, t)
     if strategy == BREAKOUT:
         return reasons
     windows = no_new_trades(settings, pair, t, calendar)
@@ -201,20 +202,34 @@ def may_open(settings: Any, pair: str, strategy: str, t: datetime, calendar: lis
     return reasons
 
 
+def trading_hours_reasons(settings: Any, t: datetime) -> list[str]:
+    """The trading hours: a new trade only from NEW_TRADES_FROM up to NEW_TRADES_UNTIL (.env), UK clock (GMT in
+    winter, BST in summer). Shared by every strategy that keeps them (may_open)."""
+    from zoneinfo import ZoneInfo
+    tz = settings.hours.timezone
+    lt = t.astimezone(ZoneInfo(tz) if isinstance(tz, str) else tz).time()
+    sw = settings.switches
+    if not (sw.new_trades_from <= lt < sw.new_trades_until):
+        return [f"outside the trading hours {sw.new_trades_from:%H:%M} to {sw.new_trades_until:%H:%M} UK"]
+    return []
+
+
 def forced_close_at(settings: Any, strategy: str, opened: datetime) -> datetime:
     """When a trade opened at `opened` is closed by the clock: hours.close_all_trades_at (20:30) UK,
     the first one after it opened; for the EMA pullback and the breakout, the first FRIDAY 20:30 UK
     after it opened. (A slow grind trade never opens between 20:30 and midnight UK, so it is
-    always closed at 20:30 the day it opened.)"""
+    always closed at 20:30 the day it opened.) While EMA_PULLBACK_TRADING_HOURS is on (owner, 21 November 2026), the
+    EMA pullback is closed at 20:30 UK every day, as every other strategy."""
     from datetime import datetime as dt, timedelta, timezone
     from zoneinfo import ZoneInfo
     tz = settings.hours.timezone
     uk = ZoneInfo(tz) if isinstance(tz, str) else tz
     lt = opened.astimezone(uk)
+    own = strategy in OWN_HOURS and not (strategy == EMA_PULLBACK and switch_on(settings, "ema_pullback_trading_hours"))
     for k in range(0, 8):
         day = lt.date() + timedelta(days=k)
         cut = dt.combine(day, settings.hours.close_all_trades_at, tzinfo=uk)
-        if cut > lt and (strategy not in OWN_HOURS or day.weekday() == 4):
+        if cut > lt and (not own or day.weekday() == 4):
             return cut.astimezone(timezone.utc)
     raise AssertionError("no close found within a week")
 
