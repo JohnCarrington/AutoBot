@@ -1,0 +1,15 @@
+days where the signal differs from the earlier study: 0 []
+days used (usable in the earlier study and measured here): 703
+trend days among them: 223 up 122 down 101
+
+threshold above 0 (Johnny): signal on 341 days | trend day its way 101 (30%) | trend day the other way 17 | not a trend day 223 | both 13 | none 349
+   of 223 trend days: caught 101 (45%) | missed: no signal 102, both ways 3, wrong way 17
+
+threshold +5: signal on 270 days | trend day its way 89 (33%) | trend day the other way 14 | not a trend day 167 | both 5 | none 428
+   of 223 trend days: caught 89 (40%) | missed: no signal 120, both ways 0, wrong way 14
+
+threshold +10: signal on 203 days | trend day its way 76 (37%) | trend day the other way 7 | not a trend day 120 | both 1 | none 499
+   of 223 trend days: caught 76 (34%) | missed: no signal 140, both ways 0, wrong way 7
+
+threshold +15: signal on 138 days | trend day its way 59 (43%) | trend day the other way 2 | not a trend day 77 | both 1 | none 564
+   of 223 trend days: caught 59 (26%) | missed: no signal 162, both ways 0, wrong way 2

@@ -1,0 +1,74 @@
+Johnny's days:
+   Mon 05 Oct 2026: not a trend day (best: down, 1 band hours in a row, 26.6 pips in the run, other band in run 0) | signal none (best buy -, best sell -)
+   Tue 06 Oct 2026: trend up: 13 band hours in a row from 08:00, 69.4 pips in the run | signal down (best buy -, best sell +11.4)
+   Mon 09 Nov 2026: trend up: 8 band hours in a row from 06:00, 46.0 pips in the run | signal up (best buy +20.0, best sell -)
+   Wed 11 Nov 2026: trend down: 13 band hours in a row from 08:00, 63.2 pips in the run | signal down (best buy -, best sell +11.2)
+   Thu 12 Nov 2026: trend down: 8 band hours in a row from 13:00, 46.1 pips in the run | signal down (best buy -2.0, best sell +2.4)
+   Wed 18 Nov 2026: trend down: 14 band hours in a row from 06:00, 55.5 pips in the run | signal down (best buy -, best sell +43.4)
+
+10 trend days at random (seed 20261121):
+   Tue 16 Jan 2024: trend down: 9 band hours in a row from 06:00, 60.0 pips in the run | signal down (best buy -, best sell +66.4)
+   Wed 10 Apr 2024: trend down: 8 band hours in a row from 13:00, 173.9 pips in the run | signal none (best buy -, best sell -)
+   Thu 25 Apr 2024: trend up: 8 band hours in a row from 06:00, 60.3 pips in the run | signal up (best buy +45.2, best sell -)
+   Fri 16 Aug 2024: trend up: 9 band hours in a row from 06:00, 41.2 pips in the run | signal up (best buy +20.0, best sell -)
+   Fri 22 Nov 2024: trend down: 11 band hours in a row from 06:00, 81.5 pips in the run | signal down (best buy -, best sell +14.7)
+   Thu 06 Feb 2025: trend down: 10 band hours in a row from 06:00, 123.6 pips in the run | signal down (best buy -, best sell +15.1)
+   Wed 19 Feb 2025: trend down: 10 band hours in a row from 09:00, 49.2 pips in the run | signal none (best buy -2.2, best sell -)
+   Fri 29 Aug 2025: trend down: 9 band hours in a row from 06:00, 56.9 pips in the run | signal none (best buy -, best sell -)
+   Tue 09 Dec 2025: trend down: 9 band hours in a row from 12:00, 41.6 pips in the run | signal none (best buy -, best sell -)
+   Wed 26 Aug 2026: trend down: 14 band hours in a row from 07:00, 51.6 pips in the run | signal down (best buy -, best sell +10.8)
+
+misses, no signal (102 in all), 6 at random:
+   Tue 02 Jul 2024: trend up: 9 band hours in a row from 12:00, 45.8 pips in the run | signal none (best buy -, best sell -)
+   Mon 08 Jul 2024: trend up: 8 band hours in a row from 08:00, 43.3 pips in the run | signal none (best buy -, best sell -)
+   Fri 12 Jul 2024: trend up: 13 band hours in a row from 08:00, 84.4 pips in the run | signal none (best buy -, best sell -)
+   Mon 17 Mar 2025: trend up: 13 band hours in a row from 08:00, 62.8 pips in the run | signal none (best buy -, best sell -)
+   Mon 07 Apr 2025: trend down: 11 band hours in a row from 10:00, 160.6 pips in the run | signal none (best buy -, best sell -)
+   Thu 15 Jan 2026: trend down: 8 band hours in a row from 10:00, 73.9 pips in the run | signal none (best buy -, best sell -)
+
+misses, signal the wrong way (17 in all), 6 at random:
+   Fri 30 Aug 2024: trend down: 8 band hours in a row from 13:00, 69.9 pips in the run | signal up (best buy +20.0, best sell -)
+   Tue 25 Mar 2025: trend up: 9 band hours in a row from 09:00, 54.5 pips in the run | signal down (best buy -, best sell +13.3)
+   Wed 26 Nov 2025: trend up: 8 band hours in a row from 13:00, 57.3 pips in the run | signal down (best buy -, best sell +5.6)
+   Tue 16 Dec 2025: trend up: 9 band hours in a row from 08:00, 81.1 pips in the run | signal down (best buy -, best sell +9.8)
+   Tue 30 Dec 2025: trend down: 9 band hours in a row from 12:00, 54.5 pips in the run | signal up (best buy +4.8, best sell -3.7)
+   Tue 21 Jul 2026: trend down: 10 band hours in a row from 11:00, 67.6 pips in the run | signal up (best buy +5.5, best sell -)
+
+false alarms, signal on but not a trend day (223 in all), 6 at random:
+   Fri 05 Apr 2024: not a trend day (best: down, 3 band hours in a row, 57.6 pips in the run, other band in run 0) | signal down (best buy -, best sell +9.2)
+   Thu 11 Apr 2024: not a trend day (best: up, 2 band hours in a row, 39.9 pips in the run, other band in run 0) | signal down (best buy -, best sell +2.2)
+   Mon 28 Oct 2024: not a trend day (best: up, 5 band hours in a row, 28.2 pips in the run, other band in run 0) | signal up (best buy +8.7, best sell -3.6)
+   Thu 30 Jan 2025: not a trend day (best: up, 4 band hours in a row, 39.1 pips in the run, other band in run 0) | signal down (best buy -, best sell +2.5)
+   Fri 02 May 2025: not a trend day (best: up, 3 band hours in a row, 39.9 pips in the run, other band in run 0) | signal up (best buy +11.8, best sell -)
+   Mon 30 Jun 2025: not a trend day (best: down, 3 band hours in a row, 43.4 pips in the run, other band in run 0) | signal up (best buy +5.0, best sell -)
+
+Oct-Nov 2026, every signal day and every trend day (for Johnny's recent charts):
+   Fri 02 Oct 2026: trend up: 8 band hours in a row from 13:00, 49.3 pips in the run | signal none (best buy -, best sell -)
+   Tue 06 Oct 2026: trend up: 13 band hours in a row from 08:00, 69.4 pips in the run | signal down (best buy -, best sell +11.4)
+   Wed 07 Oct 2026: trend down: 12 band hours in a row from 06:00, 55.7 pips in the run | signal none (best buy -, best sell -)
+   Thu 08 Oct 2026: not a trend day (best: down, 7 band hours in a row, 24.9 pips in the run, other band in run 0) | signal down (best buy -, best sell +20.0)
+   Fri 09 Oct 2026: not a trend day (best: up, 1 band hours in a row, 11.7 pips in the run, other band in run 0) | signal down (best buy -, best sell +0.7)
+   Tue 13 Oct 2026: trend up: 15 band hours in a row from 06:00, 43.6 pips in the run | signal up (best buy +19.6, best sell -)
+   Fri 16 Oct 2026: trend up: 10 band hours in a row from 06:00, 67.8 pips in the run | signal up (best buy +18.7, best sell -)
+   Tue 20 Oct 2026: trend up: 15 band hours in a row from 06:00, 76.6 pips in the run | signal up (best buy +28.0, best sell -)
+   Mon 26 Oct 2026: not a trend day (best: down, 5 band hours in a row, 31.0 pips in the run, other band in run 0) | signal down (best buy -, best sell +17.7)
+   Tue 27 Oct 2026: not a trend day (best: down, 6 band hours in a row, 24.8 pips in the run, other band in run 0) | signal down (best buy -, best sell +14.8)
+   Wed 28 Oct 2026: not a trend day (best: down, 6 band hours in a row, 17.2 pips in the run, other band in run 0) | signal down (best buy -, best sell +20.7)
+   Thu 29 Oct 2026: not a trend day (best: up, 9 band hours in a row, 62.3 pips in the run, other band in run 1) | signal down (best buy -, best sell +14.0)
+   Fri 30 Oct 2026: not a trend day (best: up, 6 band hours in a row, 42.5 pips in the run, other band in run 0) | signal up (best buy +15.3, best sell -)
+   Mon 02 Nov 2026: not a trend day (best: up, 4 band hours in a row, 27.4 pips in the run, other band in run 0) | signal up (best buy +20.0, best sell -)
+   Wed 04 Nov 2026: trend up: 8 band hours in a row from 06:00, 45.1 pips in the run | signal up (best buy +6.2, best sell -)
+   Thu 05 Nov 2026: not a trend day (best: down, 4 band hours in a row, 34.6 pips in the run, other band in run 0) | signal down (best buy -, best sell +1.6)
+   Fri 06 Nov 2026: trend down: 15 band hours in a row from 06:00, 83.2 pips in the run | signal down (best buy -, best sell +53.6)
+   Mon 09 Nov 2026: trend up: 8 band hours in a row from 06:00, 46.0 pips in the run | signal up (best buy +20.0, best sell -)
+   Tue 10 Nov 2026: trend down: 10 band hours in a row from 11:00, 115.3 pips in the run | signal none (best buy -, best sell -)
+   Wed 11 Nov 2026: trend down: 13 band hours in a row from 08:00, 63.2 pips in the run | signal down (best buy -, best sell +11.2)
+   Thu 12 Nov 2026: trend down: 8 band hours in a row from 13:00, 46.1 pips in the run | signal down (best buy -2.0, best sell +2.4)
+   Tue 17 Nov 2026: not a trend day (best: up, 6 band hours in a row, 40.9 pips in the run, other band in run 0) | signal up (best buy +5.1, best sell -)
+   Wed 18 Nov 2026: trend down: 14 band hours in a row from 06:00, 55.5 pips in the run | signal down (best buy -, best sell +43.4)
+
+caught trend days whose run started before 09:00: 74 of 101
+trend days whose run started at 09:00 or later: 107; caught 27 (25%), wrong way 14, no signal 64
+chance: with 223 trend days of 703 (32%), a signal with no link would hit a trend day its way on about half of that: 16% of signal days; it hit 30%
+stricter: 10+ band hours in a row, 50+ pips in the run: 118 trend days | signal on 341: trend day its way 63 (18%) | caught 63 of 118 (53%)
+looser: 6+ band hours in a row, 40+ pips in the run: 338 trend days | signal on 341: trend day its way 139 (41%) | caught 139 of 338 (41%)
