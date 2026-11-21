@@ -401,7 +401,7 @@ On 18 and 19 Nov the replay's slow grind opened trades that the live slow grind 
 
 ### Per strategy per week, on the live trades (IG figures)
 
-"Saved" = losses of refused live trades; "cost" = wins of refused live trades.
+"Saved" = losses of refused live trades; "cost" = wins of refused live trades. Rule 1 here is with the breakout and the Asian range breakout exempt (fourth brief).
 
 #### Trend days from the live slow grind trades
 
@@ -426,11 +426,11 @@ On 18 and 19 Nov the replay's slow grind opened trades that the live slow grind 
 |---|---:|---:|---:|---:|---:|---:|---:|---|---:|
 | Bollinger bounce | 11 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | 0, +0.0 | 0 |
 | EMA pullback | 13 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | 0, +0.0 | 0 |
-| breakout | 9 | 1 | -6.0 | 0 | 6.0 | 0.0 | +6.0 | 0, +0.0 | 0 |
+| breakout | 9 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | 0, +0.0 | 0 |
 | level reversal | 5 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | 0, +0.0 | 0 |
 | range trade | 5 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | 0, +0.0 | 0 |
 | slow grind | 12 | 1 | -15.0 | 0 | 15.0 | 0.0 | +15.0 | 1, -15.0 | 0 |
-| **All** | 55 | 2 | -21.0 | 0 | 21.0 | 0.0 | +21.0 | 1, -15.0 | 0 |
+| **All** | 55 | 1 | -15.0 | 0 | 15.0 | 0.0 | +15.0 | 1, -15.0 | 0 |
 
 **Rule 2b, RSI stretch (off in the trend's direction on a trend day)**
 
@@ -555,10 +555,40 @@ The Mon 9 08:05 breakout buy refused by rule 1 would have won +50 in the replay 
 
 ### Open for Johnny
 
-- Thu 12 Nov counts as a trend day (sell from 06:40) under the rule as written.
+- Thu 12 Nov counts as a trend day (sell from 06:40) under the rule as written. *Answered: a real trend sell day, right to start it.*
 - In the replay 18 and 19 Nov also become trend days, because the replay's slow grind opened trades that live did not.
-- Rule 1's cost in the replay: the Mon 9 08:05 breakout buy (+50 with the filters off).
+- Rule 1's cost in the replay: the Mon 9 08:05 breakout buy (+50 with the filters off). *Answered: the breakout and the Asian range breakout are now exempt from rule 1 (fourth brief).*
 - The 07:35 Asian range breakout buy is still allowed (from the earlier brief).
+
+## Rule 1 with the breakout and the Asian range breakout exempt (fourth brief, 21 Nov)
+
+Johnny's decisions:
+1. The breakout and the Asian range breakout are exempt from rule 1 (hourly context), because a breakout is meant to push through a level. The other strategies are unchanged. In code: `HOURLY_EXEMPT` in `strategies/entry_filters.py`, and a refusal-free check line "hourly context: <strategy> is exempt". There is a test for both breakouts, buys and sells, in DOWN and UP contexts.
+2. Thu 12 Nov was a real trend sell day, so the trend-day switch was right to start it. No change.
+
+### Rule 1 on the live trades (IG figures), before and after the exemption
+
+| Week | Refused before | Refused now | Saved now (losers) | Cost now (winners) | Net now | What changed |
+|---|---|---|---|---|---|---|
+| 9–13 Nov | 2 (−21.0) | 1 (−15.0) | 15.0 | 0.0 | +15.0 | Tue 10 Nov 11:50 breakout sell (−6.0 live) is now allowed |
+| 16–20 Nov | 4 (−74.8) | 4 (−74.8) | 74.8 | 0.0 | +74.8 | none (no breakout was refused) |
+
+The trades rule 1 still refuses:
+- 9–13 Nov: Mon 9 15:45 slow grind sell, −15.0.
+- 16–20 Nov: three level reversal buys, −59.8 in all (one closed by Johnny), and Fri 20 13:25 slow grind buy, −15.0.
+
+Rule 1 refused only losing live trades in both weeks. The per-strategy tables in `rule_tables_2b.md` (above) are re-run with the exemption.
+
+### The replay (rule 1 + 2b + trend day on, against all off), re-run with the exemption
+
+Files: `replay2c_*_2b.json`, summaries `replay_2c_*_nov.md`. The all-off replays don't change.
+
+| Week | Rule 1 refusals before | now | Rule 1 refusals that were trades in the all-off replay | What changed |
+|---|---|---|---|---|
+| 9–13 Nov | 2 | 1 | Mon 9 15:45 slow grind sell, −15.0 | Mon 9 08:05 breakout buy now allowed: +50 (breakout +26.0 over the week, as with filters off) |
+| 16–20 Nov | 13 | 10 | Tue 17 05:15 slow grind buy −15.0; Fri 20 06:05 and 13:10 level reversal buys −16.9 and −34.1; Fri 20 13:25 slow grind buy −15.0 | Mon 16 09:15 Asian range breakout buy now allowed: −12.0 |
+
+The trend days are unchanged: 9, 11 and 12 Nov in the first week; 18 and 19 Nov in the replay of the second. Rule 2b refusals are unchanged. These replay figures check that the code works; the live demo is the judge.
 
 ## Files
 
@@ -570,3 +600,4 @@ The Mon 9 08:05 breakout buy refused by rule 1 would have won +50 in the replay 
 - `rule_tables_2b.py`, `rule_tables_2b.md`: rule 1 and rule 2b with the trend day, per strategy per week, on the live trades; the trend days from the live slow grind.
 - `replay2b_*_2b.json`, `replay2b_*_off.json`: the third-brief replays (rule 1 + 2b + trend day, against all off; ladder held off).
 - `replay_2b_summary.py`, `replay_2b_9_13_nov.md`, `replay_2b_16_20_nov.md`: those replays summarised, every refusal next to the all-off trade.
+- `replay2c_*_2b.json`, `replay_2c_*_nov.md`: the replays re-run with the breakout and the Asian range breakout exempt from rule 1.

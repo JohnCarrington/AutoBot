@@ -15,8 +15,9 @@
                               within [pullback_entry] wait_candles (6), and open at the next candle's open; a close
                               beyond the 21 EMA against them cancels (strategies/pullback.py)
   HOURLY_CONTEXT              on or off (ON if left out; owner, 21 November 2026): in an hourly DOWN context no buy opens
-                              within 5 pips of the daily pivot or the hourly 50 EMA; in an UP context no sell
-                              ([entry_filters]; strategies/entry_filters.py, rule 1)
+                              within 5 pips of the daily pivot or the hourly 50 EMA; in an UP context no sell;
+                              breakout and Asian range breakout exempt ([entry_filters]; strategies/entry_filters.py,
+                              rule 1)
   RSI_STRETCH                 on or off (ON if left out; owner, 21 November 2026, in place of ENTRY_NEAR_EMA8): no sell
                               when the 5-minute RSI 3 is under 30, no buy when over 70; slow grind, breakout, Asian
                               range breakout and session sweep exempt (strategies/entry_filters.py, rule 2b)

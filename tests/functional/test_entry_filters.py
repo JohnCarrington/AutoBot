@@ -194,11 +194,21 @@ def test_rule_1_up_context_refuses_a_sell_near_the_pivot_or_the_50_ema_and_leave
     assert ef.check(R1, UP_STORE, idea(SESSION_SWEEP, SELL, PIVOT_UP - D("5.1"))).allowed
 
 
-def test_rule_1_applies_to_every_strategy_including_those_exempt_from_rule_2(R1, DOWN_STORE):
-    for strategy in (SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, BOLLINGER_BOUNCE_5M, RANGE_TRADE, BREAKOUT,
-                     LEVEL_REVERSAL, ASIAN_RANGE_BREAKOUT, SESSION_SWEEP, NEW_YORK_OPEN_REVERSAL):
+def test_rule_1_applies_to_every_strategy_but_the_two_breakouts_including_the_slow_grind_and_the_sweep(R1, DOWN_STORE):
+    for strategy in (SLOW_GRIND, EMA_PULLBACK, BOLLINGER_BOUNCE, BOLLINGER_BOUNCE_5M, RANGE_TRADE,
+                     LEVEL_REVERSAL, SESSION_SWEEP, NEW_YORK_OPEN_REVERSAL):
         v = ef.check(R1, DOWN_STORE, idea(strategy, BUY, PIVOT_DOWN))
         assert not v.allowed and v.rule == ef.HOURLY_CONTEXT, strategy
+
+
+def test_rule_1_exempts_the_breakout_and_the_asian_range_breakout_owner_21_november(R1, DOWN_STORE, UP_STORE):
+    # a breakout is meant to push through a level (owner, 21 November 2026)
+    assert ef.HOURLY_EXEMPT == (BREAKOUT, ASIAN_RANGE_BREAKOUT)
+    for strategy in (BREAKOUT, ASIAN_RANGE_BREAKOUT):
+        for store, direction, price in ((DOWN_STORE, BUY, PIVOT_DOWN), (UP_STORE, SELL, PIVOT_UP)):
+            v = ef.check(R1, store, idea(strategy, direction, price))
+            assert v.allowed, (strategy, direction)
+            assert f"hourly context: {strategy} is exempt" in v.checked
 
 
 def test_rule_1_no_context_when_the_latest_swing_high_is_not_lower(R1, tmp_path):

@@ -2,7 +2,8 @@
 opens (trading/engine.py, Trading._place, before the order sender's safety rules). No strategy's own code changes;
 each strategy's rules, stops, take profits and trade management stay as they are. Each rule has its own switch.
 
-RULE 1. HOURLY CONTEXT (switch HOURLY_CONTEXT, on if left out). Every strategy.
+RULE 1. HOURLY CONTEXT (switch HOURLY_CONTEXT, on if left out). Every strategy except the breakout and the Asian range
+  breakout (owner, 21 November 2026: a breakout is meant to push through a level).
   DOWN context: the last two hourly swing highs are lower highs (the latest swing high is lower than the one before
   it), AND the last finished hourly candle closed below the hourly 50 EMA, AND the hourly 50 EMA is falling (lower
   than [entry_filters] hourly_ema_slope_candles (6) hourly candles before).
@@ -56,6 +57,7 @@ from prices.model import plain
 from strategies.common import ASIAN_RANGE_BREAKOUT, BREAKOUT, SESSION_SWEEP, SLOW_GRIND
 
 HOURLY_CONTEXT = "hourly context"
+HOURLY_EXEMPT = (BREAKOUT, ASIAN_RANGE_BREAKOUT)                                   # owner, 21 November 2026
 ENTRY_NEAR_EMA8 = "entry near the 8 EMA"
 EMA8_EXEMPT = (SLOW_GRIND, BREAKOUT, ASIAN_RANGE_BREAKOUT, SESSION_SWEEP)          # owner, 21 November 2026
 RSI_STRETCH = "RSI stretch"
@@ -162,7 +164,9 @@ def check(settings: Any, store: Any, idea: Any, trend: str | None = None) -> Ver
     at, price, buy = idea.time, Decimal(idea.entry_price), idea.direction == "buy"
     checked: list[str] = []
 
-    if sw.hourly_context:
+    if sw.hourly_context and idea.strategy in HOURLY_EXEMPT:
+        checked.append(f"hourly context: {idea.strategy} is exempt")
+    elif sw.hourly_context:
         ctx = hourly_context(settings, store, at)
         against = (ctx.kind == DOWN and buy) or (ctx.kind == UP and not buy)
         if against:

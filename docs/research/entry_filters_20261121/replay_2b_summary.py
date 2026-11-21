@@ -1,6 +1,6 @@
 """Summarise a rule 1 + 2b + trend day replay against the all-off replay.
 
-Usage: python replay_2b_summary.py replay2b_9_13_nov   (reads _2b.json and _off.json)
+Usage: python replay_2b_summary.py replay2b_9_13_nov [on.json]   (reads _2b.json, or on.json, and _off.json)
 
 For each refusal it looks up the trade the all-off replay took at that time
 (same strategy, direction, open time) and shows its result.  Code check only:
@@ -17,10 +17,10 @@ def uk(s):
     return datetime.fromisoformat(s.replace("Z", "+00:00")).astimezone(UK)
 
 
-def main(stem, days=()):
-    on = json.load(open(f"{stem}_2b.json"))
+def main(stem, days=(), on_file=None):
+    on = json.load(open(on_file or f"{stem}_2b.json"))
     off = json.load(open(f"{stem}_off.json"))
-    out = [f"## {stem}", ""]
+    out = [f"## {on_file or stem}", ""]
     out.append("Trend days (replay):")
     for t in on["trend_days"]:
         if t["kind"] == "trend day started":
@@ -70,4 +70,6 @@ def main(stem, days=()):
 
 
 if __name__ == "__main__":
-    print(main(sys.argv[1], tuple(sys.argv[2:])))
+    extra = sys.argv[2:]
+    on_file = next((a for a in extra if a.endswith(".json")), None)
+    print(main(sys.argv[1], tuple(a for a in extra if not a.endswith(".json")), on_file))
