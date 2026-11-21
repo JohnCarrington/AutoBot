@@ -18,6 +18,9 @@
                               within the trading hours NEW_TRADES_FROM to NEW_TRADES_UNTIL (UK clock), as the other
                               strategies, and every open EMA pullback trade closed at hours.close_all_trades_at (20:30)
                               UK every day, not only on Friday; the 21:55-22:15 rollover pause stays as it is
+  EMA_PULLBACK_ONE_AT_A_TIME  on or off (off if left out; owner, 21 November 2026): while an EMA pullback trade is
+                              open, no other EMA pullback trade opens (limits.max_open_trades_per_strategy, 1, as the
+                              other strategies); setups still form and are logged; a skipped one is logged as refused
   BOUNCE_ONLY_NEAR_TIMES      on or off (off if left out): while on, a Bollinger bounce opens only within
                               bounce.near_times_within_minutes (60) of bounce.near_times (10:00, 14:00,
                               16:00 UK) in settings.toml
@@ -102,6 +105,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "PLANNER_OBSERVE": ("planner_observe", _on_off),
     "ONE_SIGNAL_ONE_TRADE": ("one_signal_one_trade", _on_off),
     "EMA_PULLBACK_TRADING_HOURS": ("ema_pullback_trading_hours", _on_off),
+    "EMA_PULLBACK_ONE_AT_A_TIME": ("ema_pullback_one_at_a_time", _on_off),
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
     "STRATEGY_BREAKOUT": ("breakout", _on_off),
     "STRATEGY_LEVEL_REVERSAL": ("level_reversal", _on_off),
@@ -116,7 +120,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
 
 # Switches that may be left out of .env, and their value then (owner, 15 November 2026: both off by default).
 OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_NEAR_TIMES": "off", "PLANNER_OBSERVE": "off", "ONE_SIGNAL_ONE_TRADE": "off",
-                            "EMA_PULLBACK_TRADING_HOURS": "off"}
+                            "EMA_PULLBACK_TRADING_HOURS": "off", "EMA_PULLBACK_ONE_AT_A_TIME": "off"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:
