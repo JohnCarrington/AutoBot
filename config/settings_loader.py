@@ -455,6 +455,12 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "hourly_context_near_pips": _decimal_number("0", "100"),
         "ema8_periods": _whole_number(2, 500),
         "ema8_max_distance_pips": _decimal_number("0", "100"),
+        "rsi_periods": _whole_number(2, 100),
+        "rsi_sell_below": _decimal_number("0", "100"),
+        "rsi_buy_above": _decimal_number("0", "100"),
+        "trend_day_from": _clock_time,
+        "trend_day_until": _clock_time,
+        "trend_day_ends_at": _clock_time,
     },
     "emerging_ladder": {
         "first_from_pips": _decimal_number("0", "1000"),

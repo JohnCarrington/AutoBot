@@ -1,7 +1,10 @@
 """Read-only check replay for the entry filters (owner, 21 November 2026): the full wired path (trading/engine.py) in
 PAPER mode with a pretend IG that fails if anything is ever sent. Switches: the live .env's switch lines as they
-stand (only the keys config/switches.py reads; TRADING forced off), with HOURLY_CONTEXT and ENTRY_NEAR_EMA8 both on
-or both off. Writes the trades opened and every entry-filter refusal. Based on
+stand (only the keys config/switches.py reads; TRADING forced off), with the entry filters as the mode says:
+  on    HOURLY_CONTEXT and ENTRY_NEAR_EMA8 on (the first check, rule 2)
+  2b    HOURLY_CONTEXT, RSI_STRETCH and TREND_DAY_RSI_OFF on, ENTRY_NEAR_EMA8 off (owner, 21 November 2026)
+  off   all four off
+EMERGING_LADDER (on this branch from another build) is held off in every mode, so only the filters differ. Writes the trades opened and every entry-filter refusal. Based on
 docs/research/pullback_entry_20261119/pullback_replay.py.
 
     AUTOBOT_ENV_FILE=/opt/autobot/.env PYTHONPATH=<worktree> .venv/bin/python entry_filters_replay.py \
@@ -61,14 +64,19 @@ class Over:
         return getattr(self._base, name)
 
 
+MODES = {"on": {"HOURLY_CONTEXT": "on", "ENTRY_NEAR_EMA8": "on", "RSI_STRETCH": "off", "TREND_DAY_RSI_OFF": "off"},
+         "2b": {"HOURLY_CONTEXT": "on", "ENTRY_NEAR_EMA8": "off", "RSI_STRETCH": "on", "TREND_DAY_RSI_OFF": "on"},
+         "off": {"HOURLY_CONTEXT": "off", "ENTRY_NEAR_EMA8": "off", "RSI_STRETCH": "off", "TREND_DAY_RSI_OFF": "off"}}
+
+
 def main(out, filters, week_noon, end):
-    sw = live_switches() | {"HOURLY_CONTEXT": filters, "ENTRY_NEAR_EMA8": filters}
+    sw = live_switches() | MODES[filters] | {"EMERGING_LADDER": "off"}
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         env = tmp / "switches.env"
         env.write_text("".join(f"{k}={v}\n" for k, v in sw.items()))
         base = load_settings(switches_from=env).for_pair("GBPUSD")
-        assert base.switches.hourly_context == base.switches.entry_near_ema8 == (filters == "on")
+        assert base.switches.hourly_context == (filters != "off") and base.switches.rsi_stretch == (filters == "2b")
         assert base.switches.trading is False
         s = Over(base, tmp)
         store = CandleStore(base.candles.folder, base.candles.compress_after_days)
@@ -91,10 +99,12 @@ def main(out, filters, week_noon, end):
                            "filters": [x for x in idea.steps if x.startswith("entry filters:")]})
         refused = [json.loads(l) for dec in sorted((tmp / "records").rglob("decisions.jsonl"))
                    for l in dec.read_text().splitlines()]
+        trend_days = [r for r in refused if r["kind"].startswith("trend day")]
         refused = [r for r in refused if r["kind"] == "entry filter refused"]
     Path(out).write_text(json.dumps({"filters": filters, "switches": {k: v for k, v in sw.items()},
-                                     "trades": trades, "refused": refused}, indent=1, default=str))
-    print(len(trades), "trades;", len(refused), "refused by the entry filters")
+                                     "trades": trades, "refused": refused, "trend_days": trend_days},
+                                    indent=1, default=str))
+    print(len(trades), "trades;", len(refused), "refused by the entry filters;", len(trend_days), "trend-day records")
 
 
 if __name__ == "__main__":

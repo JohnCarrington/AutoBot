@@ -133,7 +133,9 @@ EXPECTED = {
     "pullback_entry": {"wait_candles": 6},
     "entry_filters": {"hourly_swing_candles_each_side": 2, "hourly_ema_periods": 50, "hourly_ema_slope_candles": 6,
                       "hourly_context_near_pips": Decimal("5"), "ema8_periods": 8,
-                      "ema8_max_distance_pips": Decimal("5")},
+                      "ema8_max_distance_pips": Decimal("5"), "rsi_periods": 3, "rsi_sell_below": Decimal("30"),
+                      "rsi_buy_above": Decimal("70"), "trend_day_from": time(6, 0), "trend_day_until": time(9, 0),
+                      "trend_day_ends_at": time(20, 30)},
     "emerging_ladder": {"first_from_pips": Decimal("10"), "first_stop_pips": Decimal("5"),     # owner, 21 November 2026
                         "second_from_pips": Decimal("15"), "second_stop_pips": Decimal("10")},
     "asian_range_breakout": {"range_from": time(0, 0), "range_until": time(7, 0), "breakout_from": time(7, 0),

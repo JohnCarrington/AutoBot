@@ -291,6 +291,19 @@ ema8_periods = 8
 # ... a sell opens only with its entry no more than this many pips below it, a buy no more than this many above it.
 # The slow grind, the breakout, the Asian range breakout and the session sweep are exempt.
 ema8_max_distance_pips = 5
+# Rule 2b, the RSI stretch (switch RSI_STRETCH; owner, 21 November 2026, in place of rule 2): the 5-minute RSI
+# (Wilder) on the sell price at the last finished 5-minute candle before the entry, of this many periods ...
+rsi_periods = 3
+# ... no sell when it is under this, no buy when it is over the next. The slow grind, the breakout, the Asian range
+# breakout and the session sweep are exempt.
+rsi_sell_below = 30
+rsi_buy_above = 70
+# Johnny's slow-grind trend day (switch TREND_DAY_RSI_OFF): it starts when a slow grind trade is in profit (as IG
+# would close it) at any moment from trend_day_from up to trend_day_until (UK times), in that trade's direction, and
+# lasts until trend_day_ends_at; meanwhile the RSI stretch does not apply to trades in its direction.
+trend_day_from = "06:00"
+trend_day_until = "09:00"
+trend_day_ends_at = "20:30"
 
 [emerging_ladder]
 # Johnny's exit for emerging-trend trades (owner, 21 November 2026; switch EMERGING_LADDER, on if left out): only for

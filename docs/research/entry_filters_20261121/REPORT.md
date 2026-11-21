@@ -365,6 +365,201 @@ All of these were rule 2.
 | Fri 20 Nov 18:42 | EMA pullback | sell | 13092.3 | -1.4 (Johnny) |  |  | ✓ | 27.1 |  |
 | Fri 20 Nov 18:45 | level reversal | sell | 13089.7 | +3.7 |  | ✓ | ✓ | 13.6 | a SELL more than 5 pips below the 5-minute 8 EMA: entry 13089.7, 5-minute 8 EMA 13095.2 (at the 18:40 candle), 5.5 pips below it: refused |
 
+## Rule 2 off, rule 2b (RSI stretch) and the slow-grind trend day (third brief, 21 Nov)
+
+### What changed
+
+- **Rule 2** (entry near the 5-minute 8 EMA) is now **off if left out** (`ENTRY_NEAR_EMA8`). Its code is kept.
+- **Rule 2b**, `RSI_STRETCH` (on if left out): no SELL when the 5-minute RSI 3 is under 30, no BUY when it is over 70. It uses the sell price and the last finished 5-minute candle before the entry. 3, 30 and 70 are in `config/settings.toml [entry_filters]` (`rsi_periods`, `rsi_sell_below`, `rsi_buy_above`). Exempt: slow grind, breakout, Asian range breakout, session sweep. Each refusal records the RSI value, the candle, the limit, the strategy and the trend day (if any).
+- **Trend day**, `TREND_DAY_RSI_OFF` (on if left out). Johnny's answers are built in:
+  - It starts when a slow grind trade is in profit (more than 0 pips as IG would close it: the sell price for a buy, the buy price for a sell) at any point between 06:00 and 09:00 UK.
+  - Live it is checked on every price, in a replay on 5-minute candles. A slow grind trade opened before 06:00 counts once it is in profit from 06:00.
+  - It lasts until the 20:30 UK close, in that trade's direction.
+  - An opposite-direction slow grind trade also in profit inside 06:00–09:00 cancels it for the rest of the day.
+  - On a trend day, rule 2b doesn't apply to trades in the trend's direction; trades against it are still checked. Rule 1 is unchanged.
+  - The start (direction, slow grind trade, its fill and pips in profit, end time) and any cancel are recorded in the decisions log. After a restart they are read back.
+  - The dashboard's "since" line shows the trend day (▲/▼ from hh:mm). This needs the dashboard restarted, which is the owner's, when deployed.
+- Settings, switches, `.env.example`, `docs/SETTINGS.md` and `docs/DESIGN.md` 3.10 are updated.
+- Tests: `tests/functional/test_rsi_stretch_trend_day.py` (21 tests). They cover rule 2b buys, sells, the strict limits, the exemptions, the last finished candle, the switch, the trend day starting inside the window and not outside (09:00 is outside), the direction, the cancel, the 20:30 end, the restore after a restart, and 2b lifted only in the trend's direction. Full suite: **2421 passed**.
+- Another session's commit `c72499b` (emerging-trend ladder, `EMERGING_LADDER`) is on this branch underneath. I didn't change it. The replays below hold it **off**, so they show only the entry filters.
+
+### Trend days: 9 and 11 Nov start, 10 Nov doesn't
+
+| Day | From the live slow grind trades | In the replay |
+|---|---|---|
+| Mon 9 Nov | **starts 06:00, buy** (slow grind buy opened 05:25) | **starts 06:00, buy** (opened 05:25, +0.8 at 06:00) |
+| Tue 10 Nov | **no** | **no** |
+| Wed 11 Nov | **starts 08:15, sell** (slow grind sell opened 08:13) | **starts 08:10, sell** (opened 08:10, +1.6) |
+| Thu 12 Nov | also starts 06:40, sell (opened 02:58) | starts 06:40, sell (opened 02:55) |
+| Fri 13 Nov | no | no |
+| Mon 16 – Tue 17 Nov | no | no |
+| Wed 18 Nov | no | **starts 06:00, sell** (opened 04:05, +4.6) |
+| Thu 19 Nov | no | **starts 07:55, buy** (opened 07:55, +0.4) |
+| Fri 20 Nov | no | no |
+
+On 18 and 19 Nov the replay's slow grind opened trades that the live slow grind did not open, so the replay finds trend days that live did not have. (Live checks blocked the 18 Nov slow grind sells; see the 18 Nov trend-day investigation.) Thursday 12 Nov is an extra trend day under the rule as written.
+
+### Per strategy per week, on the live trades (IG figures)
+
+"Saved" = losses of refused live trades; "cost" = wins of refused live trades.
+
+#### Trend days from the live slow grind trades
+
+| Day | Trend day | Started (UK) | Direction | Slow grind trade | Cancelled |
+|---|---|---|---|---|---|
+| Mon 09 Nov | yes | 06:00 | buy | slow grind buy opened 05:25 |  |
+| Tue 10 Nov | no |  |  |  |  |
+| Wed 11 Nov | yes | 08:15 | sell | slow grind sell opened 08:13 |  |
+| Thu 12 Nov | yes | 06:40 | sell | slow grind sell opened 02:58 |  |
+| Fri 13 Nov | no |  |  |  |  |
+| Mon 16 Nov | no |  |  |  |  |
+| Tue 17 Nov | no |  |  |  |  |
+| Wed 18 Nov | no |  |  |  |  |
+| Thu 19 Nov | no |  |  |  |  |
+| Fri 20 Nov | no |  |  |  |  |
+
+#### 9-13 Nov: 55 live trades
+
+**Rule 1, hourly context**
+
+| Strategy | Live trades | Refused | Their live pips | Winners | Saved (losers) | Cost (winners) | Net | On 9 and 11 Nov: refused, their live pips | Of them closed by Johnny |
+|---|---:|---:|---:|---:|---:|---:|---:|---|---:|
+| Bollinger bounce | 11 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | 0, +0.0 | 0 |
+| EMA pullback | 13 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | 0, +0.0 | 0 |
+| breakout | 9 | 1 | -6.0 | 0 | 6.0 | 0.0 | +6.0 | 0, +0.0 | 0 |
+| level reversal | 5 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | 0, +0.0 | 0 |
+| range trade | 5 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | 0, +0.0 | 0 |
+| slow grind | 12 | 1 | -15.0 | 0 | 15.0 | 0.0 | +15.0 | 1, -15.0 | 0 |
+| **All** | 55 | 2 | -21.0 | 0 | 21.0 | 0.0 | +21.0 | 1, -15.0 | 0 |
+
+**Rule 2b, RSI stretch (off in the trend's direction on a trend day)**
+
+| Strategy | Live trades | Refused | Their live pips | Winners | Saved (losers) | Cost (winners) | Net | On 9 and 11 Nov: refused, their live pips | Of them closed by Johnny |
+|---|---:|---:|---:|---:|---:|---:|---:|---|---:|
+| Bollinger bounce | 11 | 4 | -8.4 | 2 | 12.0 | 3.6 | +8.4 | 1, +0.1 | 0 |
+| EMA pullback | 13 | 8 | -96.0 | 0 | 96.0 | 0.0 | +96.0 | 2, -24.0 | 0 |
+| breakout | 9 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | 0, +0.0 | 0 |
+| level reversal | 5 | 2 | +5.4 | 1 | 14.6 | 20.0 | -5.4 | 0, +0.0 | 1 |
+| range trade | 5 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | 0, +0.0 | 0 |
+| slow grind | 12 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | 0, +0.0 | 0 |
+| **All** | 55 | 14 | -99.0 | 3 | 122.6 | 23.6 | +99.0 | 3, -23.9 | 1 |
+
+Trades the RSI stretch would have refused but for the trend day (in its direction):
+
+- Mon 09 Nov 06:12 level reversal buy (RSI 3 92.3): live +20.0
+- Mon 09 Nov 08:25 level reversal buy (RSI 3 99.0): live -11.2
+- Wed 11 Nov 08:16 EMA pullback sell (RSI 3 15.7): live +30.0
+- Wed 11 Nov 10:51 EMA pullback sell (RSI 3 18.1): live +30.0
+- Wed 11 Nov 13:40 level reversal sell (RSI 3 15.5): live +20.0
+
+#### 16-20 Nov: 52 live trades
+
+**Rule 1, hourly context**
+
+| Strategy | Live trades | Refused | Their live pips | Winners | Saved (losers) | Cost (winners) | Net | On 9 and 11 Nov: refused, their live pips | Of them closed by Johnny |
+|---|---:|---:|---:|---:|---:|---:|---:|---|---:|
+| Asian range breakout | 3 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | – | 0 |
+| Bollinger bounce | 8 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | – | 0 |
+| Bollinger bounce 5m | 3 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | – | 0 |
+| EMA pullback | 11 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | – | 0 |
+| breakout | 2 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | – | 0 |
+| level reversal | 14 | 3 | -59.8 | 0 | 59.8 | 0.0 | +59.8 | – | 1 |
+| range trade | 2 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | – | 0 |
+| session sweep | 4 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | – | 0 |
+| slow grind | 5 | 1 | -15.0 | 0 | 15.0 | 0.0 | +15.0 | – | 0 |
+| **All** | 52 | 4 | -74.8 | 0 | 74.8 | 0.0 | +74.8 | – | 1 |
+
+**Rule 2b, RSI stretch (off in the trend's direction on a trend day)**
+
+| Strategy | Live trades | Refused | Their live pips | Winners | Saved (losers) | Cost (winners) | Net | On 9 and 11 Nov: refused, their live pips | Of them closed by Johnny |
+|---|---:|---:|---:|---:|---:|---:|---:|---|---:|
+| Asian range breakout | 3 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | – | 0 |
+| Bollinger bounce | 8 | 3 | -8.1 | 1 | 15.3 | 7.2 | +8.1 | – | 0 |
+| Bollinger bounce 5m | 3 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | – | 0 |
+| EMA pullback | 11 | 11 | -117.3 | 0 | 117.3 | 0.0 | +117.3 | – | 2 |
+| breakout | 2 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | – | 0 |
+| level reversal | 14 | 10 | -123.8 | 2 | 130.4 | 6.6 | +123.8 | – | 2 |
+| range trade | 2 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | – | 0 |
+| session sweep | 4 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | – | 0 |
+| slow grind | 5 | 0 | +0.0 | 0 | 0.0 | 0.0 | +0.0 | – | 0 |
+| **All** | 52 | 24 | -249.2 | 3 | 263.0 | 13.8 | +249.2 | – | 4 |
+
+#### Every refusal of a live trade on 9 and 11 Nov
+
+| Opened (UK) | Strategy | Dir | Entry | Live pips | Trend day then | Rule | Why |
+|---|---|---|---:|---:|---|---|---|
+| Mon 09 Nov 15:45 | slow grind | sell | 13401.4 | -15.0 | buy | 1 | SELL at 13401.4 is 1.1 pips from the hourly 50 EMA 13402.5 (within 5): refused |
+| Mon 09 Nov 21:02 | EMA pullback | buy | 13442.7 | -12.0 | none | 2b | no BUY with the 5-minute RSI 3 83.4 at the 20:55 candle, over 70: refused |
+| Wed 11 Nov 15:10 | Bollinger bounce | buy | 13277.4 | +0.1 | sell | 2b | no BUY with the 5-minute RSI 3 86.7 at the 15:05 candle, over 70 (a sell trend day: this buy is against it): refused |
+| Wed 11 Nov 21:06 | EMA pullback | sell | 13271.9 | -12.0 | none | 2b | no SELL with the 5-minute RSI 3 6.3 at the 21:00 candle, under 30: refused |
+
+
+### The replay check: rule 1 + 2b + trend day on, against all off
+
+`replay_2b_summary.py` puts each refusal next to the trade the all-off replay took at the same time. The full lists are in `replay_2b_9_13_nov.md` and `replay_2b_16_20_nov.md`. Many refusals are the same setup offered again 5 minutes later and never became a trade ("no trade"). These replay figures check that the code works; they are not a verdict (the live demo is the judge).
+
+| Week | Refusals (rule 1 / 2b) | Replay trades on / off |
+|---|---|---|
+| 9–13 Nov | 44 (2 / 42) | 55 / 71 |
+| 16–20 Nov | 115 (13 / 102) | 53 / 83 |
+
+#### Every refusal on 9 and 11 Nov (replay)
+
+| UK time | Strategy | Dir | Rule | RSI 3 | Trend day | All-off replay trade | Live trade |
+|---|---|---|---|---|---|---|---|
+| Mon 09 08:05 | breakout | buy | hourly context (DOWN) | | buy | +50.0 | none at that time |
+| Mon 09 15:45 | slow grind | sell | hourly context (UP) | | buy | −15.0 | same trade, −15.0 |
+| Mon 09 21:00 | EMA pullback | buy | RSI stretch | 83.4 | after 20:30 | −12.0 | 21:02, −12.0 |
+| Wed 11 07:00, 07:05, 07:15 | Bollinger bounce 5m | buy | RSI stretch | 76.1, 88.0, 70.9 | not yet (starts 08:10) | no trade | – |
+| Wed 11 09:55, 10:00 | Bollinger bounce 5m | buy | RSI stretch | 74.3, 85.3 | sell (against it) | no trade | – |
+| Wed 11 15:10 | Bollinger bounce | buy | RSI stretch | 86.7 | sell (against it) | −1.1 | 15:10, +0.1 |
+| Wed 11 15:10 | Bollinger bounce 5m | buy | RSI stretch | 86.7 | sell (against it) | −0.2 | – |
+| Wed 11 15:15 | Bollinger bounce | buy | RSI stretch | 93.3 | sell (against it) | no trade | – |
+| Wed 11 21:05 | EMA pullback | sell | RSI stretch | 6.3 | after 20:30 | −12.0 | 21:06, −12.0 |
+
+On Mon 9 the replay's trend day is a buy, so the stretched buys were let through (06:12 and 08:25 level reversal buys live). On Wed 11 the trend day lets through the 08:16, 10:51 and 13:40 sells (live +30, +30, +20).
+
+#### Replay trades per strategy, on against off
+
+9–13 Nov:
+
+| Strategy | Trades on | Pips on | Trades off | Pips off |
+|---|---|---|---|---|
+| Asian range breakout | 5 | +8.3 | 5 | +8.3 |
+| Bollinger bounce | 8 | +45.0 | 10 | +46.3 |
+| Bollinger bounce 5m | 11 | -5.3 | 15 | -23.7 |
+| EMA pullback | 6 | +54.0 | 13 | -30.0 |
+| breakout | 5 | -30.0 | 5 | +26.0 |
+| level reversal | 3 | +60.0 | 5 | +60.0 |
+| range trade | 4 | -41.2 | 4 | -41.2 |
+| session sweep | 3 | +26.4 | 3 | +26.4 |
+| slow grind | 10 | +66.3 | 11 | +51.3 |
+| all | 55 | +183.5 | 71 | +123.4 |
+
+16–20 Nov:
+
+| Strategy | Trades on | Pips on | Trades off | Pips off |
+|---|---|---|---|---|
+| Asian range breakout | 2 | -0.1 | 3 | -12.1 |
+| Bollinger bounce | 7 | -45.5 | 10 | -40.4 |
+| Bollinger bounce 5m | 13 | -41.0 | 17 | -42.9 |
+| EMA pullback | 6 | +217.0 | 20 | +110.2 |
+| breakout | 2 | +44.0 | 2 | +44.0 |
+| level reversal | 8 | +21.1 | 14 | -131.1 |
+| range trade | 2 | -2.1 | 2 | -2.1 |
+| session sweep | 8 | -9.2 | 8 | -9.2 |
+| slow grind | 5 | +6.6 | 7 | -23.4 |
+| all | 53 | +190.8 | 83 | -107.0 |
+
+The Mon 9 08:05 breakout buy refused by rule 1 would have won +50 in the replay (live had no breakout trade then).
+
+### Open for Johnny
+
+- Thu 12 Nov counts as a trend day (sell from 06:40) under the rule as written.
+- In the replay 18 and 19 Nov also become trend days, because the replay's slow grind opened trades that live did not.
+- Rule 1's cost in the replay: the Mon 9 08:05 breakout buy (+50 with the filters off).
+- The 07:35 Asian range breakout buy is still allowed (from the earlier brief).
+
 ## Files
 
 - `entry_filters_replay.py`: the check replay.
@@ -372,3 +567,6 @@ All of these were rule 2.
 - `compare.py`, `compare_*.md`: the refusals next to the live trades.
 - `named_trades.py`, `named_trades.txt`: the four named trades, checked one by one.
 - `rule_tables.py`, `rule_tables.md`: the per-strategy tables and every refused live trade.
+- `rule_tables_2b.py`, `rule_tables_2b.md`: rule 1 and rule 2b with the trend day, per strategy per week, on the live trades; the trend days from the live slow grind.
+- `replay2b_*_2b.json`, `replay2b_*_off.json`: the third-brief replays (rule 1 + 2b + trend day, against all off; ladder held off).
+- `replay_2b_summary.py`, `replay_2b_9_13_nov.md`, `replay_2b_16_20_nov.md`: those replays summarised, every refusal next to the all-off trade.

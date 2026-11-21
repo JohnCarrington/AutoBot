@@ -17,7 +17,13 @@
   HOURLY_CONTEXT              on or off (ON if left out; owner, 21 November 2026): in an hourly DOWN context no buy opens
                               within 5 pips of the daily pivot or the hourly 50 EMA; in an UP context no sell
                               ([entry_filters]; strategies/entry_filters.py, rule 1)
-  ENTRY_NEAR_EMA8             on or off (ON if left out; owner, 21 November 2026): a sell opens only if its entry is no
+  RSI_STRETCH                 on or off (ON if left out; owner, 21 November 2026, in place of ENTRY_NEAR_EMA8): no sell
+                              when the 5-minute RSI 3 is under 30, no buy when over 70; slow grind, breakout, Asian
+                              range breakout and session sweep exempt (strategies/entry_filters.py, rule 2b)
+  TREND_DAY_RSI_OFF           on or off (ON if left out; owner, 21 November 2026): on Johnny's slow-grind trend day (a
+                              slow grind trade in profit between 06:00 and 09:00 UK; until 20:30 UK) RSI_STRETCH does
+                              not apply to trades in the trend's direction (strategies/entry_filters.py)
+  ENTRY_NEAR_EMA8             on or off (OFF if left out since 21 November 2026; was on): a sell opens only if its entry is no
                               more than 5 pips below the 5-minute 8 EMA, a buy no more than 5 pips above it; the slow
                               grind, breakout, Asian range breakout and session sweep exempt (strategies/entry_filters.py, rule 2)
   EMERGING_LADDER             on or off (ON if left out; owner, 21 November 2026): a trade opened while the analyser said
@@ -113,6 +119,8 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "PULLBACK_ENTRY": ("pullback_entry", _on_off),
     "HOURLY_CONTEXT": ("hourly_context", _on_off),
     "ENTRY_NEAR_EMA8": ("entry_near_ema8", _on_off),
+    "RSI_STRETCH": ("rsi_stretch", _on_off),
+    "TREND_DAY_RSI_OFF": ("trend_day_rsi_off", _on_off),
     "EMERGING_LADDER": ("emerging_ladder", _on_off),
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
     "STRATEGY_BREAKOUT": ("breakout", _on_off),
@@ -130,8 +138,10 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
 OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_NEAR_TIMES": "off", "PLANNER_OBSERVE": "off", "ONE_SIGNAL_ONE_TRADE": "off",
                             # the breakout's and Asian range breakout's pullback entry (owner, 19 November 2026): ON
                             "PULLBACK_ENTRY": "on",
-                            # the entry filters (owner, 21 November 2026): both ON
-                            "HOURLY_CONTEXT": "on", "ENTRY_NEAR_EMA8": "on",
+                            # the entry filters (owner, 21 November 2026): rule 1 ON; rule 2 OFF, replaced by
+                            # rule 2b (RSI_STRETCH) ON, with the slow-grind trend day (TREND_DAY_RSI_OFF) ON
+                            "HOURLY_CONTEXT": "on", "ENTRY_NEAR_EMA8": "off", "RSI_STRETCH": "on",
+                            "TREND_DAY_RSI_OFF": "on",
                             # Johnny's exit for emerging-trend trades (owner, 21 November 2026): ON
                             "EMERGING_LADDER": "on"}
 

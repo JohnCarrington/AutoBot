@@ -296,9 +296,9 @@ def test_rule_2_uses_the_8_ema_at_the_last_finished_5_minute_candle_before_the_e
 
 # ---- both rules and the switches -----------------------------------------------------------------------------------
 
-def test_both_switches_left_out_are_on(tmp_path, pretend_switches):
+def test_left_out_rule_1_is_on_and_rule_2_is_off_since_21_november(tmp_path, pretend_switches):
     s = settings(tmp_path, pretend_switches, None, None)
-    assert s.switches.hourly_context is True and s.switches.entry_near_ema8 is True
+    assert s.switches.hourly_context is True and s.switches.entry_near_ema8 is False   # rule 2 replaced by 2b
     f = s.entry_filters
     assert (f.hourly_swing_candles_each_side, f.hourly_ema_periods, f.hourly_ema_slope_candles,
             f.hourly_context_near_pips, f.ema8_periods, f.ema8_max_distance_pips) == (2, 50, 6, D("5"), 8, D("5"))
@@ -353,7 +353,7 @@ def _engine(S, monkeypatch, verdict):
     from trading import engine as eng
     calls = []
 
-    def check(s, store, i):
+    def check(s, store, i, trend=None):
         calls.append((i.strategy, i.direction, i.entry_price))
         return verdict
     monkeypatch.setattr(eng.entry_filters, "check", check)

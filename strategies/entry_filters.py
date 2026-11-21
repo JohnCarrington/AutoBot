@@ -13,11 +13,26 @@ RULE 1. HOURLY CONTEXT (switch HOURLY_CONTEXT, on if left out). Every strategy.
   A swing high: an hourly candle whose high has hourly_swing_candles_each_side (2) lower hourly highs on each side
   (a swing low: 2 higher lows on each side); only finished hourly candles, so a swing is known 2 hours after it.
 
-RULE 2. ENTRY LOCATION (switch ENTRY_NEAR_EMA8, on if left out).
+RULE 2. ENTRY LOCATION (switch ENTRY_NEAR_EMA8, OFF if left out since 21 November 2026, replaced by rule 2b; kept).
   A SELL opens only if the entry price is no more than ema8_max_distance_pips (5) below the 5-minute 8 EMA (at it,
   above it, or up to 5 pips below); a BUY only if it is no more than 5 pips above it. The 8 EMA on the sell price at
   the last finished 5-minute candle before the entry. The slow grind, the breakout, the Asian range breakout and the
   session sweep are exempt (the session sweep: owner, 21 November 2026, after the check of the 19 November 12:10 sell).
+
+RULE 2b. RSI STRETCH (switch RSI_STRETCH, on if left out; owner, 21 November 2026, in place of rule 2).
+  No SELL when the 5-minute RSI 3 is under rsi_sell_below (30); no BUY when it is over rsi_buy_above (70). RSI 3 on the
+  sell price, Wilder's smoothing (prices/indicators.py), at the last finished 5-minute candle before the entry.
+  Exempt: the slow grind, the breakout, the Asian range breakout and the session sweep.
+
+THE SLOW-GRIND TREND DAY (switch TREND_DAY_RSI_OFF, on if left out; owner, 21 November 2026). Johnny's trend day, not
+the bot's own trend-day check (analyser/trend_day.py). It starts the first time a slow grind trade is in profit (more
+than 0 pips at the price IG would close it: the sell price for a buy, the buy price for a sell) at any moment from
+trend_day_from (06:00) up to trend_day_until (09:00) UK, in that trade's direction; a slow grind trade opened before
+06:00 counts once it is in profit from 06:00. It lasts until trend_day_ends_at (20:30) UK, the bot's close. If a slow
+grind trade in the OTHER direction is also in profit inside 06:00-09:00 that day, the trend day is cancelled for the
+rest of the day (owner's answers). On a trend day rule 2b does not apply to trades in the trend's direction; trades
+against it are still checked. Rule 1 (and rule 2, if switched on) unchanged. Live it is checked on every price; in a
+replay on the 5-minute candles. Its start and any cancel are recorded (decisions.jsonl) and shown on the dashboard.
 
 The owner's answers (21 November 2026): the entry price is the strategy's own entry price (the sell / chart price,
 as the bot records entry_price), for buys too; "price below / above the hourly 50 EMA" is the last finished hourly
@@ -36,13 +51,16 @@ from typing import Any
 from analyser.indicators import last_candles
 from levels.current import build as build_levels
 from levels.rules import PIVOT
-from prices.indicators import ema
+from prices.indicators import ema, rsi
 from prices.model import plain
 from strategies.common import ASIAN_RANGE_BREAKOUT, BREAKOUT, SESSION_SWEEP, SLOW_GRIND
 
 HOURLY_CONTEXT = "hourly context"
 ENTRY_NEAR_EMA8 = "entry near the 8 EMA"
 EMA8_EXEMPT = (SLOW_GRIND, BREAKOUT, ASIAN_RANGE_BREAKOUT, SESSION_SWEEP)          # owner, 21 November 2026
+RSI_STRETCH = "RSI stretch"
+RSI_EXEMPT = (SLOW_GRIND, BREAKOUT, ASIAN_RANGE_BREAKOUT, SESSION_SWEEP)           # owner, 21 November 2026
+TREND_DAY_STARTED, TREND_DAY_CANCELLED = "trend day started", "trend day cancelled"
 DOWN, UP = "down", "up"
 
 
@@ -128,8 +146,17 @@ def ema8_at(settings: Any, store: Any, at: datetime) -> tuple[Decimal | None, An
     return ema(c5, settings.chart.price, f.ema8_periods).get(c5[-1].start), c5[-1]
 
 
-def check(settings: Any, store: Any, idea: Any) -> Verdict:
-    """Both rules, as their switches say, for one trade about to open. The first rule that refuses it is given."""
+def rsi3_at(settings: Any, store: Any, at: datetime) -> tuple[Decimal | None, Any]:
+    """The 5-minute RSI 3 (sell price) at the last 5-minute candle finished by `at`, and that candle."""
+    c5 = last_candles(store, "5m", at, settings.indicators.history_candles)
+    if not c5:
+        return None, None
+    return rsi(c5, settings.chart.price, settings.entry_filters.rsi_periods).get(c5[-1].start), c5[-1]
+
+
+def check(settings: Any, store: Any, idea: Any, trend: str | None = None) -> Verdict:
+    """The rules, as their switches say, for one trade about to open. The first rule that refuses it is given.
+    `trend`: the slow-grind trend day's direction now ("buy" or "sell"), or None (TrendDayWatch.direction_at)."""
     sw, f = settings.switches, settings.entry_filters
     ppp = Decimal(settings.market.points_per_pip)
     at, price, buy = idea.time, Decimal(idea.entry_price), idea.direction == "buy"
@@ -178,4 +205,119 @@ def check(settings: Any, store: Any, idea: Any) -> Verdict:
                         "entry_price": str(price), "ema8_5m": f"{e8:.1f}", "ema8_candle": f"{c.start:%Y-%m-%dT%H:%MZ}",
                         "pips_beyond_ema8": f"{beyond:.1f}", "limit_pips": str(limit)}, checked)
                 checked.append(f"entry near the 8 EMA: {line}: allowed")
+
+    if sw.rsi_stretch:
+        if idea.strategy in RSI_EXEMPT:
+            checked.append(f"RSI stretch: {idea.strategy} is exempt")
+        elif trend is not None and trend == idea.direction:
+            checked.append(f"RSI stretch: not applied: a {trend} trend day (slow grind), and this {idea.direction} is in "
+                           "its direction")
+        else:
+            r3, c = rsi3_at(settings, store, at)
+            if r3 is None:
+                checked.append("RSI stretch: the 5-minute RSI 3 is not worked out yet: not checked")
+            else:
+                lo, hi = Decimal(f.rsi_sell_below), Decimal(f.rsi_buy_above)
+                stretched = (r3 > hi) if buy else (r3 < lo)
+                limit = f"over {plain(hi)}" if buy else f"under {plain(lo)}"
+                td = "" if trend is None else f" (a {trend} trend day: this {idea.direction} is against it)"
+                line = f"5-minute RSI 3 {r3:.1f} at the {c.start:%H:%M} candle"
+                if stretched:
+                    why = f"no {idea.direction.upper()} with the {line}, {limit}{td}: refused"
+                    return Verdict(False, RSI_STRETCH, why, {
+                        "strategy": idea.strategy, "rsi3_5m": f"{r3:.1f}", "rsi_candle": f"{c.start:%Y-%m-%dT%H:%MZ}",
+                        "limit": limit, "entry_price": str(price), "trend_day": trend}, checked)
+                checked.append(f"RSI stretch: {line}, not {limit}{td}: allowed")
     return Verdict(True, checked=checked)
+
+
+class TrendDayWatch:
+    """Johnny's slow-grind trend day (see the module's docstring), one UK day at a time. `record(kind, t, **data)`
+    keeps its start and cancel (the engine writes them to decisions.jsonl)."""
+
+    def __init__(self, settings: Any, record: Any = None):
+        from strategies.sessions import uk_zone
+        self.s, self.uk = settings, uk_zone(settings)
+        self.ppp = Decimal(settings.market.points_per_pip)
+        self.record = record or (lambda kind, t, **data: None)
+        self.day = None                 # the UK date the state below is for
+        self.direction = None           # "buy" or "sell" once started
+        self.started = None             # when
+        self.cancelled = None           # when, if cancelled
+        self.reference = ""             # the slow grind trade that started it
+        self.info: dict = {}
+
+    def _for(self, t: datetime) -> None:
+        d = t.astimezone(self.uk).date()
+        if d != self.day:
+            self.day, self.direction, self.started, self.cancelled, self.reference, self.info = d, None, None, None, "", {}
+
+    def _ends(self) -> datetime:
+        f = self.s.entry_filters
+        return datetime.combine(self.day, f.trend_day_ends_at, self.uk)
+
+    def direction_at(self, t: datetime) -> str | None:
+        """The trend day's direction at `t`, or None (not started, cancelled, after 20:30 UK, or another day)."""
+        if self.day != t.astimezone(self.uk).date() or self.direction is None:
+            return None
+        if self.cancelled is not None and t >= self.cancelled:
+            return None
+        return self.direction if self.started <= t < self._ends() else None
+
+    def on_bar(self, bar: Any, trades: list) -> None:
+        """A price (a tick as a one-price bar) or a 5-minute candle, with the trades open at it: a slow grind trade
+        in profit at it, inside 06:00-09:00 UK, starts (or, the other way, cancels) the day's trend day. A trade is
+        judged only on prices from the bar it opened in onwards."""
+        f = self.s.entry_filters
+        self._for(bar.start)
+        if self.cancelled is not None:
+            return
+        clock = bar.start.astimezone(self.uk).time()
+        if not (f.trend_day_from <= clock < f.trend_day_until):
+            return
+        for t in trades:
+            if t.strategy != SLOW_GRIND or not t.open or t.opened_at > bar.start:
+                continue
+            buy = t.direction == "buy"
+            best = (bar.sell_high - t.fill) / self.ppp if buy else (t.fill - bar.buy_low) / self.ppp
+            if best <= 0:
+                continue
+            data = {"direction": t.direction, "reference": t.reference, "strategy": t.strategy,
+                    "slow_grind_opened_utc": t.opened_at, "slow_grind_fill": t.fill, "pips_in_profit": best,
+                    "ends_utc": self._ends()}
+            if self.direction is None:
+                self.direction, self.started, self.reference = t.direction, bar.start, t.reference
+                self.info = data
+                self.record(TREND_DAY_STARTED, bar.start, **data,
+                            why=f"the slow grind {t.direction} opened at {t.fill} was {best:.1f} pips in profit at "
+                                f"{clock:%H:%M} UK (inside {f.trend_day_from:%H:%M}-{f.trend_day_until:%H:%M}): a "
+                                f"{t.direction} trend day until {f.trend_day_ends_at:%H:%M} UK")
+            elif t.direction != self.direction:
+                self.cancelled = bar.start
+                self.record(TREND_DAY_CANCELLED, bar.start, **data, started_utc=self.started,
+                            started_by=self.reference,
+                            why=f"a slow grind {t.direction} (opened at {t.fill}) was also in profit at {clock:%H:%M} "
+                                f"UK, against the {self.direction} trend day: cancelled for the rest of the day")
+                return
+
+    def restore(self, rows: list[dict], now: datetime) -> None:
+        """After a restart: today's recorded start and cancel (decisions.jsonl rows), so the day carries on."""
+        self._for(now)
+        for r in rows:
+            t = datetime.fromisoformat(str(r["time_utc"]).replace("Z", "+00:00"))
+            if t.astimezone(self.uk).date() != self.day or t > now:
+                continue
+            if r.get("kind") == TREND_DAY_STARTED and self.direction is None:
+                self.direction, self.started, self.reference = r["direction"], t, r.get("reference", "")
+                self.info = r
+            elif r.get("kind") == TREND_DAY_CANCELLED:
+                self.cancelled = t
+
+    def status(self, now: datetime) -> dict | None:
+        """For the dashboard: today's trend day, if one started."""
+        if self.day != now.astimezone(self.uk).date() or self.direction is None:
+            return None
+        return {"direction": self.direction, "started_utc": self.started.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "reference": self.reference, "active": self.direction_at(now) is not None,
+                "cancelled_utc": None if self.cancelled is None else self.cancelled.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "ends_utc": self._ends().astimezone(self.uk).strftime("%H:%M UK")}
