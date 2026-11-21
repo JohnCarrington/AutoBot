@@ -235,3 +235,108 @@ is assumed to fill exactly, with no slippage. The script is `ladder.py` and its 
 
 As before, this rests on 33 emerging-trend trades, only 14 of which reached +10. It is read from the candles, not
 tested on the live demo. No level is recommended here.
+
+## Follow-up 2: stop to +5 once +10, then a trailing stop (Johnny, 21 Nov)
+
+Every exit here starts the same way: once the trade is +10, the stop goes to +5. After that it trails. The stop
+never moves backwards and never goes below +5. Johnny asked for five trails:
+- **g1:** 5 pips behind the best price so far
+- **g2:** 8 pips behind the best price so far
+- **g3:** 10 pips behind the best price so far
+- **g4:** behind the last 3 five-minute candles. This is the Bollinger bounce's existing trail, copied from
+  `trade_manager/manager.py` (`_trail`): after each finished 5-minute candle, the stop goes a tenth of a pip beyond
+  the last 3 finished candles. For a buy that is below their lowest sell price; for a sell, above their highest buy
+  price.
+- **g5:** at the 5-minute 8 EMA, moved after each finished candle. The EMA is worked out from sell-price closes, the
+  same way the bot's chart and indicators do it (`prices/indicators.py`). If a candle has already closed beyond
+  the EMA, the trade is taken as closed at that candle's close, because IG will not accept a stop on the wrong side
+  of the price.
+
+The rules are the same as before:
+- Everything else stays as it was live: the same target, and the same bot closes.
+- There is no slippage.
+- A stop touched only in the closing candle counts as hit.
+
+The script is `trail.py` and its output is `trail_output.txt`. As a check, it reruns the ladder (e) and gets the
+same −28.6.
+
+**Totals (pips):**
+
+| Trades | Actual | e ladder | g1 5 behind | g2 8 behind | g3 10 behind | g4 last 3 candles | g5 8 EMA |
+|---|---|---|---|---|---|---|---|
+| **Emerging trend, all 33** | −135.9 | **−28.6** | −44.5 | −62.9 | −60.2 | −50.3 | −54.2 |
+| Without the 50-pip winner (32) | −185.9 | −78.6 | **−68.3** | −94.1 | −89.4 | −81.6 | −86.0 |
+| 9–13 Nov (16) | −46.9 | −63.0 | −86.3 | −81.8 | −83.8 | −81.7 | −81.1 |
+| Since 16 Nov (17) | −89.0 | +34.4 | **+41.8** | +18.9 | +23.6 | +31.4 | +26.9 |
+| All other states (59) | −168.4 | −209.6 | −239.3 | −246.7 | −223.4 | −234.2 | −254.3 |
+
+**The same totals if the order inside each 5-minute candle went the worst way.** g1 to g3 move with every tick, so
+a candle that makes a new best and then falls back through the new stop can't be put in order from the candles.
+The main table counts those cases as not hit. This table counts them as hit at the new stop. g4 and g5 only move
+after a candle closes, so they barely change.
+
+| Trades | Actual | e | g1 | g2 | g3 | g4 | g5 |
+|---|---|---|---|---|---|---|---|
+| **Emerging trend, all 33** | −135.9 | **−42.8** | −99.4 | −83.1 | −70.0 | −54.0 | −58.9 |
+| Without the 50-pip winner (32) | −185.9 | −92.8 | −106.3 | −103.9 | −99.2 | **−85.3** | −90.7 |
+| 9–13 Nov (16) | −46.9 | −63.0 | −110.3 | −92.2 | −83.8 | −81.7 | −81.2 |
+| Since 16 Nov (17) | −89.0 | +20.2 | +10.9 | +9.1 | +13.8 | **+27.7** | +22.3 |
+| All other states (59) | −168.4 | −232.4 | −270.0 | −257.4 | −227.4 | −252.7 | −261.5 |
+
+The ladder's worst case here is −42.8. In the follow-up above it was −40.3. The difference is that this table also
+counts the 20 Nov 07:30 candle where +10 and +5 happen together, which costs another 2.5 pips.
+
+**Emerging trend, the 14 trades that reached +10.** Where the worst order would change a result, that result is
+shown in brackets.
+
+| Opened (UTC) | Strategy | Best | Actual | e | g1 | g2 | g3 | g4 | g5 |
+|---|---|---|---|---|---|---|---|---|---|
+| 11-09 06:12 | level reversal | 20 | +20.0 | +20.0 | +20.0 (+12.9) | +20.0 | +20.0 | +20.0 | +20.0 |
+| 11-11 13:10 | breakout | 50 | +50.0 | +50.0 | +23.8 (+6.9) | +31.2 (+20.8) | +29.2 | +31.3 | +31.8 |
+| 11-12 11:30 | breakout | 43.2 | +21.1 | +5.0 | +7.9 | +5.0 | +5.0 | +5.0 | +5.1 (+5.0) |
+| 11-16 08:40 | level reversal | 14.1 | −16.4 | +5.0 | +5.5 | +5.0 | +5.0 | +5.0 | +5.0 |
+| 11-16 12:37 | level reversal | 15.6 | +8.3 | +5.0 | +9.2 | +6.2 | +5.0 | +5.0 | +6.9 |
+| 11-16 14:26 | EMA pullback | 22.6 | −12.0 | +5.0 | +6.8 | +5.0 | +5.0 | +5.0 | +5.0 |
+| 11-17 10:05 | Bollinger bounce | 15.6 | −3.3 | +10.0 | +10.6 | +7.6 | +5.6 | +8.3 | +8.0 |
+| 11-17 10:05 | level reversal | 15.2 | −20.8 | +10.0 | +10.2 | +7.2 | +5.2 | +7.9 | +7.6 |
+| 11-17 14:00 | session sweep | 12.2 | +5.1 | +5.0 | +6.0 | +5.0 | +5.0 | +5.1 | +5.2 |
+| 11-18 07:30 | Asian range breakout | 30.7 | +21.7 | +21.7 (+10.0) | +9.8 | +6.8 | +20.7 | +22.4 | +14.2 |
+| 11-18 15:44 | breakout | 16.1 | −12.0 | +10.0 | +11.1 | +8.1 | +6.1 | +8.7 | +9.8 |
+| 11-19 12:10 | session sweep | 42.2 | +28.9 | +28.9 | +37.2 (+9.0) | +34.2 (+26.9) | +32.2 (+24.9) | +29.0 | +29.3 |
+| 11-20 06:07 | level reversal | 10.5 | −17.3 | +5.0 | +5.5 | +5.0 | +5.0 | +5.0 | +5.0 |
+| 11-20 07:30 | session sweep | 13.6 | +7.5 | +7.5 (+5.0) | +8.6 (+5.9) | +7.5 (+5.0) | +7.5 (+5.0) | +8.7 (+5.0) | +9.6 (+5.0) |
+
+**What this shows:**
+- **No trail beats the ladder (e) on all 33 emerging-trend trades.** Every trail does improve on what actually
+  happened. In order:
+
+  | Rank | Exit | Total pips |
+  |---|---|---|
+  | 1 | e (ladder) | −28.6 |
+  | 2 | g1 | −44.5 |
+  | 3 | g4 | −50.3 |
+  | 4 | g5 | −54.2 |
+  | 5 | g3 | −60.2 |
+  | 6 | g2 | −62.9 |
+  | – | actual | −135.9 |
+
+- **Every trail cuts the 50-pip winner short.** It would have closed at between +23.8 and +31.8, where the ladder
+  leaves its +50 target alone. That one trade is most of the gap between e and the trails.
+- **Without the 50-pip winner, g1 comes first (−68.3, against e −78.6).** That only holds if the order inside the
+  candles went its way. In the worst order g1 drops to −106.3 and g4 comes first (−85.3).
+- **g1 is the least certain result.** A 5-pip trail sits inside the size of a normal 5-minute candle, so its total
+  ranges from −44.5 to −99.4 depending on the order inside candles. g4 (−50.3 to −54.0) and g5 (−54.2 to −58.9)
+  hardly move. Live, g1 to g3 would follow every tick, so their real result lies somewhere between the two tables.
+- **9–13 Nov:** every trail does worse than what actually happened (about −81 to −86, against −46.9) and worse
+  than e (−63.0). That week's winners ran to their targets, and the trails took them out early.
+- **Since 16 Nov:** every trail does better than what actually happened. g1 +41.8 is best in the main count, ahead
+  of e +34.4 and g4 +31.4. In the worst order, g4 +27.7 is best.
+- **On the other states every trail makes results worse,** from −223.4 (g3) to −254.3 (g5), against −168.4
+  actual.
+- **Fewest trades made worse:** e, g1 and g4 each make 3 of the 33 trades worse. g5 makes 4 worse, and g2 and g3
+  make 5 worse each.
+
+Same limits as before:
+- 33 emerging-trend trades, of which only 14 reached +10.
+- The results are read from 5-minute candles, not tested on the live demo.
+- No exit is recommended here.
