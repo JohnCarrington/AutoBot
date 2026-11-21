@@ -16,8 +16,8 @@ RULE 1. HOURLY CONTEXT (switch HOURLY_CONTEXT, on if left out). Every strategy.
 RULE 2. ENTRY LOCATION (switch ENTRY_NEAR_EMA8, on if left out).
   A SELL opens only if the entry price is no more than ema8_max_distance_pips (5) below the 5-minute 8 EMA (at it,
   above it, or up to 5 pips below); a BUY only if it is no more than 5 pips above it. The 8 EMA on the sell price at
-  the last finished 5-minute candle before the entry. The slow grind, the breakout and the Asian range breakout are
-  exempt.
+  the last finished 5-minute candle before the entry. The slow grind, the breakout, the Asian range breakout and the
+  session sweep are exempt (the session sweep: owner, 21 November 2026, after the check of the 19 November 12:10 sell).
 
 The owner's answers (21 November 2026): the entry price is the strategy's own entry price (the sell / chart price,
 as the bot records entry_price), for buys too; "price below / above the hourly 50 EMA" is the last finished hourly
@@ -38,11 +38,11 @@ from levels.current import build as build_levels
 from levels.rules import PIVOT
 from prices.indicators import ema
 from prices.model import plain
-from strategies.common import ASIAN_RANGE_BREAKOUT, BREAKOUT, SLOW_GRIND
+from strategies.common import ASIAN_RANGE_BREAKOUT, BREAKOUT, SESSION_SWEEP, SLOW_GRIND
 
 HOURLY_CONTEXT = "hourly context"
 ENTRY_NEAR_EMA8 = "entry near the 8 EMA"
-EMA8_EXEMPT = (SLOW_GRIND, BREAKOUT, ASIAN_RANGE_BREAKOUT)          # owner, 21 November 2026
+EMA8_EXEMPT = (SLOW_GRIND, BREAKOUT, ASIAN_RANGE_BREAKOUT, SESSION_SWEEP)          # owner, 21 November 2026
 DOWN, UP = "down", "up"
 
 

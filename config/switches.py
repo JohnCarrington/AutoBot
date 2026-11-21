@@ -19,7 +19,7 @@
                               ([entry_filters]; strategies/entry_filters.py, rule 1)
   ENTRY_NEAR_EMA8             on or off (ON if left out; owner, 21 November 2026): a sell opens only if its entry is no
                               more than 5 pips below the 5-minute 8 EMA, a buy no more than 5 pips above it; the slow
-                              grind, breakout and Asian range breakout exempt (strategies/entry_filters.py, rule 2)
+                              grind, breakout, Asian range breakout and session sweep exempt (strategies/entry_filters.py, rule 2)
   ONE_SIGNAL_ONE_TRADE        on or off (off if left out; owner, 18 November 2026): one trade per rejection
                               candle and direction; the session sweep and New York open reversal under one view at
                               a time (safety/rules.py, rules 9 and 11)

@@ -1,4 +1,4 @@
-Replay trades: 47 with both switches off, 37 with both on; 19 refusals (one setup can be refused on more than one candle).
+Replay trades: 47 with both switches off, 38 with both on; 18 refusals (one setup can be refused on more than one candle).
 
 #### Every refusal
 
@@ -8,7 +8,6 @@ Replay trades: 47 with both switches off, 37 with both on; 19 refusals (one setu
 | Mon 09 Nov 08:25 | level reversal | buy | 13413.2 | entry near the 8 EMA | entry 13413.2, 8 EMA 13400.4 (08:20), 12.8 pips beyond | opened 08:25, -11.2 pips (owner) |
 | Mon 09 Nov 15:45 | slow grind | sell | 13401.4 | hourly context | UP context; 1.1 pips from the hourly 50 EMA 13402.5 (swings 13334 then 13368.8; last hourly close 13409.5, 50 EMA 13402.5, 6 before 13398.9) | opened 15:45, -15.0 pips (bot) |
 | Tue 10 Nov 07:20 | EMA pullback | buy | 13454.5 | entry near the 8 EMA | entry 13454.5, 8 EMA 13449.2 (07:15), 5.3 pips beyond | opened 07:21, -12.0 pips (bot) |
-| Tue 10 Nov 09:05 | session sweep | sell | 13435.8 | entry near the 8 EMA | entry 13435.8, 8 EMA 13449.7 (09:00), 13.9 pips beyond | not traded live |
 | Tue 10 Nov 14:05 | level reversal | sell | 13389.1 | entry near the 8 EMA | entry 13389.1, 8 EMA 13399.0 (14:00), 9.9 pips beyond | opened 14:06, +20.0 pips (bot) |
 | Tue 10 Nov 14:35 | level reversal | sell | 13384.6 | entry near the 8 EMA | entry 13384.6, 8 EMA 13392.7 (14:30), 8.1 pips beyond | not traded live |
 | Tue 10 Nov 16:25 | level reversal | sell | 13321.5 | entry near the 8 EMA | entry 13321.5, 8 EMA 13334.6 (16:20), 13.1 pips beyond | opened 16:26, -14.6 pips (owner) |
@@ -30,7 +29,6 @@ Replay trades: 47 with both switches off, 37 with both on; 19 refusals (one setu
 - Mon 09 Nov 08:25 level reversal buy
 - Mon 09 Nov 15:45 slow grind sell
 - Tue 10 Nov 07:20 EMA pullback buy
-- Tue 10 Nov 09:05 session sweep sell
 - Tue 10 Nov 14:05 level reversal sell
 - Tue 10 Nov 16:25 level reversal sell
 - Wed 11 Nov 07:30 EMA pullback sell

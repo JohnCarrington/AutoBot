@@ -10,10 +10,10 @@
    context: DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13112 (Fri 20 Nov 12:00 candle), 50 EMA 13126.8, 6 candles before 13133.1: close below it and falling
    pivot 13111.6, 50 EMA 13126.8, 5m 8 EMA 13118.6; entry-pivot +15.3, entry-EMA50 +0.1, entry-EMA8 +8.3
     DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13112 (Fri 20 Nov 12:00 candle), 50 EMA 13126.8, 6 candles before 13133.1: close below it and falling. A BUY at 13126.9 is 0.1 pips from the hourly 50 EMA 13126.8 (within 5): refused
-2026-11-19T12:10 session sweep sell entry 13150.9 -> allowed=False entry near the 8 EMA
+2026-11-19T12:10 session sweep sell entry 13150.9 -> allowed=True 
    context: DOWN context: lower high 13153.3 (Thu 00:00) after 13157.5 (Wed 18:00); last hourly close 13154.7 (Thu 19 Nov 11:00 candle), 50 EMA 13165.9, 6 candles before 13169.3: close below it and falling
    pivot 13162.5, 50 EMA 13165.9, 5m 8 EMA 13156.7; entry-pivot -11.6, entry-EMA50 -15.0, entry-EMA8 -5.8
-    a SELL more than 5 pips below the 5-minute 8 EMA: entry 13150.9, 5-minute 8 EMA 13156.7 (at the 12:05 candle), 5.8 pips below it: refused
+    ['hourly context: DOWN context: lower high 13153.3 (Thu 00:00) after 13157.5 (Wed 18:00); last hourly close 13154.7 (Thu 19 Nov 11:00 candle), 50 EMA 13165.9, 6 candles before 13169.3: close below it and falling', 'entry near the 8 EMA: session sweep is exempt']
 2026-11-19T07:55 (replay) Asian range breakout buy entry 13152.2 -> allowed=True 
    context: DOWN context: lower high 13153.3 (Thu 00:00) after 13157.5 (Wed 18:00); last hourly close 13138.7 (Thu 19 Nov 06:00 candle), 50 EMA 13168.1, 6 candles before 13177.4: close below it and falling
    pivot 13162.5, 50 EMA 13168.1, 5m 8 EMA 13149.5; entry-pivot -10.3, entry-EMA50 -15.9, entry-EMA8 +2.7

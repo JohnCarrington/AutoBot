@@ -253,6 +253,18 @@
    ]
   },
   {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "time_utc": "2026-11-10T09:05:00+00:00",
+   "opened_uk": "Tue 10 Nov 09:05",
+   "entry": "13435.8",
+   "how": "stopped by IG",
+   "pips": "+5.6",
+   "filters": [
+    "entry filters: hourly context: UP context: higher low 13425.8 (Mon 22:00) after 13397.7 (Mon 15:00); last hourly close 13454.4 (Tue 10 Nov 08:00 candle), 50 EMA 13421.3, 6 candles before 13413.9: close above it and rising; the sell is not within 5 pips of the daily pivot (13413.8) or the 50 EMA (13421.3); entry near the 8 EMA: session sweep is exempt"
+   ]
+  },
+  {
    "strategy": "Asian range breakout",
    "direction": "sell",
    "time_utc": "2026-11-10T10:05:00+00:00",
@@ -567,24 +579,6 @@
     "ema8_5m": "13449.2",
     "ema8_candle": "2026-11-10T07:15Z",
     "pips_beyond_ema8": "5.3",
-    "limit_pips": "5"
-   }
-  },
-  {
-   "time_utc": "2026-11-10T09:05:00Z",
-   "kind": "entry filter refused",
-   "paper": true,
-   "strategy": "session sweep",
-   "direction": "sell",
-   "idea_time": "2026-11-10T09:05:00Z",
-   "entry_price": "13435.8",
-   "rule": "entry near the 8 EMA",
-   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13435.8, 5-minute 8 EMA 13449.7 (at the 09:00 candle), 13.9 pips below it: refused",
-   "details": {
-    "entry_price": "13435.8",
-    "ema8_5m": "13449.7",
-    "ema8_candle": "2026-11-10T09:00Z",
-    "pips_beyond_ema8": "13.9",
     "limit_pips": "5"
    }
   },

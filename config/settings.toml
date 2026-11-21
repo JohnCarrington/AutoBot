@@ -289,7 +289,7 @@ hourly_context_near_pips = 5
 # candle before the entry) ...
 ema8_periods = 8
 # ... a sell opens only with its entry no more than this many pips below it, a buy no more than this many above it.
-# The slow grind, the breakout and the Asian range breakout are exempt.
+# The slow grind, the breakout, the Asian range breakout and the session sweep are exempt.
 ema8_max_distance_pips = 5
 
 [asian_range_breakout]

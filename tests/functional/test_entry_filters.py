@@ -8,7 +8,8 @@ The owner's rules:
   an UP context no SELL. Every strategy. A swing high: an hourly candle whose high has 2 lower highs on each side.
   RULE 2 (ENTRY_NEAR_EMA8, on if left out). A SELL only if its entry price is no more than 5 pips below the
   5-minute 8 EMA; a BUY only if no more than 5 pips above it. The 8 EMA on the sell price at the last finished
-  5-minute candle before the entry. Exempt: slow grind, breakout, Asian range breakout.
+  5-minute candle before the entry. Exempt: slow grind, breakout, Asian range breakout, session sweep (the session
+  sweep added by the owner, 21 November 2026).
   Both: one check for every trade, just before it opens; nothing else changes; every refusal recorded with the rule
   and why.
 The owner's answers (21 November 2026): "the last two swing highs are lower highs" = the latest swing high is lower
@@ -271,12 +272,12 @@ def test_rule_2_a_buy_may_be_up_to_5_pips_above_the_8_ema_and_no_further(R2, DOW
     assert not v.allowed and v.details["pips_beyond_ema8"] == "5.1" and "5.1 pips above it" in v.why
 
 
-def test_rule_2_exempts_the_slow_grind_the_breakout_and_the_asian_range_breakout_only(R2, DOWN_STORE):
-    for strategy in (SLOW_GRIND, BREAKOUT, ASIAN_RANGE_BREAKOUT):
+def test_rule_2_exempts_the_slow_grind_the_breakout_the_asian_range_breakout_and_the_session_sweep_only(R2, DOWN_STORE):
+    for strategy in (SLOW_GRIND, BREAKOUT, ASIAN_RANGE_BREAKOUT, SESSION_SWEEP):
         for direction, price in ((SELL, EMA8 - 20), (BUY, EMA8 + 20)):
             v = ef.check(R2, DOWN_STORE, idea(strategy, direction, price))
             assert v.allowed and v.checked == [f"entry near the 8 EMA: {strategy} is exempt"]
-    for strategy in (EMA_PULLBACK, BOLLINGER_BOUNCE, BOLLINGER_BOUNCE_5M, RANGE_TRADE, LEVEL_REVERSAL, SESSION_SWEEP,
+    for strategy in (EMA_PULLBACK, BOLLINGER_BOUNCE, BOLLINGER_BOUNCE_5M, RANGE_TRADE, LEVEL_REVERSAL,
                      NEW_YORK_OPEN_REVERSAL):
         assert not ef.check(R2, DOWN_STORE, idea(strategy, SELL, EMA8 - 20)).allowed, strategy
         assert not ef.check(R2, DOWN_STORE, idea(strategy, BUY, EMA8 + 20)).allowed, strategy

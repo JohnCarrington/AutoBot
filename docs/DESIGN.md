@@ -231,7 +231,7 @@ Two rules in one module, `strategies/entry_filters.py`, checked once for every t
 
 **Rule 1, hourly context** (switch `HOURLY_CONTEXT`, on if left out; every strategy). DOWN context: the latest hourly swing high is lower than the one before it (a swing high: an hourly candle whose high has 2 lower highs on each side), the last finished hourly candle closed below the hourly 50 EMA, and the 50 EMA is lower than 6 hourly candles before. UP context: the mirror (higher swing low, close above, rising). In a DOWN context no buy opens within 5 pips of the daily pivot or the hourly 50 EMA; in an UP context no sell.
 
-**Rule 2, entry near the 8 EMA** (switch `ENTRY_NEAR_EMA8`, on if left out). A sell opens only if its entry price is no more than 5 pips below the 5-minute 8 EMA (at the last finished 5-minute candle before the entry); a buy only if no more than 5 pips above it. The slow grind, the breakout and the Asian range breakout are exempt. Numbers in `[entry_filters]`.
+**Rule 2, entry near the 8 EMA** (switch `ENTRY_NEAR_EMA8`, on if left out). A sell opens only if its entry price is no more than 5 pips below the 5-minute 8 EMA (at the last finished 5-minute candle before the entry); a buy only if no more than 5 pips above it. The slow grind, the breakout, the Asian range breakout and the session sweep are exempt (the session sweep: owner, 21 November 2026). Numbers in `[entry_filters]`.
 
 ## 4. Trade management
 
