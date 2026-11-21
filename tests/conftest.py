@@ -45,6 +45,8 @@ def no_real_network(monkeypatch):
 # the Asian range breakout entering on the break; the pullback entry has its own tests with it on.
 # HOURLY_CONTEXT and ENTRY_NEAR_EMA8 off (owner, 21 November 2026: both on if left out), for the same reason: the
 # entry filters have their own tests (tests/functional/test_entry_filters.py) with them on.
+# EMERGING_LADDER off (owner, 21 November 2026: on if left out), the same: the existing trade-manager tests were written
+# without it; the ladder has its own tests (tests/functional/test_emerging_ladder.py) with it on.
 PRETEND_SWITCHES = """\
 PAIRS_ON=GBPUSD
 NEW_TRADES_FROM=06:00
@@ -62,6 +64,7 @@ STRATEGY_NEW_YORK_OPEN_REVERSAL=off
 PULLBACK_ENTRY=off
 HOURLY_CONTEXT=off
 ENTRY_NEAR_EMA8=off
+EMERGING_LADDER=off
 TRADING=off
 STOP_LOSS_PIPS=6
 STOP_LOSS_PIPS_EMA_PULLBACK=12

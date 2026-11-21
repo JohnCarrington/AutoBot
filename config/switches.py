@@ -20,6 +20,9 @@
   ENTRY_NEAR_EMA8             on or off (ON if left out; owner, 21 November 2026): a sell opens only if its entry is no
                               more than 5 pips below the 5-minute 8 EMA, a buy no more than 5 pips above it; the slow
                               grind, breakout, Asian range breakout and session sweep exempt (strategies/entry_filters.py, rule 2)
+  EMERGING_LADDER             on or off (ON if left out; owner, 21 November 2026): a trade opened while the analyser said
+                              "emerging trend" has its stop at IG moved to +5 once +10, and to +10 once +15 (never
+                              backwards; a tighter trail kept) ([emerging_ladder]; trade_manager/manager.py)
   ONE_SIGNAL_ONE_TRADE        on or off (off if left out; owner, 18 November 2026): one trade per rejection
                               candle and direction; the session sweep and New York open reversal under one view at
                               a time (safety/rules.py, rules 9 and 11)
@@ -110,6 +113,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "PULLBACK_ENTRY": ("pullback_entry", _on_off),
     "HOURLY_CONTEXT": ("hourly_context", _on_off),
     "ENTRY_NEAR_EMA8": ("entry_near_ema8", _on_off),
+    "EMERGING_LADDER": ("emerging_ladder", _on_off),
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
     "STRATEGY_BREAKOUT": ("breakout", _on_off),
     "STRATEGY_LEVEL_REVERSAL": ("level_reversal", _on_off),
@@ -127,7 +131,9 @@ OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_NEAR_TIMES": "off", "PLANNER_OBSERVE": 
                             # the breakout's and Asian range breakout's pullback entry (owner, 19 November 2026): ON
                             "PULLBACK_ENTRY": "on",
                             # the entry filters (owner, 21 November 2026): both ON
-                            "HOURLY_CONTEXT": "on", "ENTRY_NEAR_EMA8": "on"}
+                            "HOURLY_CONTEXT": "on", "ENTRY_NEAR_EMA8": "on",
+                            # Johnny's exit for emerging-trend trades (owner, 21 November 2026): ON
+                            "EMERGING_LADDER": "on"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:

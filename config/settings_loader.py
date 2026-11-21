@@ -456,6 +456,12 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "ema8_periods": _whole_number(2, 500),
         "ema8_max_distance_pips": _decimal_number("0", "100"),
     },
+    "emerging_ladder": {
+        "first_from_pips": _decimal_number("0", "1000"),
+        "first_stop_pips": _decimal_number("0", "1000"),
+        "second_from_pips": _decimal_number("0", "1000"),
+        "second_stop_pips": _decimal_number("0", "1000"),
+    },
     "asian_range_breakout": {
         "range_from": _clock_time,
         "range_until": _clock_time,
@@ -764,6 +770,13 @@ def _check_together(v: dict[str, dict[str, Any]]) -> None:
     if sg["rollover_no_new_trades_from"] >= sg["rollover_no_new_trades_until"]:
         raise SettingsError("Setting [slow_grind] rollover_no_new_trades_from must be earlier than "
                             "rollover_no_new_trades_until.")
+    el = v["emerging_ladder"]
+    if not (el["first_stop_pips"] < el["first_from_pips"] and el["second_stop_pips"] < el["second_from_pips"]):
+        raise SettingsError("Setting [emerging_ladder]: each step's stop must be below the pips that move it "
+                            "(first_stop_pips < first_from_pips, second_stop_pips < second_from_pips).")
+    if not (el["first_from_pips"] < el["second_from_pips"] and el["first_stop_pips"] < el["second_stop_pips"]):
+        raise SettingsError("Setting [emerging_ladder]: the second step must come after the first and move the stop "
+                            "further (first_from_pips < second_from_pips, first_stop_pips < second_stop_pips).")
     ep = v["ema_pullback"]
     if ep["rollover_no_new_trades_from"] >= ep["rollover_no_new_trades_until"]:
         raise SettingsError("Setting [ema_pullback] rollover_no_new_trades_from must be earlier than "

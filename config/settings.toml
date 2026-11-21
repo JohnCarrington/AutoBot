@@ -292,6 +292,18 @@ ema8_periods = 8
 # The slow grind, the breakout, the Asian range breakout and the session sweep are exempt.
 ema8_max_distance_pips = 5
 
+[emerging_ladder]
+# Johnny's exit for emerging-trend trades (owner, 21 November 2026; switch EMERGING_LADDER, on if left out): only for
+# trades opened while the analyser said "emerging trend" (up or down), every strategy. Pips as IG closes the trade (a
+# buy on the sell price, a sell on the buy price), from the price it opened at. Once the trade is first_from_pips up,
+# its stop at IG moves to first_stop_pips up ...
+first_from_pips = 10
+first_stop_pips = 5
+# ... and once it is second_from_pips up, to second_stop_pips up. Never backwards; a strategy's own trail or stop move
+# is kept when it is tighter. The take profit is unchanged.
+second_from_pips = 15
+second_stop_pips = 10
+
 [asian_range_breakout]
 # The Asian range breakout (design 3.7; owner, 16 November 2026). UK times. The Asian range: the high and low of
 # the 5-minute candles from range_from up to range_until (sell price, as on the chart).

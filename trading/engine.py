@@ -128,8 +128,10 @@ class Trading:
             self._rebuild_meta()
             saved = self.manager.load_state()
             for t in [t for t in self.sender.trades.values() if t.status == "open"]:
+                # the analyser's state as recorded on the trade when it opened (the emerging-trend ladder)
                 mt = plan(self.s, t.reference, t.strategy, t.direction, t.opened_at, t.level, t.level, t.stop_pips,
-                          self.calendar, self._trend_day(t.opened_at))
+                          self.calendar, self._trend_day(t.opened_at),
+                          market_state=(self.meta.get(t.reference) or {}).get("market_state"))
                 if t.half_closed:
                     mt.half_done, mt.state = True, "half close"
                 if t.stop_level is not None:                # the bounce's stop already moved by its trail at IG
@@ -272,15 +274,15 @@ class Trading:
     def _opened(self, idea: Any, r: Any, opened_at: datetime, td: str | None) -> None:
         """A trade the order sender opened: to the trade manager, the records, and Telegram (real trades)."""
         t = self.sender.trades[r.reference]
+        state = f"{idea.state} {idea.state_direction}" + (f", {idea.trend_type}" if idea.trend_type else "")
         mt = plan(self.s, r.reference, idea.strategy, idea.direction, opened_at, idea.entry_price, r.level,
-                  t.stop_pips, self.calendar, td)
+                  t.stop_pips, self.calendar, td, market_state=state)
         if not self.replay:
             mt.bars = 1                                     # opened at the market: every later price is after it
         self.manager.add(mt)
         self.opened.append((idea, mt))
         ppp = Decimal(self.s.market.points_per_pip)
         sign = Decimal(1) if idea.direction == "buy" else Decimal(-1)
-        state = f"{idea.state} {idea.state_direction}" + (f", {idea.trend_type}" if idea.trend_type else "")
         rec = {"reference": r.reference, "deal_id": r.deal_id, "pair": self.s.market.pair, "strategy": idea.strategy,
                "direction": idea.direction, "size_gbp_per_pip": self.s.trade.size_gbp_per_pip, "market_state": state,
                "opened_utc": opened_at, "entry_price": idea.entry_price, "open_price": r.level,
@@ -336,7 +338,7 @@ class Trading:
                 "minutes_open": int((closed_at - rec["opened_utc"]).total_seconds() // 60), "best_pips": best,
                 "levels_lined_up": lined,
                 "half_close": None if half is None else vars(half), "rest": None if rest is None else vars(rest),
-                "closed_by": by}
+                "closed_by": by, "stop_moves": list(mt.stop_moves)}
             self.book.closed(row)
             if self.trading_on and by == "bot":            # the owner's close: the order sender's short message
                 today = self.book.today(closed_at)

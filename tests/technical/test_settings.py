@@ -134,6 +134,8 @@ EXPECTED = {
     "entry_filters": {"hourly_swing_candles_each_side": 2, "hourly_ema_periods": 50, "hourly_ema_slope_candles": 6,
                       "hourly_context_near_pips": Decimal("5"), "ema8_periods": 8,
                       "ema8_max_distance_pips": Decimal("5")},
+    "emerging_ladder": {"first_from_pips": Decimal("10"), "first_stop_pips": Decimal("5"),     # owner, 21 November 2026
+                        "second_from_pips": Decimal("15"), "second_stop_pips": Decimal("10")},
     "asian_range_breakout": {"range_from": time(0, 0), "range_until": time(7, 0), "breakout_from": time(7, 0),
                              "breakout_until": time(10, 0), "stop_loss_pips": 12, "trail_from_pips": Decimal("12"),
                              "trail_candles": 3},
