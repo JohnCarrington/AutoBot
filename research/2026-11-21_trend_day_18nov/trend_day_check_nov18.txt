@@ -1,0 +1,38 @@
+slow grind sell opened Wed 18 Nov 04:05 UK, fill 13195.5; still open at the replay's end
+  06:00  best +4.6  worst +2.0  close +4.6  <= TREND DAY ON (first candle in profit)
+  06:05  best +5.1  worst +2.5  close +3.2
+  06:10  best +3.2  worst +0.6  close +2.3
+  06:15  best +4.0  worst +0.5  close +3.7
+  06:20  best +4.9  worst +3.0  close +4.1
+  06:25  best +6.7  worst +3.7  close +5.9
+  06:30  best +6.1  worst +2.7  close +5.2
+  06:35  best +6.4  worst +4.3  close +6.2
+  06:40  best +7.2  worst +3.1  close +3.6
+  06:45  best +4.6  worst +2.6  close +4.6
+  06:50  best +4.7  worst +2.8  close +3.4
+  06:55  best +4.5  worst -2.5  close -2.5
+  07:00  best +17.3  worst -5.7  close +17.3
+  07:05  best +20.2  worst +15.5  close +19.1
+  07:10  best +22.1  worst +16.8  close +16.9
+  07:15  best +16.8  worst +11.3  close +12.3
+  07:20  best +16.7  worst +12.2  close +15.0
+  07:25  best +18.4  worst +14.7  close +14.8
+  07:30  best +17.3  worst +12.4  close +17.2
+  07:35  best +21.6  worst +16.7  close +20.2
+  07:40  best +21.8  worst +18.8  close +21.7
+  07:45  best +23.9  worst +19.0  close +19.8
+  07:50  best +23.0  worst +19.8  close +22.2
+  07:55  best +22.4  worst +19.3  close +21.2
+  08:00  best +21.8  worst +18.6  close +21.4
+  08:05  best +30.1  worst +20.8  close +22.6
+  08:10  best +24.9  worst +21.9  close +24.4
+  08:15  best +32.8  worst +23.9  close +32.3
+  08:20  best +32.9  worst +28.7  close +31.2
+  08:25  best +34.8  worst +30.1  close +33.4
+  08:30  best +34.6  worst +29.1  close +31.1
+  08:35  best +35.0  worst +29.1  close +33.6
+  08:40  best +34.5  worst +30.2  close +30.3
+  08:45  best +36.6  worst +30.4  close +36.3
+  08:50  best +41.2  worst +36.3  close +40.8
+  08:55  best +43.4  worst +40.1  close +40.7
+RESULT: 2026-11-18 trend day ON from the 06:00 UK candle

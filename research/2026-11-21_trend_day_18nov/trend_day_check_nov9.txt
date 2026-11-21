@@ -1,0 +1,29 @@
+slow grind buy opened Mon 09 Nov 05:25 UK, fill 13380.2; closed 08:10 (take profit hit at IG: the take profit at IG (20 pips), 20.0)
+  06:00  best +0.8  worst -1.7  close +0.4  <= TREND DAY ON (first candle in profit)
+  06:05  best +3.4  worst +0.4  close +2.6
+  06:10  best +5.3  worst +1.8  close +3.8
+  06:15  best +5.5  worst +3.8  close +5.4
+  06:20  best +5.4  worst +2.8  close +3.7
+  06:25  best +5.9  worst +2.8  close +3.7
+  06:30  best +5.2  worst +2.7  close +4.8
+  06:35  best +5.5  worst +3.2  close +3.6
+  06:40  best +5.0  worst +3.3  close +4.1
+  06:45  best +6.0  worst +3.6  close +5.8
+  06:50  best +6.6  worst +5.3  close +6.3
+  06:55  best +6.4  worst +4.7  close +6.2
+  07:00  best +8.2  worst +4.1  close +5.6
+  07:05  best +6.2  worst +4.4  close +5.4
+  07:10  best +5.3  worst +3.2  close +4.1
+  07:15  best +4.8  worst +1.6  close +4.6
+  07:20  best +7.4  worst +4.7  close +5.8
+  07:25  best +9.3  worst +5.7  close +8.1
+  07:30  best +9.1  worst +4.5  close +8.5
+  07:35  best +11.0  worst +7.8  close +9.7
+  07:40  best +10.9  worst +8.7  close +9.3
+  07:45  best +10.3  worst +7.5  close +8.0
+  07:50  best +11.1  worst +7.9  close +10.3
+  07:55  best +13.0  worst +10.0  close +10.0
+  08:00  best +14.8  worst +9.0  close +14.8
+  08:05  best +18.2  worst +13.4  close +16.5
+  08:10  best +23.1  worst +15.4  close +22.6
+RESULT: 2026-11-09 trend day ON from the 06:00 UK candle

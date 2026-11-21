@@ -319,9 +319,57 @@ After that, no change until 12:00.
 - **06:55 to 07:00:** below entry, around the 07:00 UK CPI release. The 06:55 close was −2.5, and the 07:00 candle reached −5.7 at worst before closing +17.3.
 - **07:05 to 09:00:** in profit throughout, +11.3 at worst. It was +40.8 at the 09:00 open.
 
-If the switch only counts a trade *opened* after 06:00, it would not have turned on before 09:00 in this replay. The only slow grind trade was opened at 04:05, and the 07:25 and 08:05 sells were refused because it was still open.
+**Johnny's decision (21 Nov):** a slow grind trade opened before 06:00 counts, as long as it is in profit (as IG would close it) at any point between 06:00 and 09:00 UK. Under that rule the 04:05 sell counts, and the day turns on at 06:00. Part 3 checks this, and Mon 9 Nov too.
 
 ## Files added for Part 2
 
 - `replay_next.py`: the replay, run in a worktree at 5d7942e with `.venv/bin/python replay_next.py replay_next.json`.
 - `replay_next.json`: every decision record and paper order from Tue 22:00 to Wed 12:00, the trades opened with their trade manager decisions, the state changes, the per-candle states from 06:00 to 09:30, and the slow grind's notes.
+
+---
+
+# Part 3: the trend-day check with Johnny's rule (18 Nov and 9 Nov, 5d7942e)
+
+**Johnny's decision (21 Nov 2026).** A slow grind trade opened before 06:00 counts towards the trend day, as long as it is in profit, as IG would close it, at any point between 06:00 and 09:00 UK.
+
+**How I checked it.** `trend_day_check.py` applies that rule to the 5d7942e replays:
+- **Which trades count:** any slow grind trade open at some point between 06:00 and 09:00, including one opened earlier.
+- **"As IG would close it":** a sell is closed at IG's buy price and a buy at IG's sell price, measured from the trade's paper fill.
+- **"At any point":** each candle's best price for the trade, only while the trade is still open.
+- **What it prints:** the first 5-minute candle that is in profit, plus the trade's best, worst and close for every candle in the window.
+
+The 9 Nov replay (`replay_day.py`, `replay_nov9.json`) is the same full-engine paper replay as Part 2: 5d7942e and the same switches, from the week's open (Sun 8 Nov) to Mon 9 Nov 12:00. Nothing was sent.
+
+## Result
+
+| Day | Slow grind trade | Fill | In profit (IG close) from | Turns on as a trend day |
+|---|---|---|---|---|
+| **Wed 18 Nov** | sell, opened 04:05 | 13195.5 | the 06:00 candle (best +4.6, close +4.6) | **yes, from 06:00** |
+| **Mon 9 Nov** | buy, opened 05:25 | 13380.2 | the 06:00 candle (best +0.8, close +0.4) | **yes, from 06:00** |
+
+**Both days turn on, as Johnny expected.**
+
+**Wed 18 Nov:**
+- **The trade:** the 04:05 sell from Part 2, still open at 12:00.
+- **06:00 to 09:00:** in profit from 06:00, with two dips. It got down to +0.5 at worst in the 06:15 candle. It went below entry only in the 06:55 and 07:00 candles, around the UK CPI release, at −5.7 at worst.
+- **At 09:00:** it was +40.8 at the 09:00 open.
+- **Per candle:** `trend_day_check_nov18.txt`.
+
+**Mon 9 Nov:**
+- **The trade:** the 05:25 buy at 13378.7 (paper fill 13380.2, IG's buy price then).
+- **The replay's decision records:**
+  - `Mon 05:25 idea buy 13378.7 allowed`, then the order `opened`, with stop 15 and take profit 20.
+  - `05:40 buy 13380.8`: refused by the safety rules, `slow grind already has 1 trade(s) open (at most 1)`.
+- **How it closed:** take profit +20 in the 08:10 candle.
+- **06:00 to 08:10:** at its worst it was −1.7, inside the 06:00 candle. That candle's best was +0.8, enough to turn the day on. It closed every candle in profit.
+- **Per candle:** `trend_day_check_nov9.txt`.
+- **It matches the live record.** `trades.jsonl` has a live slow grind buy opened at 05:25:04, entry 13378.7, closed at 08:13:41 by `take profit hit at IG`, +20.0. The live code on 9 Nov was the first build (f99efe1), the base of first-build-plus.
+
+**A point for Johnny: on both days the switch turns on in the very first candle, 06:00.** The rule says "at any point", so a single tick in profit is enough. On 9 Nov the 06:00 candle's best was only +0.8, with a worst of −1.7 in the same candle. If he wants a margin (for example, at least a few pips in profit, or in profit at a candle's close), that would be a separate decision. On these two days the switch would still turn on: 9 Nov closed +0.4 at 06:00 and +2.6 at 06:05, and 18 Nov closed +4.6 at 06:00.
+
+## Files added for Part 3
+
+- `replay_day.py`: the Part 2 replay with the time window as arguments; used for 9 Nov.
+- `replay_nov9.json`: its output for Sun 8 Nov 21:00 to Mon 9 Nov 12:00 UTC.
+- `trend_day_check.py`: Johnny's rule, applied to a replay's JSON and the stored candles.
+- `trend_day_check_nov18.txt`, `trend_day_check_nov9.txt`: its output.
