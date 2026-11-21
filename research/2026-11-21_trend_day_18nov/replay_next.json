@@ -1,0 +1,3903 @@
+{
+ "decisions": [
+  {
+   "time_utc": "2026-11-17T22:05:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "trend",
+   "direction": "down",
+   "trend_type": "slow grind",
+   "line": "Tue 17 Nov 22:05 GMT  trend (down, slow grind): the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new low 13198.6 on the lower band 13201.1; EMAs 7/13/21 stacked down for 34 candles, close 13200.5 below them and the 100 EMA 13208.5; band sloping -0.9 pips/candle"
+  },
+  {
+   "time_utc": "2026-11-17T22:05:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "session sweep",
+   "direction": "sell",
+   "entry_price": "13198.8",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-17T22:05:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "session sweep",
+   "direction": "sell",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-17T22:20:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "entry_price": "13198.8",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-17T22:20:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "from 20:30 UK to midnight: no new slow grind trade"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-17T22:45:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "entry_price": "13201.6",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-17T22:45:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "from 20:30 UK to midnight: no new slow grind trade"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-17T22:55:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "line": "Tue 17 Nov 22:55 GMT  consolidation (none): the down trend ran out of steam: bands 12.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 7), middle band -0.3 pips/candle, no close outside the bands for 6 candles, average body 1.2 pips, green/red 1.2"
+  },
+  {
+   "time_utc": "2026-11-17T23:20:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "line": "Tue 17 Nov 23:20 GMT  emerging trend (up): rejected at a level: closed 13207.8 above the reversal high 13207.1; trigger at above 13208.1"
+  },
+  {
+   "time_utc": "2026-11-17T23:25:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13208.1",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-17T23:30:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "line": "Tue 17 Nov 23:30 GMT  emerging trend (down): rejected at a level against the emerging up trend: closed 13206.1 below the reversal low 13206.5; trigger at below 13205.5"
+  },
+  {
+   "time_utc": "2026-11-17T23:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13205.5",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-17T23:40:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "ranging",
+   "direction": "none",
+   "trend_type": null,
+   "line": "Tue 17 Nov 23:40 GMT  ranging (none): the emerging down trend was cancelled: 2 closes in a row back above the turning_high 13204.4 it was rejected at (last 13204.8)"
+  },
+  {
+   "time_utc": "2026-11-17T23:50:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "line": "Tue 17 Nov 23:50 GMT  emerging trend (up): rejected at a level: closed 13207 above the reversal high 13206.5; trigger at above 13207.2"
+  },
+  {
+   "time_utc": "2026-11-18T00:05:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "line": "Wed 18 Nov 00:05 GMT  consolidation (none): the emerging up trend was cancelled: 2 closes in a row back below the turning_high 13204.4 it was rejected at (last 13199.7)"
+  },
+  {
+   "time_utc": "2026-11-18T00:05:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13197.4",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T00:05:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13197.4",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T00:10:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "line": "Wed 18 Nov 00:10 GMT  emerging trend (up): rejected at a level: closed 13202 above the reversal high 13200.1; trigger at above 13202"
+  },
+  {
+   "time_utc": "2026-11-18T00:10:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "range trade",
+   "direction": "buy",
+   "entry_price": "13200.1",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow range trade",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T00:15:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13202",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T00:15:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13202",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T00:15:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13202",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T00:15:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "range trade",
+   "direction": "buy",
+   "entry_price": "13202",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T00:15:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "entry_price": "13202",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T00:15:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T00:40:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13203.2",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T00:40:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "entry_price": "13203.2",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T00:40:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T00:45:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "line": "Wed 18 Nov 00:45 GMT  consolidation (none): the emerging up trend settled into consolidation: bands 12.0 pips wide (narrow: <= 14, or narrowing for 6 candles: 0), middle band -0.1 pips/candle, no close outside the bands for 6 candles, average body 1.2 pips, green/red 2.0"
+  },
+  {
+   "time_utc": "2026-11-18T00:45:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "entry_price": "13199.8",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T00:50:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "line": "Wed 18 Nov 00:50 GMT  emerging trend (down): rejected at a level: closed 13196.9 below the reversal low 13197.9; trigger at below 13194.9"
+  },
+  {
+   "time_utc": "2026-11-18T00:50:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13197.9",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow Bollinger bounce 5m",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T00:50:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13197.9",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow Bollinger bounce 5m",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T01:00:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "range trade",
+   "direction": "buy",
+   "entry_price": "13199.7",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T01:15:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "line": "Wed 18 Nov 01:15 GMT  consolidation (none): the emerging down trend settled into consolidation: bands 12.0 pips wide (narrow: <= 14, or narrowing for 6 candles: 3), middle band -0.4 pips/candle, no close outside the bands for 6 candles, average body 1.7 pips, green/red 1.6"
+  },
+  {
+   "time_utc": "2026-11-18T01:20:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13201.2",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow Bollinger bounce 5m",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T01:20:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13201.2",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow Bollinger bounce 5m",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T01:20:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "entry_price": "13201.2",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow level reversal",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T01:30:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "line": "Wed 18 Nov 01:30 GMT  emerging trend (up): rejected at a level: closed 13204.8 above the reversal high 13203; trigger at above 13206.7"
+  },
+  {
+   "time_utc": "2026-11-18T01:30:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13203",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow Bollinger bounce 5m",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T01:30:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "entry_price": "13203",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow level reversal",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T01:40:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "line": "Wed 18 Nov 01:40 GMT  emerging trend (down): rejected at a level against the emerging up trend: closed 13202.2 below the reversal low 13203.8; trigger at below 13202.1"
+  },
+  {
+   "time_utc": "2026-11-18T01:40:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "range trade",
+   "direction": "sell",
+   "entry_price": "13203.8",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T01:45:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13202.1",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T01:45:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13202.1",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T01:45:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13202.1",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T01:45:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "range trade",
+   "direction": "sell",
+   "entry_price": "13202.1",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T01:55:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "line": "Wed 18 Nov 01:55 GMT  emerging trend (up): rejected at a level against the emerging down trend: closed 13205.9 above the reversal high 13205.2; trigger at above 13206.1"
+  },
+  {
+   "time_utc": "2026-11-18T02:00:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "buy",
+   "entry_price": "13206.3",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:00:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13206.1",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:00:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13206.1",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:00:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13206.1",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:00:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "entry_price": "13206.1",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:00:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T02:05:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "line": "Wed 18 Nov 02:05 GMT  consolidation (none): the emerging up trend settled into consolidation: bands 11.2 pips wide (narrow: <= 14, or narrowing for 6 candles: 0), middle band 0.2 pips/candle, no close outside the bands for 6 candles, average body 1.6 pips, green/red 1.3"
+  },
+  {
+   "time_utc": "2026-11-18T02:15:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "emerging trend",
+   "direction": "up",
+   "trend_type": null,
+   "line": "Wed 18 Nov 02:15 GMT  emerging trend (up): rejected at a level: closed 13206 above the reversal high 13203.8; trigger at above 13206.6"
+  },
+  {
+   "time_utc": "2026-11-18T02:15:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "buy",
+   "entry_price": "13205.5",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:25:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "line": "Wed 18 Nov 02:25 GMT  consolidation (none): the emerging up trend settled into consolidation: bands 12.1 pips wide (narrow: <= 14, or narrowing for 6 candles: 1), middle band 0.2 pips/candle, no close outside the bands for 6 candles, average body 1.3 pips, green/red 1.3"
+  },
+  {
+   "time_utc": "2026-11-18T02:25:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13206.6",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:25:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13206.6",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:25:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13206.6",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:25:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "entry_price": "13206.6",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:25:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T02:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13202.3",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow Bollinger bounce 5m",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13202.3",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow Bollinger bounce 5m",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13202.3",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow Bollinger bounce 5m",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13203.5",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow Bollinger bounce 5m",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:50:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "line": "Wed 18 Nov 02:50 GMT  emerging trend (down): rejected at a level: closed 13201.3 below the reversal low 13202.4; trigger at below 13200.2"
+  },
+  {
+   "time_utc": "2026-11-18T02:50:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13202.4",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow Bollinger bounce 5m",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:55:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13200.2",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:55:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13200.2",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T02:55:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13200.2",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T03:05:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "range trade",
+   "direction": "buy",
+   "entry_price": "13197.3",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T03:10:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "trend",
+   "direction": "down",
+   "trend_type": "slow grind",
+   "line": "Wed 18 Nov 03:10 GMT  trend (down, slow grind): the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new low 13195.0 on the lower band 13195.7; EMAs 7/13/21 stacked down for 4 candles, close 13195.7 below them and the 100 EMA 13203.9; band sloping -0.5 pips/candle"
+  },
+  {
+   "time_utc": "2026-11-18T03:10:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "entry_price": "13195.6",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T03:10:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13195.5",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow Bollinger bounce 5m",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T03:55:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13197.6",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T03:55:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13197.6",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T03:55:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13197.6",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T03:55:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "entry_price": "13197.6",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T03:55:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T04:05:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "entry_price": "13195.5",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T04:05:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "result": "opened",
+   "reference": "AB261118040500-10a367e1",
+   "reasons": [],
+   "level": "13195.5"
+  },
+  {
+   "time_utc": "2026-11-18T04:05:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13195.8",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T04:05:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13195.8",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T04:05:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "entry_price": "13195.8",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T04:05:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T04:30:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "entry_price": "13192.2",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T04:30:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "slow grind already has 1 trade(s) open (at most 1)"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T04:30:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13192.1",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T04:30:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13192.2",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T04:30:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "entry_price": "13192.1",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T04:30:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T04:35:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "line": "Wed 18 Nov 04:35 GMT  consolidation (none): the down trend ran out of steam: bands 8.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 5), middle band -0.4 pips/candle, no close outside the bands for 6 candles, average body 1.9 pips, green/red 1.3"
+  },
+  {
+   "time_utc": "2026-11-18T04:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "range trade",
+   "direction": "buy",
+   "entry_price": "13194",
+   "allowed": false,
+   "blocked_by": "the analyser's state is trend, which does not allow range trade",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T05:30:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "line": "Wed 18 Nov 05:30 GMT  emerging trend (down): broke out of the consolidation: close 13191.1 below the lower band 13191.5"
+  },
+  {
+   "time_utc": "2026-11-18T05:40:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "line": "Wed 18 Nov 05:40 GMT  consolidation (none): the emerging down trend was cancelled: 2 closes in a row back inside the Bollinger bands after the breakout (last 13193.9)"
+  },
+  {
+   "time_utc": "2026-11-18T05:40:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "range trade",
+   "direction": "buy",
+   "entry_price": "13193.4",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T05:45:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "breakout",
+   "direction": "sell",
+   "entry_price": "13194.1",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow breakout",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T05:45:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13194",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow Bollinger bounce 5m",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T05:50:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "line": "Wed 18 Nov 05:50 GMT  emerging trend (down): broke out of the consolidation: close 13190.5 below the lower band 13190.8"
+  },
+  {
+   "time_utc": "2026-11-18T05:50:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "entry_price": "13190.6",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T06:00:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "range trade",
+   "direction": "buy",
+   "entry_price": "13191.4",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T06:05:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "breakout",
+   "direction": "sell",
+   "entry_price": "13189",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T06:05:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "breakout",
+   "direction": "sell",
+   "result": "opened",
+   "reference": "AB261118060500-228e8306",
+   "reasons": [],
+   "level": "13189"
+  },
+  {
+   "time_utc": "2026-11-18T06:10:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "consolidation",
+   "direction": "none",
+   "trend_type": null,
+   "line": "Wed 18 Nov 06:10 GMT  consolidation (none): the emerging down trend was cancelled: 2 closes in a row back inside the Bollinger bands after the breakout (last 13191.7)"
+  },
+  {
+   "time_utc": "2026-11-18T06:10:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "range trade",
+   "direction": "buy",
+   "entry_price": "13191.5",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow range trade",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T06:15:00Z",
+   "kind": "trade manager",
+   "paper": true,
+   "reference": "AB261118060500-228e8306",
+   "strategy": "breakout",
+   "decision": "stopped by IG",
+   "price": "13195",
+   "pips": "-6",
+   "why": "the stop at IG",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-18T06:15:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13193.4",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow Bollinger bounce 5m",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T06:15:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13193.4",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow Bollinger bounce 5m",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T06:15:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13193.4",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow Bollinger bounce 5m",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T06:25:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "entry_price": "13188.9",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T06:40:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "entry_price": "13187.6",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T07:00:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "emerging trend",
+   "direction": "down",
+   "trend_type": null,
+   "line": "Wed 18 Nov 07:00 GMT  emerging trend (down): broke out of the consolidation: close 13176.7 below the lower band 13183.1"
+  },
+  {
+   "time_utc": "2026-11-18T07:00:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "entry_price": "13189.1",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind",
+   "state": "consolidation",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T07:05:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "entry_price": "13177.1",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "emerging trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T07:05:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "result": "opened",
+   "reference": "AB261118070500-374faf61",
+   "reasons": [],
+   "level": "13177.1"
+  },
+  {
+   "time_utc": "2026-11-18T07:10:00Z",
+   "kind": "analyser state change",
+   "paper": true,
+   "state": "trend",
+   "direction": "down",
+   "trend_type": "slow grind",
+   "line": "Wed 18 Nov 07:10 GMT  trend (down, slow grind): the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new low 13171.9 on the lower band 13177.7; EMAs 7/13/21 stacked down for 23 candles, close 13177.1 below them and the 100 EMA 13196.3; band sloping -1.5 pips/candle"
+  },
+  {
+   "time_utc": "2026-11-18T07:15:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "range trade",
+   "direction": "buy",
+   "entry_price": "13177.2",
+   "allowed": false,
+   "blocked_by": "the analyser's state is trend, which does not allow range trade",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T07:20:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "breakout",
+   "direction": "sell",
+   "entry_price": "13181.8",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T07:20:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "breakout",
+   "direction": "sell",
+   "result": "opened",
+   "reference": "AB261118072000-637a7e0c",
+   "reasons": [],
+   "level": "13181.8"
+  },
+  {
+   "time_utc": "2026-11-18T07:20:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "entry_price": "13181.8",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T07:20:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "in a big-news window: Core Inflation Rate MoM, Inflation Rate YoY"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T07:20:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "entry_price": "13181.8",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T07:20:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "in a big-news window: Core Inflation Rate MoM, Inflation Rate YoY"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T07:25:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "entry_price": "13177.2",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T07:25:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "slow grind already has 1 trade(s) open (at most 1)"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T07:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13176.7",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T07:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13176.7",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T07:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13176.7",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T07:40:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13172.4",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T07:40:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13172.4",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T07:45:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13172.2",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T08:05:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "entry_price": "13171",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T08:05:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "slow grind already has 1 trade(s) open (at most 1)"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T08:05:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "entry_price": "13167.1",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T08:05:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "result": "opened",
+   "reference": "AB261118080500-e8b7e7bc",
+   "reasons": [],
+   "level": "13167.1"
+  },
+  {
+   "time_utc": "2026-11-18T08:15:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13163.9",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T08:15:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13163.9",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T08:20:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13161.2",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T08:20:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13161.2",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T08:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13159.2",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T08:50:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13157.4",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T08:55:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13152.8",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T09:05:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13149.2",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "entry_price": "13161.8",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "result": "opened",
+   "reference": "AB261118093000-b93825c7",
+   "reasons": [],
+   "level": "13163.3"
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13161.9",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "result": "opened",
+   "reference": "AB261118093000-fa763317",
+   "reasons": [],
+   "level": "13163.4"
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13161.9",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "kind": "idea not sent again",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13161.9",
+   "why": "this strategy already had a try in this direction on this candle"
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13161.9",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "kind": "idea not sent again",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13161.9",
+   "why": "this strategy already had a try in this direction on this candle"
+  },
+  {
+   "time_utc": "2026-11-18T09:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "entry_price": "13163.8",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T09:35:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "Bollinger bounce already has 1 buy trade(s) open (at most 1 each way)"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T09:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13164.9",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T09:35:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "Bollinger bounce 5m already has 1 buy trade(s) open (at most 1 each way)"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T09:55:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "buy",
+   "entry_price": "13168.9",
+   "allowed": false,
+   "blocked_by": "the trend is down: slow grind only in the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T10:10:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "buy",
+   "entry_price": "13171.7",
+   "allowed": false,
+   "blocked_by": "the trend is down: slow grind only in the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T10:30:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13172.7",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T10:30:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "Bollinger bounce 5m already has 1 buy trade(s) open (at most 1 each way)"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T10:30:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13172.7",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T10:30:00Z",
+   "kind": "idea not sent again",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13172.7",
+   "why": "this strategy already had a try in this direction on this candle"
+  },
+  {
+   "time_utc": "2026-11-18T10:30:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13172.7",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T10:30:00Z",
+   "kind": "idea not sent again",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13172.7",
+   "why": "this strategy already had a try in this direction on this candle"
+  },
+  {
+   "time_utc": "2026-11-18T10:45:00Z",
+   "kind": "trade manager",
+   "paper": true,
+   "reference": "AB261118093000-b93825c7",
+   "strategy": "Bollinger bounce",
+   "decision": "stop moved",
+   "price": "13170.8",
+   "pips": "7.5",
+   "why": "12.3 pips up at best (the trail from 12): the stop moves to 13170.8, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-18T10:45:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "buy",
+   "entry_price": "13173.7",
+   "allowed": false,
+   "blocked_by": "the trend is down: slow grind only in the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T10:45:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "entry_price": "13173.1",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T10:45:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "result": "safety refused",
+   "reference": "",
+   "reasons": [
+    "Bollinger bounce 5m already has 1 buy trade(s) open (at most 1 each way)"
+   ],
+   "level": null
+  },
+  {
+   "time_utc": "2026-11-18T10:55:00Z",
+   "kind": "trade manager",
+   "paper": true,
+   "reference": "AB261118093000-b93825c7",
+   "strategy": "Bollinger bounce",
+   "decision": "stop moved",
+   "price": "13171.7",
+   "pips": "8.4",
+   "why": "12.3 pips up at best (the trail from 12): the stop moves to 13171.7, beyond the last 3 candles",
+   "order_sender": "stop moved"
+  },
+  {
+   "time_utc": "2026-11-18T11:00:00Z",
+   "kind": "trade manager",
+   "paper": true,
+   "reference": "AB261118093000-b93825c7",
+   "strategy": "Bollinger bounce",
+   "decision": "stopped by IG",
+   "price": "13171.7",
+   "pips": "8.4",
+   "why": "the stop at IG (trailed to 13171.7)",
+   "order_sender": "closed at IG"
+  },
+  {
+   "time_utc": "2026-11-18T11:25:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13167.1",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T11:30:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "entry_price": "13164.1",
+   "allowed": true,
+   "blocked_by": "",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T11:30:00Z",
+   "kind": "order",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "result": "opened",
+   "reference": "AB261118113000-1de05d5c",
+   "reasons": [],
+   "level": "13164.1"
+  },
+  {
+   "time_utc": "2026-11-18T11:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13163.9",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T11:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13163.9",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T11:35:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13163.9",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T11:40:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13162.1",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T11:45:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13158.8",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T11:45:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13158.8",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  },
+  {
+   "time_utc": "2026-11-18T11:55:00Z",
+   "kind": "idea",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "entry_price": "13155.6",
+   "allowed": false,
+   "blocked_by": "the trend is down: Bollinger bounce 5m only against the trend's direction",
+   "state": "trend",
+   "already_sent_live": false
+  }
+ ],
+ "orders": [
+  {
+   "time_utc": "2026-11-17T22:05:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "session sweep",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-17T22:20:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "reasons": [
+    "from 20:30 UK to midnight: no new slow grind trade"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-17T22:45:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "reasons": [
+    "from 20:30 UK to midnight: no new slow grind trade"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T00:15:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T00:40:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T02:00:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T02:25:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T03:55:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T04:05:00Z",
+   "event": "sending",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118040500-10a367e1",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "size": "10.0",
+   "stop_pips": "15",
+   "stop_distance": "15",
+   "take_profit_pips": 100,
+   "idea_time": "2026-11-18T04:05:00Z",
+   "idea_price": "13195.5",
+   "body": {
+    "currencyCode": "GBP",
+    "direction": "SELL",
+    "epic": "CS.D.GBPUSD.TODAY.IP",
+    "expiry": "DFB",
+    "forceOpen": true,
+    "guaranteedStop": false,
+    "level": null,
+    "limitDistance": 100.0,
+    "limitLevel": null,
+    "orderType": "MARKET",
+    "quoteId": null,
+    "size": 10.0,
+    "stopDistance": 15.0,
+    "stopLevel": null,
+    "trailingStop": false,
+    "trailingStopIncrement": null,
+    "dealReference": "AB261118040500-10a367e1"
+   },
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T04:05:00Z",
+   "event": "opened",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118040500-10a367e1",
+   "strategy": "slow grind",
+   "direction": "sell",
+   "size": "10.0",
+   "stop_pips": "15",
+   "opened_utc": "2026-11-18T04:05:00Z",
+   "deal_id": "PAPER-AB261118040500-10a367e1",
+   "level": "13195.5",
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T04:05:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T04:30:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "reasons": [
+    "slow grind already has 1 trade(s) open (at most 1)"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T04:30:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "reasons": [
+    "outside the trading hours 06:00 to 20:30 UK"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T06:05:00Z",
+   "event": "sending",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118060500-228e8306",
+   "strategy": "breakout",
+   "direction": "sell",
+   "size": "10.0",
+   "stop_pips": "6",
+   "stop_distance": "6",
+   "take_profit_pips": 50,
+   "idea_time": "2026-11-18T06:05:00Z",
+   "idea_price": "13189",
+   "body": {
+    "currencyCode": "GBP",
+    "direction": "SELL",
+    "epic": "CS.D.GBPUSD.TODAY.IP",
+    "expiry": "DFB",
+    "forceOpen": true,
+    "guaranteedStop": false,
+    "level": null,
+    "limitDistance": 50.0,
+    "limitLevel": null,
+    "orderType": "MARKET",
+    "quoteId": null,
+    "size": 10.0,
+    "stopDistance": 6.0,
+    "stopLevel": null,
+    "trailingStop": false,
+    "trailingStopIncrement": null,
+    "dealReference": "AB261118060500-228e8306"
+   },
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T06:05:00Z",
+   "event": "opened",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118060500-228e8306",
+   "strategy": "breakout",
+   "direction": "sell",
+   "size": "10.0",
+   "stop_pips": "6",
+   "opened_utc": "2026-11-18T06:05:00Z",
+   "deal_id": "PAPER-AB261118060500-228e8306",
+   "level": "13189",
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T06:15:00Z",
+   "event": "closed at IG",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118060500-228e8306",
+   "deal_id": "PAPER-AB261118060500-228e8306",
+   "how": "stopped by IG",
+   "level": "13195",
+   "size": "10.0",
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T07:05:00Z",
+   "event": "sending",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118070500-374faf61",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "size": "10.0",
+   "stop_pips": "12",
+   "stop_distance": "12",
+   "take_profit_pips": 100,
+   "idea_time": "2026-11-18T07:05:00Z",
+   "idea_price": "13177.1",
+   "body": {
+    "currencyCode": "GBP",
+    "direction": "SELL",
+    "epic": "CS.D.GBPUSD.TODAY.IP",
+    "expiry": "DFB",
+    "forceOpen": true,
+    "guaranteedStop": false,
+    "level": null,
+    "limitDistance": 100.0,
+    "limitLevel": null,
+    "orderType": "MARKET",
+    "quoteId": null,
+    "size": 10.0,
+    "stopDistance": 12.0,
+    "stopLevel": null,
+    "trailingStop": false,
+    "trailingStopIncrement": null,
+    "dealReference": "AB261118070500-374faf61"
+   },
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T07:05:00Z",
+   "event": "opened",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118070500-374faf61",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "size": "10.0",
+   "stop_pips": "12",
+   "opened_utc": "2026-11-18T07:05:00Z",
+   "deal_id": "PAPER-AB261118070500-374faf61",
+   "level": "13177.1",
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T07:20:00Z",
+   "event": "sending",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118072000-637a7e0c",
+   "strategy": "breakout",
+   "direction": "sell",
+   "size": "10.0",
+   "stop_pips": "6",
+   "stop_distance": "6",
+   "take_profit_pips": 50,
+   "idea_time": "2026-11-18T07:20:00Z",
+   "idea_price": "13181.8",
+   "body": {
+    "currencyCode": "GBP",
+    "direction": "SELL",
+    "epic": "CS.D.GBPUSD.TODAY.IP",
+    "expiry": "DFB",
+    "forceOpen": true,
+    "guaranteedStop": false,
+    "level": null,
+    "limitDistance": 50.0,
+    "limitLevel": null,
+    "orderType": "MARKET",
+    "quoteId": null,
+    "size": 10.0,
+    "stopDistance": 6.0,
+    "stopLevel": null,
+    "trailingStop": false,
+    "trailingStopIncrement": null,
+    "dealReference": "AB261118072000-637a7e0c"
+   },
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T07:20:00Z",
+   "event": "opened",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118072000-637a7e0c",
+   "strategy": "breakout",
+   "direction": "sell",
+   "size": "10.0",
+   "stop_pips": "6",
+   "opened_utc": "2026-11-18T07:20:00Z",
+   "deal_id": "PAPER-AB261118072000-637a7e0c",
+   "level": "13181.8",
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T07:20:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "reasons": [
+    "in a big-news window: Core Inflation Rate MoM, Inflation Rate YoY"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T07:20:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "sell",
+   "reasons": [
+    "in a big-news window: Core Inflation Rate MoM, Inflation Rate YoY"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T07:25:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "reasons": [
+    "slow grind already has 1 trade(s) open (at most 1)"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T08:05:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "sell",
+   "reasons": [
+    "slow grind already has 1 trade(s) open (at most 1)"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T08:05:00Z",
+   "event": "sending",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118080500-e8b7e7bc",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "size": "10.0",
+   "stop_pips": "12",
+   "stop_distance": "12",
+   "take_profit_pips": 100,
+   "idea_time": "2026-11-18T08:05:00Z",
+   "idea_price": "13167.1",
+   "body": {
+    "currencyCode": "GBP",
+    "direction": "SELL",
+    "epic": "CS.D.GBPUSD.TODAY.IP",
+    "expiry": "DFB",
+    "forceOpen": true,
+    "guaranteedStop": false,
+    "level": null,
+    "limitDistance": 100.0,
+    "limitLevel": null,
+    "orderType": "MARKET",
+    "quoteId": null,
+    "size": 10.0,
+    "stopDistance": 12.0,
+    "stopLevel": null,
+    "trailingStop": false,
+    "trailingStopIncrement": null,
+    "dealReference": "AB261118080500-e8b7e7bc"
+   },
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T08:05:00Z",
+   "event": "opened",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118080500-e8b7e7bc",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "size": "10.0",
+   "stop_pips": "12",
+   "opened_utc": "2026-11-18T08:05:00Z",
+   "deal_id": "PAPER-AB261118080500-e8b7e7bc",
+   "level": "13167.1",
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "event": "sending",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118093000-b93825c7",
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "size": "10.0",
+   "stop_pips": "12",
+   "stop_distance": "12",
+   "take_profit_pips": 100,
+   "idea_time": "2026-11-18T09:30:00Z",
+   "idea_price": "13161.8",
+   "body": {
+    "currencyCode": "GBP",
+    "direction": "BUY",
+    "epic": "CS.D.GBPUSD.TODAY.IP",
+    "expiry": "DFB",
+    "forceOpen": true,
+    "guaranteedStop": false,
+    "level": null,
+    "limitDistance": 100.0,
+    "limitLevel": null,
+    "orderType": "MARKET",
+    "quoteId": null,
+    "size": 10.0,
+    "stopDistance": 12.0,
+    "stopLevel": null,
+    "trailingStop": false,
+    "trailingStopIncrement": null,
+    "dealReference": "AB261118093000-b93825c7"
+   },
+   "signal": "buy 2026-11-18T09:20:00Z",
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "event": "opened",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118093000-b93825c7",
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "size": "10.0",
+   "stop_pips": "12",
+   "opened_utc": "2026-11-18T09:30:00Z",
+   "deal_id": "PAPER-AB261118093000-b93825c7",
+   "level": "13163.3",
+   "signal": "buy 2026-11-18T09:20:00Z",
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "event": "sending",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118093000-fa763317",
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "size": "10.0",
+   "stop_pips": "12",
+   "stop_distance": "12",
+   "take_profit_pips": 100,
+   "idea_time": "2026-11-18T09:30:00Z",
+   "idea_price": "13161.9",
+   "body": {
+    "currencyCode": "GBP",
+    "direction": "BUY",
+    "epic": "CS.D.GBPUSD.TODAY.IP",
+    "expiry": "DFB",
+    "forceOpen": true,
+    "guaranteedStop": false,
+    "level": null,
+    "limitDistance": 100.0,
+    "limitLevel": null,
+    "orderType": "MARKET",
+    "quoteId": null,
+    "size": 10.0,
+    "stopDistance": 12.0,
+    "stopLevel": null,
+    "trailingStop": false,
+    "trailingStopIncrement": null,
+    "dealReference": "AB261118093000-fa763317"
+   },
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "event": "opened",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118093000-fa763317",
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "size": "10.0",
+   "stop_pips": "12",
+   "opened_utc": "2026-11-18T09:30:00Z",
+   "deal_id": "PAPER-AB261118093000-fa763317",
+   "level": "13163.4",
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T09:35:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "reasons": [
+    "Bollinger bounce already has 1 buy trade(s) open (at most 1 each way)"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T09:35:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "reasons": [
+    "Bollinger bounce 5m already has 1 buy trade(s) open (at most 1 each way)"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T10:30:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "reasons": [
+    "Bollinger bounce 5m already has 1 buy trade(s) open (at most 1 each way)"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T10:45:00Z",
+   "event": "stop move sending",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118093000-b93825c7",
+   "deal_id": "PAPER-AB261118093000-b93825c7",
+   "stop_level": "13170.8",
+   "why": "12.3 pips up at best (the trail from 12): the stop moves to 13170.8, beyond the last 3 candles",
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T10:45:00Z",
+   "event": "stop moved",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118093000-b93825c7",
+   "deal_id": "PAPER-AB261118093000-b93825c7",
+   "stop_level": "13170.8",
+   "how": "paper",
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T10:45:00Z",
+   "event": "safety refused",
+   "pair": "GBPUSD",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "reasons": [
+    "Bollinger bounce 5m already has 1 buy trade(s) open (at most 1 each way)"
+   ],
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T10:55:00Z",
+   "event": "stop move sending",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118093000-b93825c7",
+   "deal_id": "PAPER-AB261118093000-b93825c7",
+   "stop_level": "13171.7",
+   "why": "12.3 pips up at best (the trail from 12): the stop moves to 13171.7, beyond the last 3 candles",
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T10:55:00Z",
+   "event": "stop moved",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118093000-b93825c7",
+   "deal_id": "PAPER-AB261118093000-b93825c7",
+   "stop_level": "13171.7",
+   "how": "paper",
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T11:00:00Z",
+   "event": "closed at IG",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118093000-b93825c7",
+   "deal_id": "PAPER-AB261118093000-b93825c7",
+   "how": "stopped by IG",
+   "level": "13171.7",
+   "size": "10.0",
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T11:30:00Z",
+   "event": "sending",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118113000-1de05d5c",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "size": "10.0",
+   "stop_pips": "12",
+   "stop_distance": "12",
+   "take_profit_pips": 100,
+   "idea_time": "2026-11-18T11:30:00Z",
+   "idea_price": "13164.1",
+   "body": {
+    "currencyCode": "GBP",
+    "direction": "SELL",
+    "epic": "CS.D.GBPUSD.TODAY.IP",
+    "expiry": "DFB",
+    "forceOpen": true,
+    "guaranteedStop": false,
+    "level": null,
+    "limitDistance": 100.0,
+    "limitLevel": null,
+    "orderType": "MARKET",
+    "quoteId": null,
+    "size": 10.0,
+    "stopDistance": 12.0,
+    "stopLevel": null,
+    "trailingStop": false,
+    "trailingStopIncrement": null,
+    "dealReference": "AB261118113000-1de05d5c"
+   },
+   "_file": "paper_orders.jsonl"
+  },
+  {
+   "time_utc": "2026-11-18T11:30:00Z",
+   "event": "opened",
+   "pair": "GBPUSD",
+   "paper": true,
+   "reference": "AB261118113000-1de05d5c",
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "size": "10.0",
+   "stop_pips": "12",
+   "opened_utc": "2026-11-18T11:30:00Z",
+   "deal_id": "PAPER-AB261118113000-1de05d5c",
+   "level": "13164.1",
+   "_file": "paper_orders.jsonl"
+  }
+ ],
+ "opened": [
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "time": "2026-11-18T04:05:00+00:00",
+   "entry": "13195.5",
+   "open": true,
+   "closed": null,
+   "how": null,
+   "pips": null,
+   "steps": [
+    "Wed 18 Nov 03:10 GMT: the last low made: 13195",
+    "Wed 18 Nov 03:15 GMT to 04:00 GMT: a pause: 10 candles in a row without a new low, closing below the 21 EMA; its lowest point 13195.5",
+    "Wed 18 Nov 04:05 GMT: price broke below it (during this candle)",
+    "allowed at entry: slow grind in a trend down; direction rule sell side (price 13195.5 is below the pivot 13200.1 and below the 5m 100 EMA 13202.9); the direction rule does not apply to slow grind"
+   ],
+   "decisions": []
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "time": "2026-11-18T06:05:00+00:00",
+   "entry": "13189",
+   "open": false,
+   "closed": "2026-11-18T06:15:00+00:00",
+   "how": "stopped by IG: the stop at IG",
+   "pips": "-6",
+   "steps": [
+    "Wed 18 Nov 05:50 GMT: the analyser moved from consolidation to an emerging trend down: broke out of the consolidation: close 13190.5 below the lower band 13190.8",
+    "PULLBACK_ENTRY: not opened on the break; waiting up to 6 candles for a candle whose high reaches the 8 EMA, then a close back below it (the breakout candle Wed 18 Nov 05:50 GMT)",
+    "Wed 18 Nov 06:00 GMT: price came back to the 8 EMA 13191.9 (high 13192)",
+    "Wed 18 Nov 06:00 GMT: closed 13189.4 below the 8 EMA 13191.9, candle 2 of 6 after the break",
+    "Wed 18 Nov 06:05 GMT opens at this candle's open, 13189 (sell price)",
+    "the day's move: 13189 is below the day's 00:00 UK open 13205.2",
+    "allowed at entry: breakout in a emerging trend down; direction rule sell side (price 13189 is below the pivot 13200.1 and below the 5m 100 EMA 13199.5); the direction rule does not apply to breakout"
+   ],
+   "decisions": [
+    [
+     "2026-11-18T06:15:00+00:00",
+     "stopped by IG",
+     "13195",
+     "-6",
+     "the stop at IG"
+    ]
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time": "2026-11-18T07:05:00+00:00",
+   "entry": "13177.1",
+   "open": true,
+   "closed": null,
+   "how": null,
+   "pips": null,
+   "steps": [
+    "step 0, hourly 8/13/20 EMAs in order, falling; slopes 1.63, 1.15, 0.72 pips/hour (min 0.16); gaps 1.73 and 0.36 pips (min 0.25 and 0.2)",
+    "Wed 18 Nov 07:00 GMT: price rose to the 5-minute 8 EMA 13190.0 (high 13192.7); closed 13176.7, below the 21 EMA 13189.9",
+    "entry 13183.8: 3 pips below the lowest low of the 5 candles before the touch candle (06:35 GMT to 06:55 GMT); expires 20 minutes after the touch",
+    "Wed 18 Nov 07:05 GMT: price reached the entry 13183.8 (the candle opened past it, at 13177.1)",
+    "allowed at entry: EMA pullback in a emerging trend down; direction rule sell side (price 13177.1 is below the pivot 13200.1 and below the 5m 100 EMA 13197.1)"
+   ],
+   "decisions": []
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "time": "2026-11-18T07:20:00+00:00",
+   "entry": "13181.8",
+   "open": true,
+   "closed": null,
+   "how": null,
+   "pips": null,
+   "steps": [
+    "Wed 18 Nov 07:00 GMT: the analyser moved from consolidation to an emerging trend down: broke out of the consolidation: close 13176.7 below the lower band 13183.1",
+    "PULLBACK_ENTRY: not opened on the break; waiting up to 6 candles for a candle whose high reaches the 8 EMA, then a close back below it (the breakout candle Wed 18 Nov 07:00 GMT)",
+    "Wed 18 Nov 07:15 GMT: price came back to the 8 EMA 13182.5 (high 13182.7)",
+    "Wed 18 Nov 07:15 GMT: closed 13181.7 below the 8 EMA 13182.5, candle 3 of 6 after the break",
+    "Wed 18 Nov 07:20 GMT opens at this candle's open, 13181.8 (sell price)",
+    "the day's move: 13181.8 is below the day's 00:00 UK open 13205.2",
+    "allowed at entry: breakout in a trend down; direction rule sell side (price 13181.8 is below the pivot 13200.1 and below the 5m 100 EMA 13196.0); the direction rule does not apply to breakout"
+   ],
+   "decisions": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time": "2026-11-18T08:05:00+00:00",
+   "entry": "13167.1",
+   "open": true,
+   "closed": null,
+   "how": null,
+   "pips": null,
+   "steps": [
+    "step 0, hourly 8/13/20 EMAs in order, falling; slopes 3.05, 2.14, 1.41 pips/hour (min 0.16); gaps 3.38 and 1.55 pips (min 0.25 and 0.2)",
+    "Wed 18 Nov 08:00 GMT: price rose to the 5-minute 8 EMA 13174.9 (high 13175.4); closed 13172.6, below the 21 EMA 13179.6",
+    "entry 13167.1: 3 pips below the lowest low of the 5 candles before the touch candle (07:35 GMT to 07:55 GMT); expires 20 minutes after the touch",
+    "Wed 18 Nov 08:05 GMT: price reached the entry 13167.1 (during this candle)",
+    "allowed at entry: EMA pullback in a trend down; direction rule sell side (price 13167.1 is below the pivot 13200.1 and below the 5m 100 EMA 13192.5)"
+   ],
+   "decisions": []
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time": "2026-11-18T09:30:00+00:00",
+   "entry": "13161.8",
+   "open": false,
+   "closed": "2026-11-18T11:00:00+00:00",
+   "how": "stopped by IG: the stop at IG (trailed to 13171.7)",
+   "pips": "8.4",
+   "steps": [
+    "Wed 18 Nov 09:20 GMT pierce and rejection candle: its low 13150 went 9.4 pips below the lower hourly Bollinger band (13159.4 at that moment), and it closed green (13151.4 to 13155.3)",
+    "Wed 18 Nov 09:25 GMT confirmation candle: closed at 13161.4, above the rejection candle's high (13156.2)",
+    "Wed 18 Nov 09:30 GMT opens at this candle's open, 13161.8 (sell price)",
+    "allowed at entry: Bollinger bounce in a trend down; direction rule sell side (price 13161.8 is below the pivot 13200.1 and below the 5m 100 EMA 13182.7); the direction rule does not apply to Bollinger bounce"
+   ],
+   "decisions": [
+    [
+     "2026-11-18T11:00:00+00:00",
+     "stopped by IG",
+     "13171.7",
+     "8.4",
+     "the stop at IG (trailed to 13171.7)"
+    ]
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time": "2026-11-18T09:30:00+00:00",
+   "entry": "13161.9",
+   "open": true,
+   "closed": null,
+   "how": null,
+   "pips": null,
+   "steps": [
+    "Wed 18 Nov 09:05 GMT  #1258 bounce buy pierce 13148: low 13148 reached lower Bollinger band 13148.7, london_session_low 13149.2, round_number 13150; outside the watch windows; levels line up; counts",
+    "Wed 18 Nov 09:20 GMT  #1258 bounce buy reversal 13155.3: reversal candle O 13151.4 H 13156.2 L 13150 C 13155.3; size against the piercing candle: body 1.39x, high-low 0.70x",
+    "Wed 18 Nov 09:25 GMT  #1258 bounce buy confirmation 13161.4: closed 13161.4 above the reversal high 13156.2; trigger at above 13161.9",
+    "Wed 18 Nov 09:30 GMT  #1258 bounce buy trigger 13161.9: price went above 13161.9 (during this candle)",
+    "recorded, not used: reversal/piercing candle body 1.39x, high-low 0.70x",
+    "reversal watch window: outside; the setup counts (a mark for the trade manager, not a filter)",
+    "allowed at entry: Bollinger bounce 5m in a trend down; direction rule sell side (price 13161.9 is below the pivot 13200.1 and below the 5m 100 EMA 13182.7); the direction rule does not apply to Bollinger bounce 5m"
+   ],
+   "decisions": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time": "2026-11-18T11:30:00+00:00",
+   "entry": "13164.1",
+   "open": true,
+   "closed": null,
+   "how": null,
+   "pips": null,
+   "steps": [
+    "step 0, hourly 8/13/20 EMAs in order, falling; slopes 4.20, 3.43, 2.57 pips/hour (min 0.16); gaps 5.69 and 4.14 pips (min 0.25 and 0.2)",
+    "Wed 18 Nov 11:25 GMT: price rose to the 5-minute 8 EMA 13171.2 (high 13171.8); closed 13164.1, below the 21 EMA 13169.3",
+    "entry 13164.1: 3 pips below the lowest low of the 5 candles before the touch candle (11:00 GMT to 11:20 GMT); expires 20 minutes after the touch",
+    "Wed 18 Nov 11:30 GMT: price reached the entry 13164.1 (during this candle)",
+    "allowed at entry: EMA pullback in a trend down; direction rule sell side (price 13164.1 is below the pivot 13200.1 and below the 5m 100 EMA 13177.8)"
+   ],
+   "decisions": []
+  }
+ ],
+ "changes": [
+  [
+   "2026-11-17T21:10:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level: closed 13209.5 above the reversal high 13209.3; trigger at above 13211.1"
+  ],
+  [
+   "2026-11-17T21:25:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "rejected at a level against the emerging up trend: closed 13206.6 below the reversal low 13208.2; trigger at below 13206.5"
+  ],
+  [
+   "2026-11-17T22:05:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new low 13198.6 on the lower band 13201.1; EMAs 7/13/21 stacked down for 34 candles, close 13200.5 below them and the 100 EMA 13208.5; band sloping -0.9 pips/candle"
+  ],
+  [
+   "2026-11-17T22:55:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the down trend ran out of steam: bands 12.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 7), middle band -0.3 pips/candle, no close outside the bands for 6 candles, average body 1.2 pips, green/red 1.2"
+  ],
+  [
+   "2026-11-17T23:20:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level: closed 13207.8 above the reversal high 13207.1; trigger at above 13208.1"
+  ],
+  [
+   "2026-11-17T23:30:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "rejected at a level against the emerging up trend: closed 13206.1 below the reversal low 13206.5; trigger at below 13205.5"
+  ],
+  [
+   "2026-11-17T23:40:00+00:00",
+   "ranging",
+   "none",
+   null,
+   "the emerging down trend was cancelled: 2 closes in a row back above the turning_high 13204.4 it was rejected at (last 13204.8)"
+  ],
+  [
+   "2026-11-17T23:50:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level: closed 13207 above the reversal high 13206.5; trigger at above 13207.2"
+  ],
+  [
+   "2026-11-18T00:05:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging up trend was cancelled: 2 closes in a row back below the turning_high 13204.4 it was rejected at (last 13199.7)"
+  ],
+  [
+   "2026-11-18T00:10:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level: closed 13202 above the reversal high 13200.1; trigger at above 13202"
+  ],
+  [
+   "2026-11-18T00:45:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging up trend settled into consolidation: bands 12.0 pips wide (narrow: <= 14, or narrowing for 6 candles: 0), middle band -0.1 pips/candle, no close outside the bands for 6 candles, average body 1.2 pips, green/red 2.0"
+  ],
+  [
+   "2026-11-18T00:50:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "rejected at a level: closed 13196.9 below the reversal low 13197.9; trigger at below 13194.9"
+  ],
+  [
+   "2026-11-18T01:15:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging down trend settled into consolidation: bands 12.0 pips wide (narrow: <= 14, or narrowing for 6 candles: 3), middle band -0.4 pips/candle, no close outside the bands for 6 candles, average body 1.7 pips, green/red 1.6"
+  ],
+  [
+   "2026-11-18T01:30:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level: closed 13204.8 above the reversal high 13203; trigger at above 13206.7"
+  ],
+  [
+   "2026-11-18T01:40:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "rejected at a level against the emerging up trend: closed 13202.2 below the reversal low 13203.8; trigger at below 13202.1"
+  ],
+  [
+   "2026-11-18T01:55:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level against the emerging down trend: closed 13205.9 above the reversal high 13205.2; trigger at above 13206.1"
+  ],
+  [
+   "2026-11-18T02:05:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging up trend settled into consolidation: bands 11.2 pips wide (narrow: <= 14, or narrowing for 6 candles: 0), middle band 0.2 pips/candle, no close outside the bands for 6 candles, average body 1.6 pips, green/red 1.3"
+  ],
+  [
+   "2026-11-18T02:15:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level: closed 13206 above the reversal high 13203.8; trigger at above 13206.6"
+  ],
+  [
+   "2026-11-18T02:25:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging up trend settled into consolidation: bands 12.1 pips wide (narrow: <= 14, or narrowing for 6 candles: 1), middle band 0.2 pips/candle, no close outside the bands for 6 candles, average body 1.3 pips, green/red 1.3"
+  ],
+  [
+   "2026-11-18T02:50:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "rejected at a level: closed 13201.3 below the reversal low 13202.4; trigger at below 13200.2"
+  ],
+  [
+   "2026-11-18T03:10:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new low 13195.0 on the lower band 13195.7; EMAs 7/13/21 stacked down for 4 candles, close 13195.7 below them and the 100 EMA 13203.9; band sloping -0.5 pips/candle"
+  ],
+  [
+   "2026-11-18T04:35:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the down trend ran out of steam: bands 8.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 5), middle band -0.4 pips/candle, no close outside the bands for 6 candles, average body 1.9 pips, green/red 1.3"
+  ],
+  [
+   "2026-11-18T05:30:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "broke out of the consolidation: close 13191.1 below the lower band 13191.5"
+  ],
+  [
+   "2026-11-18T05:40:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging down trend was cancelled: 2 closes in a row back inside the Bollinger bands after the breakout (last 13193.9)"
+  ],
+  [
+   "2026-11-18T05:50:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "broke out of the consolidation: close 13190.5 below the lower band 13190.8"
+  ],
+  [
+   "2026-11-18T06:10:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging down trend was cancelled: 2 closes in a row back inside the Bollinger bands after the breakout (last 13191.7)"
+  ],
+  [
+   "2026-11-18T07:00:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "broke out of the consolidation: close 13176.7 below the lower band 13183.1"
+  ],
+  [
+   "2026-11-18T07:10:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new low 13171.9 on the lower band 13177.7; EMAs 7/13/21 stacked down for 23 candles, close 13177.1 below them and the 100 EMA 13196.3; band sloping -1.5 pips/candle"
+  ]
+ ],
+ "per_candle": [
+  [
+   "2026-11-18T06:00:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13189.4",
+   "13190.9"
+  ],
+  [
+   "2026-11-18T06:05:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13190.8",
+   "13192.3"
+  ],
+  [
+   "2026-11-18T06:10:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13191.7",
+   "13193.2"
+  ],
+  [
+   "2026-11-18T06:15:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13190.3",
+   "13191.8"
+  ],
+  [
+   "2026-11-18T06:20:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13189.9",
+   "13191.4"
+  ],
+  [
+   "2026-11-18T06:25:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13188.1",
+   "13189.6"
+  ],
+  [
+   "2026-11-18T06:30:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13188.8",
+   "13190.3"
+  ],
+  [
+   "2026-11-18T06:35:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13187.8",
+   "13189.3"
+  ],
+  [
+   "2026-11-18T06:40:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13190.4",
+   "13191.9"
+  ],
+  [
+   "2026-11-18T06:45:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13189.4",
+   "13190.9"
+  ],
+  [
+   "2026-11-18T06:50:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13190.6",
+   "13192.1"
+  ],
+  [
+   "2026-11-18T06:55:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13190.4",
+   "13198"
+  ],
+  [
+   "2026-11-18T07:00:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13176.7",
+   "13178.2"
+  ],
+  [
+   "2026-11-18T07:05:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13174.9",
+   "13176.4"
+  ],
+  [
+   "2026-11-18T07:10:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "trend",
+   "down",
+   "slow grind",
+   "13177.1",
+   "13178.6"
+  ],
+  [
+   "2026-11-18T07:15:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13181.7",
+   "13183.2"
+  ],
+  [
+   "2026-11-18T07:20:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13179",
+   "13180.5"
+  ],
+  [
+   "2026-11-18T07:25:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13179.2",
+   "13180.7"
+  ],
+  [
+   "2026-11-18T07:30:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13176.8",
+   "13178.3"
+  ],
+  [
+   "2026-11-18T07:35:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13173.8",
+   "13175.3"
+  ],
+  [
+   "2026-11-18T07:40:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13172.3",
+   "13173.8"
+  ],
+  [
+   "2026-11-18T07:45:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13174.2",
+   "13175.7"
+  ],
+  [
+   "2026-11-18T07:50:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13171.8",
+   "13173.3"
+  ],
+  [
+   "2026-11-18T07:55:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13172.8",
+   "13174.3"
+  ],
+  [
+   "2026-11-18T08:00:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13172.6",
+   "13174.1"
+  ],
+  [
+   "2026-11-18T08:05:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13171.4",
+   "13172.9"
+  ],
+  [
+   "2026-11-18T08:10:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13169.6",
+   "13171.1"
+  ],
+  [
+   "2026-11-18T08:15:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13161.7",
+   "13163.2"
+  ],
+  [
+   "2026-11-18T08:20:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13162.8",
+   "13164.3"
+  ],
+  [
+   "2026-11-18T08:25:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13160.6",
+   "13162.1"
+  ],
+  [
+   "2026-11-18T08:30:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13162.9",
+   "13164.4"
+  ],
+  [
+   "2026-11-18T08:35:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13160.4",
+   "13161.9"
+  ],
+  [
+   "2026-11-18T08:40:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13163.7",
+   "13165.2"
+  ],
+  [
+   "2026-11-18T08:45:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13157.7",
+   "13159.2"
+  ],
+  [
+   "2026-11-18T08:50:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13153.2",
+   "13154.7"
+  ],
+  [
+   "2026-11-18T08:55:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13153.3",
+   "13154.8"
+  ],
+  [
+   "2026-11-18T09:00:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13150.9",
+   "13152.4"
+  ],
+  [
+   "2026-11-18T09:05:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13153.8",
+   "13155.3"
+  ],
+  [
+   "2026-11-18T09:10:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13153.6",
+   "13155.1"
+  ],
+  [
+   "2026-11-18T09:15:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13151.1",
+   "13152"
+  ],
+  [
+   "2026-11-18T09:20:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13155.3",
+   "13156.8"
+  ],
+  [
+   "2026-11-18T09:25:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13161.4",
+   "13162.9"
+  ],
+  [
+   "2026-11-18T09:30:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13163.4",
+   "13164.9"
+  ]
+ ],
+ "grind_notes": [
+  [
+   "2026-11-17T21:00:00+00:00",
+   "sell",
+   "broke below the pause's 13208.6: entry 13208.6"
+  ],
+  [
+   "2026-11-17T21:10:00+00:00",
+   "sell",
+   "a pause (2 candles from 21:05 GMT); low 13207.2 not broken"
+  ],
+  [
+   "2026-11-17T21:25:00+00:00",
+   "sell",
+   "broke below the pause's 13207.6: entry 13207.6"
+  ],
+  [
+   "2026-11-17T21:45:00+00:00",
+   "sell",
+   "a pause (2 candles from 21:40 GMT); low 13206 not broken"
+  ],
+  [
+   "2026-11-17T21:50:00+00:00",
+   "sell",
+   "broke below the pause's 13206.7: entry 13206.7"
+  ],
+  [
+   "2026-11-17T22:15:00+00:00",
+   "sell",
+   "a pause (2 candles from 22:10 GMT); low 13198.6 not broken"
+  ],
+  [
+   "2026-11-17T22:20:00+00:00",
+   "sell",
+   "broke below the pause's 13198.8: entry 13198.8"
+  ],
+  [
+   "2026-11-17T22:30:00+00:00",
+   "sell",
+   "a pause (2 candles from 22:25 GMT); low 13198.5 not broken"
+  ],
+  [
+   "2026-11-17T22:45:00+00:00",
+   "sell",
+   "broke below the pause's 13201.6: entry 13201.6"
+  ],
+  [
+   "2026-11-17T23:05:00+00:00",
+   "sell",
+   "a pause (2 candles from 23:00 GMT); low 13198.9 not broken"
+  ],
+  [
+   "2026-11-17T23:10:00+00:00",
+   "sell",
+   "closed 13206.0 above the 21 EMA 13204.5 after 2 candle(s): cancelled"
+  ],
+  [
+   "2026-11-17T23:35:00+00:00",
+   "buy",
+   "closed 13205.2 below the 21 EMA 13205.2 after 1 candle(s): cancelled"
+  ],
+  [
+   "2026-11-18T00:15:00+00:00",
+   "sell",
+   "a pause (2 candles from 00:10 GMT); low 13197 not broken"
+  ],
+  [
+   "2026-11-18T00:45:00+00:00",
+   "sell",
+   "broke below the pause's 13199.8: entry 13199.8"
+  ],
+  [
+   "2026-11-18T01:00:00+00:00",
+   "sell",
+   "a pause (2 candles from 00:55 GMT); low 13194.9 not broken"
+  ],
+  [
+   "2026-11-18T01:20:00+00:00",
+   "sell",
+   "closed 13201.4 above the 21 EMA 13200.7 after 5 candle(s): cancelled"
+  ],
+  [
+   "2026-11-18T01:40:00+00:00",
+   "buy",
+   "a pause (2 candles from 01:35 GMT); high 13206.7 not broken"
+  ],
+  [
+   "2026-11-18T02:00:00+00:00",
+   "buy",
+   "broke above the pause's 13206.3: entry 13206.3"
+  ],
+  [
+   "2026-11-18T02:10:00+00:00",
+   "buy",
+   "a pause (2 candles from 02:05 GMT); high 13206.9 not broken"
+  ],
+  [
+   "2026-11-18T02:15:00+00:00",
+   "buy",
+   "broke above the pause's 13205.5: entry 13205.5"
+  ],
+  [
+   "2026-11-18T02:35:00+00:00",
+   "buy",
+   "a pause (2 candles from 02:30 GMT); high 13206.9 not broken"
+  ],
+  [
+   "2026-11-18T02:45:00+00:00",
+   "buy",
+   "closed 13202.6 below the 21 EMA 13203.4 after 3 candle(s): cancelled"
+  ],
+  [
+   "2026-11-18T03:05:00+00:00",
+   "sell",
+   "a pause (2 candles from 03:00 GMT); low 13195.5 not broken"
+  ],
+  [
+   "2026-11-18T03:10:00+00:00",
+   "sell",
+   "broke below the pause's 13195.6: entry 13195.6"
+  ],
+  [
+   "2026-11-18T03:20:00+00:00",
+   "sell",
+   "a pause (2 candles from 03:15 GMT); low 13195 not broken"
+  ],
+  [
+   "2026-11-18T04:05:00+00:00",
+   "sell",
+   "broke below the pause's 13195.5: entry 13195.5"
+  ],
+  [
+   "2026-11-18T04:20:00+00:00",
+   "sell",
+   "a pause (2 candles from 04:15 GMT); low 13192.1 not broken"
+  ],
+  [
+   "2026-11-18T04:30:00+00:00",
+   "sell",
+   "broke below the pause's 13192.2: entry 13192.2"
+  ],
+  [
+   "2026-11-18T04:55:00+00:00",
+   "sell",
+   "closed 13196.9 above the 21 EMA 13196.5 after 1 candle(s): cancelled"
+  ],
+  [
+   "2026-11-18T05:40:00+00:00",
+   "sell",
+   "a pause (2 candles from 05:35 GMT); low 13189 not broken"
+  ],
+  [
+   "2026-11-18T05:50:00+00:00",
+   "sell",
+   "broke below the pause's 13190.6: entry 13190.6"
+  ],
+  [
+   "2026-11-18T06:05:00+00:00",
+   "sell",
+   "a pause (2 candles from 06:00 GMT); low 13188.7 not broken"
+  ],
+  [
+   "2026-11-18T06:25:00+00:00",
+   "sell",
+   "broke below the pause's 13188.9: entry 13188.9"
+  ],
+  [
+   "2026-11-18T06:35:00+00:00",
+   "sell",
+   "a pause (2 candles from 06:30 GMT); low 13187.3 not broken"
+  ],
+  [
+   "2026-11-18T06:40:00+00:00",
+   "sell",
+   "broke below the pause's 13187.6: entry 13187.6"
+  ],
+  [
+   "2026-11-18T06:50:00+00:00",
+   "sell",
+   "a pause (2 candles from 06:45 GMT); low 13186.8 not broken"
+  ],
+  [
+   "2026-11-18T07:00:00+00:00",
+   "sell",
+   "broke below the pause's 13189.3: entry 13189.1"
+  ],
+  [
+   "2026-11-18T07:20:00+00:00",
+   "sell",
+   "a pause (2 candles from 07:15 GMT); low 13171.9 not broken"
+  ],
+  [
+   "2026-11-18T07:25:00+00:00",
+   "sell",
+   "broke below the pause's 13177.2: entry 13177.2"
+  ],
+  [
+   "2026-11-18T07:55:00+00:00",
+   "sell",
+   "a pause (2 candles from 07:50 GMT); low 13170.1 not broken"
+  ],
+  [
+   "2026-11-18T08:05:00+00:00",
+   "sell",
+   "broke below the pause's 13171: entry 13171"
+  ],
+  [
+   "2026-11-18T09:15:00+00:00",
+   "sell",
+   "a pause (2 candles from 09:10 GMT); low 13148 not broken"
+  ],
+  [
+   "2026-11-18T09:30:00+00:00",
+   "sell",
+   "closed 13163.4 above the 21 EMA 13161.8 after 4 candle(s): cancelled"
+  ],
+  [
+   "2026-11-18T09:50:00+00:00",
+   "buy",
+   "a pause (2 candles from 09:45 GMT); high 13171.6 not broken"
+  ],
+  [
+   "2026-11-18T09:55:00+00:00",
+   "buy",
+   "broke above the pause's 13168.9: entry 13168.9"
+  ],
+  [
+   "2026-11-18T10:05:00+00:00",
+   "buy",
+   "a pause (2 candles from 10:00 GMT); high 13172.1 not broken"
+  ],
+  [
+   "2026-11-18T10:10:00+00:00",
+   "buy",
+   "broke above the pause's 13171.4: entry 13171.7"
+  ],
+  [
+   "2026-11-18T10:40:00+00:00",
+   "buy",
+   "a pause (2 candles from 10:35 GMT); high 13173.7 not broken"
+  ],
+  [
+   "2026-11-18T10:45:00+00:00",
+   "buy",
+   "broke above the pause's 13173.7: entry 13173.7"
+  ],
+  [
+   "2026-11-18T10:55:00+00:00",
+   "buy",
+   "a pause (2 candles from 10:50 GMT); high 13175.6 not broken"
+  ],
+  [
+   "2026-11-18T11:05:00+00:00",
+   "buy",
+   "closed 13167.7 below the 21 EMA 13169.2 after 3 candle(s): cancelled"
+  ],
+  [
+   "2026-11-18T11:20:00+00:00",
+   "buy",
+   "a pause (2 candles from 11:15 GMT); high 13173.6 not broken"
+  ],
+  [
+   "2026-11-18T11:25:00+00:00",
+   "buy",
+   "closed 13164.1 below the 21 EMA 13169.3 after 2 candle(s): cancelled"
+  ]
+ ]
+}

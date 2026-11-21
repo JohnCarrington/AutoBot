@@ -2,7 +2,9 @@
 
 **Investigation only.** Nothing was changed, switched or restarted. This is the new AutoBot server (`/opt/autobot`), not AutoBot 161. All times are UK time, which in November is GMT, the same as the logs. Prices are sell prices unless I say otherwise. "IG's buy price" is the price a sell is closed at.
 
-## Short answer
+**Part 1** (below) replays the code that was live that night (cc70dc5). **Part 2** (at the end) replays the code for the next restart (5d7942e). The two give different answers.
+
+## Short answer (Part 1: the code live on 18 Nov)
 
 - **The slow grind found 12 sell setups** between Tue 22:00 and Wed 12:00. All 12 would have been in profit at some point between 06:00 and 09:00 if they had been open and held.
 - **None of them opened.** The strategy checks refused every one before trading hours or the safety rules came into it. The reasons were:
@@ -172,3 +174,154 @@ The signal needs a slow grind trade in profit between 06:00 and 09:00, as IG wou
 - `replay18.json`: the same data, plus the candles from Tue 21:00 to Wed 12:00, buy and sell.
 - `profit18.py`, `profit_check.txt`: the profit check in part 1.
 - `analyser_per_candle_0600_0930.csv`: the analyser table above, with the full hourly-read text.
+
+---
+
+# Part 2: the same night through the code for the next restart (5d7942e)
+
+Brief (21 Nov 2026): replay Tue 17 Nov 22:00 to Wed 18 Nov 12:00 through **5d7942e** (first-build-plus, with the pullback entry and the observe-only STP forecaster). Use the live `.env` switches and send nothing.
+
+## Short answer (Part 2)
+
+- **Same sell setups.** The slow grind found the same 12 sells, at the same times and prices. Its own notes match Part 1 line for line.
+- **One opened: the 04:05 sell at 13195.5.** It was still open at 12:00.
+- **The other 11 were refused:**
+  - 2 by the slow grind's own hours (Tue 22:20 and 22:45, in its 20:30 to midnight block);
+  - 3 by "at most 1 open", because the 04:05 trade was still open (04:30, 07:25, 08:05);
+  - 6 by the analyser's state, consolidation or emerging trend (00:45, 03:10, 05:50, 06:25, 06:40, 07:00).
+- **The analyser called trend down at 07:10 and kept it until 12:00.** There was no "emerging trend up" in this build.
+- **Johnny's trend-day switch would have turned on at 06:00.** The 04:05 sell was already open and in profit on IG's buy price at 06:00: +3.0 at the 06:00 open, +4.6 at the 06:00 candle's close. It stayed in profit except for 06:55 to 07:00, around the UK CPI release, when it fell to −5.7 at worst. It was +40.8 at 09:00. There is no such switch in the code yet, so this applies the definition: a slow grind trade in profit between 06:00 and 09:00, as IG would close it.
+
+## How I ran it
+
+- **The code.** `replay_next.py` was run in a clean worktree at 5d7942e. It drives the full wired path, `trading/engine.py`: analyser, strategies, checks, safety rules, order sender in **paper** mode, and the trade manager. It starts from the week's open (Sun 15 Nov) and runs to Wed 12:00. A pretend IG fails if anything is ever sent; nothing was. It takes about 8 minutes.
+- **The switches.** These are the switch lines of `/opt/autobot/.env` as it is today (21 Nov), with TRADING changed to off. This build only reads its own switches. It printed: all 10 strategies on, STRATEGY_BOLLINGER_BOUNCE_5M on, ONE_SIGNAL_ONE_TRADE on, PULLBACK_ENTRY on (on when left out), PLANNER_OBSERVE on, stop 12, take profit 100, hours 06:00 to 20:30. It ignores HOURLY_READ, TREND_STILL_GOING, the ANALYSER_* switches, the Stage 4 switches and EMA_PULLBACK_*: first-build-plus dropped the hourly read and TREND_STILL_GOING.
+- **Two things to know about this run:**
+  - **/opt/autobot is checked out on 4635175, not 5d7942e.** That is 5d7942e plus the two EMA pullback switches (EMA_PULLBACK_TRADING_HOURS, EMA_PULLBACK_ONE_AT_A_TIME). Those commits touch only the EMA pullback (`safety/rules.py`, `strategies/common.py`, `config/switches.py`) and not the slow grind or the analyser. I replayed 5d7942e as asked, so the EMA pullback trades in this replay ignore those two switches.
+  - **This is a replay, not a match against live records.** 5d7942e wasn't running on 18 Nov, so there is no live record to compare it with.
+
+## 1. Did the slow grind find the same sell setups? Which would have opened?
+
+**Yes, the same 12.** This build has the same slow grind, and its own notes (`replay_next.json`, `grind_notes`) match Part 1. The difference is which checks they meet.
+
+| Setup (UK) | Sell entry | What happened |
+|---|---|---|
+| Tue 22:20 | 13198.8 | allowed by the checks; **refused by the safety rules**: the slow grind's hours |
+| Tue 22:45 | 13201.6 | allowed by the checks; **refused by the safety rules**: the slow grind's hours |
+| Wed 00:45 | 13199.8 | refused by the checks: analyser state |
+| Wed 03:10 | 13195.6 | refused by the checks: analyser state |
+| **Wed 04:05** | **13195.5** | **OPENED** (paper), stop 15, take profit 100 |
+| Wed 04:30 | 13192.2 | allowed by the checks; refused by the safety rules: 1 slow grind already open |
+| Wed 05:50 | 13190.6 | refused by the checks: analyser state |
+| Wed 06:25 | 13188.9 | refused by the checks: analyser state |
+| Wed 06:40 | 13187.6 | refused by the checks: analyser state |
+| Wed 07:00 | 13189.1 | refused by the checks: analyser state |
+| Wed 07:25 | 13177.2 | allowed by the checks; refused by the safety rules: 1 slow grind already open |
+| Wed 08:05 | 13171.0 | allowed by the checks; refused by the safety rules: 1 slow grind already open |
+
+**The 04:05 trade** (paper order record): `"event": "opened", "strategy": "slow grind", "direction": "sell", "stop_pips": "15", "opened_utc": "2026-11-18T04:05:00Z", "level": "13195.5"`, and in the sending record, `"take_profit_pips": 100`. Its steps:
+```
+Wed 18 Nov 03:10 GMT: the last low made: 13195
+Wed 18 Nov 03:15 GMT to 04:00 GMT: a pause: 10 candles in a row without a new low, closing below the 21 EMA; its lowest point 13195.5
+Wed 18 Nov 04:05 GMT: price broke below it (during this candle)
+allowed at entry: slow grind in a trend down; direction rule sell side (price 13195.5 is below the pivot 13200.1 and below the 5m 100 EMA 13202.9); the direction rule does not apply to slow grind
+```
+- **Why it opened at 04:05.** The slow grind's own hours allow overnight trades (any time except 20:30 to midnight, the rollover and the week's first 15 minutes). The analyser said trend down from 03:10 to 04:35. This build has no hourly read and no TREND_STILL_GOING, which refused this same setup in Part 1.
+- **Why it was still open at 12:00.** The take profit was 100 because 18 Nov was a big-news day (UK CPI at 07:00). The highest buy price after 04:05 was 13201.2, at 07:00, below the stop at 13210.5. The profit lock (once 15 up, close at 10 up) was armed from 07:05. The closest price came back was 11.3 up, at 07:15, so it never closed it.
+
+## 2. What stopped the others (the replay's decision records, quoted)
+
+**Refused by the strategy checks** (`kind: idea`, `allowed: false`):
+```
+Wed 00:45 sell 13199.8  the analyser's state is emerging trend, which does not allow slow grind
+Wed 03:10 sell 13195.6  the analyser's state is emerging trend, which does not allow slow grind
+Wed 05:50 sell 13190.6  the analyser's state is consolidation, which does not allow slow grind
+Wed 06:25 sell 13188.9  the analyser's state is consolidation, which does not allow slow grind
+Wed 06:40 sell 13187.6  the analyser's state is consolidation, which does not allow slow grind
+Wed 07:00 sell 13189.1  the analyser's state is consolidation, which does not allow slow grind
+```
+**Allowed by the checks, refused by the safety rules** (`kind: order`, `result: safety refused`):
+```
+Tue 22:20 sell  ["from 20:30 UK to midnight: no new slow grind trade"]
+Tue 22:45 sell  ["from 20:30 UK to midnight: no new slow grind trade"]
+Wed 04:30 sell  ["slow grind already has 1 trade(s) open (at most 1)"]
+Wed 07:25 sell  ["slow grind already has 1 trade(s) open (at most 1)"]
+Wed 08:05 sell  ["slow grind already has 1 trade(s) open (at most 1)"]
+```
+- **Tue 22:20 and 22:45 got past the checks here** because this build's analyser said "trend down (slow grind)" from 22:05. In Part 1 it said emerging trend.
+- **07:25 and 08:05 got past the checks here** because the analyser said trend down from 07:10. They were refused only because the 04:05 trade was still open.
+
+## 3. The analyser's state, every 5-minute candle from 06:00 to 09:30 (5d7942e)
+
+The changes in that window:
+```
+06:10  consolidation (none): the emerging down trend was cancelled: 2 closes in a row back inside the Bollinger bands after the breakout (last 13191.7)
+07:00  emerging trend (down): broke out of the consolidation: close 13176.7 below the lower band 13183.1
+07:10  trend (down, slow grind): the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new low 13171.9 on the lower band 13177.7; EMAs 7/13/21 stacked down for 23 candles, close 13177.1 below them and the 100 EMA 13196.3; band sloping -1.5 pips/candle
+```
+After that, no change until 12:00.
+
+**The main difference from the code live on 18 Nov:**
+- **This build called the trend at 07:10, not 08:35.** The analyser here is the first build's (f99efe1). Its `analyser/` files differ from cc70dc5 (5 files, 84 lines added and 116 removed).
+- **There is no flip to "emerging trend up" at 07:15.** The analyser was already in a trend by then, and in a trend the 07:15 bounce doesn't flip it.
+- **One more difference overnight:** this build also called trend down at Tue 22:05, where the live code said emerging trend.
+
+| 5m candle (UK) | State the strategies saw while it formed | State after it closed | Sell close |
+|---|---|---|---|
+| 06:00 | emerging trend down | emerging trend down | 13189.4 |
+| 06:05 | emerging trend down | emerging trend down | 13190.8 |
+| 06:10 | emerging trend down | consolidation | 13191.7 |
+| 06:15 | consolidation | consolidation | 13190.3 |
+| 06:20 | consolidation | consolidation | 13189.9 |
+| 06:25 | consolidation | consolidation | 13188.1 |
+| 06:30 | consolidation | consolidation | 13188.8 |
+| 06:35 | consolidation | consolidation | 13187.8 |
+| 06:40 | consolidation | consolidation | 13190.4 |
+| 06:45 | consolidation | consolidation | 13189.4 |
+| 06:50 | consolidation | consolidation | 13190.6 |
+| 06:55 | consolidation | consolidation | 13190.4 |
+| 07:00 | consolidation | emerging trend down | 13176.7 |
+| 07:05 | emerging trend down | emerging trend down | 13174.9 |
+| 07:10 | emerging trend down | trend down (slow grind) | 13177.1 |
+| 07:15 | trend down (slow grind) | trend down (slow grind) | 13181.7 |
+| 07:20 | trend down (slow grind) | trend down (slow grind) | 13179 |
+| 07:25 | trend down (slow grind) | trend down (slow grind) | 13179.2 |
+| 07:30 | trend down (slow grind) | trend down (slow grind) | 13176.8 |
+| 07:35 | trend down (slow grind) | trend down (slow grind) | 13173.8 |
+| 07:40 | trend down (slow grind) | trend down (slow grind) | 13172.3 |
+| 07:45 | trend down (slow grind) | trend down (slow grind) | 13174.2 |
+| 07:50 | trend down (slow grind) | trend down (slow grind) | 13171.8 |
+| 07:55 | trend down (slow grind) | trend down (slow grind) | 13172.8 |
+| 08:00 | trend down (slow grind) | trend down (slow grind) | 13172.6 |
+| 08:05 | trend down (slow grind) | trend down (slow grind) | 13171.4 |
+| 08:10 | trend down (slow grind) | trend down (slow grind) | 13169.6 |
+| 08:15 | trend down (slow grind) | trend down (slow grind) | 13161.7 |
+| 08:20 | trend down (slow grind) | trend down (slow grind) | 13162.8 |
+| 08:25 | trend down (slow grind) | trend down (slow grind) | 13160.6 |
+| 08:30 | trend down (slow grind) | trend down (slow grind) | 13162.9 |
+| 08:35 | trend down (slow grind) | trend down (slow grind) | 13160.4 |
+| 08:40 | trend down (slow grind) | trend down (slow grind) | 13163.7 |
+| 08:45 | trend down (slow grind) | trend down (slow grind) | 13157.7 |
+| 08:50 | trend down (slow grind) | trend down (slow grind) | 13153.2 |
+| 08:55 | trend down (slow grind) | trend down (slow grind) | 13153.3 |
+| 09:00 | trend down (slow grind) | trend down (slow grind) | 13150.9 |
+| 09:05 | trend down (slow grind) | trend down (slow grind) | 13153.8 |
+| 09:10 | trend down (slow grind) | trend down (slow grind) | 13153.6 |
+| 09:15 | trend down (slow grind) | trend down (slow grind) | 13151.1 |
+| 09:20 | trend down (slow grind) | trend down (slow grind) | 13155.3 |
+| 09:25 | trend down (slow grind) | trend down (slow grind) | 13161.4 |
+| 09:30 | trend down (slow grind) | trend down (slow grind) | 13163.4 |
+
+## 4. Would Johnny's trend-day switch have turned on, and when?
+
+**Yes, at 06:00.** The 04:05 slow grind sell at 13195.5 was open at 06:00 and in profit on IG's buy price (the price a sell closes at):
+- **06:00 to 06:50:** in profit throughout: +3.0 at the 06:00 open, +4.6 at that candle's close, at least +0.5 at worst.
+- **06:55 to 07:00:** below entry, around the 07:00 UK CPI release. The 06:55 close was −2.5, and the 07:00 candle reached −5.7 at worst before closing +17.3.
+- **07:05 to 09:00:** in profit throughout, +11.3 at worst. It was +40.8 at the 09:00 open.
+
+If the switch only counts a trade *opened* after 06:00, it would not have turned on before 09:00 in this replay. The only slow grind trade was opened at 04:05, and the 07:25 and 08:05 sells were refused because it was still open.
+
+## Files added for Part 2
+
+- `replay_next.py`: the replay, run in a worktree at 5d7942e with `.venv/bin/python replay_next.py replay_next.json`.
+- `replay_next.json`: every decision record and paper order from Tue 22:00 to Wed 12:00, the trades opened with their trade manager decisions, the state changes, the per-candle states from 06:00 to 09:30, and the slow grind's notes.
