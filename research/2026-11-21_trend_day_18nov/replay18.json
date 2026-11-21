@@ -1,0 +1,3406 @@
+{
+ "changes": [
+  [
+   "2026-11-17T20:55:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging down trend settled into consolidation: bands 13.2 pips wide (narrow: <= 14, or narrowing for 6 candles: 1), middle band -0.4 pips/candle, no close outside the bands for 6 candles, average body 1.1 pips, green/red 1.1"
+  ],
+  [
+   "2026-11-17T21:10:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level: closed 13209.5 above the reversal high 13209.3; trigger at above 13211.1"
+  ],
+  [
+   "2026-11-17T21:25:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "rejected at a level against the emerging up trend: closed 13206.6 below the reversal low 13208.2; trigger at below 13206.5"
+  ],
+  [
+   "2026-11-17T22:55:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging down trend settled into consolidation: bands 12.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 7), middle band -0.3 pips/candle, no close outside the bands for 6 candles, average body 1.2 pips, green/red 1.2"
+  ],
+  [
+   "2026-11-17T23:20:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level: closed 13207.8 above the reversal high 13207.1; trigger at above 13208.1"
+  ],
+  [
+   "2026-11-17T23:30:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "rejected at a level against the emerging up trend: closed 13206.1 below the reversal low 13206.5; trigger at below 13205.5"
+  ],
+  [
+   "2026-11-17T23:40:00+00:00",
+   "ranging",
+   "none",
+   null,
+   "the emerging down trend was cancelled: 2 closes in a row back above the turning_high 13204.4 it was rejected at (last 13204.8)"
+  ],
+  [
+   "2026-11-17T23:50:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level: closed 13207 above the reversal high 13206.5; trigger at above 13207.2"
+  ],
+  [
+   "2026-11-18T00:05:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging up trend was cancelled: 2 closes in a row back below the turning_high 13204.4 it was rejected at (last 13199.7)"
+  ],
+  [
+   "2026-11-18T00:10:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level: closed 13202 above the reversal high 13200.1; trigger at above 13202"
+  ],
+  [
+   "2026-11-18T00:45:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging up trend settled into consolidation: bands 12.0 pips wide (narrow: <= 14, or narrowing for 6 candles: 0), middle band -0.1 pips/candle, no close outside the bands for 6 candles, average body 1.2 pips, green/red 2.0"
+  ],
+  [
+   "2026-11-18T00:50:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "rejected at a level: closed 13196.9 below the reversal low 13197.9; trigger at below 13194.9"
+  ],
+  [
+   "2026-11-18T01:15:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging down trend settled into consolidation: bands 12.0 pips wide (narrow: <= 14, or narrowing for 6 candles: 3), middle band -0.4 pips/candle, no close outside the bands for 6 candles, average body 1.7 pips, green/red 1.6"
+  ],
+  [
+   "2026-11-18T01:30:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level: closed 13204.8 above the reversal high 13203; trigger at above 13206.7"
+  ],
+  [
+   "2026-11-18T01:40:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "rejected at a level against the emerging up trend: closed 13202.2 below the reversal low 13203.8; trigger at below 13202.1"
+  ],
+  [
+   "2026-11-18T01:55:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level against the emerging down trend: closed 13205.9 above the reversal high 13205.2; trigger at above 13206.1"
+  ],
+  [
+   "2026-11-18T02:05:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging up trend settled into consolidation: bands 11.2 pips wide (narrow: <= 14, or narrowing for 6 candles: 0), middle band 0.2 pips/candle, no close outside the bands for 6 candles, average body 1.6 pips, green/red 1.3"
+  ],
+  [
+   "2026-11-18T02:15:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level: closed 13206 above the reversal high 13203.8; trigger at above 13206.6"
+  ],
+  [
+   "2026-11-18T02:25:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging up trend settled into consolidation: bands 12.1 pips wide (narrow: <= 14, or narrowing for 6 candles: 1), middle band 0.2 pips/candle, no close outside the bands for 6 candles, average body 1.3 pips, green/red 1.3"
+  ],
+  [
+   "2026-11-18T02:50:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "rejected at a level: closed 13201.3 below the reversal low 13202.4; trigger at below 13200.2"
+  ],
+  [
+   "2026-11-18T03:10:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new low 13195.0 on the lower band 13195.7; EMAs 7/13/21 stacked down for 4 candles, close 13195.7 below them and the 100 EMA 13203.9; band sloping -0.5 pips/candle"
+  ],
+  [
+   "2026-11-18T04:35:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the down trend ran out of steam: bands 8.9 pips wide (narrow: <= 14, or narrowing for 6 candles: 5), middle band -0.4 pips/candle, no close outside the bands for 6 candles, average body 1.9 pips, green/red 1.3"
+  ],
+  [
+   "2026-11-18T05:30:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "broke out of the consolidation: close 13191.1 below the lower band 13191.5"
+  ],
+  [
+   "2026-11-18T05:40:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging down trend was cancelled: 2 closes in a row back inside the Bollinger bands after the breakout (last 13193.9)"
+  ],
+  [
+   "2026-11-18T05:50:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "broke out of the consolidation: close 13190.5 below the lower band 13190.8"
+  ],
+  [
+   "2026-11-18T06:10:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "the emerging down trend was cancelled: 2 closes in a row back inside the Bollinger bands after the breakout (last 13191.7)"
+  ],
+  [
+   "2026-11-18T07:00:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "broke out of the consolidation: close 13176.7 below the lower band 13183.1"
+  ],
+  [
+   "2026-11-18T07:15:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "rejected at a level against the emerging down trend: closed 13181.7 above the reversal high 13177.2; trigger at above 13182.7"
+  ],
+  [
+   "2026-11-18T08:05:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "rejected at a level against the emerging up trend: closed 13171.4 below the reversal low 13172.2; trigger at below 13163.9"
+  ],
+  [
+   "2026-11-18T08:35:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "the rejection became a trend: a bounce failed under the 21 EMA and middle band, then a new low 13159.0 on the lower band 13158.8; EMAs 7/13/21 stacked down for 40 candles, close 13160.4 below them and the 100 EMA 13188.8; band sloping -1.1 pips/candle"
+  ]
+ ],
+ "grind_ideas": [
+  {
+   "t": "2026-11-17T22:20:00+00:00",
+   "dir": "sell",
+   "entry": "13198.8",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; the hourly chart is in a rally: slow grind only buys",
+   "steps": [
+    "Tue 17 Nov 22:05 GMT: the last low made: 13198.6",
+    "Tue 17 Nov 22:10 GMT to 22:15 GMT: a pause: 2 candles in a row without a new low, closing below the 21 EMA; its lowest point 13198.8",
+    "Tue 17 Nov 22:20 GMT: price broke below it (during this candle)"
+   ]
+  },
+  {
+   "t": "2026-11-17T22:45:00+00:00",
+   "dir": "sell",
+   "entry": "13201.6",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; the hourly chart is in a rally: slow grind only buys",
+   "steps": [
+    "Tue 17 Nov 22:20 GMT: the last low made: 13198.5",
+    "Tue 17 Nov 22:25 GMT to 22:40 GMT: a pause: 4 candles in a row without a new low, closing below the 21 EMA; its lowest point 13201.6",
+    "Tue 17 Nov 22:45 GMT: price broke below it (during this candle)"
+   ]
+  },
+  {
+   "t": "2026-11-18T00:45:00+00:00",
+   "dir": "sell",
+   "entry": "13199.8",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; the hourly chart is in a rally: slow grind only buys",
+   "steps": [
+    "Wed 18 Nov 00:05 GMT: the last low made: 13197",
+    "Wed 18 Nov 00:10 GMT to 00:40 GMT: a pause: 7 candles in a row without a new low, closing below the 21 EMA; its lowest point 13199.8",
+    "Wed 18 Nov 00:45 GMT: price broke below it (during this candle)"
+   ]
+  },
+  {
+   "t": "2026-11-18T02:00:00+00:00",
+   "dir": "buy",
+   "entry": "13206.3",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind",
+   "steps": [
+    "Wed 18 Nov 01:30 GMT: the last high made: 13206.7",
+    "Wed 18 Nov 01:35 GMT to 01:55 GMT: a pause: 5 candles in a row without a new high, closing above the 21 EMA; its highest point 13206.3",
+    "Wed 18 Nov 02:00 GMT: price broke above it (during this candle)"
+   ]
+  },
+  {
+   "t": "2026-11-18T02:15:00+00:00",
+   "dir": "buy",
+   "entry": "13205.5",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind",
+   "steps": [
+    "Wed 18 Nov 02:00 GMT: the last high made: 13206.9",
+    "Wed 18 Nov 02:05 GMT to 02:10 GMT: a pause: 2 candles in a row without a new high, closing above the 21 EMA; its highest point 13205.5",
+    "Wed 18 Nov 02:15 GMT: price broke above it (during this candle)"
+   ]
+  },
+  {
+   "t": "2026-11-18T03:10:00+00:00",
+   "dir": "sell",
+   "entry": "13195.6",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; the hourly chart is in a rally: slow grind only buys",
+   "steps": [
+    "Wed 18 Nov 02:55 GMT: the last low made: 13195.5",
+    "Wed 18 Nov 03:00 GMT to 03:05 GMT: a pause: 2 candles in a row without a new low, closing below the 21 EMA; its lowest point 13195.6",
+    "Wed 18 Nov 03:10 GMT: price broke below it (during this candle)"
+   ]
+  },
+  {
+   "t": "2026-11-18T04:05:00+00:00",
+   "dir": "sell",
+   "entry": "13195.5",
+   "allowed": false,
+   "blocked_by": "the hourly chart is in a rally: slow grind only buys; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 0.9 pips below the swing low 13196.7 of 03:40, at 04:00)",
+   "steps": [
+    "Wed 18 Nov 03:10 GMT: the last low made: 13195",
+    "Wed 18 Nov 03:15 GMT to 04:00 GMT: a pause: 10 candles in a row without a new low, closing below the 21 EMA; its lowest point 13195.5",
+    "Wed 18 Nov 04:05 GMT: price broke below it (during this candle)"
+   ]
+  },
+  {
+   "t": "2026-11-18T04:30:00+00:00",
+   "dir": "sell",
+   "entry": "13192.2",
+   "allowed": false,
+   "blocked_by": "the hourly chart is in a rally: slow grind only buys; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 4.6 pips below the swing low 13196.7 of 03:40, at 04:10)",
+   "steps": [
+    "Wed 18 Nov 04:10 GMT: the last low made: 13192.1",
+    "Wed 18 Nov 04:15 GMT to 04:25 GMT: a pause: 3 candles in a row without a new low, closing below the 21 EMA; its lowest point 13192.2",
+    "Wed 18 Nov 04:30 GMT: price broke below it (during this candle)"
+   ]
+  },
+  {
+   "t": "2026-11-18T05:50:00+00:00",
+   "dir": "sell",
+   "entry": "13190.6",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind; the hourly chart is in a rally: slow grind only buys",
+   "steps": [
+    "Wed 18 Nov 05:30 GMT: the last low made: 13189",
+    "Wed 18 Nov 05:35 GMT to 05:45 GMT: a pause: 3 candles in a row without a new low, closing below the 21 EMA; its lowest point 13190.6",
+    "Wed 18 Nov 05:50 GMT: price broke below it (during this candle)"
+   ]
+  },
+  {
+   "t": "2026-11-18T06:25:00+00:00",
+   "dir": "sell",
+   "entry": "13188.9",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind; the hourly chart is ranging (13188.7 to 13227.9): slow grind waits for an hourly close at least 3 pips beyond the hourly range",
+   "steps": [
+    "Wed 18 Nov 05:55 GMT: the last low made: 13188.7",
+    "Wed 18 Nov 06:00 GMT to 06:20 GMT: a pause: 5 candles in a row without a new low, closing below the 21 EMA; its lowest point 13188.9",
+    "Wed 18 Nov 06:25 GMT: price broke below it (during this candle)"
+   ]
+  },
+  {
+   "t": "2026-11-18T06:40:00+00:00",
+   "dir": "sell",
+   "entry": "13187.6",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind; the hourly chart is ranging (13188.7 to 13227.9): slow grind waits for an hourly close at least 3 pips beyond the hourly range; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 1.6 pips below the swing low 13188.9 of 06:05, at 06:25)",
+   "steps": [
+    "Wed 18 Nov 06:25 GMT: the last low made: 13187.3",
+    "Wed 18 Nov 06:30 GMT to 06:35 GMT: a pause: 2 candles in a row without a new low, closing below the 21 EMA; its lowest point 13187.6",
+    "Wed 18 Nov 06:40 GMT: price broke below it (during this candle)"
+   ]
+  },
+  {
+   "t": "2026-11-18T07:00:00+00:00",
+   "dir": "sell",
+   "entry": "13189.1",
+   "allowed": false,
+   "blocked_by": "the analyser's state is consolidation, which does not allow slow grind; the hourly chart is ranging (13186.8 to 13219.6): slow grind waits for an hourly close at least 3 pips beyond the hourly range; TREND_STILL_GOING is on and the trend is not still going: no new low at least 5 pips below the previous low in the last 12 five-minute candles (the most: 1.6 pips below the swing low 13188.9 of 06:05, at 06:25)",
+   "steps": [
+    "Wed 18 Nov 06:40 GMT: the last low made: 13186.8",
+    "Wed 18 Nov 06:45 GMT to 06:55 GMT: a pause: 3 candles in a row without a new low, closing below the 21 EMA; its lowest point 13189.3",
+    "Wed 18 Nov 07:00 GMT: price broke below it (the candle opened past it, at 13189.1)"
+   ]
+  },
+  {
+   "t": "2026-11-18T07:25:00+00:00",
+   "dir": "sell",
+   "entry": "13177.2",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind; the hourly chart is ranging (13186.8 to 13219.6): slow grind waits for an hourly close at least 3 pips beyond the hourly range",
+   "steps": [
+    "Wed 18 Nov 07:10 GMT: the last low made: 13171.9",
+    "Wed 18 Nov 07:15 GMT to 07:20 GMT: a pause: 2 candles in a row without a new low, closing below the 21 EMA; its lowest point 13177.2",
+    "Wed 18 Nov 07:25 GMT: price broke below it (during this candle)"
+   ]
+  },
+  {
+   "t": "2026-11-18T08:05:00+00:00",
+   "dir": "sell",
+   "entry": "13171",
+   "allowed": false,
+   "blocked_by": "the analyser's state is emerging trend, which does not allow slow grind",
+   "steps": [
+    "Wed 18 Nov 07:45 GMT: the last low made: 13170.1",
+    "Wed 18 Nov 07:50 GMT to 08:00 GMT: a pause: 3 candles in a row without a new low, closing below the 21 EMA; its lowest point 13171",
+    "Wed 18 Nov 08:05 GMT: price broke below it (during this candle)"
+   ]
+  },
+  {
+   "t": "2026-11-18T09:55:00+00:00",
+   "dir": "buy",
+   "entry": "13168.9",
+   "allowed": false,
+   "blocked_by": "the trend is down: slow grind only in the trend's direction; the hourly chart is in a sell-off: slow grind only sells",
+   "steps": [
+    "Wed 18 Nov 09:40 GMT: the last high made: 13171.6",
+    "Wed 18 Nov 09:45 GMT to 09:50 GMT: a pause: 2 candles in a row without a new high, closing above the 21 EMA; its highest point 13168.9",
+    "Wed 18 Nov 09:55 GMT: price broke above it (during this candle)"
+   ]
+  },
+  {
+   "t": "2026-11-18T10:10:00+00:00",
+   "dir": "buy",
+   "entry": "13171.7",
+   "allowed": false,
+   "blocked_by": "the trend is down: slow grind only in the trend's direction; the hourly chart is in a sell-off: slow grind only sells",
+   "steps": [
+    "Wed 18 Nov 09:55 GMT: the last high made: 13172.1",
+    "Wed 18 Nov 10:00 GMT to 10:05 GMT: a pause: 2 candles in a row without a new high, closing above the 21 EMA; its highest point 13171.4",
+    "Wed 18 Nov 10:10 GMT: price broke above it (the candle opened past it, at 13171.7)"
+   ]
+  },
+  {
+   "t": "2026-11-18T10:45:00+00:00",
+   "dir": "buy",
+   "entry": "13173.7",
+   "allowed": false,
+   "blocked_by": "the trend is down: slow grind only in the trend's direction; the hourly chart is in a sell-off: slow grind only sells",
+   "steps": [
+    "Wed 18 Nov 10:30 GMT: the last high made: 13173.7",
+    "Wed 18 Nov 10:35 GMT to 10:40 GMT: a pause: 2 candles in a row without a new high, closing above the 21 EMA; its highest point 13173.7",
+    "Wed 18 Nov 10:45 GMT: price broke above it (during this candle)"
+   ]
+  }
+ ],
+ "grind_notes": [
+  [
+   "2026-11-17T21:00:00+00:00",
+   "sell",
+   "broke below the pause's 13208.6: entry 13208.6"
+  ],
+  [
+   "2026-11-17T21:10:00+00:00",
+   "sell",
+   "a pause (2 candles from 21:05 GMT); low 13207.2 not broken"
+  ],
+  [
+   "2026-11-17T21:25:00+00:00",
+   "sell",
+   "broke below the pause's 13207.6: entry 13207.6"
+  ],
+  [
+   "2026-11-17T21:45:00+00:00",
+   "sell",
+   "a pause (2 candles from 21:40 GMT); low 13206 not broken"
+  ],
+  [
+   "2026-11-17T21:50:00+00:00",
+   "sell",
+   "broke below the pause's 13206.7: entry 13206.7"
+  ],
+  [
+   "2026-11-17T22:15:00+00:00",
+   "sell",
+   "a pause (2 candles from 22:10 GMT); low 13198.6 not broken"
+  ],
+  [
+   "2026-11-17T22:20:00+00:00",
+   "sell",
+   "broke below the pause's 13198.8: entry 13198.8"
+  ],
+  [
+   "2026-11-17T22:30:00+00:00",
+   "sell",
+   "a pause (2 candles from 22:25 GMT); low 13198.5 not broken"
+  ],
+  [
+   "2026-11-17T22:45:00+00:00",
+   "sell",
+   "broke below the pause's 13201.6: entry 13201.6"
+  ],
+  [
+   "2026-11-17T23:05:00+00:00",
+   "sell",
+   "a pause (2 candles from 23:00 GMT); low 13198.9 not broken"
+  ],
+  [
+   "2026-11-17T23:10:00+00:00",
+   "sell",
+   "closed 13206.0 above the 21 EMA 13204.5 after 2 candle(s): cancelled"
+  ],
+  [
+   "2026-11-17T23:35:00+00:00",
+   "buy",
+   "closed 13205.2 below the 21 EMA 13205.2 after 1 candle(s): cancelled"
+  ],
+  [
+   "2026-11-18T00:15:00+00:00",
+   "sell",
+   "a pause (2 candles from 00:10 GMT); low 13197 not broken"
+  ],
+  [
+   "2026-11-18T00:45:00+00:00",
+   "sell",
+   "broke below the pause's 13199.8: entry 13199.8"
+  ],
+  [
+   "2026-11-18T01:00:00+00:00",
+   "sell",
+   "a pause (2 candles from 00:55 GMT); low 13194.9 not broken"
+  ],
+  [
+   "2026-11-18T01:20:00+00:00",
+   "sell",
+   "closed 13201.4 above the 21 EMA 13200.7 after 5 candle(s): cancelled"
+  ],
+  [
+   "2026-11-18T01:40:00+00:00",
+   "buy",
+   "a pause (2 candles from 01:35 GMT); high 13206.7 not broken"
+  ],
+  [
+   "2026-11-18T02:00:00+00:00",
+   "buy",
+   "broke above the pause's 13206.3: entry 13206.3"
+  ],
+  [
+   "2026-11-18T02:10:00+00:00",
+   "buy",
+   "a pause (2 candles from 02:05 GMT); high 13206.9 not broken"
+  ],
+  [
+   "2026-11-18T02:15:00+00:00",
+   "buy",
+   "broke above the pause's 13205.5: entry 13205.5"
+  ],
+  [
+   "2026-11-18T02:35:00+00:00",
+   "buy",
+   "a pause (2 candles from 02:30 GMT); high 13206.9 not broken"
+  ],
+  [
+   "2026-11-18T02:45:00+00:00",
+   "buy",
+   "closed 13202.6 below the 21 EMA 13203.4 after 3 candle(s): cancelled"
+  ],
+  [
+   "2026-11-18T03:05:00+00:00",
+   "sell",
+   "a pause (2 candles from 03:00 GMT); low 13195.5 not broken"
+  ],
+  [
+   "2026-11-18T03:10:00+00:00",
+   "sell",
+   "broke below the pause's 13195.6: entry 13195.6"
+  ],
+  [
+   "2026-11-18T03:20:00+00:00",
+   "sell",
+   "a pause (2 candles from 03:15 GMT); low 13195 not broken"
+  ],
+  [
+   "2026-11-18T04:05:00+00:00",
+   "sell",
+   "broke below the pause's 13195.5: entry 13195.5"
+  ],
+  [
+   "2026-11-18T04:20:00+00:00",
+   "sell",
+   "a pause (2 candles from 04:15 GMT); low 13192.1 not broken"
+  ],
+  [
+   "2026-11-18T04:30:00+00:00",
+   "sell",
+   "broke below the pause's 13192.2: entry 13192.2"
+  ],
+  [
+   "2026-11-18T04:55:00+00:00",
+   "sell",
+   "closed 13196.9 above the 21 EMA 13196.5 after 1 candle(s): cancelled"
+  ],
+  [
+   "2026-11-18T05:40:00+00:00",
+   "sell",
+   "a pause (2 candles from 05:35 GMT); low 13189 not broken"
+  ],
+  [
+   "2026-11-18T05:50:00+00:00",
+   "sell",
+   "broke below the pause's 13190.6: entry 13190.6"
+  ],
+  [
+   "2026-11-18T06:05:00+00:00",
+   "sell",
+   "a pause (2 candles from 06:00 GMT); low 13188.7 not broken"
+  ],
+  [
+   "2026-11-18T06:25:00+00:00",
+   "sell",
+   "broke below the pause's 13188.9: entry 13188.9"
+  ],
+  [
+   "2026-11-18T06:35:00+00:00",
+   "sell",
+   "a pause (2 candles from 06:30 GMT); low 13187.3 not broken"
+  ],
+  [
+   "2026-11-18T06:40:00+00:00",
+   "sell",
+   "broke below the pause's 13187.6: entry 13187.6"
+  ],
+  [
+   "2026-11-18T06:50:00+00:00",
+   "sell",
+   "a pause (2 candles from 06:45 GMT); low 13186.8 not broken"
+  ],
+  [
+   "2026-11-18T07:00:00+00:00",
+   "sell",
+   "broke below the pause's 13189.3: entry 13189.1"
+  ],
+  [
+   "2026-11-18T07:20:00+00:00",
+   "sell",
+   "a pause (2 candles from 07:15 GMT); low 13171.9 not broken"
+  ],
+  [
+   "2026-11-18T07:25:00+00:00",
+   "sell",
+   "broke below the pause's 13177.2: entry 13177.2"
+  ],
+  [
+   "2026-11-18T07:55:00+00:00",
+   "sell",
+   "a pause (2 candles from 07:50 GMT); low 13170.1 not broken"
+  ],
+  [
+   "2026-11-18T08:05:00+00:00",
+   "sell",
+   "broke below the pause's 13171: entry 13171"
+  ],
+  [
+   "2026-11-18T09:15:00+00:00",
+   "sell",
+   "a pause (2 candles from 09:10 GMT); low 13148 not broken"
+  ],
+  [
+   "2026-11-18T09:30:00+00:00",
+   "sell",
+   "closed 13163.4 above the 21 EMA 13161.8 after 4 candle(s): cancelled"
+  ],
+  [
+   "2026-11-18T09:50:00+00:00",
+   "buy",
+   "a pause (2 candles from 09:45 GMT); high 13171.6 not broken"
+  ],
+  [
+   "2026-11-18T09:55:00+00:00",
+   "buy",
+   "broke above the pause's 13168.9: entry 13168.9"
+  ],
+  [
+   "2026-11-18T10:05:00+00:00",
+   "buy",
+   "a pause (2 candles from 10:00 GMT); high 13172.1 not broken"
+  ],
+  [
+   "2026-11-18T10:10:00+00:00",
+   "buy",
+   "broke above the pause's 13171.4: entry 13171.7"
+  ],
+  [
+   "2026-11-18T10:40:00+00:00",
+   "buy",
+   "a pause (2 candles from 10:35 GMT); high 13173.7 not broken"
+  ],
+  [
+   "2026-11-18T10:45:00+00:00",
+   "buy",
+   "broke above the pause's 13173.7: entry 13173.7"
+  ],
+  [
+   "2026-11-18T10:55:00+00:00",
+   "buy",
+   "a pause (2 candles from 10:50 GMT); high 13175.6 not broken"
+  ],
+  [
+   "2026-11-18T11:05:00+00:00",
+   "buy",
+   "closed 13167.7 below the 21 EMA 13169.2 after 3 candle(s): cancelled"
+  ],
+  [
+   "2026-11-18T11:20:00+00:00",
+   "buy",
+   "a pause (2 candles from 11:15 GMT); high 13173.6 not broken"
+  ],
+  [
+   "2026-11-18T11:25:00+00:00",
+   "buy",
+   "closed 13164.1 below the 21 EMA 13169.3 after 2 candle(s): cancelled"
+  ]
+ ],
+ "per_candle": [
+  [
+   "2026-11-18T05:30:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13193",
+   "13193.3",
+   "13189",
+   "13191.1",
+   "13192.6",
+   "hourly rally: the Tue 17 Nov 17:00 GMT hourly candle closed at 13224, 3.3 pips above the high 13220.7 of the 12 hourly candles before it; the hourly range 13190.8 to 13227.9"
+  ],
+  [
+   "2026-11-18T05:35:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13190.9",
+   "13193.4",
+   "13190.6",
+   "13193.4",
+   "13194.9",
+   "hourly rally: the Tue 17 Nov 17:00 GMT hourly candle closed at 13224, 3.3 pips above the high 13220.7 of the 12 hourly candles before it; the hourly range 13190.8 to 13227.9"
+  ],
+  [
+   "2026-11-18T05:40:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13193.9",
+   "13194",
+   "13192.9",
+   "13193.9",
+   "13195.4",
+   "hourly rally: the Tue 17 Nov 17:00 GMT hourly candle closed at 13224, 3.3 pips above the high 13220.7 of the 12 hourly candles before it; the hourly range 13190.8 to 13227.9"
+  ],
+  [
+   "2026-11-18T05:45:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13194.1",
+   "13194.2",
+   "13192.6",
+   "13192.8",
+   "13194.3",
+   "hourly rally: the Tue 17 Nov 17:00 GMT hourly candle closed at 13224, 3.3 pips above the high 13220.7 of the 12 hourly candles before it; the hourly range 13190.8 to 13227.9"
+  ],
+  [
+   "2026-11-18T05:50:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13192.7",
+   "13193.1",
+   "13190.2",
+   "13190.5",
+   "13192",
+   "hourly rally: the Tue 17 Nov 17:00 GMT hourly candle closed at 13224, 3.3 pips above the high 13220.7 of the 12 hourly candles before it; the hourly range 13190.8 to 13227.9"
+  ],
+  [
+   "2026-11-18T05:55:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13190.4",
+   "13191.4",
+   "13188.7",
+   "13191.3",
+   "13192.8",
+   "hourly rally: the Tue 17 Nov 17:00 GMT hourly candle closed at 13224, 3.3 pips above the high 13220.7 of the 12 hourly candles before it; the hourly range 13190.8 to 13227.9"
+  ],
+  [
+   "2026-11-18T06:00:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13191",
+   "13192",
+   "13189.4",
+   "13189.4",
+   "13190.9",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13188.7 to 13227.9"
+  ],
+  [
+   "2026-11-18T06:05:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13189",
+   "13191.5",
+   "13188.9",
+   "13190.8",
+   "13192.3",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13188.7 to 13227.9"
+  ],
+  [
+   "2026-11-18T06:10:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13191.1",
+   "13193.4",
+   "13190.8",
+   "13191.7",
+   "13193.2",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13188.7 to 13227.9"
+  ],
+  [
+   "2026-11-18T06:15:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13192",
+   "13193.5",
+   "13190",
+   "13190.3",
+   "13191.8",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13188.7 to 13227.9"
+  ],
+  [
+   "2026-11-18T06:20:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13190.5",
+   "13191",
+   "13189.1",
+   "13189.9",
+   "13191.4",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13188.7 to 13227.9"
+  ],
+  [
+   "2026-11-18T06:25:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13190",
+   "13190.3",
+   "13187.3",
+   "13188.1",
+   "13189.6",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13188.7 to 13227.9"
+  ],
+  [
+   "2026-11-18T06:30:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13187.9",
+   "13191.3",
+   "13187.9",
+   "13188.8",
+   "13190.3",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13188.7 to 13227.9"
+  ],
+  [
+   "2026-11-18T06:35:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13188.9",
+   "13189.7",
+   "13187.6",
+   "13187.8",
+   "13189.3",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13188.7 to 13227.9"
+  ],
+  [
+   "2026-11-18T06:40:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13188.2",
+   "13190.9",
+   "13186.8",
+   "13190.4",
+   "13191.9",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13188.7 to 13227.9"
+  ],
+  [
+   "2026-11-18T06:45:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13190.5",
+   "13191.4",
+   "13189.4",
+   "13189.4",
+   "13190.9",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13188.7 to 13227.9"
+  ],
+  [
+   "2026-11-18T06:50:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13189.5",
+   "13191.2",
+   "13189.3",
+   "13190.6",
+   "13192.1",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13188.7 to 13227.9"
+  ],
+  [
+   "2026-11-18T06:55:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "consolidation",
+   "none",
+   null,
+   "13190.5",
+   "13193.1",
+   "13189.5",
+   "13190.4",
+   "13198",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13188.7 to 13227.9"
+  ],
+  [
+   "2026-11-18T07:00:00+00:00",
+   "consolidation",
+   "none",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13189.1",
+   "13192.7",
+   "13176.7",
+   "13176.7",
+   "13178.2",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6"
+  ],
+  [
+   "2026-11-18T07:05:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13177.1",
+   "13178.5",
+   "13173.8",
+   "13174.9",
+   "13176.4",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6"
+  ],
+  [
+   "2026-11-18T07:10:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13175",
+   "13177.2",
+   "13171.9",
+   "13177.1",
+   "13178.6",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6"
+  ],
+  [
+   "2026-11-18T07:15:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "up",
+   null,
+   "13177.2",
+   "13182.7",
+   "13177.2",
+   "13181.7",
+   "13183.2",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6"
+  ],
+  [
+   "2026-11-18T07:20:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "emerging trend",
+   "up",
+   null,
+   "13181.8",
+   "13181.8",
+   "13177.3",
+   "13179",
+   "13180.5",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6"
+  ],
+  [
+   "2026-11-18T07:25:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "emerging trend",
+   "up",
+   null,
+   "13178.7",
+   "13179.3",
+   "13175.6",
+   "13179.2",
+   "13180.7",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6"
+  ],
+  [
+   "2026-11-18T07:30:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "emerging trend",
+   "up",
+   null,
+   "13179.3",
+   "13181.6",
+   "13176.7",
+   "13176.8",
+   "13178.3",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6"
+  ],
+  [
+   "2026-11-18T07:35:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "emerging trend",
+   "up",
+   null,
+   "13176.9",
+   "13177.3",
+   "13172.4",
+   "13173.8",
+   "13175.3",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6"
+  ],
+  [
+   "2026-11-18T07:40:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "emerging trend",
+   "up",
+   null,
+   "13174",
+   "13175.2",
+   "13172.2",
+   "13172.3",
+   "13173.8",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6"
+  ],
+  [
+   "2026-11-18T07:45:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "emerging trend",
+   "up",
+   null,
+   "13173.1",
+   "13175",
+   "13170.1",
+   "13174.2",
+   "13175.7",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6"
+  ],
+  [
+   "2026-11-18T07:50:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "emerging trend",
+   "up",
+   null,
+   "13174.1",
+   "13174.2",
+   "13171",
+   "13171.8",
+   "13173.3",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6"
+  ],
+  [
+   "2026-11-18T07:55:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "emerging trend",
+   "up",
+   null,
+   "13171.9",
+   "13174.7",
+   "13171.6",
+   "13172.8",
+   "13174.3",
+   "hourly ranging: 12 hourly candles have closed with no new break since the Tue 17 Nov 17:00 GMT candle; the hourly range 13186.8 to 13219.6"
+  ],
+  [
+   "2026-11-18T08:00:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "emerging trend",
+   "up",
+   null,
+   "13172.9",
+   "13175.4",
+   "13172.2",
+   "13172.6",
+   "13174.1",
+   "hourly sell-off: the Wed 18 Nov 07:00 GMT hourly candle closed at 13172.8, 14.0 pips below the low 13186.8 of the 12 hourly candles before it; the hourly range 13170.1 to 13215.3"
+  ],
+  [
+   "2026-11-18T08:05:00+00:00",
+   "emerging trend",
+   "up",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13172.5",
+   "13173.2",
+   "13163.9",
+   "13171.4",
+   "13172.9",
+   "hourly sell-off: the Wed 18 Nov 07:00 GMT hourly candle closed at 13172.8, 14.0 pips below the low 13186.8 of the 12 hourly candles before it; the hourly range 13170.1 to 13215.3"
+  ],
+  [
+   "2026-11-18T08:10:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13171.3",
+   "13172.1",
+   "13169.1",
+   "13169.6",
+   "13171.1",
+   "hourly sell-off: the Wed 18 Nov 07:00 GMT hourly candle closed at 13172.8, 14.0 pips below the low 13186.8 of the 12 hourly candles before it; the hourly range 13170.1 to 13215.3"
+  ],
+  [
+   "2026-11-18T08:15:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13169.8",
+   "13170.1",
+   "13161.2",
+   "13161.7",
+   "13163.2",
+   "hourly sell-off: the Wed 18 Nov 07:00 GMT hourly candle closed at 13172.8, 14.0 pips below the low 13186.8 of the 12 hourly candles before it; the hourly range 13170.1 to 13215.3"
+  ],
+  [
+   "2026-11-18T08:20:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13162",
+   "13165.3",
+   "13161.1",
+   "13162.8",
+   "13164.3",
+   "hourly sell-off: the Wed 18 Nov 07:00 GMT hourly candle closed at 13172.8, 14.0 pips below the low 13186.8 of the 12 hourly candles before it; the hourly range 13170.1 to 13215.3"
+  ],
+  [
+   "2026-11-18T08:25:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13162.7",
+   "13163.9",
+   "13159.2",
+   "13160.6",
+   "13162.1",
+   "hourly sell-off: the Wed 18 Nov 07:00 GMT hourly candle closed at 13172.8, 14.0 pips below the low 13186.8 of the 12 hourly candles before it; the hourly range 13170.1 to 13215.3"
+  ],
+  [
+   "2026-11-18T08:30:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "emerging trend",
+   "down",
+   null,
+   "13160.5",
+   "13164.9",
+   "13159.4",
+   "13162.9",
+   "13164.4",
+   "hourly sell-off: the Wed 18 Nov 07:00 GMT hourly candle closed at 13172.8, 14.0 pips below the low 13186.8 of the 12 hourly candles before it; the hourly range 13170.1 to 13215.3"
+  ],
+  [
+   "2026-11-18T08:35:00+00:00",
+   "emerging trend",
+   "down",
+   null,
+   "trend",
+   "down",
+   "slow grind",
+   "13163",
+   "13164.9",
+   "13159",
+   "13160.4",
+   "13161.9",
+   "hourly sell-off: the Wed 18 Nov 07:00 GMT hourly candle closed at 13172.8, 14.0 pips below the low 13186.8 of the 12 hourly candles before it; the hourly range 13170.1 to 13215.3"
+  ],
+  [
+   "2026-11-18T08:40:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13160.3",
+   "13163.8",
+   "13159.5",
+   "13163.7",
+   "13165.2",
+   "hourly sell-off: the Wed 18 Nov 07:00 GMT hourly candle closed at 13172.8, 14.0 pips below the low 13186.8 of the 12 hourly candles before it; the hourly range 13170.1 to 13215.3"
+  ],
+  [
+   "2026-11-18T08:45:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13163.6",
+   "13163.6",
+   "13157.4",
+   "13157.7",
+   "13159.2",
+   "hourly sell-off: the Wed 18 Nov 07:00 GMT hourly candle closed at 13172.8, 14.0 pips below the low 13186.8 of the 12 hourly candles before it; the hourly range 13170.1 to 13215.3"
+  ],
+  [
+   "2026-11-18T08:50:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13157.6",
+   "13157.7",
+   "13152.8",
+   "13153.2",
+   "13154.7",
+   "hourly sell-off: the Wed 18 Nov 07:00 GMT hourly candle closed at 13172.8, 14.0 pips below the low 13186.8 of the 12 hourly candles before it; the hourly range 13170.1 to 13215.3"
+  ],
+  [
+   "2026-11-18T08:55:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13153",
+   "13153.9",
+   "13150.6",
+   "13153.3",
+   "13154.8",
+   "hourly sell-off: the Wed 18 Nov 07:00 GMT hourly candle closed at 13172.8, 14.0 pips below the low 13186.8 of the 12 hourly candles before it; the hourly range 13170.1 to 13215.3"
+  ],
+  [
+   "2026-11-18T09:00:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13153.2",
+   "13153.3",
+   "13149.2",
+   "13150.9",
+   "13152.4",
+   "hourly sell-off: the Wed 18 Nov 08:00 GMT hourly candle closed at 13153.3, 16.8 pips below the low 13170.1 of the 12 hourly candles before it; the hourly range 13150.6 to 13211.1"
+  ],
+  [
+   "2026-11-18T09:05:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13151",
+   "13156.9",
+   "13148",
+   "13153.8",
+   "13155.3",
+   "hourly sell-off: the Wed 18 Nov 08:00 GMT hourly candle closed at 13153.3, 16.8 pips below the low 13170.1 of the 12 hourly candles before it; the hourly range 13150.6 to 13211.1"
+  ],
+  [
+   "2026-11-18T09:10:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13153.7",
+   "13155.9",
+   "13151.3",
+   "13153.6",
+   "13155.1",
+   "hourly sell-off: the Wed 18 Nov 08:00 GMT hourly candle closed at 13153.3, 16.8 pips below the low 13170.1 of the 12 hourly candles before it; the hourly range 13150.6 to 13211.1"
+  ],
+  [
+   "2026-11-18T09:15:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13153.5",
+   "13153.7",
+   "13149.4",
+   "13151.1",
+   "13152",
+   "hourly sell-off: the Wed 18 Nov 08:00 GMT hourly candle closed at 13153.3, 16.8 pips below the low 13170.1 of the 12 hourly candles before it; the hourly range 13150.6 to 13211.1"
+  ],
+  [
+   "2026-11-18T09:20:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13151.4",
+   "13156.2",
+   "13150",
+   "13155.3",
+   "13156.8",
+   "hourly sell-off: the Wed 18 Nov 08:00 GMT hourly candle closed at 13153.3, 16.8 pips below the low 13170.1 of the 12 hourly candles before it; the hourly range 13150.6 to 13211.1"
+  ],
+  [
+   "2026-11-18T09:25:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13155.7",
+   "13161.9",
+   "13155.7",
+   "13161.4",
+   "13162.9",
+   "hourly sell-off: the Wed 18 Nov 08:00 GMT hourly candle closed at 13153.3, 16.8 pips below the low 13170.1 of the 12 hourly candles before it; the hourly range 13150.6 to 13211.1"
+  ],
+  [
+   "2026-11-18T09:30:00+00:00",
+   "trend",
+   "down",
+   "slow grind",
+   "trend",
+   "down",
+   "slow grind",
+   "13161.8",
+   "13164.9",
+   "13161.1",
+   "13163.4",
+   "13164.9",
+   "hourly sell-off: the Wed 18 Nov 08:00 GMT hourly candle closed at 13153.3, 16.8 pips below the low 13170.1 of the 12 hourly candles before it; the hourly range 13150.6 to 13211.1"
+  ]
+ ],
+ "candles": [
+  [
+   "2026-11-17T21:00:00+00:00",
+   "13209.2",
+   "13209.2",
+   "13207.2",
+   "13209",
+   "13210.1",
+   "13210.7",
+   "13208.7",
+   "13210.5"
+  ],
+  [
+   "2026-11-17T21:05:00+00:00",
+   "13208.9",
+   "13209.3",
+   "13207.6",
+   "13209.3",
+   "13210.4",
+   "13210.8",
+   "13209.1",
+   "13210.8"
+  ],
+  [
+   "2026-11-17T21:10:00+00:00",
+   "13209.7",
+   "13211.1",
+   "13209.3",
+   "13209.5",
+   "13211.2",
+   "13212.6",
+   "13210.8",
+   "13211"
+  ],
+  [
+   "2026-11-17T21:15:00+00:00",
+   "13209.6",
+   "13210.5",
+   "13209.2",
+   "13210.2",
+   "13211.1",
+   "13212",
+   "13210.7",
+   "13211.7"
+  ],
+  [
+   "2026-11-17T21:20:00+00:00",
+   "13210.4",
+   "13210.8",
+   "13208.2",
+   "13208.9",
+   "13211.9",
+   "13212.3",
+   "13209.7",
+   "13210.4"
+  ],
+  [
+   "2026-11-17T21:25:00+00:00",
+   "13209.1",
+   "13209.8",
+   "13206.5",
+   "13206.6",
+   "13210.6",
+   "13211",
+   "13208",
+   "13208.1"
+  ],
+  [
+   "2026-11-17T21:30:00+00:00",
+   "13206.8",
+   "13207.2",
+   "13206.3",
+   "13206.7",
+   "13208.3",
+   "13208.7",
+   "13207.8",
+   "13208.2"
+  ],
+  [
+   "2026-11-17T21:35:00+00:00",
+   "13206.9",
+   "13209",
+   "13206",
+   "13207.5",
+   "13208.4",
+   "13210.5",
+   "13207.5",
+   "13209"
+  ],
+  [
+   "2026-11-17T21:40:00+00:00",
+   "13207.7",
+   "13208.3",
+   "13207.3",
+   "13207.9",
+   "13209.2",
+   "13209.8",
+   "13208.8",
+   "13209.4"
+  ],
+  [
+   "2026-11-17T21:45:00+00:00",
+   "13207.7",
+   "13208.7",
+   "13206.7",
+   "13208.1",
+   "13210",
+   "13210.7",
+   "13208.2",
+   "13209.6"
+  ],
+  [
+   "2026-11-17T21:50:00+00:00",
+   "13208.4",
+   "13208.4",
+   "13206.2",
+   "13206.6",
+   "13209.9",
+   "13210.2",
+   "13207.7",
+   "13209.3"
+  ],
+  [
+   "2026-11-17T21:55:00+00:00",
+   "13206.5",
+   "13207.3",
+   "13201.3",
+   "13203.5",
+   "13210.1",
+   "13214.2",
+   "13207.2",
+   "13214.2"
+  ],
+  [
+   "2026-11-17T22:00:00+00:00",
+   "13199.7",
+   "13201.8",
+   "13198.8",
+   "13199",
+   "13216.6",
+   "13218.7",
+   "13215.7",
+   "13215.9"
+  ],
+  [
+   "2026-11-17T22:05:00+00:00",
+   "13198.8",
+   "13201.6",
+   "13198.6",
+   "13200.5",
+   "13215.7",
+   "13218.5",
+   "13215.5",
+   "13217.4"
+  ],
+  [
+   "2026-11-17T22:10:00+00:00",
+   "13200.6",
+   "13200.6",
+   "13200.5",
+   "13200.6",
+   "13217.5",
+   "13217.5",
+   "13217.4",
+   "13217.5"
+  ],
+  [
+   "2026-11-17T22:15:00+00:00",
+   "13200.4",
+   "13200.9",
+   "13198.8",
+   "13198.8",
+   "13217.3",
+   "13217.8",
+   "13215.7",
+   "13215.7"
+  ],
+  [
+   "2026-11-17T22:20:00+00:00",
+   "13198.9",
+   "13198.9",
+   "13198.5",
+   "13198.6",
+   "13215.8",
+   "13215.8",
+   "13215.4",
+   "13215.5"
+  ],
+  [
+   "2026-11-17T22:25:00+00:00",
+   "13201.6",
+   "13202",
+   "13201.6",
+   "13201.9",
+   "13218.5",
+   "13218.9",
+   "13218.5",
+   "13218.8"
+  ],
+  [
+   "2026-11-17T22:30:00+00:00",
+   "13202",
+   "13205",
+   "13201.9",
+   "13205",
+   "13218.9",
+   "13221.9",
+   "13218.8",
+   "13221.9"
+  ],
+  [
+   "2026-11-17T22:35:00+00:00",
+   "13204.9",
+   "13205",
+   "13204.6",
+   "13204.6",
+   "13221.8",
+   "13221.9",
+   "13221.5",
+   "13221.5"
+  ],
+  [
+   "2026-11-17T22:40:00+00:00",
+   "13204.8",
+   "13205.4",
+   "13204.6",
+   "13205",
+   "13221.7",
+   "13222.3",
+   "13221.5",
+   "13221.9"
+  ],
+  [
+   "2026-11-17T22:45:00+00:00",
+   "13205.1",
+   "13205.3",
+   "13200.2",
+   "13203.2",
+   "13222",
+   "13222.2",
+   "13215.6",
+   "13218.3"
+  ],
+  [
+   "2026-11-17T22:50:00+00:00",
+   "13203.3",
+   "13205.3",
+   "13203.2",
+   "13203.5",
+   "13218.2",
+   "13218.3",
+   "13215.4",
+   "13217.6"
+  ],
+  [
+   "2026-11-17T22:55:00+00:00",
+   "13203.4",
+   "13208.2",
+   "13198.9",
+   "13201.6",
+   "13217.7",
+   "13221.6",
+   "13214.2",
+   "13218.5"
+  ],
+  [
+   "2026-11-17T23:00:00+00:00",
+   "13201.7",
+   "13205.6",
+   "13200.8",
+   "13202.9",
+   "13218.6",
+   "13218.9",
+   "13207",
+   "13207.1"
+  ],
+  [
+   "2026-11-17T23:05:00+00:00",
+   "13203.3",
+   "13205.4",
+   "13203.1",
+   "13204.1",
+   "13206.6",
+   "13208.1",
+   "13204.6",
+   "13206.2"
+  ],
+  [
+   "2026-11-17T23:10:00+00:00",
+   "13204.2",
+   "13206.3",
+   "13204.2",
+   "13206",
+   "13205.6",
+   "13208.4",
+   "13205.6",
+   "13207.5"
+  ],
+  [
+   "2026-11-17T23:15:00+00:00",
+   "13206.1",
+   "13207.1",
+   "13205.8",
+   "13206.9",
+   "13207.6",
+   "13209.2",
+   "13207.3",
+   "13208.4"
+  ],
+  [
+   "2026-11-17T23:20:00+00:00",
+   "13207",
+   "13208.1",
+   "13206.8",
+   "13207.8",
+   "13208.5",
+   "13209.6",
+   "13208.3",
+   "13209.3"
+  ],
+  [
+   "2026-11-17T23:25:00+00:00",
+   "13207.9",
+   "13208.7",
+   "13206.5",
+   "13206.5",
+   "13209.4",
+   "13210.2",
+   "13208",
+   "13208"
+  ],
+  [
+   "2026-11-17T23:30:00+00:00",
+   "13206.6",
+   "13208",
+   "13205.5",
+   "13206.1",
+   "13208.1",
+   "13209.5",
+   "13207",
+   "13207.6"
+  ],
+  [
+   "2026-11-17T23:35:00+00:00",
+   "13206.2",
+   "13206.3",
+   "13204.8",
+   "13205.2",
+   "13207.7",
+   "13207.8",
+   "13206.3",
+   "13206.7"
+  ],
+  [
+   "2026-11-17T23:40:00+00:00",
+   "13205.3",
+   "13205.6",
+   "13204.7",
+   "13204.8",
+   "13206.8",
+   "13207.1",
+   "13206.2",
+   "13206.3"
+  ],
+  [
+   "2026-11-17T23:45:00+00:00",
+   "13204.7",
+   "13206.5",
+   "13204.4",
+   "13206.5",
+   "13206.2",
+   "13208",
+   "13205.9",
+   "13208"
+  ],
+  [
+   "2026-11-17T23:50:00+00:00",
+   "13206.6",
+   "13207.2",
+   "13206.6",
+   "13207",
+   "13208.1",
+   "13208.7",
+   "13208.1",
+   "13208.5"
+  ],
+  [
+   "2026-11-17T23:55:00+00:00",
+   "13207.1",
+   "13207.1",
+   "13204.4",
+   "13204.4",
+   "13208.6",
+   "13208.6",
+   "13205.9",
+   "13205.9"
+  ],
+  [
+   "2026-11-18T00:00:00+00:00",
+   "13205.2",
+   "13205.2",
+   "13197.4",
+   "13197.4",
+   "13206.7",
+   "13206.7",
+   "13198.9",
+   "13198.9"
+  ],
+  [
+   "2026-11-18T00:05:00+00:00",
+   "13197.5",
+   "13200.1",
+   "13197",
+   "13199.7",
+   "13199",
+   "13201.6",
+   "13198.5",
+   "13201.2"
+  ],
+  [
+   "2026-11-18T00:10:00+00:00",
+   "13199.8",
+   "13202",
+   "13199.8",
+   "13202",
+   "13201.3",
+   "13203.5",
+   "13201.3",
+   "13203.5"
+  ],
+  [
+   "2026-11-18T00:15:00+00:00",
+   "13201.9",
+   "13202.2",
+   "13200.3",
+   "13201.4",
+   "13203.4",
+   "13203.7",
+   "13201.8",
+   "13202.9"
+  ],
+  [
+   "2026-11-18T00:20:00+00:00",
+   "13201.5",
+   "13202",
+   "13200.3",
+   "13201",
+   "13203",
+   "13203.5",
+   "13201.8",
+   "13202.5"
+  ],
+  [
+   "2026-11-18T00:25:00+00:00",
+   "13200.9",
+   "13203.2",
+   "13200.9",
+   "13202.6",
+   "13202.4",
+   "13204.7",
+   "13202.4",
+   "13204.1"
+  ],
+  [
+   "2026-11-18T00:30:00+00:00",
+   "13202.5",
+   "13202.7",
+   "13200.8",
+   "13201.6",
+   "13204",
+   "13204.2",
+   "13202.3",
+   "13203.1"
+  ],
+  [
+   "2026-11-18T00:35:00+00:00",
+   "13201.7",
+   "13202.7",
+   "13200.8",
+   "13202.5",
+   "13203.2",
+   "13204.2",
+   "13202.3",
+   "13204"
+  ],
+  [
+   "2026-11-18T00:40:00+00:00",
+   "13202.4",
+   "13203.8",
+   "13200",
+   "13200.3",
+   "13203.9",
+   "13205.3",
+   "13201.5",
+   "13201.8"
+  ],
+  [
+   "2026-11-18T00:45:00+00:00",
+   "13200.2",
+   "13202.4",
+   "13197.9",
+   "13198.8",
+   "13201.7",
+   "13203.9",
+   "13199.4",
+   "13200.3"
+  ],
+  [
+   "2026-11-18T00:50:00+00:00",
+   "13198.5",
+   "13198.5",
+   "13194.9",
+   "13196.9",
+   "13200",
+   "13200",
+   "13196.4",
+   "13198.4"
+  ],
+  [
+   "2026-11-18T00:55:00+00:00",
+   "13196.7",
+   "13199.7",
+   "13195.5",
+   "13198.5",
+   "13198.2",
+   "13201.2",
+   "13197",
+   "13200"
+  ],
+  [
+   "2026-11-18T01:00:00+00:00",
+   "13198.6",
+   "13200",
+   "13196.3",
+   "13196.3",
+   "13200.1",
+   "13201.5",
+   "13197.8",
+   "13197.8"
+  ],
+  [
+   "2026-11-18T01:05:00+00:00",
+   "13196.4",
+   "13199.7",
+   "13195.6",
+   "13197.9",
+   "13197.9",
+   "13201.2",
+   "13197.1",
+   "13199.4"
+  ],
+  [
+   "2026-11-18T01:10:00+00:00",
+   "13198",
+   "13199.9",
+   "13197.6",
+   "13198.3",
+   "13199.5",
+   "13201.4",
+   "13199.1",
+   "13199.8"
+  ],
+  [
+   "2026-11-18T01:15:00+00:00",
+   "13198",
+   "13201.2",
+   "13198",
+   "13200.6",
+   "13199.5",
+   "13202.7",
+   "13199.5",
+   "13202.1"
+  ],
+  [
+   "2026-11-18T01:20:00+00:00",
+   "13200.7",
+   "13202",
+   "13200",
+   "13201.4",
+   "13202.2",
+   "13203.5",
+   "13201.5",
+   "13202.9"
+  ],
+  [
+   "2026-11-18T01:25:00+00:00",
+   "13201.6",
+   "13203",
+   "13201.1",
+   "13202.9",
+   "13203.1",
+   "13204.5",
+   "13202.6",
+   "13204.4"
+  ],
+  [
+   "2026-11-18T01:30:00+00:00",
+   "13202.8",
+   "13206.7",
+   "13202.7",
+   "13204.8",
+   "13204.3",
+   "13208.2",
+   "13204.2",
+   "13206.3"
+  ],
+  [
+   "2026-11-18T01:35:00+00:00",
+   "13205",
+   "13206.3",
+   "13203.8",
+   "13204.3",
+   "13206.5",
+   "13207.8",
+   "13205.3",
+   "13205.8"
+  ],
+  [
+   "2026-11-18T01:40:00+00:00",
+   "13204.2",
+   "13205",
+   "13202.1",
+   "13202.2",
+   "13205.7",
+   "13206.5",
+   "13203.6",
+   "13203.7"
+  ],
+  [
+   "2026-11-18T01:45:00+00:00",
+   "13202",
+   "13203",
+   "13200.5",
+   "13202",
+   "13203.5",
+   "13204.5",
+   "13202",
+   "13203.5"
+  ],
+  [
+   "2026-11-18T01:50:00+00:00",
+   "13201.9",
+   "13205.2",
+   "13201.8",
+   "13205.1",
+   "13203.4",
+   "13206.7",
+   "13203.3",
+   "13206.6"
+  ],
+  [
+   "2026-11-18T01:55:00+00:00",
+   "13205",
+   "13206.1",
+   "13203.8",
+   "13205.9",
+   "13206.5",
+   "13207.6",
+   "13205.3",
+   "13207.4"
+  ],
+  [
+   "2026-11-18T02:00:00+00:00",
+   "13206",
+   "13206.9",
+   "13204.7",
+   "13204.8",
+   "13207.5",
+   "13208.4",
+   "13206.2",
+   "13206.3"
+  ],
+  [
+   "2026-11-18T02:05:00+00:00",
+   "13204.9",
+   "13205.5",
+   "13202.3",
+   "13202.7",
+   "13206.4",
+   "13207",
+   "13203.8",
+   "13204.2"
+  ],
+  [
+   "2026-11-18T02:10:00+00:00",
+   "13202.6",
+   "13203.8",
+   "13202.4",
+   "13203.6",
+   "13204.1",
+   "13205.3",
+   "13203.9",
+   "13205.1"
+  ],
+  [
+   "2026-11-18T02:15:00+00:00",
+   "13203.7",
+   "13206.6",
+   "13203.2",
+   "13206",
+   "13205.2",
+   "13208.1",
+   "13204.7",
+   "13207.5"
+  ],
+  [
+   "2026-11-18T02:20:00+00:00",
+   "13205.7",
+   "13206.1",
+   "13204.2",
+   "13204.8",
+   "13207.2",
+   "13207.6",
+   "13205.7",
+   "13206.3"
+  ],
+  [
+   "2026-11-18T02:25:00+00:00",
+   "13204.7",
+   "13206.9",
+   "13204.5",
+   "13204.6",
+   "13206.2",
+   "13208.4",
+   "13206",
+   "13206.1"
+  ],
+  [
+   "2026-11-18T02:30:00+00:00",
+   "13204.5",
+   "13205",
+   "13203.5",
+   "13204",
+   "13206",
+   "13206.5",
+   "13205",
+   "13205.5"
+  ],
+  [
+   "2026-11-18T02:35:00+00:00",
+   "13203.8",
+   "13204.3",
+   "13201.7",
+   "13203.9",
+   "13205.3",
+   "13205.8",
+   "13203.2",
+   "13205.4"
+  ],
+  [
+   "2026-11-18T02:40:00+00:00",
+   "13204",
+   "13204.1",
+   "13202.4",
+   "13204.1",
+   "13205.5",
+   "13205.6",
+   "13203.9",
+   "13205.6"
+  ],
+  [
+   "2026-11-18T02:45:00+00:00",
+   "13204.4",
+   "13204.5",
+   "13202.4",
+   "13202.6",
+   "13205.9",
+   "13206",
+   "13203.9",
+   "13204.1"
+  ],
+  [
+   "2026-11-18T02:50:00+00:00",
+   "13202.5",
+   "13202.7",
+   "13200.2",
+   "13201.3",
+   "13204",
+   "13204.2",
+   "13201.7",
+   "13202.8"
+  ],
+  [
+   "2026-11-18T02:55:00+00:00",
+   "13201.4",
+   "13201.4",
+   "13195.5",
+   "13195.9",
+   "13202.9",
+   "13202.9",
+   "13197",
+   "13197.4"
+  ],
+  [
+   "2026-11-18T03:00:00+00:00",
+   "13196",
+   "13197.3",
+   "13195.6",
+   "13196.6",
+   "13197.5",
+   "13198.8",
+   "13197.1",
+   "13198.1"
+  ],
+  [
+   "2026-11-18T03:05:00+00:00",
+   "13196.7",
+   "13198.6",
+   "13196.2",
+   "13196.5",
+   "13198.2",
+   "13200.1",
+   "13197.7",
+   "13198"
+  ],
+  [
+   "2026-11-18T03:10:00+00:00",
+   "13196.6",
+   "13197.1",
+   "13195",
+   "13195.7",
+   "13198.1",
+   "13198.6",
+   "13196.5",
+   "13197.2"
+  ],
+  [
+   "2026-11-18T03:15:00+00:00",
+   "13195.6",
+   "13196.7",
+   "13195.5",
+   "13195.6",
+   "13197.1",
+   "13198.2",
+   "13197",
+   "13197.1"
+  ],
+  [
+   "2026-11-18T03:20:00+00:00",
+   "13195.8",
+   "13198.8",
+   "13195.5",
+   "13198.7",
+   "13197.3",
+   "13200.3",
+   "13197",
+   "13200.2"
+  ],
+  [
+   "2026-11-18T03:25:00+00:00",
+   "13198.8",
+   "13201.9",
+   "13198.5",
+   "13199.9",
+   "13200.3",
+   "13203.4",
+   "13200",
+   "13201.4"
+  ],
+  [
+   "2026-11-18T03:30:00+00:00",
+   "13199.8",
+   "13200.7",
+   "13199",
+   "13199.9",
+   "13201.3",
+   "13202.2",
+   "13200.5",
+   "13201.4"
+  ],
+  [
+   "2026-11-18T03:35:00+00:00",
+   "13199.7",
+   "13200.8",
+   "13198.6",
+   "13198.8",
+   "13201.2",
+   "13202.3",
+   "13200.1",
+   "13200.3"
+  ],
+  [
+   "2026-11-18T03:40:00+00:00",
+   "13198.7",
+   "13199",
+   "13196.7",
+   "13198.6",
+   "13200.2",
+   "13200.5",
+   "13198.2",
+   "13200.1"
+  ],
+  [
+   "2026-11-18T03:45:00+00:00",
+   "13198.8",
+   "13199.3",
+   "13197.6",
+   "13198.5",
+   "13200.3",
+   "13200.8",
+   "13199.1",
+   "13200"
+  ],
+  [
+   "2026-11-18T03:50:00+00:00",
+   "13198.6",
+   "13199.4",
+   "13198.4",
+   "13199",
+   "13200.1",
+   "13200.9",
+   "13199.9",
+   "13200.5"
+  ],
+  [
+   "2026-11-18T03:55:00+00:00",
+   "13198.8",
+   "13199.1",
+   "13197.1",
+   "13197.8",
+   "13200.3",
+   "13200.6",
+   "13199",
+   "13199.3"
+  ],
+  [
+   "2026-11-18T04:00:00+00:00",
+   "13197.6",
+   "13198.6",
+   "13195.8",
+   "13195.9",
+   "13199.1",
+   "13200.1",
+   "13197.3",
+   "13197.4"
+  ],
+  [
+   "2026-11-18T04:05:00+00:00",
+   "13195.8",
+   "13196.4",
+   "13193.5",
+   "13196.2",
+   "13197.3",
+   "13197.9",
+   "13195",
+   "13197.7"
+  ],
+  [
+   "2026-11-18T04:10:00+00:00",
+   "13196.1",
+   "13197",
+   "13192.1",
+   "13193",
+   "13197.6",
+   "13198.5",
+   "13193.6",
+   "13194.5"
+  ],
+  [
+   "2026-11-18T04:15:00+00:00",
+   "13193.1",
+   "13194.3",
+   "13192.2",
+   "13194.3",
+   "13194.6",
+   "13195.8",
+   "13193.7",
+   "13195.8"
+  ],
+  [
+   "2026-11-18T04:20:00+00:00",
+   "13194.2",
+   "13194.3",
+   "13193.2",
+   "13193.7",
+   "13195.7",
+   "13195.8",
+   "13194.7",
+   "13195.2"
+  ],
+  [
+   "2026-11-18T04:25:00+00:00",
+   "13194.2",
+   "13194.3",
+   "13192.2",
+   "13192.7",
+   "13195.7",
+   "13195.8",
+   "13193.7",
+   "13194.2"
+  ],
+  [
+   "2026-11-18T04:30:00+00:00",
+   "13192.4",
+   "13194",
+   "13190.8",
+   "13193.5",
+   "13193.9",
+   "13195.5",
+   "13193",
+   "13195"
+  ],
+  [
+   "2026-11-18T04:35:00+00:00",
+   "13192.9",
+   "13197.2",
+   "13192.9",
+   "13197.1",
+   "13195.1",
+   "13198.7",
+   "13195.1",
+   "13198.6"
+  ],
+  [
+   "2026-11-18T04:40:00+00:00",
+   "13196.9",
+   "13197.2",
+   "13194.1",
+   "13194.5",
+   "13199",
+   "13199",
+   "13195.6",
+   "13196"
+  ],
+  [
+   "2026-11-18T04:45:00+00:00",
+   "13194.6",
+   "13194.7",
+   "13192.8",
+   "13194.5",
+   "13196.1",
+   "13196.2",
+   "13194.3",
+   "13196"
+  ],
+  [
+   "2026-11-18T04:50:00+00:00",
+   "13194.6",
+   "13196.5",
+   "13193.9",
+   "13196.3",
+   "13196.1",
+   "13198",
+   "13195.7",
+   "13197.8"
+  ],
+  [
+   "2026-11-18T04:55:00+00:00",
+   "13196.4",
+   "13197",
+   "13195.5",
+   "13196.9",
+   "13197.9",
+   "13198.5",
+   "13197",
+   "13198.4"
+  ],
+  [
+   "2026-11-18T05:00:00+00:00",
+   "13197",
+   "13197.2",
+   "13195.1",
+   "13195.5",
+   "13198.5",
+   "13198.7",
+   "13196.6",
+   "13197"
+  ],
+  [
+   "2026-11-18T05:05:00+00:00",
+   "13195.6",
+   "13195.8",
+   "13194.5",
+   "13195.6",
+   "13197.1",
+   "13197.3",
+   "13196",
+   "13197.1"
+  ],
+  [
+   "2026-11-18T05:10:00+00:00",
+   "13195.8",
+   "13196.1",
+   "13194.4",
+   "13195.4",
+   "13197.3",
+   "13197.6",
+   "13196.2",
+   "13196.9"
+  ],
+  [
+   "2026-11-18T05:15:00+00:00",
+   "13195.5",
+   "13196.7",
+   "13195.4",
+   "13196.7",
+   "13197",
+   "13198.2",
+   "13196.9",
+   "13198.2"
+  ],
+  [
+   "2026-11-18T05:20:00+00:00",
+   "13196.6",
+   "13196.7",
+   "13194.5",
+   "13194.7",
+   "13198.1",
+   "13198.2",
+   "13196",
+   "13196.2"
+  ],
+  [
+   "2026-11-18T05:25:00+00:00",
+   "13195",
+   "13195",
+   "13192.9",
+   "13192.9",
+   "13196.5",
+   "13196.5",
+   "13194.4",
+   "13194.4"
+  ],
+  [
+   "2026-11-18T05:30:00+00:00",
+   "13193",
+   "13193.3",
+   "13189",
+   "13191.1",
+   "13194.5",
+   "13194.8",
+   "13190.9",
+   "13192.6"
+  ],
+  [
+   "2026-11-18T05:35:00+00:00",
+   "13190.9",
+   "13193.4",
+   "13190.6",
+   "13193.4",
+   "13192.4",
+   "13194.9",
+   "13192.1",
+   "13194.9"
+  ],
+  [
+   "2026-11-18T05:40:00+00:00",
+   "13193.9",
+   "13194",
+   "13192.9",
+   "13193.9",
+   "13195.4",
+   "13195.5",
+   "13194.4",
+   "13195.4"
+  ],
+  [
+   "2026-11-18T05:45:00+00:00",
+   "13194.1",
+   "13194.2",
+   "13192.6",
+   "13192.8",
+   "13195.6",
+   "13195.7",
+   "13194.1",
+   "13194.3"
+  ],
+  [
+   "2026-11-18T05:50:00+00:00",
+   "13192.7",
+   "13193.1",
+   "13190.2",
+   "13190.5",
+   "13194.2",
+   "13194.6",
+   "13191.7",
+   "13192"
+  ],
+  [
+   "2026-11-18T05:55:00+00:00",
+   "13190.4",
+   "13191.4",
+   "13188.7",
+   "13191.3",
+   "13191.9",
+   "13192.9",
+   "13190.2",
+   "13192.8"
+  ],
+  [
+   "2026-11-18T06:00:00+00:00",
+   "13191",
+   "13192",
+   "13189.4",
+   "13189.4",
+   "13192.5",
+   "13193.5",
+   "13190.9",
+   "13190.9"
+  ],
+  [
+   "2026-11-18T06:05:00+00:00",
+   "13189",
+   "13191.5",
+   "13188.9",
+   "13190.8",
+   "13190.5",
+   "13193",
+   "13190.4",
+   "13192.3"
+  ],
+  [
+   "2026-11-18T06:10:00+00:00",
+   "13191.1",
+   "13193.4",
+   "13190.8",
+   "13191.7",
+   "13192.6",
+   "13194.9",
+   "13192.3",
+   "13193.2"
+  ],
+  [
+   "2026-11-18T06:15:00+00:00",
+   "13192",
+   "13193.5",
+   "13190",
+   "13190.3",
+   "13193.5",
+   "13195",
+   "13191.5",
+   "13191.8"
+  ],
+  [
+   "2026-11-18T06:20:00+00:00",
+   "13190.5",
+   "13191",
+   "13189.1",
+   "13189.9",
+   "13192",
+   "13192.5",
+   "13190.6",
+   "13191.4"
+  ],
+  [
+   "2026-11-18T06:25:00+00:00",
+   "13190",
+   "13190.3",
+   "13187.3",
+   "13188.1",
+   "13191.5",
+   "13191.8",
+   "13188.8",
+   "13189.6"
+  ],
+  [
+   "2026-11-18T06:30:00+00:00",
+   "13187.9",
+   "13191.3",
+   "13187.9",
+   "13188.8",
+   "13189.4",
+   "13192.8",
+   "13189.4",
+   "13190.3"
+  ],
+  [
+   "2026-11-18T06:35:00+00:00",
+   "13188.9",
+   "13189.7",
+   "13187.6",
+   "13187.8",
+   "13190.4",
+   "13191.2",
+   "13189.1",
+   "13189.3"
+  ],
+  [
+   "2026-11-18T06:40:00+00:00",
+   "13188.2",
+   "13190.9",
+   "13186.8",
+   "13190.4",
+   "13189.7",
+   "13192.4",
+   "13188.3",
+   "13191.9"
+  ],
+  [
+   "2026-11-18T06:45:00+00:00",
+   "13190.5",
+   "13191.4",
+   "13189.4",
+   "13189.4",
+   "13192",
+   "13192.9",
+   "13190.9",
+   "13190.9"
+  ],
+  [
+   "2026-11-18T06:50:00+00:00",
+   "13189.5",
+   "13191.2",
+   "13189.3",
+   "13190.6",
+   "13191",
+   "13192.7",
+   "13190.8",
+   "13192.1"
+  ],
+  [
+   "2026-11-18T06:55:00+00:00",
+   "13190.5",
+   "13193.1",
+   "13189.5",
+   "13190.4",
+   "13192",
+   "13198",
+   "13191",
+   "13198"
+  ],
+  [
+   "2026-11-18T07:00:00+00:00",
+   "13189.1",
+   "13192.7",
+   "13176.7",
+   "13176.7",
+   "13199.1",
+   "13201.2",
+   "13178.2",
+   "13178.2"
+  ],
+  [
+   "2026-11-18T07:05:00+00:00",
+   "13177.1",
+   "13178.5",
+   "13173.8",
+   "13174.9",
+   "13178.6",
+   "13180",
+   "13175.3",
+   "13176.4"
+  ],
+  [
+   "2026-11-18T07:10:00+00:00",
+   "13175",
+   "13177.2",
+   "13171.9",
+   "13177.1",
+   "13176.5",
+   "13178.7",
+   "13173.4",
+   "13178.6"
+  ],
+  [
+   "2026-11-18T07:15:00+00:00",
+   "13177.2",
+   "13182.7",
+   "13177.2",
+   "13181.7",
+   "13178.7",
+   "13184.2",
+   "13178.7",
+   "13183.2"
+  ],
+  [
+   "2026-11-18T07:20:00+00:00",
+   "13181.8",
+   "13181.8",
+   "13177.3",
+   "13179",
+   "13183.3",
+   "13183.3",
+   "13178.8",
+   "13180.5"
+  ],
+  [
+   "2026-11-18T07:25:00+00:00",
+   "13178.7",
+   "13179.3",
+   "13175.6",
+   "13179.2",
+   "13180.2",
+   "13180.8",
+   "13177.1",
+   "13180.7"
+  ],
+  [
+   "2026-11-18T07:30:00+00:00",
+   "13179.3",
+   "13181.6",
+   "13176.7",
+   "13176.8",
+   "13180.8",
+   "13183.1",
+   "13178.2",
+   "13178.3"
+  ],
+  [
+   "2026-11-18T07:35:00+00:00",
+   "13176.9",
+   "13177.3",
+   "13172.4",
+   "13173.8",
+   "13178.4",
+   "13178.8",
+   "13173.9",
+   "13175.3"
+  ],
+  [
+   "2026-11-18T07:40:00+00:00",
+   "13174",
+   "13175.2",
+   "13172.2",
+   "13172.3",
+   "13175.5",
+   "13176.7",
+   "13173.7",
+   "13173.8"
+  ],
+  [
+   "2026-11-18T07:45:00+00:00",
+   "13173.1",
+   "13175",
+   "13170.1",
+   "13174.2",
+   "13174.6",
+   "13176.5",
+   "13171.6",
+   "13175.7"
+  ],
+  [
+   "2026-11-18T07:50:00+00:00",
+   "13174.1",
+   "13174.2",
+   "13171",
+   "13171.8",
+   "13175.6",
+   "13175.7",
+   "13172.5",
+   "13173.3"
+  ],
+  [
+   "2026-11-18T07:55:00+00:00",
+   "13171.9",
+   "13174.7",
+   "13171.6",
+   "13172.8",
+   "13173.4",
+   "13176.2",
+   "13173.1",
+   "13174.3"
+  ],
+  [
+   "2026-11-18T08:00:00+00:00",
+   "13172.9",
+   "13175.4",
+   "13172.2",
+   "13172.6",
+   "13174.4",
+   "13176.9",
+   "13173.7",
+   "13174.1"
+  ],
+  [
+   "2026-11-18T08:05:00+00:00",
+   "13172.5",
+   "13173.2",
+   "13163.9",
+   "13171.4",
+   "13174",
+   "13174.7",
+   "13165.4",
+   "13172.9"
+  ],
+  [
+   "2026-11-18T08:10:00+00:00",
+   "13171.3",
+   "13172.1",
+   "13169.1",
+   "13169.6",
+   "13172.8",
+   "13173.6",
+   "13170.6",
+   "13171.1"
+  ],
+  [
+   "2026-11-18T08:15:00+00:00",
+   "13169.8",
+   "13170.1",
+   "13161.2",
+   "13161.7",
+   "13171.3",
+   "13171.6",
+   "13162.7",
+   "13163.2"
+  ],
+  [
+   "2026-11-18T08:20:00+00:00",
+   "13162",
+   "13165.3",
+   "13161.1",
+   "13162.8",
+   "13163.5",
+   "13166.8",
+   "13162.6",
+   "13164.3"
+  ],
+  [
+   "2026-11-18T08:25:00+00:00",
+   "13162.7",
+   "13163.9",
+   "13159.2",
+   "13160.6",
+   "13164.2",
+   "13165.4",
+   "13160.7",
+   "13162.1"
+  ],
+  [
+   "2026-11-18T08:30:00+00:00",
+   "13160.5",
+   "13164.9",
+   "13159.4",
+   "13162.9",
+   "13162",
+   "13166.4",
+   "13160.9",
+   "13164.4"
+  ],
+  [
+   "2026-11-18T08:35:00+00:00",
+   "13163",
+   "13164.9",
+   "13159",
+   "13160.4",
+   "13164.5",
+   "13166.4",
+   "13160.5",
+   "13161.9"
+  ],
+  [
+   "2026-11-18T08:40:00+00:00",
+   "13160.3",
+   "13163.8",
+   "13159.5",
+   "13163.7",
+   "13161.8",
+   "13165.3",
+   "13161",
+   "13165.2"
+  ],
+  [
+   "2026-11-18T08:45:00+00:00",
+   "13163.6",
+   "13163.6",
+   "13157.4",
+   "13157.7",
+   "13165.1",
+   "13165.1",
+   "13158.9",
+   "13159.2"
+  ],
+  [
+   "2026-11-18T08:50:00+00:00",
+   "13157.6",
+   "13157.7",
+   "13152.8",
+   "13153.2",
+   "13159.1",
+   "13159.2",
+   "13154.3",
+   "13154.7"
+  ],
+  [
+   "2026-11-18T08:55:00+00:00",
+   "13153",
+   "13153.9",
+   "13150.6",
+   "13153.3",
+   "13154.5",
+   "13155.4",
+   "13152.1",
+   "13154.8"
+  ],
+  [
+   "2026-11-18T09:00:00+00:00",
+   "13153.2",
+   "13153.3",
+   "13149.2",
+   "13150.9",
+   "13154.7",
+   "13154.8",
+   "13150.7",
+   "13152.4"
+  ],
+  [
+   "2026-11-18T09:05:00+00:00",
+   "13151",
+   "13156.9",
+   "13148",
+   "13153.8",
+   "13152.5",
+   "13158.4",
+   "13149.5",
+   "13155.3"
+  ],
+  [
+   "2026-11-18T09:10:00+00:00",
+   "13153.7",
+   "13155.9",
+   "13151.3",
+   "13153.6",
+   "13155.2",
+   "13157.4",
+   "13152.8",
+   "13155.1"
+  ],
+  [
+   "2026-11-18T09:15:00+00:00",
+   "13153.5",
+   "13153.7",
+   "13149.4",
+   "13151.1",
+   "13155",
+   "13155.2",
+   "13150.8",
+   "13152"
+  ],
+  [
+   "2026-11-18T09:20:00+00:00",
+   "13151.4",
+   "13156.2",
+   "13150",
+   "13155.3",
+   "13152.6",
+   "13157.7",
+   "13151.5",
+   "13156.8"
+  ],
+  [
+   "2026-11-18T09:25:00+00:00",
+   "13155.7",
+   "13161.9",
+   "13155.7",
+   "13161.4",
+   "13157.2",
+   "13163.4",
+   "13157.2",
+   "13162.9"
+  ],
+  [
+   "2026-11-18T09:30:00+00:00",
+   "13161.8",
+   "13164.9",
+   "13161.1",
+   "13163.4",
+   "13163.3",
+   "13166.4",
+   "13162.6",
+   "13164.9"
+  ],
+  [
+   "2026-11-18T09:35:00+00:00",
+   "13163.8",
+   "13167.7",
+   "13163.7",
+   "13167.3",
+   "13165.3",
+   "13169.2",
+   "13165.2",
+   "13168.8"
+  ],
+  [
+   "2026-11-18T09:40:00+00:00",
+   "13167.4",
+   "13171.6",
+   "13166.8",
+   "13168.4",
+   "13168.9",
+   "13173.1",
+   "13168.3",
+   "13169.9"
+  ],
+  [
+   "2026-11-18T09:45:00+00:00",
+   "13168.6",
+   "13168.9",
+   "13163.5",
+   "13163.8",
+   "13170.1",
+   "13170.4",
+   "13165",
+   "13165.3"
+  ],
+  [
+   "2026-11-18T09:50:00+00:00",
+   "13163.7",
+   "13167.7",
+   "13163.7",
+   "13165.7",
+   "13165.2",
+   "13169.2",
+   "13165.2",
+   "13167.2"
+  ],
+  [
+   "2026-11-18T09:55:00+00:00",
+   "13165.8",
+   "13172.1",
+   "13164.7",
+   "13170.8",
+   "13167.3",
+   "13173.4",
+   "13166.2",
+   "13172.3"
+  ],
+  [
+   "2026-11-18T10:00:00+00:00",
+   "13170.6",
+   "13171.3",
+   "13167.3",
+   "13168.1",
+   "13172.1",
+   "13172.8",
+   "13168.8",
+   "13169.6"
+  ],
+  [
+   "2026-11-18T10:05:00+00:00",
+   "13167.8",
+   "13171.4",
+   "13167.7",
+   "13171.2",
+   "13169.3",
+   "13172.8",
+   "13168.9",
+   "13172.7"
+  ],
+  [
+   "2026-11-18T10:10:00+00:00",
+   "13171.7",
+   "13171.8",
+   "13168.4",
+   "13168.5",
+   "13173.2",
+   "13173.3",
+   "13169.9",
+   "13170"
+  ],
+  [
+   "2026-11-18T10:15:00+00:00",
+   "13168.4",
+   "13168.5",
+   "13163.6",
+   "13164.8",
+   "13169.9",
+   "13170",
+   "13165.1",
+   "13166.3"
+  ],
+  [
+   "2026-11-18T10:20:00+00:00",
+   "13164.7",
+   "13170.2",
+   "13164.5",
+   "13169.5",
+   "13166.2",
+   "13171.7",
+   "13166",
+   "13171"
+  ],
+  [
+   "2026-11-18T10:25:00+00:00",
+   "13169.6",
+   "13172.7",
+   "13167.4",
+   "13172.5",
+   "13171.1",
+   "13174.2",
+   "13168.9",
+   "13174"
+  ],
+  [
+   "2026-11-18T10:30:00+00:00",
+   "13172",
+   "13173.7",
+   "13170.9",
+   "13172.2",
+   "13173.5",
+   "13175.2",
+   "13172.4",
+   "13173.7"
+  ],
+  [
+   "2026-11-18T10:35:00+00:00",
+   "13171.8",
+   "13173.7",
+   "13171.6",
+   "13172.6",
+   "13173.3",
+   "13175.2",
+   "13173.1",
+   "13174.1"
+  ],
+  [
+   "2026-11-18T10:40:00+00:00",
+   "13172.5",
+   "13173.1",
+   "13170.9",
+   "13173.1",
+   "13174",
+   "13174.6",
+   "13172.4",
+   "13174.6"
+  ],
+  [
+   "2026-11-18T10:45:00+00:00",
+   "13173",
+   "13175.6",
+   "13171.8",
+   "13174.7",
+   "13174.5",
+   "13177.1",
+   "13173.3",
+   "13176.2"
+  ],
+  [
+   "2026-11-18T10:50:00+00:00",
+   "13174.5",
+   "13174.8",
+   "13172.5",
+   "13173.6",
+   "13176",
+   "13176.3",
+   "13174",
+   "13175.1"
+  ],
+  [
+   "2026-11-18T10:55:00+00:00",
+   "13173.3",
+   "13175.6",
+   "13172.9",
+   "13173.7",
+   "13174.8",
+   "13177.1",
+   "13174.4",
+   "13174.6"
+  ],
+  [
+   "2026-11-18T11:00:00+00:00",
+   "13173.5",
+   "13173.8",
+   "13168.7",
+   "13169.7",
+   "13175.2",
+   "13175.3",
+   "13170.2",
+   "13171.2"
+  ],
+  [
+   "2026-11-18T11:05:00+00:00",
+   "13169.6",
+   "13170.8",
+   "13167.1",
+   "13167.7",
+   "13171.1",
+   "13171.7",
+   "13168.6",
+   "13168.6"
+  ],
+  [
+   "2026-11-18T11:10:00+00:00",
+   "13167.2",
+   "13173.6",
+   "13167.2",
+   "13171.5",
+   "13168.7",
+   "13174.8",
+   "13168.7",
+   "13172.4"
+  ],
+  [
+   "2026-11-18T11:15:00+00:00",
+   "13171.3",
+   "13173.4",
+   "13170.4",
+   "13172.1",
+   "13172.8",
+   "13174.9",
+   "13171.7",
+   "13173.6"
+  ],
+  [
+   "2026-11-18T11:20:00+00:00",
+   "13172",
+   "13173",
+   "13169.9",
+   "13171",
+   "13173.5",
+   "13174.1",
+   "13171",
+   "13172.5"
+  ],
+  [
+   "2026-11-18T11:25:00+00:00",
+   "13170.9",
+   "13171.8",
+   "13163.9",
+   "13164.1",
+   "13172.4",
+   "13173.3",
+   "13165.4",
+   "13165.6"
+  ],
+  [
+   "2026-11-18T11:30:00+00:00",
+   "13164.2",
+   "13166.6",
+   "13164.1",
+   "13165",
+   "13165.7",
+   "13168.1",
+   "13165.6",
+   "13166.5"
+  ],
+  [
+   "2026-11-18T11:35:00+00:00",
+   "13164.2",
+   "13166.1",
+   "13162.1",
+   "13163.4",
+   "13165.7",
+   "13167.6",
+   "13163.6",
+   "13164.9"
+  ],
+  [
+   "2026-11-18T11:40:00+00:00",
+   "13163.2",
+   "13163.5",
+   "13158.8",
+   "13160.7",
+   "13164.7",
+   "13165",
+   "13160.3",
+   "13162.2"
+  ],
+  [
+   "2026-11-18T11:45:00+00:00",
+   "13160.8",
+   "13161.3",
+   "13158.3",
+   "13160",
+   "13162.3",
+   "13162.8",
+   "13159.8",
+   "13161.5"
+  ],
+  [
+   "2026-11-18T11:50:00+00:00",
+   "13159.8",
+   "13161.7",
+   "13155.6",
+   "13155.7",
+   "13161.3",
+   "13163.2",
+   "13157.1",
+   "13157.2"
+  ],
+  [
+   "2026-11-18T11:55:00+00:00",
+   "13155.6",
+   "13158.5",
+   "13154.4",
+   "13157",
+   "13157.1",
+   "13160",
+   "13155.9",
+   "13158.5"
+  ]
+ ]
+}

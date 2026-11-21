@@ -1,0 +1,12 @@
+Tue 22:20 sell 13198.8 | A (no exits): best +46.7, worst -2.4, at 09:00 +44.0 | B (own exits): closed before 06:00 (stop Tue 22:25, -15) | entry candle buy H 13215.8 L 13215.4
+Tue 22:45 sell 13201.6 | A (no exits): best +49.5, worst +0.4, at 09:00 +46.8 | B (own exits): closed before 06:00 (stop Tue 22:50, -15) | entry candle buy H 13222.2 L 13215.6
+Wed 00:45 sell 13199.8 | A (no exits): best +47.7, worst -1.4, at 09:00 +45.0 | B (own exits): open in the window; best +20.0; closed take profit Wed 07:00 +20 | entry candle buy H 13203.9 L 13199.4
+Wed 03:10 sell 13195.6 | A (no exits): best +43.5, worst -5.6, at 09:00 +40.8 | B (own exits): open in the window; best +20.0; closed take profit Wed 07:05 +20 | entry candle buy H 13198.6 L 13196.5
+Wed 04:05 sell 13195.5 | A (no exits): best +43.4, worst -5.7, at 09:00 +40.7 | B (own exits): open in the window; best +20.0; closed take profit Wed 07:05 +20 | entry candle buy H 13197.9 L 13195
+Wed 04:30 sell 13192.2 | A (no exits): best +40.1, worst -9.0, at 09:00 +37.4 | B (own exits): open in the window; best +18.8; closed profit lock Wed 07:15 +10 | entry candle buy H 13195.5 L 13193
+Wed 05:50 sell 13190.6 | A (no exits): best +38.5, worst -10.6, at 09:00 +35.8 | B (own exits): open in the window; best +17.2; closed profit lock Wed 07:15 +10 | entry candle buy H 13194.6 L 13191.7
+Wed 06:25 sell 13188.9 | A (no exits): best +36.8, worst -12.3, at 09:00 +34.1 | B (own exits): open in the window; best +15.5; closed profit lock Wed 07:15 +10 | entry candle buy H 13191.8 L 13188.8
+Wed 06:40 sell 13187.6 | A (no exits): best +35.5, worst -13.6, at 09:00 +32.8 | B (own exits): open in the window; best +20.0; closed take profit Wed 08:05 +20 | entry candle buy H 13192.4 L 13188.3
+Wed 07:00 sell 13189.1 | A (no exits): best +37.0, worst -12.1, at 09:00 +34.3 | B (own exits): open in the window; best +15.7; closed profit lock Wed 07:15 +10 | entry candle buy H 13201.2 L 13178.2
+Wed 07:25 sell 13177.2 | A (no exits): best +25.1, worst -5.9, at 09:00 +22.4 | B (own exits): open in the window; best +20.0; closed take profit Wed 08:50 +20 | entry candle buy H 13180.8 L 13177.1
+Wed 08:05 sell 13171 | A (no exits): best +18.9, worst -3.7, at 09:00 +16.2 | B (own exits): open in the window; best +18.9; at 09:00 +16.2; later take profit Wed 09:00 +20 | entry candle buy H 13174.7 L 13165.4
