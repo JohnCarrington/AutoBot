@@ -272,6 +272,26 @@ take_profit_pips = 50
 # within this many 5-minute candles after the break candle; the trade opens at the next candle's open.
 wait_candles = 6
 
+[entry_filters]
+# The entry filters (owner, 21 November 2026; strategies/entry_filters.py), checked once for every trade just before
+# it opens. Sell (chart) price throughout; the entry price is the strategy's own entry price.
+# Rule 1, the hourly context (switch HOURLY_CONTEXT): a swing high is an hourly candle whose high has this many lower
+# hourly highs on each side (a swing low: higher lows) ...
+hourly_swing_candles_each_side = 2
+# ... the hourly EMA (50) the last hourly close is compared with ...
+hourly_ema_periods = 50
+# ... falling (rising) = that EMA lower (higher) than this many hourly candles before ...
+hourly_ema_slope_candles = 6
+# ... and, in a DOWN (UP) context, no buy (sell) opens with its entry price within this many pips of the daily
+# pivot or that EMA (exactly this many counts as within).
+hourly_context_near_pips = 5
+# Rule 2, entry near the 8 EMA (switch ENTRY_NEAR_EMA8): the 5-minute EMA used (8, at the last finished 5-minute
+# candle before the entry) ...
+ema8_periods = 8
+# ... a sell opens only with its entry no more than this many pips below it, a buy no more than this many above it.
+# The slow grind, the breakout and the Asian range breakout are exempt.
+ema8_max_distance_pips = 5
+
 [asian_range_breakout]
 # The Asian range breakout (design 3.7; owner, 16 November 2026). UK times. The Asian range: the high and low of
 # the 5-minute candles from range_from up to range_until (sell price, as on the chart).

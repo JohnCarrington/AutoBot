@@ -43,6 +43,8 @@ def no_real_network(monkeypatch):
 # them on), stop 6 pips (EMA pullback 12), take profit 100), unless it sets its own.
 # PULLBACK_ENTRY off (owner, 19 November 2026: on if left out): the existing tests were written for the breakout and
 # the Asian range breakout entering on the break; the pullback entry has its own tests with it on.
+# HOURLY_CONTEXT and ENTRY_NEAR_EMA8 off (owner, 21 November 2026: both on if left out), for the same reason: the
+# entry filters have their own tests (tests/functional/test_entry_filters.py) with them on.
 PRETEND_SWITCHES = """\
 PAIRS_ON=GBPUSD
 NEW_TRADES_FROM=06:00
@@ -58,6 +60,8 @@ STRATEGY_ASIAN_RANGE_BREAKOUT=off
 STRATEGY_SESSION_SWEEP=off
 STRATEGY_NEW_YORK_OPEN_REVERSAL=off
 PULLBACK_ENTRY=off
+HOURLY_CONTEXT=off
+ENTRY_NEAR_EMA8=off
 TRADING=off
 STOP_LOSS_PIPS=6
 STOP_LOSS_PIPS_EMA_PULLBACK=12

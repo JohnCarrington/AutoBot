@@ -52,13 +52,14 @@ from typing import Any, Callable
 from analyser.day_direction import day_directions
 from analyser.market_state import MemoStore, StateTracker
 from analyser.trend_day import trend_day_at
-from orders.sender import OrderSender
+from orders.sender import OrderSender, Result
 from records.book import Book, daily_text
 from trading.reasons import level_note, one_line, take_profit_kind
 from levels.current import build
 from prices.calendar import floor_5m
 from prices.model import Candle
 from strategies.common import SESSION_STRATEGIES, most_trail_candles, opens_at_next_candle
+from strategies import entry_filters
 from strategies.replay import StrategyRunner
 from trade_manager.manager import Bar, Rejection, TradeManager, plan
 
@@ -248,6 +249,20 @@ class Trading:
         return paused
 
     def _place(self, idea: Any, td: str | None) -> Any:
+        # the entry filters (owner, 21 November 2026): every trade, once, here, just before it opens
+        v = entry_filters.check(self.s, MemoStore(self.store), idea)
+        if not v.allowed:
+            self.book.decision("entry filter refused", self.now(), strategy=idea.strategy, direction=idea.direction,
+                               idea_time=idea.time, entry_price=idea.entry_price, rule=v.rule, why=v.why,
+                               details=v.details)
+            log.info("%s %s at %s refused by the entry filter (%s): %s", idea.strategy, idea.direction,
+                     idea.entry_price, v.rule, v.why)
+            r = Result(False, "entry filter refused", reasons=[f"{v.rule}: {v.why}"])
+            self.book.decision("order", self.now(), strategy=idea.strategy, direction=idea.direction, result=r.what,
+                               reference=r.reference, reasons=r.reasons, level=r.level)
+            return r
+        if v.checked:
+            idea.steps.append("entry filters: " + "; ".join(v.checked))
         day = day_directions(self.s, self.store, idea.time, self.calendar, td)     # the day's directions (safety rule 9)
         r = self.sender.place(idea, paused=self._paused(), trend_day=td, calendar=self.calendar, day=day)
         self.book.decision("order", self.now(), strategy=idea.strategy, direction=idea.direction, result=r.what,

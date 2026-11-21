@@ -448,6 +448,14 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "pullback_entry": {
         "wait_candles": _whole_number(1, 100),
     },
+    "entry_filters": {
+        "hourly_swing_candles_each_side": _whole_number(1, 20),
+        "hourly_ema_periods": _whole_number(2, 500),
+        "hourly_ema_slope_candles": _whole_number(1, 100),
+        "hourly_context_near_pips": _decimal_number("0", "100"),
+        "ema8_periods": _whole_number(2, 500),
+        "ema8_max_distance_pips": _decimal_number("0", "100"),
+    },
     "asian_range_breakout": {
         "range_from": _clock_time,
         "range_until": _clock_time,

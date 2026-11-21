@@ -14,6 +14,12 @@
                               range breakout wait for a pullback to the 5-minute 8 EMA and a close back beyond it,
                               within [pullback_entry] wait_candles (6), and open at the next candle's open; a close
                               beyond the 21 EMA against them cancels (strategies/pullback.py)
+  HOURLY_CONTEXT              on or off (ON if left out; owner, 21 November 2026): in an hourly DOWN context no buy opens
+                              within 5 pips of the daily pivot or the hourly 50 EMA; in an UP context no sell
+                              ([entry_filters]; strategies/entry_filters.py, rule 1)
+  ENTRY_NEAR_EMA8             on or off (ON if left out; owner, 21 November 2026): a sell opens only if its entry is no
+                              more than 5 pips below the 5-minute 8 EMA, a buy no more than 5 pips above it; the slow
+                              grind, breakout and Asian range breakout exempt (strategies/entry_filters.py, rule 2)
   ONE_SIGNAL_ONE_TRADE        on or off (off if left out; owner, 18 November 2026): one trade per rejection
                               candle and direction; the session sweep and New York open reversal under one view at
                               a time (safety/rules.py, rules 9 and 11)
@@ -102,6 +108,8 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "PLANNER_OBSERVE": ("planner_observe", _on_off),
     "ONE_SIGNAL_ONE_TRADE": ("one_signal_one_trade", _on_off),
     "PULLBACK_ENTRY": ("pullback_entry", _on_off),
+    "HOURLY_CONTEXT": ("hourly_context", _on_off),
+    "ENTRY_NEAR_EMA8": ("entry_near_ema8", _on_off),
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
     "STRATEGY_BREAKOUT": ("breakout", _on_off),
     "STRATEGY_LEVEL_REVERSAL": ("level_reversal", _on_off),
@@ -117,7 +125,9 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
 # Switches that may be left out of .env, and their value then (owner, 15 November 2026: both off by default).
 OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_NEAR_TIMES": "off", "PLANNER_OBSERVE": "off", "ONE_SIGNAL_ONE_TRADE": "off",
                             # the breakout's and Asian range breakout's pullback entry (owner, 19 November 2026): ON
-                            "PULLBACK_ENTRY": "on"}
+                            "PULLBACK_ENTRY": "on",
+                            # the entry filters (owner, 21 November 2026): both ON
+                            "HOURLY_CONTEXT": "on", "ENTRY_NEAR_EMA8": "on"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:
