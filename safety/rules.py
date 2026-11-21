@@ -10,7 +10,8 @@ It gives EVERY reason it refuses (an empty list: the order may go out):
   3. the strategy's switch in .env is off (checked again here: a strategy cannot bypass it);
   4. the strategy's own hours, news rules and Friday rules (strategies.common.may_open);
   5. trades open at once: the strategy's own limit (limits.max_open_trades_per_strategy, 1; the
-     Bollinger bounce 1 in each direction, owner, 15 November 2026; the EMA pullback no limit), and at
+     Bollinger bounce 1 in each direction, owner, 15 November 2026; the EMA pullback no limit, or the same
+     limit while EMA_PULLBACK_ONE_AT_A_TIME is on, owner, 21 November 2026), and at
      most limits.max_open_trades (5) in total not counting the EMA pullback's
      (strategies.common.counts_towards_most_at_once); the Bollinger bounce is not held back by that total;
      the three session strategies (owner, 16 November 2026) as the bounce: 1 in each direction, not held back;
@@ -108,9 +109,12 @@ class Decision:
 
 
 def _limits(settings: Any, order: Order, open_trades: list[OpenTrade]) -> list[str]:
+    from analyser.states import switch_on
     lim, idea = settings.limits, order.idea
     out = []
-    if idea.strategy != EMA_PULLBACK:
+    # the EMA pullback has no limit of its own, unless EMA_PULLBACK_ONE_AT_A_TIME is on: then the same per-strategy
+    # limit as the others, one open at a time (owner, 21 November 2026)
+    if idea.strategy != EMA_PULLBACK or switch_on(settings, "ema_pullback_one_at_a_time"):
         mine = [t for t in open_trades if t.strategy == idea.strategy]
         if idea.strategy in WITHOUT_HINDRANCE:           # one at a time in each direction (owner, 15 and 16 November 2026)
             same = [t for t in mine if t.direction == idea.direction]
