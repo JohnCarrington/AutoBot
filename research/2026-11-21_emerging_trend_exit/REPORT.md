@@ -168,3 +168,70 @@ trades** closed by the bot or IG, against 59 trades in the other states.
 - The +10 to +16 trades that came back are spread over several strategies.
 - The what-ifs are read from candles, not tested on the live demo. As always, the live demo is the judge.
 - No exit level is recommended here. This is information for Johnny to decide with.
+
+## Follow-up: stepped stops (Johnny, 21 Nov)
+
+Johnny asked about two more exits:
+- **e** = move the stop to +5 once the trade is +10, then to +10 once it is +15 (a two-step ladder)
+- **f** = move the stop to +10 once the trade is +15 (the second step on its own)
+
+These use the same 92 trades and the same rules as above. Everything else stays as it was live, and the moved stop
+is assumed to fill exactly, with no slippage. The script is `ladder.py` and its output is `ladder_output.txt`.
+- As a check, `ladder.py` also recalculates exit **d** and gets the same −43.6 as `analyse.py`.
+- If a stop is touched only in the trade's closing candle, it is counted as hit, the same rule `analyse.py` uses.
+
+| State | Trades | Actual | d +5 once +10 | **e: +5 at +10, then +10 at +15** | f +10 once +15 |
+|---|---|---|---|---|---|
+| **emerging trend** | 33 | −135.9 | −43.6 | **−28.6** | −46.1 |
+| trend slow grind | 40 | −61.0 | −80.1 | −75.1 | −81.3 |
+| trend strong push | 9 | −54.3 | −81.4 | −81.4 | −54.3 |
+| ranging | 7 | −39.5 | −39.5 | −39.5 | −39.5 |
+| possible reversal | 3 | −13.6 | −13.6 | −13.6 | −13.6 |
+| *all states except emerging* | *59* | *−168.4* | *−214.6* | *−209.6* | *−188.7* |
+
+**Emerging trend, the 14 trades that reached +10.** The other 19 are the same under every exit.
+
+| Opened (UTC) | Strategy | Best | Actual | d | e | f | Note |
+|---|---|---|---|---|---|---|---|
+| 11-09 06:12 | level reversal | 20 | +20.0 | +20.0 | +20.0 | +20.0 | |
+| 11-11 13:10 | breakout | 50 | +50.0 | +50.0 | +50.0 | +50.0 | |
+| 11-12 11:30 | breakout | 43.2 | +21.1 | +5.0 | +5.0 | +21.1 | f: +15 and +10 in the same candle; counted as not stopped |
+| 11-16 08:40 | level reversal | 14.1 | −16.4 | +5.0 | +5.0 | −16.4 | |
+| 11-16 12:37 | level reversal | 15.6 | +8.3 | +5.0 | +5.0 | +10.0 | |
+| 11-16 14:26 | EMA pullback | 22.6 | −12.0 | +5.0 | +5.0 | +10.0 | |
+| 11-17 10:05 | Bollinger bounce | 15.6 | −3.3 | +5.0 | +10.0 | +10.0 | |
+| 11-17 10:05 | level reversal | 15.2 | −20.8 | +5.0 | +10.0 | +10.0 | |
+| 11-17 14:00 | session sweep | 12.2 | +5.1 | +5.0 | +5.0 | +5.1 | the +5 stop is touched only in the close candle |
+| 11-18 07:30 | Asian range breakout | 30.7 | +21.7 | +21.7 | +21.7 | +21.7 | e and f: +15 and +10 in the same candle; counted as not stopped |
+| 11-18 15:44 | breakout | 16.1 | −12.0 | +5.0 | +10.0 | +10.0 | |
+| 11-19 12:10 | session sweep | 42.2 | +28.9 | +28.9 | +28.9 | +28.9 | |
+| 11-20 06:07 | level reversal | 10.5 | −17.3 | +5.0 | +5.0 | −17.3 | |
+| 11-20 07:30 | session sweep | 13.6 | +7.5 | +7.5 | +7.5 | +7.5 | d and e: +10 and +5 in the same candle; counted as not stopped |
+| **All 33** | | | **−135.9** | **−43.6** | **−28.6** | **−46.1** | |
+
+**What this shows for emerging trend:**
+- **e (the ladder) is the best of all six exits looked at so far:** −28.6 against −135.9 actual. It is 15 pips
+  better than d, and the gain comes from three trades. Each went to about +15 or +16, then came back. Under e
+  their stop was at +10 by then, instead of +5.
+  - 11-17 Bollinger bounce
+  - 11-17 level reversal
+  - 11-18 breakout
+- **e also stays first without the 50-pip winner.** That is different from d. Without that trade the totals are:
+  actual −185.9, e −78.6, a −86.7, d −93.6, f −96.1.
+- **e is first in the recent weeks, but not in the first week:**
+  - **First build (9–13 Nov, 16 trades):** actual −46.9, d −63.0, e −63.0, f −46.9. Only f does no harm here,
+    because it never moves the stop until +15.
+  - **Since 16 Nov (17 trades):** actual −89.0, d +19.4, e +34.4, f +0.8.
+- **f is the safest but gains less:** 5 trades better, none worse, +89.8 pips in total. It never helps a trade that
+  only gets to +10 to +14, because it waits for +15.
+- **The candles can't tell which came first in two places.** On two trades, the move to +15 and the drop back to
+  +10 happen inside the same 5-minute candle. The table counts these as not stopped. If the drop came after the
+  stop moved:
+  - 18 Nov 07:30 would make +10 instead of +21.7 under e and f.
+  - 12 Nov 11:30 would make +10 instead of +21.1 under f.
+  - The worst case is therefore **e −40.3** and **f −68.9**. Even then, e is still the best total.
+- **On the other states every one of these exits makes results worse:** d −214.6, e −209.6, f −188.7, against
+  −168.4 actual.
+
+As before, this rests on 33 emerging-trend trades, only 14 of which reached +10. It is read from the candles, not
+tested on the live demo. No level is recommended here.

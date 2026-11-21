@@ -1,0 +1,33 @@
+| State | Trades | Actual | d +5 once +10 | e ladder +5@10, +10@15 | f +10 once +15 |
+|---|---|---|---|---|---|
+| emerging trend | 33 | -135.9 | -43.6 | -28.6 | -46.1 |
+| trend slow grind | 40 | -61.0 | -80.1 | -75.1 | -81.3 |
+| trend strong push | 9 | -54.3 | -81.4 | -81.4 | -54.3 |
+| ranging | 7 | -39.5 | -39.5 | -39.5 | -39.5 |
+| possible reversal | 3 | -13.6 | -13.6 | -13.6 | -13.6 |
+| all other | 59 | -168.4 | -214.6 | -209.6 | -188.7 |
+
+emerging trend, trades that reached +10
+| Opened (UTC) | Strategy | Best | Actual | d +5 once +10 | e ladder | f +10 once +15 | Notes |
+|---|---|---|---|---|---|---|---|
+| 11-09 06:12 | level reversal | 20 | +20.0 | +20.0 | +20.0 | +20.0 |  |
+| 11-11 13:10 | breakout | 50 | +50.0 | +50.0 | +50.0 | +50.0 |  |
+| 11-12 11:30 | breakout | 43.2 | +21.1 | +5.0 | +5.0 | +21.1 | +15 and +10 in the same candle; order unknown, counted as not hit |
+| 11-16 08:40 | level reversal | 14.1 | -16.4 | +5.0 | +5.0 | -16.4 |  |
+| 11-16 12:37 | level reversal | 15.6 | +8.3 | +5.0 | +5.0 | +10.0 |  |
+| 11-16 14:26 | EMA pullback | 22.6 | -12.0 | +5.0 | +5.0 | +10.0 |  |
+| 11-17 10:05 | Bollinger bounce | 15.6 | -3.3 | +5.0 | +10.0 | +10.0 |  |
+| 11-17 10:05 | level reversal | 15.2 | -20.8 | +5.0 | +10.0 | +10.0 |  |
+| 11-17 14:00 | session sweep | 12.2 | +5.1 | +5.0 | +5.0 | +5.1 | stop +5 touched only in the close candle (may be after the close); counted as hit, as in analyse.py |
+| 11-18 07:30 | Asian range breakout | 30.7 | +21.7 | +21.7 | +21.7 | +21.7 | +15 and +10 in the same candle; order unknown, counted as not hit |
+| 11-18 15:44 | breakout | 16.1 | -12.0 | +5.0 | +10.0 | +10.0 |  |
+| 11-19 12:10 | session sweep | 42.2 | +28.9 | +28.9 | +28.9 | +28.9 |  |
+| 11-20 06:07 | level reversal | 10.5 | -17.3 | +5.0 | +5.0 | -17.3 |  |
+| 11-20 07:30 | session sweep | 13.6 | +7.5 | +7.5 | +7.5 | +7.5 | +10 and +5 in the same candle; order unknown, counted as not hit |
+| **All 33** | | | **-135.9** | **-43.6** | **-28.6** | **-46.1** | |
+d better 6 worse 3 same 24
+e better 6 worse 3 same 24
+f better 5 worse 0 same 28
+without the 50-pip trade: -185.9 [-93.6, -78.6, -96.1]
+first build 16 -46.9 [-63.0, -63.0, -46.9]
+since 16 Nov 17 -89.0 [19.4, 34.4, 0.8]
