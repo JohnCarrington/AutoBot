@@ -1,0 +1,111 @@
+day,direction,run_starts_uk,hours,pips,case,release_uk,release_tier,minutes_release_to_run_hour,release,release_direction,note,big_releases,medium_releases
+2024-01-09,down,09:00,12,47.6,no big or medium release,,,,,,,,
+2024-01-30,down,09:00,8,48.4,releases only after the run's first hour,,,,,,,,15:00 USD JOLTs Job Openings
+2024-02-02,down,13:00,8,142.6,release before the run,13:30,big,-30,"USD Non Farm Payrolls (big; actual 353, forecast 180); USD Unemployment Rate (big; actual 3.7, forecast 3.8)",down,,13:30 USD Non Farm Payrolls; 13:30 USD Unemployment Rate,
+2024-02-05,down,09:00,12,101.1,releases only after the run's first hour,,,,,,,,15:00 USD ISM Services PMI
+2024-02-06,up,11:00,10,64.5,no big or medium release,,,,,,,,
+2024-02-20,up,09:00,9,80.5,no big or medium release,,,,,,,,
+2024-03-07,up,09:00,12,73.7,no big or medium release,,,,,,,,
+2024-03-11,down,12:00,9,55.5,no big or medium release,,,,,,,,
+2024-03-14,down,12:00,9,79.4,release before the run,12:30,medium,-30,"USD PPI MoM (medium; actual 0.6, forecast 0.3); USD Retail Sales MoM (medium; actual 0.6, forecast 0.8)",mixed,releases disagreed; headline order decides,,12:30 USD PPI MoM; 12:30 USD Retail Sales MoM
+2024-03-21,down,11:00,10,115.7,releases only after the run's first hour,,,,,,,12:00 GBP BoE Interest Rate Decision,
+2024-03-25,up,09:00,9,43.8,no big or medium release,,,,,,,,
+2024-04-01,down,11:00,10,80.5,releases only after the run's first hour,,,,,,,,15:00 USD ISM Manufacturing PMI
+2024-04-10,down,13:00,8,173.9,release before the run,13:30,big,-30,"USD Core Inflation Rate MoM (big; actual 0.4, forecast 0.3); USD Core Inflation Rate YoY (big; actual 3.8, forecast 3.7); USD Inflation Rate MoM (big; actual 0.4, forecast 0.3); USD Inflation Rate YoY (big; actual 3.5, forecast 3.4)",down,,13:30 USD Core Inflation Rate MoM; 13:30 USD Core Inflation Rate YoY; 13:30 USD Inflation Rate MoM; 13:30 USD Inflation Rate YoY; 19:00 USD FOMC Minutes,
+2024-04-23,up,12:00,9,107.8,no big or medium release,,,,,,,,
+2024-04-30,down,12:00,9,48.4,no big or medium release,,,,,,,,
+2024-05-13,up,09:00,11,45.3,no big or medium release,,,,,,,,
+2024-05-15,up,09:00,12,89.5,releases only after the run's first hour,,,,,,,13:30 USD Core Inflation Rate MoM; 13:30 USD Core Inflation Rate YoY; 13:30 USD Inflation Rate MoM; 13:30 USD Inflation Rate YoY,13:30 USD Retail Sales MoM
+2024-05-24,up,10:00,11,46.4,release before the run,07:00,medium,180,"GBP Retail Sales MoM (medium; actual -2.3, forecast -0.4)",down,,,07:00 GBP Retail Sales MoM; 13:30 USD Durable Goods Orders MoM
+2024-05-29,down,11:00,10,61.8,no big or medium release,,,,,,,,
+2024-07-02,up,12:00,9,45.8,releases only after the run's first hour,,,,,,,,15:00 USD JOLTs Job Openings
+2024-07-10,up,10:00,11,50.2,no big or medium release,,,,,,,,
+2024-07-18,down,09:00,12,59.4,release before the run,07:00,big,120,"GBP Unemployment Rate (big; actual 4.4, forecast 4.4)",in line,,07:00 GBP Unemployment Rate,
+2024-08-02,up,13:00,8,99.0,release before the run,13:30,big,-30,"USD Non Farm Payrolls (big; actual 114, forecast 175); USD Unemployment Rate (big; actual 4.3, forecast 4.1)",up,,13:30 USD Non Farm Payrolls; 13:30 USD Unemployment Rate,
+2024-08-13,up,12:00,9,88.8,release before the run,07:00,big,300,"GBP Unemployment Rate (big; actual 4.2, forecast 4.5)",up,,07:00 GBP Unemployment Rate,13:30 USD PPI MoM
+2024-08-21,up,13:00,8,87.8,releases only after the run's first hour,,,,,,,15:00 USD Non Farm Payrolls Annual Revision; 19:00 USD FOMC Minutes,
+2024-08-28,down,09:00,12,64.0,no big or medium release,,,,,,,,
+2024-08-30,down,13:00,8,69.9,release before the run,13:30,medium,-30,"USD Core PCE Price Index MoM (medium; actual 0.2, forecast 0.2)",in line,,,13:30 USD Core PCE Price Index MoM
+2024-09-04,up,12:00,9,63.0,releases only after the run's first hour,,,,,,,,15:00 USD JOLTs Job Openings
+2024-09-12,up,13:00,8,81.3,release before the run,13:30,medium,-30,"USD PPI MoM (medium; actual 0.2, forecast 0.1)",down,,,13:30 USD PPI MoM
+2024-09-23,up,13:00,8,46.8,no big or medium release,,,,,,,,
+2024-09-26,up,10:00,11,83.2,releases only after the run's first hour,,,,,,,,13:30 USD Durable Goods Orders MoM
+2024-10-07,down,09:00,8,53.2,no big or medium release,,,,,,,,
+2024-10-23,down,12:00,9,67.6,no big or medium release,,,,,,,,
+2024-11-01,up,09:00,8,75.8,releases only after the run's first hour,,,,,,,12:30 USD Non Farm Payrolls; 12:30 USD Unemployment Rate,14:00 USD ISM Manufacturing PMI
+2024-11-08,down,12:00,9,84.1,releases only after the run's first hour,,,,,,,,15:00 USD Michigan Consumer Sentiment Prel
+2024-11-15,down,13:00,8,80.5,release before the run,13:30,medium,-30,"USD Retail Sales MoM (medium; actual 0.4, forecast 0.3)",down,,07:00 GBP GDP Growth Rate QoQ Prel; 07:00 GBP GDP Growth Rate YoY Prel,07:00 GBP GDP MoM; 13:30 USD Retail Sales MoM
+2024-12-12,down,10:00,11,91.6,release before the run,07:00,medium,180,"GBP GDP MoM (medium; actual None, forecast None)",no reading,,,07:00 GBP GDP MoM; 13:30 USD PPI MoM
+2024-12-16,up,09:00,12,59.7,no big or medium release,,,,,,,,
+2024-12-20,up,12:00,9,108.3,release before the run,07:00,medium,300,"GBP Retail Sales MoM (medium; actual 0.2, forecast 0.5)",down,,,07:00 GBP Retail Sales MoM; 13:30 USD Core PCE Price Index MoM
+2024-12-23,down,10:00,9,59.6,releases only after the run's first hour,,,,,,,,14:30 USD Durable Goods Orders MoM; 15:30 USD Durable Goods Orders MoM
+2025-01-10,down,13:00,8,124.4,release before the run,13:30,big,-30,"USD Non Farm Payrolls (big; actual 256, forecast 160); USD Unemployment Rate (big; actual 4.1, forecast 4.2)",down,,13:30 USD Non Farm Payrolls; 13:30 USD Unemployment Rate,15:00 USD Michigan Consumer Sentiment Prel
+2025-01-20,up,13:00,8,146.5,no big or medium release,,,,,,,,
+2025-01-23,up,13:00,8,59.9,no big or medium release,,,,,,,,
+2025-01-24,up,13:00,8,92.5,release before the run,09:30,medium,210,"GBP S&P Global Manufacturing PMI Flash (medium; actual None, forecast 47); GBP S&P Global Services PMI Flash (medium; actual None, forecast 50.9)",no reading,,,00:01 GBP Gfk Consumer Confidence; 09:30 GBP S&P Global Manufacturing PMI Flash; 09:30 GBP S&P Global Services PMI Flash
+2025-02-11,up,12:00,9,88.3,no big or medium release,,,,,,,,
+2025-02-19,down,09:00,10,49.2,release before the run,07:00,big,120,"GBP Inflation Rate YoY (big; actual 3, forecast 2.8)",up,,07:00 GBP Inflation Rate YoY; 19:00 USD FOMC Minutes,
+2025-02-27,down,13:00,8,62.4,release before the run,13:30,medium,-30,"USD Durable Goods Orders MoM (medium; actual 3.1, forecast 2)",down,,,13:30 USD Durable Goods Orders MoM
+2025-03-03,up,09:00,10,132.8,releases only after the run's first hour,,,,,,,,15:00 USD ISM Manufacturing PMI
+2025-03-05,up,13:00,8,87.7,releases only after the run's first hour,,,,,,,,15:00 USD ISM Services PMI
+2025-03-25,up,09:00,9,54.5,no big or medium release,,,,,,,,
+2025-04-02,up,10:00,11,66.3,no big or medium release,,,,,,,,
+2025-04-07,down,10:00,11,160.6,no big or medium release,,,,,,,,
+2025-04-17,up,13:00,8,45.9,no big or medium release,,,,,,,,
+2025-04-28,up,09:00,12,137.0,no big or medium release,,,,,,,,
+2025-05-09,up,11:00,10,53.8,no big or medium release,,,,,,,,
+2025-05-16,down,11:00,8,41.7,releases only after the run's first hour,,,,,,,,15:00 USD Michigan Consumer Sentiment Prel
+2025-05-29,up,13:00,8,46.8,no big or medium release,,,,,,,,
+2025-06-05,up,11:00,8,51.7,no big or medium release,,,,,,,,
+2025-06-11,up,13:00,8,71.9,release before the run,13:30,big,-30,"USD Core Inflation Rate MoM (big; actual 0.1, forecast 0.3); USD Core Inflation Rate YoY (big; actual 2.8, forecast 2.9); USD Inflation Rate MoM (big; actual 0.1, forecast 0.2); USD Inflation Rate YoY (big; actual 2.4, forecast 2.5)",up,,13:30 USD Core Inflation Rate MoM; 13:30 USD Core Inflation Rate YoY; 13:30 USD Inflation Rate MoM; 13:30 USD Inflation Rate YoY,
+2025-06-17,down,13:00,8,139.3,release before the run,13:30,medium,-30,"USD Retail Sales MoM (medium; actual -0.9, forecast -0.7)",up,,,13:30 USD Retail Sales MoM
+2025-07-24,down,09:00,12,55.2,release before the run,09:30,medium,-30,"GBP S&P Global Manufacturing PMI Flash (medium; actual None, forecast 48); GBP S&P Global Services PMI Flash (medium; actual None, forecast 53)",no reading,,,09:30 GBP S&P Global Manufacturing PMI Flash; 09:30 GBP S&P Global Services PMI Flash
+2025-07-30,down,13:00,8,145.2,release before the run,13:30,big,-30,"USD GDP Growth Rate QoQ Adv (big; actual 3, forecast 2.4)",down,,13:30 USD GDP Growth Rate QoQ Adv; 19:00 USD Fed Interest Rate Decision; 19:30 USD Fed Press Conference,
+2025-08-06,up,11:00,10,70.3,no big or medium release,,,,,,,,
+2025-08-07,up,11:00,8,68.5,releases only after the run's first hour,,,,,,,12:00 GBP BoE Interest Rate Decision,
+2025-08-14,down,13:00,8,53.1,release before the run,13:30,medium,-30,"USD PPI MoM (medium; actual 0.9, forecast 0.2)",down,,07:00 GBP GDP Growth Rate QoQ Prel; 07:00 GBP GDP Growth Rate YoY Prel,07:00 GBP GDP MoM; 13:30 USD PPI MoM
+2025-08-21,down,13:00,8,49.1,release before the run,09:30,medium,210,"GBP S&P Global Manufacturing PMI Flash (medium; actual None, forecast 48.3); GBP S&P Global Services PMI Flash (medium; actual None, forecast 51.8)",no reading,,,09:30 GBP S&P Global Manufacturing PMI Flash; 09:30 GBP S&P Global Services PMI Flash
+2025-09-03,up,09:00,12,91.9,releases only after the run's first hour,,,,,,,,15:00 USD JOLTs Job Openings
+2025-09-18,down,13:00,8,87.7,release before the run,12:00,big,60,"GBP BoE Interest Rate Decision (big; actual 4, forecast 4)",in line,,12:00 GBP BoE Interest Rate Decision,
+2025-09-25,down,12:00,9,122.6,releases only after the run's first hour,,,,,,,,13:30 USD Durable Goods Orders MoM
+2025-09-26,up,13:00,8,63.1,release before the run,13:30,medium,-30,"USD Core PCE Price Index MoM (medium; actual 0.2, forecast 0.2)",in line,,,13:30 USD Core PCE Price Index MoM
+2025-10-23,down,11:00,9,41.1,no big or medium release,,,,,,,,
+2025-10-30,down,10:00,11,72.5,releases only after the run's first hour,,,,,,,12:30 USD GDP Growth Rate QoQ Adv,
+2025-11-26,up,13:00,8,57.3,release before the run,13:30,big,-30,"USD Core PCE Price Index MoM (medium; actual None, forecast None); USD Durable Goods Orders MoM (medium; actual 0.5, forecast 0.3); USD GDP Growth Rate QoQ Adv (big; actual None, forecast 3)",down,,13:30 USD GDP Growth Rate QoQ Adv,13:30 USD Core PCE Price Index MoM; 13:30 USD Durable Goods Orders MoM; 15:00 USD Core PCE Price Index MoM
+2025-12-09,down,12:00,9,41.6,releases only after the run's first hour,,,,,,,,15:00 USD JOLTs Job Openings
+2025-12-10,up,12:00,9,78.6,releases only after the run's first hour,,,,,,,13:30 USD Core Inflation Rate MoM; 13:30 USD Core Inflation Rate YoY; 13:30 USD Inflation Rate MoM; 13:30 USD Inflation Rate YoY; 19:00 USD FOMC Economic Projections; 19:00 USD Fed Interest Rate Decision; 19:30 USD Fed Press Conference,
+2025-12-11,up,11:00,8,60.0,releases only after the run's first hour,,,,,,,,13:30 USD PPI MoM
+2025-12-12,down,10:00,9,40.4,release before the run,07:00,medium,180,"GBP GDP MoM (medium; actual -0.1, forecast 0.1)",down,,,07:00 GBP GDP MoM
+2025-12-30,down,12:00,9,54.5,releases only after the run's first hour,,,,,,,19:00 USD FOMC Minutes,
+2026-01-06,down,11:00,10,40.7,no big or medium release,,,,,,,,
+2026-01-15,down,10:00,8,73.9,release before the run,07:00,medium,180,"GBP GDP MoM (medium; actual 0.3, forecast 0.1)",up,,,07:00 GBP GDP MoM
+2026-01-23,up,09:00,12,137.1,release before the run,09:30,medium,-30,"GBP S&P Global Manufacturing PMI Flash (medium; actual None, forecast 50.6); GBP S&P Global Services PMI Flash (medium; actual None, forecast 51.7)",no reading,,,07:00 GBP Retail Sales MoM; 09:30 GBP S&P Global Manufacturing PMI Flash; 09:30 GBP S&P Global Services PMI Flash
+2026-01-27,up,09:00,12,194.7,no big or medium release,,,,,,,,
+2026-01-30,down,13:00,8,81.2,release before the run,13:30,medium,-30,"USD PPI MoM (medium; actual 0.5, forecast 0.2)",down,,,13:30 USD PPI MoM
+2026-02-05,down,12:00,9,95.2,release before the run,12:00,big,0,"GBP BoE Interest Rate Decision (big; actual 3.75, forecast 3.75)",in line,,12:00 GBP BoE Interest Rate Decision,15:00 USD JOLTs Job Openings
+2026-02-09,up,11:00,10,91.3,no big or medium release,,,,,,,,
+2026-02-13,up,13:00,8,51.9,release before the run,13:30,big,-30,"USD Core Inflation Rate MoM (big; actual 0.3, forecast 0.3); USD Core Inflation Rate YoY (big; actual 2.5, forecast 2.5); USD Inflation Rate MoM (big; actual 0.2, forecast 0.3); USD Inflation Rate YoY (big; actual 2.4, forecast 2.5)",up,,13:30 USD Core Inflation Rate MoM; 13:30 USD Core Inflation Rate YoY; 13:30 USD Inflation Rate MoM; 13:30 USD Inflation Rate YoY,
+2026-02-20,up,09:00,10,62.7,release before the run,09:30,medium,-30,"GBP S&P Global Manufacturing PMI Flash (medium; actual None, forecast 51.5); GBP S&P Global Services PMI Flash (medium; actual None, forecast 53.5)",no reading,,13:30 USD GDP Growth Rate QoQ Adv,07:00 GBP Retail Sales MoM; 09:30 GBP S&P Global Manufacturing PMI Flash; 09:30 GBP S&P Global Services PMI Flash; 13:30 USD Core PCE Price Index MoM
+2026-04-03,down,13:00,8,48.7,release before the run,13:30,big,-30,"USD Non Farm Payrolls (big; actual 178, forecast 60); USD Unemployment Rate (big; actual 4.3, forecast 4.4)",down,,13:30 USD Non Farm Payrolls; 13:30 USD Unemployment Rate,
+2026-04-10,up,12:00,9,43.8,releases only after the run's first hour,,,,,,,13:30 USD Core Inflation Rate MoM; 13:30 USD Core Inflation Rate YoY; 13:30 USD Inflation Rate MoM; 13:30 USD Inflation Rate YoY,15:00 USD Michigan Consumer Sentiment Prel
+2026-04-16,down,09:00,12,43.8,release before the run,07:00,medium,120,"GBP GDP MoM (medium; actual 0.5, forecast 0.1)",up,,,07:00 GBP GDP MoM
+2026-04-24,up,11:00,10,51.9,release before the run,07:00,medium,240,"GBP Retail Sales MoM (medium; actual 0.7, forecast 0.2)",up,,,07:00 GBP Retail Sales MoM
+2026-04-29,down,13:00,8,47.1,release before the run,13:30,medium,-30,"USD Durable Goods Orders MoM (medium; actual 0.8, forecast 0.5)",down,,19:00 USD Fed Interest Rate Decision; 19:30 USD Fed Press Conference,13:30 USD Durable Goods Orders MoM
+2026-04-30,up,09:00,12,127.0,releases only after the run's first hour,,,,,,,12:00 GBP BoE Interest Rate Decision; 13:30 USD GDP Growth Rate QoQ Adv,13:30 USD Core PCE Price Index MoM
+2026-05-05,up,09:00,9,40.5,releases only after the run's first hour,,,,,,,,15:00 USD ISM Services PMI; 15:00 USD JOLTs Job Openings
+2026-05-08,up,09:00,12,50.0,releases only after the run's first hour,,,,,,,13:30 USD Non Farm Payrolls; 13:30 USD Unemployment Rate,15:00 USD Michigan Consumer Sentiment Prel
+2026-06-05,down,13:00,8,137.3,release before the run,13:30,big,-30,"USD Non Farm Payrolls (big; actual 172, forecast 85); USD Unemployment Rate (big; actual 4.3, forecast 4.3)",down,,13:30 USD Non Farm Payrolls; 13:30 USD Unemployment Rate,
+2026-06-29,up,10:00,11,55.1,no big or medium release,,,,,,,,
+2026-07-15,up,12:00,9,158.6,releases only after the run's first hour,,,,,,,,13:30 USD PPI MoM
+2026-07-16,down,10:00,11,62.0,release before the run,07:00,medium,180,"GBP GDP MoM (medium; actual 0.1, forecast 0.1)",in line,,,07:00 GBP GDP MoM; 13:30 USD Retail Sales MoM
+2026-07-21,down,11:00,10,67.6,release before the run,07:00,big,240,"GBP Unemployment Rate (big; actual 4.9, forecast 5)",up,,07:00 GBP Unemployment Rate,
+2026-07-27,down,11:00,10,47.3,releases only after the run's first hour,,,,,,,,13:30 USD Durable Goods Orders MoM
+2026-07-30,up,10:00,11,121.0,releases only after the run's first hour,,,,,,,12:00 GBP BoE Interest Rate Decision; 13:30 USD GDP Growth Rate QoQ Adv,13:30 USD Core PCE Price Index MoM
+2026-08-07,up,13:00,8,59.0,release before the run,13:30,big,-30,"USD Non Farm Payrolls (big; actual -23, forecast 80); USD Unemployment Rate (big; actual 4.1, forecast 4.2)",up,releases disagreed; headline order decides,13:30 USD Non Farm Payrolls; 13:30 USD Unemployment Rate,
+2026-08-28,down,10:00,11,61.1,releases only after the run's first hour,,,,,,,15:00 USD Non Farm Payrolls Annual Revision Prel,
+2026-09-10,down,11:00,10,58.5,releases only after the run's first hour,,,,,,,,13:30 USD PPI MoM
+2026-09-16,down,12:00,9,99.6,release before the run,07:00,big,300,"GBP Inflation Rate YoY (big; actual 3.1, forecast 3.1)",in line,,07:00 GBP Inflation Rate YoY; 19:00 USD FOMC Economic Projections; 19:00 USD Fed Interest Rate Decision; 19:30 USD Fed Press Conference,13:30 USD Retail Sales MoM
+2026-09-22,down,12:00,8,43.0,no big or medium release,,,,,,,,
+2026-10-02,up,13:00,8,49.3,release before the run,13:30,big,-30,"USD Non Farm Payrolls (big; actual 29, forecast 90); USD Unemployment Rate (big; actual 4.2, forecast 4.1)",up,,13:30 USD Non Farm Payrolls; 13:30 USD Unemployment Rate,
+2026-11-10,down,11:00,10,115.3,releases only after the run's first hour,,,,,,,13:30 USD Core Inflation Rate MoM; 13:30 USD Core Inflation Rate YoY; 13:30 USD Inflation Rate MoM; 13:30 USD Inflation Rate YoY,
+2026-11-12,down,13:00,8,46.1,release before the run,07:00,big,360,"GBP GDP Growth Rate QoQ Prel (big; actual 0.7, forecast 0.7); GBP GDP Growth Rate YoY Prel (big; actual 1.9, forecast 1.9); GBP GDP MoM (medium; actual 0.2, forecast 0)",up,,07:00 GBP GDP Growth Rate QoQ Prel; 07:00 GBP GDP Growth Rate YoY Prel,07:00 GBP GDP MoM

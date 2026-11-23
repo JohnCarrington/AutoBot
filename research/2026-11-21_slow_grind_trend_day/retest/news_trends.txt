@@ -1,0 +1,182 @@
+Measured weekdays 713 (2024-01-08 to 2026-11-19); trend days 227; run started 09:00 or later: 110
+Run start hours (late trends): [(9, 26), (10, 14), (11, 18), (12, 20), (13, 32)]
+6 Oct 2026: {'dir': 'up', 'hours_n': 15, 'work': 13, 'other': 1, 'move': 84.4, 'run': 13, 'run_move': 69.4, 'run_other': 0, 'run_start': 8, 'parts': {'run': True, 'other_band_in_run': True, 'move_in_run': True}, 'trend': True}
+
+Q1 late trend days 110: big release that day 38, medium 54, medium but no big 38, big or medium 76, neither 34
+   release before (or in the first hour of) the run: 43; releases only later: 33
+
+Q2 minutes from the release to the start of the run's first hour (negative = release inside that hour):
+   release inside the run's first hour: 25 (big 12, medium 13)
+   run's first hour began 0-59 min after: 1 (big 1, medium 0)
+   1-2 h after: 4 (big 3, medium 1)
+   3-5 h after: 12 (big 3, medium 9)
+   6 h or more after: 1 (big 1, medium 0)
+   median -30 min; all sorted: [-30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, 0, 60, 120, 120, 120, 180, 180, 180, 180, 180, 210, 210, 240, 240, 300, 300, 300, 360]
+   deciding release times: [('07:00', 14), ('09:30', 5), ('12:00', 2), ('12:30', 1), ('13:30', 21)]
+
+Q3 direction (actual vs forecast): readable 29, matched 19, did not 10; no reading 14 (Counter({'in line': 7, 'no reading': 6, 'mixed': 1}))
+   big: matched 12 of 16
+   medium: matched 7 of 13
+   release inside the run's first hour: matched 16 of 19
+   run's first hour began 0-59 min after: matched 0 of 0
+   1-2 h after: matched 0 of 2
+   3-5 h after: matched 3 of 7
+   6 h or more after: matched 0 of 1
+   did not match:
+     Fri 24 May 2024: trend up from 10:00 (11 h, 46.4 pips); 07:00 GBP Retail Sales MoM (medium; actual -2.3, forecast -0.4) -> pointed down
+     Thu 12 Sep 2024: trend up from 13:00 (8 h, 81.3 pips); 13:30 USD PPI MoM (medium; actual 0.2, forecast 0.1) -> pointed down
+     Fri 20 Dec 2024: trend up from 12:00 (9 h, 108.3 pips); 07:00 GBP Retail Sales MoM (medium; actual 0.2, forecast 0.5) -> pointed down
+     Wed 19 Feb 2025: trend down from 09:00 (10 h, 49.2 pips); 07:00 GBP Inflation Rate YoY (big; actual 3, forecast 2.8) -> pointed up
+     Tue 17 Jun 2025: trend down from 13:00 (8 h, 139.3 pips); 13:30 USD Retail Sales MoM (medium; actual -0.9, forecast -0.7) -> pointed up
+     Wed 26 Nov 2025: trend up from 13:00 (8 h, 57.3 pips); 13:30 USD Core PCE Price Index MoM (medium; actual None, forecast None); USD Durable Goods Orders MoM (medium; actual 0.5, forecast 0.3); USD GDP Growth Rate QoQ Adv (big; actual None, forecast 3) -> pointed down
+     Thu 15 Jan 2026: trend down from 10:00 (8 h, 73.9 pips); 07:00 GBP GDP MoM (medium; actual 0.3, forecast 0.1) -> pointed up
+     Thu 16 Apr 2026: trend down from 09:00 (12 h, 43.8 pips); 07:00 GBP GDP MoM (medium; actual 0.5, forecast 0.1) -> pointed up
+     Tue 21 Jul 2026: trend down from 11:00 (10 h, 67.6 pips); 07:00 GBP Unemployment Rate (big; actual 4.9, forecast 5) -> pointed up
+     Thu 12 Nov 2026: trend down from 13:00 (8 h, 46.1 pips); 07:00 GBP GDP Growth Rate QoQ Prel (big; actual 0.7, forecast 0.7); GBP GDP Growth Rate YoY Prel (big; actual 1.9, forecast 1.9); GBP GDP MoM (medium; actual 0.2, forecast 0) -> pointed up
+   no reading:
+     Thu 14 Mar 2024: trend down from 12:00; 12:30 USD PPI MoM (medium; actual 0.6, forecast 0.3); USD Retail Sales MoM (medium; actual 0.6, forecast 0.8) -> mixed
+     Thu 18 Jul 2024: trend down from 09:00; 07:00 GBP Unemployment Rate (big; actual 4.4, forecast 4.4) -> in line
+     Fri 30 Aug 2024: trend down from 13:00; 13:30 USD Core PCE Price Index MoM (medium; actual 0.2, forecast 0.2) -> in line
+     Thu 12 Dec 2024: trend down from 10:00; 07:00 GBP GDP MoM (medium; actual None, forecast None) -> no reading
+     Fri 24 Jan 2025: trend up from 13:00; 09:30 GBP S&P Global Manufacturing PMI Flash (medium; actual None, forecast 47); GBP S&P Global Services PMI Flash (medium; actual None, forecast 50.9) -> no reading
+     Thu 24 Jul 2025: trend down from 09:00; 09:30 GBP S&P Global Manufacturing PMI Flash (medium; actual None, forecast 48); GBP S&P Global Services PMI Flash (medium; actual None, forecast 53) -> no reading
+     Thu 21 Aug 2025: trend down from 13:00; 09:30 GBP S&P Global Manufacturing PMI Flash (medium; actual None, forecast 48.3); GBP S&P Global Services PMI Flash (medium; actual None, forecast 51.8) -> no reading
+     Thu 18 Sep 2025: trend down from 13:00; 12:00 GBP BoE Interest Rate Decision (big; actual 4, forecast 4) -> in line
+     Fri 26 Sep 2025: trend up from 13:00; 13:30 USD Core PCE Price Index MoM (medium; actual 0.2, forecast 0.2) -> in line
+     Fri 23 Jan 2026: trend up from 09:00; 09:30 GBP S&P Global Manufacturing PMI Flash (medium; actual None, forecast 50.6); GBP S&P Global Services PMI Flash (medium; actual None, forecast 51.7) -> no reading
+     Thu 5 Feb 2026: trend down from 12:00; 12:00 GBP BoE Interest Rate Decision (big; actual 3.75, forecast 3.75) -> in line
+     Fri 20 Feb 2026: trend up from 09:00; 09:30 GBP S&P Global Manufacturing PMI Flash (medium; actual None, forecast 51.5); GBP S&P Global Services PMI Flash (medium; actual None, forecast 53.5) -> no reading
+     Thu 16 Jul 2026: trend down from 10:00; 07:00 GBP GDP MoM (medium; actual 0.1, forecast 0.1) -> in line
+     Wed 16 Sep 2026: trend down from 12:00; 07:00 GBP Inflation Rate YoY (big; actual 3.1, forecast 3.1) -> in line
+   matched:
+     Fri 2 Feb 2024: trend down from 13:00; 13:30 USD Non Farm Payrolls (big; actual 353, forecast 180); USD Unemployment Rate (big; actual 3.7, forecast 3.8)
+     Wed 10 Apr 2024: trend down from 13:00; 13:30 USD Core Inflation Rate MoM (big; actual 0.4, forecast 0.3); USD Core Inflation Rate YoY (big; actual 3.8, forecast 3.7); USD Inflation Rate MoM (big; actual 0.4, forecast 0.3); USD Inflation Rate YoY (big; actual 3.5, forecast 3.4)
+     Fri 2 Aug 2024: trend up from 13:00; 13:30 USD Non Farm Payrolls (big; actual 114, forecast 175); USD Unemployment Rate (big; actual 4.3, forecast 4.1)
+     Tue 13 Aug 2024: trend up from 12:00; 07:00 GBP Unemployment Rate (big; actual 4.2, forecast 4.5)
+     Fri 15 Nov 2024: trend down from 13:00; 13:30 USD Retail Sales MoM (medium; actual 0.4, forecast 0.3)
+     Fri 10 Jan 2025: trend down from 13:00; 13:30 USD Non Farm Payrolls (big; actual 256, forecast 160); USD Unemployment Rate (big; actual 4.1, forecast 4.2)
+     Thu 27 Feb 2025: trend down from 13:00; 13:30 USD Durable Goods Orders MoM (medium; actual 3.1, forecast 2)
+     Wed 11 Jun 2025: trend up from 13:00; 13:30 USD Core Inflation Rate MoM (big; actual 0.1, forecast 0.3); USD Core Inflation Rate YoY (big; actual 2.8, forecast 2.9); USD Inflation Rate MoM (big; actual 0.1, forecast 0.2); USD Inflation Rate YoY (big; actual 2.4, forecast 2.5)
+     Wed 30 Jul 2025: trend down from 13:00; 13:30 USD GDP Growth Rate QoQ Adv (big; actual 3, forecast 2.4)
+     Thu 14 Aug 2025: trend down from 13:00; 13:30 USD PPI MoM (medium; actual 0.9, forecast 0.2)
+     Fri 12 Dec 2025: trend down from 10:00; 07:00 GBP GDP MoM (medium; actual -0.1, forecast 0.1)
+     Fri 30 Jan 2026: trend down from 13:00; 13:30 USD PPI MoM (medium; actual 0.5, forecast 0.2)
+     Fri 13 Feb 2026: trend up from 13:00; 13:30 USD Core Inflation Rate MoM (big; actual 0.3, forecast 0.3); USD Core Inflation Rate YoY (big; actual 2.5, forecast 2.5); USD Inflation Rate MoM (big; actual 0.2, forecast 0.3); USD Inflation Rate YoY (big; actual 2.4, forecast 2.5)
+     Fri 3 Apr 2026: trend down from 13:00; 13:30 USD Non Farm Payrolls (big; actual 178, forecast 60); USD Unemployment Rate (big; actual 4.3, forecast 4.4)
+     Fri 24 Apr 2026: trend up from 11:00; 07:00 GBP Retail Sales MoM (medium; actual 0.7, forecast 0.2)
+     Wed 29 Apr 2026: trend down from 13:00; 13:30 USD Durable Goods Orders MoM (medium; actual 0.8, forecast 0.5)
+     Fri 5 Jun 2026: trend down from 13:00; 13:30 USD Non Farm Payrolls (big; actual 172, forecast 85); USD Unemployment Rate (big; actual 4.3, forecast 4.3)
+     Fri 7 Aug 2026: trend up from 13:00; 13:30 USD Non Farm Payrolls (big; actual -23, forecast 80); USD Unemployment Rate (big; actual 4.1, forecast 4.2)
+     Fri 2 Oct 2026: trend up from 13:00; 13:30 USD Non Farm Payrolls (big; actual 29, forecast 90); USD Unemployment Rate (big; actual 4.2, forecast 4.1)
+
+Q4 late trend days with no big or medium GBP/USD release before 20:30 UK: 34
+   Tue 9 Jan 2024: down from 09:00, 12 h, 47.6 pips
+   Tue 6 Feb 2024: up from 11:00, 10 h, 64.5 pips
+   Tue 20 Feb 2024: up from 09:00, 9 h, 80.5 pips
+   Thu 7 Mar 2024: up from 09:00, 12 h, 73.7 pips
+   Mon 11 Mar 2024: down from 12:00, 9 h, 55.5 pips
+   Mon 25 Mar 2024: up from 09:00, 9 h, 43.8 pips
+   Tue 23 Apr 2024: up from 12:00, 9 h, 107.8 pips
+   Tue 30 Apr 2024: down from 12:00, 9 h, 48.4 pips
+   Mon 13 May 2024: up from 09:00, 11 h, 45.3 pips
+   Wed 29 May 2024: down from 11:00, 10 h, 61.8 pips
+   Wed 10 Jul 2024: up from 10:00, 11 h, 50.2 pips
+   Wed 28 Aug 2024: down from 09:00, 12 h, 64.0 pips
+   Mon 23 Sep 2024: up from 13:00, 8 h, 46.8 pips
+   Mon 7 Oct 2024: down from 09:00, 8 h, 53.2 pips
+   Wed 23 Oct 2024: down from 12:00, 9 h, 67.6 pips
+   Mon 16 Dec 2024: up from 09:00, 12 h, 59.7 pips
+   Mon 20 Jan 2025: up from 13:00, 8 h, 146.5 pips
+   Thu 23 Jan 2025: up from 13:00, 8 h, 59.9 pips
+   Tue 11 Feb 2025: up from 12:00, 9 h, 88.3 pips
+   Tue 25 Mar 2025: up from 09:00, 9 h, 54.5 pips
+   Wed 2 Apr 2025: up from 10:00, 11 h, 66.3 pips
+   Mon 7 Apr 2025: down from 10:00, 11 h, 160.6 pips
+   Thu 17 Apr 2025: up from 13:00, 8 h, 45.9 pips
+   Mon 28 Apr 2025: up from 09:00, 12 h, 137.0 pips
+   Fri 9 May 2025: up from 11:00, 10 h, 53.8 pips
+   Thu 29 May 2025: up from 13:00, 8 h, 46.8 pips
+   Thu 5 Jun 2025: up from 11:00, 8 h, 51.7 pips
+   Wed 6 Aug 2025: up from 11:00, 10 h, 70.3 pips
+   Thu 23 Oct 2025: down from 11:00, 9 h, 41.1 pips
+   Tue 6 Jan 2026: down from 11:00, 10 h, 40.7 pips
+   Tue 27 Jan 2026: up from 09:00, 12 h, 194.7 pips
+   Mon 9 Feb 2026: up from 11:00, 10 h, 91.3 pips
+   Mon 29 Jun 2026: up from 10:00, 11 h, 55.1 pips
+   Tue 22 Sep 2026: down from 12:00, 8 h, 43.0 pips
+   releases only after the run's first hour: 33
+   Tue 30 Jan 2024: down from 09:00; 15:00 USD JOLTs Job Openings (medium)
+   Mon 5 Feb 2024: down from 09:00; 15:00 USD ISM Services PMI (medium)
+   Thu 21 Mar 2024: down from 11:00; 12:00 GBP BoE Interest Rate Decision (big)
+   Mon 1 Apr 2024: down from 11:00; 15:00 USD ISM Manufacturing PMI (medium)
+   Wed 15 May 2024: up from 09:00; 13:30 USD Core Inflation Rate MoM (big); 13:30 USD Core Inflation Rate YoY (big); 13:30 USD Inflation Rate MoM (big); 13:30 USD Inflation Rate YoY (big); 13:30 USD Retail Sales MoM (medium)
+   Tue 2 Jul 2024: up from 12:00; 15:00 USD JOLTs Job Openings (medium)
+   Wed 21 Aug 2024: up from 13:00; 15:00 USD Non Farm Payrolls Annual Revision (big); 19:00 USD FOMC Minutes (big)
+   Wed 4 Sep 2024: up from 12:00; 15:00 USD JOLTs Job Openings (medium)
+   Thu 26 Sep 2024: up from 10:00; 13:30 USD Durable Goods Orders MoM (medium)
+   Fri 1 Nov 2024: up from 09:00; 12:30 USD Non Farm Payrolls (big); 12:30 USD Unemployment Rate (big); 14:00 USD ISM Manufacturing PMI (medium)
+   Fri 8 Nov 2024: down from 12:00; 15:00 USD Michigan Consumer Sentiment Prel (medium)
+   Mon 23 Dec 2024: down from 10:00; 14:30 USD Durable Goods Orders MoM (medium); 15:30 USD Durable Goods Orders MoM (medium)
+   Mon 3 Mar 2025: up from 09:00; 15:00 USD ISM Manufacturing PMI (medium)
+   Wed 5 Mar 2025: up from 13:00; 15:00 USD ISM Services PMI (medium)
+   Fri 16 May 2025: down from 11:00; 15:00 USD Michigan Consumer Sentiment Prel (medium)
+   Thu 7 Aug 2025: up from 11:00; 12:00 GBP BoE Interest Rate Decision (big)
+   Wed 3 Sep 2025: up from 09:00; 15:00 USD JOLTs Job Openings (medium)
+   Thu 25 Sep 2025: down from 12:00; 13:30 USD Durable Goods Orders MoM (medium)
+   Thu 30 Oct 2025: down from 10:00; 12:30 USD GDP Growth Rate QoQ Adv (big)
+   Tue 9 Dec 2025: down from 12:00; 15:00 USD JOLTs Job Openings (medium)
+   Wed 10 Dec 2025: up from 12:00; 13:30 USD Core Inflation Rate MoM (big); 13:30 USD Core Inflation Rate YoY (big); 13:30 USD Inflation Rate MoM (big); 13:30 USD Inflation Rate YoY (big); 19:00 USD FOMC Economic Projections (big); 19:00 USD Fed Interest Rate Decision (big); 19:30 USD Fed Press Conference (big)
+   Thu 11 Dec 2025: up from 11:00; 13:30 USD PPI MoM (medium)
+   Tue 30 Dec 2025: down from 12:00; 19:00 USD FOMC Minutes (big)
+   Fri 10 Apr 2026: up from 12:00; 13:30 USD Core Inflation Rate MoM (big); 13:30 USD Core Inflation Rate YoY (big); 13:30 USD Inflation Rate MoM (big); 13:30 USD Inflation Rate YoY (big); 15:00 USD Michigan Consumer Sentiment Prel (medium)
+   Thu 30 Apr 2026: up from 09:00; 12:00 GBP BoE Interest Rate Decision (big); 13:30 USD Core PCE Price Index MoM (medium); 13:30 USD GDP Growth Rate QoQ Adv (big)
+   Tue 5 May 2026: up from 09:00; 15:00 USD ISM Services PMI (medium); 15:00 USD JOLTs Job Openings (medium)
+   Fri 8 May 2026: up from 09:00; 13:30 USD Non Farm Payrolls (big); 13:30 USD Unemployment Rate (big); 15:00 USD Michigan Consumer Sentiment Prel (medium)
+   Wed 15 Jul 2026: up from 12:00; 13:30 USD PPI MoM (medium)
+   Mon 27 Jul 2026: down from 11:00; 13:30 USD Durable Goods Orders MoM (medium)
+   Thu 30 Jul 2026: up from 10:00; 12:00 GBP BoE Interest Rate Decision (big); 13:30 USD Core PCE Price Index MoM (medium); 13:30 USD GDP Growth Rate QoQ Adv (big)
+   Fri 28 Aug 2026: down from 10:00; 15:00 USD Non Farm Payrolls Annual Revision Prel (big)
+   Thu 10 Sep 2026: down from 11:00; 13:30 USD PPI MoM (medium)
+   Tue 10 Nov 2026: down from 11:00; 13:30 USD Core Inflation Rate MoM (big); 13:30 USD Core Inflation Rate YoY (big); 13:30 USD Inflation Rate MoM (big); 13:30 USD Inflation Rate YoY (big)
+
+Q5 days with a big GBP/USD release 06:00-20:30 UK
+  first big release by 13:59: 172
+     trend run began in or after the release's hour: 31
+     trend day, run already under way before the release: 34
+     not a trend day: 107
+  first big release 14:00 or later: 25
+     trend run began in or after the release's hour: 0
+     trend day, run already under way before the release: 6
+     not a trend day: 19
+  for comparison, days with no big release: 516; trend run starting 09:00 or later 72; any trend day 156
+  days with a big release 06:00-13:59: 172; trend run starting 09:00 or later 34; any trend day 65
+  first big release of the day -> outcome (counts):
+     GBP Unemployment Rate: {'not a trend day': 21, 'trend day, run already under way before the release': 6, "trend run began in or after the release's hour": 7}
+     USD Non Farm Payrolls + Unemployment Rate: {'not a trend day': 21, 'trend day, run already under way before the release': 6, "trend run began in or after the release's hour": 7}
+     GBP Inflation Rate YoY: {'not a trend day': 24, 'trend day, run already under way before the release': 2, "trend run began in or after the release's hour": 7}
+     USD Core Inflation Rate MoM + Core Inflation Rate YoY + Inflation Rate MoM + Inflation Rate YoY: {'not a trend day': 16, 'trend day, run already under way before the release': 8, "trend run began in or after the release's hour": 3}
+     GBP BoE Interest Rate Decision: {'not a trend day': 9, 'trend day, run already under way before the release': 7, "trend run began in or after the release's hour": 2}
+     GBP GDP Growth Rate QoQ Prel + GDP Growth Rate YoY Prel: {'not a trend day': 9, "trend run began in or after the release's hour": 3}
+     USD GDP Growth Rate QoQ Adv: {'not a trend day': 5, 'trend day, run already under way before the release': 4, "trend run began in or after the release's hour": 2}
+     USD FOMC Minutes: {'not a trend day': 8, 'trend day, run already under way before the release': 3}
+     USD Fed Interest Rate Decision: {'not a trend day': 9, 'trend day, run already under way before the release': 1}
+     GBP Core Inflation Rate MoM + Inflation Rate YoY: {'not a trend day': 1, 'trend day, run already under way before the release': 1}
+     USD Non Farm Payrolls Annual Revision: {'not a trend day': 1, 'trend day, run already under way before the release': 1}
+     GBP BoE Interest Rate Decision + Interest Rate: {'not a trend day': 1}
+     USD FOMC Economic Projections + Fed Interest Rate Decision: {'not a trend day': 1}
+     USD Non Farm Payrolls Annual Revision Prel: {'trend day, run already under way before the release': 1}
+  examples, first big release 14:00 or later / not a trend day (19): 2024-01-31 (19:00 USD Fed Interest Rate Decision); 2024-02-21 (19:00 USD FOMC Minutes); 2024-05-01 (19:00 USD Fed Interest Rate Decision); 2024-07-31 (19:00 USD Fed Interest Rate Decision); 2024-10-09 (19:00 USD FOMC Minutes); 2024-11-26 (19:00 USD FOMC Minutes); 2025-01-29 (19:00 USD Fed Interest Rate Decision); 2025-03-19 (18:00 USD FOMC Economic Projections); 2025-04-09 (19:00 USD FOMC Minutes); 2025-05-07 (19:00 USD Fed Interest Rate Decision); 2025-05-28 (19:00 USD FOMC Minutes); 2025-07-09 (19:00 USD FOMC Minutes); 2025-09-09 (15:00 USD Non Farm Payrolls Annual Revision); 2025-10-08 (19:00 USD FOMC Minutes); 2025-10-29 (18:00 USD Fed Interest Rate Decision); 2026-01-28 (19:00 USD Fed Interest Rate Decision); 2026-07-08 (19:00 USD FOMC Minutes); 2026-07-29 (19:00 USD Fed Interest Rate Decision); 2026-10-28 (18:00 USD Fed Interest Rate Decision)
+  examples, first big release 14:00 or later / trend day, run already under way before the release (6): 2024-07-03 (19:00 USD FOMC Minutes, up from 08:00); 2024-08-21 (15:00 USD Non Farm Payrolls Annual Revision, up from 13:00); 2025-01-08 (19:00 USD FOMC Minutes, down from 07:00); 2025-12-30 (19:00 USD FOMC Minutes, down from 12:00); 2026-04-29 (19:00 USD Fed Interest Rate Decision, down from 13:00); 2026-08-28 (15:00 USD Non Farm Payrolls Annual Revision Prel, down from 10:00)
+  examples, first big release by 13:59 / not a trend day (107): 2024-01-11 (13:30 USD Core Inflation Rate MoM); 2024-01-17 (07:00 GBP Inflation Rate YoY); 2024-01-25 (13:30 USD GDP Growth Rate QoQ Adv); 2024-02-01 (12:00 GBP BoE Interest Rate Decision); 2024-02-13 (07:00 GBP Unemployment Rate); 2024-02-15 (07:00 GBP GDP Growth Rate QoQ Prel); 2024-03-20 (07:00 GBP Inflation Rate YoY); 2024-04-05 (13:30 USD Non Farm Payrolls); 2024-04-16 (07:00 GBP Unemployment Rate); 2024-04-17 (07:00 GBP Inflation Rate YoY); 2024-05-03 (13:30 USD Non Farm Payrolls); 2024-05-09 (12:00 GBP BoE Interest Rate Decision); 2024-05-10 (07:00 GBP GDP Growth Rate QoQ Prel); 2024-05-14 (07:00 GBP Unemployment Rate); 2024-05-22 (07:00 GBP Inflation Rate YoY); 2024-06-07 (13:30 USD Non Farm Payrolls); 2024-06-11 (07:00 GBP Unemployment Rate); 2024-06-19 (07:00 GBP Inflation Rate YoY); 2024-07-25 (13:30 USD GDP Growth Rate QoQ Adv); 2024-08-01 (12:00 GBP BoE Interest Rate Decision); 2024-08-14 (07:00 GBP Inflation Rate YoY); 2024-08-15 (07:00 GBP GDP Growth Rate QoQ Prel); 2024-09-06 (13:30 USD Non Farm Payrolls); 2024-09-10 (07:00 GBP Unemployment Rate); 2024-09-11 (13:30 USD Core Inflation Rate MoM); 2024-09-19 (12:00 GBP BoE Interest Rate Decision); 2024-10-04 (13:30 USD Non Farm Payrolls); 2024-10-10 (13:30 USD Core Inflation Rate MoM); 2024-10-16 (07:00 GBP Inflation Rate YoY); 2024-10-30 (12:30 USD GDP Growth Rate QoQ Adv); 2024-11-13 (13:30 USD Core Inflation Rate MoM); 2024-11-14 (07:00 GBP GDP Growth Rate QoQ Prel); 2024-11-20 (07:00 GBP Inflation Rate YoY); 2024-12-06 (13:30 USD Non Farm Payrolls); 2024-12-11 (13:30 USD Core Inflation Rate MoM); 2024-12-17 (07:00 GBP Unemployment Rate); 2024-12-18 (07:00 GBP Inflation Rate YoY); 2024-12-19 (12:00 GBP BoE Interest Rate Decision); 2025-01-15 (07:00 GBP Inflation Rate YoY); 2025-01-21 (07:00 GBP Unemployment Rate); 2025-01-30 (13:30 USD GDP Growth Rate QoQ Adv); 2025-02-07 (13:30 USD Non Farm Payrolls); 2025-02-12 (13:30 USD Core Inflation Rate MoM); 2025-02-13 (07:00 GBP GDP Growth Rate QoQ Prel); 2025-02-18 (07:00 GBP Unemployment Rate); 2025-03-07 (13:30 USD Non Farm Payrolls); 2025-03-12 (12:30 USD Core Inflation Rate MoM); 2025-03-20 (07:00 GBP Unemployment Rate); 2025-04-15 (07:00 GBP Unemployment Rate); 2025-04-16 (07:00 GBP Inflation Rate YoY); 2025-05-02 (13:30 USD Non Farm Payrolls); 2025-05-08 (12:00 GBP BoE Interest Rate Decision); 2025-05-15 (07:00 GBP GDP Growth Rate QoQ Prel); 2025-05-21 (07:00 GBP Inflation Rate YoY); 2025-06-06 (13:30 USD Non Farm Payrolls); 2025-06-10 (07:00 GBP Unemployment Rate); 2025-06-18 (07:00 GBP Inflation Rate YoY); 2025-06-19 (12:00 GBP BoE Interest Rate Decision); 2025-07-03 (13:30 USD Non Farm Payrolls); 2025-07-15 (13:30 USD Core Inflation Rate MoM); 2025-07-16 (07:00 GBP Inflation Rate YoY); 2025-07-17 (07:00 GBP Unemployment Rate); 2025-08-01 (13:30 USD Non Farm Payrolls); 2025-08-20 (07:00 GBP Inflation Rate YoY); 2025-09-05 (13:30 USD Non Farm Payrolls); 2025-09-11 (13:30 USD Core Inflation Rate MoM); 2025-09-17 (07:00 GBP Inflation Rate YoY); 2025-10-03 (13:30 USD Non Farm Payrolls); 2025-10-14 (07:00 GBP Unemployment Rate); 2025-10-15 (13:30 USD Core Inflation Rate MoM); 2025-10-22 (07:00 GBP Inflation Rate YoY); 2025-10-24 (13:30 USD Core Inflation Rate MoM); 2025-11-07 (13:30 USD Non Farm Payrolls); 2025-11-11 (07:00 GBP Unemployment Rate); 2025-11-13 (07:00 GBP GDP Growth Rate QoQ Prel); 2025-11-20 (13:30 USD Non Farm Payrolls); 2025-12-05 (13:30 USD Non Farm Payrolls); 2025-12-17 (07:00 GBP Inflation Rate YoY); 2025-12-18 (12:00 GBP BoE Interest Rate Decision); 2026-01-09 (13:30 USD Non Farm Payrolls); 2026-01-13 (13:30 USD Core Inflation Rate MoM); 2026-01-20 (07:00 GBP Unemployment Rate); 2026-01-21 (07:00 GBP Inflation Rate YoY); 2026-02-11 (13:30 USD Non Farm Payrolls); 2026-02-12 (07:00 GBP GDP Growth Rate QoQ Prel); 2026-02-18 (07:00 GBP Inflation Rate YoY); 2026-03-25 (07:00 GBP Inflation Rate YoY); 2026-04-21 (07:00 GBP Unemployment Rate); 2026-04-22 (07:00 GBP Inflation Rate YoY); 2026-05-19 (07:00 GBP Unemployment Rate); 2026-05-20 (07:00 GBP Inflation Rate YoY); 2026-06-10 (13:30 USD Core Inflation Rate MoM); 2026-06-18 (07:00 GBP Unemployment Rate); 2026-07-02 (13:30 USD Non Farm Payrolls); 2026-07-22 (07:00 GBP Inflation Rate YoY); 2026-08-12 (13:30 USD Core Inflation Rate MoM); 2026-08-13 (07:00 GBP GDP Growth Rate QoQ Prel); 2026-08-18 (07:00 GBP Unemployment Rate); 2026-09-04 (13:30 USD Non Farm Payrolls); 2026-09-11 (13:30 USD Core Inflation Rate MoM); 2026-09-15 (07:00 GBP Unemployment Rate); 2026-09-17 (12:00 GBP BoE Interest Rate Decision); 2026-10-14 (13:30 USD Core Inflation Rate MoM); 2026-10-21 (07:00 GBP Core Inflation Rate MoM); 2026-10-29 (12:30 USD GDP Growth Rate QoQ Adv); 2026-11-05 (12:00 GBP BoE Interest Rate Decision); 2026-11-17 (07:00 GBP Unemployment Rate)
+  examples, first big release by 13:59 / trend day, run already under way before the release (34): 2024-01-16 (07:00 GBP Unemployment Rate, down from 06:00); 2024-03-08 (13:30 USD Non Farm Payrolls, up from 08:00); 2024-03-21 (12:00 GBP BoE Interest Rate Decision, down from 11:00); 2024-04-25 (13:30 USD GDP Growth Rate QoQ Adv, up from 06:00); 2024-05-15 (13:30 USD Core Inflation Rate MoM, up from 09:00); 2024-06-12 (13:30 USD Core Inflation Rate MoM, up from 08:00); 2024-06-20 (12:00 GBP BoE Interest Rate Decision, down from 06:00); 2024-07-05 (13:30 USD Non Farm Payrolls, up from 06:00); 2024-07-11 (13:30 USD Core Inflation Rate MoM, up from 08:00); 2024-11-01 (12:30 USD Non Farm Payrolls, up from 09:00); 2024-11-12 (07:00 GBP Unemployment Rate, down from 06:00); 2025-02-06 (12:00 GBP BoE Interest Rate Decision, down from 06:00); 2025-03-26 (07:00 GBP Inflation Rate YoY, down from 06:00); 2025-04-04 (13:30 USD Non Farm Payrolls, down from 07:00); 2025-04-10 (13:30 USD Core Inflation Rate MoM, up from 06:00); 2025-04-30 (13:30 USD GDP Growth Rate QoQ Adv, down from 07:00); 2025-05-13 (07:00 GBP Unemployment Rate, up from 06:00); 2025-08-07 (12:00 GBP BoE Interest Rate Decision, up from 11:00); 2025-09-16 (07:00 GBP Unemployment Rate, up from 06:00); 2025-10-30 (12:30 USD GDP Growth Rate QoQ Adv, down from 10:00); 2025-11-06 (12:00 GBP BoE Interest Rate Decision, up from 07:00); 2025-12-10 (13:30 USD Core Inflation Rate MoM, up from 12:00); 2026-02-17 (07:00 GBP Unemployment Rate, down from 06:00); 2026-02-20 (13:30 USD GDP Growth Rate QoQ Adv, up from 09:00); 2026-04-10 (13:30 USD Core Inflation Rate MoM, up from 12:00); 2026-04-30 (12:00 GBP BoE Interest Rate Decision, up from 09:00); 2026-05-08 (13:30 USD Non Farm Payrolls, up from 09:00); 2026-05-12 (13:30 USD Core Inflation Rate MoM, down from 06:00); 2026-07-30 (12:00 GBP BoE Interest Rate Decision, up from 10:00); 2026-08-19 (07:00 GBP Inflation Rate YoY, up from 06:00); 2026-10-20 (07:00 GBP Unemployment Rate, up from 06:00); 2026-11-06 (13:30 USD Non Farm Payrolls, down from 06:00); 2026-11-10 (13:30 USD Core Inflation Rate MoM, down from 11:00); 2026-11-18 (07:00 GBP Core Inflation Rate MoM, down from 06:00)
+  examples, first big release by 13:59 / trend run began in or after the release's hour (31): 2024-02-02 (13:30 USD Non Farm Payrolls, down from 13:00); 2024-02-14 (07:00 GBP Inflation Rate YoY, down from 07:00); 2024-03-12 (07:00 GBP Unemployment Rate, down from 07:00); 2024-04-10 (13:30 USD Core Inflation Rate MoM, down from 13:00); 2024-07-17 (07:00 GBP Inflation Rate YoY, up from 07:00); 2024-07-18 (07:00 GBP Unemployment Rate, down from 09:00); 2024-08-02 (13:30 USD Non Farm Payrolls, up from 13:00); 2024-08-13 (07:00 GBP Unemployment Rate, up from 12:00); 2024-09-18 (07:00 GBP Inflation Rate YoY, up from 08:00); 2024-10-15 (07:00 GBP Unemployment Rate, up from 08:00); 2024-11-15 (07:00 GBP GDP Growth Rate QoQ Prel, down from 13:00); 2025-01-10 (13:30 USD Non Farm Payrolls, down from 13:00); 2025-02-19 (07:00 GBP Inflation Rate YoY, down from 09:00); 2025-06-11 (13:30 USD Core Inflation Rate MoM, up from 13:00); 2025-07-30 (13:30 USD GDP Growth Rate QoQ Adv, down from 13:00); 2025-08-12 (07:00 GBP Unemployment Rate, up from 07:00); 2025-08-14 (07:00 GBP GDP Growth Rate QoQ Prel, down from 13:00); 2025-09-18 (12:00 GBP BoE Interest Rate Decision, down from 13:00); 2025-11-19 (07:00 GBP Inflation Rate YoY, down from 07:00); 2025-11-26 (13:30 USD GDP Growth Rate QoQ Adv, up from 13:00); 2025-12-16 (07:00 GBP Unemployment Rate, up from 08:00); 2026-02-05 (12:00 GBP BoE Interest Rate Decision, down from 12:00); 2026-02-13 (13:30 USD Core Inflation Rate MoM, up from 13:00); 2026-04-03 (13:30 USD Non Farm Payrolls, down from 13:00); 2026-06-05 (13:30 USD Non Farm Payrolls, down from 13:00); 2026-06-17 (07:00 GBP Inflation Rate YoY, down from 07:00); 2026-07-21 (07:00 GBP Unemployment Rate, down from 11:00); 2026-08-07 (13:30 USD Non Farm Payrolls, up from 13:00); 2026-09-16 (07:00 GBP Inflation Rate YoY, down from 12:00); 2026-10-02 (13:30 USD Non Farm Payrolls, up from 13:00); 2026-11-12 (07:00 GBP GDP Growth Rate QoQ Prel, down from 13:00)
+  gap from the first big release to the run's first hour (trend run began in or after the release's hour):
+     release inside the run's first hour: 12
+     run's first hour began 0-59 min after: 7
+     1-2 h after: 6
+     3-5 h after: 3
+     6 h or more after: 3
+
+Q2 extra: runs whose first hour holds the release (5-minute candles, chart price)
+   25 runs; best move its way before the release (pips) vs whole run: 2024-02-02 4.2/142.6; 2024-03-14 16.9/79.4; 2024-04-10 1.2/173.9; 2024-08-02 8.0/99.0; 2024-08-30 2.6/69.9; 2024-09-12 15.6/72.7; 2024-11-15 2.8/76.7; 2025-01-10 6.2/124.4; 2025-02-27 0.4/62.4; 2025-06-11 6.1/71.9; 2025-06-17 2.6/139.3; 2025-07-24 0.9/55.2; 2025-07-30 21.7/145.2; 2025-08-14 0.8/53.1; 2025-09-26 19.3/63.1; 2025-11-26 40.5/57.3; 2026-01-23 6.2/137.0; 2026-01-30 11.0/81.2; 2026-02-13 7.3/51.9; 2026-02-20 12.5/62.7; 2026-04-03 7.5/48.7; 2026-04-29 0.7/47.1; 2026-06-05 6.3/137.3; 2026-08-07 2.0/59.0; 2026-10-02 3.3/49.3
+   before the release had made under 10 pips its way: 18 of 25
