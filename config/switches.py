@@ -26,7 +26,8 @@
                               not apply to trades in the trend's direction (strategies/entry_filters.py)
   COUNTER_TREND_TIRING        on or off (ON if left out; owner, 23 November 2026): a bounce (hourly or 5m Bollinger bounce,
                               level reversal, session sweep, New York open reversal) against the analyser's trend
-                              opens only if the hourly MACD 35/45/30 histogram is shrinking (1 bar) or past zero
+                              opens only if the hourly MACD 35/45/30 histogram is shrinking (1 bar) or past zero,
+                              or the 5-minute histogram has crossed zero onto the bounce's side
                               (strategies/entry_filters.py, rule 3)
   ENTRY_NEAR_EMA8             on or off (OFF if left out since 21 November 2026; was on): a sell opens only if its entry is no
                               more than 5 pips below the 5-minute 8 EMA, a buy no more than 5 pips above it; the slow

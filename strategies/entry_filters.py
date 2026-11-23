@@ -35,8 +35,13 @@ RULE 3. COUNTER-TREND TIRING (switch COUNTER_TREND_TIRING, on if left out; owner
   before the entry, against the hourly candle before it (1 bar):
     trend down: allowed if the histogram has crossed above zero, or is higher (closer to zero) than the bar before;
     trend up:   allowed if the histogram has crossed below zero, or is lower (closer to zero) than the bar before.
-  Otherwise (the same, or further from zero on the trend's side, including just crossing back onto it) refused.
+  Also allowed (owner, 23 November 2026, Johnny's addition): the 5-MINUTE MACD 35/45/30 histogram (sell price) at the
+  last finished 5-minute candle before the entry has crossed zero onto the bounce's side: above zero for a buy
+  (against a trend down), below zero for a sell (against a trend up). Exactly zero is not across.
+  Otherwise (the hourly the same, or further from zero on the trend's side, including just crossing back onto it,
+  and the 5-minute not across zero) refused.
   The owner's answers (23 November 2026): hourly chart; 1 bar; past zero counts as tiring; the trend state only.
+  The 5-minute MACD not warmed up: only the hourly decides.
   Not enough hourly candles for a warmed-up MACD: not checked (recorded), as with the other rules.
   Each refusal records the strategy, the analyser state and the MACD values.
 
@@ -192,6 +197,20 @@ def hourly_macd(settings: Any, store: Any, at: datetime) -> tuple[Any, Any, str]
     return last, before, ""
 
 
+def five_minute_macd(settings: Any, store: Any, at: datetime) -> tuple[Any, str]:
+    """(the 5-minute MACD 35/45/30 at the last 5-minute candle finished by `at`, why not) on the sell price; (None, why)
+    when there are too few 5-minute candles for a warmed-up MACD."""
+    ind = settings.indicators
+    c5 = last_candles(store, "5m", at, settings.indicators.history_candles)
+    need = needs_macd(ind.macd_fast_periods, ind.macd_slow_periods, ind.macd_signal_periods,
+                      ind.warm_up_seed_weight_percent)
+    if len(c5) < need:
+        return None, f"only {len(c5)} finished 5-minute candles, {need} needed for the 5-minute MACD"
+    m = macd(c5, settings.chart.price, ind.macd_fast_periods, ind.macd_slow_periods, ind.macd_signal_periods)
+    last = m.get(c5[-1].start)
+    return (last, "") if last is not None else (None, "the 5-minute MACD is not worked out yet")
+
+
 def check(settings: Any, store: Any, idea: Any, trend: str | None = None) -> Verdict:
     """The rules, as their switches say, for one trade about to open. The first rule that refuses it is given.
     `trend`: the slow-grind trend day's direction now ("buy" or "sell"), or None (TrendDayWatch.direction_at)."""
@@ -291,15 +310,30 @@ def check(settings: Any, store: Any, idea: Any, trend: str | None = None) -> Ver
                 elif shrinking:
                     checked.append(f"counter-trend tiring: {line}: shrinking towards zero, the trend is tiring: allowed")
                 else:
-                    why = f"{line}: not shrinking, the trend is not tiring: refused"
-                    return Verdict(False, COUNTER_TREND_TIRING, why, {
-                        "strategy": idea.strategy, "analyser_state": state, "analyser_direction": sd,
-                        "trend_type": getattr(idea, "trend_type", None), "entry_price": str(price),
-                        "macd_timeframe": "1h", "macd_candle": f"{last.candle_utc:%Y-%m-%dT%H:%MZ}",
-                        "macd_histogram": f"{h:.2f}", "macd_line": f"{last.line:.2f}",
-                        "macd_signal": f"{last.signal:.2f}",
-                        "macd_candle_before": f"{before.candle_utc:%Y-%m-%dT%H:%MZ}",
-                        "macd_histogram_before": f"{hb:.2f}"}, checked)
+                    m5, why5 = five_minute_macd(settings, store, at)
+                    h5 = None if m5 is None else m5.histogram
+                    across5 = h5 is not None and (h5 > 0 if down else h5 < 0)
+                    side5 = "above" if down else "below"
+                    line5 = (f"5-minute MACD 35/45/30 histogram {h5:.2f} at the {m5.candle_utc:%H:%M} candle"
+                             if m5 is not None else f"5-minute MACD: {why5}")
+                    if across5:
+                        checked.append(f"counter-trend tiring: {line}: not shrinking; but the {line5} has crossed "
+                                       f"{side5} zero, onto the {idea.direction}'s side: allowed")
+                    else:
+                        why = (f"{line}: not shrinking, the trend is not tiring; the {line5} is not {side5} zero: "
+                               "refused")
+                        return Verdict(False, COUNTER_TREND_TIRING, why, {
+                            "macd_5m_candle": None if m5 is None else f"{m5.candle_utc:%Y-%m-%dT%H:%MZ}",
+                            "macd_5m_histogram": None if m5 is None else f"{h5:.2f}",
+                            "macd_5m_line": None if m5 is None else f"{m5.line:.2f}",
+                            "macd_5m_signal": None if m5 is None else f"{m5.signal:.2f}",
+                            "strategy": idea.strategy, "analyser_state": state, "analyser_direction": sd,
+                            "trend_type": getattr(idea, "trend_type", None), "entry_price": str(price),
+                            "macd_timeframe": "1h", "macd_candle": f"{last.candle_utc:%Y-%m-%dT%H:%MZ}",
+                            "macd_histogram": f"{h:.2f}", "macd_line": f"{last.line:.2f}",
+                            "macd_signal": f"{last.signal:.2f}",
+                            "macd_candle_before": f"{before.candle_utc:%Y-%m-%dT%H:%MZ}",
+                            "macd_histogram_before": f"{hb:.2f}"}, checked)
     return Verdict(True, checked=checked)
 
 

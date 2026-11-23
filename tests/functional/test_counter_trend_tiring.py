@@ -10,6 +10,9 @@ Johnny's rule (21 October 2026): "A bounce against an established trend is allow
 The owner's answers (23 November 2026): the HOURLY histogram; shrinking over 1 bar (closer to zero than the hourly bar
 before); past zero on the trade's side counts as tiring; only the analyser's "trend" state counts as an established
 trend (not "emerging trend" or "possible reversal"). Switch COUNTER_TREND_TIRING, on if left out.
+Johnny's addition (23 November 2026): also allowed when the 5-MINUTE MACD 35/45/30 histogram, at the last finished
+5-minute candle, has crossed zero onto the bounce's side (above zero for a buy, below for a sell). Everything else
+stays the same.
 """
 
 from datetime import datetime, timedelta, timezone
@@ -51,18 +54,20 @@ def S(tmp_path, pretend_switches):
     return settings(tmp_path, pretend_switches)
 
 
-def hours(closes) -> list:
-    """Hourly candles ending at Wed 18 Nov 12:00 UTC, one per close; sell prices as given, buy 1.5 pips above."""
+def hours(closes, tf="1h", minutes=60) -> list:
+    """Candles (hourly unless given) ending at Wed 18 Nov 12:00 UTC, one per close; sell prices as given, buy 1.5 pips
+    above."""
     n, out = len(closes), []
     for k, cl in enumerate(closes):
-        t, p = END - timedelta(hours=n - k), D(str(cl))
-        out.append(Candle("1h", t, t + timedelta(hours=1), *[p + D("1.5")] * 4, p, p, p, p, 60, 60))
+        t, p = END - timedelta(minutes=minutes * (n - k)), D(str(cl))
+        out.append(Candle(tf, t, t + timedelta(minutes=minutes), *[p + D("1.5")] * 4, p, p, p, p, 60, 60))
     return out
 
 
-def store_of(tmp_path, closes, name) -> CandleStore:
+def store_of(tmp_path, closes, name, five=None) -> CandleStore:
+    """The hourly candles from `closes`, and 5-minute candles from `five` (the same shapes, on 5-minute candles)."""
     st = CandleStore(tmp_path / name / "candles" / "GBPUSD", 30)
-    for x in hours(closes):
+    for x in hours(closes) + ([] if five is None else hours(five, "5m", 5)):
         st.add(x)
     return st
 
@@ -192,6 +197,7 @@ def macd_of(before, last):
 ])
 def test_the_1_bar_comparison_for_a_buy_against_a_trend_down(S, monkeypatch, before, last, allowed):
     monkeypatch.setattr(ef, "hourly_macd", lambda s, st, at: macd_of(before, last))
+    monkeypatch.setattr(ef, "five_minute_macd", lambda s, st, at: (None, "no 5-minute candles"))
     assert ef.check(S, None, idea()).allowed is allowed
 
 
@@ -200,6 +206,7 @@ def test_the_1_bar_comparison_for_a_buy_against_a_trend_down(S, monkeypatch, bef
     ("0.05", "-0.01", True), ("-0.50", "-0.20", True)])
 def test_the_1_bar_comparison_for_a_sell_against_a_trend_up(S, monkeypatch, before, last, allowed):
     monkeypatch.setattr(ef, "hourly_macd", lambda s, st, at: macd_of(before, last))
+    monkeypatch.setattr(ef, "five_minute_macd", lambda s, st, at: (None, "no 5-minute candles"))
     assert ef.check(S, None, idea(direction=SELL, state_direction="up")).allowed is allowed
 
 
@@ -222,3 +229,71 @@ def test_switch_off_and_left_out(tmp_path, pretend_switches, GROWING):
     left_out = settings(tmp_path, pretend_switches, None)
     assert left_out.switches.counter_trend_tiring
     assert not ef.check(left_out, GROWING, idea()).allowed
+
+
+# ---- Johnny's addition (23 November 2026): the 5-minute histogram across zero onto the bounce's side ----
+
+def test_the_hourly_not_tiring_but_the_5_minute_histogram_above_zero_allows_a_buy(tmp_path, S):
+    st = store_of(tmp_path, GROWING_DOWN, "g_5m_above", five=PAST_ZERO_DOWN)
+    last5, _ = ef.five_minute_macd(S, st, AT)
+    assert last5.candle_utc == END - timedelta(minutes=5) and last5.histogram > 0     # the 11:55 candle, above zero
+    v = ef.check(S, st, idea())
+    assert v.allowed
+    assert any("not shrinking; but the 5-minute MACD" in x and "crossed above zero" in x for x in v.checked)
+
+
+def test_the_hourly_not_tiring_and_the_5_minute_histogram_below_zero_refuses_a_buy_and_records_both(tmp_path, S):
+    st = store_of(tmp_path, GROWING_DOWN, "g_5m_below", five=GROWING_DOWN)
+    v = ef.check(S, st, idea())
+    assert not v.allowed and v.rule == ef.COUNTER_TREND_TIRING
+    last5, _ = ef.five_minute_macd(S, st, AT)
+    d = v.details
+    assert d["macd_5m_candle"] == "2026-11-18T11:55Z" and d["macd_5m_histogram"] == f"{last5.histogram:.2f}"
+    assert "macd_5m_line" in d and "macd_5m_signal" in d
+    assert d["macd_histogram"] and d["macd_histogram_before"] and d["analyser_state"] == "trend"
+    assert "is not above zero" in v.why
+
+
+def test_the_mirror_a_sell_against_a_trend_up_with_the_5_minute_histogram_below_zero(tmp_path, S):
+    sell = dict(direction=SELL, state_direction="up", price=13600)
+    across = store_of(tmp_path, mirror(GROWING_DOWN), "up_5m_below", five=mirror(PAST_ZERO_DOWN))
+    not_across = store_of(tmp_path, mirror(GROWING_DOWN), "up_5m_above", five=mirror(GROWING_DOWN))
+    assert ef.check(S, across, idea(**sell)).allowed
+    v = ef.check(S, not_across, idea(**sell))
+    assert not v.allowed and "is not below zero" in v.why
+
+
+def five_of(h):
+    return SimpleNamespace(candle_utc=END - timedelta(minutes=5), histogram=D(str(h)), line=D("0"), signal=D("0")), ""
+
+
+@pytest.mark.parametrize("direction,state_direction,h5,allowed", [
+    (BUY, "down", "0.01", True), (BUY, "down", "0", False), (BUY, "down", "-0.01", False),
+    (SELL, "up", "-0.01", True), (SELL, "up", "0", False), (SELL, "up", "0.01", False)])
+def test_the_5_minute_histogram_must_be_across_zero_on_the_bounces_side_exactly_zero_is_not(
+        S, monkeypatch, direction, state_direction, h5, allowed):
+    growing = ("-1.00", "-1.01") if state_direction == "down" else ("1.00", "1.01")      # hourly: not tiring
+    monkeypatch.setattr(ef, "hourly_macd", lambda s, st, at: macd_of(*growing))
+    monkeypatch.setattr(ef, "five_minute_macd", lambda s, st, at: five_of(h5))
+    assert ef.check(S, None, idea(direction=direction, state_direction=state_direction)).allowed is allowed
+
+
+def test_the_5_minute_histogram_is_only_looked_at_when_the_hourly_says_not_tiring(S, monkeypatch):
+    calls = []
+    monkeypatch.setattr(ef, "hourly_macd", lambda s, st, at: macd_of("-1.00", "-0.99"))       # shrinking
+    monkeypatch.setattr(ef, "five_minute_macd", lambda s, st, at: calls.append(at) or five_of("-5"))
+    assert ef.check(S, None, idea()).allowed and calls == []
+
+
+def test_too_few_5_minute_candles_leaves_the_hourly_to_decide(tmp_path, S):
+    st = store_of(tmp_path, GROWING_DOWN, "g_5m_few", five=PAST_ZERO_DOWN[-60:])
+    m5, why = ef.five_minute_macd(S, st, AT)
+    assert m5 is None and "5-minute" in why
+    v = ef.check(S, st, idea())
+    assert not v.allowed and v.details["macd_5m_histogram"] is None
+
+
+def test_only_finished_5_minute_candles_count(tmp_path, S):
+    st = store_of(tmp_path, GROWING_DOWN, "g_5m_finished", five=PAST_ZERO_DOWN)
+    m5, _ = ef.five_minute_macd(S, st, END - timedelta(seconds=30))          # 11:59:30: the 11:55 candle not finished
+    assert m5.candle_utc == END - timedelta(minutes=10)
