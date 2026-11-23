@@ -1,0 +1,40 @@
+PLANNER
+STP-GBPUSD-20261123-0000-9 00:00 {"entry": "05:50", "stop": "hourly close 13133 in the 08:00 hour (closes 09:00)", "targets": {"T1 13100": "11:20", "primary 13084.1": "12:45"}, "target_before_entry": ["T1 13100 at 00:00"], "stop_touch": "08:30", "first": "stop first (hourly close 13133 in the 08:00 hour (closes 09:00))"}
+STP-GBPUSD-20261123-0100-10 01:00 {"entry": "02:25", "stop": "hourly close 13127.3 in the 06:00 hour (closes 07:00)", "targets": {"T1 13103.7": "04:10", "primary 13097.1": "11:35", "extended 13084.1": "12:45"}, "stop_touch": "06:15", "first": "target T1 13103.7 first (04:10)"}
+STP-GBPUSD-20261123-0900-11 09:00 {"entry": "09:00", "stop": null, "targets": {"T1 13121.9": "09:30", "primary 13121.9": "09:30", "extended 13103.7": "10:20"}, "stop_touch": null, "first": "target T1 13121.9 first (09:30)"}
+STP-GBPUSD-20261123-1000-12 10:00 {"entry": "10:00", "stop": null, "targets": {"T1 13103.7": "10:20", "primary 13103.7": "10:20", "extended 13097.1": "11:35"}, "stop_touch": null, "first": "target T1 13103.7 first (10:20)"}
+STP-GBPUSD-20261123-1200-13 12:00 {"entry": "12:00", "stop": null, "targets": {"T1 13084.1": "12:45", "primary 13084.1": "12:45", "extended 13071.5": "12:45"}, "stop_touch": null, "first": "target T1 13084.1 first (12:45)"}
+STP-GBPUSD-20261123-1300-14 13:00 {"entry": "13:00", "stop": null, "targets": {"T1 13071.5": "13:10", "primary 13071.5": "13:10"}, "stop_touch": null, "first": "target T1 13071.5 first (13:10)"}
+
+TECHNICAL
+00:00 PULLBACK SELL {"entry": "00:00", "stop": "01:00", "targets": {"T1 13084.1": "12:45", "T2 13037.3": "15:05"}, "first": "stop first (01:00)"}
+01:00 PULLBACK SELL {"entry": "11:10", "stop": null, "targets": {"T1 13084.1": "12:45", "T2 13071.5": "12:45"}, "stop_before_entry": "01:00", "first": "target T1 13084.1 first (12:45)"}
+02:00 no opportunity
+03:00 PULLBACK SELL {"entry": "04:10", "stop": "04:55", "targets": {"T1 13084.1": "12:45", "T2 13071.5": "12:45"}, "stop_before_entry": "03:05", "first": "stop first (04:55)"}
+04:00 PULLBACK SELL {"entry": "04:00", "stop": "05:05", "targets": {"T1 13084.1": "12:45", "T2 13071.5": "12:45"}, "first": "stop first (05:05)"}
+05:00 PULLBACK SELL {"entry": "10:20", "stop": "10:20", "targets": {"T1 13084.1": "12:45", "T2 13071.5": "12:45"}, "stop_before_entry": "05:05", "first": "stop first (10:20)"}
+06:00 no opportunity
+07:00 REVERSAL SELL {"entry": "07:00", "stop": "08:35", "targets": {"T1 13123.7": "07:10", "T2 13103.7": "10:20"}, "first": "target T1 13123.7 first (07:10)"}
+08:00 REVERSAL SELL {"entry": "08:05", "stop": "08:35", "targets": {"T1 13121.9": "08:05", "T2 13103.7": "10:20"}, "target_before_entry": ["T1 13121.9 at 08:00"], "first": "target T1 13121.9 first (08:05)"}
+09:00 REVERSAL SELL {"entry": "09:00", "stop": null, "targets": {"T1 13121.9": "09:30", "T2 13103.7": "10:20"}, "first": "target T1 13121.9 first (09:30)"}
+10:00 PULLBACK SELL {"entry": "10:00", "stop": null, "targets": {"T1 13097.1": "11:35", "T2 13084.1": "12:45"}, "first": "target T1 13097.1 first (11:35)"}
+11:00 FAILED_BREAKOUT SELL {"entry": null, "stop": null, "targets": {}, "target_before_entry": ["T1 13103.7 at 11:05", "T2 13097.1 at 11:35"], "no_entry": "zone never reached (price 13010.1-13107.6 from 11:00 to 20:30)"}
+12:00 PULLBACK SELL {"entry": null, "stop": null, "targets": {}, "target_before_entry": ["T1 13084.1 at 12:45", "T2 13071.5 at 12:45"], "no_entry": "zone never reached (price 13010.1-13099.9 from 12:00 to 20:30)"}
+13:00 PULLBACK SELL {"entry": null, "stop": null, "targets": {}, "target_before_entry": ["T1 13071.5 at 13:10", "T2 13052.5 at 13:50"], "no_entry": "zone never reached (price 13010.1-13083.9 from 13:00 to 20:30)"}
+14:00 REVERSAL BUY {"entry": "14:00", "stop": "14:50", "targets": {"T1 13075": "14:00", "T2 13087.6": null}, "first": "target T1 13075 first (14:00)"}
+15:00 PULLBACK SELL {"entry": null, "stop": null, "targets": {}, "target_before_entry": ["T1 13037.3 at 15:05"], "no_entry": "zone never reached (price 13010.1-13051.2 from 15:00 to 20:30)"}
+16:00 PULLBACK SELL {"entry": null, "stop": null, "targets": {}, "target_before_entry": ["T1 13015.8 at 16:00"], "no_entry": "zone never reached (price 13010.1-13027.1 from 16:00 to 20:30)"}
+17:00 no opportunity
+18:00 PULLBACK SELL {"entry": null, "stop": null, "targets": {}, "target_before_entry": ["T1 13014.2 at 18:00"], "no_entry": "zone never reached (price 13013.2-13025 from 18:00 to 20:30)"}
+
+PIA 09:11 BUY 13081 stop 13029 target 13222
+{"entry": "12:45", "stop": "15:50", "targets": {"target 13222": null}, "first": "stop (15:50)"}
+day 00:00-20:30: high 13142.1 08:40 low 13010.1 17:45 | 20:25 close 13021.7 18:45
+   09:10 open 13124.6
+   12:00 open 13096.9
+   13:00 open 13081.4
+   14:00 open 13069.1
+   15:00 open 13045.5
+   16:00 open 13018.4
+   17:00 open 13020.2
+   18:00 open 13015.6

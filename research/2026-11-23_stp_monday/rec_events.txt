@@ -1,0 +1,113 @@
+2026-11-23T00:00:02Z analysis  |  | 
+    plan: BEARISH EXHAUSTION corrective reversal SELL zone 13119.1 13128.6 Major primary 13084.1 reach PLAUSIBLE nr: None
+    levels: ['hourly swing low 13119.1 (former support, now resistance)', 'hourly swing high 13121.9', 'London session high 13121.9', 'weekly pivot 13127.3', '4-hour swing high 13128.6', 'hourly swing high 13128.6', 'New York session high 13128.6', 'H4 Bollinger middle 13128.6']
+2026-11-23T00:00:02Z created STP-GBPUSD-20261123-0000-9 | CANDIDATE | Major zone (4 families: moving average, pivot, session, structure) 24.9 pips away, PLAUSIBLE; the strongest class among the reachable zones
+    plan: BEARISH EXHAUSTION corrective reversal SELL zone 13119.1 13128.6 Major primary 13084.1 reach PLAUSIBLE nr: None
+    levels: ['hourly swing low 13119.1 (former support, now resistance)', 'hourly swing high 13121.9', 'London session high 13121.9', 'weekly pivot 13127.3', '4-hour swing high 13128.6', 'hourly swing high 13128.6', 'New York session high 13128.6', 'H4 Bollinger middle 13128.6']
+2026-11-23T00:00:02Z waiting STP-GBPUSD-20261123-0000-9 | WAITING | issued on the first analysis with all the evidence (adjustment 1)
+2026-11-23T01:00:01Z analysis  |  | 
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13113.2 13121.9 Major primary 13097.1 reach PLAUSIBLE nr: None
+    levels: ['daily R2 13113.2', 'hourly swing low 13119.1 (former support, now resistance)', 'hourly swing high 13121.9', 'London session high 13121.9']
+2026-11-23T01:00:01Z superseded STP-GBPUSD-20261123-0000-9 | SUPERSEDED | a zone resting on different fixed levels (13119.1-13128.6 to 13113.2-13121.9): Major zone (3 families: pivot, session, structure) 9.4 pips away, PLAUSIBLE; the strongest class among the reachable zones
+2026-11-23T01:00:01Z created STP-GBPUSD-20261123-0100-10 | CANDIDATE | supersedes STP-GBPUSD-20261123-0000-9: Major zone (3 families: pivot, session, structure) 9.4 pips away, PLAUSIBLE; the strongest class among the reachable zones
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13113.2 13121.9 Major primary 13097.1 reach PLAUSIBLE nr: None
+    levels: ['daily R2 13113.2', 'hourly swing low 13119.1 (former support, now resistance)', 'hourly swing high 13121.9', 'London session high 13121.9']
+2026-11-23T01:00:01Z waiting STP-GBPUSD-20261123-0100-10 | WAITING | issued on the first analysis with all the evidence (adjustment 1)
+2026-11-23T01:15:00Z active STP-GBPUSD-20261123-0100-10 | ACTIVE | the Mon 23 Nov 01:10 GMT 5-minute candle reached the zone 13113.2-13121.9
+2026-11-23T02:00:02Z analysis  |  | 
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13113.2 13121.9 Major primary 13097.1 reach PLAUSIBLE nr: None
+    levels: ['daily R2 13113.2', 'hourly swing low 13119.1 (former support, now resistance)', 'hourly swing high 13121.9', 'London session high 13121.9']
+2026-11-23T02:00:02Z supported STP-GBPUSD-20261123-0100-10 |  | re-checked: the structural basis still holds
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13113.2 13121.9 Major primary 13097.1 reach PLAUSIBLE nr: None
+2026-11-23T03:00:01Z analysis  |  | 
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13113.2 13121.9 Major primary 13097.1 reach PLAUSIBLE nr: None
+    levels: ['daily R2 13113.2', 'hourly swing low 13119.1 (former support, now resistance)', 'hourly swing high 13121.9', 'London session high 13121.9']
+2026-11-23T03:00:01Z supported STP-GBPUSD-20261123-0100-10 |  | re-checked: the structural basis still holds
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13113.2 13121.9 Major primary 13097.1 reach PLAUSIBLE nr: None
+2026-11-23T04:00:01Z analysis  |  | 
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13113.2 13123.7 Major primary 13097.1 reach PLAUSIBLE nr: None
+    levels: ['daily R2 13113.2', 'hourly swing low 13119.1 (former support, now resistance)', 'hourly swing high 13121.9', 'London session high 13121.9', 'H4 Bollinger middle 13123.7']
+2026-11-23T04:00:01Z changed STP-GBPUSD-20261123-0100-10 |  | re-checked, still supported; changed: zone edges 13113.2-13121.9 to 13113.2-13123.7; families pivot, session, structure to moving average, pivot, session, structure
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13113.2 13123.7 Major primary 13097.1 reach PLAUSIBLE nr: None
+    levels: ['daily R2 13113.2', 'hourly swing low 13119.1 (former support, now resistance)', 'hourly swing high 13121.9', 'London session high 13121.9', 'H4 Bollinger middle 13123.7']
+2026-11-23T05:00:00Z waiting STP-GBPUSD-20261123-0100-10 | WAITING | the Mon 23 Nov 04:00 GMT hourly candle stayed wholly clear of the zone
+2026-11-23T05:00:01Z analysis  |  | 
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13113.2 13123.7 Major primary 13097.1 reach PLAUSIBLE nr: None
+    levels: ['daily R2 13113.2', 'hourly swing low 13119.1 (former support, now resistance)', 'hourly swing high 13121.9', 'London session high 13121.9', 'H4 Bollinger middle 13123.7']
+2026-11-23T05:00:01Z supported STP-GBPUSD-20261123-0100-10 |  | re-checked: the structural basis still holds
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13113.2 13123.7 Major primary 13097.1 reach PLAUSIBLE nr: None
+2026-11-23T05:15:00Z active STP-GBPUSD-20261123-0100-10 | ACTIVE | the Mon 23 Nov 05:10 GMT 5-minute candle reached the zone 13113.2-13123.7
+2026-11-23T06:00:04Z analysis  |  | 
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13113.2 13123.7 Major primary 13097.1 reach NEAR nr: None
+    levels: ['daily R2 13113.2', 'hourly swing low 13119.1', 'hourly swing high 13121.9', 'London session high 13121.9', 'H4 Bollinger middle 13123.7']
+2026-11-23T06:00:04Z changed STP-GBPUSD-20261123-0100-10 |  | re-checked, still supported; changed: reachability PLAUSIBLE to NEAR
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13113.2 13123.7 Major primary 13097.1 reach NEAR nr: None
+    levels: ['daily R2 13113.2', 'hourly swing low 13119.1', 'hourly swing high 13121.9', 'London session high 13121.9', 'H4 Bollinger middle 13123.7']
+2026-11-23T07:00:00Z invalidated STP-GBPUSD-20261123-0100-10 | INVALIDATED | confirmed break: the Mon 23 Nov 06:00 GMT hourly candle closed at 13127.3, 3.6 pips beyond the zone's top 13123.7
+2026-11-23T07:00:01Z analysis  |  | 
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone None None None primary None reach None nr: the primary destination 13123.7 is already reached (the Mon 23 Nov 06:55 GMT 5-minute candle reached 13125.1, within 3 pips of the destination zone 13113.2-13123.7); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13127.3-13135.6 is not recommended
+    levels: None
+2026-11-23T08:00:00Z failed breakout STP-GBPUSD-20261123-0100-10 |  | after the zone break, the Mon 23 Nov 07:00 GMT hourly candle closed back below 13123.7 within 1 candle(s) (recorded only)
+2026-11-23T08:00:01Z analysis  |  | 
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone None None None primary None reach None nr: the primary destination 13121.9 is already reached (the Mon 23 Nov 07:55 GMT 5-minute candle reached 13121.5, within 3 pips of the destination zone 13113.2-13121.9); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13127.3-13135.6 is not recommended
+    levels: None
+2026-11-23T09:00:02Z analysis  |  | 
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13127.3 13135.6 Major primary 13121.9 reach NEAR nr: None
+    levels: ['weekly pivot 13127.3', '4-hour swing high 13128.6 (former resistance, now support)', 'hourly swing high 13128.6 (former resistance, now support)', 'New York session high 13128.6', 'daily R3 13129.3', 'hourly swing low 13135.5 (former support, now resistance)', 'daily swing low 13135.6 (former support, now resistance)', '4-hour swing low 13135.6 (former support, now resistance)']
+2026-11-23T09:00:02Z created STP-GBPUSD-20261123-0900-11 | CANDIDATE | Major zone (4 families: higher-timeframe structure, pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13127.3 13135.6 Major primary 13121.9 reach NEAR nr: None
+    levels: ['weekly pivot 13127.3', '4-hour swing high 13128.6 (former resistance, now support)', 'hourly swing high 13128.6 (former resistance, now support)', 'New York session high 13128.6', 'daily R3 13129.3', 'hourly swing low 13135.5 (former support, now resistance)', 'daily swing low 13135.6 (former support, now resistance)', '4-hour swing low 13135.6 (former support, now resistance)']
+2026-11-23T09:00:02Z waiting STP-GBPUSD-20261123-0900-11 | WAITING | issued on the first analysis with all the evidence (adjustment 1)
+2026-11-23T09:00:02Z in zone at creation STP-GBPUSD-20261123-0900-11 |  | the Mon 23 Nov 08:55 GMT 5-minute candle, finished before the recommendation was created, was already at the zone: not an activation (only a candle after creation can activate it; recorded only)
+2026-11-23T09:05:00Z ambiguous STP-GBPUSD-20261123-0900-11 |  | the Mon 23 Nov 09:00 GMT 5-minute candle reached the zone 13127.3-13135.6, but it began before the recommendation was created (2026-11-23T09:00:02Z) and 5-minute candles cannot show whether that happened before or after: not used (recorded only)
+2026-11-23T09:10:00Z invalidated STP-GBPUSD-20261123-0900-11 | INVALIDATED | destination reached before entry: price reached 13121.9 (Mon 23 Nov 09:05 GMT) without reaching the zone
+2026-11-23T10:00:03Z analysis  |  | 
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13111.8 13121.9 Major primary 13103.7 reach NEAR nr: None
+    levels: ['London session low (so far) 13111.8', 'daily R2 13113.2', 'hourly swing low 13119.1 (former support, now resistance)', 'H4 Bollinger middle 13119.9', 'hourly swing high 13121.9', 'London session high 13121.9']
+2026-11-23T10:00:03Z created STP-GBPUSD-20261123-1000-12 | CANDIDATE | Major zone (4 families: moving average, pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13111.8 13121.9 Major primary 13103.7 reach NEAR nr: None
+    levels: ['London session low (so far) 13111.8', 'daily R2 13113.2', 'hourly swing low 13119.1 (former support, now resistance)', 'H4 Bollinger middle 13119.9', 'hourly swing high 13121.9', 'London session high 13121.9']
+2026-11-23T10:00:03Z waiting STP-GBPUSD-20261123-1000-12 | WAITING | issued on the first analysis with all the evidence (adjustment 1)
+2026-11-23T10:00:03Z in zone at creation STP-GBPUSD-20261123-1000-12 |  | the Mon 23 Nov 09:55 GMT 5-minute candle, finished before the recommendation was created, was already at the zone: not an activation (only a candle after creation can activate it; recorded only)
+2026-11-23T10:05:00Z ambiguous STP-GBPUSD-20261123-1000-12 |  | the Mon 23 Nov 10:00 GMT 5-minute candle reached the zone 13111.8-13121.9, but it began before the recommendation was created (2026-11-23T10:00:03Z) and 5-minute candles cannot show whether that happened before or after: not used (recorded only)
+2026-11-23T10:10:00Z active STP-GBPUSD-20261123-1000-12 | ACTIVE | the Mon 23 Nov 10:05 GMT 5-minute candle reached the zone 13111.8-13121.9
+2026-11-23T10:20:00Z completed STP-GBPUSD-20261123-1000-12 | COMPLETED | price reached the primary destination 13103.7 (Mon 23 Nov 10:15 GMT) after the zone
+2026-11-23T11:00:02Z analysis  |  | 
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone None None None primary None reach None nr: the primary destination 13103.7 is already reached (the Mon 23 Nov 10:55 GMT 5-minute candle reached 13105, within 3 pips of the destination zone 13100-13103.7); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13113.2-13121.9 is not recommended
+    levels: None
+2026-11-23T12:00:02Z analysis  |  | 
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13087.6 13097.1 Major primary 13084.1 reach NEAR nr: None
+    levels: ['daily pivot 13087.6', 'hourly swing low 13093', 'London session low 13093', 'London session low 13094.5', 'previous day high 13097.1']
+2026-11-23T12:00:02Z created STP-GBPUSD-20261123-1200-13 | CANDIDATE | Major zone (3 families: pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals
+    plan: BEARISH CORRECTION_ACTIVE corrective reversal SELL zone 13087.6 13097.1 Major primary 13084.1 reach NEAR nr: None
+    levels: ['daily pivot 13087.6', 'hourly swing low 13093', 'London session low 13093', 'London session low 13094.5', 'previous day high 13097.1']
+2026-11-23T12:00:02Z waiting STP-GBPUSD-20261123-1200-13 | WAITING | issued on the first analysis with all the evidence (adjustment 1)
+2026-11-23T12:00:02Z in zone at creation STP-GBPUSD-20261123-1200-13 |  | the Mon 23 Nov 11:55 GMT 5-minute candle, finished before the recommendation was created, was already at the zone: not an activation (only a candle after creation can activate it; recorded only)
+2026-11-23T12:05:00Z ambiguous STP-GBPUSD-20261123-1200-13 |  | the Mon 23 Nov 12:00 GMT 5-minute candle reached the zone 13087.6-13097.1, but it began before the recommendation was created (2026-11-23T12:00:02Z) and 5-minute candles cannot show whether that happened before or after: not used (recorded only)
+2026-11-23T12:10:00Z active STP-GBPUSD-20261123-1200-13 | ACTIVE | the Mon 23 Nov 12:05 GMT 5-minute candle reached the zone 13087.6-13097.1
+2026-11-23T12:45:00Z completed STP-GBPUSD-20261123-1200-13 | COMPLETED | price reached the primary destination 13084.1 (Mon 23 Nov 12:40 GMT) after the zone
+2026-11-23T13:00:03Z analysis  |  | 
+    plan: BEARISH EXHAUSTION corrective reversal SELL zone 13075 13084.1 Major primary 13071.5 reach NEAR nr: None
+    levels: ['previous week low 13075', '4-hour swing low 13077', 'hourly swing low 13077', 'hourly swing low 13077.5', 'New York session low 13077.6', 'daily S1 13078.1', 'historical daily swing low 13084.1 (former support, now resistance)']
+2026-11-23T13:00:03Z created STP-GBPUSD-20261123-1300-14 | CANDIDATE | Major zone (4 families: higher-timeframe structure, pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals
+    plan: BEARISH EXHAUSTION corrective reversal SELL zone 13075 13084.1 Major primary 13071.5 reach NEAR nr: None
+    levels: ['previous week low 13075', '4-hour swing low 13077', 'hourly swing low 13077', 'hourly swing low 13077.5', 'New York session low 13077.6', 'daily S1 13078.1', 'historical daily swing low 13084.1 (former support, now resistance)']
+2026-11-23T13:00:03Z waiting STP-GBPUSD-20261123-1300-14 | WAITING | issued on the first analysis with all the evidence (adjustment 1)
+2026-11-23T13:00:03Z in zone at creation STP-GBPUSD-20261123-1300-14 |  | the Mon 23 Nov 12:55 GMT 5-minute candle, finished before the recommendation was created, was already at the zone: not an activation (only a candle after creation can activate it; recorded only)
+2026-11-23T13:05:00Z ambiguous STP-GBPUSD-20261123-1300-14 |  | the Mon 23 Nov 13:00 GMT 5-minute candle reached the zone 13075-13084.1, but it began before the recommendation was created (2026-11-23T13:00:03Z) and 5-minute candles cannot show whether that happened before or after: not used (recorded only)
+2026-11-23T13:10:00Z invalidated STP-GBPUSD-20261123-1300-14 | INVALIDATED | destination reached before entry: price reached 13071.5 (Mon 23 Nov 13:05 GMT) without reaching the zone
+2026-11-23T14:00:03Z analysis  |  | 
+    plan: BEARISH EXHAUSTION corrective reversal SELL zone None None None primary None reach None nr: the primary destination 13052.5 is already reached (the Mon 23 Nov 13:55 GMT 5-minute candle reached 13055, within 3 pips of the destination zone 13050-13052.5); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13062.0-13071.5 is not recommended
+    levels: None
+2026-11-23T15:00:03Z analysis  |  | 
+    plan: BEARISH EXHAUSTION corrective reversal SELL zone None None None primary None reach None nr: no Major support zone below the entry zone for the primary destination
+    levels: None
+2026-11-23T16:00:02Z analysis  |  | 
+    plan: BEARISH CONTINUATION healthy-trend pullback SELL zone None None None primary None reach None nr: no Major support zone below the entry zone for the primary destination
+    levels: None
+2026-11-23T17:00:02Z analysis  |  | 
+    plan: BEARISH CONTINUATION healthy-trend pullback SELL zone None None None primary None reach None nr: no Major support zone below the entry zone for the primary destination
+    levels: None
+2026-11-23T18:00:05Z analysis  |  | 
+    plan: BEARISH CONTINUATION healthy-trend pullback SELL zone None None None primary None reach None nr: no Major support zone below the entry zone for the primary destination
+    levels: None

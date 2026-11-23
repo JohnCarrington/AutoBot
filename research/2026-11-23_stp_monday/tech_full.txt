@@ -1,0 +1,176 @@
+candidates key sample: [{"type": "REVERSAL", "trade": "SELL", "score": 5, "entry_zone": "13127.3-13135.6"}, {"type": "FAILED_BREAKOUT", "trade": "SELL", "score": 4, "entry_zone": "13130.1-13135.6"}]
+
+== 2026-11-23T00:00:07Z price 13094.2 EXHAUSTION
+   PULLBACK SELL with trend | entry 13090.3 - 13101.4 | stop 13105.9 | T1 13084.1 | T2 13037.3 | score 4 | R:R 0.9 | status price is in the entry zone
+   entry basis: H1 EMA20 13095.8 +/- 5.5 (half the zone width)
+   T1 basis: Major zone 13075-13084.1 (previous week low 13075, 4-hour swing low 13077, hourly swing low 13077, hourly swing low 13077.5)
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 H1 EMA21 13096.4 below a falling EMA100 13144.1
+    ev 1 the pullback has reached the EMA zone (last H1 high 13097.1)
+    ev 1 resistance at the EMA zone: hourly swing low 13093, London session low 13093, round number 13100
+    ev 1 Bollinger middle falling (13098.3)
+    ev -1 H1 EMA20 flat (-0.9/candle): no H1 trend to continue
+   BUY candidate: {"type": "FAILED_BREAKOUT", "trade": "BUY", "score": 3, "entry_zone": "13075.0-13080.5"}
+== 2026-11-23T01:00:04Z price 13103.8 CORRECTION_ACTIVE
+   PULLBACK SELL with trend | entry 13091.1 - 13102.1 | stop 13106.4 | T1 13084.1 | T2 13071.5 | score 4 | R:R 4.2 | status waiting for price to reach the entry zone (1.7 pips away)
+   entry basis: H1 EMA20 13096.6 +/- 5.5 (half the zone width)
+   T1 basis: Major zone 13075-13084.1 (previous week low 13075, 4-hour swing low 13077, hourly swing low 13077, hourly swing low 13077.5)
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 H1 EMA21 13097.1 below a falling EMA100 13143.3
+    ev 1 the pullback has reached the EMA zone (last H1 high 13105.2)
+    ev 1 resistance at the EMA zone: hourly swing low 13093, London session low 13093, today low (so far) 13093.8
+    ev 1 Bollinger middle falling (13098.2)
+    ev -1 H1 EMA20 flat (-0.9/candle): no H1 trend to continue
+== 2026-11-23T02:00:04Z price 13109.7 CORRECTION_ACTIVE
+   none: no credible opportunity: the best set-up (failed breakout BUY at 13087.6-13093.1) has 2 evidence points, below the minimum 4
+   BUY candidate: {"type": "FAILED_BREAKOUT", "trade": "BUY", "score": 2, "entry_zone": "13087.6-13093.1"}
+== 2026-11-23T03:00:03Z price 13106.7 CORRECTION_ACTIVE
+   PULLBACK SELL with trend | entry 13093.2 - 13104.2 | stop 13108.1 | T1 13084.1 | T2 13071.5 | score 5 | R:R 5.2 | status waiting for price to reach the entry zone (2.5 pips away)
+   entry basis: H1 EMA20 13098.7 +/- 5.5 (half the zone width)
+   T1 basis: Major zone 13075-13084.1 (previous week low 13075, 4-hour swing low 13077, hourly swing low 13077, hourly swing low 13077.5)
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 H1 EMA21 13099.0 below a falling EMA100 13141.9
+    ev 1 the pullback has reached the EMA zone (last H1 high 13114.4)
+    ev 1 RSI(14) declining (55.4 to 53.4)
+    ev 1 resistance at the EMA zone: today low (so far) 13093.8, previous day high 13097.1, round number 13100
+    ev 1 Bollinger middle falling (13097.9)
+    ev -1 H1 EMA20 flat (-0.7/candle): no H1 trend to continue
+== 2026-11-23T04:00:04Z price 13106.1 CORRECTION_ACTIVE
+   PULLBACK SELL with trend | entry 13093.9 - 13104.9 | stop 13108.7 | T1 13084.1 | T2 13071.5 | score 5 | R:R 5.5 | status waiting for price to reach the entry zone (1.2 pips away)
+   entry basis: H1 EMA20 13099.4 +/- 5.5 (half the zone width)
+   T1 basis: Major zone 13075-13084.1 (previous week low 13075, 4-hour swing low 13077, hourly swing low 13077, hourly swing low 13077.5)
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 H1 EMA21 13099.6 below a falling EMA100 13141.2
+    ev 1 the pullback has reached the EMA zone (last H1 high 13115.7)
+    ev 1 Mon 23 Nov 03:00 GMT H1 bearish rejection (O 13106.8 H 13115.7 L 13105.3 C 13106.1) at the zone
+    ev 1 RSI(14) declining (53.4 to 53.0)
+    ev 1 resistance at the EMA zone: previous day high 13097.1, round number 13100, daily R1 13103.7
+    ev -1 H1 EMA20 flat (-0.6/candle): no H1 trend to continue
+== 2026-11-23T05:00:04Z price 13106.7 CORRECTION_ACTIVE
+   PULLBACK SELL with trend | entry 13094.6 - 13105.6 | stop 13109.1 | T1 13084.1 | T2 13071.5 | score 4 | R:R 6.1 | status waiting for price to reach the entry zone (1.1 pips away)
+   entry basis: H1 EMA20 13100.1 +/- 5.5 (half the zone width)
+   T1 basis: Major zone 13075-13084.1 (previous week low 13075, 4-hour swing low 13077, hourly swing low 13077, hourly swing low 13077.5)
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 H1 EMA21 13100.3 below a falling EMA100 13140.5
+    ev 1 the pullback has reached the EMA zone (last H1 high 13115.7)
+    ev 1 Mon 23 Nov 03:00 GMT H1 bearish rejection (O 13106.8 H 13115.7 L 13105.3 C 13106.1) at the zone
+    ev 1 resistance at the EMA zone: previous day high 13097.1, round number 13100, daily R1 13103.7
+    ev -1 H1 EMA20 flat (-0.5/candle): no H1 trend to continue
+   BUY candidate: {"type": "REVERSAL", "trade": "BUY", "score": 1, "entry_zone": "13100.0-13103.7"}
+== 2026-11-23T06:00:06Z price 13120.8 CORRECTION_ACTIVE
+   none: no credible opportunity: no pullback, reaction or breakout set-up with a destination beyond it
+== 2026-11-23T07:00:05Z price 13127.3 CORRECTION_ACTIVE
+   REVERSAL SELL with trend | entry 13127.3 - 13135.6 | stop 13139.2 | T1 13123.7 | T2 13103.7 | score 5 | R:R 0.3 | status price is in the entry zone
+   entry basis: Major zone 13127.3-13135.6 (weekly pivot 13127.3, 4-hour swing high 13128.6, hourly swing high 13128.6, New York session high 13128.6)
+   T1 basis: Major zone 13113.2-13123.7 (daily R2 13113.2, hourly swing low 13119.1, hourly swing high 13121.9 (former resistance, now support), London session high 13121.9)
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 Major zone 13127.3-13135.6 (weekly pivot 13127.3, 4-hour swing high 13128.6, hourly swing high 13128.6, New York session high 13128.6) is Major
+    ev 1 tested 8 times before
+    ev 1 back inside the Bollinger band after touching the upper band (13128.3)
+    ev 1 H1 EMA20 flat (0.1/candle): no strong trend into the zone
+== 2026-11-23T08:00:04Z price 13122.9 CORRECTION_ACTIVE
+   REVERSAL SELL with trend | entry 13127.3 - 13135.6 | stop 13139.2 | T1 13121.9 | T2 13103.7 | score 5 | R:R 0.5 | status waiting for price to reach the entry zone (4.4 pips away)
+   entry basis: Major zone 13127.3-13135.6 (weekly pivot 13127.3, 4-hour swing high 13128.6, hourly swing high 13128.6, New York session high 13128.6)
+   T1 basis: Major zone 13113.2-13121.9 (daily R2 13113.2, hourly swing low 13119.1, London session low (so far) 13119.6, H4 Bollinger middle 13119.9)
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 Major zone 13127.3-13135.6 (weekly pivot 13127.3, 4-hour swing high 13128.6, hourly swing high 13128.6, New York session high 13128.6) is Major
+    ev 1 tested 8 times before
+    ev 1 back inside the Bollinger band after touching the upper band (13130.1)
+    ev 1 H1 EMA20 flat (0.4/candle): no strong trend into the zone
+== 2026-11-23T09:00:07Z price 13133 CORRECTION_ACTIVE
+   REVERSAL SELL with trend | entry 13127.3 - 13135.6 | stop 13146.0 | T1 13121.9 | T2 13103.7 | score 5 | R:R 0.9 | status price is in the entry zone
+   entry basis: Major zone 13127.3-13135.6 (weekly pivot 13127.3, 4-hour swing high 13128.6 (former resistance, now support), hourly swing high 13128.6 (former resistance, now support), New York session high 13128.6)
+   T1 basis: Major zone 13113.2-13121.9 (daily R2 13113.2, London session low (so far) 13117.3, hourly swing low 13119.1, H4 Bollinger middle 13119.9)
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 Major zone 13127.3-13135.6 (weekly pivot 13127.3, 4-hour swing high 13128.6 (former resistance, now support), hourly swing high 13128.6 (former resistance, now support), New York session high 13128.6) is Major
+    ev 1 tested 8 times before
+    ev 1 back inside the Bollinger band after touching the upper band (13133.0)
+    ev 1 H1 EMA20 flat (0.8/candle): no strong trend into the zone
+== 2026-11-23T10:00:06Z price 13112.2 CORRECTION_ACTIVE
+   PULLBACK SELL with trend | entry 13103.6 - 13114.6 | stop 13118.7 | T1 13097.1 | T2 13084.1 | score 4 | R:R 2.3 | status price is in the entry zone
+   entry basis: H1 EMA20 13109.1 +/- 5.5 (half the zone width)
+   T1 basis: Major zone 13087.6-13097.1 (daily pivot 13087.6, hourly swing low 13093, London session low 13093, today low (so far) 13093.8)
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 H1 EMA21 13108.9 below a falling EMA100 13138.9
+    ev 1 the pullback has reached the EMA zone (last H1 high 13142.1)
+    ev 1 RSI(14) declining (65.3 to 52.0)
+    ev 1 resistance at the EMA zone: daily R1 13103.7, London session low (so far) 13111.8, daily R2 13113.2
+    ev -1 H1 EMA20 flat (1.0/candle): no H1 trend to continue
+== 2026-11-23T11:00:05Z price 13105.5 CORRECTION_ACTIVE
+   FAILED_BREAKOUT SELL with trend | entry 13116.4 - 13121.9 | stop 13146.2 | T1 13103.7 | T2 13097.1 | score 5 | R:R 0.4 | status waiting for price to reach the entry zone (10.9 pips away)
+   entry basis: back inside the Major zone 13113.2-13121.9 (daily R2 13113.2, hourly swing low 13119.1 (former support, now resistance), H4 Bollinger middle 13119.9, hourly swing high 13121.9)
+   T1 basis: Major zone 13100-13103.7 (round number 13100, hourly swing low 13103, London session low (so far) 13103.1, daily R1 13103.7)
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 a close through 13121.9 to 13142.1, then an H1 close back inside at 13105.5
+    ev 1 the level is Major zone 13113.2-13121.9 (daily R2 13113.2, hourly swing low 13119.1 (former support, now resistance), H4 Bollinger middle 13119.9, hourly swing high 13121.9)
+    ev 1 RSI(14) declining (52.0 to 48.5)
+    ev 1 pierced the upper Bollinger band (13133.8) and closed back inside
+== 2026-11-23T12:00:05Z price 13096.3 CORRECTION_ACTIVE
+   PULLBACK SELL with trend | entry 13102.0 - 13113.1 | stop 13117.2 | T1 13084.1 | T2 13071.5 | score 4 | R:R 1.2 | status waiting for price to reach the entry zone (5.7 pips away)
+   entry basis: H1 EMA20 13107.6 +/- 5.5 (half the zone width)
+   T1 basis: Major zone 13075-13084.1 (previous week low 13075, 4-hour swing low 13077, hourly swing low 13077, hourly swing low 13077.5)
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 H1 EMA21 13107.5 below a falling EMA100 13137.4
+    ev 1 the pullback has reached the EMA zone (last H1 high 13115.3)
+    ev 1 RSI(14) declining (48.5 to 44.2)
+    ev 1 resistance at the EMA zone: hourly swing low 13103 (former support, now resistance), daily R1 13103.7, daily R2 13113.2
+    ev -1 H1 EMA20 flat (1.0/candle): no H1 trend to continue
+== 2026-11-23T13:00:05Z price 13081.2 EXHAUSTION
+   PULLBACK SELL with trend | entry 13099.5 - 13110.6 | stop 13115.0 | T1 13071.5 | T2 13052.5 | score 5 | R:R 1.8 | status waiting for price to reach the entry zone (18.3 pips away)
+   entry basis: H1 EMA20 13105.1 +/- 5.5 (half the zone width)
+   T1 basis: Major zone 13062.0-13071.5 (daily S2 13062.0, today low (so far) 13065.6, New York session low (so far) 13065.6, previous day low 13071.5)
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 H1 EMA21 13105.1 below a falling EMA100 13136.3
+    ev 1 the pullback has reached the EMA zone (last H1 high 13107.6)
+    ev 1 RSI(14) declining (44.2 to 38.2)
+    ev 1 resistance at the EMA zone: New York session high (so far) 13099.9, round number 13100, hourly swing low 13103 (former support, now resistance)
+    ev 1 Bollinger middle falling (13101.6)
+    ev -1 H1 EMA20 flat (0.7/candle): no H1 trend to continue
+   BUY candidate: {"type": "REVERSAL", "trade": "BUY", "score": 3, "entry_zone": "13075.0-13084.1"}
+   BUY candidate: {"type": "FAILED_BREAKOUT", "trade": "BUY", "score": 2, "entry_zone": "13075.0-13080.5"}
+== 2026-11-23T14:00:05Z price 13069 EXHAUSTION
+   REVERSAL BUY countertrend | entry 13062.0 - 13071.5 | stop 13045.6 | T1 13075 | T2 13087.6 | score 4 | R:R 0.3 | status price is in the entry zone
+   entry basis: Major zone 13062.0-13071.5 (daily S2 13062.0, previous day low 13071.5, 4-hour swing low 13071.5, hourly swing low 13071.5)
+   T1 basis: Major zone 13075-13084.1 (previous week low 13075, 4-hour swing low 13077 (former support, now resistance), hourly swing low 13077 (former support, now resistance), hourly swing low 13077.5 (former support, now resistance))
+    ev -1 against the 4-hour direction (existing STP: BEARISH): countertrend, lower confidence
+    ev 1 Major zone 13062.0-13071.5 (daily S2 13062.0, previous day low 13071.5, 4-hour swing low 13071.5, hourly swing low 13071.5) is Major
+    ev 1 tested 2 times before
+    ev 1 Mon 23 Nov 13:00 GMT H1 bullish rejection (O 13081.4 H 13083.9 L 13050.4 C 13069)
+    ev 1 back inside the Bollinger band after touching the lower band (13065.0)
+    ev 1 H1 EMA20 flat (0.3/candle): no strong trend into the zone
+   BUY candidate: {"type": "REVERSAL", "trade": "BUY", "score": 4, "entry_zone": "13062.0-13071.5"}
+   BUY candidate: {"type": "FAILED_BREAKOUT", "trade": "BUY", "score": 3, "entry_zone": "13062.0-13067.5"}
+== 2026-11-23T15:00:06Z price 13045.3 EXHAUSTION
+   PULLBACK SELL with trend | entry 13090.7 - 13101.8 | stop 13107.1 | T1 13037.3 | T2 13000 | score 4 | R:R 3.3 | status waiting for price to reach the entry zone (45.4 pips away)
+   entry basis: H1 EMA20 13096.3 +/- 5.5 (half the zone width)
+   T1 basis: Moderate zone 13026.6-13037.3 (weekly S1 13026.6, historical daily swing low 13037.3)
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 H1 EMA21 13096.7 below a falling EMA100 13133.2
+    ev 1 RSI(14) declining (34.2 to 28.0)
+    ev 1 resistance at the EMA zone: hourly swing low 13093 (former support, now resistance), London session low 13093, London session low 13094.5
+    ev 1 Bollinger middle falling (13098.3)
+    ev -1 H1 EMA20 flat (-0.2/candle): no H1 trend to continue
+   BUY candidate: {"type": "REVERSAL", "trade": "BUY", "score": 2, "entry_zone": "13043.1-13052.5"}
+== 2026-11-23T16:00:05Z price 13018.5 CONTINUATION
+   PULLBACK SELL with trend | entry 13083.3 - 13094.4 | stop 13100.3 | T1 13015.8 | T2 13000 | score 4 | R:R 4.0 | status waiting for price to reach the entry zone (64.8 pips away)
+   entry basis: H1 EMA20 13088.9 +/- 5.5 (half the zone width)
+   T1 basis: Moderate zone 13009.7-13015.8 (historical daily swing low 13009.7, historical daily swing high 13014.2 (former resistance, now support), today low (so far) 13015.8, New York session low (so far) 13015.8)
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 H1 EMA21 13089.6 below a falling EMA100 13130.9
+    ev 1 RSI(14) declining (28.0 to 22.9)
+    ev 1 resistance at the EMA zone: historical daily swing low 13084.1 (former support, now resistance), daily pivot 13087.6, hourly swing low 13093 (former support, now resistance)
+    ev 1 Bollinger middle falling (13095.2)
+    ev -1 H1 EMA20 flat (-0.9/candle): no H1 trend to continue
+== 2026-11-23T17:00:04Z price 13020.6 CONTINUATION
+   none: no credible opportunity: the best set-up (failed breakout SELL at 13066.0-13071.5) has 3 evidence points, below the minimum 4
+== 2026-11-23T18:00:12Z price 13015.7 CONTINUATION
+   PULLBACK SELL with trend | entry 13070.5 - 13081.5 | stop 13087.6 | T1 13014.2 | T2 13000 | score 6 | R:R 3.3 | status waiting for price to reach the entry zone (54.8 pips away)
+   entry basis: H1 EMA20 13076.0 +/- 5.5 (half the zone width)
+   T1 basis: Moderate zone 13009.7-13014.2 (historical daily swing low 13009.7, today low (so far) 13010.1, New York session low (so far) 13010.1, historical daily swing high 13014.2 (former resistance, now support))
+    ev 1 the 4-hour direction (existing STP) is BEARISH
+    ev 1 H1 EMA20 falling: 13102.1 to 13076.0 over 12 candles
+    ev 1 H1 EMA21 13077.1 below a falling EMA100 13126.5
+    ev 1 RSI(14) declining (24.1 to 23.2)
+    ev 1 resistance at the EMA zone: previous day low 13071.5, 4-hour swing low 13071.5 (former support, now resistance), hourly swing low 13071.5 (former support, now resistance)
+    ev 1 Bollinger middle falling (13089.2)
+   BUY candidate: {"type": "REVERSAL", "trade": "BUY", "score": 0, "entry_zone": "13009.7-13014.2"}
