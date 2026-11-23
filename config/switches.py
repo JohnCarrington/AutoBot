@@ -24,6 +24,10 @@
   TREND_DAY_RSI_OFF           on or off (ON if left out; owner, 21 November 2026): on Johnny's slow-grind trend day (a
                               slow grind trade in profit between 06:00 and 09:00 UK; until 20:30 UK) RSI_STRETCH does
                               not apply to trades in the trend's direction (strategies/entry_filters.py)
+  COUNTER_TREND_TIRING        on or off (ON if left out; owner, 23 November 2026): a bounce (hourly or 5m Bollinger bounce,
+                              level reversal, session sweep, New York open reversal) against the analyser's trend
+                              opens only if the hourly MACD 35/45/30 histogram is shrinking (1 bar) or past zero
+                              (strategies/entry_filters.py, rule 3)
   ENTRY_NEAR_EMA8             on or off (OFF if left out since 21 November 2026; was on): a sell opens only if its entry is no
                               more than 5 pips below the 5-minute 8 EMA, a buy no more than 5 pips above it; the slow
                               grind, breakout, Asian range breakout and session sweep exempt (strategies/entry_filters.py, rule 2)
@@ -132,6 +136,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "RSI_STRETCH": ("rsi_stretch", _on_off),
     "TREND_DAY_RSI_OFF": ("trend_day_rsi_off", _on_off),
     "EMERGING_LADDER": ("emerging_ladder", _on_off),
+    "COUNTER_TREND_TIRING": ("counter_trend_tiring", _on_off),
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
     "STRATEGY_BREAKOUT": ("breakout", _on_off),
     "STRATEGY_LEVEL_REVERSAL": ("level_reversal", _on_off),
@@ -154,7 +159,9 @@ OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_NEAR_TIMES": "off", "PLANNER_OBSERVE": 
                             "HOURLY_CONTEXT": "on", "ENTRY_NEAR_EMA8": "off", "RSI_STRETCH": "on",
                             "TREND_DAY_RSI_OFF": "on",
                             # Johnny's exit for emerging-trend trades (owner, 21 November 2026): ON
-                            "EMERGING_LADDER": "on"}
+                            "EMERGING_LADDER": "on",
+                            # rule 3, counter-trend tiring (owner, 23 November 2026): ON
+                            "COUNTER_TREND_TIRING": "on"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:

@@ -1,4 +1,4 @@
-"""The entry filters (owner, 21 November 2026): two rules checked once for every trade, at one point, just before it
+"""The entry filters (owner, 21 November 2026; rule 3, 23 November 2026): the rules checked once for every trade, at one point, just before it
 opens (trading/engine.py, Trading._place, before the order sender's safety rules). No strategy's own code changes;
 each strategy's rules, stops, take profits and trade management stay as they are. Each rule has its own switch.
 
@@ -25,6 +25,21 @@ RULE 2b. RSI STRETCH (switch RSI_STRETCH, on if left out; owner, 21 November 202
   sell price, Wilder's smoothing (prices/indicators.py), at the last finished 5-minute candle before the entry.
   Exempt: the slow grind, the breakout, the Asian range breakout and the session sweep.
 
+RULE 3. COUNTER-TREND TIRING (switch COUNTER_TREND_TIRING, on if left out; owner, 23 November 2026; Johnny's rule of
+  21 October 2026: "A bounce against an established trend is allowed only when the trend is tiring (MACD 35/45/30
+  histogram shrinking); otherwise blocked."). The reversal-type strategies only: the Bollinger bounce (hourly), the
+  Bollinger bounce 5m, the level reversal, the session sweep and the New York open reversal.
+  Against the trend: the analyser's state at the time is "trend" (slow grind or strong push; "emerging trend" and
+  "possible reversal" do not count) and the trade is the other way: a BUY in a trend down, a SELL in a trend up.
+  Tiring: the HOURLY MACD 35/45/30 histogram (sell price, [indicators] periods) at the last finished hourly candle
+  before the entry, against the hourly candle before it (1 bar):
+    trend down: allowed if the histogram has crossed above zero, or is higher (closer to zero) than the bar before;
+    trend up:   allowed if the histogram has crossed below zero, or is lower (closer to zero) than the bar before.
+  Otherwise (the same, or further from zero on the trend's side, including just crossing back onto it) refused.
+  The owner's answers (23 November 2026): hourly chart; 1 bar; past zero counts as tiring; the trend state only.
+  Not enough hourly candles for a warmed-up MACD: not checked (recorded), as with the other rules.
+  Each refusal records the strategy, the analyser state and the MACD values.
+
 THE SLOW-GRIND TREND DAY (switch TREND_DAY_RSI_OFF, on if left out; owner, 21 November 2026). Johnny's trend day, not
 the bot's own trend-day check (analyser/trend_day.py). It starts the first time a slow grind trade is in profit (more
 than 0 pips at the price IG would close it: the sell price for a buy, the buy price for a sell) at any moment from
@@ -50,11 +65,13 @@ from decimal import Decimal
 from typing import Any
 
 from analyser.indicators import last_candles
+from analyser.states import TREND
 from levels.current import build as build_levels
 from levels.rules import PIVOT
-from prices.indicators import ema, rsi
+from prices.indicators import ema, macd, needs_macd, rsi
 from prices.model import plain
-from strategies.common import ASIAN_RANGE_BREAKOUT, BREAKOUT, SESSION_SWEEP, SLOW_GRIND
+from strategies.common import (ASIAN_RANGE_BREAKOUT, BOLLINGER_BOUNCE, BOLLINGER_BOUNCE_5M, BREAKOUT, LEVEL_REVERSAL,
+                               NEW_YORK_OPEN_REVERSAL, SESSION_SWEEP, SLOW_GRIND)
 
 HOURLY_CONTEXT = "hourly context"
 HOURLY_EXEMPT = (BREAKOUT, ASIAN_RANGE_BREAKOUT)                                   # owner, 21 November 2026
@@ -62,6 +79,9 @@ ENTRY_NEAR_EMA8 = "entry near the 8 EMA"
 EMA8_EXEMPT = (SLOW_GRIND, BREAKOUT, ASIAN_RANGE_BREAKOUT, SESSION_SWEEP)          # owner, 21 November 2026
 RSI_STRETCH = "RSI stretch"
 RSI_EXEMPT = (SLOW_GRIND, BREAKOUT, ASIAN_RANGE_BREAKOUT, SESSION_SWEEP)           # owner, 21 November 2026
+COUNTER_TREND_TIRING = "counter-trend tiring"
+COUNTER_TREND_STRATEGIES = (BOLLINGER_BOUNCE, BOLLINGER_BOUNCE_5M, LEVEL_REVERSAL, SESSION_SWEEP,
+                            NEW_YORK_OPEN_REVERSAL)                                 # owner, 23 November 2026
 TREND_DAY_STARTED, TREND_DAY_CANCELLED = "trend day started", "trend day cancelled"
 DOWN, UP = "down", "up"
 
@@ -156,6 +176,22 @@ def rsi3_at(settings: Any, store: Any, at: datetime) -> tuple[Decimal | None, An
     return rsi(c5, settings.chart.price, settings.entry_filters.rsi_periods).get(c5[-1].start), c5[-1]
 
 
+def hourly_macd(settings: Any, store: Any, at: datetime) -> tuple[Any, Any, str]:
+    """(the hourly MACD 35/45/30 at the last hourly candle finished by `at`, at the hourly candle before it, why not)
+    on the sell price; (None, None, why) when there are too few hourly candles for a warmed-up MACD."""
+    ind = settings.indicators
+    hc = last_candles(store, "1h", at, settings.indicators.history_candles)
+    need = needs_macd(ind.macd_fast_periods, ind.macd_slow_periods, ind.macd_signal_periods,
+                      ind.warm_up_seed_weight_percent) + 1
+    if len(hc) < need:
+        return None, None, f"only {len(hc)} finished hourly candles, {need} needed for the hourly MACD and the bar before"
+    m = macd(hc, settings.chart.price, ind.macd_fast_periods, ind.macd_slow_periods, ind.macd_signal_periods)
+    last, before = m.get(hc[-1].start), m.get(hc[-2].start)
+    if last is None or before is None:
+        return None, None, "the hourly MACD is not worked out yet"
+    return last, before, ""
+
+
 def check(settings: Any, store: Any, idea: Any, trend: str | None = None) -> Verdict:
     """The rules, as their switches say, for one trade about to open. The first rule that refuses it is given.
     `trend`: the slow-grind trend day's direction now ("buy" or "sell"), or None (TrendDayWatch.direction_at)."""
@@ -232,6 +268,38 @@ def check(settings: Any, store: Any, idea: Any, trend: str | None = None) -> Ver
                         "strategy": idea.strategy, "rsi3_5m": f"{r3:.1f}", "rsi_candle": f"{c.start:%Y-%m-%dT%H:%MZ}",
                         "limit": limit, "entry_price": str(price), "trend_day": trend}, checked)
                 checked.append(f"RSI stretch: {line}, not {limit}{td}: allowed")
+
+    if getattr(sw, "counter_trend_tiring", False) and idea.strategy in COUNTER_TREND_STRATEGIES:
+        state, sd = idea.state, idea.state_direction
+        kind = f", {idea.trend_type}" if getattr(idea, "trend_type", None) else ""
+        if not (state == TREND and ((sd == DOWN and buy) or (sd == UP and not buy))):
+            checked.append(f"counter-trend tiring: the analyser says {state} {sd}{kind}: this {idea.direction} is not "
+                           "against a trend")
+        else:
+            last, before, why_not = hourly_macd(settings, store, at)
+            if last is None:
+                checked.append(f"counter-trend tiring: {why_not}: not checked")
+            else:
+                h, hb = last.histogram, before.histogram
+                down = sd == DOWN
+                crossed = h > 0 if down else h < 0
+                shrinking = h > hb if down else h < hb
+                line = (f"a {idea.direction} against the trend {sd}{kind}: hourly MACD 35/45/30 histogram {h:.2f} at "
+                        f"the {last.candle_utc:%H:%M} candle, {hb:.2f} at the {before.candle_utc:%H:%M} candle before")
+                if crossed:
+                    checked.append(f"counter-trend tiring: {line}: past zero, the trend is tiring: allowed")
+                elif shrinking:
+                    checked.append(f"counter-trend tiring: {line}: shrinking towards zero, the trend is tiring: allowed")
+                else:
+                    why = f"{line}: not shrinking, the trend is not tiring: refused"
+                    return Verdict(False, COUNTER_TREND_TIRING, why, {
+                        "strategy": idea.strategy, "analyser_state": state, "analyser_direction": sd,
+                        "trend_type": getattr(idea, "trend_type", None), "entry_price": str(price),
+                        "macd_timeframe": "1h", "macd_candle": f"{last.candle_utc:%Y-%m-%dT%H:%MZ}",
+                        "macd_histogram": f"{h:.2f}", "macd_line": f"{last.line:.2f}",
+                        "macd_signal": f"{last.signal:.2f}",
+                        "macd_candle_before": f"{before.candle_utc:%Y-%m-%dT%H:%MZ}",
+                        "macd_histogram_before": f"{hb:.2f}"}, checked)
     return Verdict(True, checked=checked)
 
 

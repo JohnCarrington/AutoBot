@@ -45,6 +45,8 @@ def no_real_network(monkeypatch):
 # the Asian range breakout entering on the break; the pullback entry has its own tests with it on.
 # HOURLY_CONTEXT, ENTRY_NEAR_EMA8, RSI_STRETCH and TREND_DAY_RSI_OFF off (owner, 21 November 2026), for the same reason: the
 # entry filters have their own tests (tests/functional/test_entry_filters.py) with them on.
+# COUNTER_TREND_TIRING off (owner, 23 November 2026: on if left out), the same: rule 3 has its own tests
+# (tests/functional/test_counter_trend_tiring.py) with it on.
 # EMERGING_LADDER off (owner, 21 November 2026: on if left out), the same: the existing trade-manager tests were written
 # without it; the ladder has its own tests (tests/functional/test_emerging_ladder.py) with it on.
 PRETEND_SWITCHES = """\
@@ -67,6 +69,7 @@ ENTRY_NEAR_EMA8=off
 RSI_STRETCH=off
 TREND_DAY_RSI_OFF=off
 EMERGING_LADDER=off
+COUNTER_TREND_TIRING=off
 TRADING=off
 STOP_LOSS_PIPS=6
 STOP_LOSS_PIPS_EMA_PULLBACK=12
