@@ -612,6 +612,53 @@ def _opp_dict(settings: Any, o: Opportunity, price: Decimal, adr: Decimal | None
     return d
 
 
+def conditional_scenarios(settings: Any, cands: Sequence[Opportunity], price: Decimal,
+                          adr: Decimal, min_evidence: int) -> dict:
+    """Read-only independent directional assessments from existing finished-candle candidates.
+
+    These are conditional hypotheses, NOT orders or calibrated probabilities. Preserve
+    candidates below the action threshold rather than hiding the opposing direction.
+    No state here can authorise a trade or modify the existing planner lifecycle.
+    """
+    result = {}
+    for direction in (BUY, SELL):
+        matching = [o for o in cands if o.trade == direction]
+        # Each direction is evaluated independently; no comparison to the other score.
+        # Candidate ordering is inherited from the established nearest-first ranking.
+        if not matching:
+            result[direction] = {"state": "INSUFFICIENT_EVIDENCE",
+                                 "reason": "No structurally valid candidate with a reachable target",
+                                 "candidate": None, "minimum_evidence": min_evidence}
+            continue
+        chosen = next((o for o in matching if o.score >= min_evidence), matching[0])
+        enough = chosen.score >= min_evidence
+        detail = _opp_dict(settings, chosen, price, adr)
+        if chosen.kind == BREAKOUT:
+            trigger = ("A completed H1 close beyond the zone and a subsequent retest holding "
+                       "the broken level; do not infer a fill from the forecast")
+        elif chosen.kind == FAILED_BREAKOUT:
+            trigger = ("A completed H1 candle returning inside the broken zone after the "
+                       "failed break; require a separate entry confirmation")
+        elif chosen.kind in (REVERSAL, RANGE_REVERSAL):
+            trigger = ("A completed H1 rejection/return inside the boundary plus a subsequent "
+                       "entry confirmation; a touch or momentum divergence alone is insufficient")
+        else:
+            trigger = ("Pullback to the named entry zone with fresh directional confirmation; "
+                       "the forecast alone is not an entry")
+        result[direction] = {
+            "state": "WAITING_FOR_CONFIRMATION" if enough else "INSUFFICIENT_EVIDENCE",
+            "reason": ("Evidence threshold met; entry confirmation not established by this assessment"
+                       if enough else f"Score {chosen.score} below minimum {min_evidence}"),
+            "minimum_evidence": min_evidence, "score": chosen.score,
+            "confirmation_required": trigger,
+            "evidence_for_and_against": [{"points": points, "reason": reason}
+                                         for points, reason in chosen.evidence],
+            "candidate": detail,
+            "observe_only": True,
+        }
+    return result
+
+
 def forecast(settings: Any, snap: Snapshot, existing: Any, plan: dict) -> dict:
     """The technical forecast at the snapshot's time. `plan` is the existing STP plan at the same time (context only:
     its 4-hour direction and condition are used as evidence, never changed)."""
@@ -621,7 +668,8 @@ def forecast(settings: Any, snap: Snapshot, existing: Any, plan: dict) -> dict:
            "observe_only": OBSERVE_ONLY, "fresh": snap.fresh, "price": plain(snap.price) if snap.price is not None else None,
            "h4_direction": plan.get("dominant_direction"), "condition": plan.get("condition"),
            "existing_stp": {"trade": plan.get("trade"), "no_recommendation": plan.get("no_recommendation")},
-           "opportunity": None, "no_opportunity": None, "candidates": [], "chart": None}
+           "opportunity": None, "no_opportunity": None, "candidates": [], "chart": None,
+           "conditional_scenarios": {}}
     if not snap.fresh:
         out["no_opportunity"] = "the data is not fresh: no forecast (" + "; ".join(snap.stale_reasons) + ")"
         return out
@@ -659,6 +707,7 @@ def forecast(settings: Any, snap: Snapshot, existing: Any, plan: dict) -> dict:
         "range": rng.text() if rng else None, "stop_buffer_pips": plain(pips(settings, buffer)),
         "zone_half_width_pips": plain(pips(settings, half))}
     cands = candidates(ctx)
+    out["conditional_scenarios"] = conditional_scenarios(settings, cands, snap.price, snap.adr, t.min_evidence)
     out["bias"] = _bias(plan, read, rng)
     out["candidates"] = [{"type": o.kind, "trade": o.trade, "score": o.score,
                           "entry_zone": f"{plain(o.entry_low)}-{plain(o.entry_high)}"} for o in cands[:6]]
