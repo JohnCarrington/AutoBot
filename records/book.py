@@ -20,6 +20,9 @@ rewritten or added at IG's figures; the file as it was is kept as trades.jsonl.b
 the bot's own 19 closes of 9 to 11 November whose price or time differed from IG's were corrected to IG's close
 time, level and booked £ (each with its "before_correction"); the file before that is
 trades.jsonl.before-2026-11-11-ig-prices. Since then every live close is recorded at IG's price and time.
+A second correction by hand (owner, 23 November 2026): four trades the owner closed on IG's web platform at 18:36 UTC
+that day (channel WEB), recorded by the bot as "closed at IG" while it was restarting, were rewritten as "closed by
+owner" (each with its "before_correction"); the file as it was is trades.jsonl.before-2026-11-23-correction.
 """
 
 from __future__ import annotations

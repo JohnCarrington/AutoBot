@@ -184,9 +184,9 @@ class PretendIG:
             self.positions.append(rest)
 
     def system_close(self, deal, level, when, channel="SYSTEM", stop=None, limit=None):
-        """A position closed at IG without the bot. Channel SYSTEM not at its stop or limit is the owner closing it by
-        hand (as on 9 and 10 November); SYSTEM at its stop or limit is IG's stop or limit; another channel is a
-        close made some other way."""
+        """A position closed at IG without the bot. Channel SYSTEM or WEB not at its stop or limit is the owner closing
+        it by hand (as on 9 and 10 November, and on 23 November on IG's web platform); SYSTEM at its stop or limit is
+        IG's stop or limit; another channel (DEALER here) is a close made some other way."""
         p = next(p for p in self.positions if p["position"]["dealId"] == deal)
         self.positions.remove(p)
         self.activity.append({"date": when, "epic": EPIC, "dealId": "DISYS" + deal[-4:], "channel": channel,
@@ -701,13 +701,13 @@ def test_the_reference_ig_echoes_is_the_one_confirmed(S):
 def test_a_close_of_a_position_ig_already_closed_is_recorded_with_igs_own_close(S):
     sender, ig, alerts, *_ = make(S)
     r = sender.place(idea(SLOW_GRIND), calendar=[])
-    ig.system_close(r.deal_id, 13335.2, "2026-11-04T09:56:27", "WEB")      # closed at IG some other way
+    ig.system_close(r.deal_id, 13335.2, "2026-11-04T09:56:27", "DEALER")   # closed at IG some other way
     ig.close_answer = "notional"
     c = sender.close(r.reference, why="20:30 UK close")
     assert (c.ok, c.what, c.level) == (True, "gone at IG", D("13335.2"))
     assert c.closed_utc == U(2026, 11, 4, 9, 56, 27) and "already closed" in c.reasons[0]
     gone = [x for x in records(sender) if x["event"] == "gone at IG"][0]
-    assert gone["ig_level"] == "13335.2" and gone["ig_channel"] == "WEB" and gone["ig_time_utc"] == "2026-11-04T09:56:27Z"
+    assert gone["ig_level"] == "13335.2" and gone["ig_channel"] == "DEALER" and gone["ig_time_utc"] == "2026-11-04T09:56:27Z"
     assert "close refused" in events(sender) and sender.open_trades() == []
     key, text = alerts.sent[-1]
     assert key == f"gone-at-ig-{r.deal_id}" and "13335.2" in text and "did not close it" in text
@@ -738,7 +738,7 @@ def test_the_regular_check_finds_every_difference_with_igs_open_positions(S):
     b = sender.place(idea(BREAKOUT), calendar=[])
     c = sender.place(idea(RANGE_TRADE, BUY), calendar=[])
     assert sender.reconcile() == [] and alerts.sent == []                  # all the same: nothing said
-    ig.system_close(a.deal_id, 13390.0, "2026-11-04T10:30:00", "WEB")
+    ig.system_close(a.deal_id, 13390.0, "2026-11-04T10:30:00", "DEALER")
     ig.positions.append(theirs())
     next(p for p in ig.positions if p["position"]["dealId"] == c.deal_id)["position"]["size"] = 5.0
     gone = sender.reconcile()
@@ -774,7 +774,7 @@ def test_the_regular_check_never_closes_anything_on_a_guess(S):
 def test_at_start_up_a_trade_ig_closed_while_the_bot_was_away_is_alerted_with_igs_close(S):
     sender, ig, *_ = make(S)
     a = sender.place(idea(SLOW_GRIND), calendar=[])
-    ig.system_close(a.deal_id, 13404.1, "2026-11-04T15:21:00", "WEB")
+    ig.system_close(a.deal_id, 13404.1, "2026-11-04T15:21:00", "DEALER")
     again, ig, alerts, *_ = make(S, ig)
     assert again.open_trades() == []
     (g,) = again.take_gone()
@@ -833,8 +833,28 @@ def test_a_system_close_at_the_stop_or_take_profit_or_beyond_is_igs_not_the_owne
     assert not closed_by_owner("buy", buy | {"ig_level": D("13317.0")})
     assert not closed_by_owner("buy", buy | {"ig_level": D("13423.7")})
     assert closed_by_owner("buy", buy | {"ig_level": D("13324.3")})
-    assert not closed_by_owner("buy", buy | {"ig_level": D("13324.3"), "ig_channel": "WEB"})   # not SYSTEM
+    assert closed_by_owner("buy", buy | {"ig_level": D("13324.3"), "ig_channel": "WEB"})   # WEB: also the owner
+    assert not closed_by_owner("buy", buy | {"ig_level": D("13317.0"), "ig_channel": "WEB"})   # WEB at the stop: IG's
+    assert not closed_by_owner("buy", buy | {"ig_level": D("13324.3"), "ig_channel": "DEALER"})   # another channel
+    assert not closed_by_owner("buy", buy | {"ig_level": D("13324.3"), "ig_channel": "MOBILE"})   # not given by the owner
     assert not closed_by_owner("buy", {})                                   # IG's activity did not show it
+
+
+def test_at_start_up_trades_the_owner_closed_on_igs_web_platform_are_the_owners(S):
+    """23 November 2026: four trades closed by hand on IG's web platform (channel WEB, IG's activity without stop or
+    limit levels) 90 seconds before a restart were recorded as "gone at IG" and counted as the bot's. Now: the
+    owner's, with a short message and no warning."""
+    sender, ig, *_ = make(S)
+    a = sender.place(idea(SLOW_GRIND), calendar=[])
+    t = sender.trades[a.reference]
+    ig.system_close(a.deal_id, float(t.level) + 6.1, "2026-11-04T18:36:05", "WEB")
+    again, ig, alerts, *_ = make(S, ig)
+    assert again.open_trades() == []
+    (g,) = again.take_gone()
+    assert (g.what, g.level) == ("closed by owner", t.level + D("6.1"))
+    assert alerts.sent == [] and len(alerts.infos) == 1                      # a message, not a warning
+    rec = [x for x in records(again) if x["event"] == "closed by owner"][0]
+    assert rec["ig_channel"] == "WEB" and "IG's channel WEB" in rec["note"]
 
 
 def test_a_stop_the_bot_expected_but_the_owner_closed_first_is_the_owners(S):
