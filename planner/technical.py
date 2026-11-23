@@ -628,7 +628,7 @@ def conditional_scenarios(settings: Any, cands: Sequence[Opportunity], price: De
         if not matching:
             result[direction] = {"state": "INSUFFICIENT_EVIDENCE",
                                  "reason": "No structurally valid candidate with a reachable target",
-                                 "candidate": None, "minimum_evidence": min_evidence}
+                                 "candidate": None, "minimum_evidence": min_evidence, "observe_only": True}
             continue
         chosen = next((o for o in matching if o.score >= min_evidence), matching[0])
         enough = chosen.score >= min_evidence

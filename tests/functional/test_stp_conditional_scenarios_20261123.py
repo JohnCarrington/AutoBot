@@ -36,3 +36,4 @@ def test_no_candidate_never_invents_a_trade():
     scenarios = conditional_scenarios(None, [], Decimal("13080"), Decimal("100"), 4)
     assert all(scenarios[d]["state"] == "INSUFFICIENT_EVIDENCE" for d in (BUY, SELL))
     assert all(scenarios[d]["candidate"] is None for d in (BUY, SELL))
+    assert all(scenarios[d]["observe_only"] is True for d in (BUY, SELL))
