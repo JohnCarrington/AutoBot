@@ -473,6 +473,9 @@ async function load() {
   $("state").textContent = a ? (a.state + " " + (a.direction === "up" ? "▲" : a.direction === "down" ? "▼" : "")) : "–";
   $("since").textContent = a ? ((a.trend_type ? a.trend_type + " · " : "") + "since " + uk(a.since_utc)) +
                               (a.hourly_position ? " · hourly range: " + a.hourly_position : "") +
+                              (s.trend_day ? " · trend day " + (s.trend_day.direction === "buy" ? "▲" : "▼") +
+                                " from " + uk(s.trend_day.started_utc) + (s.trend_day.cancelled_utc ? ", cancelled " +
+                                uk(s.trend_day.cancelled_utc) : (s.trend_day.active ? " (slow grind)" : ", ended")) : "") +
                               (s.price ? " · bid " + s.price.bid + " / offer " + s.price.offer : "") : "";
   const al = $("allowed"); al.textContent = "";
   (s.strategies_allowed || []).forEach(x => al.appendChild(el("span", "chip" + (x.switched_on ? "" : " off"),

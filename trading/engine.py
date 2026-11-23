@@ -52,13 +52,14 @@ from typing import Any, Callable
 from analyser.day_direction import day_directions
 from analyser.market_state import MemoStore, StateTracker
 from analyser.trend_day import trend_day_at
-from orders.sender import OrderSender
+from orders.sender import OrderSender, Result
 from records.book import Book, daily_text
 from trading.reasons import level_note, one_line, take_profit_kind
 from levels.current import build
 from prices.calendar import floor_5m
 from prices.model import Candle
 from strategies.common import SESSION_STRATEGIES, most_trail_candles, opens_at_next_candle
+from strategies import entry_filters
 from strategies.replay import StrategyRunner
 from trade_manager.manager import Bar, Rejection, TradeManager, plan
 
@@ -107,6 +108,9 @@ class Trading:
         self.manager.on_decision = lambda t, d, sent: self.book.decision(
             "trade manager", self.now(), reference=t.reference, strategy=t.strategy, decision=d.kind,
             price=d.price, pips=d.pips, why=d.why, order_sender=getattr(sent, "what", None))
+        # Johnny's slow-grind trend day (owner, 21 November 2026; strategies/entry_filters.py): its start and cancel
+        # are recorded; while it is on, the RSI stretch does not apply to trades in its direction
+        self.trend_watch = entry_filters.TrendDayWatch(settings, record=lambda kind, t, **d: self._trend_record(kind, t, d))
         self.meta: dict = {}                                # reference -> what the records and messages need
         self._changes_seen = 0
         self._was_paused: bool | None = None
@@ -127,8 +131,10 @@ class Trading:
             self._rebuild_meta()
             saved = self.manager.load_state()
             for t in [t for t in self.sender.trades.values() if t.status == "open"]:
+                # the analyser's state as recorded on the trade when it opened (the emerging-trend ladder)
                 mt = plan(self.s, t.reference, t.strategy, t.direction, t.opened_at, t.level, t.level, t.stop_pips,
-                          self.calendar, self._trend_day(t.opened_at))
+                          self.calendar, self._trend_day(t.opened_at),
+                          market_state=(self.meta.get(t.reference) or {}).get("market_state"))
                 if t.half_closed:
                     mt.half_done, mt.state = True, "half close"
                 if t.stop_level is not None:                # the bounce's stop already moved by its trail at IG
@@ -138,6 +144,7 @@ class Trading:
                     log.info("Trade %s: its saved best (%s pips) restored.", t.reference, mt.best)
                 self.manager.add(mt)
             self._take_gone()                               # trades IG closed while the bot was away
+            self._restore_trend_day(now)
             self._after_bars()
             if not self.replay:
                 self.tracker.replay(now)
@@ -149,6 +156,41 @@ class Trading:
             log.info("Trading %s: %d open trade(s) taken over; the strategies are up to %s.",
                      "ON" if self.trading_on else "OFF (paper trades, nothing sent to IG)",
                      len([t for t in self.manager.trades.values() if t.open]), now.strftime("%Y-%m-%d %H:%M UTC"))
+
+    # ---- Johnny's slow-grind trend day ---------------------------------------------------------------
+
+    def _trend_on(self) -> bool:
+        return bool(getattr(self.s.switches, "trend_day_rsi_off", False))
+
+    def _trend_watch(self, bar: Any, refs: list | None = None) -> None:
+        """A price or a 5-minute candle, with the trades open at it (`refs`: only these), to the trend-day watch."""
+        if not self._trend_on():
+            return
+        trades = [t for ref, t in self.manager.trades.items() if t.open and (refs is None or ref in refs)]
+        self.trend_watch.on_bar(bar, trades)
+
+    def _trend_record(self, kind: str, t: datetime, data: dict) -> None:
+        self.book.decision(kind, t, **data)
+        log.info("Slow-grind %s: %s", kind, data.get("why", ""))
+
+    def _restore_trend_day(self, now: datetime) -> None:
+        """After a restart: today's recorded trend-day start and cancel, read back from decisions.jsonl."""
+        import json
+        f = self.book.decisions_file
+        if not self._trend_on() or not f.exists():
+            return
+        kinds = (entry_filters.TREND_DAY_STARTED, entry_filters.TREND_DAY_CANCELLED)
+        rows = []
+        for line in f.read_text().splitlines()[-5000:]:
+            try:
+                r = json.loads(line)
+            except ValueError:
+                continue
+            if r.get("kind") in kinds:
+                rows.append(r)
+        self.trend_watch.restore(rows, now)
+        if self.trend_watch.direction is not None:
+            log.info("Slow-grind trend day restored: %s since %s.", self.trend_watch.direction, self.trend_watch.started)
 
     def _trend_day(self, t: datetime) -> str | None:
         try:
@@ -190,6 +232,7 @@ class Trading:
             band = (hist[i - 1][0].upper, hist[i - 1][0].lower) if i > 0 and hist[i - 1][0].upper is not None else None
             rej = analyser_rejections(self.tracker.watcher, c.start)
             before = [ref for ref, t in self.manager.trades.items() if t.open and t.opened_at <= c.start]
+            self._trend_watch(Bar.of(c), before)
             self.manager.on_bar(Bar.of(c), band, rej, watching if k == len(new) - 1 else frozenset(), only=before,
                                 finished=True)
             self._after_bars()
@@ -234,6 +277,7 @@ class Trading:
         opened_at = candle.start if self.replay else self.now()
         self._opened(idea, r, opened_at, td)
         if self.replay:                                     # as the research: it may close in the candle it opened in
+            self._trend_watch(Bar.of(candle), [r.reference])
             self.manager.on_bar(Bar.of(candle), band, rej, only=[r.reference], finished=True)
             self._after_bars()
 
@@ -248,6 +292,21 @@ class Trading:
         return paused
 
     def _place(self, idea: Any, td: str | None) -> Any:
+        # the entry filters (owner, 21 November 2026): every trade, once, here, just before it opens
+        trend = self.trend_watch.direction_at(idea.time) if self._trend_on() else None
+        v = entry_filters.check(self.s, MemoStore(self.store), idea, trend=trend)
+        if not v.allowed:
+            self.book.decision("entry filter refused", self.now(), strategy=idea.strategy, direction=idea.direction,
+                               idea_time=idea.time, entry_price=idea.entry_price, rule=v.rule, why=v.why,
+                               details=v.details)
+            log.info("%s %s at %s refused by the entry filter (%s): %s", idea.strategy, idea.direction,
+                     idea.entry_price, v.rule, v.why)
+            r = Result(False, "entry filter refused", reasons=[f"{v.rule}: {v.why}"])
+            self.book.decision("order", self.now(), strategy=idea.strategy, direction=idea.direction, result=r.what,
+                               reference=r.reference, reasons=r.reasons, level=r.level)
+            return r
+        if v.checked:
+            idea.steps.append("entry filters: " + "; ".join(v.checked))
         day = day_directions(self.s, self.store, idea.time, self.calendar, td)     # the day's directions (safety rule 9)
         r = self.sender.place(idea, paused=self._paused(), trend_day=td, calendar=self.calendar, day=day)
         self.book.decision("order", self.now(), strategy=idea.strategy, direction=idea.direction, result=r.what,
@@ -257,15 +316,15 @@ class Trading:
     def _opened(self, idea: Any, r: Any, opened_at: datetime, td: str | None) -> None:
         """A trade the order sender opened: to the trade manager, the records, and Telegram (real trades)."""
         t = self.sender.trades[r.reference]
+        state = f"{idea.state} {idea.state_direction}" + (f", {idea.trend_type}" if idea.trend_type else "")
         mt = plan(self.s, r.reference, idea.strategy, idea.direction, opened_at, idea.entry_price, r.level,
-                  t.stop_pips, self.calendar, td)
+                  t.stop_pips, self.calendar, td, market_state=state)
         if not self.replay:
             mt.bars = 1                                     # opened at the market: every later price is after it
         self.manager.add(mt)
         self.opened.append((idea, mt))
         ppp = Decimal(self.s.market.points_per_pip)
         sign = Decimal(1) if idea.direction == "buy" else Decimal(-1)
-        state = f"{idea.state} {idea.state_direction}" + (f", {idea.trend_type}" if idea.trend_type else "")
         rec = {"reference": r.reference, "deal_id": r.deal_id, "pair": self.s.market.pair, "strategy": idea.strategy,
                "direction": idea.direction, "size_gbp_per_pip": self.s.trade.size_gbp_per_pip, "market_state": state,
                "opened_utc": opened_at, "entry_price": idea.entry_price, "open_price": r.level,
@@ -321,7 +380,7 @@ class Trading:
                 "minutes_open": int((closed_at - rec["opened_utc"]).total_seconds() // 60), "best_pips": best,
                 "levels_lined_up": lined,
                 "half_close": None if half is None else vars(half), "rest": None if rest is None else vars(rest),
-                "closed_by": by}
+                "closed_by": by, "stop_moves": list(mt.stop_moves)}
             self.book.closed(row)
             if self.trading_on and by == "bot":            # the owner's close: the order sender's short message
                 today = self.book.today(closed_at)
@@ -423,6 +482,7 @@ class Trading:
             b = Bar(tick.time, tick.buy, tick.buy, tick.buy, tick.buy, tick.sell, tick.sell, tick.sell, tick.sell)
             hist = self.tracker.history
             band = (hist[-1][0].upper, hist[-1][0].lower) if hist and hist[-1][0].upper is not None else None
+            self._trend_watch(b)
             self.manager.on_bar(b, band, [], analyser_watching(self.tracker.watcher))
             self._after_bars()
 
@@ -511,6 +571,7 @@ class Trading:
                 "price": None if tick is None else {"bid": str(tick.sell), "offer": str(tick.buy),
                                                     "time_utc": tick.time.strftime("%Y-%m-%dT%H:%M:%SZ")},
                 "open_trades": trades,
+                "trend_day": self.trend_watch.status(now) if self._trend_on() else None,
                 "today": {"trades": today.trades, "wins": today.wins, "losses": today.losses,
                           "pips": str(today.pips), "gbp": str(today.gbp)},
                 "warnings": warnings}

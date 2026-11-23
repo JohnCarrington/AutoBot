@@ -22,7 +22,18 @@ a bar whose open, high, low and close are the same), in this order (as the resea
      only once IG confirms it ("stop moved"); if IG does not confirm it the old stop stays ("stop not moved") and the
      move is tried again after orders.close_retry_seconds, up to orders.stop_move_attempts (3) in all; then the bot
      gives up on that level (one alert to the owner) and works the trail out again after the next finished candle.
-     A later candle's level replaces one still waiting (owner, 17 November 2026);
+     A later candle's level replaces one still waiting (owner, 17 November 2026).
+     Johnny's exit for emerging-trend trades (owner, 21 November 2026; switch EMERGING_LADDER, on if left out;
+     [emerging_ladder]): a trade opened while the analyser said "emerging trend" (up or down, as recorded on the trade
+     at open; every strategy) has its stop at IG moved to +5 once it is +10, and to +10 once it is +15 (pips as IG
+     closes it, from the fill). Checked after every price (each tick live, each candle in a replay), from the best
+     pips reached so far. It goes through the same stop-move path as the trail (_move_stop: the nearest level IG
+     allows, counted only once IG confirms it, 3 attempts then given up until the next finished candle). A level is
+     asked for once; it is asked for again only at a new step, or after the next finished candle if IG's stop is not
+     there yet (the nearest level IG allowed, or a move given up), at the trail's pace. Never
+     backwards, and whichever stop is tighter wins: the ladder moves only to a level closer than the stop IG holds and
+     than a move still waiting, and a trail level looser than the ladder's is not sent. The take profit is unchanged.
+     Every confirmed stop move (trail or ladder) is kept on the trade (ManagedTrade.stop_moves) and recorded;
   3. the range trade's half close at the opposite band (range_trade.close_percent_at_opposite_band, 50%),
      the band as it stood at the last finished candle; the bot closes that part;
   4. the take profit at IG (strategies.common.take_profit_pips: 100 on a big-news day or in a trend day's
@@ -58,6 +69,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
+from analyser.states import EMERGING
 from strategies.common import (BUY, RANGE_TRADE, SELL, closed_before_big_news, closed_on_level_rejection,
                                forced_close_at, profit_lock, take_profit_pips, trail)
 
@@ -70,6 +82,8 @@ HOLD, HALF_CLOSE, CLOSE, FORCED_CLOSE, STOPPED_BY_IG, TAKE_PROFIT_AT_IG, WATCHIN
 CLOSED_AT_IG, CLOSE_NOT_DONE = "closed at IG", "close not done"
 # The Bollinger bounce's stop moved at IG by its trail, and a move IG did not confirm (owner, 15 November 2026).
 STOP_MOVED, STOP_NOT_MOVED = "stop moved", "stop not moved"
+# Who asked for a stop move: a strategy's trail, or Johnny's emerging-trend ladder (owner, 21 November 2026).
+BY_TRAIL, BY_LADDER = "trail", "emerging ladder"
 # Live only: the owner closed it by hand at IG (IG's channel SYSTEM, not at the stop or take profit; owner,
 # 11 November 2026). Kept apart from the bot's own exits in the records, the dashboard and the summaries.
 CLOSED_BY_OWNER = "closed by owner"
@@ -149,6 +163,12 @@ class ManagedTrade:
     retry_move_at: datetime | None = None   # live: a stop move IG did not confirm is tried again from this time
     move_attempts: int = 0                  # live: stop moves IG did not confirm (for the level waiting)
     decisions: list[Decision] = field(default_factory=list)
+    market_state: str | None = None         # the analyser's state when it opened, as recorded ("emerging trend up")
+    want_by: str | None = None              # who asked for the stop move waiting (BY_TRAIL or BY_LADDER)
+    want_why: str | None = None             # ... and why
+    ladder_asked: Decimal | None = None     # the ladder's level last asked for: asked again only for a new step, or
+                                            # after the next finished candle (as the trail's pace)
+    stop_moves: list[dict] = field(default_factory=list)   # every confirmed stop move (owner, 21 November 2026)
 
     @property
     def open(self) -> bool:
@@ -187,8 +207,10 @@ def day_news_direction(settings: Any, pair: str, t: datetime, calendar: list | N
 
 
 def plan(settings: Any, reference: str, strategy: str, direction: str, opened_at: datetime, entry_price: Decimal,
-         fill: Decimal, stop_pips: Decimal, calendar: list | None = None, trend_day: str | None = None) -> ManagedTrade:
-    """A trade's exits, worked out when it opens."""
+         fill: Decimal, stop_pips: Decimal, calendar: list | None = None, trend_day: str | None = None,
+         market_state: str | None = None) -> ManagedTrade:
+    """A trade's exits, worked out when it opens. `market_state`: the analyser's state recorded on the trade when it
+    opened (e.g. "emerging trend down"), for the emerging-trend ladder."""
     from news.calendar import big_news_windows
     from datetime import timedelta
     pair = settings.market.pair
@@ -203,7 +225,8 @@ def plan(settings: Any, reference: str, strategy: str, direction: str, opened_at
     return ManagedTrade(reference, strategy, direction, opened_at, Decimal(entry_price), Decimal(fill), Decimal(stop_pips),
                         Decimal(tp), close_at, why, profit_lock(settings, strategy), closed_on_level_rejection(strategy),
                         strategy == RANGE_TRADE, day_news_direction(settings, pair, opened_at, calendar),
-                        trail_from=trail_from(settings, strategy), trail_candles=_trail_candles(settings, strategy))
+                        trail_from=trail_from(settings, strategy), trail_candles=_trail_candles(settings, strategy),
+                        market_state=market_state)
 
 
 def trail_from(settings: Any, strategy: str) -> Decimal | None:
@@ -219,6 +242,29 @@ def _trail_candles(settings: Any, strategy: str) -> int:
     """How many finished candles the trail looks back over (3); the bounce's for a strategy without a trail."""
     got = trail(settings, strategy)
     return int(settings.bounce.trail_candles) if got is None else got[1]
+
+
+def ladder_applies(settings: Any, t: ManagedTrade) -> bool:
+    """Johnny's emerging-trend ladder runs this trade: the switch is on and the trade opened in "emerging trend"."""
+    return bool(getattr(settings.switches, "emerging_ladder", False)) and (t.market_state or "").startswith(EMERGING)
+
+
+def ladder_stop_pips(settings: Any, t: ManagedTrade) -> Decimal | None:
+    """The ladder's stop, in pips up from the fill, for the best pips reached so far: second_stop_pips once
+    second_from_pips up, first_stop_pips once first_from_pips up, otherwise None."""
+    if t.best is None or not ladder_applies(settings, t):
+        return None
+    el = settings.emerging_ladder
+    if t.best >= Decimal(el.second_from_pips):
+        return Decimal(el.second_stop_pips)
+    if t.best >= Decimal(el.first_from_pips):
+        return Decimal(el.first_stop_pips)
+    return None
+
+
+def _closer(direction: str, a: Decimal, b: Decimal) -> bool:
+    """Stop level a is tighter (closer to the price, in the trade's favour) than b."""
+    return a < b if direction == SELL else a > b
 
 
 def step(settings: Any, t: ManagedTrade, bar: Bar, band: tuple[Decimal, Decimal] | None = None,
@@ -329,7 +375,8 @@ class TradeManager:
     def _snapshot(t: ManagedTrade) -> dict:
         return {"best": None if t.best is None else str(t.best), "bars": t.bars, "half_done": t.half_done,
                 "half_pips": None if t.half_pips is None else str(t.half_pips), "half_share": str(t.half_share),
-                "watching": t.watching, "opened_at": t.opened_at.strftime("%Y-%m-%dT%H:%M:%SZ")}
+                "watching": t.watching, "opened_at": t.opened_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "stop_moves": list(t.stop_moves)}
 
     def save_state(self) -> None:
         """Save each open trade's best pips so far, half close and watching (only when something changed)."""
@@ -360,6 +407,7 @@ class TradeManager:
         t.half_pips = None if saved["half_pips"] is None else Decimal(saved["half_pips"])
         t.half_share = Decimal(saved["half_share"])
         t.watching = bool(saved["watching"])
+        t.stop_moves = list(saved.get("stop_moves") or [])
         if t.half_done and t.state == HOLD:
             t.state = HALF_CLOSE
         return True
@@ -421,6 +469,8 @@ class TradeManager:
                         d = Decision(d.kind, d.price, d.pips, d.why + " (expected; IG has not closed it yet)", d.part)
                 self._record(t, d, sent)
                 done.append((t, d))
+            if t.open:
+                self._ladder(t)                         # Johnny's emerging-trend ladder, from the best so far
             if t.open and t.level_close:
                 against = BUY if t.direction == SELL else SELL
                 now_watching = against in watching and t.news_direction != t.direction
@@ -439,8 +489,48 @@ class TradeManager:
         if not self.recent or bar.start > self.recent[-1].start:
             self.recent.append(bar)
             del self.recent[:-50]
+        for t in [t for t in self.trades.values() if t.open]:
+            t.ladder_asked = None                       # the ladder's level is worked out again now, as the trail's
         for t in [t for t in self.trades.values() if t.open and t.trail_from is not None]:
             self._trail(t)
+        for t in [t for t in self.trades.values() if t.open]:
+            self._ladder(t)
+
+    def _ladder_level(self, t: ManagedTrade) -> Decimal | None:
+        """The ladder's stop as a price (IG's level) for the best so far, or None."""
+        pips = ladder_stop_pips(self.s, t)
+        if pips is None:
+            return None
+        ppp = Decimal(self.s.market.points_per_pip)
+        return (t.fill - pips * ppp) if t.direction == SELL else (t.fill + pips * ppp)
+
+    def _ladder(self, t: ManagedTrade) -> None:
+        """Johnny's emerging-trend ladder (owner, 21 November 2026): once the trade is first_from_pips up its stop
+        moves to first_stop_pips up, once second_from_pips up to second_stop_pips up. Only to a level tighter than the
+        stop IG holds (never backwards; a tighter trail or earlier move is kept) and tighter than a move still
+        waiting; through _move_stop, as the trail."""
+        if not t.open:
+            return
+        level = self._ladder_level(t)
+        if level is None or level == t.ladder_asked:
+            return                                      # nothing yet, or this level already asked for since the candle
+        ppp = Decimal(self.s.market.points_per_pip)
+        sell = t.direction == SELL
+        now = t.stop_level if t.stop_level is not None else ((t.fill + t.stop_pips * ppp) if sell else (t.fill - t.stop_pips * ppp))
+        if not _closer(t.direction, level, now):
+            return
+        if t.trail_want is not None and not _closer(t.direction, level, t.trail_want):
+            return                                      # a move as tight or tighter is already waiting
+        el = self.s.emerging_ladder
+        second = t.best >= Decimal(el.second_from_pips)
+        rule = (f"+{el.second_from_pips} reached: stop to +{el.second_stop_pips}" if second
+                else f"+{el.first_from_pips} reached: stop to +{el.first_stop_pips}")
+        pips = ladder_stop_pips(self.s, t)
+        t.trail_want, t.want_by, t.ladder_asked = level, BY_LADDER, level
+        t.want_why = (f"{t.best} pips up at best, opened in {t.market_state}: the emerging-trend ladder ({rule}) moves "
+                      f"the stop to {level} ({pips} pips up)")
+        t.retry_move_at, t.move_attempts = None, 0
+        self._move_stop(t)
 
     def _trail(self, t: ManagedTrade) -> None:
         """The Bollinger bounce's trail (owner, 15 November 2026): once the trade has been trail_from pips up, its
@@ -457,8 +547,12 @@ class TradeManager:
         now = t.stop_level
         if now is None:
             now = (t.fill + t.stop_pips * ppp) if sell else (t.fill - t.stop_pips * ppp)
+        lad = self._ladder_level(t)
+        if lad is not None and not _closer(t.direction, want, lad):
+            return                                  # the emerging-trend ladder's stop is as tight or tighter: it wins
         if ((want < now) if sell else (want > now)) and want != t.trail_want:
             t.trail_want = want                     # a newer level replaces one still waiting: a fresh set of attempts
+            t.want_by, t.want_why = BY_TRAIL, None
             t.retry_move_at = None
             t.move_attempts = 0
             self._move_stop(t)
@@ -473,8 +567,9 @@ class TradeManager:
             return
         if self.ig_confirms and t.retry_move_at is not None and self.now() < t.retry_move_at:
             return
-        why = (f"{t.best} pips up at best (the trail from {t.trail_from}): the stop moves to {want}, beyond the last "
-               f"{t.trail_candles} candles")
+        by = t.want_by or BY_TRAIL
+        why = t.want_why or (f"{t.best} pips up at best (the trail from {t.trail_from}): the stop moves to {want}, "
+                             f"beyond the last {t.trail_candles} candles")
         sent = self.sender.move_stop(t.reference, want, why=why) if hasattr(self.sender, "move_stop") else None
         if sent is None or getattr(sent, "ok", False) or not self.ig_confirms:
             # the order sender may have sent the nearest level IG allows instead (owner, 17 November 2026)
@@ -485,8 +580,11 @@ class TradeManager:
                 self.sender.alerts.info(f"AutoBot: the stop of {t.strategy} {t.direction} trade {t.reference} is now at "
                                         f"{level} at IG, after {t.move_attempts} move(s) IG did not confirm.")
             t.stop_level, t.trail_want, t.retry_move_at, t.move_attempts = level, None, None, 0
+            t.want_by = t.want_why = None
             ppp = Decimal(self.s.market.points_per_pip)
             pips = ((t.fill - level) if t.direction == SELL else (level - t.fill)) / ppp
+            t.stop_moves.append({"time_utc": self.now().strftime("%Y-%m-%dT%H:%M:%SZ"), "level": str(level),
+                                 "pips": str(pips), "by": by, "why": why})
             self._record(t, Decision(STOP_MOVED, level, pips, why), sent)
             return
         t.move_attempts += 1
@@ -499,15 +597,16 @@ class TradeManager:
             stays = t.stop_level if t.stop_level is not None else "its stop when it opened"
             self._record(t, Decision(STOP_NOT_MOVED, tried, None,
                                      f"{why}: not done, IG did not confirm it ({reason}); gave up after {attempts} "
-                                     f"attempts: the stop stays at {stays} and the trail is worked out again after "
+                                     f"attempts: the stop stays at {stays} and the {by} is worked out again after "
                                      f"the next finished candle"), sent)
             alerts = getattr(self.sender, "alerts", None)
             if alerts is not None and hasattr(alerts, "problem"):
                 alerts.problem(f"stop-move-gave-up-{t.reference}",
                                f"IG did not move the stop of {t.strategy} {t.direction} trade {t.reference} to {tried} "
-                               f"(the trail) in {attempts} attempts: {reason}. The stop stays at {stays} at IG and in "
-                               f"the bot's records; the trail is worked out again after the next finished candle.")
+                               f"(the {by}) in {attempts} attempts: {reason}. The stop stays at {stays} at IG and in "
+                               f"the bot's records; the {by} is worked out again after the next finished candle.")
             t.trail_want, t.retry_move_at, t.move_attempts = None, None, 0
+            t.want_by = t.want_why = None           # the ladder, as the trail: worked out again after the next candle
             return
         t.retry_move_at = self.now() + timedelta(seconds=self.s.orders.close_retry_seconds)
         self._record(t, Decision(STOP_NOT_MOVED, tried, None,

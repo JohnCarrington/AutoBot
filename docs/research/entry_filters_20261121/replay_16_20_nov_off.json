@@ -1,0 +1,859 @@
+{
+ "filters": "off",
+ "switches": {
+  "TRADING": "off",
+  "PAIRS_ON": "GBPUSD",
+  "NEW_TRADES_FROM": "06:00",
+  "NEW_TRADES_UNTIL": "20:30",
+  "STRATEGY_SLOW_GRIND": "on",
+  "STRATEGY_BREAKOUT": "on",
+  "STRATEGY_EMA_PULLBACK": "on",
+  "STRATEGY_BOLLINGER_BOUNCE": "on",
+  "STRATEGY_LEVEL_REVERSAL": "on",
+  "STRATEGY_RANGE_TRADE": "on",
+  "STRATEGY_ASIAN_RANGE_BREAKOUT": "on",
+  "STRATEGY_SESSION_SWEEP": "on",
+  "STRATEGY_NEW_YORK_OPEN_REVERSAL": "on",
+  "STOP_LOSS_PIPS": "12",
+  "STOP_LOSS_PIPS_EMA_PULLBACK": "12",
+  "TAKE_PROFIT_PIPS": "100",
+  "PLANNER_OBSERVE": "on",
+  "ONE_SIGNAL_ONE_TRADE": "on",
+  "STRATEGY_BOLLINGER_BOUNCE_5M": "on",
+  "HOURLY_CONTEXT": "off",
+  "ENTRY_NEAR_EMA8": "off"
+ },
+ "trades": [
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-16T06:50:00+00:00",
+   "opened_uk": "Mon 16 Nov 06:50",
+   "entry": "13197.8",
+   "how": "stopped by IG",
+   "pips": "-11.2",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-16T07:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 07:15",
+   "entry": "13204.4",
+   "how": "close",
+   "pips": "-5.8",
+   "filters": []
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "time_utc": "2026-11-16T07:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 07:15",
+   "entry": "13204.4",
+   "how": "stopped by IG",
+   "pips": "-16.5",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-16T09:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 09:15",
+   "entry": "13211.1",
+   "how": "close",
+   "pips": "+11.0",
+   "filters": []
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "time_utc": "2026-11-16T09:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 09:15",
+   "entry": "13213.4",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "time_utc": "2026-11-16T09:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 09:15",
+   "entry": "13213.4",
+   "how": "stopped by IG",
+   "pips": "+22.9",
+   "filters": []
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-16T09:50:00+00:00",
+   "opened_uk": "Mon 16 Nov 09:50",
+   "entry": "13186.7",
+   "how": "stopped by IG",
+   "pips": "-17.6",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time_utc": "2026-11-16T10:25:00+00:00",
+   "opened_uk": "Mon 16 Nov 10:25",
+   "entry": "13196.3",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "buy",
+   "time_utc": "2026-11-16T10:30:00+00:00",
+   "opened_uk": "Mon 16 Nov 10:30",
+   "entry": "13199.3",
+   "how": "stopped by IG",
+   "pips": "-17.2",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-16T10:50:00+00:00",
+   "opened_uk": "Mon 16 Nov 10:50",
+   "entry": "13186.8",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-16T12:35:00+00:00",
+   "opened_uk": "Mon 16 Nov 12:35",
+   "entry": "13194.6",
+   "how": "forced close",
+   "pips": "+8.4",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-16T14:25:00+00:00",
+   "opened_uk": "Mon 16 Nov 14:25",
+   "entry": "13192.1",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-16T14:55:00+00:00",
+   "opened_uk": "Mon 16 Nov 14:55",
+   "entry": "13187.1",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-16T15:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 15:15",
+   "entry": "13192.9",
+   "how": "close",
+   "pips": "-5.6",
+   "filters": []
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "time_utc": "2026-11-16T15:45:00+00:00",
+   "opened_uk": "Mon 16 Nov 15:45",
+   "entry": "13187.2",
+   "how": "forced close",
+   "pips": "+1.0",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-16T15:50:00+00:00",
+   "opened_uk": "Mon 16 Nov 15:50",
+   "entry": "13183.1",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "buy",
+   "time_utc": "2026-11-16T16:10:00+00:00",
+   "opened_uk": "Mon 16 Nov 16:10",
+   "entry": "13193.7",
+   "how": "stopped by IG",
+   "pips": "-17.1",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-16T16:50:00+00:00",
+   "opened_uk": "Mon 16 Nov 16:50",
+   "entry": "13182.6",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-16T17:10:00+00:00",
+   "opened_uk": "Mon 16 Nov 17:10",
+   "entry": "13190.8",
+   "how": "close",
+   "pips": "+1.1",
+   "filters": []
+  },
+  {
+   "strategy": "range trade",
+   "direction": "sell",
+   "time_utc": "2026-11-16T17:25:00+00:00",
+   "opened_uk": "Mon 16 Nov 17:25",
+   "entry": "13193.8",
+   "how": "close",
+   "pips": "+9.9",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-16T20:00:00+00:00",
+   "opened_uk": "Mon 16 Nov 20:00",
+   "entry": "13184.7",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-17T01:10:00+00:00",
+   "opened_uk": "Tue 17 Nov 01:10",
+   "entry": "13175.9",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "time_utc": "2026-11-17T05:15:00+00:00",
+   "opened_uk": "Tue 17 Nov 05:15",
+   "entry": "13194.6",
+   "how": "stopped by IG",
+   "pips": "-15.0",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-17T06:00:00+00:00",
+   "opened_uk": "Tue 17 Nov 06:00",
+   "entry": "13198.8",
+   "how": "forced close",
+   "pips": "+3.2",
+   "filters": []
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-17T06:00:00+00:00",
+   "opened_uk": "Tue 17 Nov 06:00",
+   "entry": "13198.8",
+   "how": "forced close",
+   "pips": "+3.2",
+   "filters": []
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-17T07:35:00+00:00",
+   "opened_uk": "Tue 17 Nov 07:35",
+   "entry": "13192",
+   "how": "stopped by IG",
+   "pips": "-12.9",
+   "filters": []
+  },
+  {
+   "strategy": "range trade",
+   "direction": "sell",
+   "time_utc": "2026-11-17T08:55:00+00:00",
+   "opened_uk": "Tue 17 Nov 08:55",
+   "entry": "13190.8",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "time_utc": "2026-11-17T10:05:00+00:00",
+   "opened_uk": "Tue 17 Nov 10:05",
+   "entry": "13190.3",
+   "how": "stopped by IG",
+   "pips": "+8.7",
+   "filters": []
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-17T10:05:00+00:00",
+   "opened_uk": "Tue 17 Nov 10:05",
+   "entry": "13189.8",
+   "how": "stopped by IG",
+   "pips": "-20.6",
+   "filters": []
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "buy",
+   "time_utc": "2026-11-17T14:00:00+00:00",
+   "opened_uk": "Tue 17 Nov 14:00",
+   "entry": "13187",
+   "how": "stopped by IG",
+   "pips": "+5.4",
+   "filters": []
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "time_utc": "2026-11-17T16:20:00+00:00",
+   "opened_uk": "Tue 17 Nov 16:20",
+   "entry": "13217.2",
+   "how": "forced close",
+   "pips": "-9.1",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "time_utc": "2026-11-17T16:35:00+00:00",
+   "opened_uk": "Tue 17 Nov 16:35",
+   "entry": "13215",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "time_utc": "2026-11-17T16:45:00+00:00",
+   "opened_uk": "Tue 17 Nov 16:45",
+   "entry": "13218.4",
+   "how": "forced close",
+   "pips": "-10.3",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-17T16:45:00+00:00",
+   "opened_uk": "Tue 17 Nov 16:45",
+   "entry": "13213.7",
+   "how": "close",
+   "pips": "-5.8",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "buy",
+   "time_utc": "2026-11-17T17:15:00+00:00",
+   "opened_uk": "Tue 17 Nov 17:15",
+   "entry": "13223.3",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "time_utc": "2026-11-17T17:45:00+00:00",
+   "opened_uk": "Tue 17 Nov 17:45",
+   "entry": "13221.2",
+   "how": "forced close",
+   "pips": "+10.1",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-17T18:30:00+00:00",
+   "opened_uk": "Tue 17 Nov 18:30",
+   "entry": "13221.1",
+   "how": "close",
+   "pips": "-2.1",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-17T19:10:00+00:00",
+   "opened_uk": "Tue 17 Nov 19:10",
+   "entry": "13216.7",
+   "how": "forced close",
+   "pips": "+5.6",
+   "filters": []
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "time_utc": "2026-11-18T04:05:00+00:00",
+   "opened_uk": "Wed 18 Nov 04:05",
+   "entry": "13195.5",
+   "how": "forced close",
+   "pips": "+45.9",
+   "filters": []
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "time_utc": "2026-11-18T06:05:00+00:00",
+   "opened_uk": "Wed 18 Nov 06:05",
+   "entry": "13189",
+   "how": "stopped by IG",
+   "pips": "-6.0",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-18T07:05:00+00:00",
+   "opened_uk": "Wed 18 Nov 07:05",
+   "entry": "13177.1",
+   "how": "forced close",
+   "pips": "+92.0",
+   "filters": []
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "time_utc": "2026-11-18T07:20:00+00:00",
+   "opened_uk": "Wed 18 Nov 07:20",
+   "entry": "13181.8",
+   "how": "take profit hit at IG",
+   "pips": "+50.0",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-18T08:05:00+00:00",
+   "opened_uk": "Wed 18 Nov 08:05",
+   "entry": "13167.1",
+   "how": "forced close",
+   "pips": "+82.0",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time_utc": "2026-11-18T09:30:00+00:00",
+   "opened_uk": "Wed 18 Nov 09:30",
+   "entry": "13161.8",
+   "how": "stopped by IG",
+   "pips": "+8.4",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-18T09:30:00+00:00",
+   "opened_uk": "Wed 18 Nov 09:30",
+   "entry": "13161.9",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-18T11:30:00+00:00",
+   "opened_uk": "Wed 18 Nov 11:30",
+   "entry": "13164.1",
+   "how": "forced close",
+   "pips": "+79.0",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-18T12:35:00+00:00",
+   "opened_uk": "Wed 18 Nov 12:35",
+   "entry": "13156.2",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-18T13:00:00+00:00",
+   "opened_uk": "Wed 18 Nov 13:00",
+   "entry": "13161",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-18T14:10:00+00:00",
+   "opened_uk": "Wed 18 Nov 14:10",
+   "entry": "13159.3",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-18T16:20:00+00:00",
+   "opened_uk": "Wed 18 Nov 16:20",
+   "entry": "13140.8",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-18T16:50:00+00:00",
+   "opened_uk": "Wed 18 Nov 16:50",
+   "entry": "13145.1",
+   "how": "forced close",
+   "pips": "+10.7",
+   "filters": []
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "time_utc": "2026-11-18T16:50:00+00:00",
+   "opened_uk": "Wed 18 Nov 16:50",
+   "entry": "13145.1",
+   "how": "forced close",
+   "pips": "+10.7",
+   "filters": []
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "buy",
+   "time_utc": "2026-11-18T17:00:00+00:00",
+   "opened_uk": "Wed 18 Nov 17:00",
+   "entry": "13150.3",
+   "how": "forced close",
+   "pips": "+5.5",
+   "filters": []
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-18T19:30:00+00:00",
+   "opened_uk": "Wed 18 Nov 19:30",
+   "entry": "13138.9",
+   "how": "forced close",
+   "pips": "-10.7",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-19T00:10:00+00:00",
+   "opened_uk": "Thu 19 Nov 00:10",
+   "entry": "13142",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "time_utc": "2026-11-19T02:55:00+00:00",
+   "opened_uk": "Thu 19 Nov 02:55",
+   "entry": "13132",
+   "how": "stopped by IG",
+   "pips": "-15.0",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-19T03:00:00+00:00",
+   "opened_uk": "Thu 19 Nov 03:00",
+   "entry": "13129",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "time_utc": "2026-11-19T07:55:00+00:00",
+   "opened_uk": "Thu 19 Nov 07:55",
+   "entry": "13155.6",
+   "how": "stopped by IG",
+   "pips": "-15.0",
+   "filters": []
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "time_utc": "2026-11-19T07:55:00+00:00",
+   "opened_uk": "Thu 19 Nov 07:55",
+   "entry": "13152.2",
+   "how": "stopped by IG",
+   "pips": "+11.9",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-19T09:20:00+00:00",
+   "opened_uk": "Thu 19 Nov 09:20",
+   "entry": "13151.7",
+   "how": "close",
+   "pips": "-8.1",
+   "filters": []
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "time_utc": "2026-11-19T09:30:00+00:00",
+   "opened_uk": "Thu 19 Nov 09:30",
+   "entry": "13143.4",
+   "how": "stopped by IG",
+   "pips": "-18.3",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-19T11:15:00+00:00",
+   "opened_uk": "Thu 19 Nov 11:15",
+   "entry": "13165.5",
+   "how": "close",
+   "pips": "+4.9",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time_utc": "2026-11-19T15:40:00+00:00",
+   "opened_uk": "Thu 19 Nov 15:40",
+   "entry": "13116.3",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-19T15:40:00+00:00",
+   "opened_uk": "Thu 19 Nov 15:40",
+   "entry": "13119.3",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-19T16:15:00+00:00",
+   "opened_uk": "Thu 19 Nov 16:15",
+   "entry": "13110.6",
+   "how": "take profit hit at IG",
+   "pips": "+30.0",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time_utc": "2026-11-19T16:40:00+00:00",
+   "opened_uk": "Thu 19 Nov 16:40",
+   "entry": "13113.8",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-19T17:05:00+00:00",
+   "opened_uk": "Thu 19 Nov 17:05",
+   "entry": "13101.4",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time_utc": "2026-11-19T17:20:00+00:00",
+   "opened_uk": "Thu 19 Nov 17:20",
+   "entry": "13105.9",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "time_utc": "2026-11-19T17:20:00+00:00",
+   "opened_uk": "Thu 19 Nov 17:20",
+   "entry": "13106",
+   "how": "forced close",
+   "pips": "-8.4",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time_utc": "2026-11-19T18:40:00+00:00",
+   "opened_uk": "Thu 19 Nov 18:40",
+   "entry": "13106.6",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-19T19:50:00+00:00",
+   "opened_uk": "Thu 19 Nov 19:50",
+   "entry": "13094.8",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "time_utc": "2026-11-20T06:05:00+00:00",
+   "opened_uk": "Fri 20 Nov 06:05",
+   "entry": "13109.6",
+   "how": "stopped by IG",
+   "pips": "-16.9",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-20T07:25:00+00:00",
+   "opened_uk": "Fri 20 Nov 07:25",
+   "entry": "13114.8",
+   "how": "close",
+   "pips": "-5.8",
+   "filters": []
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "time_utc": "2026-11-20T07:30:00+00:00",
+   "opened_uk": "Fri 20 Nov 07:30",
+   "entry": "13113.4",
+   "how": "stopped by IG",
+   "pips": "+8.6",
+   "filters": []
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "time_utc": "2026-11-20T07:40:00+00:00",
+   "opened_uk": "Fri 20 Nov 07:40",
+   "entry": "13118.1",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "time_utc": "2026-11-20T13:10:00+00:00",
+   "opened_uk": "Fri 20 Nov 13:10",
+   "entry": "13126.2",
+   "how": "stopped by IG",
+   "pips": "-34.1",
+   "filters": []
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "time_utc": "2026-11-20T13:25:00+00:00",
+   "opened_uk": "Fri 20 Nov 13:25",
+   "entry": "13126.9",
+   "how": "stopped by IG",
+   "pips": "-15.0",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "time_utc": "2026-11-20T13:30:00+00:00",
+   "opened_uk": "Fri 20 Nov 13:30",
+   "entry": "13119.4",
+   "how": "stopped by IG",
+   "pips": "+4.4",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-20T13:30:00+00:00",
+   "opened_uk": "Fri 20 Nov 13:30",
+   "entry": "13118.9",
+   "how": "close",
+   "pips": "+1.8",
+   "filters": []
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "time_utc": "2026-11-20T13:35:00+00:00",
+   "opened_uk": "Fri 20 Nov 13:35",
+   "entry": "13116.2",
+   "how": "stopped by IG",
+   "pips": "+1.0",
+   "filters": []
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-20T14:45:00+00:00",
+   "opened_uk": "Fri 20 Nov 14:45",
+   "entry": "13107.4",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": []
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-20T18:40:00+00:00",
+   "opened_uk": "Fri 20 Nov 18:40",
+   "entry": "13092.3",
+   "how": "forced close",
+   "pips": "+7.2",
+   "filters": []
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-20T18:45:00+00:00",
+   "opened_uk": "Fri 20 Nov 18:45",
+   "entry": "13089.7",
+   "how": "forced close",
+   "pips": "+4.6",
+   "filters": []
+  }
+ ],
+ "refused": []
+}

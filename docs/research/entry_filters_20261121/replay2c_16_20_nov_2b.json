@@ -1,0 +1,3005 @@
+{
+ "filters": "2b",
+ "switches": {
+  "TRADING": "off",
+  "PAIRS_ON": "GBPUSD",
+  "NEW_TRADES_FROM": "06:00",
+  "NEW_TRADES_UNTIL": "20:30",
+  "STRATEGY_SLOW_GRIND": "on",
+  "STRATEGY_BREAKOUT": "on",
+  "STRATEGY_EMA_PULLBACK": "on",
+  "STRATEGY_BOLLINGER_BOUNCE": "on",
+  "STRATEGY_LEVEL_REVERSAL": "on",
+  "STRATEGY_RANGE_TRADE": "on",
+  "STRATEGY_ASIAN_RANGE_BREAKOUT": "on",
+  "STRATEGY_SESSION_SWEEP": "on",
+  "STRATEGY_NEW_YORK_OPEN_REVERSAL": "on",
+  "STOP_LOSS_PIPS": "12",
+  "STOP_LOSS_PIPS_EMA_PULLBACK": "12",
+  "TAKE_PROFIT_PIPS": "100",
+  "PLANNER_OBSERVE": "on",
+  "ONE_SIGNAL_ONE_TRADE": "on",
+  "STRATEGY_BOLLINGER_BOUNCE_5M": "on",
+  "HOURLY_CONTEXT": "on",
+  "ENTRY_NEAR_EMA8": "off",
+  "RSI_STRETCH": "on",
+  "TREND_DAY_RSI_OFF": "on",
+  "EMERGING_LADDER": "off"
+ },
+ "trades": [
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-16T09:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 09:15",
+   "entry": "13211.1",
+   "how": "close",
+   "pips": "+11.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13213.3 (Mon 05:00) after 13218.5 (Mon 00:00); last hourly close 13216.2 (Mon 16 Nov 08:00 candle), 50 EMA 13232.5, 6 candles before 13239.8: close below it and falling; RSI stretch: 5-minute RSI 3 38.6 at the 09:10 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-16T09:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 09:15",
+   "entry": "13211.1",
+   "how": "take profit hit at IG",
+   "pips": "+20.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13213.3 (Mon 05:00) after 13218.5 (Mon 00:00); last hourly close 13216.2 (Mon 16 Nov 08:00 candle), 50 EMA 13232.5, 6 candles before 13239.8: close below it and falling; RSI stretch: 5-minute RSI 3 38.6 at the 09:10 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "time_utc": "2026-11-16T09:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 09:15",
+   "entry": "13213.4",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: Asian range breakout is exempt; RSI stretch: Asian range breakout is exempt"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "time_utc": "2026-11-16T09:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 09:15",
+   "entry": "13213.4",
+   "how": "stopped by IG",
+   "pips": "+22.9",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13213.3 (Mon 05:00) after 13218.5 (Mon 00:00); last hourly close 13216.2 (Mon 16 Nov 08:00 candle), 50 EMA 13232.5, 6 candles before 13239.8: close below it and falling; RSI stretch: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "buy",
+   "time_utc": "2026-11-16T10:30:00+00:00",
+   "opened_uk": "Mon 16 Nov 10:30",
+   "entry": "13199.3",
+   "how": "stopped by IG",
+   "pips": "-17.2",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13213.3 (Mon 05:00) after 13218.5 (Mon 00:00); last hourly close 13188.7 (Mon 16 Nov 09:00 candle), 50 EMA 13230.8, 6 candles before 13238.5: close below it and falling; the buy is not within 5 pips of the daily pivot (13211.7) or the 50 EMA (13230.8); RSI stretch: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-16T12:35:00+00:00",
+   "opened_uk": "Mon 16 Nov 12:35",
+   "entry": "13194.6",
+   "how": "forced close",
+   "pips": "+8.4",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13213.3 then 13224.5; swing lows 13199.9 then 13195.4; last hourly close 13193.8 (Mon 16 Nov 11:00 candle), 50 EMA 13227.7, 6 candles before 13236.1; RSI stretch: 5-minute RSI 3 34.9 at the 12:30 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-16T15:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 15:15",
+   "entry": "13192.9",
+   "how": "close",
+   "pips": "-5.6",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13213.3 then 13224.5; swing lows 13195.4 then 13182.1; last hourly close 13184.8 (Mon 16 Nov 14:00 candle), 50 EMA 13223.8, 6 candles before 13232.5; RSI stretch: 5-minute RSI 3 67.8 at the 15:10 candle, not over 70: allowed"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "time_utc": "2026-11-16T15:45:00+00:00",
+   "opened_uk": "Mon 16 Nov 15:45",
+   "entry": "13187.2",
+   "how": "forced close",
+   "pips": "+1.0",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13213.3 then 13224.5; swing lows 13195.4 then 13182.1; last hourly close 13184.8 (Mon 16 Nov 14:00 candle), 50 EMA 13223.8, 6 candles before 13232.5; RSI stretch: slow grind is exempt"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "buy",
+   "time_utc": "2026-11-16T16:10:00+00:00",
+   "opened_uk": "Mon 16 Nov 16:10",
+   "entry": "13193.7",
+   "how": "stopped by IG",
+   "pips": "-17.1",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13205.2 (Mon 13:00) after 13224.5 (Mon 09:00); last hourly close 13185.6 (Mon 16 Nov 15:00 candle), 50 EMA 13222.3, 6 candles before 13230.8: close below it and falling; the buy is not within 5 pips of the daily pivot (13211.7) or the 50 EMA (13222.3); RSI stretch: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "range trade",
+   "direction": "sell",
+   "time_utc": "2026-11-16T17:25:00+00:00",
+   "opened_uk": "Mon 16 Nov 17:25",
+   "entry": "13193.8",
+   "how": "close",
+   "pips": "+9.9",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13205.2 (Mon 13:00) after 13224.5 (Mon 09:00); last hourly close 13183.7 (Mon 16 Nov 16:00 candle), 50 EMA 13220.8, 6 candles before 13229.0: close below it and falling; RSI stretch: 5-minute RSI 3 77.4 at the 17:20 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-17T06:00:00+00:00",
+   "opened_uk": "Tue 17 Nov 06:00",
+   "entry": "13198.8",
+   "how": "forced close",
+   "pips": "+3.2",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13188.2 (Tue 00:00) after 13205.2 (Mon 13:00); last hourly close 13200.2 (Tue 17 Nov 05:00 candle), 50 EMA 13206.9, 6 candles before 13211.7: close below it and falling; RSI stretch: 5-minute RSI 3 52.8 at the 05:55 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-17T06:00:00+00:00",
+   "opened_uk": "Tue 17 Nov 06:00",
+   "entry": "13198.8",
+   "how": "forced close",
+   "pips": "+3.2",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13188.2 (Tue 00:00) after 13205.2 (Mon 13:00); last hourly close 13200.2 (Tue 17 Nov 05:00 candle), 50 EMA 13206.9, 6 candles before 13211.7: close below it and falling; RSI stretch: 5-minute RSI 3 52.8 at the 05:55 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-17T07:35:00+00:00",
+   "opened_uk": "Tue 17 Nov 07:35",
+   "entry": "13192",
+   "how": "stopped by IG",
+   "pips": "-12.9",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13188.2 (Tue 00:00) after 13205.2 (Mon 13:00); last hourly close 13187.5 (Tue 17 Nov 06:00 candle), 50 EMA 13206.2, 6 candles before 13210.6: close below it and falling; RSI stretch: 5-minute RSI 3 41.9 at the 07:30 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "range trade",
+   "direction": "sell",
+   "time_utc": "2026-11-17T08:55:00+00:00",
+   "opened_uk": "Tue 17 Nov 08:55",
+   "entry": "13190.8",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13188.2 then 13202.5; swing lows 13175.2 then 13168; last hourly close 13186 (Tue 17 Nov 07:00 candle), 50 EMA 13205.4, 6 candles before 13209.3; RSI stretch: 5-minute RSI 3 49.4 at the 08:50 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "buy",
+   "time_utc": "2026-11-17T14:00:00+00:00",
+   "opened_uk": "Tue 17 Nov 14:00",
+   "entry": "13187",
+   "how": "stopped by IG",
+   "pips": "+5.4",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13202.5 then 13204.4; swing lows 13168 then 13181.3; last hourly close 13186.9 (Tue 17 Nov 13:00 candle), 50 EMA 13202.3, 6 candles before 13205.4; RSI stretch: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "time_utc": "2026-11-17T16:35:00+00:00",
+   "opened_uk": "Tue 17 Nov 16:35",
+   "entry": "13215",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13202.5 then 13204.4; swing lows 13181.3 then 13172.8; last hourly close 13203.4 (Tue 17 Nov 15:00 candle), 50 EMA 13201.9, 6 candles before 13204.5; RSI stretch: 5-minute RSI 3 55.7 at the 16:30 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "time_utc": "2026-11-17T16:45:00+00:00",
+   "opened_uk": "Tue 17 Nov 16:45",
+   "entry": "13218.4",
+   "how": "forced close",
+   "pips": "-10.3",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13202.5 then 13204.4; swing lows 13181.3 then 13172.8; last hourly close 13203.4 (Tue 17 Nov 15:00 candle), 50 EMA 13201.9, 6 candles before 13204.5; RSI stretch: slow grind is exempt"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-17T16:45:00+00:00",
+   "opened_uk": "Tue 17 Nov 16:45",
+   "entry": "13213.7",
+   "how": "close",
+   "pips": "-5.8",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13202.5 then 13204.4; swing lows 13181.3 then 13172.8; last hourly close 13203.4 (Tue 17 Nov 15:00 candle), 50 EMA 13201.9, 6 candles before 13204.5; RSI stretch: 5-minute RSI 3 69.6 at the 16:40 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "time_utc": "2026-11-17T17:45:00+00:00",
+   "opened_uk": "Tue 17 Nov 17:45",
+   "entry": "13221.2",
+   "how": "forced close",
+   "pips": "+10.1",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13202.5 then 13204.4; swing lows 13181.3 then 13172.8; last hourly close 13215.3 (Tue 17 Nov 16:00 candle), 50 EMA 13202.5, 6 candles before 13203.8; RSI stretch: 5-minute RSI 3 39.2 at the 17:40 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-17T19:10:00+00:00",
+   "opened_uk": "Tue 17 Nov 19:10",
+   "entry": "13216.7",
+   "how": "forced close",
+   "pips": "+5.6",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13202.5 then 13204.4; swing lows 13181.3 then 13172.8; last hourly close 13218.3 (Tue 17 Nov 18:00 candle), 50 EMA 13203.9, 6 candles before 13202.9; RSI stretch: 5-minute RSI 3 30.4 at the 19:05 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "time_utc": "2026-11-18T04:05:00+00:00",
+   "opened_uk": "Wed 18 Nov 04:05",
+   "entry": "13195.5",
+   "how": "forced close",
+   "pips": "+45.9",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13204.4 then 13227.9; swing lows 13172.8 then 13194.9; last hourly close 13197.8 (Wed 18 Nov 03:00 candle), 50 EMA 13203.6, 6 candles before 13204.4; RSI stretch: slow grind is exempt"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "time_utc": "2026-11-18T06:05:00+00:00",
+   "opened_uk": "Wed 18 Nov 06:05",
+   "entry": "13189",
+   "how": "stopped by IG",
+   "pips": "-6.0",
+   "filters": [
+    "entry filters: hourly context: breakout is exempt; RSI stretch: breakout is exempt"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-18T07:05:00+00:00",
+   "opened_uk": "Wed 18 Nov 07:05",
+   "entry": "13177.1",
+   "how": "forced close",
+   "pips": "+92.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13206.9 (Wed 02:00) after 13227.9 (Tue 18:00); last hourly close 13190.4 (Wed 18 Nov 06:00 candle), 50 EMA 13202.4, 6 candles before 13204.1: close below it and falling; RSI stretch: not applied: a sell trend day (slow grind), and this sell is in its direction"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "time_utc": "2026-11-18T07:20:00+00:00",
+   "opened_uk": "Wed 18 Nov 07:20",
+   "entry": "13181.8",
+   "how": "take profit hit at IG",
+   "pips": "+50.0",
+   "filters": [
+    "entry filters: hourly context: breakout is exempt; RSI stretch: breakout is exempt"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-18T08:05:00+00:00",
+   "opened_uk": "Wed 18 Nov 08:05",
+   "entry": "13167.1",
+   "how": "forced close",
+   "pips": "+82.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13206.9 (Wed 02:00) after 13227.9 (Tue 18:00); last hourly close 13172.8 (Wed 18 Nov 07:00 candle), 50 EMA 13201.2, 6 candles before 13204.2: close below it and falling; RSI stretch: not applied: a sell trend day (slow grind), and this sell is in its direction"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-18T11:30:00+00:00",
+   "opened_uk": "Wed 18 Nov 11:30",
+   "entry": "13164.1",
+   "how": "forced close",
+   "pips": "+79.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13206.9 (Wed 02:00) after 13227.9 (Tue 18:00); last hourly close 13173.7 (Wed 18 Nov 10:00 candle), 50 EMA 13197.3, 6 candles before 13203.4: close below it and falling; RSI stretch: not applied: a sell trend day (slow grind), and this sell is in its direction"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-18T12:05:00+00:00",
+   "opened_uk": "Wed 18 Nov 12:05",
+   "entry": "13162",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13206.9 (Wed 02:00) after 13227.9 (Tue 18:00); last hourly close 13157 (Wed 18 Nov 11:00 candle), 50 EMA 13195.7, 6 candles before 13202.9: close below it and falling; the buy is not within 5 pips of the daily pivot (13200.1) or the 50 EMA (13195.7); RSI stretch: 5-minute RSI 3 50.5 at the 12:00 candle, not over 70 (a sell trend day: this buy is against it): allowed"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-18T12:35:00+00:00",
+   "opened_uk": "Wed 18 Nov 12:35",
+   "entry": "13156.2",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13206.9 (Wed 02:00) after 13227.9 (Tue 18:00); last hourly close 13157 (Wed 18 Nov 11:00 candle), 50 EMA 13195.7, 6 candles before 13202.9: close below it and falling; RSI stretch: not applied: a sell trend day (slow grind), and this sell is in its direction"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-18T13:00:00+00:00",
+   "opened_uk": "Wed 18 Nov 13:00",
+   "entry": "13161",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13175.6 (Wed 10:00) after 13206.9 (Wed 02:00); last hourly close 13160.1 (Wed 18 Nov 12:00 candle), 50 EMA 13194.3, 6 candles before 13202.4: close below it and falling; the buy is not within 5 pips of the daily pivot (13200.1) or the 50 EMA (13194.3); RSI stretch: 5-minute RSI 3 65.0 at the 12:55 candle, not over 70 (a sell trend day: this buy is against it): allowed"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-18T14:10:00+00:00",
+   "opened_uk": "Wed 18 Nov 14:10",
+   "entry": "13159.3",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13175.6 (Wed 10:00) after 13206.9 (Wed 02:00); last hourly close 13162.6 (Wed 18 Nov 13:00 candle), 50 EMA 13193.0, 6 candles before 13201.2: close below it and falling; RSI stretch: not applied: a sell trend day (slow grind), and this sell is in its direction"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-18T16:20:00+00:00",
+   "opened_uk": "Wed 18 Nov 16:20",
+   "entry": "13140.8",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13175.6 (Wed 10:00) after 13206.9 (Wed 02:00); last hourly close 13148.1 (Wed 18 Nov 15:00 candle), 50 EMA 13190.2, 6 candles before 13198.2: close below it and falling; RSI stretch: not applied: a sell trend day (slow grind), and this sell is in its direction"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-18T16:50:00+00:00",
+   "opened_uk": "Wed 18 Nov 16:50",
+   "entry": "13145.1",
+   "how": "forced close",
+   "pips": "+10.7",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13175.6 (Wed 10:00) after 13206.9 (Wed 02:00); last hourly close 13148.1 (Wed 18 Nov 15:00 candle), 50 EMA 13190.2, 6 candles before 13198.2: close below it and falling; the buy is not within 5 pips of the daily pivot (13200.1) or the 50 EMA (13190.2); RSI stretch: 5-minute RSI 3 64.2 at the 16:45 candle, not over 70 (a sell trend day: this buy is against it): allowed"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "time_utc": "2026-11-18T16:50:00+00:00",
+   "opened_uk": "Wed 18 Nov 16:50",
+   "entry": "13145.1",
+   "how": "forced close",
+   "pips": "+10.7",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13175.6 (Wed 10:00) after 13206.9 (Wed 02:00); last hourly close 13148.1 (Wed 18 Nov 15:00 candle), 50 EMA 13190.2, 6 candles before 13198.2: close below it and falling; the buy is not within 5 pips of the daily pivot (13200.1) or the 50 EMA (13190.2); RSI stretch: 5-minute RSI 3 64.2 at the 16:45 candle, not over 70 (a sell trend day: this buy is against it): allowed"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "buy",
+   "time_utc": "2026-11-18T17:00:00+00:00",
+   "opened_uk": "Wed 18 Nov 17:00",
+   "entry": "13150.3",
+   "how": "forced close",
+   "pips": "+5.5",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13175.6 (Wed 10:00) after 13206.9 (Wed 02:00); last hourly close 13150.2 (Wed 18 Nov 16:00 candle), 50 EMA 13188.6, 6 candles before 13197.3: close below it and falling; the buy is not within 5 pips of the daily pivot (13200.1) or the 50 EMA (13188.6); RSI stretch: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-18T19:30:00+00:00",
+   "opened_uk": "Wed 18 Nov 19:30",
+   "entry": "13138.9",
+   "how": "forced close",
+   "pips": "-10.7",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13175.6 (Wed 10:00) after 13206.9 (Wed 02:00); last hourly close 13151.9 (Wed 18 Nov 18:00 candle), 50 EMA 13185.8, 6 candles before 13194.3: close below it and falling; RSI stretch: not applied: a sell trend day (slow grind), and this sell is in its direction"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "time_utc": "2026-11-19T02:55:00+00:00",
+   "opened_uk": "Thu 19 Nov 02:55",
+   "entry": "13132",
+   "how": "stopped by IG",
+   "pips": "-15.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13157.5 (Wed 18:00) after 13175.6 (Wed 10:00); last hourly close 13139.8 (Thu 19 Nov 01:00 candle), 50 EMA 13176.0, 6 candles before 13184.0: close below it and falling; RSI stretch: slow grind is exempt"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "time_utc": "2026-11-19T07:55:00+00:00",
+   "opened_uk": "Thu 19 Nov 07:55",
+   "entry": "13155.6",
+   "how": "stopped by IG",
+   "pips": "-15.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13153.3 (Thu 00:00) after 13157.5 (Wed 18:00); last hourly close 13138.7 (Thu 19 Nov 06:00 candle), 50 EMA 13168.1, 6 candles before 13177.4: close below it and falling; the buy is not within 5 pips of the daily pivot (13162.5) or the 50 EMA (13168.1); RSI stretch: slow grind is exempt"
+   ]
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "time_utc": "2026-11-19T07:55:00+00:00",
+   "opened_uk": "Thu 19 Nov 07:55",
+   "entry": "13152.2",
+   "how": "stopped by IG",
+   "pips": "+11.9",
+   "filters": [
+    "entry filters: hourly context: Asian range breakout is exempt; RSI stretch: Asian range breakout is exempt"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-19T09:20:00+00:00",
+   "opened_uk": "Thu 19 Nov 09:20",
+   "entry": "13151.7",
+   "how": "close",
+   "pips": "-8.1",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13153.3 (Thu 00:00) after 13157.5 (Wed 18:00); last hourly close 13155.5 (Thu 19 Nov 08:00 candle), 50 EMA 13167.1, 6 candles before 13174.2: close below it and falling; RSI stretch: 5-minute RSI 3 31.4 at the 09:15 candle, not under 30 (a buy trend day: this sell is against it): allowed"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "time_utc": "2026-11-19T09:30:00+00:00",
+   "opened_uk": "Thu 19 Nov 09:30",
+   "entry": "13143.4",
+   "how": "stopped by IG",
+   "pips": "-18.3",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13153.3 (Thu 00:00) after 13157.5 (Wed 18:00); last hourly close 13155.5 (Thu 19 Nov 08:00 candle), 50 EMA 13167.1, 6 candles before 13174.2: close below it and falling; RSI stretch: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time_utc": "2026-11-19T15:40:00+00:00",
+   "opened_uk": "Thu 19 Nov 15:40",
+   "entry": "13116.3",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13153.3 then 13171.9; swing lows 13136.3 then 13119.1; last hourly close 13141.2 (Thu 19 Nov 14:00 candle), 50 EMA 13164.3, 6 candles before 13167.1; RSI stretch: not applied: a buy trend day (slow grind), and this buy is in its direction"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-19T15:40:00+00:00",
+   "opened_uk": "Thu 19 Nov 15:40",
+   "entry": "13119.3",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13153.3 then 13171.9; swing lows 13136.3 then 13119.1; last hourly close 13141.2 (Thu 19 Nov 14:00 candle), 50 EMA 13164.3, 6 candles before 13167.1; RSI stretch: not applied: a buy trend day (slow grind), and this buy is in its direction"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time_utc": "2026-11-19T16:40:00+00:00",
+   "opened_uk": "Thu 19 Nov 16:40",
+   "entry": "13113.8",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13153.3 then 13171.9; swing lows 13136.3 then 13119.1; last hourly close 13117.2 (Thu 19 Nov 15:00 candle), 50 EMA 13162.4, 6 candles before 13166.2; RSI stretch: not applied: a buy trend day (slow grind), and this buy is in its direction"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time_utc": "2026-11-19T17:20:00+00:00",
+   "opened_uk": "Thu 19 Nov 17:20",
+   "entry": "13105.9",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13112.9 (Thu 19 Nov 16:00 candle), 50 EMA 13160.5, 6 candles before 13166.3: close below it and falling; the buy is not within 5 pips of the daily pivot (13162.5) or the 50 EMA (13160.5); RSI stretch: not applied: a buy trend day (slow grind), and this buy is in its direction"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "time_utc": "2026-11-19T17:20:00+00:00",
+   "opened_uk": "Thu 19 Nov 17:20",
+   "entry": "13106",
+   "how": "forced close",
+   "pips": "-8.4",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13112.9 (Thu 19 Nov 16:00 candle), 50 EMA 13160.5, 6 candles before 13166.3: close below it and falling; the buy is not within 5 pips of the daily pivot (13162.5) or the 50 EMA (13160.5); RSI stretch: not applied: a buy trend day (slow grind), and this buy is in its direction"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time_utc": "2026-11-19T18:40:00+00:00",
+   "opened_uk": "Thu 19 Nov 18:40",
+   "entry": "13106.6",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13101.6 (Thu 19 Nov 17:00 candle), 50 EMA 13158.2, 6 candles before 13165.9: close below it and falling; the buy is not within 5 pips of the daily pivot (13162.5) or the 50 EMA (13158.2); RSI stretch: not applied: a buy trend day (slow grind), and this buy is in its direction"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-20T07:25:00+00:00",
+   "opened_uk": "Fri 20 Nov 07:25",
+   "entry": "13114.8",
+   "how": "close",
+   "pips": "-5.8",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13109.6 (Fri 20 Nov 06:00 candle), 50 EMA 13133.1, 6 candles before 13141.9: close below it and falling; RSI stretch: 5-minute RSI 3 41.2 at the 07:20 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "time_utc": "2026-11-20T07:30:00+00:00",
+   "opened_uk": "Fri 20 Nov 07:30",
+   "entry": "13113.4",
+   "how": "stopped by IG",
+   "pips": "+8.6",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13109.6 (Fri 20 Nov 06:00 candle), 50 EMA 13133.1, 6 candles before 13141.9: close below it and falling; RSI stretch: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "time_utc": "2026-11-20T07:40:00+00:00",
+   "opened_uk": "Fri 20 Nov 07:40",
+   "entry": "13118.1",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: Asian range breakout is exempt; RSI stretch: Asian range breakout is exempt"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "time_utc": "2026-11-20T13:30:00+00:00",
+   "opened_uk": "Fri 20 Nov 13:30",
+   "entry": "13119.4",
+   "how": "stopped by IG",
+   "pips": "+4.4",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13112 (Fri 20 Nov 12:00 candle), 50 EMA 13126.8, 6 candles before 13133.1: close below it and falling; RSI stretch: 5-minute RSI 3 40.2 at the 13:25 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-20T13:30:00+00:00",
+   "opened_uk": "Fri 20 Nov 13:30",
+   "entry": "13118.9",
+   "how": "close",
+   "pips": "+1.8",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13112 (Fri 20 Nov 12:00 candle), 50 EMA 13126.8, 6 candles before 13133.1: close below it and falling; RSI stretch: 5-minute RSI 3 40.2 at the 13:25 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "time_utc": "2026-11-20T13:35:00+00:00",
+   "opened_uk": "Fri 20 Nov 13:35",
+   "entry": "13116.2",
+   "how": "stopped by IG",
+   "pips": "+1.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13112 (Fri 20 Nov 12:00 candle), 50 EMA 13126.8, 6 candles before 13133.1: close below it and falling; RSI stretch: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-20T14:45:00+00:00",
+   "opened_uk": "Fri 20 Nov 14:45",
+   "entry": "13107.4",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13119 (Fri 20 Nov 13:00 candle), 50 EMA 13126.5, 6 candles before 13132.3: close below it and falling; RSI stretch: 5-minute RSI 3 30.1 at the 14:40 candle, not under 30: allowed"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-20T18:25:00+00:00",
+   "opened_uk": "Fri 20 Nov 18:25",
+   "entry": "13095.9",
+   "how": "forced close",
+   "pips": "+10.8",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13121.9 then 13128.6; swing lows 13077 then 13093; last hourly close 13100.3 (Fri 20 Nov 17:00 candle), 50 EMA 13123.0, 6 candles before 13127.4; RSI stretch: 5-minute RSI 3 34.5 at the 18:20 candle, not under 30: allowed"
+   ]
+  }
+ ],
+ "refused": [
+  {
+   "time_utc": "2026-11-16T05:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-16T05:50:00Z",
+   "entry_price": "13208.3",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 22.1 at the 05:45 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "22.1",
+    "rsi_candle": "2026-11-16T05:45Z",
+    "limit": "under 30",
+    "entry_price": "13208.3",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T06:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T06:50:00Z",
+   "entry_price": "13197.8",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 3.0 at the 06:45 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "3.0",
+    "rsi_candle": "2026-11-16T06:45Z",
+    "limit": "under 30",
+    "entry_price": "13197.8",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T07:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-16T07:15:00Z",
+   "entry_price": "13204.4",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 72.2 at the 07:10 candle, over 70: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "72.2",
+    "rsi_candle": "2026-11-16T07:10Z",
+    "limit": "over 70",
+    "entry_price": "13204.4",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T07:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-16T07:15:00Z",
+   "entry_price": "13204.4",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 72.2 at the 07:10 candle, over 70: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "72.2",
+    "rsi_candle": "2026-11-16T07:10Z",
+    "limit": "over 70",
+    "entry_price": "13204.4",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T08:40:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-16T08:40:00Z",
+   "entry_price": "13208.8",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13213.3 (Mon 05:00) after 13218.5 (Mon 00:00); last hourly close 13201.8 (Mon 16 Nov 07:00 candle), 50 EMA 13233.2, 6 candles before 13241.1: close below it and falling. A BUY at 13208.8 is 2.9 pips from the daily pivot 13211.7 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13208.8",
+    "line": "the daily pivot",
+    "line_price": "13211.7",
+    "pips_from_line": "2.9",
+    "daily_pivot": "13211.7",
+    "hourly_ema50": "13233.2",
+    "hourly_ema50_before": "13241.1",
+    "last_hourly_close": "13201.8",
+    "swings": [
+     [
+      "2026-11-16T00:00Z",
+      "13218.5"
+     ],
+     [
+      "2026-11-16T05:00Z",
+      "13213.3"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-16T08:45:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-16T08:45:00Z",
+   "entry_price": "13215.1",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13213.3 (Mon 05:00) after 13218.5 (Mon 00:00); last hourly close 13201.8 (Mon 16 Nov 07:00 candle), 50 EMA 13233.2, 6 candles before 13241.1: close below it and falling. A BUY at 13215.1 is 3.4 pips from the daily pivot 13211.7 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13215.1",
+    "line": "the daily pivot",
+    "line_price": "13211.7",
+    "pips_from_line": "3.4",
+    "daily_pivot": "13211.7",
+    "hourly_ema50": "13233.2",
+    "hourly_ema50_before": "13241.1",
+    "last_hourly_close": "13201.8",
+    "swings": [
+     [
+      "2026-11-16T00:00Z",
+      "13218.5"
+     ],
+     [
+      "2026-11-16T05:00Z",
+      "13213.3"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-16T09:20:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-16T09:20:00Z",
+   "entry_price": "13210",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 20.8 at the 09:15 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "20.8",
+    "rsi_candle": "2026-11-16T09:15Z",
+    "limit": "under 30",
+    "entry_price": "13210",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T09:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-16T09:25:00Z",
+   "entry_price": "13206",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 13.7 at the 09:20 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "13.7",
+    "rsi_candle": "2026-11-16T09:20Z",
+    "limit": "under 30",
+    "entry_price": "13206",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T09:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T09:50:00Z",
+   "entry_price": "13186.7",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 2.0 at the 09:45 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "2.0",
+    "rsi_candle": "2026-11-16T09:45Z",
+    "limit": "under 30",
+    "entry_price": "13186.7",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T10:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-16T10:25:00Z",
+   "entry_price": "13196.3",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 80.1 at the 10:20 candle, over 70: refused",
+   "details": {
+    "strategy": "Bollinger bounce",
+    "rsi3_5m": "80.1",
+    "rsi_candle": "2026-11-16T10:20Z",
+    "limit": "over 70",
+    "entry_price": "13196.3",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T10:45:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T10:45:00Z",
+   "entry_price": "13190.9",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 24.6 at the 10:40 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "24.6",
+    "rsi_candle": "2026-11-16T10:40Z",
+    "limit": "under 30",
+    "entry_price": "13190.9",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T10:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-16T10:50:00Z",
+   "entry_price": "13186.8",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 15.0 at the 10:45 candle, under 30: refused",
+   "details": {
+    "strategy": "EMA pullback",
+    "rsi3_5m": "15.0",
+    "rsi_candle": "2026-11-16T10:45Z",
+    "limit": "under 30",
+    "entry_price": "13186.8",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T10:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T10:50:00Z",
+   "entry_price": "13187.1",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 15.0 at the 10:45 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "15.0",
+    "rsi_candle": "2026-11-16T10:45Z",
+    "limit": "under 30",
+    "entry_price": "13187.1",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T11:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T11:00:00Z",
+   "entry_price": "13184.2",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 12.5 at the 10:55 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "12.5",
+    "rsi_candle": "2026-11-16T10:55Z",
+    "limit": "under 30",
+    "entry_price": "13184.2",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T13:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-16T13:15:00Z",
+   "entry_price": "13199.9",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 70.1 at the 13:10 candle, over 70: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "70.1",
+    "rsi_candle": "2026-11-16T13:10Z",
+    "limit": "over 70",
+    "entry_price": "13199.9",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T13:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-16T13:30:00Z",
+   "entry_price": "13201.2",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 74.5 at the 13:25 candle, over 70: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "74.5",
+    "rsi_candle": "2026-11-16T13:25Z",
+    "limit": "over 70",
+    "entry_price": "13201.2",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T14:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-16T14:25:00Z",
+   "entry_price": "13192.1",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 13.8 at the 14:20 candle, under 30: refused",
+   "details": {
+    "strategy": "EMA pullback",
+    "rsi3_5m": "13.8",
+    "rsi_candle": "2026-11-16T14:20Z",
+    "limit": "under 30",
+    "entry_price": "13192.1",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T14:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T14:25:00Z",
+   "entry_price": "13193.4",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 13.8 at the 14:20 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "13.8",
+    "rsi_candle": "2026-11-16T14:20Z",
+    "limit": "under 30",
+    "entry_price": "13193.4",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T14:55:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-16T14:55:00Z",
+   "entry_price": "13187.1",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 25.2 at the 14:50 candle, under 30: refused",
+   "details": {
+    "strategy": "EMA pullback",
+    "rsi3_5m": "25.2",
+    "rsi_candle": "2026-11-16T14:50Z",
+    "limit": "under 30",
+    "entry_price": "13187.1",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T14:55:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T14:55:00Z",
+   "entry_price": "13188.4",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 25.2 at the 14:50 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "25.2",
+    "rsi_candle": "2026-11-16T14:50Z",
+    "limit": "under 30",
+    "entry_price": "13188.4",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T15:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T15:00:00Z",
+   "entry_price": "13184.8",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 15.5 at the 14:55 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "15.5",
+    "rsi_candle": "2026-11-16T14:55Z",
+    "limit": "under 30",
+    "entry_price": "13184.8",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T15:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-16T15:50:00Z",
+   "entry_price": "13183.1",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 28.0 at the 15:45 candle, under 30: refused",
+   "details": {
+    "strategy": "EMA pullback",
+    "rsi3_5m": "28.0",
+    "rsi_candle": "2026-11-16T15:45Z",
+    "limit": "under 30",
+    "entry_price": "13183.1",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T16:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-16T16:50:00Z",
+   "entry_price": "13182.6",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 28.3 at the 16:45 candle, under 30: refused",
+   "details": {
+    "strategy": "EMA pullback",
+    "rsi3_5m": "28.3",
+    "rsi_candle": "2026-11-16T16:45Z",
+    "limit": "under 30",
+    "entry_price": "13182.6",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T17:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-16T17:10:00Z",
+   "entry_price": "13190.8",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 87.1 at the 17:05 candle, over 70: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "87.1",
+    "rsi_candle": "2026-11-16T17:05Z",
+    "limit": "over 70",
+    "entry_price": "13190.8",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T17:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-16T17:15:00Z",
+   "entry_price": "13196.1",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 92.1 at the 17:10 candle, over 70: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "92.1",
+    "rsi_candle": "2026-11-16T17:10Z",
+    "limit": "over 70",
+    "entry_price": "13196.1",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T17:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T17:50:00Z",
+   "entry_price": "13188.5",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 14.3 at the 17:45 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "14.3",
+    "rsi_candle": "2026-11-16T17:45Z",
+    "limit": "under 30",
+    "entry_price": "13188.5",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-16T20:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-16T20:00:00Z",
+   "entry_price": "13184.7",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 14.6 at the 19:55 candle, under 30: refused",
+   "details": {
+    "strategy": "EMA pullback",
+    "rsi3_5m": "14.6",
+    "rsi_candle": "2026-11-16T19:55Z",
+    "limit": "under 30",
+    "entry_price": "13184.7",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T01:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-17T01:10:00Z",
+   "entry_price": "13175.9",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 16.5 at the 01:05 candle, under 30: refused",
+   "details": {
+    "strategy": "EMA pullback",
+    "rsi3_5m": "16.5",
+    "rsi_candle": "2026-11-17T01:05Z",
+    "limit": "under 30",
+    "entry_price": "13175.9",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T01:45:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-17T01:45:00Z",
+   "entry_price": "13177.3",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 74.0 at the 01:40 candle, over 70: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "74.0",
+    "rsi_candle": "2026-11-17T01:40Z",
+    "limit": "over 70",
+    "entry_price": "13177.3",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T01:55:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-17T01:55:00Z",
+   "entry_price": "13178.3",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 73.6 at the 01:50 candle, over 70: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "73.6",
+    "rsi_candle": "2026-11-17T01:50Z",
+    "limit": "over 70",
+    "entry_price": "13178.3",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T02:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-17T02:15:00Z",
+   "entry_price": "13181",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 82.3 at the 02:10 candle, over 70: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "82.3",
+    "rsi_candle": "2026-11-17T02:10Z",
+    "limit": "over 70",
+    "entry_price": "13181",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T02:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-17T02:25:00Z",
+   "entry_price": "13181.9",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 78.9 at the 02:20 candle, over 70: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "78.9",
+    "rsi_candle": "2026-11-17T02:20Z",
+    "limit": "over 70",
+    "entry_price": "13181.9",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T02:55:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-17T02:55:00Z",
+   "entry_price": "13183",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 72.6 at the 02:50 candle, over 70: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "72.6",
+    "rsi_candle": "2026-11-17T02:50Z",
+    "limit": "over 70",
+    "entry_price": "13183",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T04:35:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-17T04:35:00Z",
+   "entry_price": "13192",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 29.5 at the 04:30 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "29.5",
+    "rsi_candle": "2026-11-17T04:30Z",
+    "limit": "under 30",
+    "entry_price": "13192",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T05:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "buy",
+   "idea_time": "2026-11-17T05:15:00Z",
+   "entry_price": "13194.6",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13188.2 (Tue 00:00) after 13205.2 (Mon 13:00); last hourly close 13190.8 (Tue 17 Nov 04:00 candle), 50 EMA 13207.2, 6 candles before 13212.8: close below it and falling. A BUY at 13194.6 is 0.2 pips from the daily pivot 13194.4 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13194.6",
+    "line": "the daily pivot",
+    "line_price": "13194.4",
+    "pips_from_line": "0.2",
+    "daily_pivot": "13194.4",
+    "hourly_ema50": "13207.2",
+    "hourly_ema50_before": "13212.8",
+    "last_hourly_close": "13190.8",
+    "swings": [
+     [
+      "2026-11-16T13:00Z",
+      "13205.2"
+     ],
+     [
+      "2026-11-17T00:00Z",
+      "13188.2"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-17T06:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-17T06:10:00Z",
+   "entry_price": "13195.6",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 19.1 at the 06:05 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "19.1",
+    "rsi_candle": "2026-11-17T06:05Z",
+    "limit": "under 30",
+    "entry_price": "13195.6",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T06:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-17T06:10:00Z",
+   "entry_price": "13195.6",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 19.1 at the 06:05 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "19.1",
+    "rsi_candle": "2026-11-17T06:05Z",
+    "limit": "under 30",
+    "entry_price": "13195.6",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T06:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-17T06:15:00Z",
+   "entry_price": "13193.4",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 17.5 at the 06:10 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "17.5",
+    "rsi_candle": "2026-11-17T06:10Z",
+    "limit": "under 30",
+    "entry_price": "13193.4",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T06:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-17T06:15:00Z",
+   "entry_price": "13193.4",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 17.5 at the 06:10 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "17.5",
+    "rsi_candle": "2026-11-17T06:10Z",
+    "limit": "under 30",
+    "entry_price": "13193.4",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T06:20:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-17T06:20:00Z",
+   "entry_price": "13192.7",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 8.8 at the 06:15 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "8.8",
+    "rsi_candle": "2026-11-17T06:15Z",
+    "limit": "under 30",
+    "entry_price": "13192.7",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T06:20:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-17T06:20:00Z",
+   "entry_price": "13192.7",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 8.8 at the 06:15 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "8.8",
+    "rsi_candle": "2026-11-17T06:15Z",
+    "limit": "under 30",
+    "entry_price": "13192.7",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T06:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-17T06:25:00Z",
+   "entry_price": "13190.8",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 5.6 at the 06:20 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "5.6",
+    "rsi_candle": "2026-11-17T06:20Z",
+    "limit": "under 30",
+    "entry_price": "13190.8",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T09:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-17T09:00:00Z",
+   "entry_price": "13189.5",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 29.3 at the 08:55 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "29.3",
+    "rsi_candle": "2026-11-17T08:55Z",
+    "limit": "under 30",
+    "entry_price": "13189.5",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T10:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "idea_time": "2026-11-17T10:05:00Z",
+   "entry_price": "13190.3",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 23.0 at the 10:00 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce",
+    "rsi3_5m": "23.0",
+    "rsi_candle": "2026-11-17T10:00Z",
+    "limit": "under 30",
+    "entry_price": "13190.3",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T10:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-17T10:05:00Z",
+   "entry_price": "13189.8",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 23.0 at the 10:00 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "23.0",
+    "rsi_candle": "2026-11-17T10:00Z",
+    "limit": "under 30",
+    "entry_price": "13189.8",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T10:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-17T10:10:00Z",
+   "entry_price": "13186.9",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 16.5 at the 10:05 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "16.5",
+    "rsi_candle": "2026-11-17T10:05Z",
+    "limit": "under 30",
+    "entry_price": "13186.9",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T13:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-17T13:15:00Z",
+   "entry_price": "13188.9",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 25.2 at the 13:10 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "25.2",
+    "rsi_candle": "2026-11-17T13:10Z",
+    "limit": "under 30",
+    "entry_price": "13188.9",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T14:55:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-17T14:55:00Z",
+   "entry_price": "13191.3",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 27.6 at the 14:50 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "27.6",
+    "rsi_candle": "2026-11-17T14:50Z",
+    "limit": "under 30",
+    "entry_price": "13191.3",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T15:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-17T15:00:00Z",
+   "entry_price": "13190.4",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 20.2 at the 14:55 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "20.2",
+    "rsi_candle": "2026-11-17T14:55Z",
+    "limit": "under 30",
+    "entry_price": "13190.4",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T16:20:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-17T16:20:00Z",
+   "entry_price": "13217.2",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 91.1 at the 16:15 candle, over 70: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "91.1",
+    "rsi_candle": "2026-11-17T16:15Z",
+    "limit": "over 70",
+    "entry_price": "13217.2",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T17:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "buy",
+   "idea_time": "2026-11-17T17:15:00Z",
+   "entry_price": "13223.3",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 78.0 at the 17:10 candle, over 70: refused",
+   "details": {
+    "strategy": "EMA pullback",
+    "rsi3_5m": "78.0",
+    "rsi_candle": "2026-11-17T17:10Z",
+    "limit": "over 70",
+    "entry_price": "13223.3",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T18:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "idea_time": "2026-11-17T18:30:00Z",
+   "entry_price": "13222",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 19.3 at the 18:25 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce",
+    "rsi3_5m": "19.3",
+    "rsi_candle": "2026-11-17T18:25Z",
+    "limit": "under 30",
+    "entry_price": "13222",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T18:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-17T18:30:00Z",
+   "entry_price": "13221.1",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 19.3 at the 18:25 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "19.3",
+    "rsi_candle": "2026-11-17T18:25Z",
+    "limit": "under 30",
+    "entry_price": "13221.1",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T18:35:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "idea_time": "2026-11-17T18:35:00Z",
+   "entry_price": "13219.7",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 8.9 at the 18:30 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce",
+    "rsi3_5m": "8.9",
+    "rsi_candle": "2026-11-17T18:30Z",
+    "limit": "under 30",
+    "entry_price": "13219.7",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T18:35:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-17T18:35:00Z",
+   "entry_price": "13219.5",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 8.9 at the 18:30 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "8.9",
+    "rsi_candle": "2026-11-17T18:30Z",
+    "limit": "under 30",
+    "entry_price": "13219.5",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-17T18:40:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "idea_time": "2026-11-17T18:40:00Z",
+   "entry_price": "13218.7",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 6.8 at the 18:35 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce",
+    "rsi3_5m": "6.8",
+    "rsi_candle": "2026-11-17T18:35Z",
+    "limit": "under 30",
+    "entry_price": "13218.7",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-18T02:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-18T02:00:00Z",
+   "entry_price": "13206.1",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 80.0 at the 01:55 candle, over 70: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "80.0",
+    "rsi_candle": "2026-11-18T01:55Z",
+    "limit": "over 70",
+    "entry_price": "13206.1",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-18T04:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-18T04:05:00Z",
+   "entry_price": "13195.8",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 12.4 at the 04:00 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "12.4",
+    "rsi_candle": "2026-11-18T04:00Z",
+    "limit": "under 30",
+    "entry_price": "13195.8",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-18T04:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-18T04:30:00Z",
+   "entry_price": "13192.1",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 20.2 at the 04:25 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "20.2",
+    "rsi_candle": "2026-11-18T04:25Z",
+    "limit": "under 30",
+    "entry_price": "13192.1",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-18T09:30:00Z",
+   "entry_price": "13161.8",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 82.2 at the 09:25 candle, over 70 (a sell trend day: this buy is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce",
+    "rsi3_5m": "82.2",
+    "rsi_candle": "2026-11-18T09:25Z",
+    "limit": "over 70",
+    "entry_price": "13161.8",
+    "trend_day": "sell"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-18T09:30:00Z",
+   "entry_price": "13161.9",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 82.2 at the 09:25 candle, over 70 (a sell trend day: this buy is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "82.2",
+    "rsi_candle": "2026-11-18T09:25Z",
+    "limit": "over 70",
+    "entry_price": "13161.9",
+    "trend_day": "sell"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T09:35:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-18T09:35:00Z",
+   "entry_price": "13163.8",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 85.8 at the 09:30 candle, over 70 (a sell trend day: this buy is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce",
+    "rsi3_5m": "85.8",
+    "rsi_candle": "2026-11-18T09:30Z",
+    "limit": "over 70",
+    "entry_price": "13163.8",
+    "trend_day": "sell"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T09:35:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-18T09:35:00Z",
+   "entry_price": "13164.9",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 85.8 at the 09:30 candle, over 70 (a sell trend day: this buy is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "85.8",
+    "rsi_candle": "2026-11-18T09:30Z",
+    "limit": "over 70",
+    "entry_price": "13164.9",
+    "trend_day": "sell"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T10:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-18T10:30:00Z",
+   "entry_price": "13172.7",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 71.5 at the 10:25 candle, over 70 (a sell trend day: this buy is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "71.5",
+    "rsi_candle": "2026-11-18T10:25Z",
+    "limit": "over 70",
+    "entry_price": "13172.7",
+    "trend_day": "sell"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T10:45:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-18T10:45:00Z",
+   "entry_price": "13173.1",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 74.5 at the 10:40 candle, over 70 (a sell trend day: this buy is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "74.5",
+    "rsi_candle": "2026-11-18T10:40Z",
+    "limit": "over 70",
+    "entry_price": "13173.1",
+    "trend_day": "sell"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T12:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-18T12:10:00Z",
+   "entry_price": "13164.8",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 74.0 at the 12:05 candle, over 70 (a sell trend day: this buy is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "74.0",
+    "rsi_candle": "2026-11-18T12:05Z",
+    "limit": "over 70",
+    "entry_price": "13164.8",
+    "trend_day": "sell"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T13:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-18T13:10:00Z",
+   "entry_price": "13170.4",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 87.2 at the 13:05 candle, over 70 (a sell trend day: this buy is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "87.2",
+    "rsi_candle": "2026-11-18T13:05Z",
+    "limit": "over 70",
+    "entry_price": "13170.4",
+    "trend_day": "sell"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T16:55:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-18T16:55:00Z",
+   "entry_price": "13149",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 82.3 at the 16:50 candle, over 70 (a sell trend day: this buy is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "82.3",
+    "rsi_candle": "2026-11-18T16:50Z",
+    "limit": "over 70",
+    "entry_price": "13149",
+    "trend_day": "sell"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T16:55:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-18T16:55:00Z",
+   "entry_price": "13149",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 82.3 at the 16:50 candle, over 70 (a sell trend day: this buy is against it): refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "82.3",
+    "rsi_candle": "2026-11-18T16:50Z",
+    "limit": "over 70",
+    "entry_price": "13149",
+    "trend_day": "sell"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T17:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-18T17:25:00Z",
+   "entry_price": "13152.3",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 76.6 at the 17:20 candle, over 70 (a sell trend day: this buy is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "76.6",
+    "rsi_candle": "2026-11-18T17:20Z",
+    "limit": "over 70",
+    "entry_price": "13152.3",
+    "trend_day": "sell"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T17:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-18T17:25:00Z",
+   "entry_price": "13152.3",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 76.6 at the 17:20 candle, over 70 (a sell trend day: this buy is against it): refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "76.6",
+    "rsi_candle": "2026-11-18T17:20Z",
+    "limit": "over 70",
+    "entry_price": "13152.3",
+    "trend_day": "sell"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T18:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-18T18:05:00Z",
+   "entry_price": "13154.1",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 80.8 at the 18:00 candle, over 70 (a sell trend day: this buy is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "80.8",
+    "rsi_candle": "2026-11-18T18:00Z",
+    "limit": "over 70",
+    "entry_price": "13154.1",
+    "trend_day": "sell"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T18:40:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-18T18:40:00Z",
+   "entry_price": "13157.2",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 83.6 at the 18:35 candle, over 70 (a sell trend day: this buy is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "83.6",
+    "rsi_candle": "2026-11-18T18:35Z",
+    "limit": "over 70",
+    "entry_price": "13157.2",
+    "trend_day": "sell"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T20:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-18T20:30:00Z",
+   "entry_price": "13148.4",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 95.2 at the 20:25 candle, over 70: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "95.2",
+    "rsi_candle": "2026-11-18T20:25Z",
+    "limit": "over 70",
+    "entry_price": "13148.4",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-19T00:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-19T00:10:00Z",
+   "entry_price": "13142",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 10.3 at the 00:05 candle, under 30: refused",
+   "details": {
+    "strategy": "EMA pullback",
+    "rsi3_5m": "10.3",
+    "rsi_candle": "2026-11-19T00:05Z",
+    "limit": "under 30",
+    "entry_price": "13142",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-19T02:40:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-19T02:40:00Z",
+   "entry_price": "13139",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 82.5 at the 02:35 candle, over 70: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "82.5",
+    "rsi_candle": "2026-11-19T02:35Z",
+    "limit": "over 70",
+    "entry_price": "13139",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-19T03:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-19T03:00:00Z",
+   "entry_price": "13129",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 16.0 at the 02:55 candle, under 30: refused",
+   "details": {
+    "strategy": "EMA pullback",
+    "rsi3_5m": "16.0",
+    "rsi_candle": "2026-11-19T02:55Z",
+    "limit": "under 30",
+    "entry_price": "13129",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-19T04:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-19T04:05:00Z",
+   "entry_price": "13126.6",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 74.1 at the 04:00 candle, over 70: refused",
+   "details": {
+    "strategy": "Bollinger bounce",
+    "rsi3_5m": "74.1",
+    "rsi_candle": "2026-11-19T04:00Z",
+    "limit": "over 70",
+    "entry_price": "13126.6",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-19T09:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-19T09:25:00Z",
+   "entry_price": "13149.2",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 15.4 at the 09:20 candle, under 30 (a buy trend day: this sell is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "15.4",
+    "rsi_candle": "2026-11-19T09:20Z",
+    "limit": "under 30",
+    "entry_price": "13149.2",
+    "trend_day": "buy"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T09:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-19T09:30:00Z",
+   "entry_price": "13143",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 6.2 at the 09:25 candle, under 30 (a buy trend day: this sell is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "6.2",
+    "rsi_candle": "2026-11-19T09:25Z",
+    "limit": "under 30",
+    "entry_price": "13143",
+    "trend_day": "buy"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T11:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-19T11:15:00Z",
+   "entry_price": "13165.5",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 26.2 at the 11:10 candle, under 30 (a buy trend day: this sell is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "26.2",
+    "rsi_candle": "2026-11-19T11:10Z",
+    "limit": "under 30",
+    "entry_price": "13165.5",
+    "trend_day": "buy"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T11:20:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-19T11:20:00Z",
+   "entry_price": "13164.5",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 22.7 at the 11:15 candle, under 30 (a buy trend day: this sell is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "22.7",
+    "rsi_candle": "2026-11-19T11:15Z",
+    "limit": "under 30",
+    "entry_price": "13164.5",
+    "trend_day": "buy"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T11:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-19T11:25:00Z",
+   "entry_price": "13162.1",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 12.0 at the 11:20 candle, under 30 (a buy trend day: this sell is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "12.0",
+    "rsi_candle": "2026-11-19T11:20Z",
+    "limit": "under 30",
+    "entry_price": "13162.1",
+    "trend_day": "buy"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T11:55:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-19T11:55:00Z",
+   "entry_price": "13156.6",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 22.5 at the 11:50 candle, under 30 (a buy trend day: this sell is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "22.5",
+    "rsi_candle": "2026-11-19T11:50Z",
+    "limit": "under 30",
+    "entry_price": "13156.6",
+    "trend_day": "buy"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T12:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-19T12:00:00Z",
+   "entry_price": "13154.1",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 9.7 at the 11:55 candle, under 30 (a buy trend day: this sell is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "9.7",
+    "rsi_candle": "2026-11-19T11:55Z",
+    "limit": "under 30",
+    "entry_price": "13154.1",
+    "trend_day": "buy"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T12:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-19T12:05:00Z",
+   "entry_price": "13152.8",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 7.0 at the 12:00 candle, under 30 (a buy trend day: this sell is against it): refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "7.0",
+    "rsi_candle": "2026-11-19T12:00Z",
+    "limit": "under 30",
+    "entry_price": "13152.8",
+    "trend_day": "buy"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T16:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-19T16:15:00Z",
+   "entry_price": "13110.6",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 10.5 at the 16:10 candle, under 30 (a buy trend day: this sell is against it): refused",
+   "details": {
+    "strategy": "EMA pullback",
+    "rsi3_5m": "10.5",
+    "rsi_candle": "2026-11-19T16:10Z",
+    "limit": "under 30",
+    "entry_price": "13110.6",
+    "trend_day": "buy"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T17:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-19T17:05:00Z",
+   "entry_price": "13101.4",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 14.8 at the 17:00 candle, under 30 (a buy trend day: this sell is against it): refused",
+   "details": {
+    "strategy": "EMA pullback",
+    "rsi3_5m": "14.8",
+    "rsi_candle": "2026-11-19T17:00Z",
+    "limit": "under 30",
+    "entry_price": "13101.4",
+    "trend_day": "buy"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T19:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-19T19:50:00Z",
+   "entry_price": "13094.8",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 17.0 at the 19:45 candle, under 30 (a buy trend day: this sell is against it): refused",
+   "details": {
+    "strategy": "EMA pullback",
+    "rsi3_5m": "17.0",
+    "rsi_candle": "2026-11-19T19:45Z",
+    "limit": "under 30",
+    "entry_price": "13094.8",
+    "trend_day": "buy"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T19:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-19T19:50:00Z",
+   "entry_price": "13098.2",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 17.0 at the 19:45 candle, under 30 (a buy trend day: this sell is against it): refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "17.0",
+    "rsi_candle": "2026-11-19T19:45Z",
+    "limit": "under 30",
+    "entry_price": "13098.2",
+    "trend_day": "buy"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T20:35:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-19T20:35:00Z",
+   "entry_price": "13097.1",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 24.0 at the 20:30 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "24.0",
+    "rsi_candle": "2026-11-19T20:30Z",
+    "limit": "under 30",
+    "entry_price": "13097.1",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-19T21:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-19T21:15:00Z",
+   "entry_price": "13093.6",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 10.0 at the 21:10 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "10.0",
+    "rsi_candle": "2026-11-19T21:10Z",
+    "limit": "under 30",
+    "entry_price": "13093.6",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-19T21:20:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-19T21:20:00Z",
+   "entry_price": "13089.4",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 4.0 at the 21:15 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "4.0",
+    "rsi_candle": "2026-11-19T21:15Z",
+    "limit": "under 30",
+    "entry_price": "13089.4",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-19T21:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-19T21:30:00Z",
+   "entry_price": "13081.5",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 1.0 at the 21:25 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "1.0",
+    "rsi_candle": "2026-11-19T21:25Z",
+    "limit": "under 30",
+    "entry_price": "13081.5",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-20T00:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-20T00:00:00Z",
+   "entry_price": "13084.2",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 27.9 at the 23:55 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "27.9",
+    "rsi_candle": "2026-11-19T23:55Z",
+    "limit": "under 30",
+    "entry_price": "13084.2",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-20T04:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T04:00:00Z",
+   "entry_price": "13101.8",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 96.0 at the 03:55 candle, over 70: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "96.0",
+    "rsi_candle": "2026-11-20T03:55Z",
+    "limit": "over 70",
+    "entry_price": "13101.8",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-20T04:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T04:15:00Z",
+   "entry_price": "13104.2",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 98.5 at the 04:10 candle, over 70: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "98.5",
+    "rsi_candle": "2026-11-20T04:10Z",
+    "limit": "over 70",
+    "entry_price": "13104.2",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-20T04:20:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T04:20:00Z",
+   "entry_price": "13104.6",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 99.0 at the 04:15 candle, over 70: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "99.0",
+    "rsi_candle": "2026-11-20T04:15Z",
+    "limit": "over 70",
+    "entry_price": "13104.6",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-20T04:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T04:25:00Z",
+   "entry_price": "13105",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 99.2 at the 04:20 candle, over 70: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "99.2",
+    "rsi_candle": "2026-11-20T04:20Z",
+    "limit": "over 70",
+    "entry_price": "13105",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-20T05:55:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T05:55:00Z",
+   "entry_price": "13105",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 76.9 at the 05:50 candle, over 70: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "76.9",
+    "rsi_candle": "2026-11-20T05:50Z",
+    "limit": "over 70",
+    "entry_price": "13105",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-20T06:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T06:05:00Z",
+   "entry_price": "13109.6",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13105 (Fri 20 Nov 05:00 candle), 50 EMA 13134.1, 6 candles before 13144.0: close below it and falling. A BUY at 13109.6 is 2.0 pips from the daily pivot 13111.6 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13109.6",
+    "line": "the daily pivot",
+    "line_price": "13111.6",
+    "pips_from_line": "2.0",
+    "daily_pivot": "13111.6",
+    "hourly_ema50": "13134.1",
+    "hourly_ema50_before": "13144.0",
+    "last_hourly_close": "13105",
+    "swings": [
+     [
+      "2026-11-19T10:00Z",
+      "13171.9"
+     ],
+     [
+      "2026-11-19T14:00Z",
+      "13164.4"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-20T06:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T06:10:00Z",
+   "entry_price": "13112",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13105 (Fri 20 Nov 05:00 candle), 50 EMA 13134.1, 6 candles before 13144.0: close below it and falling. A BUY at 13112 is 0.4 pips from the daily pivot 13111.6 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13112",
+    "line": "the daily pivot",
+    "line_price": "13111.6",
+    "pips_from_line": "0.4",
+    "daily_pivot": "13111.6",
+    "hourly_ema50": "13134.1",
+    "hourly_ema50_before": "13144.0",
+    "last_hourly_close": "13105",
+    "swings": [
+     [
+      "2026-11-19T10:00Z",
+      "13171.9"
+     ],
+     [
+      "2026-11-19T14:00Z",
+      "13164.4"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-20T09:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T09:30:00Z",
+   "entry_price": "13105.2",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 84.0 at the 09:25 candle, over 70: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "84.0",
+    "rsi_candle": "2026-11-20T09:25Z",
+    "limit": "over 70",
+    "entry_price": "13105.2",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-20T09:40:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T09:40:00Z",
+   "entry_price": "13108.5",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13099.2 (Fri 20 Nov 08:00 candle), 50 EMA 13131.0, 6 candles before 13137.8: close below it and falling. A BUY at 13108.5 is 3.1 pips from the daily pivot 13111.6 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13108.5",
+    "line": "the daily pivot",
+    "line_price": "13111.6",
+    "pips_from_line": "3.1",
+    "daily_pivot": "13111.6",
+    "hourly_ema50": "13131.0",
+    "hourly_ema50_before": "13137.8",
+    "last_hourly_close": "13099.2",
+    "swings": [
+     [
+      "2026-11-19T10:00Z",
+      "13171.9"
+     ],
+     [
+      "2026-11-19T14:00Z",
+      "13164.4"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-20T11:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T11:15:00Z",
+   "entry_price": "13109.6",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13101.9 (Fri 20 Nov 10:00 candle), 50 EMA 13128.8, 6 candles before 13135.2: close below it and falling. A BUY at 13109.6 is 2.0 pips from the daily pivot 13111.6 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13109.6",
+    "line": "the daily pivot",
+    "line_price": "13111.6",
+    "pips_from_line": "2.0",
+    "daily_pivot": "13111.6",
+    "hourly_ema50": "13128.8",
+    "hourly_ema50_before": "13135.2",
+    "last_hourly_close": "13101.9",
+    "swings": [
+     [
+      "2026-11-19T14:00Z",
+      "13164.4"
+     ],
+     [
+      "2026-11-20T07:00Z",
+      "13121.9"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-20T11:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T11:25:00Z",
+   "entry_price": "13110.2",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13101.9 (Fri 20 Nov 10:00 candle), 50 EMA 13128.8, 6 candles before 13135.2: close below it and falling. A BUY at 13110.2 is 1.4 pips from the daily pivot 13111.6 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13110.2",
+    "line": "the daily pivot",
+    "line_price": "13111.6",
+    "pips_from_line": "1.4",
+    "daily_pivot": "13111.6",
+    "hourly_ema50": "13128.8",
+    "hourly_ema50_before": "13135.2",
+    "last_hourly_close": "13101.9",
+    "swings": [
+     [
+      "2026-11-19T14:00Z",
+      "13164.4"
+     ],
+     [
+      "2026-11-20T07:00Z",
+      "13121.9"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-20T13:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T13:10:00Z",
+   "entry_price": "13126.2",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13112 (Fri 20 Nov 12:00 candle), 50 EMA 13126.8, 6 candles before 13133.1: close below it and falling. A BUY at 13126.2 is 0.6 pips from the hourly 50 EMA 13126.8 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13126.2",
+    "line": "the hourly 50 EMA",
+    "line_price": "13126.8",
+    "pips_from_line": "0.6",
+    "daily_pivot": "13111.6",
+    "hourly_ema50": "13126.8",
+    "hourly_ema50_before": "13133.1",
+    "last_hourly_close": "13112",
+    "swings": [
+     [
+      "2026-11-19T14:00Z",
+      "13164.4"
+     ],
+     [
+      "2026-11-20T07:00Z",
+      "13121.9"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-20T13:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "buy",
+   "idea_time": "2026-11-20T13:25:00Z",
+   "entry_price": "13126.9",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13112 (Fri 20 Nov 12:00 candle), 50 EMA 13126.8, 6 candles before 13133.1: close below it and falling. A BUY at 13126.9 is 0.1 pips from the hourly 50 EMA 13126.8 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13126.9",
+    "line": "the hourly 50 EMA",
+    "line_price": "13126.8",
+    "pips_from_line": "0.1",
+    "daily_pivot": "13111.6",
+    "hourly_ema50": "13126.8",
+    "hourly_ema50_before": "13133.1",
+    "last_hourly_close": "13112",
+    "swings": [
+     [
+      "2026-11-19T14:00Z",
+      "13164.4"
+     ],
+     [
+      "2026-11-20T07:00Z",
+      "13121.9"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-20T13:35:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "idea_time": "2026-11-20T13:35:00Z",
+   "entry_price": "13116.2",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 28.7 at the 13:30 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce",
+    "rsi3_5m": "28.7",
+    "rsi_candle": "2026-11-20T13:30Z",
+    "limit": "under 30",
+    "entry_price": "13116.2",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-20T13:35:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-20T13:35:00Z",
+   "entry_price": "13115.8",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 28.7 at the 13:30 candle, under 30: refused",
+   "details": {
+    "strategy": "Bollinger bounce 5m",
+    "rsi3_5m": "28.7",
+    "rsi_candle": "2026-11-20T13:30Z",
+    "limit": "under 30",
+    "entry_price": "13115.8",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-20T17:55:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-20T17:55:00Z",
+   "entry_price": "13096.1",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 22.1 at the 17:50 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "22.1",
+    "rsi_candle": "2026-11-20T17:50Z",
+    "limit": "under 30",
+    "entry_price": "13096.1",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-20T18:40:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-20T18:40:00Z",
+   "entry_price": "13092.3",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 27.1 at the 18:35 candle, under 30: refused",
+   "details": {
+    "strategy": "EMA pullback",
+    "rsi3_5m": "27.1",
+    "rsi_candle": "2026-11-20T18:35Z",
+    "limit": "under 30",
+    "entry_price": "13092.3",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-20T18:45:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-20T18:45:00Z",
+   "entry_price": "13089.7",
+   "rule": "RSI stretch",
+   "why": "no SELL with the 5-minute RSI 3 13.6 at the 18:40 candle, under 30: refused",
+   "details": {
+    "strategy": "level reversal",
+    "rsi3_5m": "13.6",
+    "rsi_candle": "2026-11-20T18:40Z",
+    "limit": "under 30",
+    "entry_price": "13089.7",
+    "trend_day": null
+   }
+  },
+  {
+   "time_utc": "2026-11-20T21:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-20T21:50:00Z",
+   "entry_price": "13080.1",
+   "rule": "RSI stretch",
+   "why": "no BUY with the 5-minute RSI 3 88.8 at the 21:45 candle, over 70: refused",
+   "details": {
+    "strategy": "Bollinger bounce",
+    "rsi3_5m": "88.8",
+    "rsi_candle": "2026-11-20T21:45Z",
+    "limit": "over 70",
+    "entry_price": "13080.1",
+    "trend_day": null
+   }
+  }
+ ],
+ "trend_days": [
+  {
+   "time_utc": "2026-11-18T06:00:00Z",
+   "kind": "trend day started",
+   "paper": true,
+   "direction": "sell",
+   "reference": "AB261118040500-5008b1ae",
+   "strategy": "slow grind",
+   "slow_grind_opened_utc": "2026-11-18T04:05:00Z",
+   "slow_grind_fill": "13195.5",
+   "pips_in_profit": "4.6",
+   "ends_utc": "2026-11-18T20:30:00Z",
+   "why": "the slow grind sell opened at 13195.5 was 4.6 pips in profit at 06:00 UK (inside 06:00-09:00): a sell trend day until 20:30 UK"
+  },
+  {
+   "time_utc": "2026-11-19T07:55:00Z",
+   "kind": "trend day started",
+   "paper": true,
+   "direction": "buy",
+   "reference": "AB261119075500-6ffc12f3",
+   "strategy": "slow grind",
+   "slow_grind_opened_utc": "2026-11-19T07:55:00Z",
+   "slow_grind_fill": "13157.1",
+   "pips_in_profit": "0.4",
+   "ends_utc": "2026-11-19T20:30:00Z",
+   "why": "the slow grind buy opened at 13157.1 was 0.4 pips in profit at 07:55 UK (inside 06:00-09:00): a buy trend day until 20:30 UK"
+  }
+ ]
+}

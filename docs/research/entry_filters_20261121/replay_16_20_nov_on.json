@@ -1,0 +1,1900 @@
+{
+ "filters": "on",
+ "switches": {
+  "TRADING": "off",
+  "PAIRS_ON": "GBPUSD",
+  "NEW_TRADES_FROM": "06:00",
+  "NEW_TRADES_UNTIL": "20:30",
+  "STRATEGY_SLOW_GRIND": "on",
+  "STRATEGY_BREAKOUT": "on",
+  "STRATEGY_EMA_PULLBACK": "on",
+  "STRATEGY_BOLLINGER_BOUNCE": "on",
+  "STRATEGY_LEVEL_REVERSAL": "on",
+  "STRATEGY_RANGE_TRADE": "on",
+  "STRATEGY_ASIAN_RANGE_BREAKOUT": "on",
+  "STRATEGY_SESSION_SWEEP": "on",
+  "STRATEGY_NEW_YORK_OPEN_REVERSAL": "on",
+  "STOP_LOSS_PIPS": "12",
+  "STOP_LOSS_PIPS_EMA_PULLBACK": "12",
+  "TAKE_PROFIT_PIPS": "100",
+  "PLANNER_OBSERVE": "on",
+  "ONE_SIGNAL_ONE_TRADE": "on",
+  "STRATEGY_BOLLINGER_BOUNCE_5M": "on",
+  "HOURLY_CONTEXT": "on",
+  "ENTRY_NEAR_EMA8": "on"
+ },
+ "trades": [
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-16T07:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 07:15",
+   "entry": "13204.4",
+   "how": "close",
+   "pips": "-5.8",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13218.5 (Mon 00:00) after 13219.1 (Fri 21:00); last hourly close 13195.7 (Mon 16 Nov 06:00 candle), 50 EMA 13234.5, 6 candles before 13242.1: close below it and falling; the buy is not within 5 pips of the daily pivot (13211.7) or the 50 EMA (13234.5); entry near the 8 EMA: entry 13204.4, 5-minute 8 EMA 13202.2 (at the 07:10 candle), 2.2 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "time_utc": "2026-11-16T07:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 07:15",
+   "entry": "13204.4",
+   "how": "stopped by IG",
+   "pips": "-16.5",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13218.5 (Mon 00:00) after 13219.1 (Fri 21:00); last hourly close 13195.7 (Mon 16 Nov 06:00 candle), 50 EMA 13234.5, 6 candles before 13242.1: close below it and falling; the buy is not within 5 pips of the daily pivot (13211.7) or the 50 EMA (13234.5); entry near the 8 EMA: entry 13204.4, 5-minute 8 EMA 13202.2 (at the 07:10 candle), 2.2 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-16T09:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 09:15",
+   "entry": "13211.1",
+   "how": "close",
+   "pips": "+11.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13213.3 (Mon 05:00) after 13218.5 (Mon 00:00); last hourly close 13216.2 (Mon 16 Nov 08:00 candle), 50 EMA 13232.5, 6 candles before 13239.8: close below it and falling; entry near the 8 EMA: entry 13211.1, 5-minute 8 EMA 13213.9 (at the 09:10 candle), 2.8 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "time_utc": "2026-11-16T09:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 09:15",
+   "entry": "13213.4",
+   "how": "stopped by IG",
+   "pips": "+22.9",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13213.3 (Mon 05:00) after 13218.5 (Mon 00:00); last hourly close 13216.2 (Mon 16 Nov 08:00 candle), 50 EMA 13232.5, 6 candles before 13239.8: close below it and falling; entry near the 8 EMA: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time_utc": "2026-11-16T10:25:00+00:00",
+   "opened_uk": "Mon 16 Nov 10:25",
+   "entry": "13196.3",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13213.3 (Mon 05:00) after 13218.5 (Mon 00:00); last hourly close 13188.7 (Mon 16 Nov 09:00 candle), 50 EMA 13230.8, 6 candles before 13238.5: close below it and falling; the buy is not within 5 pips of the daily pivot (13211.7) or the 50 EMA (13230.8); entry near the 8 EMA: entry 13196.3, 5-minute 8 EMA 13192.8 (at the 10:20 candle), 3.5 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "buy",
+   "time_utc": "2026-11-16T10:30:00+00:00",
+   "opened_uk": "Mon 16 Nov 10:30",
+   "entry": "13199.3",
+   "how": "stopped by IG",
+   "pips": "-17.2",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13213.3 (Mon 05:00) after 13218.5 (Mon 00:00); last hourly close 13188.7 (Mon 16 Nov 09:00 candle), 50 EMA 13230.8, 6 candles before 13238.5: close below it and falling; the buy is not within 5 pips of the daily pivot (13211.7) or the 50 EMA (13230.8); entry near the 8 EMA: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-16T10:45:00+00:00",
+   "opened_uk": "Mon 16 Nov 10:45",
+   "entry": "13190.9",
+   "how": "stopped by IG",
+   "pips": "-14.9",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13213.3 (Mon 05:00) after 13218.5 (Mon 00:00); last hourly close 13188.7 (Mon 16 Nov 09:00 candle), 50 EMA 13230.8, 6 candles before 13238.5: close below it and falling; entry near the 8 EMA: entry 13190.9, 5-minute 8 EMA 13194.3 (at the 10:40 candle), 3.4 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "time_utc": "2026-11-16T13:30:00+00:00",
+   "opened_uk": "Mon 16 Nov 13:30",
+   "entry": "13201.2",
+   "how": "stopped by IG",
+   "pips": "-15.4",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13213.3 then 13224.5; swing lows 13199.9 then 13195.4; last hourly close 13199.2 (Mon 16 Nov 12:00 candle), 50 EMA 13226.5, 6 candles before 13234.5; entry near the 8 EMA: entry 13201.2, 5-minute 8 EMA 13198.4 (at the 13:25 candle), 2.8 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-16T15:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 15:15",
+   "entry": "13192.9",
+   "how": "close",
+   "pips": "-5.6",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13213.3 then 13224.5; swing lows 13195.4 then 13182.1; last hourly close 13184.8 (Mon 16 Nov 14:00 candle), 50 EMA 13223.8, 6 candles before 13232.5; entry near the 8 EMA: entry 13192.9, 5-minute 8 EMA 13191.0 (at the 15:10 candle), 1.9 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "time_utc": "2026-11-16T15:15:00+00:00",
+   "opened_uk": "Mon 16 Nov 15:15",
+   "entry": "13192.9",
+   "how": "stopped by IG",
+   "pips": "-15.8",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13213.3 then 13224.5; swing lows 13195.4 then 13182.1; last hourly close 13184.8 (Mon 16 Nov 14:00 candle), 50 EMA 13223.8, 6 candles before 13232.5; entry near the 8 EMA: entry 13192.9, 5-minute 8 EMA 13191.0 (at the 15:10 candle), 1.9 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "time_utc": "2026-11-16T15:45:00+00:00",
+   "opened_uk": "Mon 16 Nov 15:45",
+   "entry": "13187.2",
+   "how": "forced close",
+   "pips": "+1.0",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13213.3 then 13224.5; swing lows 13195.4 then 13182.1; last hourly close 13184.8 (Mon 16 Nov 14:00 candle), 50 EMA 13223.8, 6 candles before 13232.5; entry near the 8 EMA: slow grind is exempt"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "buy",
+   "time_utc": "2026-11-16T16:10:00+00:00",
+   "opened_uk": "Mon 16 Nov 16:10",
+   "entry": "13193.7",
+   "how": "stopped by IG",
+   "pips": "-17.1",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13205.2 (Mon 13:00) after 13224.5 (Mon 09:00); last hourly close 13185.6 (Mon 16 Nov 15:00 candle), 50 EMA 13222.3, 6 candles before 13230.8: close below it and falling; the buy is not within 5 pips of the daily pivot (13211.7) or the 50 EMA (13222.3); entry near the 8 EMA: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-16T16:50:00+00:00",
+   "opened_uk": "Mon 16 Nov 16:50",
+   "entry": "13182.6",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13205.2 (Mon 13:00) after 13224.5 (Mon 09:00); last hourly close 13185.6 (Mon 16 Nov 15:00 candle), 50 EMA 13222.3, 6 candles before 13230.8: close below it and falling; entry near the 8 EMA: entry 13182.6, 5-minute 8 EMA 13186.6 (at the 16:45 candle), 4.0 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-16T17:10:00+00:00",
+   "opened_uk": "Mon 16 Nov 17:10",
+   "entry": "13190.8",
+   "how": "close",
+   "pips": "+1.1",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13205.2 (Mon 13:00) after 13224.5 (Mon 09:00); last hourly close 13183.7 (Mon 16 Nov 16:00 candle), 50 EMA 13220.8, 6 candles before 13229.0: close below it and falling; the buy is not within 5 pips of the daily pivot (13211.7) or the 50 EMA (13220.8); entry near the 8 EMA: entry 13190.8, 5-minute 8 EMA 13186.5 (at the 17:05 candle), 4.3 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "range trade",
+   "direction": "sell",
+   "time_utc": "2026-11-16T17:25:00+00:00",
+   "opened_uk": "Mon 16 Nov 17:25",
+   "entry": "13193.8",
+   "how": "close",
+   "pips": "+9.9",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13205.2 (Mon 13:00) after 13224.5 (Mon 09:00); last hourly close 13183.7 (Mon 16 Nov 16:00 candle), 50 EMA 13220.8, 6 candles before 13229.0: close below it and falling; entry near the 8 EMA: entry 13193.8, 5-minute 8 EMA 13190.9 (at the 17:20 candle), 2.9 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-16T20:00:00+00:00",
+   "opened_uk": "Mon 16 Nov 20:00",
+   "entry": "13184.7",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13205.2 (Mon 13:00) after 13224.5 (Mon 09:00); last hourly close 13185.8 (Mon 16 Nov 19:00 candle), 50 EMA 13217.0, 6 candles before 13225.4: close below it and falling; entry near the 8 EMA: entry 13184.7, 5-minute 8 EMA 13188.1 (at the 19:55 candle), 3.4 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-17T06:00:00+00:00",
+   "opened_uk": "Tue 17 Nov 06:00",
+   "entry": "13198.8",
+   "how": "forced close",
+   "pips": "+3.2",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13188.2 (Tue 00:00) after 13205.2 (Mon 13:00); last hourly close 13200.2 (Tue 17 Nov 05:00 candle), 50 EMA 13206.9, 6 candles before 13211.7: close below it and falling; entry near the 8 EMA: entry 13198.8, 5-minute 8 EMA 13199.0 (at the 05:55 candle), 0.2 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-17T06:00:00+00:00",
+   "opened_uk": "Tue 17 Nov 06:00",
+   "entry": "13198.8",
+   "how": "forced close",
+   "pips": "+3.2",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13188.2 (Tue 00:00) after 13205.2 (Mon 13:00); last hourly close 13200.2 (Tue 17 Nov 05:00 candle), 50 EMA 13206.9, 6 candles before 13211.7: close below it and falling; entry near the 8 EMA: entry 13198.8, 5-minute 8 EMA 13199.0 (at the 05:55 candle), 0.2 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-17T07:35:00+00:00",
+   "opened_uk": "Tue 17 Nov 07:35",
+   "entry": "13192",
+   "how": "stopped by IG",
+   "pips": "-12.9",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13188.2 (Tue 00:00) after 13205.2 (Mon 13:00); last hourly close 13187.5 (Tue 17 Nov 06:00 candle), 50 EMA 13206.2, 6 candles before 13210.6: close below it and falling; entry near the 8 EMA: entry 13192, 5-minute 8 EMA 13193.1 (at the 07:30 candle), 1.1 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "range trade",
+   "direction": "sell",
+   "time_utc": "2026-11-17T08:55:00+00:00",
+   "opened_uk": "Tue 17 Nov 08:55",
+   "entry": "13190.8",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13188.2 then 13202.5; swing lows 13175.2 then 13168; last hourly close 13186 (Tue 17 Nov 07:00 candle), 50 EMA 13205.4, 6 candles before 13209.3; entry near the 8 EMA: entry 13190.8, 5-minute 8 EMA 13193.1 (at the 08:50 candle), 2.3 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-17T13:15:00+00:00",
+   "opened_uk": "Tue 17 Nov 13:15",
+   "entry": "13188.9",
+   "how": "stopped by IG",
+   "pips": "-15.6",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13202.5 then 13204.4; swing lows 13168 then 13181.3; last hourly close 13195.1 (Tue 17 Nov 12:00 candle), 50 EMA 13202.9, 6 candles before 13206.2; entry near the 8 EMA: entry 13188.9, 5-minute 8 EMA 13192.9 (at the 13:10 candle), 4.0 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "buy",
+   "time_utc": "2026-11-17T14:00:00+00:00",
+   "opened_uk": "Tue 17 Nov 14:00",
+   "entry": "13187",
+   "how": "stopped by IG",
+   "pips": "+5.4",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13202.5 then 13204.4; swing lows 13168 then 13181.3; last hourly close 13186.9 (Tue 17 Nov 13:00 candle), 50 EMA 13202.3, 6 candles before 13205.4; entry near the 8 EMA: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "time_utc": "2026-11-17T16:35:00+00:00",
+   "opened_uk": "Tue 17 Nov 16:35",
+   "entry": "13215",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13202.5 then 13204.4; swing lows 13181.3 then 13172.8; last hourly close 13203.4 (Tue 17 Nov 15:00 candle), 50 EMA 13201.9, 6 candles before 13204.5; entry near the 8 EMA: entry 13215, 5-minute 8 EMA 13212.1 (at the 16:30 candle), 2.9 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "time_utc": "2026-11-17T16:45:00+00:00",
+   "opened_uk": "Tue 17 Nov 16:45",
+   "entry": "13218.4",
+   "how": "forced close",
+   "pips": "-10.3",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13202.5 then 13204.4; swing lows 13181.3 then 13172.8; last hourly close 13203.4 (Tue 17 Nov 15:00 candle), 50 EMA 13201.9, 6 candles before 13204.5; entry near the 8 EMA: slow grind is exempt"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-17T16:45:00+00:00",
+   "opened_uk": "Tue 17 Nov 16:45",
+   "entry": "13213.7",
+   "how": "close",
+   "pips": "-5.8",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13202.5 then 13204.4; swing lows 13181.3 then 13172.8; last hourly close 13203.4 (Tue 17 Nov 15:00 candle), 50 EMA 13201.9, 6 candles before 13204.5; entry near the 8 EMA: entry 13213.7, 5-minute 8 EMA 13214.1 (at the 16:40 candle), 0.4 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "time_utc": "2026-11-17T17:45:00+00:00",
+   "opened_uk": "Tue 17 Nov 17:45",
+   "entry": "13221.2",
+   "how": "forced close",
+   "pips": "+10.1",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13202.5 then 13204.4; swing lows 13181.3 then 13172.8; last hourly close 13215.3 (Tue 17 Nov 16:00 candle), 50 EMA 13202.5, 6 candles before 13203.8; entry near the 8 EMA: entry 13221.2, 5-minute 8 EMA 13221.0 (at the 17:40 candle), 0.2 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-17T18:30:00+00:00",
+   "opened_uk": "Tue 17 Nov 18:30",
+   "entry": "13221.1",
+   "how": "close",
+   "pips": "-2.1",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13202.5 then 13204.4; swing lows 13181.3 then 13172.8; last hourly close 13224 (Tue 17 Nov 17:00 candle), 50 EMA 13203.3, 6 candles before 13203.3; entry near the 8 EMA: entry 13221.1, 5-minute 8 EMA 13223.2 (at the 18:25 candle), 2.1 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-17T19:10:00+00:00",
+   "opened_uk": "Tue 17 Nov 19:10",
+   "entry": "13216.7",
+   "how": "forced close",
+   "pips": "+5.6",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13202.5 then 13204.4; swing lows 13181.3 then 13172.8; last hourly close 13218.3 (Tue 17 Nov 18:00 candle), 50 EMA 13203.9, 6 candles before 13202.9; entry near the 8 EMA: entry 13216.7, 5-minute 8 EMA 13219.3 (at the 19:05 candle), 2.6 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "time_utc": "2026-11-18T04:05:00+00:00",
+   "opened_uk": "Wed 18 Nov 04:05",
+   "entry": "13195.5",
+   "how": "forced close",
+   "pips": "+45.9",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13204.4 then 13227.9; swing lows 13172.8 then 13194.9; last hourly close 13197.8 (Wed 18 Nov 03:00 candle), 50 EMA 13203.6, 6 candles before 13204.4; entry near the 8 EMA: slow grind is exempt"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "time_utc": "2026-11-18T06:05:00+00:00",
+   "opened_uk": "Wed 18 Nov 06:05",
+   "entry": "13189",
+   "how": "stopped by IG",
+   "pips": "-6.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13206.9 (Wed 02:00) after 13227.9 (Tue 18:00); last hourly close 13191.3 (Wed 18 Nov 05:00 candle), 50 EMA 13202.9, 6 candles before 13204.3: close below it and falling; entry near the 8 EMA: breakout is exempt"
+   ]
+  },
+  {
+   "strategy": "breakout",
+   "direction": "sell",
+   "time_utc": "2026-11-18T07:20:00+00:00",
+   "opened_uk": "Wed 18 Nov 07:20",
+   "entry": "13181.8",
+   "how": "take profit hit at IG",
+   "pips": "+50.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13206.9 (Wed 02:00) after 13227.9 (Tue 18:00); last hourly close 13190.4 (Wed 18 Nov 06:00 candle), 50 EMA 13202.4, 6 candles before 13204.1: close below it and falling; entry near the 8 EMA: breakout is exempt"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-18T10:30:00+00:00",
+   "opened_uk": "Wed 18 Nov 10:30",
+   "entry": "13172.7",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13206.9 (Wed 02:00) after 13227.9 (Tue 18:00); last hourly close 13170.8 (Wed 18 Nov 09:00 candle), 50 EMA 13198.2, 6 candles before 13203.6: close below it and falling; the buy is not within 5 pips of the daily pivot (13200.1) or the 50 EMA (13198.2); entry near the 8 EMA: entry 13172.7, 5-minute 8 EMA 13168.4 (at the 10:25 candle), 4.3 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-18T12:05:00+00:00",
+   "opened_uk": "Wed 18 Nov 12:05",
+   "entry": "13162",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13206.9 (Wed 02:00) after 13227.9 (Tue 18:00); last hourly close 13157 (Wed 18 Nov 11:00 candle), 50 EMA 13195.7, 6 candles before 13202.9: close below it and falling; the buy is not within 5 pips of the daily pivot (13200.1) or the 50 EMA (13195.7); entry near the 8 EMA: entry 13162, 5-minute 8 EMA 13160.9 (at the 12:00 candle), 1.1 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-18T13:00:00+00:00",
+   "opened_uk": "Wed 18 Nov 13:00",
+   "entry": "13161",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13175.6 (Wed 10:00) after 13206.9 (Wed 02:00); last hourly close 13160.1 (Wed 18 Nov 12:00 candle), 50 EMA 13194.3, 6 candles before 13202.4: close below it and falling; the buy is not within 5 pips of the daily pivot (13200.1) or the 50 EMA (13194.3); entry near the 8 EMA: entry 13161, 5-minute 8 EMA 13158.7 (at the 12:55 candle), 2.3 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-18T16:50:00+00:00",
+   "opened_uk": "Wed 18 Nov 16:50",
+   "entry": "13145.1",
+   "how": "forced close",
+   "pips": "+10.7",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13175.6 (Wed 10:00) after 13206.9 (Wed 02:00); last hourly close 13148.1 (Wed 18 Nov 15:00 candle), 50 EMA 13190.2, 6 candles before 13198.2: close below it and falling; the buy is not within 5 pips of the daily pivot (13200.1) or the 50 EMA (13190.2); entry near the 8 EMA: entry 13145.1, 5-minute 8 EMA 13143.0 (at the 16:45 candle), 2.1 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "time_utc": "2026-11-18T16:50:00+00:00",
+   "opened_uk": "Wed 18 Nov 16:50",
+   "entry": "13145.1",
+   "how": "forced close",
+   "pips": "+10.7",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13175.6 (Wed 10:00) after 13206.9 (Wed 02:00); last hourly close 13148.1 (Wed 18 Nov 15:00 candle), 50 EMA 13190.2, 6 candles before 13198.2: close below it and falling; the buy is not within 5 pips of the daily pivot (13200.1) or the 50 EMA (13190.2); entry near the 8 EMA: entry 13145.1, 5-minute 8 EMA 13143.0 (at the 16:45 candle), 2.1 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "buy",
+   "time_utc": "2026-11-18T17:00:00+00:00",
+   "opened_uk": "Wed 18 Nov 17:00",
+   "entry": "13150.3",
+   "how": "forced close",
+   "pips": "+5.5",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13175.6 (Wed 10:00) after 13206.9 (Wed 02:00); last hourly close 13150.2 (Wed 18 Nov 16:00 candle), 50 EMA 13188.6, 6 candles before 13197.3: close below it and falling; the buy is not within 5 pips of the daily pivot (13200.1) or the 50 EMA (13188.6); entry near the 8 EMA: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-19T00:10:00+00:00",
+   "opened_uk": "Thu 19 Nov 00:10",
+   "entry": "13142",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13157.5 (Wed 18:00) after 13175.6 (Wed 10:00); last hourly close 13145.1 (Wed 18 Nov 23:00 candle), 50 EMA 13178.5, 6 candles before 13187.2: close below it and falling; entry near the 8 EMA: entry 13142, 5-minute 8 EMA 13145.3 (at the 00:05 candle), 3.3 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "sell",
+   "time_utc": "2026-11-19T02:55:00+00:00",
+   "opened_uk": "Thu 19 Nov 02:55",
+   "entry": "13132",
+   "how": "stopped by IG",
+   "pips": "-15.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13157.5 (Wed 18:00) after 13175.6 (Wed 10:00); last hourly close 13139.8 (Thu 19 Nov 01:00 candle), 50 EMA 13176.0, 6 candles before 13184.0: close below it and falling; entry near the 8 EMA: slow grind is exempt"
+   ]
+  },
+  {
+   "strategy": "slow grind",
+   "direction": "buy",
+   "time_utc": "2026-11-19T07:55:00+00:00",
+   "opened_uk": "Thu 19 Nov 07:55",
+   "entry": "13155.6",
+   "how": "stopped by IG",
+   "pips": "-15.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13153.3 (Thu 00:00) after 13157.5 (Wed 18:00); last hourly close 13138.7 (Thu 19 Nov 06:00 candle), 50 EMA 13168.1, 6 candles before 13177.4: close below it and falling; the buy is not within 5 pips of the daily pivot (13162.5) or the 50 EMA (13168.1); entry near the 8 EMA: slow grind is exempt"
+   ]
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "time_utc": "2026-11-19T07:55:00+00:00",
+   "opened_uk": "Thu 19 Nov 07:55",
+   "entry": "13152.2",
+   "how": "stopped by IG",
+   "pips": "+11.9",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13153.3 (Thu 00:00) after 13157.5 (Wed 18:00); last hourly close 13138.7 (Thu 19 Nov 06:00 candle), 50 EMA 13168.1, 6 candles before 13177.4: close below it and falling; the buy is not within 5 pips of the daily pivot (13162.5) or the 50 EMA (13168.1); entry near the 8 EMA: Asian range breakout is exempt"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-19T09:20:00+00:00",
+   "opened_uk": "Thu 19 Nov 09:20",
+   "entry": "13151.7",
+   "how": "close",
+   "pips": "-8.1",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13153.3 (Thu 00:00) after 13157.5 (Wed 18:00); last hourly close 13155.5 (Thu 19 Nov 08:00 candle), 50 EMA 13167.1, 6 candles before 13174.2: close below it and falling; entry near the 8 EMA: entry 13151.7, 5-minute 8 EMA 13155.8 (at the 09:15 candle), 4.1 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "time_utc": "2026-11-19T09:30:00+00:00",
+   "opened_uk": "Thu 19 Nov 09:30",
+   "entry": "13143.4",
+   "how": "stopped by IG",
+   "pips": "-18.3",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13153.3 (Thu 00:00) after 13157.5 (Wed 18:00); last hourly close 13155.5 (Thu 19 Nov 08:00 candle), 50 EMA 13167.1, 6 candles before 13174.2: close below it and falling; entry near the 8 EMA: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-19T11:15:00+00:00",
+   "opened_uk": "Thu 19 Nov 11:15",
+   "entry": "13165.5",
+   "how": "close",
+   "pips": "+4.9",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13157.5 then 13153.3; swing lows 13136.3 then 13119.1; last hourly close 13169.1 (Thu 19 Nov 10:00 candle), 50 EMA 13166.3, 6 candles before 13170.7; entry near the 8 EMA: entry 13165.5, 5-minute 8 EMA 13166.3 (at the 11:10 candle), 0.8 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time_utc": "2026-11-19T15:40:00+00:00",
+   "opened_uk": "Thu 19 Nov 15:40",
+   "entry": "13116.3",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13153.3 then 13171.9; swing lows 13136.3 then 13119.1; last hourly close 13141.2 (Thu 19 Nov 14:00 candle), 50 EMA 13164.3, 6 candles before 13167.1; entry near the 8 EMA: entry 13116.3, 5-minute 8 EMA 13121.6 (at the 15:35 candle), 5.3 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "time_utc": "2026-11-19T15:40:00+00:00",
+   "opened_uk": "Thu 19 Nov 15:40",
+   "entry": "13119.3",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13153.3 then 13171.9; swing lows 13136.3 then 13119.1; last hourly close 13141.2 (Thu 19 Nov 14:00 candle), 50 EMA 13164.3, 6 candles before 13167.1; entry near the 8 EMA: entry 13119.3, 5-minute 8 EMA 13121.6 (at the 15:35 candle), 2.3 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time_utc": "2026-11-19T16:40:00+00:00",
+   "opened_uk": "Thu 19 Nov 16:40",
+   "entry": "13113.8",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13153.3 then 13171.9; swing lows 13136.3 then 13119.1; last hourly close 13117.2 (Thu 19 Nov 15:00 candle), 50 EMA 13162.4, 6 candles before 13166.2; entry near the 8 EMA: entry 13113.8, 5-minute 8 EMA 13112.3 (at the 16:35 candle), 1.5 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "time_utc": "2026-11-19T17:20:00+00:00",
+   "opened_uk": "Thu 19 Nov 17:20",
+   "entry": "13105.9",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13112.9 (Thu 19 Nov 16:00 candle), 50 EMA 13160.5, 6 candles before 13166.3: close below it and falling; the buy is not within 5 pips of the daily pivot (13162.5) or the 50 EMA (13160.5); entry near the 8 EMA: entry 13105.9, 5-minute 8 EMA 13107.7 (at the 17:15 candle), 1.8 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "time_utc": "2026-11-19T17:20:00+00:00",
+   "opened_uk": "Thu 19 Nov 17:20",
+   "entry": "13106",
+   "how": "forced close",
+   "pips": "-8.4",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13112.9 (Thu 19 Nov 16:00 candle), 50 EMA 13160.5, 6 candles before 13166.3: close below it and falling; the buy is not within 5 pips of the daily pivot (13162.5) or the 50 EMA (13160.5); entry near the 8 EMA: entry 13106, 5-minute 8 EMA 13107.7 (at the 17:15 candle), 1.7 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-20T07:25:00+00:00",
+   "opened_uk": "Fri 20 Nov 07:25",
+   "entry": "13114.8",
+   "how": "close",
+   "pips": "-5.8",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13109.6 (Fri 20 Nov 06:00 candle), 50 EMA 13133.1, 6 candles before 13141.9: close below it and falling; entry near the 8 EMA: entry 13114.8, 5-minute 8 EMA 13116.1 (at the 07:20 candle), 1.3 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "time_utc": "2026-11-20T07:30:00+00:00",
+   "opened_uk": "Fri 20 Nov 07:30",
+   "entry": "13113.4",
+   "how": "stopped by IG",
+   "pips": "+8.6",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13109.6 (Fri 20 Nov 06:00 candle), 50 EMA 13133.1, 6 candles before 13141.9: close below it and falling; entry near the 8 EMA: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "time_utc": "2026-11-20T07:40:00+00:00",
+   "opened_uk": "Fri 20 Nov 07:40",
+   "entry": "13118.1",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13109.6 (Fri 20 Nov 06:00 candle), 50 EMA 13133.1, 6 candles before 13141.9: close below it and falling; the buy is not within 5 pips of the daily pivot (13111.6) or the 50 EMA (13133.1); entry near the 8 EMA: Asian range breakout is exempt"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "buy",
+   "time_utc": "2026-11-20T09:30:00+00:00",
+   "opened_uk": "Fri 20 Nov 09:30",
+   "entry": "13105.2",
+   "how": "take profit hit at IG",
+   "pips": "+20.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13099.2 (Fri 20 Nov 08:00 candle), 50 EMA 13131.0, 6 candles before 13137.8: close below it and falling; the buy is not within 5 pips of the daily pivot (13111.6) or the 50 EMA (13131.0); entry near the 8 EMA: entry 13105.2, 5-minute 8 EMA 13103.1 (at the 09:25 candle), 2.1 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "time_utc": "2026-11-20T13:30:00+00:00",
+   "opened_uk": "Fri 20 Nov 13:30",
+   "entry": "13119.4",
+   "how": "stopped by IG",
+   "pips": "+4.4",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13112 (Fri 20 Nov 12:00 candle), 50 EMA 13126.8, 6 candles before 13133.1: close below it and falling; entry near the 8 EMA: entry 13119.4, 5-minute 8 EMA 13118.8 (at the 13:25 candle), 0.6 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-20T13:30:00+00:00",
+   "opened_uk": "Fri 20 Nov 13:30",
+   "entry": "13118.9",
+   "how": "close",
+   "pips": "+1.8",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13112 (Fri 20 Nov 12:00 candle), 50 EMA 13126.8, 6 candles before 13133.1: close below it and falling; entry near the 8 EMA: entry 13118.9, 5-minute 8 EMA 13118.8 (at the 13:25 candle), 0.1 pips above it: allowed"
+   ]
+  },
+  {
+   "strategy": "session sweep",
+   "direction": "sell",
+   "time_utc": "2026-11-20T13:35:00+00:00",
+   "opened_uk": "Fri 20 Nov 13:35",
+   "entry": "13116.2",
+   "how": "stopped by IG",
+   "pips": "+1.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13112 (Fri 20 Nov 12:00 candle), 50 EMA 13126.8, 6 candles before 13133.1: close below it and falling; entry near the 8 EMA: session sweep is exempt"
+   ]
+  },
+  {
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "time_utc": "2026-11-20T14:45:00+00:00",
+   "opened_uk": "Fri 20 Nov 14:45",
+   "entry": "13107.4",
+   "how": "stopped by IG",
+   "pips": "-12.0",
+   "filters": [
+    "entry filters: hourly context: DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13119 (Fri 20 Nov 13:00 candle), 50 EMA 13126.5, 6 candles before 13132.3: close below it and falling; entry near the 8 EMA: entry 13107.4, 5-minute 8 EMA 13112.1 (at the 14:40 candle), 4.7 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "level reversal",
+   "direction": "sell",
+   "time_utc": "2026-11-20T17:55:00+00:00",
+   "opened_uk": "Fri 20 Nov 17:55",
+   "entry": "13096.1",
+   "how": "forced close",
+   "pips": "+11.0",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13121.9 then 13128.6; swing lows 13077 then 13093; last hourly close 13101.7 (Fri 20 Nov 16:00 candle), 50 EMA 13123.9, 6 candles before 13128.8; entry near the 8 EMA: entry 13096.1, 5-minute 8 EMA 13099.2 (at the 17:50 candle), 3.1 pips below it: allowed"
+   ]
+  },
+  {
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "time_utc": "2026-11-20T18:40:00+00:00",
+   "opened_uk": "Fri 20 Nov 18:40",
+   "entry": "13092.3",
+   "how": "forced close",
+   "pips": "+7.2",
+   "filters": [
+    "entry filters: hourly context: no DOWN or UP context: swing highs 13121.9 then 13128.6; swing lows 13077 then 13093; last hourly close 13100.3 (Fri 20 Nov 17:00 candle), 50 EMA 13123.0, 6 candles before 13127.4; entry near the 8 EMA: entry 13092.3, 5-minute 8 EMA 13096.7 (at the 18:35 candle), 4.4 pips below it: allowed"
+   ]
+  }
+ ],
+ "refused": [
+  {
+   "time_utc": "2026-11-16T06:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T06:50:00Z",
+   "entry_price": "13197.8",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13197.8, 5-minute 8 EMA 13203.3 (at the 06:45 candle), 5.5 pips below it: refused",
+   "details": {
+    "entry_price": "13197.8",
+    "ema8_5m": "13203.3",
+    "ema8_candle": "2026-11-16T06:45Z",
+    "pips_beyond_ema8": "5.5",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-16T08:40:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-16T08:40:00Z",
+   "entry_price": "13208.8",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13213.3 (Mon 05:00) after 13218.5 (Mon 00:00); last hourly close 13201.8 (Mon 16 Nov 07:00 candle), 50 EMA 13233.2, 6 candles before 13241.1: close below it and falling. A BUY at 13208.8 is 2.9 pips from the daily pivot 13211.7 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13208.8",
+    "line": "the daily pivot",
+    "line_price": "13211.7",
+    "pips_from_line": "2.9",
+    "daily_pivot": "13211.7",
+    "hourly_ema50": "13233.2",
+    "hourly_ema50_before": "13241.1",
+    "last_hourly_close": "13201.8",
+    "swings": [
+     [
+      "2026-11-16T00:00Z",
+      "13218.5"
+     ],
+     [
+      "2026-11-16T05:00Z",
+      "13213.3"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-16T08:45:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-16T08:45:00Z",
+   "entry_price": "13215.1",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13213.3 (Mon 05:00) after 13218.5 (Mon 00:00); last hourly close 13201.8 (Mon 16 Nov 07:00 candle), 50 EMA 13233.2, 6 candles before 13241.1: close below it and falling. A BUY at 13215.1 is 3.4 pips from the daily pivot 13211.7 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13215.1",
+    "line": "the daily pivot",
+    "line_price": "13211.7",
+    "pips_from_line": "3.4",
+    "daily_pivot": "13211.7",
+    "hourly_ema50": "13233.2",
+    "hourly_ema50_before": "13241.1",
+    "last_hourly_close": "13201.8",
+    "swings": [
+     [
+      "2026-11-16T00:00Z",
+      "13218.5"
+     ],
+     [
+      "2026-11-16T05:00Z",
+      "13213.3"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-16T09:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Asian range breakout",
+   "direction": "buy",
+   "idea_time": "2026-11-16T09:15:00Z",
+   "entry_price": "13213.4",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13213.3 (Mon 05:00) after 13218.5 (Mon 00:00); last hourly close 13216.2 (Mon 16 Nov 08:00 candle), 50 EMA 13232.5, 6 candles before 13239.8: close below it and falling. A BUY at 13213.4 is 1.7 pips from the daily pivot 13211.7 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13213.4",
+    "line": "the daily pivot",
+    "line_price": "13211.7",
+    "pips_from_line": "1.7",
+    "daily_pivot": "13211.7",
+    "hourly_ema50": "13232.5",
+    "hourly_ema50_before": "13239.8",
+    "last_hourly_close": "13216.2",
+    "swings": [
+     [
+      "2026-11-16T00:00Z",
+      "13218.5"
+     ],
+     [
+      "2026-11-16T05:00Z",
+      "13213.3"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-16T09:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-16T09:25:00Z",
+   "entry_price": "13206",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13206, 5-minute 8 EMA 13211.8 (at the 09:20 candle), 5.8 pips below it: refused",
+   "details": {
+    "entry_price": "13206",
+    "ema8_5m": "13211.8",
+    "ema8_candle": "2026-11-16T09:20Z",
+    "pips_beyond_ema8": "5.8",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-16T09:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T09:50:00Z",
+   "entry_price": "13186.7",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13186.7, 5-minute 8 EMA 13196.1 (at the 09:45 candle), 9.4 pips below it: refused",
+   "details": {
+    "entry_price": "13186.7",
+    "ema8_5m": "13196.1",
+    "ema8_candle": "2026-11-16T09:45Z",
+    "pips_beyond_ema8": "9.4",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-16T10:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-16T10:50:00Z",
+   "entry_price": "13186.8",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13186.8, 5-minute 8 EMA 13192.7 (at the 10:45 candle), 5.9 pips below it: refused",
+   "details": {
+    "entry_price": "13186.8",
+    "ema8_5m": "13192.7",
+    "ema8_candle": "2026-11-16T10:45Z",
+    "pips_beyond_ema8": "5.9",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-16T10:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T10:50:00Z",
+   "entry_price": "13187.1",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13187.1, 5-minute 8 EMA 13192.7 (at the 10:45 candle), 5.6 pips below it: refused",
+   "details": {
+    "entry_price": "13187.1",
+    "ema8_5m": "13192.7",
+    "ema8_candle": "2026-11-16T10:45Z",
+    "pips_beyond_ema8": "5.6",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-16T11:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T11:00:00Z",
+   "entry_price": "13184.2",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13184.2, 5-minute 8 EMA 13189.9 (at the 10:55 candle), 5.7 pips below it: refused",
+   "details": {
+    "entry_price": "13184.2",
+    "ema8_5m": "13189.9",
+    "ema8_candle": "2026-11-16T10:55Z",
+    "pips_beyond_ema8": "5.7",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-16T14:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-16T14:25:00Z",
+   "entry_price": "13192.1",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13192.1, 5-minute 8 EMA 13197.7 (at the 14:20 candle), 5.6 pips below it: refused",
+   "details": {
+    "entry_price": "13192.1",
+    "ema8_5m": "13197.7",
+    "ema8_candle": "2026-11-16T14:20Z",
+    "pips_beyond_ema8": "5.6",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-16T14:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T14:50:00Z",
+   "entry_price": "13190.1",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13190.1, 5-minute 8 EMA 13195.5 (at the 14:45 candle), 5.4 pips below it: refused",
+   "details": {
+    "entry_price": "13190.1",
+    "ema8_5m": "13195.5",
+    "ema8_candle": "2026-11-16T14:45Z",
+    "pips_beyond_ema8": "5.4",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-16T14:55:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-16T14:55:00Z",
+   "entry_price": "13187.1",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13187.1, 5-minute 8 EMA 13194.2 (at the 14:50 candle), 7.1 pips below it: refused",
+   "details": {
+    "entry_price": "13187.1",
+    "ema8_5m": "13194.2",
+    "ema8_candle": "2026-11-16T14:50Z",
+    "pips_beyond_ema8": "7.1",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-16T14:55:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T14:55:00Z",
+   "entry_price": "13188.4",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13188.4, 5-minute 8 EMA 13194.2 (at the 14:50 candle), 5.8 pips below it: refused",
+   "details": {
+    "entry_price": "13188.4",
+    "ema8_5m": "13194.2",
+    "ema8_candle": "2026-11-16T14:50Z",
+    "pips_beyond_ema8": "5.8",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-16T15:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-16T15:00:00Z",
+   "entry_price": "13184.8",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13184.8, 5-minute 8 EMA 13192.1 (at the 14:55 candle), 7.3 pips below it: refused",
+   "details": {
+    "entry_price": "13184.8",
+    "ema8_5m": "13192.1",
+    "ema8_candle": "2026-11-16T14:55Z",
+    "pips_beyond_ema8": "7.3",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-16T15:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-16T15:50:00Z",
+   "entry_price": "13183.1",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13183.1, 5-minute 8 EMA 13189.1 (at the 15:45 candle), 6.0 pips below it: refused",
+   "details": {
+    "entry_price": "13183.1",
+    "ema8_5m": "13189.1",
+    "ema8_candle": "2026-11-16T15:45Z",
+    "pips_beyond_ema8": "6.0",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-16T17:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-16T17:15:00Z",
+   "entry_price": "13196.1",
+   "rule": "entry near the 8 EMA",
+   "why": "a BUY more than 5 pips above the 5-minute 8 EMA: entry 13196.1, 5-minute 8 EMA 13188.2 (at the 17:10 candle), 7.9 pips above it: refused",
+   "details": {
+    "entry_price": "13196.1",
+    "ema8_5m": "13188.2",
+    "ema8_candle": "2026-11-16T17:10Z",
+    "pips_beyond_ema8": "7.9",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-17T01:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-17T01:10:00Z",
+   "entry_price": "13175.9",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13175.9, 5-minute 8 EMA 13181.5 (at the 01:05 candle), 5.6 pips below it: refused",
+   "details": {
+    "entry_price": "13175.9",
+    "ema8_5m": "13181.5",
+    "ema8_candle": "2026-11-17T01:05Z",
+    "pips_beyond_ema8": "5.6",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-17T05:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "buy",
+   "idea_time": "2026-11-17T05:15:00Z",
+   "entry_price": "13194.6",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13188.2 (Tue 00:00) after 13205.2 (Mon 13:00); last hourly close 13190.8 (Tue 17 Nov 04:00 candle), 50 EMA 13207.2, 6 candles before 13212.8: close below it and falling. A BUY at 13194.6 is 0.2 pips from the daily pivot 13194.4 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13194.6",
+    "line": "the daily pivot",
+    "line_price": "13194.4",
+    "pips_from_line": "0.2",
+    "daily_pivot": "13194.4",
+    "hourly_ema50": "13207.2",
+    "hourly_ema50_before": "13212.8",
+    "last_hourly_close": "13190.8",
+    "swings": [
+     [
+      "2026-11-16T13:00Z",
+      "13205.2"
+     ],
+     [
+      "2026-11-17T00:00Z",
+      "13188.2"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-17T10:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "sell",
+   "idea_time": "2026-11-17T10:05:00Z",
+   "entry_price": "13190.3",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13190.3, 5-minute 8 EMA 13195.5 (at the 10:00 candle), 5.2 pips below it: refused",
+   "details": {
+    "entry_price": "13190.3",
+    "ema8_5m": "13195.5",
+    "ema8_candle": "2026-11-17T10:00Z",
+    "pips_beyond_ema8": "5.2",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-17T10:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-17T10:05:00Z",
+   "entry_price": "13189.8",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13189.8, 5-minute 8 EMA 13195.5 (at the 10:00 candle), 5.7 pips below it: refused",
+   "details": {
+    "entry_price": "13189.8",
+    "ema8_5m": "13195.5",
+    "ema8_candle": "2026-11-17T10:00Z",
+    "pips_beyond_ema8": "5.7",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-17T10:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-17T10:10:00Z",
+   "entry_price": "13186.9",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13186.9, 5-minute 8 EMA 13193.6 (at the 10:05 candle), 6.7 pips below it: refused",
+   "details": {
+    "entry_price": "13186.9",
+    "ema8_5m": "13193.6",
+    "ema8_candle": "2026-11-17T10:05Z",
+    "pips_beyond_ema8": "6.7",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-17T16:20:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-17T16:20:00Z",
+   "entry_price": "13217.2",
+   "rule": "entry near the 8 EMA",
+   "why": "a BUY more than 5 pips above the 5-minute 8 EMA: entry 13217.2, 5-minute 8 EMA 13206.9 (at the 16:15 candle), 10.3 pips above it: refused",
+   "details": {
+    "entry_price": "13217.2",
+    "ema8_5m": "13206.9",
+    "ema8_candle": "2026-11-17T16:15Z",
+    "pips_beyond_ema8": "10.3",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-17T17:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "buy",
+   "idea_time": "2026-11-17T17:15:00Z",
+   "entry_price": "13223.3",
+   "rule": "entry near the 8 EMA",
+   "why": "a BUY more than 5 pips above the 5-minute 8 EMA: entry 13223.3, 5-minute 8 EMA 13216.6 (at the 17:10 candle), 6.7 pips above it: refused",
+   "details": {
+    "entry_price": "13223.3",
+    "ema8_5m": "13216.6",
+    "ema8_candle": "2026-11-17T17:10Z",
+    "pips_beyond_ema8": "6.7",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T07:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-18T07:05:00Z",
+   "entry_price": "13177.1",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13177.1, 5-minute 8 EMA 13187.0 (at the 07:00 candle), 9.9 pips below it: refused",
+   "details": {
+    "entry_price": "13177.1",
+    "ema8_5m": "13187.0",
+    "ema8_candle": "2026-11-18T07:00Z",
+    "pips_beyond_ema8": "9.9",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T08:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-18T08:05:00Z",
+   "entry_price": "13167.1",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13167.1, 5-minute 8 EMA 13174.4 (at the 08:00 candle), 7.3 pips below it: refused",
+   "details": {
+    "entry_price": "13167.1",
+    "ema8_5m": "13174.4",
+    "ema8_candle": "2026-11-18T08:00Z",
+    "pips_beyond_ema8": "7.3",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-18T09:30:00Z",
+   "entry_price": "13161.8",
+   "rule": "entry near the 8 EMA",
+   "why": "a BUY more than 5 pips above the 5-minute 8 EMA: entry 13161.8, 5-minute 8 EMA 13156.4 (at the 09:25 candle), 5.4 pips above it: refused",
+   "details": {
+    "entry_price": "13161.8",
+    "ema8_5m": "13156.4",
+    "ema8_candle": "2026-11-18T09:25Z",
+    "pips_beyond_ema8": "5.4",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T09:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-18T09:30:00Z",
+   "entry_price": "13161.9",
+   "rule": "entry near the 8 EMA",
+   "why": "a BUY more than 5 pips above the 5-minute 8 EMA: entry 13161.9, 5-minute 8 EMA 13156.4 (at the 09:25 candle), 5.5 pips above it: refused",
+   "details": {
+    "entry_price": "13161.9",
+    "ema8_5m": "13156.4",
+    "ema8_candle": "2026-11-18T09:25Z",
+    "pips_beyond_ema8": "5.5",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T09:35:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-18T09:35:00Z",
+   "entry_price": "13163.8",
+   "rule": "entry near the 8 EMA",
+   "why": "a BUY more than 5 pips above the 5-minute 8 EMA: entry 13163.8, 5-minute 8 EMA 13157.9 (at the 09:30 candle), 5.9 pips above it: refused",
+   "details": {
+    "entry_price": "13163.8",
+    "ema8_5m": "13157.9",
+    "ema8_candle": "2026-11-18T09:30Z",
+    "pips_beyond_ema8": "5.9",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T09:35:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-18T09:35:00Z",
+   "entry_price": "13164.9",
+   "rule": "entry near the 8 EMA",
+   "why": "a BUY more than 5 pips above the 5-minute 8 EMA: entry 13164.9, 5-minute 8 EMA 13157.9 (at the 09:30 candle), 7.0 pips above it: refused",
+   "details": {
+    "entry_price": "13164.9",
+    "ema8_5m": "13157.9",
+    "ema8_candle": "2026-11-18T09:30Z",
+    "pips_beyond_ema8": "7.0",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T11:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-18T11:30:00Z",
+   "entry_price": "13164.1",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13164.1, 5-minute 8 EMA 13169.6 (at the 11:25 candle), 5.5 pips below it: refused",
+   "details": {
+    "entry_price": "13164.1",
+    "ema8_5m": "13169.6",
+    "ema8_candle": "2026-11-18T11:25Z",
+    "pips_beyond_ema8": "5.5",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T12:35:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-18T12:35:00Z",
+   "entry_price": "13156.2",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13156.2, 5-minute 8 EMA 13162.8 (at the 12:30 candle), 6.6 pips below it: refused",
+   "details": {
+    "entry_price": "13156.2",
+    "ema8_5m": "13162.8",
+    "ema8_candle": "2026-11-18T12:30Z",
+    "pips_beyond_ema8": "6.6",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T13:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "buy",
+   "idea_time": "2026-11-18T13:10:00Z",
+   "entry_price": "13170.4",
+   "rule": "entry near the 8 EMA",
+   "why": "a BUY more than 5 pips above the 5-minute 8 EMA: entry 13170.4, 5-minute 8 EMA 13161.0 (at the 13:05 candle), 9.4 pips above it: refused",
+   "details": {
+    "entry_price": "13170.4",
+    "ema8_5m": "13161.0",
+    "ema8_candle": "2026-11-18T13:05Z",
+    "pips_beyond_ema8": "9.4",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T14:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-18T14:10:00Z",
+   "entry_price": "13159.3",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13159.3, 5-minute 8 EMA 13165.3 (at the 14:05 candle), 6.0 pips below it: refused",
+   "details": {
+    "entry_price": "13159.3",
+    "ema8_5m": "13165.3",
+    "ema8_candle": "2026-11-18T14:05Z",
+    "pips_beyond_ema8": "6.0",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T16:20:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-18T16:20:00Z",
+   "entry_price": "13140.8",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13140.8, 5-minute 8 EMA 13149.8 (at the 16:15 candle), 9.0 pips below it: refused",
+   "details": {
+    "entry_price": "13140.8",
+    "ema8_5m": "13149.8",
+    "ema8_candle": "2026-11-18T16:15Z",
+    "pips_beyond_ema8": "9.0",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T19:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-18T19:30:00Z",
+   "entry_price": "13138.9",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13138.9, 5-minute 8 EMA 13144.5 (at the 19:25 candle), 5.6 pips below it: refused",
+   "details": {
+    "entry_price": "13138.9",
+    "ema8_5m": "13144.5",
+    "ema8_candle": "2026-11-18T19:25Z",
+    "pips_beyond_ema8": "5.6",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-18T19:40:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-18T19:40:00Z",
+   "entry_price": "13136.7",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13136.7, 5-minute 8 EMA 13141.8 (at the 19:35 candle), 5.1 pips below it: refused",
+   "details": {
+    "entry_price": "13136.7",
+    "ema8_5m": "13141.8",
+    "ema8_candle": "2026-11-18T19:35Z",
+    "pips_beyond_ema8": "5.1",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T03:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-19T03:00:00Z",
+   "entry_price": "13129",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13129, 5-minute 8 EMA 13135.0 (at the 02:55 candle), 6.0 pips below it: refused",
+   "details": {
+    "entry_price": "13129",
+    "ema8_5m": "13135.0",
+    "ema8_candle": "2026-11-19T02:55Z",
+    "pips_beyond_ema8": "6.0",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T09:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-19T09:25:00Z",
+   "entry_price": "13149.2",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13149.2, 5-minute 8 EMA 13154.7 (at the 09:20 candle), 5.5 pips below it: refused",
+   "details": {
+    "entry_price": "13149.2",
+    "ema8_5m": "13154.7",
+    "ema8_candle": "2026-11-19T09:20Z",
+    "pips_beyond_ema8": "5.5",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T09:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-19T09:30:00Z",
+   "entry_price": "13143",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13143, 5-minute 8 EMA 13152.2 (at the 09:25 candle), 9.2 pips below it: refused",
+   "details": {
+    "entry_price": "13143",
+    "ema8_5m": "13152.2",
+    "ema8_candle": "2026-11-19T09:25Z",
+    "pips_beyond_ema8": "9.2",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T12:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-19T12:00:00Z",
+   "entry_price": "13154.1",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13154.1, 5-minute 8 EMA 13159.8 (at the 11:55 candle), 5.7 pips below it: refused",
+   "details": {
+    "entry_price": "13154.1",
+    "ema8_5m": "13159.8",
+    "ema8_candle": "2026-11-19T11:55Z",
+    "pips_beyond_ema8": "5.7",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T12:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-19T12:05:00Z",
+   "entry_price": "13152.8",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13152.8, 5-minute 8 EMA 13158.3 (at the 12:00 candle), 5.5 pips below it: refused",
+   "details": {
+    "entry_price": "13152.8",
+    "ema8_5m": "13158.3",
+    "ema8_candle": "2026-11-19T12:00Z",
+    "pips_beyond_ema8": "5.5",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T16:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-19T16:15:00Z",
+   "entry_price": "13110.6",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13110.6, 5-minute 8 EMA 13116.7 (at the 16:10 candle), 6.1 pips below it: refused",
+   "details": {
+    "entry_price": "13110.6",
+    "ema8_5m": "13116.7",
+    "ema8_candle": "2026-11-19T16:10Z",
+    "pips_beyond_ema8": "6.1",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T17:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-19T17:05:00Z",
+   "entry_price": "13101.4",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13101.4, 5-minute 8 EMA 13111.9 (at the 17:00 candle), 10.5 pips below it: refused",
+   "details": {
+    "entry_price": "13101.4",
+    "ema8_5m": "13111.9",
+    "ema8_candle": "2026-11-19T17:00Z",
+    "pips_beyond_ema8": "10.5",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T18:40:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce",
+   "direction": "buy",
+   "idea_time": "2026-11-19T18:40:00Z",
+   "entry_price": "13106.6",
+   "rule": "entry near the 8 EMA",
+   "why": "a BUY more than 5 pips above the 5-minute 8 EMA: entry 13106.6, 5-minute 8 EMA 13100.8 (at the 18:30 candle), 5.8 pips above it: refused",
+   "details": {
+    "entry_price": "13106.6",
+    "ema8_5m": "13100.8",
+    "ema8_candle": "2026-11-19T18:30Z",
+    "pips_beyond_ema8": "5.8",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T19:50:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "EMA pullback",
+   "direction": "sell",
+   "idea_time": "2026-11-19T19:50:00Z",
+   "entry_price": "13094.8",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13094.8, 5-minute 8 EMA 13100.2 (at the 19:45 candle), 5.4 pips below it: refused",
+   "details": {
+    "entry_price": "13094.8",
+    "ema8_5m": "13100.2",
+    "ema8_candle": "2026-11-19T19:45Z",
+    "pips_beyond_ema8": "5.4",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T21:20:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-19T21:20:00Z",
+   "entry_price": "13089.4",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13089.4, 5-minute 8 EMA 13094.9 (at the 21:15 candle), 5.5 pips below it: refused",
+   "details": {
+    "entry_price": "13089.4",
+    "ema8_5m": "13094.9",
+    "ema8_candle": "2026-11-19T21:15Z",
+    "pips_beyond_ema8": "5.5",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-19T21:30:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-19T21:30:00Z",
+   "entry_price": "13081.5",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13081.5, 5-minute 8 EMA 13090.3 (at the 21:25 candle), 8.8 pips below it: refused",
+   "details": {
+    "entry_price": "13081.5",
+    "ema8_5m": "13090.3",
+    "ema8_candle": "2026-11-19T21:25Z",
+    "pips_beyond_ema8": "8.8",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-20T06:05:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T06:05:00Z",
+   "entry_price": "13109.6",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13105 (Fri 20 Nov 05:00 candle), 50 EMA 13134.1, 6 candles before 13144.0: close below it and falling. A BUY at 13109.6 is 2.0 pips from the daily pivot 13111.6 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13109.6",
+    "line": "the daily pivot",
+    "line_price": "13111.6",
+    "pips_from_line": "2.0",
+    "daily_pivot": "13111.6",
+    "hourly_ema50": "13134.1",
+    "hourly_ema50_before": "13144.0",
+    "last_hourly_close": "13105",
+    "swings": [
+     [
+      "2026-11-19T10:00Z",
+      "13171.9"
+     ],
+     [
+      "2026-11-19T14:00Z",
+      "13164.4"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-20T06:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T06:10:00Z",
+   "entry_price": "13112",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13105 (Fri 20 Nov 05:00 candle), 50 EMA 13134.1, 6 candles before 13144.0: close below it and falling. A BUY at 13112 is 0.4 pips from the daily pivot 13111.6 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13112",
+    "line": "the daily pivot",
+    "line_price": "13111.6",
+    "pips_from_line": "0.4",
+    "daily_pivot": "13111.6",
+    "hourly_ema50": "13134.1",
+    "hourly_ema50_before": "13144.0",
+    "last_hourly_close": "13105",
+    "swings": [
+     [
+      "2026-11-19T10:00Z",
+      "13171.9"
+     ],
+     [
+      "2026-11-19T14:00Z",
+      "13164.4"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-20T09:40:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T09:40:00Z",
+   "entry_price": "13108.5",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13164.4 (Thu 14:00) after 13171.9 (Thu 10:00); last hourly close 13099.2 (Fri 20 Nov 08:00 candle), 50 EMA 13131.0, 6 candles before 13137.8: close below it and falling. A BUY at 13108.5 is 3.1 pips from the daily pivot 13111.6 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13108.5",
+    "line": "the daily pivot",
+    "line_price": "13111.6",
+    "pips_from_line": "3.1",
+    "daily_pivot": "13111.6",
+    "hourly_ema50": "13131.0",
+    "hourly_ema50_before": "13137.8",
+    "last_hourly_close": "13099.2",
+    "swings": [
+     [
+      "2026-11-19T10:00Z",
+      "13171.9"
+     ],
+     [
+      "2026-11-19T14:00Z",
+      "13164.4"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-20T11:15:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T11:15:00Z",
+   "entry_price": "13109.6",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13101.9 (Fri 20 Nov 10:00 candle), 50 EMA 13128.8, 6 candles before 13135.2: close below it and falling. A BUY at 13109.6 is 2.0 pips from the daily pivot 13111.6 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13109.6",
+    "line": "the daily pivot",
+    "line_price": "13111.6",
+    "pips_from_line": "2.0",
+    "daily_pivot": "13111.6",
+    "hourly_ema50": "13128.8",
+    "hourly_ema50_before": "13135.2",
+    "last_hourly_close": "13101.9",
+    "swings": [
+     [
+      "2026-11-19T14:00Z",
+      "13164.4"
+     ],
+     [
+      "2026-11-20T07:00Z",
+      "13121.9"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-20T11:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T11:25:00Z",
+   "entry_price": "13110.2",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13101.9 (Fri 20 Nov 10:00 candle), 50 EMA 13128.8, 6 candles before 13135.2: close below it and falling. A BUY at 13110.2 is 1.4 pips from the daily pivot 13111.6 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13110.2",
+    "line": "the daily pivot",
+    "line_price": "13111.6",
+    "pips_from_line": "1.4",
+    "daily_pivot": "13111.6",
+    "hourly_ema50": "13128.8",
+    "hourly_ema50_before": "13135.2",
+    "last_hourly_close": "13101.9",
+    "swings": [
+     [
+      "2026-11-19T14:00Z",
+      "13164.4"
+     ],
+     [
+      "2026-11-20T07:00Z",
+      "13121.9"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-20T13:10:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "buy",
+   "idea_time": "2026-11-20T13:10:00Z",
+   "entry_price": "13126.2",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13112 (Fri 20 Nov 12:00 candle), 50 EMA 13126.8, 6 candles before 13133.1: close below it and falling. A BUY at 13126.2 is 0.6 pips from the hourly 50 EMA 13126.8 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13126.2",
+    "line": "the hourly 50 EMA",
+    "line_price": "13126.8",
+    "pips_from_line": "0.6",
+    "daily_pivot": "13111.6",
+    "hourly_ema50": "13126.8",
+    "hourly_ema50_before": "13133.1",
+    "last_hourly_close": "13112",
+    "swings": [
+     [
+      "2026-11-19T14:00Z",
+      "13164.4"
+     ],
+     [
+      "2026-11-20T07:00Z",
+      "13121.9"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-20T13:25:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "slow grind",
+   "direction": "buy",
+   "idea_time": "2026-11-20T13:25:00Z",
+   "entry_price": "13126.9",
+   "rule": "hourly context",
+   "why": "DOWN context: lower high 13121.9 (Fri 07:00) after 13164.4 (Thu 14:00); last hourly close 13112 (Fri 20 Nov 12:00 candle), 50 EMA 13126.8, 6 candles before 13133.1: close below it and falling. A BUY at 13126.9 is 0.1 pips from the hourly 50 EMA 13126.8 (within 5): refused",
+   "details": {
+    "context": "down",
+    "entry_price": "13126.9",
+    "line": "the hourly 50 EMA",
+    "line_price": "13126.8",
+    "pips_from_line": "0.1",
+    "daily_pivot": "13111.6",
+    "hourly_ema50": "13126.8",
+    "hourly_ema50_before": "13133.1",
+    "last_hourly_close": "13112",
+    "swings": [
+     [
+      "2026-11-19T14:00Z",
+      "13164.4"
+     ],
+     [
+      "2026-11-20T07:00Z",
+      "13121.9"
+     ]
+    ]
+   }
+  },
+  {
+   "time_utc": "2026-11-20T14:00:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "Bollinger bounce 5m",
+   "direction": "sell",
+   "idea_time": "2026-11-20T14:00:00Z",
+   "entry_price": "13111.9",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13111.9, 5-minute 8 EMA 13117.4 (at the 13:55 candle), 5.5 pips below it: refused",
+   "details": {
+    "entry_price": "13111.9",
+    "ema8_5m": "13117.4",
+    "ema8_candle": "2026-11-20T13:55Z",
+    "pips_beyond_ema8": "5.5",
+    "limit_pips": "5"
+   }
+  },
+  {
+   "time_utc": "2026-11-20T18:45:00Z",
+   "kind": "entry filter refused",
+   "paper": true,
+   "strategy": "level reversal",
+   "direction": "sell",
+   "idea_time": "2026-11-20T18:45:00Z",
+   "entry_price": "13089.7",
+   "rule": "entry near the 8 EMA",
+   "why": "a SELL more than 5 pips below the 5-minute 8 EMA: entry 13089.7, 5-minute 8 EMA 13095.2 (at the 18:40 candle), 5.5 pips below it: refused",
+   "details": {
+    "entry_price": "13089.7",
+    "ema8_5m": "13095.2",
+    "ema8_candle": "2026-11-20T18:40Z",
+    "pips_beyond_ema8": "5.5",
+    "limit_pips": "5"
+   }
+  }
+ ]
+}
