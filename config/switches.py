@@ -29,6 +29,11 @@
                               opens only if the hourly MACD 35/45/30 histogram is shrinking (1 bar) or past zero,
                               or the 5-minute histogram has crossed zero onto the bounce's side
                               (strategies/entry_filters.py, rule 3)
+  COUNTER_TREND_EMERGING      on or off (ON if left out; owner, 24 November 2026): rule 3 also applies when the analyser
+                              says "emerging trend", not only "trend"
+  COUNTER_TREND_HOURLY_CONFIRMED on or off (ON if left out; owner, 24 November 2026): in rule 3 the hourly histogram past
+                              zero counts as tiring only if it was on the trend's side of zero at an hourly candle since
+                              the analyser's state began, and shrinking only while it is on the trend's side
   ENTRY_NEAR_EMA8             on or off (OFF if left out since 21 November 2026; was on): a sell opens only if its entry is no
                               more than 5 pips below the 5-minute 8 EMA, a buy no more than 5 pips above it; the slow
                               grind, breakout, Asian range breakout and session sweep exempt (strategies/entry_filters.py, rule 2)
@@ -138,6 +143,8 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "TREND_DAY_RSI_OFF": ("trend_day_rsi_off", _on_off),
     "EMERGING_LADDER": ("emerging_ladder", _on_off),
     "COUNTER_TREND_TIRING": ("counter_trend_tiring", _on_off),
+    "COUNTER_TREND_EMERGING": ("counter_trend_emerging", _on_off),
+    "COUNTER_TREND_HOURLY_CONFIRMED": ("counter_trend_hourly_confirmed", _on_off),
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
     "STRATEGY_BREAKOUT": ("breakout", _on_off),
     "STRATEGY_LEVEL_REVERSAL": ("level_reversal", _on_off),
@@ -162,7 +169,10 @@ OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_NEAR_TIMES": "off", "PLANNER_OBSERVE": 
                             # Johnny's exit for emerging-trend trades (owner, 21 November 2026): ON
                             "EMERGING_LADDER": "on",
                             # rule 3, counter-trend tiring (owner, 23 November 2026): ON
-                            "COUNTER_TREND_TIRING": "on"}
+                            "COUNTER_TREND_TIRING": "on",
+                            # rule 3: also in an emerging trend; the hourly must have confirmed the trend (owner,
+                            # 24 November 2026): ON
+                            "COUNTER_TREND_EMERGING": "on", "COUNTER_TREND_HOURLY_CONFIRMED": "on"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:

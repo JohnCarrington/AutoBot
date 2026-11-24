@@ -126,8 +126,9 @@ class StrategyRunner:
         """The analyser's state after week candle i (before the week's first candle: consolidation)."""
         t = self.week[i].start if i >= 0 else None
         before = [ch for ch in self.tracker.changes if t is not None and ch.time <= t]
-        return (SimpleNamespace(state=before[-1].state, direction=before[-1].direction, trend_type=before[-1].trend_type)
-                if before else SimpleNamespace(state=CONSOLIDATION, direction=NONE, trend_type=None))
+        return (SimpleNamespace(state=before[-1].state, direction=before[-1].direction, trend_type=before[-1].trend_type,
+                                since=before[-1].time)
+                if before else SimpleNamespace(state=CONSOLIDATION, direction=NONE, trend_type=None, since=None))
 
     def pivot_at(self, t: datetime, keep: bool = True):
         """The pivot at t. Kept for a finished candle (step); the live check (keep=False) only reads one already

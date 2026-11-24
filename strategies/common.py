@@ -119,6 +119,9 @@ class Idea:
     allowed: bool = True
     blocked_by: str = ""
     context: dict = field(default_factory=dict)   # from the candidate (e.g. the breakout's consolidation range)
+    # when the analyser's current state began (the 5-minute candle it was decided on); None when not known. Rule 3's
+    # hourly confirmation looks back to it (owner, 24 November 2026).
+    state_since: datetime | None = None
 
     def as_dict(self) -> dict:
         return {"pair": self.pair, "strategy": self.strategy, "direction": self.direction,
@@ -435,7 +438,8 @@ def check(settings: Any, pair: str, c: Candidate, state: Any, pivot: Decimal | N
     """Turn a candidate into an idea, or a blocked one with every reason."""
     reasons, rule = allowed(settings, c.strategy, c.direction, c.entry_price, state, pivot, ema100, c.time)
     idea = Idea(pair, c.strategy, c.direction, c.time, c.entry_price, state.state, state.direction,
-                state.trend_type, rule.side, list(c.steps), context=dict(c.context))
+                state.trend_type, rule.side, list(c.steps), context=dict(c.context),
+                state_since=getattr(state, "since", None))
     if reasons:
         idea.allowed, idea.blocked_by = False, "; ".join(reasons)
     else:

@@ -33,18 +33,26 @@ from strategies.common import (ASIAN_RANGE_BREAKOUT, BOLLINGER_BOUNCE, BOLLINGER
 UTC = timezone.utc
 AT = datetime(2026, 11, 18, 12, 0, 30, tzinfo=UTC)          # just after the 11:00 hourly candle finished
 END = datetime(2026, 11, 18, 12, 0, tzinfo=UTC)
-OTHERS = ("HOURLY_CONTEXT", "ENTRY_NEAR_EMA8", "RSI_STRETCH", "TREND_DAY_RSI_OFF", "COUNTER_TREND_TIRING")
+OTHERS = ("HOURLY_CONTEXT", "ENTRY_NEAR_EMA8", "RSI_STRETCH", "TREND_DAY_RSI_OFF", "COUNTER_TREND_TIRING",
+          "COUNTER_TREND_EMERGING", "COUNTER_TREND_HOURLY_CONFIRMED")
 REVERSALS = (BOLLINGER_BOUNCE, BOLLINGER_BOUNCE_5M, LEVEL_REVERSAL, SESSION_SWEEP, NEW_YORK_OPEN_REVERSAL)
 
 
-def settings(tmp_path: Path, pretend_switches: Path, tiring: str | None = "on"):
-    """The real settings with the tests' pretend switches: rules 1, 2 and 2b off; rule 3 as given (None: left out)."""
+def settings(tmp_path: Path, pretend_switches: Path, tiring: str | None = "on", emerging: str | None = "off",
+             confirmed: str | None = "off"):
+    """The real settings with the tests' pretend switches: rules 1, 2 and 2b off; rule 3 as given (None: left out).
+    The two changes of 24 November 2026 (COUNTER_TREND_EMERGING, COUNTER_TREND_HOURLY_CONFIRMED) are off here, so these
+    tests keep checking rule 3 as built on 23 November; they have their own tests (test_counter_trend_tiring_20261124)."""
     text = "".join(line + "\n" for line in pretend_switches.read_text().splitlines()
                    if not line.startswith(tuple(k + "=" for k in OTHERS)))
     text += "HOURLY_CONTEXT=off\nENTRY_NEAR_EMA8=off\nRSI_STRETCH=off\nTREND_DAY_RSI_OFF=off\n"
     if tiring is not None:
         text += f"COUNTER_TREND_TIRING={tiring}\n"
-    env = tmp_path / f"switches_tiring_{tiring}.env"
+    if emerging is not None:
+        text += f"COUNTER_TREND_EMERGING={emerging}\n"
+    if confirmed is not None:
+        text += f"COUNTER_TREND_HOURLY_CONFIRMED={confirmed}\n"
+    env = tmp_path / f"switches_tiring_{tiring}_{emerging}_{confirmed}.env"
     env.write_text(text)
     return load_settings(switches_from=env).for_pair("GBPUSD")
 

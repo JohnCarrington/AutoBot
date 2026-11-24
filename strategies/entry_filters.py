@@ -44,6 +44,16 @@ RULE 3. COUNTER-TREND TIRING (switch COUNTER_TREND_TIRING, on if left out; owner
   The 5-minute MACD not warmed up: only the hourly decides.
   Not enough hourly candles for a warmed-up MACD: not checked (recorded), as with the other rules.
   Each refusal records the strategy, the analyser state and the MACD values.
+  Two changes (owner, 24 November 2026), each behind its own switch, both on if left out:
+  * COUNTER_TREND_EMERGING: rule 3 also applies when the analyser's state is "emerging trend" (in its direction), not
+    only "trend".
+  * COUNTER_TREND_HOURLY_CONFIRMED: a histogram on the bounce's side of zero that never went to the trend's side is
+    NOT tiring: the hourly has not confirmed the trend yet. Past zero counts as tiring only if the histogram was on the
+    trend's side (below zero in a trend down, above in a trend up) at an hourly candle since the analyser's current
+    state began (the owner's answer: since the state began), before the last finished one. Shrinking counts only while
+    the histogram is on the trend's side (the owner's answer). Exactly zero is not on either side. If the state's start
+    is not known, only the hourly candle before the last finished one is looked at. Everything else unchanged,
+    including the 5-minute zero-cross. The slow-grind trend day is not used by rule 3 (the owner's answer: no link yet).
 
 THE SLOW-GRIND TREND DAY (switch TREND_DAY_RSI_OFF, on if left out; owner, 21 November 2026). Johnny's trend day, not
 the bot's own trend-day check (analyser/trend_day.py). It starts the first time a slow grind trade is in profit (more
@@ -70,7 +80,7 @@ from decimal import Decimal
 from typing import Any
 
 from analyser.indicators import last_candles
-from analyser.states import TREND
+from analyser.states import EMERGING, TREND
 from levels.current import build as build_levels
 from levels.rules import PIVOT
 from prices.indicators import ema, macd, needs_macd, rsi
@@ -197,6 +207,28 @@ def hourly_macd(settings: Any, store: Any, at: datetime) -> tuple[Any, Any, str]
     return last, before, ""
 
 
+def hourly_trend_side_since(settings: Any, store: Any, at: datetime, since: datetime | None, last: Any,
+                            down: bool) -> tuple[bool, str]:
+    """COUNTER_TREND_HOURLY_CONFIRMED: was the hourly MACD 35/45/30 histogram on the trend's side of zero (below zero
+    for a trend down, above for a trend up) at an hourly candle since `since` (the analyser's state began), before the
+    last finished one (`last`)? Returns (yes, the hourly candle it was so at, or why not, for the record)."""
+    ind = settings.indicators
+    hc = last_candles(store, "1h", at, settings.indicators.history_candles)
+    m = macd(hc, settings.chart.price, ind.macd_fast_periods, ind.macd_slow_periods, ind.macd_signal_periods)
+    before_last = [c for c in hc if c.start < last.candle_utc]
+    if since is None:
+        window = before_last[-1:]
+        span = "the hourly candle before (the state's start not known)"
+    else:
+        window = [c for c in before_last if c.end > since]
+        span = f"since the state began at {since:%H:%M} UTC"
+    for c in window:
+        v = m.get(c.start)
+        if v is not None and (v.histogram < 0 if down else v.histogram > 0):
+            return True, f"on the trend's side at the {c.start:%H:%M} hourly candle ({v.histogram:.2f}), {span}"
+    return False, f"never on the trend's side {span}" if window else f"no finished hourly candle {span}"
+
+
 def five_minute_macd(settings: Any, store: Any, at: datetime) -> tuple[Any, str]:
     """(the 5-minute MACD 35/45/30 at the last 5-minute candle finished by `at`, why not) on the sell price; (None, why)
     when there are too few 5-minute candles for a warmed-up MACD."""
@@ -291,7 +323,9 @@ def check(settings: Any, store: Any, idea: Any, trend: str | None = None) -> Ver
     if getattr(sw, "counter_trend_tiring", False) and idea.strategy in COUNTER_TREND_STRATEGIES:
         state, sd = idea.state, idea.state_direction
         kind = f", {idea.trend_type}" if getattr(idea, "trend_type", None) else ""
-        if not (state == TREND and ((sd == DOWN and buy) or (sd == UP and not buy))):
+        states = (TREND, EMERGING) if getattr(sw, "counter_trend_emerging", False) else (TREND,)
+        confirm = getattr(sw, "counter_trend_hourly_confirmed", False)
+        if not (state in states and ((sd == DOWN and buy) or (sd == UP and not buy))):
             checked.append(f"counter-trend tiring: the analyser says {state} {sd}{kind}: this {idea.direction} is not "
                            "against a trend")
         else:
@@ -303,8 +337,21 @@ def check(settings: Any, store: Any, idea: Any, trend: str | None = None) -> Ver
                 down = sd == DOWN
                 crossed = h > 0 if down else h < 0
                 shrinking = h > hb if down else h < hb
-                line = (f"a {idea.direction} against the trend {sd}{kind}: hourly MACD 35/45/30 histogram {h:.2f} at "
+                line = (f"a {idea.direction} against the {state} {sd}{kind}: hourly MACD 35/45/30 histogram {h:.2f} at "
                         f"the {last.candle_utc:%H:%M} candle, {hb:.2f} at the {before.candle_utc:%H:%M} candle before")
+                trend_side_now = h < 0 if down else h > 0
+                if confirm and crossed:
+                    seen, how = hourly_trend_side_since(settings, store, at, getattr(idea, "state_since", None), last,
+                                                        down)
+                    if not seen:
+                        crossed = False
+                        line += f"; on the bounce's side of zero but {how}: the hourly has not confirmed the trend"
+                    else:
+                        line += f"; {how}"
+                if confirm and shrinking and not trend_side_now:
+                    shrinking = False
+                    if "not confirmed" not in line:
+                        line += "; not on the trend's side of zero, so not shrinking towards it"
                 if crossed:
                     checked.append(f"counter-trend tiring: {line}: past zero, the trend is tiring: allowed")
                 elif shrinking:
