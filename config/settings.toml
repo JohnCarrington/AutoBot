@@ -657,6 +657,16 @@ sunday_ready_within_minutes = 30
 # no more than this many minutes ago.
 candles_arriving_within_minutes = 10
 
+[stp_authorisation]
+# The STP strategy integration (owner, 24 November 2026; docs/design/STP_STRATEGY_INTEGRATION_20261124.md): read only
+# while STP_AUTHORISES_ENTRIES is on. The strategies STP authorises (OD-03), BUY and SELL: they trade only at a live STP
+# opportunity in their direction whose zone their rejection candle reached (stp/authorise.py).
+strategies = ["Bollinger bounce", "Bollinger bounce 5m", "level reversal"]
+# The existing filters STP replaces for an STP-authorised entry of those strategies only (OD-05, OD-30): the analyser
+# state (strategies/common.py ALLOWED_IN), entry filter rule 1 (hourly context), rule 2b (RSI stretch), rule 3
+# (counter-trend tiring) and safety rule 9 (one view). Every other filter, rule and limit is unchanged.
+bypass_filters = ["analyser_state", "hourly_context", "rsi_stretch", "counter_trend_tiring", "one_view"]
+
 [planner]
 # The Structural Trade Planner V1 (planner/; owner's approval of 17 November 2026). OBSERVE ONLY: it forecasts and
 # records; it never authorises, refuses, opens, changes or closes a trade. It runs only while the switch

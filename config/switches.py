@@ -47,6 +47,14 @@
                               candle and direction; the session sweep and New York open reversal under one view at
                               a time (safety/rules.py, rules 9 and 11)
   PLANNER_OBSERVE             on or off (off if left out): the Structural Trade Planner (planner/), OBSERVE ONLY
+  STP_OPPORTUNITIES           on or off (OFF if left out; owner, 24 November 2026, OD-01/OD-02/OD-29): STP's tracker
+                              keeps several opportunities, each ended only by its own conditions (planner/opportunities.py);
+                              observe only by itself
+  STP_BIDIRECTIONAL           on or off (OFF if left out; OD-06/OD-16/OD-17): STP proposes one opportunity per direction
+                              per hourly re-plan, the 4-hour direction and condition recorded as context only
+  STP_AUTHORISES_ENTRIES      on or off (OFF if left out; OD-03/OD-29): the hourly bounce, 5m bounce and level reversal
+                              trade only at a live STP opportunity in their direction (stp/authorise.py); refuses every
+                              gated idea unless STP_OPPORTUNITIES and STP_BIDIRECTIONAL are also on
   EMA_PULLBACK_TRADING_HOURS  on or off (off if left out; owner, 21 November 2026): new EMA pullback trades only
                               within the trading hours NEW_TRADES_FROM to NEW_TRADES_UNTIL (UK clock), as the other
                               strategies, and every open EMA pullback trade closed at hours.close_all_trades_at (20:30)
@@ -136,6 +144,9 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "STRATEGY_BOLLINGER_BOUNCE_5M": ("bollinger_bounce_5m", _on_off),
     "BOUNCE_ONLY_NEAR_TIMES": ("bounce_only_near_times", _on_off),
     "PLANNER_OBSERVE": ("planner_observe", _on_off),
+    "STP_OPPORTUNITIES": ("stp_opportunities", _on_off),
+    "STP_BIDIRECTIONAL": ("stp_bidirectional", _on_off),
+    "STP_AUTHORISES_ENTRIES": ("stp_authorises_entries", _on_off),
     "ONE_SIGNAL_ONE_TRADE": ("one_signal_one_trade", _on_off),
     "PULLBACK_ENTRY": ("pullback_entry", _on_off),
     "EMA_PULLBACK_TRADING_HOURS": ("ema_pullback_trading_hours", _on_off),
@@ -178,7 +189,10 @@ OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_NEAR_TIMES": "off", "PLANNER_OBSERVE": 
                             # 24 November 2026): ON
                             "COUNTER_TREND_EMERGING": "on", "COUNTER_TREND_HOURLY_CONFIRMED": "on",
                             # a trend ends only in consolidation (owner, 24 November 2026): ON
-                            "TREND_ENDS_IN_CONSOLIDATION": "on"}
+                            "TREND_ENDS_IN_CONSOLIDATION": "on",
+                            # the STP strategy integration (owner, 24 November 2026, OD-29): all OFF until the
+                            # owner's separate activation approval
+                            "STP_OPPORTUNITIES": "off", "STP_BIDIRECTIONAL": "off", "STP_AUTHORISES_ENTRIES": "off"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:

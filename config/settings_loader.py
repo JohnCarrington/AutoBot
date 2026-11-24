@@ -448,6 +448,10 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
     "pullback_entry": {
         "wait_candles": _whole_number(1, 100),
     },
+    "stp_authorisation": {
+        "strategies": _names,
+        "bypass_filters": _names,
+    },
     "entry_filters": {
         "hourly_swing_candles_each_side": _whole_number(1, 20),
         "hourly_ema_periods": _whole_number(2, 500),

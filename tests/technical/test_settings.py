@@ -131,6 +131,9 @@ EXPECTED = {
                       "validity_hours": 8},
     # the session strategies (owner, 16 November 2026)
     "pullback_entry": {"wait_candles": 6},
+    "stp_authorisation": {"strategies": ("Bollinger bounce", "Bollinger bounce 5m", "level reversal"),
+                          "bypass_filters": ("analyser_state", "hourly_context", "rsi_stretch", "counter_trend_tiring",
+                                             "one_view")},
     "entry_filters": {"hourly_swing_candles_each_side": 2, "hourly_ema_periods": 50, "hourly_ema_slope_candles": 6,
                       "hourly_context_near_pips": Decimal("5"), "ema8_periods": 8,
                       "ema8_max_distance_pips": Decimal("5"), "rsi_periods": 3, "rsi_sell_below": Decimal("30"),

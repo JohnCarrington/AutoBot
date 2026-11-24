@@ -75,7 +75,7 @@ def main(argv: list[str] | None = None) -> int:
         print("\n".join(technical.describe(technical.technical_at(settings, store, at))))
         return 0
     from housekeeping.logs import setup_logging
-    from planner.keeper import Keeper
+    from planner.opportunities import make_keeper
     setup_logging(settings.housekeeping, "planner", console=False)
     folder = Path(settings.planner.folder) / settings.market.pair
     folder.mkdir(parents=True, exist_ok=True)
@@ -86,7 +86,7 @@ def main(argv: list[str] | None = None) -> int:
             log.info("Planner: another run is still going; this one leaves.")
             return 0
         try:
-            Keeper(settings, store).run(datetime.now(UTC))
+            make_keeper(settings, store).run(datetime.now(UTC))   # STP_OPPORTUNITIES picks the tracker
         except Exception:                               # noqa: BLE001  logged; trading is never affected
             log.exception("Planner run failed; the previous planner files are kept. Trading is not affected.")
             return 1
