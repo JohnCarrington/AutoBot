@@ -358,6 +358,50 @@ Tue 24 Nov 17:00 GMT  #107 bounce sell pierce 13113.3: high 13113.3 reached R1 1
 Tue 24 Nov 17:05 GMT  #106 bounce buy trigger 13113.3: price went above 13113.3 (during this candle)
 Tue 24 Nov 17:05 GMT  #107 bounce sell pierce 13117.2: high 13117.2 reached R1 13114.1, new_york_session_high 13117.6 (within 0.4 pips), turning_low 13119.1 (within 1.9 pips); in a reversal watch window; levels line up; counts (pierced again: the reversal count starts again)
 Tue 24 Nov 17:10 GMT  #107 bounce sell reversal 13110.5: reversal candle O 13113.4 H 13113.7 L 13110 C 13110.5; size against the piercing candle: body 4.14x, high-low 0.82x
+Tue 24 Nov 17:20 GMT  #107 bounce sell cancelled 13113.7: price went above the reversal candle's high 13113.7
+Tue 24 Nov 17:20 GMT  #108 bounce sell pierce 13114: high 13114 reached R1 13114.1 (within 0.1 pips); in a reversal watch window; levels line up; counts
+Tue 24 Nov 17:25 GMT  #108 bounce sell pierce 13118.2: high 13118.2 reached upper Bollinger band 13117.1, R1 13114.1, new_york_session_high 13117.6, turning_low 13119.1 (within 0.9 pips); outside the watch windows; levels line up; counts (pierced again: the reversal count starts again)
+Tue 24 Nov 17:25 GMT  #109 range sell pierce 13118.2: high 13118.2 reached upper Bollinger band 13117.1; outside the watch windows; counts
+Tue 24 Nov 17:30 GMT  #108 bounce sell pierce 13118.7: high 13118.7 reached upper Bollinger band 13118.1, new_york_session_high 13118.2, turning_low 13119.1 (within 0.4 pips); outside the watch windows; levels line up; counts (pierced again: the reversal count starts again)
+Tue 24 Nov 17:30 GMT  #109 range sell expired: no red candle within 1 candle(s) of the pierce
+Tue 24 Nov 17:30 GMT  #110 bounce buy pierce 13115.7: low 13115.7 reached R1 13114.1 (within 1.6 pips); outside the watch windows; levels line up; counts
+Tue 24 Nov 17:30 GMT  #111 range sell pierce 13118.7: high 13118.7 reached upper Bollinger band 13118.1; outside the watch windows; counts
+Tue 24 Nov 17:35 GMT  #108 bounce sell pierce 13120: high 13120 reached upper Bollinger band 13118.6, new_york_session_high 13118.7, turning_low 13119.1, turning_high 13121.9 (within 1.9 pips); outside the watch windows; levels line up; counts (pierced again: the reversal count starts again)
+Tue 24 Nov 17:35 GMT  #110 bounce buy reversal 13117.9: reversal candle O 13117.8 H 13120 L 13115.6 C 13117.9; size against the piercing candle: body 0.06x, high-low 1.47x
+Tue 24 Nov 17:35 GMT  #111 range sell expired: no red candle within 1 candle(s) of the pierce
+Tue 24 Nov 17:35 GMT  #112 range sell pierce 13120: high 13120 reached upper Bollinger band 13118.6; outside the watch windows; counts
+Tue 24 Nov 17:40 GMT  #108 bounce sell reversal 13115.4: reversal candle O 13117.8 H 13118.8 L 13114.6 C 13115.4; size against the piercing candle: body 24.00x, high-low 0.95x
+Tue 24 Nov 17:40 GMT  #110 bounce buy cancelled 13115.6: price went below the reversal candle's low 13115.6
+Tue 24 Nov 17:40 GMT  #112 range sell reversal 13115.4: rejection candle O 13117.8 H 13118.8 L 13114.6 C 13115.4; size against the piercing candle: body 24.00x, high-low 0.95x
+Tue 24 Nov 17:40 GMT  #113 bounce buy pierce 13114.6: low 13114.6 reached R1 13114.1 (within 0.5 pips); outside the watch windows; levels line up; counts
+Tue 24 Nov 17:45 GMT  #108 bounce sell cancelled 13118.8: price went above the reversal candle's high 13118.8
+Tue 24 Nov 17:45 GMT  #112 range sell cancelled 13118.8: price went above the rejection candle's high 13118.8
+Tue 24 Nov 17:45 GMT  #113 bounce buy reversal 13118.3: reversal candle O 13115.1 H 13120 L 13114.9 C 13118.3; size against the piercing candle: body 1.33x, high-low 1.21x
+Tue 24 Nov 17:45 GMT  #114 bounce sell pierce 13120: high 13120 reached upper Bollinger band 13119.4, turning_low 13119.1, new_york_session_high 13120 (touched), turning_high 13121.9 (within 1.9 pips); outside the watch windows; levels line up; counts
+Tue 24 Nov 17:45 GMT  #115 range sell pierce 13120: high 13120 reached upper Bollinger band 13119.4; outside the watch windows; counts
+Tue 24 Nov 17:50 GMT  #114 bounce sell pierce 13121.3: high 13121.3 reached upper Bollinger band 13120.4, turning_low 13119.1, new_york_session_high 13120, turning_high 13121.9 (within 0.6 pips); outside the watch windows; levels line up; counts (pierced again: the reversal count starts again)
+Tue 24 Nov 17:50 GMT  #115 range sell expired: no red candle within 1 candle(s) of the pierce
+Tue 24 Nov 17:50 GMT  #116 range sell pierce 13121.3: high 13121.3 reached upper Bollinger band 13120.4; outside the watch windows; counts
+Tue 24 Nov 17:55 GMT  #113 bounce buy confirmation 13120.4: closed 13120.4 above the reversal high 13120; trigger at above 13120.7
+Tue 24 Nov 17:55 GMT  #114 bounce sell pierce 13120.7: high 13120.7 reached new_york_session_high 13121.3 (within 0.6 pips), turning_high 13121.9 (within 1.2 pips); outside the watch windows; levels line up; counts (pierced again: the reversal count starts again)
+Tue 24 Nov 17:55 GMT  #116 range sell expired: no red candle within 1 candle(s) of the pierce
+Tue 24 Nov 18:00 GMT  #113 bounce buy trigger 13120.7: price went above 13120.7 (during this candle)
+Tue 24 Nov 18:00 GMT  #114 bounce sell reversal 13120.1: reversal candle O 13120.3 H 13121.9 L 13118.6 C 13120.1; size against the piercing candle: body 0.33x, high-low 2.54x
+Tue 24 Nov 18:00 GMT  #117 bounce buy pierce 13118.6: low 13118.6 reached turning_low 13119.1; outside the watch windows; levels line up; counts
+Tue 24 Nov 18:05 GMT  #114 bounce sell cancelled 13121.9: price went above the reversal candle's high 13121.9
+Tue 24 Nov 18:05 GMT  #117 bounce buy reversal 13122.9: reversal candle O 13119.9 H 13123.9 L 13119.5 C 13122.9; size against the piercing candle: body 15.00x, high-low 1.33x
+Tue 24 Nov 18:05 GMT  #118 bounce sell pierce 13123.9: high 13123.9 reached upper Bollinger band 13123.4, new_york_session_high 13121.9, turning_high 13121.9; outside the watch windows; levels line up; counts
+Tue 24 Nov 18:05 GMT  #119 range sell pierce 13123.9: high 13123.9 reached upper Bollinger band 13123.4; outside the watch windows; counts
+Tue 24 Nov 18:10 GMT  #118 bounce sell reversal 13120.3: reversal candle O 13122.8 H 13123.1 L 13120.2 C 13120.3; size against the piercing candle: body 0.83x, high-low 0.66x
+Tue 24 Nov 18:10 GMT  #119 range sell reversal 13120.3: rejection candle O 13122.8 H 13123.1 L 13120.2 C 13120.3; size against the piercing candle: body 0.83x, high-low 0.66x
+Tue 24 Nov 18:15 GMT  #117 bounce buy cancelled 13119.5: price went below the reversal candle's low 13119.5
+Tue 24 Nov 18:15 GMT  #118 bounce sell confirmation 13115.9: closed 13115.9 below the reversal low 13120.2; trigger at below 13115.6
+Tue 24 Nov 18:15 GMT  #119 range sell trigger 13120.2: price went below 13120.2 (during this candle)
+Tue 24 Nov 18:15 GMT  #120 bounce buy pierce 13115.6: low 13115.6 reached R1 13114.1 (within 1.5 pips), turning_low 13119.1; outside the watch windows; levels line up; counts
+Tue 24 Nov 18:20 GMT  #118 bounce sell trigger 13115.6: price went below 13115.6 (during this candle)
+Tue 24 Nov 18:20 GMT  #120 bounce buy reversal 13116.7: reversal candle O 13115.8 H 13117.8 L 13114.1 C 13116.7; size against the piercing candle: body 0.21x, high-low 0.80x
+Tue 24 Nov 18:20 GMT  #121 bounce sell pierce 13117.8: high 13117.8 reached turning_low 13119.1 (within 1.3 pips); outside the watch windows; levels line up; counts
+Tue 24 Nov 18:25 GMT  #121 bounce sell pierce 13117.6: high 13117.6 reached turning_low 13119.1 (within 1.5 pips); outside the watch windows; levels line up; counts (pierced again: the reversal count starts again)
 
 #1 bounce sell: cancelled; pierce Tue 24 Nov 00:35 GMT; counts; levels: no levels; reversal/pierce body 0.08x, high-low 1.00x
 #2 range sell: expired; pierce Tue 24 Nov 00:35 GMT; counts; levels: no levels
@@ -465,4 +509,18 @@ Tue 24 Nov 17:10 GMT  #107 bounce sell reversal 13110.5: reversal candle O 13113
 #104 bounce buy: cancelled; pierce Tue 24 Nov 16:25 GMT; counts; levels: G14 (lined up): R1 13114.1, new_york_session_high 13117.6, turning_low 13119.1; reversal/pierce body 0.07x, high-low 0.88x
 #105 bounce sell: cancelled; pierce Tue 24 Nov 16:40 GMT; counts; levels: G14 (lined up): R1 13114.1, new_york_session_high 13117.6, turning_low 13119.1; reversal/pierce body 12.50x, high-low 1.48x
 #106 bounce buy: triggered; pierce Tue 24 Nov 16:50 GMT; counts; levels: G13 (lined up): new_york_session_high 13099.9, round_number 13100, turning_low 13103; reversal/pierce body 9.00x, high-low 1.88x
-#107 bounce sell: running; pierce Tue 24 Nov 17:05 GMT; counts; levels: G14 (lined up): R1 13114.1, new_york_session_high 13117.6, turning_low 13119.1; reversal/pierce body 4.14x, high-low 0.82x
+#107 bounce sell: cancelled; pierce Tue 24 Nov 17:05 GMT; counts; levels: G14 (lined up): R1 13114.1, new_york_session_high 13117.6, turning_low 13119.1; reversal/pierce body 4.14x, high-low 0.82x
+#108 bounce sell: cancelled; pierce Tue 24 Nov 17:35 GMT; counts; levels: G14 (lined up): R1 13114.1, new_york_session_high 13118.7, turning_low 13119.1; G15: turning_high 13121.9; reversal/pierce body 24.00x, high-low 0.95x
+#109 range sell: expired; pierce Tue 24 Nov 17:25 GMT; counts; levels: no levels
+#110 bounce buy: cancelled; pierce Tue 24 Nov 17:30 GMT; counts; levels: G14 (lined up): R1 13114.1, new_york_session_high 13118.2, turning_low 13119.1; reversal/pierce body 0.06x, high-low 1.47x
+#111 range sell: expired; pierce Tue 24 Nov 17:30 GMT; counts; levels: no levels
+#112 range sell: cancelled; pierce Tue 24 Nov 17:35 GMT; counts; levels: no levels; reversal/pierce body 24.00x, high-low 0.95x
+#113 bounce buy: triggered; pierce Tue 24 Nov 17:40 GMT; counts; levels: G14 (lined up): R1 13114.1, turning_low 13119.1; reversal/pierce body 1.33x, high-low 1.21x
+#114 bounce sell: cancelled; pierce Tue 24 Nov 17:55 GMT; counts; levels: G15 (lined up): new_york_session_high 13121.3, turning_high 13121.9; reversal/pierce body 0.33x, high-low 2.54x
+#115 range sell: expired; pierce Tue 24 Nov 17:45 GMT; counts; levels: no levels
+#116 range sell: expired; pierce Tue 24 Nov 17:50 GMT; counts; levels: no levels
+#117 bounce buy: cancelled; pierce Tue 24 Nov 18:00 GMT; counts; levels: G14 (lined up): R1 13114.1, turning_low 13119.1; reversal/pierce body 15.00x, high-low 1.33x
+#118 bounce sell: triggered; pierce Tue 24 Nov 18:05 GMT; counts; levels: G15 (lined up): new_york_session_high 13121.9, turning_high 13121.9; reversal/pierce body 0.83x, high-low 0.66x
+#119 range sell: triggered; pierce Tue 24 Nov 18:05 GMT; counts; levels: no levels; reversal/pierce body 0.83x, high-low 0.66x
+#120 bounce buy: running; pierce Tue 24 Nov 18:15 GMT; counts; levels: G14 (lined up): R1 13114.1, turning_low 13119.1; reversal/pierce body 0.21x, high-low 0.80x
+#121 bounce sell: running; pierce Tue 24 Nov 18:25 GMT; counts; levels: G14 (lined up): R1 13114.1, turning_low 13119.1
