@@ -29,6 +29,9 @@
                               opens only if the hourly MACD 35/45/30 histogram is shrinking (1 bar) or past zero,
                               or the 5-minute histogram has crossed zero onto the bounce's side
                               (strategies/entry_filters.py, rule 3)
+  TREND_ENDS_IN_CONSOLIDATION on or off (ON if left out; owner, 24 November 2026): once the analyser calls a trend it
+                              stays in trend until consolidation: no possible reversal from a trend, and the 100 EMA,
+                              fading and ranging exits go to consolidation (analyser/states.py)
   COUNTER_TREND_EMERGING      on or off (ON if left out; owner, 24 November 2026): rule 3 also applies when the analyser
                               says "emerging trend", not only "trend"
   COUNTER_TREND_HOURLY_CONFIRMED on or off (ON if left out; owner, 24 November 2026): in rule 3 the hourly histogram past
@@ -144,6 +147,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "EMERGING_LADDER": ("emerging_ladder", _on_off),
     "COUNTER_TREND_TIRING": ("counter_trend_tiring", _on_off),
     "COUNTER_TREND_EMERGING": ("counter_trend_emerging", _on_off),
+    "TREND_ENDS_IN_CONSOLIDATION": ("trend_ends_in_consolidation", _on_off),
     "COUNTER_TREND_HOURLY_CONFIRMED": ("counter_trend_hourly_confirmed", _on_off),
     "STRATEGY_RANGE_TRADE": ("range_trade", _on_off),
     "STRATEGY_BREAKOUT": ("breakout", _on_off),
@@ -172,7 +176,9 @@ OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_NEAR_TIMES": "off", "PLANNER_OBSERVE": 
                             "COUNTER_TREND_TIRING": "on",
                             # rule 3: also in an emerging trend; the hourly must have confirmed the trend (owner,
                             # 24 November 2026): ON
-                            "COUNTER_TREND_EMERGING": "on", "COUNTER_TREND_HOURLY_CONFIRMED": "on"}
+                            "COUNTER_TREND_EMERGING": "on", "COUNTER_TREND_HOURLY_CONFIRMED": "on",
+                            # a trend ends only in consolidation (owner, 24 November 2026): ON
+                            "TREND_ENDS_IN_CONSOLIDATION": "on"}
 
 
 def read_switches(path: Path) -> tuple[dict[str, Any], list[str]]:

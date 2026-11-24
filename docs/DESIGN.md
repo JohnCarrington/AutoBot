@@ -88,6 +88,8 @@ It becomes clear when the first bounce fails under the EMAs and middle band and 
 
 ### 2.6 What points to a possible reversal
 
+**A trend ends only in consolidation** (switch `TREND_ENDS_IN_CONSOLIDATION`, on if left out; owner, 24 November 2026: "once the analyser has called a trend, it should stay in trend and be done with it. Even when a trend does reverse after a move like that, it goes into consolidation first, not a sharp bounce"). While the analyser is in `trend` (slow grind or strong push) it does not go to `possible reversal`, so it cannot flip to an emerging trend the other way. Every way out of a trend goes to consolidation (the owner's answers): the existing consolidation reading; 2 closes back past the 100 EMA (always consolidation, never ranging); the 24-candle fade (always consolidation); and the ranging reading, which counts as consolidation. A break out of consolidation then decides the next state, as before. An emerging trend, and a possible reversal reached from an emerging trend, are unchanged. Off: as before.
+
 - **MACD** still shows the move that is ending: at its biggest histogram bar in the old direction, or already past its biggest and shrinking. MACD lags price, so the bot must never wait for MACD to turn before allowing a reversal.
 - **RSI** has gone beyond 30 or 70 and is turning back.
 - **A rejection candle**, such as a hammer.

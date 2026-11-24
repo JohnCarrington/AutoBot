@@ -33,7 +33,12 @@ this candle happen at once (they are proof in the price itself):
     confirmation; a single opposite candle is not enough);
   * in a possible reversal: the rejection's trigger -> emerging trend the new
     way; the old trend making a new extreme, or the setup cancelled or expired
-    -> back to the old trend.
+    -> back to the old trend;
+  * TREND_ENDS_IN_CONSOLIDATION (owner, 24 November 2026; on if left out): a
+    trend (slow grind or strong push) never goes to a possible reversal, and
+    every way out of it goes to consolidation: the consolidation reading, 2
+    closes back past the 100 EMA, the 24-candle fade and the ranging reading
+    (the owner's answers). Emerging trends are unchanged.
 An emerging trend is cancelled only by persistence_candles closes in a row back
 beyond the level it was rejected at (if it started from a level rejection), or
 back inside the Bollinger bands (if it started from a breakout).
@@ -304,6 +309,10 @@ class StateMachine:
         # ---- emerging trend and trend ----------------------------------------------------
         if st in TRENDING:
             moved = self._pips(self.extreme, self.start_price) if self.extreme is not None else Decimal(0)
+            # TREND_ENDS_IN_CONSOLIDATION (owner, 24 November 2026): once the analyser has called a trend it stays in
+            # trend until it goes into consolidation: no possible reversal from a trend, and every way out of a trend
+            # (the 100 EMA, fading, the ranging reading, the consolidation reading) goes to consolidation
+            stay = st == TREND and getattr(getattr(self.s, "switches", None), "trend_ends_in_consolidation", False)
             if st == EMERGING:
                 for e, stp in important_rejection(CONFIRMATION):
                     if _move(e.direction) == _opposite(d):
@@ -311,7 +320,7 @@ class StateMachine:
                                                     f"rejected at a level against the emerging {d} trend: {e.note}",
                                                     stp)
             for e in bounce:
-                if e.kind == CONFIRMATION and _move(e.direction) == _opposite(d):
+                if e.kind == CONFIRMATION and _move(e.direction) == _opposite(d) and not stay:
                     stp = setup_of(e.setup)
                     at = self._levels_of(stp)
                     if moved >= self.s.possible_reversal.min_trend_move_pips and at:
@@ -337,6 +346,8 @@ class StateMachine:
                     return ch
             if self.n - self.last_news >= self.m.evidence_fades_after_candles:
                 state, why = self.base(f)
+                if stay:
+                    state = CONSOLIDATION                # owner's answer: the fade always goes to consolidation
                 return self._change(f, state, NONE, None,
                                     f"the {st} faded: no new {'low' if d == DOWN else 'high'} for "
                                     f"{self.m.evidence_fades_after_candles} candles; {why}", [why])
@@ -351,11 +362,16 @@ class StateMachine:
             r_ok, r_why = self.ranging(f)
             c_ok, c_why = self.consolidation(f)
             if wrong_side:
-                target = (RANGING if r_ok else CONSOLIDATION, NONE,
+                # owner's answer (24 November 2026): with TREND_ENDS_IN_CONSOLIDATION always consolidation
+                target = (RANGING if r_ok and not stay else CONSOLIDATION, NONE,
                           f"price closed back {'above' if d == DOWN else 'below'} the 100 EMA "
                           f"{self._p(f.ema100)} for {self.m.persistence_candles} candles: the {d} {st} is over")
             elif c_ok:
                 target = (CONSOLIDATION, NONE, f"the {d} {st} ran out of steam: {c_why}")
+            elif r_ok and stay:
+                # owner's answer: the ranging reading counts as consolidation
+                target = (CONSOLIDATION, NONE, f"the {d} {st} went flat (the ranging reading, counted as "
+                                               f"consolidation): {r_why}")
             elif r_ok:
                 target = (RANGING, NONE, f"the {d} {st} turned into a range: {r_why}")
             else:
