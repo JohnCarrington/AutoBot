@@ -493,9 +493,32 @@ def overview(settings: Any, now: datetime) -> dict:
         out["explanation"] = explanation(st, fresh, prices)
     out["overlays"] = overlays(p, rec, prices)
     out["technical"] = technical(st, p, prices)
+    if isinstance(st.get("opportunities"), list):          # STP_OPPORTUNITIES (owner, 24 November 2026; WP-5)
+        out["opportunities"] = opportunities(st, prices)
     out["recent"] = [{"id": x["id"], "trade": x["trade"], "zone": prices.zone(*x["zone"]), "status": x["status"],
                       "why": prices.text(x.get("why")), "created_utc": x.get("created_utc"), "ended_utc": x.get("ended_utc")}
                      for x in st.get("recent") or [] if isinstance(x, dict) and x.get("zone")]
+    return out
+
+
+def opportunities(st: dict, prices: Prices) -> list[dict]:
+    """Every opportunity STP is tracking (STP_OPPORTUNITIES; planner/opportunities.py), newest first, read only:
+    WAITING and Watch & Wait authorise (while STP_AUTHORISES_ENTRIES is on); BROKEN waits for the failed-breakout
+    window (OD-31) and authorises nothing."""
+    out = []
+    for o in sorted((x for x in st.get("opportunities") or [] if isinstance(x, dict)),
+                    key=lambda x: x.get("created_utc") or "", reverse=True):
+        z = o.get("entry_zone") or {}
+        inv = o.get("invalidation") or {}
+        prim = ((o.get("destinations") or {}).get("primary") or {}).get("price")
+        out.append({"id": o.get("id"), "trade": o.get("trade"), "status": o.get("status"),
+                    "label": "Watch & Wait" if o.get("status") == "ACTIVE" else (o.get("status") or "").capitalize(),
+                    "authorises": o.get("status") in ("WAITING", "ACTIVE"),
+                    "zone": prices.zone(z.get("low"), z.get("high")), "zone_class": z.get("class"),
+                    "primary": prices.real(prim) if prim is not None else None,
+                    "zone_break": prices.real(inv.get("zone_break_close")) if inv.get("zone_break_close") else None,
+                    "relation_to_h4": o.get("relation_to_h4"), "created_utc": o.get("created_utc"),
+                    "lineage": o.get("lineage"), "broken_utc": (o.get("broken") or {}).get("broken_utc")})
     return out
 
 

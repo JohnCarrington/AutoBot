@@ -133,8 +133,31 @@
       if (o.explanation.planner_reason) b.appendChild(el("div", "why", "Planner's recorded reason: " + o.explanation.planner_reason));
       ex.appendChild(b);
     }
+    renderOpportunities();
     renderPlan();
     renderTech();
+  }
+
+  // STP_OPPORTUNITIES (owner, 24 November 2026): every opportunity STP is tracking, read only
+  function renderOpportunities() {
+    let box = $q(".stp-oppbox");
+    const list = S.ov.opportunities;
+    if (!list) { if (box) box.remove(); return; }
+    if (!box) { box = el("div", "stp-oppbox"); const ex = $q(".stp-explainbox"); ex.parentNode.insertBefore(box, ex.nextSibling); }
+    box.textContent = "";
+    box.appendChild(el("h3", "", "STP opportunities (" + list.length + ")"));
+    if (!list.length) { box.appendChild(el("div", "stp-note", "STP is tracking no opportunity.")); return; }
+    const t = el("table", "stp-table"), hr = el("tr");
+    ["Id", "Trade", "Status", "Zone", "Class", "Primary", "Zone break", "4-hour", "Created"].forEach((x) => hr.appendChild(el("th", "", x)));
+    t.appendChild(hr);
+    list.forEach((o) => {
+      const r = el("tr");
+      [o.id, o.trade, o.label + (o.authorises ? "" : " (does not authorise)"), o.zone || "", o.zone_class || "",
+       o.primary || "–", o.zone_break || "–", o.relation_to_h4 || "–", o.created_utc ? when(o.created_utc) : "–"]
+        .forEach((x, i) => r.appendChild(el("td", i === 2 ? "st-" + o.status : "", String(x))));
+      t.appendChild(r);
+    });
+    box.appendChild(t);
   }
 
   function renderPlan() {
