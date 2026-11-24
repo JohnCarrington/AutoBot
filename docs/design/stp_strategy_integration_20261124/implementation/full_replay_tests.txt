@@ -1,0 +1,5 @@
+STP_FULL_REPLAY=1 .venv/bin/python -m pytest -q tests/functional/test_stp_integration_20261124.py -k 'FT_A15 or FT_A16 or FT_A18'
+
+tests/functional/test_stp_integration_20261124.py ...                    [100%]
+
+================= 3 passed, 30 deselected in 998.10s (0:16:38) =================

@@ -1,0 +1,128 @@
+24 November 2026, the full wired path in candle mode (paper orders, pretend IG), all three STP switches ON.
+Every STP decision and every order result for the three gated strategies; no profit or loss is computed.
+
+03:40:00 STP refused    Bollinger bounce 5m  buy 13040.3 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 03:20 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+03:40:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 03:20 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+05:50:00 STP refused    Bollinger bounce 5m  sell 13040.1 |  no live STP SELL opportunity whose zone the rejection candle (Tue 24 Nov 05:20 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+05:50:00 order STP refused Bollinger bounce 5m  sell | no live STP SELL opportunity whose zone the rejection candle (Tue 24 Nov 05:20 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+05:55:00 STP refused    Bollinger bounce 5m  sell 13039.4 |  no live STP SELL opportunity whose zone the rejection candle (Tue 24 Nov 05:35 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+05:55:00 order STP refused Bollinger bounce 5m  sell | no live STP SELL opportunity whose zone the rejection candle (Tue 24 Nov 05:35 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+07:20:00 STP refused    Bollinger bounce 5m  buy 13040.8 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 06:55 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+07:20:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 06:55 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+08:00:00 STP refused    Bollinger bounce 5m  sell 13033.9 |  no live STP SELL opportunity whose zone the rejection candle (Tue 24 Nov 07:15 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+08:00:00 order STP refused Bollinger bounce 5m  sell | no live STP SELL opportunity whose zone the rejection candle (Tue 24 Nov 07:15 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+09:00:00 STP refused    Bollinger bounce 5m  buy 13052.5 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 08:35 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+09:00:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 08:35 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+09:25:00 STP refused    Bollinger bounce 5m  buy 13058.1 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 09:05 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+09:25:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 09:05 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+09:30:00 STP refused    Bollinger bounce 5m  buy 13059.1 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 09:10 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+09:30:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 09:10 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+09:50:00 STP refused    Bollinger bounce 5m  buy 13064.6 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 09:30 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+09:50:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 09:30 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1)
+10:05:00 STP authorised Bollinger bounce 5m  buy 13068.5 | STP-GBPUSD-20261124-1000-16 STP-GBPUSD-20261124-1000-16#t1
+10:05:00 order opened   Bollinger bounce 5m  buy | 
+10:35:00 STP authorised Bollinger bounce     sell 13061.3 | STP-GBPUSD-20261124-1000-15 sell 2026-11-24T10:15:00Z|STP-GBPUSD-20261124-1000-15#t1
+10:35:00 order opened   Bollinger bounce     sell | 
+10:35:00 STP authorised Bollinger bounce 5m  sell 13060.8 | STP-GBPUSD-20261124-1000-15 STP-GBPUSD-20261124-1000-15#t1
+10:35:00 order safety refused Bollinger bounce 5m  sell | same signal already traded by Bollinger bounce
+10:50:00 STP authorised Bollinger bounce 5m  buy 13066.7 | STP-GBPUSD-20261124-1000-16 STP-GBPUSD-20261124-1000-16#t1
+10:50:00 order safety refused Bollinger bounce 5m  buy | same signal already traded by Bollinger bounce 5m
+11:00:00 STP authorised Bollinger bounce 5m  buy 13070.6 | STP-GBPUSD-20261124-1000-16 STP-GBPUSD-20261124-1000-16#t1
+11:00:00 order safety refused Bollinger bounce 5m  buy | same signal already traded by Bollinger bounce 5m
+11:05:00 STP refused    Bollinger bounce 5m  buy 13072.5 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 10:45 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1; SELL STP-GBPUSD-20261124-1000-15 13062.1-13071.5)
+11:05:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 10:45 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1; SELL STP-GBPUSD-20261124-1000-15 13062.1-13071.5)
+11:25:00 STP refused    Bollinger bounce 5m  buy 13077.7 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 11:00 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1; SELL STP-GBPUSD-20261124-1000-15 13062.1-13071.5)
+11:25:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 11:00 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1; SELL STP-GBPUSD-20261124-1000-15 13062.1-13071.5)
+11:35:00 STP refused    Bollinger bounce 5m  buy 13078.9 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 11:15 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1; SELL STP-GBPUSD-20261124-1000-15 13062.1-13071.5)
+11:35:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 11:15 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1; SELL STP-GBPUSD-20261124-1000-15 13062.1-13071.5)
+11:50:00 STP refused    Bollinger bounce 5m  buy 13083.8 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 11:30 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1; SELL STP-GBPUSD-20261124-1000-15 13062.1-13071.5)
+11:50:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 11:30 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1; SELL STP-GBPUSD-20261124-1000-15 13062.1-13071.5)
+11:50:00 STP refused    level reversal       buy 13083.8 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 11:30 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1; SELL STP-GBPUSD-20261124-1000-15 13062.1-13071.5)
+11:50:00 order STP refused level reversal       buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 11:30 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1; SELL STP-GBPUSD-20261124-1000-15 13062.1-13071.5)
+11:55:00 STP refused    Bollinger bounce 5m  buy 13087.9 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 11:40 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1; SELL STP-GBPUSD-20261124-1000-15 13062.1-13071.5)
+11:55:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 11:40 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1; SELL STP-GBPUSD-20261124-1000-15 13062.1-13071.5)
+11:55:00 STP refused    level reversal       buy 13087.9 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 11:40 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1; SELL STP-GBPUSD-20261124-1000-15 13062.1-13071.5)
+11:55:00 order STP refused level reversal       buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 11:40 GMT) reached (live: SELL STP-GBPUSD-20261124-0000-14 13075-13084.1; SELL STP-GBPUSD-20261124-1000-15 13062.1-13071.5)
+12:35:00 STP authorised Bollinger bounce 5m  buy 13089.7 | STP-GBPUSD-20261124-1200-17 STP-GBPUSD-20261124-1200-17#t1
+12:35:00 order opened   Bollinger bounce 5m  buy | 
+12:35:00 STP authorised level reversal       buy 13089.7 | STP-GBPUSD-20261124-1200-17 STP-GBPUSD-20261124-1200-17#t1
+12:35:00 order safety refused level reversal       buy | same signal already traded by Bollinger bounce 5m
+12:45:00 STP authorised Bollinger bounce 5m  buy 13093.8 | STP-GBPUSD-20261124-1200-17 STP-GBPUSD-20261124-1200-17#t1
+12:45:00 order safety refused Bollinger bounce 5m  buy | Bollinger bounce 5m already has 1 buy trade(s) open (at most 1 each way); same signal already traded by Bollinger bounce 5m
+12:45:00 STP authorised level reversal       buy 13093.8 | STP-GBPUSD-20261124-1200-17 STP-GBPUSD-20261124-1200-17#t1
+12:45:00 order safety refused level reversal       buy | same signal already traded by Bollinger bounce 5m
+12:50:00 STP authorised Bollinger bounce 5m  buy 13097.7 | STP-GBPUSD-20261124-1200-17 STP-GBPUSD-20261124-1200-17#t1
+12:50:00 order safety refused Bollinger bounce 5m  buy | Bollinger bounce 5m already has 1 buy trade(s) open (at most 1 each way); same signal already traded by Bollinger bounce 5m
+12:50:00 STP authorised level reversal       buy 13097.7 | STP-GBPUSD-20261124-1200-17 STP-GBPUSD-20261124-1200-17#t1
+12:50:00 order safety refused level reversal       buy | same signal already traded by Bollinger bounce 5m
+13:05:00 STP refused    Bollinger bounce 5m  buy 13101 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 12:45 GMT) reached (live: BUY STP-GBPUSD-20261124-1200-17 13075-13085.4; SELL STP-GBPUSD-20261124-1300-18 13135.5-13142.1)
+13:05:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 12:45 GMT) reached (live: BUY STP-GBPUSD-20261124-1200-17 13075-13085.4; SELL STP-GBPUSD-20261124-1300-18 13135.5-13142.1)
+13:20:00 STP refused    Bollinger bounce     sell 13096.4 |  no live STP SELL opportunity whose zone the rejection candle (Tue 24 Nov 13:05 GMT) reached (live: BUY STP-GBPUSD-20261124-1200-17 13075-13085.4; SELL STP-GBPUSD-20261124-1300-18 13135.5-13142.1)
+13:20:00 order STP refused Bollinger bounce     sell | no live STP SELL opportunity whose zone the rejection candle (Tue 24 Nov 13:05 GMT) reached (live: BUY STP-GBPUSD-20261124-1200-17 13075-13085.4; SELL STP-GBPUSD-20261124-1300-18 13135.5-13142.1)
+13:30:00 STP refused    Bollinger bounce 5m  sell 13093.9 |  no live STP SELL opportunity whose zone the rejection candle (Tue 24 Nov 12:50 GMT) reached (live: BUY STP-GBPUSD-20261124-1200-17 13075-13085.4; SELL STP-GBPUSD-20261124-1300-18 13135.5-13142.1)
+13:30:00 order STP refused Bollinger bounce 5m  sell | no live STP SELL opportunity whose zone the rejection candle (Tue 24 Nov 12:50 GMT) reached (live: BUY STP-GBPUSD-20261124-1200-17 13075-13085.4; SELL STP-GBPUSD-20261124-1300-18 13135.5-13142.1)
+13:30:00 STP refused    level reversal       sell 13093.9 |  no live STP SELL opportunity whose zone the rejection candle (Tue 24 Nov 12:50 GMT) reached (live: BUY STP-GBPUSD-20261124-1200-17 13075-13085.4; SELL STP-GBPUSD-20261124-1300-18 13135.5-13142.1)
+13:30:00 order STP refused level reversal       sell | no live STP SELL opportunity whose zone the rejection candle (Tue 24 Nov 12:50 GMT) reached (live: BUY STP-GBPUSD-20261124-1200-17 13075-13085.4; SELL STP-GBPUSD-20261124-1300-18 13135.5-13142.1)
+14:05:00 STP refused    Bollinger bounce 5m  buy 13102.3 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 13:35 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1)
+14:05:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 13:35 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1)
+14:35:00 STP refused    Bollinger bounce 5m  buy 13105.9 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 14:00 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1)
+14:35:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 14:00 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1)
+14:35:00 STP refused    level reversal       buy 13105.9 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 14:20 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1)
+14:35:00 order STP refused level reversal       buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 14:20 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1)
+14:40:00 STP refused    Bollinger bounce 5m  buy 13113.3 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 14:25 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1)
+14:40:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 14:25 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1)
+14:40:00 STP refused    level reversal       buy 13113.3 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 14:25 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1)
+14:40:00 order STP refused level reversal       buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 14:25 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1)
+14:45:00 STP refused    Bollinger bounce 5m  buy 13115.1 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 14:30 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1)
+14:45:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 14:30 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1)
+14:45:00 STP refused    level reversal       buy 13115.1 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 14:30 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1)
+14:45:00 order STP refused level reversal       buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 14:30 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1)
+15:15:00 STP authorised Bollinger bounce 5m  sell 13104.3 | STP-GBPUSD-20261124-1400-19 STP-GBPUSD-20261124-1400-19#t1
+15:15:00 order opened   Bollinger bounce 5m  sell | 
+15:25:00 STP refused    Bollinger bounce 5m  buy 13111.2 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 15:10 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; BUY STP-GBPUSD-20261124-1500-21 13075-13085.4)
+15:25:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 15:10 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; BUY STP-GBPUSD-20261124-1500-21 13075-13085.4)
+15:30:00 STP refused    Bollinger bounce 5m  buy 13113 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 15:15 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; BUY STP-GBPUSD-20261124-1500-21 13075-13085.4)
+15:30:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 15:15 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; BUY STP-GBPUSD-20261124-1500-21 13075-13085.4)
+15:30:00 STP refused    level reversal       buy 13113 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 15:15 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; BUY STP-GBPUSD-20261124-1500-21 13075-13085.4)
+15:30:00 order STP refused level reversal       buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 15:15 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; BUY STP-GBPUSD-20261124-1500-21 13075-13085.4)
+15:40:00 STP authorised Bollinger bounce 5m  sell 13105.4 | STP-GBPUSD-20261124-1400-19 STP-GBPUSD-20261124-1400-19#t1
+15:40:00 order safety refused Bollinger bounce 5m  sell | same signal already traded by Bollinger bounce 5m
+16:15:00 STP refused    Bollinger bounce 5m  buy 13115.5 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 15:35 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; BUY STP-GBPUSD-20261124-1500-21 13075-13084.1)
+16:15:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 15:35 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; BUY STP-GBPUSD-20261124-1500-21 13075-13084.1)
+16:15:00 STP refused    level reversal       buy 13115.5 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 15:40 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; BUY STP-GBPUSD-20261124-1500-21 13075-13084.1)
+16:15:00 order STP refused level reversal       buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 15:40 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; BUY STP-GBPUSD-20261124-1500-21 13075-13084.1)
+16:35:00 STP authorised Bollinger bounce 5m  sell 13108.2 | STP-GBPUSD-20261124-1400-19 STP-GBPUSD-20261124-1400-19#t1
+16:35:00 order safety refused Bollinger bounce 5m  sell | same signal already traded by Bollinger bounce 5m
+16:50:00 STP authorised Bollinger bounce 5m  sell 13105.8 | STP-GBPUSD-20261124-1400-19 STP-GBPUSD-20261124-1400-19#t1
+16:50:00 order safety refused Bollinger bounce 5m  sell | same signal already traded by Bollinger bounce 5m
+17:05:00 STP refused    Bollinger bounce 5m  buy 13113.3 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 16:45 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; BUY STP-GBPUSD-20261124-1500-21 13075-13084.1; SELL STP-GBPUSD-20261124-1700-22 13117.6-13128.6)
+17:05:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 16:45 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; BUY STP-GBPUSD-20261124-1500-21 13075-13084.1; SELL STP-GBPUSD-20261124-1700-22 13117.6-13128.6)
+17:25:00 STP refused    Bollinger bounce 5m  buy 13114 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 17:05 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; SELL STP-GBPUSD-20261124-1700-22 13117.6-13128.6)
+17:25:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 17:05 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13103-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; SELL STP-GBPUSD-20261124-1700-22 13117.6-13128.6)
+18:00:00 STP authorised Bollinger bounce 5m  buy 13120.7 | STP-GBPUSD-20261124-1800-23 STP-GBPUSD-20261124-1800-23#t1
+18:00:00 order opened   Bollinger bounce 5m  buy | 
+18:00:00 STP authorised level reversal       buy 13120.7 | STP-GBPUSD-20261124-1800-23 STP-GBPUSD-20261124-1800-23#t1
+18:00:00 order safety refused level reversal       buy | same signal already traded by Bollinger bounce 5m
+18:20:00 STP authorised Bollinger bounce 5m  sell 13115.6 | STP-GBPUSD-20261124-1700-22 STP-GBPUSD-20261124-1700-22#t1
+18:20:00 order opened   Bollinger bounce 5m  sell | 
+18:35:00 STP authorised Bollinger bounce 5m  buy 13121.4 | STP-GBPUSD-20261124-1800-23 STP-GBPUSD-20261124-1800-23#t1
+18:35:00 order safety refused Bollinger bounce 5m  buy | same signal already traded by Bollinger bounce 5m
+18:45:00 STP authorised Bollinger bounce 5m  sell 13117.3 | STP-GBPUSD-20261124-1700-22 STP-GBPUSD-20261124-1700-22#t1
+18:45:00 order safety refused Bollinger bounce 5m  sell | same signal already traded by Bollinger bounce 5m
+18:55:00 STP authorised Bollinger bounce 5m  sell 13114.6 | STP-GBPUSD-20261124-1700-22 STP-GBPUSD-20261124-1700-22#t1
+18:55:00 order safety refused Bollinger bounce 5m  sell | same signal already traded by Bollinger bounce 5m
+19:00:00 STP authorised Bollinger bounce 5m  sell 13113.1 | STP-GBPUSD-20261124-1700-22 STP-GBPUSD-20261124-1700-22#t1
+19:00:00 order safety refused Bollinger bounce 5m  sell | same signal already traded by Bollinger bounce 5m
+19:15:00 STP refused    Bollinger bounce 5m  buy 13117.4 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 18:45 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13102.6-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; SELL STP-GBPUSD-20261124-1700-22 13119.1-13128.6)
+19:15:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 18:45 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13102.6-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; SELL STP-GBPUSD-20261124-1700-22 13119.1-13128.6)
+19:35:00 STP refused    Bollinger bounce 5m  buy 13115.9 |  no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 19:10 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13102.6-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; SELL STP-GBPUSD-20261124-1700-22 13119.1-13128.6)
+19:35:00 order STP refused Bollinger bounce 5m  buy | no live STP BUY opportunity whose zone the rejection candle (Tue 24 Nov 19:10 GMT) reached (live: SELL STP-GBPUSD-20261124-1400-19 13102.6-13114.1; SELL STP-GBPUSD-20261124-1500-20 13135.5-13142.1; SELL STP-GBPUSD-20261124-1700-22 13119.1-13128.6)
+20:40:00 STP authorised Bollinger bounce 5m  sell 13114.7 | STP-GBPUSD-20261124-1700-22 STP-GBPUSD-20261124-1700-22#t1
+20:40:00 order safety refused Bollinger bounce 5m  sell | outside the trading hours 06:00 to 20:30 UK; same signal already traded by Bollinger bounce 5m
+20:45:00 STP authorised Bollinger bounce 5m  sell 13113.4 | STP-GBPUSD-20261124-1700-22 STP-GBPUSD-20261124-1700-22#t1
+20:45:00 order safety refused Bollinger bounce 5m  sell | outside the trading hours 06:00 to 20:30 UK; same signal already traded by Bollinger bounce 5m
+20:50:00 STP authorised Bollinger bounce 5m  sell 13111.3 | STP-GBPUSD-20261124-1700-22 STP-GBPUSD-20261124-1700-22#t1
+20:50:00 order safety refused Bollinger bounce 5m  sell | outside the trading hours 06:00 to 20:30 UK; same signal already traded by Bollinger bounce 5m
+
+Analyser state changes identical, STP off vs on: True 69
+Every ungated strategy's records identical (deal references aside), STP off vs on: True 147

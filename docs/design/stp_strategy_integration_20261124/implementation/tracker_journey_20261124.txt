@@ -1,0 +1,66 @@
+seconds 82
+23:55 created STP-GBPUSD-20261123-2355-1 Major zone (3 families: pivot, session, structure) 30.2 pips away, PLAUSIBLE; the strongest class among the reachable zo
+00:00 invalidated STP-GBPUSD-20261123-2355-1 structural levels changed at the pivot rollover: daily S2 13062.0, previous day low 13071.5 no longer in the level map (
+00:00 created STP-GBPUSD-20261124-0000-2 Major zone (3 families: higher-timeframe structure, session, structure) 40.9 pips away, PLAUSIBLE; the strongest class a
+01:00 supported STP-GBPUSD-20261124-0000-2 re-checked: the structural basis still holds
+02:00 changed STP-GBPUSD-20261124-0000-2 re-checked, still supported; changed: primary destination 13014.2 to 13016.9; condition CONTINUATION to CORRECTION_ACTIV
+03:00 supported STP-GBPUSD-20261124-0000-2 re-checked: the structural basis still holds
+04:00 supported STP-GBPUSD-20261124-0000-2 re-checked: the structural basis still holds
+05:00 supported STP-GBPUSD-20261124-0000-2 re-checked: the structural basis still holds
+06:00 supported STP-GBPUSD-20261124-0000-2 re-checked: the structural basis still holds
+07:00 supported STP-GBPUSD-20261124-0000-2 re-checked: the structural basis still holds
+09:00 changed STP-GBPUSD-20261124-0000-2 re-checked, still supported; changed: primary destination 13016.9 to 13037.3; extended destination None to 13016.9
+10:00 created STP-GBPUSD-20261124-1000-3 Major zone (3 families: pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones
+10:00 in zone at creation STP-GBPUSD-20261124-1000-3 the Tue 24 Nov 09:55 GMT 5-minute candle, finished before the opportunity was created, was already at the zone: not an a
+10:00 created STP-GBPUSD-20261124-1000-4 Major zone (3 families: pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones
+10:00 in zone at creation STP-GBPUSD-20261124-1000-4 the Tue 24 Nov 09:55 GMT 5-minute candle, finished before the opportunity was created, was already at the zone: not an a
+10:05 ambiguous STP-GBPUSD-20261124-1000-3 the Tue 24 Nov 10:00 GMT 5-minute candle reached the zone 13062.1-13071.5, but it began before the recommendation was cr
+10:05 ambiguous STP-GBPUSD-20261124-1000-4 the Tue 24 Nov 10:00 GMT 5-minute candle reached the zone 13062.1-13071.5, but it began before the recommendation was cr
+10:10 active STP-GBPUSD-20261124-1000-3 the Tue 24 Nov 10:05 GMT 5-minute candle reached the zone 13062.1-13071.5
+10:10 active STP-GBPUSD-20261124-1000-4 the Tue 24 Nov 10:05 GMT 5-minute candle reached the zone 13062.1-13071.5
+11:00 wick sweep STP-GBPUSD-20261124-1000-4 the Tue 24 Nov 10:00 GMT hourly candle went to 13060.4, beyond the zone edge 13062.1, and closed back at 13070.5 (record
+11:00 supported STP-GBPUSD-20261124-1000-3 re-checked: the structural basis still holds
+11:00 supported STP-GBPUSD-20261124-1000-4 re-checked: the structural basis still holds
+11:05 active STP-GBPUSD-20261124-0000-2 the Tue 24 Nov 11:00 GMT 5-minute candle reached the zone 13075-13084.1
+11:05 completed STP-GBPUSD-20261124-1000-4 price reached the primary destination 13075 (Tue 24 Nov 11:00 GMT) after the zone
+12:00 broken STP-GBPUSD-20261124-0000-2 confirmed break: the Tue 24 Nov 11:00 GMT hourly candle closed at 13089.1, 5.0 pips beyond the zone's top 13084.1: BROKE
+12:00 broken STP-GBPUSD-20261124-1000-3 confirmed break: the Tue 24 Nov 11:00 GMT hourly candle closed at 13089.1, 17.6 pips beyond the zone's top 13071.5: BROK
+12:00 created STP-GBPUSD-20261124-1200-5 Major zone (4 families: higher-timeframe structure, moving average, session, structure) 3.7 pips away, PLAUSIBLE; the st
+12:00 in zone at creation STP-GBPUSD-20261124-1200-5 the Tue 24 Nov 11:55 GMT 5-minute candle, finished before the opportunity was created, was already at the zone: not an a
+12:05 ambiguous STP-GBPUSD-20261124-1200-5 the Tue 24 Nov 12:00 GMT 5-minute candle reached the zone 13075-13085.4, but it began before the recommendation was crea
+12:10 active STP-GBPUSD-20261124-1200-5 the Tue 24 Nov 12:05 GMT 5-minute candle reached the zone 13075-13085.4
+13:00 created STP-GBPUSD-20261124-1300-6 Major zone (3 families: higher-timeframe structure, session, structure) 39.1 pips away, PLAUSIBLE; the strongest class a
+13:00 supported STP-GBPUSD-20261124-1200-5 re-checked: the structural basis still holds
+13:35 invalidated STP-GBPUSD-20261124-1300-6 destination reached before entry: price reached 13085.4 (Tue 24 Nov 13:30 GMT) without reaching the zone
+14:00 created STP-GBPUSD-20261124-1400-7 Major zone (3 families: pivot, session, structure) 6.3 pips away, PLAUSIBLE; the strongest class among the reachable zon
+14:00 changed STP-GBPUSD-20261124-1200-5 re-checked, still supported; changed: primary destination 13135.5 to 13103; extended destination 13148 to 13135.5
+14:05 completed STP-GBPUSD-20261124-1200-5 price reached the primary destination 13103 (Tue 24 Nov 14:00 GMT) after the zone
+14:05 ambiguous STP-GBPUSD-20261124-1400-7 the Tue 24 Nov 14:00 GMT 5-minute candle reached the zone 13103-13114.1, but it began before the recommendation was crea
+14:10 active STP-GBPUSD-20261124-1400-7 the Tue 24 Nov 14:05 GMT 5-minute candle reached the zone 13103-13114.1
+15:00 invalidated STP-GBPUSD-20261124-0000-2 confirmed break held: no hourly close back below 13084.1 within 3 candles of the break (2026-11-24T12:00:00Z)
+15:00 invalidated STP-GBPUSD-20261124-1000-3 confirmed break held: no hourly close back below 13071.5 within 3 candles of the break (2026-11-24T12:00:00Z)
+15:00 wick sweep STP-GBPUSD-20261124-1400-7 the Tue 24 Nov 14:00 GMT hourly candle went to 13116.8, beyond the zone edge 13114.1, and closed back at 13112.1 (record
+15:00 created STP-GBPUSD-20261124-1500-8 Major zone (3 families: higher-timeframe structure, session, structure) 23.4 pips away, PLAUSIBLE; the strongest class a
+15:00 created STP-GBPUSD-20261124-1500-9 Major zone (4 families: higher-timeframe structure, moving average, session, structure) 26.7 pips away, PLAUSIBLE; the s
+16:00 closed beyond STP-GBPUSD-20261124-1400-7 the Tue 24 Nov 15:00 GMT hourly candle closed 13115.3, beyond the zone edge 13114.1 by less than 3 pips (recorded only)
+16:00 changed STP-GBPUSD-20261124-1500-8 re-checked, still supported; changed: primary destination 13085.4 to 13084.1
+16:00 changed STP-GBPUSD-20261124-1500-9 re-checked, still supported; changed: zone edges 13075-13085.4 to 13075-13084.1
+17:00 reclaim STP-GBPUSD-20261124-1400-7 the Tue 24 Nov 16:00 GMT hourly candle closed back inside the zone edge 13114.1 (recorded only)
+17:00 created STP-GBPUSD-20261124-1700-10 Major zone (3 families: pivot, session, structure) 5.9 pips away, PLAUSIBLE; the strongest class among the reachable zon
+17:00 changed STP-GBPUSD-20261124-1500-9 re-checked, still supported; changed: primary destination 13135.5 to 13117.6; extended destination 13148 to 13135.5
+17:10 invalidated STP-GBPUSD-20261124-1500-9 destination reached before entry: price reached 13117.6 (Tue 24 Nov 17:05 GMT) without reaching the zone
+17:10 active STP-GBPUSD-20261124-1700-10 the Tue 24 Nov 17:05 GMT 5-minute candle reached the zone 13117.6-13128.6
+18:00 broken STP-GBPUSD-20261124-1400-7 confirmed break: the Tue 24 Nov 17:00 GMT hourly candle closed at 13120.4, 6.3 pips beyond the zone's top 13114.1: BROKE
+18:00 changed STP-GBPUSD-20261124-1700-10 re-checked, still supported; changed: zone edges 13117.6-13128.6 to 13119.1-13128.6; reachability PLAUSIBLE to NEAR
+18:00 created STP-GBPUSD-20261124-1800-11 Major zone (3 families: pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones
+18:00 in zone at creation STP-GBPUSD-20261124-1800-11 the Tue 24 Nov 17:55 GMT 5-minute candle, finished before the opportunity was created, was already at the zone: not an a
+18:05 ambiguous STP-GBPUSD-20261124-1800-11 the Tue 24 Nov 18:00 GMT 5-minute candle reached the zone 13119.1-13128.6, but it began before the recommendation was cr
+18:10 active STP-GBPUSD-20261124-1800-11 the Tue 24 Nov 18:05 GMT 5-minute candle reached the zone 13119.1-13128.6
+19:00 failed breakout STP-GBPUSD-20261124-1400-7 after the zone break, the Tue 24 Nov 18:00 GMT hourly candle closed back below 13114.1 within 1 candle(s): back to Watch
+19:00 broken STP-GBPUSD-20261124-1800-11 confirmed break: the Tue 24 Nov 18:00 GMT hourly candle closed at 13113.2, 5.9 pips beyond the zone's bottom 13119.1: BR
+19:00 changed STP-GBPUSD-20261124-1400-7 re-checked, still supported; changed: zone edges 13103-13114.1 to 13102.6-13114.1; families pivot, session, structure to
+19:00 created STP-GBPUSD-20261124-1900-12 Major zone (3 families: moving average, pivot, structure) containing price, NEAR; the strongest class among the reachabl
+19:00 in zone at creation STP-GBPUSD-20261124-1900-12 the Tue 24 Nov 18:55 GMT 5-minute candle, finished before the opportunity was created, was already at the zone: not an a
+19:05 ambiguous STP-GBPUSD-20261124-1900-12 the Tue 24 Nov 19:00 GMT 5-minute candle reached the zone 13102.6-13114.1, but it began before the recommendation was cr
+19:10 invalidated STP-GBPUSD-20261124-1900-12 destination reached before entry: price reached 13119.1 (Tue 24 Nov 19:05 GMT) without reaching the zone
+20:00 closed beyond STP-GBPUSD-20261124-1400-7 the Tue 24 Nov 19:00 GMT hourly candle closed 13116.7, beyond the zone edge 13114.1 by less than 3 pips (recorded only)

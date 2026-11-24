@@ -1,0 +1,6 @@
+identical  orders/GBPUSD/paper_orders.jsonl  (150 lines)
+identical  records/GBPUSD/paper/decisions.jsonl  (683 lines)
+identical  records/GBPUSD/paper/trades.jsonl  (46 lines)
+identical  trade_manager/GBPUSD/decisions.jsonl  (47 lines)
+identical  trade_manager/GBPUSD/open_trades.json  (1 lines)
+BYTE-IDENTICAL (deal references normalised)
