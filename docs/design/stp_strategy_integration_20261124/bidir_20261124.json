@@ -1,0 +1,2605 @@
+[
+ {
+  "as_of": "2026-11-24T00:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CONTINUATION",
+  "zone": {
+   "low": "13075",
+   "high": "13084.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13071.5",
+   "primary": "13014.2",
+   "extended": null
+  },
+  "invalidation": {
+   "zone_break_close": "13087.1",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T00:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CONTINUATION",
+  "zone": null,
+  "reachability": null,
+  "destinations": null,
+  "invalidation": null,
+  "no_recommendation": "no defensible entry zone: no support zone of at least Moderate class that is NEAR or PLAUSIBLE before the last 4-hour swing low 13071.5"
+ },
+ {
+  "as_of": "2026-11-24T01:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CONTINUATION",
+  "zone": {
+   "low": "13075",
+   "high": "13084.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13071.5",
+   "primary": "13014.2",
+   "extended": null
+  },
+  "invalidation": {
+   "zone_break_close": "13087.1",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T01:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CONTINUATION",
+  "zone": null,
+  "reachability": null,
+  "destinations": null,
+  "invalidation": null,
+  "no_recommendation": "no defensible entry zone: no support zone of at least Moderate class that is NEAR or PLAUSIBLE before the last 4-hour swing low 13071.5"
+ },
+ {
+  "as_of": "2026-11-24T02:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13075",
+   "high": "13084.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13071.5",
+   "primary": "13016.9",
+   "extended": null
+  },
+  "invalidation": {
+   "zone_break_close": "13087.1",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T02:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": null,
+  "reachability": null,
+  "destinations": null,
+  "invalidation": null,
+  "no_recommendation": "no defensible entry zone: no support zone of at least Moderate class that is NEAR or PLAUSIBLE before the last 4-hour swing low 13071.5"
+ },
+ {
+  "as_of": "2026-11-24T03:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13075",
+   "high": "13084.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13071.5",
+   "primary": "13016.9",
+   "extended": null
+  },
+  "invalidation": {
+   "zone_break_close": "13087.1",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T03:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": null,
+  "reachability": null,
+  "destinations": null,
+  "invalidation": null,
+  "no_recommendation": "no defensible entry zone: no support zone of at least Moderate class that is NEAR or PLAUSIBLE before the last 4-hour swing low 13071.5"
+ },
+ {
+  "as_of": "2026-11-24T04:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13075",
+   "high": "13084.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13071.5",
+   "primary": "13016.9",
+   "extended": null
+  },
+  "invalidation": {
+   "zone_break_close": "13087.1",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T04:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": null,
+  "reachability": null,
+  "destinations": null,
+  "invalidation": null,
+  "no_recommendation": "no defensible entry zone: no support zone of at least Moderate class that is NEAR or PLAUSIBLE before the last 4-hour swing low 13071.5"
+ },
+ {
+  "as_of": "2026-11-24T05:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13075",
+   "high": "13084.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13071.5",
+   "primary": "13016.9",
+   "extended": null
+  },
+  "invalidation": {
+   "zone_break_close": "13087.1",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T05:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": null,
+  "reachability": null,
+  "destinations": null,
+  "invalidation": null,
+  "no_recommendation": "no defensible entry zone: no support zone of at least Moderate class that is NEAR or PLAUSIBLE before the last 4-hour swing low 13071.5"
+ },
+ {
+  "as_of": "2026-11-24T06:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13075",
+   "high": "13084.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13071.5",
+   "primary": "13016.9",
+   "extended": null
+  },
+  "invalidation": {
+   "zone_break_close": "13087.1",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T06:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": null,
+  "reachability": null,
+  "destinations": null,
+  "invalidation": null,
+  "no_recommendation": "no defensible entry zone: no support zone of at least Moderate class that is NEAR or PLAUSIBLE before the last 4-hour swing low 13071.5"
+ },
+ {
+  "as_of": "2026-11-24T07:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13075",
+   "high": "13084.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13071.5",
+   "primary": "13016.9",
+   "extended": null
+  },
+  "invalidation": {
+   "zone_break_close": "13087.1",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T07:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": null,
+  "reachability": null,
+  "destinations": null,
+  "invalidation": null,
+  "no_recommendation": "no defensible entry zone: no support zone of at least Moderate class that is NEAR or PLAUSIBLE before the last 4-hour swing low 13071.5"
+ },
+ {
+  "as_of": "2026-11-24T08:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": null,
+  "reachability": null,
+  "destinations": null,
+  "invalidation": null,
+  "no_recommendation": "the primary destination 13037.3 is already reached (the Tue 24 Nov 07:55 GMT 5-minute candle reached 13037, within 3 pips of the destination zone 13026.6-13037.3); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13075-13084.1 is not recommended"
+ },
+ {
+  "as_of": "2026-11-24T08:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": null,
+  "reachability": null,
+  "destinations": null,
+  "invalidation": null,
+  "no_recommendation": "no defensible entry zone: no support zone of at least Moderate class that is NEAR or PLAUSIBLE before the last 4-hour swing low 13071.5"
+ },
+ {
+  "as_of": "2026-11-24T09:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13075",
+   "high": "13084.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13071.5",
+   "primary": "13037.3",
+   "extended": "13016.9"
+  },
+  "invalidation": {
+   "zone_break_close": "13087.1",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T09:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": null,
+  "reachability": null,
+  "destinations": null,
+  "invalidation": null,
+  "no_recommendation": "no defensible entry zone: no support zone of at least Moderate class that is NEAR or PLAUSIBLE before the last 4-hour swing low 13071.5"
+ },
+ {
+  "as_of": "2026-11-24T10:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13062.1",
+   "high": "13071.5",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13062.1",
+     "name": "daily pivot",
+     "role": "",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-23T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "daily candle Mon 23 Nov (sell H 13142.1 L 13010.1 C 13034.1)"
+    },
+    {
+     "price": "13068.5",
+     "name": "London session high (so far)",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-24T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": "London session today Tue 24 Nov 07:00-12:00 UTC, so far (to 10:00 UTC)"
+    },
+    {
+     "price": "13071.5",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-22T20:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13071.5 (Sun 22 Nov 20:00 GMT)"
+    },
+    {
+     "price": "13071.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-22T21:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Sun 22 Nov 21:00 GMT low (sell)"
+    }
+   ]
+  },
+  "reachability": "NEAR",
+  "destinations": {
+   "intermediate": "13050",
+   "primary": "13037.3",
+   "extended": "13016.9"
+  },
+  "invalidation": {
+   "zone_break_close": "13074.5",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T10:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13062.1",
+   "high": "13071.5",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13062.1",
+     "name": "daily pivot",
+     "role": "",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-23T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "daily candle Mon 23 Nov (sell H 13142.1 L 13010.1 C 13034.1)"
+    },
+    {
+     "price": "13068.5",
+     "name": "London session high (so far)",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-24T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": "London session today Tue 24 Nov 07:00-12:00 UTC, so far (to 10:00 UTC)"
+    },
+    {
+     "price": "13071.5",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-22T20:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13071.5 (Sun 22 Nov 20:00 GMT)"
+    },
+    {
+     "price": "13071.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-22T21:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Sun 22 Nov 21:00 GMT low (sell)"
+    }
+   ]
+  },
+  "reachability": "NEAR",
+  "destinations": {
+   "intermediate": "13075",
+   "primary": "13075",
+   "extended": "13127.3"
+  },
+  "invalidation": {
+   "zone_break_close": "13059.1",
+   "structure_break_close": "13068.5",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T11:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13062.1",
+   "high": "13071.5",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13062.1",
+     "name": "daily pivot",
+     "role": "",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-23T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "daily candle Mon 23 Nov (sell H 13142.1 L 13010.1 C 13034.1)"
+    },
+    {
+     "price": "13071.1",
+     "name": "London session high (so far)",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-24T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": "London session today Tue 24 Nov 07:00-12:00 UTC, so far (to 11:00 UTC)"
+    },
+    {
+     "price": "13071.5",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-22T20:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13071.5 (Sun 22 Nov 20:00 GMT)"
+    },
+    {
+     "price": "13071.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-22T21:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Sun 22 Nov 21:00 GMT low (sell)"
+    }
+   ]
+  },
+  "reachability": "NEAR",
+  "destinations": {
+   "intermediate": "13050",
+   "primary": "13037.3",
+   "extended": "13016.9"
+  },
+  "invalidation": {
+   "zone_break_close": "13074.5",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T11:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13062.1",
+   "high": "13071.5",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13062.1",
+     "name": "daily pivot",
+     "role": "",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-23T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "daily candle Mon 23 Nov (sell H 13142.1 L 13010.1 C 13034.1)"
+    },
+    {
+     "price": "13071.1",
+     "name": "London session high (so far)",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-24T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": "London session today Tue 24 Nov 07:00-12:00 UTC, so far (to 11:00 UTC)"
+    },
+    {
+     "price": "13071.5",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-22T20:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13071.5 (Sun 22 Nov 20:00 GMT)"
+    },
+    {
+     "price": "13071.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-22T21:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Sun 22 Nov 21:00 GMT low (sell)"
+    }
+   ]
+  },
+  "reachability": "NEAR",
+  "destinations": {
+   "intermediate": "13075",
+   "primary": "13075",
+   "extended": "13127.3"
+  },
+  "invalidation": {
+   "zone_break_close": "13059.1",
+   "structure_break_close": "13068.5",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T12:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": null,
+  "reachability": null,
+  "destinations": null,
+  "invalidation": null,
+  "no_recommendation": "the primary destination 13085.4 is already reached (the Tue 24 Nov 11:55 GMT 5-minute candle reached 13086.5, within 3 pips of the destination zone 13075-13085.4); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13135.5-13142.1 is not recommended"
+ },
+ {
+  "as_of": "2026-11-24T12:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13075",
+   "high": "13085.4",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13085.4",
+     "name": "H4 Bollinger middle",
+     "role": "",
+     "family": "moving average",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-24T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": ""
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13091.1",
+   "primary": "13135.5",
+   "extended": "13148"
+  },
+  "invalidation": {
+   "zone_break_close": "13072",
+   "structure_break_close": "13007.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T13:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13135.5",
+   "high": "13142.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13135.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-18T16:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Wed 18 Nov 16:00 GMT low (sell)"
+    },
+    {
+     "price": "13135.6",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-10-13T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13135.6 (Wed 14 Oct 00:00 BST)"
+    },
+    {
+     "price": "13135.6",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-14T15:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13135.6 (Wed 14 Oct 16:00 BST)"
+    },
+    {
+     "price": "13139.4",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-05-11T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13139.4 (Mon 12 May 00:00 BST)"
+    },
+    {
+     "price": "13139.7",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-07-31T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13139.7 (Fri 01 Aug 00:00 BST)"
+    },
+    {
+     "price": "13139.9",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-06-23T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13139.9 (Wed 24 Jun 00:00 BST)"
+    },
+    {
+     "price": "13142.1",
+     "name": "previous day high",
+     "role": "",
+     "family": "session",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-23T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "daily candle Mon 23 Nov (sell)"
+    },
+    {
+     "price": "13142.1",
+     "name": "4-hour swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-23T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing high 13142.1 (Mon 23 Nov 08:00 GMT)"
+    },
+    {
+     "price": "13142.1",
+     "name": "hourly swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-23T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Mon 23 Nov 08:00 GMT high (sell)"
+    },
+    {
+     "price": "13142.1",
+     "name": "London session high",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-23T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "London session previous Mon 23 Nov 07:00-12:00 UTC"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13128.6",
+   "primary": "13085.4",
+   "extended": "13037.3"
+  },
+  "invalidation": {
+   "zone_break_close": "13145.1",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T13:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13075",
+   "high": "13085.4",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13080.7",
+     "name": "New York session low (so far)",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-24T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": "New York session today Tue 24 Nov 12:00-21:00 UTC, so far (to 13:00 UTC)"
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13085.4",
+     "name": "H4 Bollinger middle",
+     "role": "",
+     "family": "moving average",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-24T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": ""
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13091.1",
+   "primary": "13135.5",
+   "extended": "13148"
+  },
+  "invalidation": {
+   "zone_break_close": "13072",
+   "structure_break_close": "13007.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T14:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13103",
+   "high": "13114.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13103",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-23T04:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Mon 23 Nov 04:00 GMT low (sell)"
+    },
+    {
+     "price": "13104.4",
+     "name": "New York session high (so far)",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-24T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": "New York session today Tue 24 Nov 12:00-21:00 UTC, so far (to 14:00 UTC)"
+    },
+    {
+     "price": "13114.1",
+     "name": "daily R1",
+     "role": "",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-23T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "daily candle Mon 23 Nov (sell H 13142.1 L 13010.1 C 13034.1)"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13101.3",
+   "primary": "13085.4",
+   "extended": "13037.3"
+  },
+  "invalidation": {
+   "zone_break_close": "13117.1",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T14:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13075",
+   "high": "13085.4",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13080.7",
+     "name": "New York session low (so far)",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-24T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": "New York session today Tue 24 Nov 12:00-21:00 UTC, so far (to 14:00 UTC)"
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13085.4",
+     "name": "H4 Bollinger middle",
+     "role": "",
+     "family": "moving average",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-24T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": ""
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13091.1",
+   "primary": "13103",
+   "extended": "13135.5"
+  },
+  "invalidation": {
+   "zone_break_close": "13072",
+   "structure_break_close": "13007.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T15:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13135.5",
+   "high": "13142.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13135.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-18T16:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Wed 18 Nov 16:00 GMT low (sell)"
+    },
+    {
+     "price": "13135.6",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-10-13T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13135.6 (Wed 14 Oct 00:00 BST)"
+    },
+    {
+     "price": "13135.6",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-14T15:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13135.6 (Wed 14 Oct 16:00 BST)"
+    },
+    {
+     "price": "13139.4",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-05-11T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13139.4 (Mon 12 May 00:00 BST)"
+    },
+    {
+     "price": "13139.7",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-07-31T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13139.7 (Fri 01 Aug 00:00 BST)"
+    },
+    {
+     "price": "13139.9",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-06-23T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13139.9 (Wed 24 Jun 00:00 BST)"
+    },
+    {
+     "price": "13142.1",
+     "name": "previous day high",
+     "role": "",
+     "family": "session",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-23T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "daily candle Mon 23 Nov (sell)"
+    },
+    {
+     "price": "13142.1",
+     "name": "4-hour swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-23T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing high 13142.1 (Mon 23 Nov 08:00 GMT)"
+    },
+    {
+     "price": "13142.1",
+     "name": "hourly swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-23T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Mon 23 Nov 08:00 GMT high (sell)"
+    },
+    {
+     "price": "13142.1",
+     "name": "London session high",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-23T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "London session previous Mon 23 Nov 07:00-12:00 UTC"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13128.6",
+   "primary": "13085.4",
+   "extended": "13037.3"
+  },
+  "invalidation": {
+   "zone_break_close": "13145.1",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T15:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13075",
+   "high": "13085.4",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13080.7",
+     "name": "New York session low (so far)",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-24T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": "New York session today Tue 24 Nov 12:00-21:00 UTC, so far (to 15:00 UTC)"
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13085.4",
+     "name": "H4 Bollinger middle",
+     "role": "",
+     "family": "moving average",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-24T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": ""
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13091.1",
+   "primary": "13135.5",
+   "extended": "13148"
+  },
+  "invalidation": {
+   "zone_break_close": "13072",
+   "structure_break_close": "13007.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T16:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13135.5",
+   "high": "13142.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13135.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-18T16:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Wed 18 Nov 16:00 GMT low (sell)"
+    },
+    {
+     "price": "13135.6",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-10-13T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13135.6 (Wed 14 Oct 00:00 BST)"
+    },
+    {
+     "price": "13135.6",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-14T15:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13135.6 (Wed 14 Oct 16:00 BST)"
+    },
+    {
+     "price": "13139.4",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-05-11T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13139.4 (Mon 12 May 00:00 BST)"
+    },
+    {
+     "price": "13139.7",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-07-31T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13139.7 (Fri 01 Aug 00:00 BST)"
+    },
+    {
+     "price": "13139.9",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-06-23T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13139.9 (Wed 24 Jun 00:00 BST)"
+    },
+    {
+     "price": "13142.1",
+     "name": "previous day high",
+     "role": "",
+     "family": "session",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-23T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "daily candle Mon 23 Nov (sell)"
+    },
+    {
+     "price": "13142.1",
+     "name": "4-hour swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-23T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing high 13142.1 (Mon 23 Nov 08:00 GMT)"
+    },
+    {
+     "price": "13142.1",
+     "name": "hourly swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-23T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Mon 23 Nov 08:00 GMT high (sell)"
+    },
+    {
+     "price": "13142.1",
+     "name": "London session high",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-23T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "London session previous Mon 23 Nov 07:00-12:00 UTC"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13128.6",
+   "primary": "13084.1",
+   "extended": "13037.3"
+  },
+  "invalidation": {
+   "zone_break_close": "13145.1",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T16:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13075",
+   "high": "13084.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13080.7",
+     "name": "New York session low (so far)",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-24T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": "New York session today Tue 24 Nov 12:00-21:00 UTC, so far (to 16:00 UTC)"
+    },
+    {
+     "price": "13083.4",
+     "name": "H4 Bollinger middle",
+     "role": "",
+     "family": "moving average",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-24T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": ""
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13091.1",
+   "primary": "13135.5",
+   "extended": "13148"
+  },
+  "invalidation": {
+   "zone_break_close": "13072",
+   "structure_break_close": "13007.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T17:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13117.6",
+   "high": "13128.6",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13117.6",
+     "name": "New York session high (so far)",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-24T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": "New York session today Tue 24 Nov 12:00-21:00 UTC, so far (to 17:00 UTC)"
+    },
+    {
+     "price": "13119.1",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T03:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 03:00 GMT low (sell)"
+    },
+    {
+     "price": "13121.9",
+     "name": "hourly swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 07:00 GMT high (sell)"
+    },
+    {
+     "price": "13127.3",
+     "name": "weekly pivot",
+     "role": "",
+     "family": "pivot",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13128.6",
+     "name": "4-hour swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing high 13128.6 (Fri 20 Nov 12:00 GMT)"
+    },
+    {
+     "price": "13128.6",
+     "name": "hourly swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T13:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 13:00 GMT high (sell)"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13114.1",
+   "primary": "13084.1",
+   "extended": "13037.3"
+  },
+  "invalidation": {
+   "zone_break_close": "13131.6",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T17:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13075",
+   "high": "13084.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "role": "",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing low 13077 (Fri 20 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 02:00 GMT low (sell)"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 22:00 GMT low (sell)"
+    },
+    {
+     "price": "13080.7",
+     "name": "New York session low (so far)",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-24T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": "New York session today Tue 24 Nov 12:00-21:00 UTC, so far (to 17:00 UTC)"
+    },
+    {
+     "price": "13083.4",
+     "name": "H4 Bollinger middle",
+     "role": "",
+     "family": "moving average",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-24T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": ""
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    }
+   ]
+  },
+  "reachability": "PLAUSIBLE",
+  "destinations": {
+   "intermediate": "13091.1",
+   "primary": "13117.6",
+   "extended": "13135.5"
+  },
+  "invalidation": {
+   "zone_break_close": "13072",
+   "structure_break_close": "13007.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T18:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13119.1",
+   "high": "13128.6",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13119.1",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T03:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 03:00 GMT low (sell)"
+    },
+    {
+     "price": "13121.3",
+     "name": "New York session high (so far)",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-24T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": "New York session today Tue 24 Nov 12:00-21:00 UTC, so far (to 18:00 UTC)"
+    },
+    {
+     "price": "13121.9",
+     "name": "hourly swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 07:00 GMT high (sell)"
+    },
+    {
+     "price": "13127.3",
+     "name": "weekly pivot",
+     "role": "",
+     "family": "pivot",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13128.6",
+     "name": "4-hour swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing high 13128.6 (Fri 20 Nov 12:00 GMT)"
+    },
+    {
+     "price": "13128.6",
+     "name": "hourly swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T13:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 13:00 GMT high (sell)"
+    }
+   ]
+  },
+  "reachability": "NEAR",
+  "destinations": {
+   "intermediate": "13114.1",
+   "primary": "13084.1",
+   "extended": "13037.3"
+  },
+  "invalidation": {
+   "zone_break_close": "13131.6",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T18:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13119.1",
+   "high": "13128.6",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13119.1",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T03:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 19 Nov 03:00 GMT low (sell)"
+    },
+    {
+     "price": "13121.3",
+     "name": "New York session high (so far)",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-24T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": "New York session today Tue 24 Nov 12:00-21:00 UTC, so far (to 18:00 UTC)"
+    },
+    {
+     "price": "13121.9",
+     "name": "hourly swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 07:00 GMT high (sell)"
+    },
+    {
+     "price": "13127.3",
+     "name": "weekly pivot",
+     "role": "",
+     "family": "pivot",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13128.6",
+     "name": "4-hour swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing high 13128.6 (Fri 20 Nov 12:00 GMT)"
+    },
+    {
+     "price": "13128.6",
+     "name": "hourly swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T13:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 13:00 GMT high (sell)"
+    }
+   ]
+  },
+  "reachability": "NEAR",
+  "destinations": {
+   "intermediate": "13135.5",
+   "primary": "13135.5",
+   "extended": "13148"
+  },
+  "invalidation": {
+   "zone_break_close": "13116.1",
+   "structure_break_close": "13007.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T19:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13102.6",
+   "high": "13114.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13102.6",
+     "name": "H1 EMA100",
+     "role": "",
+     "family": "moving average",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-24T18:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": ""
+    },
+    {
+     "price": "13103",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-23T04:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Mon 23 Nov 04:00 GMT low (sell)"
+    },
+    {
+     "price": "13114.1",
+     "name": "daily R1",
+     "role": "",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-23T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "daily candle Mon 23 Nov (sell H 13142.1 L 13010.1 C 13034.1)"
+    }
+   ]
+  },
+  "reachability": "NEAR",
+  "destinations": {
+   "intermediate": "13100",
+   "primary": "13084.1",
+   "extended": "13037.3"
+  },
+  "invalidation": {
+   "zone_break_close": "13117.1",
+   "structure_break_close": "13145.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T19:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": {
+   "low": "13102.6",
+   "high": "13114.1",
+   "class": "Major",
+   "levels": [
+    {
+     "price": "13102.6",
+     "name": "H1 EMA100",
+     "role": "",
+     "family": "moving average",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-24T18:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": ""
+    },
+    {
+     "price": "13103",
+     "name": "hourly swing low",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-23T04:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Mon 23 Nov 04:00 GMT low (sell)"
+    },
+    {
+     "price": "13114.1",
+     "name": "daily R1",
+     "role": "",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-23T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "daily candle Mon 23 Nov (sell H 13142.1 L 13010.1 C 13034.1)"
+    }
+   ]
+  },
+  "reachability": "NEAR",
+  "destinations": {
+   "intermediate": "13119.1",
+   "primary": "13119.1",
+   "extended": "13135.5"
+  },
+  "invalidation": {
+   "zone_break_close": "13099.6",
+   "structure_break_close": "13007.1",
+   "destination_first_applies": true
+  },
+  "no_recommendation": null
+ },
+ {
+  "as_of": "2026-11-24T20:00",
+  "trade": "SELL",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": null,
+  "reachability": null,
+  "destinations": null,
+  "invalidation": null,
+  "no_recommendation": "the primary destination 13114.1 is already reached (the Tue 24 Nov 19:55 GMT 5-minute candle reached 13114.4, within 3 pips of the destination zone 13102.8-13114.1); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13119.1-13128.6 is not recommended"
+ },
+ {
+  "as_of": "2026-11-24T20:00",
+  "trade": "BUY",
+  "h4_real": "BEARISH",
+  "condition_real": "CORRECTION_ACTIVE",
+  "zone": null,
+  "reachability": null,
+  "destinations": null,
+  "invalidation": null,
+  "no_recommendation": "the primary destination 13119.1 is already reached (the Tue 24 Nov 19:55 GMT 5-minute candle reached 13118, within 3 pips of the destination zone 13119.1-13128.6); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13102.8-13114.1 is not recommended"
+ }
+]

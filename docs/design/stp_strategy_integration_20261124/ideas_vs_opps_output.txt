@@ -1,0 +1,58 @@
+03:40:00 Bollinger bounce 5m buy 13040.3 -> no matching opportunity | today: the analyser's state is consolidation, which 
+05:53:56 Bollinger bounce 5m sell 13040.1 -> no matching opportunity | today: allowed
+05:50:00 Bollinger bounce 5m sell 13040.1 -> no matching opportunity | today: allowed
+05:55:03 Bollinger bounce 5m sell 13039.4 -> no matching opportunity | today: allowed
+07:20:00 Bollinger bounce 5m buy 13040.8 -> no matching opportunity | today: the analyser's state is consolidation, which 
+08:00:00 Bollinger bounce 5m sell 13033.9 -> no matching opportunity | today: the analyser's state is ranging, which does n
+09:00:00 Bollinger bounce 5m buy 13052.5 -> no matching opportunity | today: the trend is up: Bollinger bounce 5m only aga
+09:25:00 Bollinger bounce 5m buy 13058.1 -> no matching opportunity | today: the trend is up: Bollinger bounce 5m only aga
+09:30:00 Bollinger bounce 5m buy 13059.1 -> no matching opportunity | today: the trend is up: Bollinger bounce 5m only aga
+09:50:00 Bollinger bounce 5m buy 13064.6 -> no matching opportunity | today: the trend is up: Bollinger bounce 5m only aga
+10:05:00 Bollinger bounce 5m buy 13068.5 -> B1000 | today: the trend is up: Bollinger bounce 5m only aga
+10:35:01 Bollinger bounce sell 13061 -> S1000-19 | today: allowed
+10:35:04 Bollinger bounce 5m sell 13060.8 -> S1000-19 | today: allowed
+10:50:00 Bollinger bounce 5m buy 13066.7 -> B1000 | today: the trend is up: Bollinger bounce 5m only aga
+11:00:00 Bollinger bounce 5m buy 13070.6 -> B1000 | today: the trend is up: Bollinger bounce 5m only aga
+11:05:00 Bollinger bounce 5m buy 13072.5 -> no matching opportunity | today: the trend is up: Bollinger bounce 5m only aga
+11:25:00 Bollinger bounce 5m buy 13077.7 -> no matching opportunity | today: the trend is up: Bollinger bounce 5m only aga
+11:35:00 Bollinger bounce 5m buy 13078.9 -> no matching opportunity | today: the trend is up: Bollinger bounce 5m only aga
+11:50:00 Bollinger bounce 5m buy 13083.8 -> no matching opportunity | today: the trend is up: Bollinger bounce 5m only aga
+11:55:00 Bollinger bounce 5m buy 13087.9 -> no matching opportunity | today: the trend is up: Bollinger bounce 5m only aga
+12:35:00 Bollinger bounce 5m buy 13089.7 -> B1200 | today: the trend is up: Bollinger bounce 5m only aga
+12:50:00 Bollinger bounce 5m buy 13097.7 -> B1200 | today: the trend is up: Bollinger bounce 5m only aga
+13:05:00 Bollinger bounce 5m buy 13101 -> B1200 | today: the trend is up: Bollinger bounce 5m only aga
+13:20:03 Bollinger bounce sell 13096.4 -> no matching opportunity | today: allowed
+13:32:21 Bollinger bounce 5m sell 13093.9 -> no matching opportunity | today: allowed
+13:32:21 level reversal sell 13093.9 -> no matching opportunity | today: allowed
+13:30:00 Bollinger bounce 5m sell 13093.9 -> no matching opportunity | today: allowed
+13:30:00 level reversal sell 13093.9 -> no matching opportunity | today: allowed
+14:05:00 Bollinger bounce 5m buy 13102.3 -> no matching opportunity | today: the analyser's state is emerging trend, which
+14:35:23 level reversal buy 13105.9 -> no matching opportunity | today: allowed
+14:35:00 Bollinger bounce 5m buy 13105.9 -> no matching opportunity | today: the analyser's state is emerging trend, which
+14:40:16 level reversal buy 13113.3 -> no matching opportunity | today: allowed
+14:40:00 Bollinger bounce 5m buy 13113.3 -> no matching opportunity | today: the analyser's state is emerging trend, which
+14:45:13 level reversal buy 13115.1 -> no matching opportunity | today: allowed
+14:45:00 Bollinger bounce 5m buy 13115.1 -> no matching opportunity | today: the analyser's state is emerging trend, which
+15:15:00 Bollinger bounce 5m sell 13104.3 -> S1400-21 | today: the analyser's state is emerging trend, which
+15:25:00 Bollinger bounce 5m buy 13111.2 -> no matching opportunity | today: the analyser's state is emerging trend, which
+15:30:26 level reversal buy 13113 -> no matching opportunity | today: allowed
+15:30:00 Bollinger bounce 5m buy 13113 -> no matching opportunity | today: the analyser's state is emerging trend, which
+15:40:00 Bollinger bounce 5m sell 13105.4 -> S1400-21 | today: the analyser's state is emerging trend, which
+16:17:36 level reversal buy 13115.5 -> no matching opportunity | today: allowed
+16:15:00 Bollinger bounce 5m buy 13115.5 -> no matching opportunity | today: the analyser's state is emerging trend, which
+16:15:00 level reversal buy 13115.5 -> no matching opportunity | today: allowed
+16:35:00 Bollinger bounce 5m sell 13108.2 -> S1400-21 | today: the analyser's state is emerging trend, which
+16:50:00 Bollinger bounce 5m sell 13105.8 -> S1400-21 | today: the analyser's state is emerging trend, which
+17:05:00 Bollinger bounce 5m buy 13113.3 -> no matching opportunity | today: the analyser's state is emerging trend, which
+17:25:00 Bollinger bounce 5m buy 13114 -> no matching opportunity | today: the analyser's state is emerging trend, which
+18:00:00 Bollinger bounce 5m buy 13120.7 -> no matching opportunity | today: the trend is up: Bollinger bounce 5m only aga
+18:20:35 Bollinger bounce 5m sell 13115.6 -> S1700-23 | today: allowed
+18:35:00 Bollinger bounce 5m buy 13121.4 -> B1800 | today: the trend is up: Bollinger bounce 5m only aga
+18:45:00 Bollinger bounce 5m sell 13117.3 -> S1700-23 | today: the analyser's state is emerging trend, which
+18:55:00 Bollinger bounce 5m sell 13114.6 -> S1700-23 | today: the analyser's state is consolidation, which 
+19:00:00 Bollinger bounce 5m sell 13113.1 -> S1400-21,S1700-23 | today: the analyser's state is emerging trend, which
+19:15:00 Bollinger bounce 5m buy 13117.4 -> no matching opportunity | today: the analyser's state is emerging trend, which
+19:35:00 Bollinger bounce 5m buy 13115.9 -> no matching opportunity | today: the analyser's state is emerging trend, which
+20:40:00 Bollinger bounce 5m sell 13114.7 -> S1700-23 | today: the analyser's state is consolidation, which 
+20:45:00 Bollinger bounce 5m sell 13113.4 -> S1400-21,S1700-23 | today: the analyser's state is consolidation, which 
+20:50:00 Bollinger bounce 5m sell 13111.3 -> S1400-21,S1700-23 | today: the analyser's state is emerging trend, which

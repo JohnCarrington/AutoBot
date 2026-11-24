@@ -1,0 +1,17 @@
+A one candle, three levels | setups: 7 | pierced per setup: [3, 3, 2, 1, 1, 1, 1] | confirmations: 2 | triggers (candle): 1
+B two candles, two levels | setups: 9 | pierced per setup: [1, 1, 3, 2, 2, 1, 1, 1, 1] | confirmations: 3 | triggers (candle): 2
+B detail
+    pierce setup 1 sell 18:00 13118
+    pierce setup 2 buy 18:00 13113
+    pierce setup 3 sell 18:05 13127.5
+    pierce setup 4 buy 18:05 13116
+    pierce setup 5 sell 18:10 13127
+    pierce setup 6 buy 18:10 13119
+    confirmation setup 1 sell 18:15 13115
+    confirmation setup 3 sell 18:15 13115
+    pierce setup 7 sell 18:15 13121
+    pierce setup 8 buy 18:15 13114
+    trigger setup 1 sell 18:20 13114
+    trigger setup 3 sell 18:20 13114
+    confirmation setup 5 sell 18:20 13111
+    pierce setup 9 sell 18:20 13116
