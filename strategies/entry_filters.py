@@ -243,15 +243,24 @@ def five_minute_macd(settings: Any, store: Any, at: datetime) -> tuple[Any, str]
     return (last, "") if last is not None else (None, "the 5-minute MACD is not worked out yet")
 
 
-def check(settings: Any, store: Any, idea: Any, trend: str | None = None) -> Verdict:
+def check(settings: Any, store: Any, idea: Any, trend: str | None = None, bypass: frozenset = frozenset()) -> Verdict:
     """The rules, as their switches say, for one trade about to open. The first rule that refuses it is given.
-    `trend`: the slow-grind trend day's direction now ("buy" or "sell"), or None (TrendDayWatch.direction_at)."""
+    `trend`: the slow-grind trend day's direction now ("buy" or "sell"), or None (TrendDayWatch.direction_at).
+    `bypass`: for an entry STP has authorised (stp/authorise.py; owner, 24 November 2026; OD-05, OD-30), the rules in
+    stp_authorisation.bypass_filters that do not apply to it ("hourly_context", "rsi_stretch", "counter_trend_tiring");
+    empty for every other idea, which is checked exactly as before."""
     sw, f = settings.switches, settings.entry_filters
     ppp = Decimal(settings.market.points_per_pip)
     at, price, buy = idea.time, Decimal(idea.entry_price), idea.direction == "buy"
     checked: list[str] = []
+    for name, on in (("hourly_context", sw.hourly_context), ("rsi_stretch", sw.rsi_stretch),
+                     ("counter_trend_tiring", getattr(sw, "counter_trend_tiring", False))):
+        if on and name in bypass:
+            checked.append(f"{name.replace('_', ' ')}: not applied: STP authorised this entry (OD-05, OD-30)")
 
-    if sw.hourly_context and idea.strategy in HOURLY_EXEMPT:
+    if "hourly_context" in bypass:
+        pass
+    elif sw.hourly_context and idea.strategy in HOURLY_EXEMPT:
         checked.append(f"hourly context: {idea.strategy} is exempt")
     elif sw.hourly_context:
         ctx = hourly_context(settings, store, at)
@@ -297,7 +306,7 @@ def check(settings: Any, store: Any, idea: Any, trend: str | None = None) -> Ver
                         "pips_beyond_ema8": f"{beyond:.1f}", "limit_pips": str(limit)}, checked)
                 checked.append(f"entry near the 8 EMA: {line}: allowed")
 
-    if sw.rsi_stretch:
+    if sw.rsi_stretch and "rsi_stretch" not in bypass:
         if idea.strategy in RSI_EXEMPT:
             checked.append(f"RSI stretch: {idea.strategy} is exempt")
         elif trend is not None and trend == idea.direction:
@@ -320,7 +329,8 @@ def check(settings: Any, store: Any, idea: Any, trend: str | None = None) -> Ver
                         "limit": limit, "entry_price": str(price), "trend_day": trend}, checked)
                 checked.append(f"RSI stretch: {line}, not {limit}{td}: allowed")
 
-    if getattr(sw, "counter_trend_tiring", False) and idea.strategy in COUNTER_TREND_STRATEGIES:
+    if getattr(sw, "counter_trend_tiring", False) and idea.strategy in COUNTER_TREND_STRATEGIES and \
+            "counter_trend_tiring" not in bypass:
         state, sd = idea.state, idea.state_direction
         kind = f", {idea.trend_type}" if getattr(idea, "trend_type", None) else ""
         states = (TREND, EMERGING) if getattr(sw, "counter_trend_emerging", False) else (TREND,)

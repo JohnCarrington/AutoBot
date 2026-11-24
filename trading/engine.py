@@ -60,6 +60,7 @@ from prices.calendar import floor_5m
 from prices.model import Candle
 from strategies.common import SESSION_STRATEGIES, most_trail_candles, opens_at_next_candle
 from strategies import entry_filters
+from stp.gate import gated as stp_gated
 from strategies.replay import StrategyRunner
 from trade_manager.manager import Bar, Rejection, TradeManager, plan
 
@@ -292,9 +293,32 @@ class Trading:
         return paused
 
     def _place(self, idea: Any, td: str | None) -> Any:
+        # STP_AUTHORISES_ENTRIES (owner, 24 November 2026; stp/authorise.py): an idea of a strategy STP authorises
+        # opens only at a live STP opportunity in its direction; checked once, here, after the try was recorded
+        bypass: frozenset = frozenset()
+        if stp_gated(self.s, idea.strategy):
+            from stp.authorise import authorise              # only while STP_AUTHORISES_ENTRIES is on
+            sv = authorise(self.s, self.store, idea, self.now(), getattr(self.runner, "stp", None), None if self.replay else self.partial,
+                           None if self.replay else self._last_tick)
+            if not sv.allowed:
+                self.book.decision("STP refused", self.now(), strategy=idea.strategy, direction=idea.direction,
+                                   idea_time=idea.time, entry_price=idea.entry_price, why="; ".join(sv.reasons))
+                log.info("%s %s at %s refused by STP: %s", idea.strategy, idea.direction, idea.entry_price,
+                         "; ".join(sv.reasons))
+                r = Result(False, "STP refused", reasons=list(sv.reasons))
+                self.book.decision("order", self.now(), strategy=idea.strategy, direction=idea.direction, result=r.what,
+                                   reference=r.reference, reasons=r.reasons, level=r.level)
+                return r
+            idea.context = dict(idea.context) | {"signal": sv.signal, "stp": {
+                "opportunity": sv.opportunity["id"], "key": sv.stp_key, "bypass": sorted(sv.bypass)}}
+            idea.steps.extend(sv.steps)
+            bypass = sv.bypass
+            self.book.decision("STP authorised", self.now(), strategy=idea.strategy, direction=idea.direction,
+                               idea_time=idea.time, entry_price=idea.entry_price, opportunity=sv.opportunity["id"],
+                               signal=sv.signal)
         # the entry filters (owner, 21 November 2026): every trade, once, here, just before it opens
         trend = self.trend_watch.direction_at(idea.time) if self._trend_on() else None
-        v = entry_filters.check(self.s, MemoStore(self.store), idea, trend=trend)
+        v = entry_filters.check(self.s, MemoStore(self.store), idea, trend=trend, **({"bypass": bypass} if bypass else {}))
         if not v.allowed:
             self.book.decision("entry filter refused", self.now(), strategy=idea.strategy, direction=idea.direction,
                                idea_time=idea.time, entry_price=idea.entry_price, rule=v.rule, why=v.why,
@@ -504,7 +528,13 @@ class Trading:
     def _live_entries(self, tick: Any) -> None:
         import dataclasses
         p = self._forming(tick)
-        if self._levels is None or self._levels[0] != p.start:
+        if getattr(self.runner, "stp", None) is not None:
+            # STP_AUTHORISES_ENTRIES: the strategies' levels with the live STP zones, renewed also when STP's file
+            # changes, so a zone published at the hourly close is seen from the next price (design 8, 9.5)
+            version = self.runner.stp_version()
+            if self._levels is None or self._levels[0] != p.start or self._levels[2:] != (version,):
+                self._levels = (p.start, self.runner.levels_at(p.start, MemoStore(self.store)), version)
+        elif self._levels is None or self._levels[0] != p.start:
             self._levels = (p.start, build(self.s, MemoStore(self.store), p.start))
         for idea in self.runner.peek(p, self._levels[1]):
             key = (idea.strategy, idea.direction, p.start)

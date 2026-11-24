@@ -454,6 +454,12 @@ class OrderSender:
         its strategy (safety rule 11; owner, 18 November 2026)."""
         out = {u["signal"]: u["strategy"] for u in self.unresolved.values() if u.get("signal")}
         out.update({t.signal: t.strategy for t in self.trades.values() if t.signal})
+        # OD-32 (owner, 24 November 2026): each part of a key joined by "|" counts as used too (an STP-authorised
+        # trade keeps the strategy's own key and STP's opportunity/test key); a key without "|" is unchanged
+        for key, strategy in list(out.items()):
+            if "|" in key:
+                for part in key.split("|"):
+                    out.setdefault(part, strategy)
         return out
 
     def used_once_a_day(self) -> set[str]:

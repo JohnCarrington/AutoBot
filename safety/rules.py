@@ -194,7 +194,10 @@ def is_reversal(idea: Any, settings: Any = None) -> bool:
 
 
 def _one_view(idea: Any, day: Any, settings: Any = None) -> list[str]:
-    """Rule 9: one view at a time. `day`: the day's directions (analyser.day_direction.DayDirections), or None."""
+    """Rule 9: one view at a time. `day`: the day's directions (analyser.day_direction.DayDirections), or None.
+    Not for an entry STP has authorised with "one_view" among its bypassed filters (owner, 24 November 2026; OD-05)."""
+    if "one_view" in ((getattr(idea, "context", None) or {}).get("stp") or {}).get("bypass", ()):
+        return []
     if not is_reversal(idea, settings):
         return []
     out = []
@@ -221,9 +224,14 @@ def _one_signal(settings: Any, idea: Any, used: dict | None) -> list[str]:
     signal keys of the trades already opened (or sent and not yet settled), each with its strategy."""
     from analyser.states import switch_on
     key = (getattr(idea, "context", None) or {}).get("signal")
-    if not key or not used or key not in used or not switch_on(settings, "one_signal_one_trade"):
+    if not key or not used or not switch_on(settings, "one_signal_one_trade"):
         return []
-    return [f"same signal already traded by {used[key]}"]
+    # OD-32 (owner, 24 November 2026): a key may have parts joined by "|" (the strategy's own key and STP's
+    # opportunity/test key); refused if ANY part was already used. A key without "|" is one part, as before.
+    hit = [part for part in key.split("|") if part in used]
+    if not hit:
+        return []
+    return [f"same signal already traded by {used[hit[0]]}"]
 
 
 def decide(settings: Any, order: Order, open_trades: list[OpenTrade], funds: AccountFunds | None,

@@ -382,6 +382,8 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
     ok_in = ALLOWED_IN[strategy]
     if strategy in WITHOUT_HINDRANCE:
         pass                                            # not checked against the state (owner, 15 and 16 November 2026)
+    elif _stp_bypassed(settings, strategy, "analyser_state"):
+        pass                                            # STP authorises it instead (OD-05; stp/authorise.py at entry)
     elif state.state not in ok_in:
         reasons.append(f"the analyser's state is {state.state}, which does not allow {strategy}")
     elif ok_in[state.state] in ("trend", "against"):
@@ -396,6 +398,13 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
         reasons.append(f"the direction rule says {rule.side} ({rule.reason})")
     reasons += bounce_reasons(settings, strategy, t)
     return reasons, rule
+
+
+def _stp_bypassed(settings: Any, strategy: str, name: str) -> bool:
+    """STP_AUTHORISES_ENTRIES (owner, 24 November 2026; OD-05): a filter STP replaces for the strategies it authorises;
+    every such idea is then refused at entry unless a live STP opportunity authorises it (stp/authorise.py)."""
+    from stp.gate import bypassed
+    return bypassed(settings, strategy, name)
 
 
 def bounce_reasons(settings: Any, strategy: str, t: datetime | None) -> list[str]:
