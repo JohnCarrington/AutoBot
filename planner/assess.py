@@ -108,6 +108,9 @@ class Plan:
     destination_reached: dict | None = None     # D-1 correction: the primary destination was already reached
     condition_unclassified: bool = False        # INDETERMINATE only because no class recipe matched (data ready)
     structure: dict | None = None               # reporting only: every level, zone and swing the plan saw
+    # STP_BIDIRECTIONAL (owner, 24 November 2026; OD-06, OD-16): a plan for one direction; the 4-hour direction is
+    # context: "with" or "against" it, or "none (NEUTRAL)" etc. None: the plan in the 4-hour direction (as before).
+    relation_to_h4: str | None = None
 
     @property
     def recommends(self) -> bool:
@@ -130,7 +133,7 @@ class Plan:
             "threshold_misses": self.threshold_misses, "h4_last_swing": self.h4_last_swing,
             "destination_reached": self.destination_reached, "structure": self.structure,
             "condition_unclassified": self.condition_unclassified,
-        }
+        } | ({"relation_to_h4": self.relation_to_h4} if self.relation_to_h4 is not None else {})
 
 
 def _iso(t: datetime | None) -> str | None:
@@ -349,8 +352,12 @@ def _zone_dict(z: Zone, extra: dict) -> dict:
 
 
 def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list | None = None,
-           five_minute_rule: dict | None = None) -> Plan:
-    """The plan from a snapshot (planner/measure.py) and the existing levels list (levels/current.py) at its time."""
+           five_minute_rule: dict | None = None, trade: str | None = None) -> Plan:
+    """The plan from a snapshot (planner/measure.py) and the existing levels list (levels/current.py) at its time.
+    `trade` "SELL" or "BUY" (STP_BIDIRECTIONAL; owner, 24 November 2026; OD-06, OD-16, OD-17): the plan for that
+    direction with every approved criterion unchanged (zone class, reachability before the last 4-hour swing in that
+    direction, a Major zone for the primary destination, destination-first, invalidation), the 4-hour direction and
+    the condition recorded as context instead of gating it. None: the plan in the 4-hour direction, exactly as before."""
     side = side_of(settings)
     pair = settings.market.pair
     near = Decimal(settings.rejection.near_level_within_pips) * ppp(settings)
@@ -374,26 +381,43 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
     if snap.price is None or snap.h4.last is None:
         plan.no_recommendation = "no finished candles to work from"
         return plan
-    if dirn not in (BEARISH, BULLISH):
+    if trade is None and dirn not in (BEARISH, BULLISH):
         unresolved = st.sweep is not None and st.sweep["state"] == "unresolved"
         plan.no_recommendation = (f"the 4-hour direction is {dirn}"
                                   + (f" (the wick-only sweep of {st.sweep['beyond']} by {st.sweep['price']} is unresolved)"
                                      if unresolved else "")
                                   + ": no recommendation until it is BEARISH or BULLISH")
         return plan
-    bear = dirn == BEARISH
-    last_opp = (st.highs if bear else st.lows)[-1]
+    bear = dirn == BEARISH if trade is None else trade == "SELL"
+    side_swings = st.highs if bear else st.lows
+    if not side_swings:
+        plan.trade = "SELL" if bear else "BUY"
+        plan.no_recommendation = f"no 4-hour swing {'high' if bear else 'low'} to judge reachability against"
+        return plan
+    last_opp = side_swings[-1]
     plan.h4_last_swing = {"kind": last_opp.kind, "price": plain(last_opp.price), "candle_utc": _iso(last_opp.candle_utc)}
-    cond, cond_ev, facts = condition(settings, snap, st, d1, h1_found)
+    if trade is None:
+        cond, cond_ev, facts = condition(settings, snap, st, d1, h1_found)
+    else:
+        try:                                            # context only for a one-direction plan
+            cond, cond_ev, facts = condition(settings, snap, st, d1, h1_found)
+        except Exception as e:                          # noqa: BLE001
+            cond, cond_ev, facts = INDETERMINATE, [f"condition not worked out ({type(e).__name__})"], {}
     plan.condition, plan.condition_evidence = cond, cond_ev
-    plan.condition_unclassified = cond == INDETERMINATE and bool(facts.get("unclassified"))
+    plan.condition_unclassified = trade is None and cond == INDETERMINATE and bool(facts.get("unclassified"))
     if facts.get("impulse_size_points") is not None and snap.adr:
         plan.observations["impulse_pips"] = plain(pips(settings, facts["impulse_size_points"]))
         plan.observations["impulse_adr"] = plain((facts["impulse_size_points"] / snap.adr).quantize(Decimal("0.01")))
-    if cond not in OPPORTUNITY_CLASSES:
-        plan.no_recommendation = f"condition {cond}: no opportunity"
-        return plan
-    plan.opportunity = opportunity_of(cond)
+    if trade is None:
+        if cond not in OPPORTUNITY_CLASSES:
+            plan.no_recommendation = f"condition {cond}: no opportunity"
+            return plan
+        plan.opportunity = opportunity_of(cond)
+    else:
+        with_h4 = (dirn == BEARISH and bear) or (dirn == BULLISH and not bear)
+        plan.relation_to_h4 = ("with" if with_h4 else "against") if dirn in (BEARISH, BULLISH) else f"none ({dirn})"
+        plan.opportunity = (opportunity_of(cond) if with_h4 and cond in OPPORTUNITY_CLASSES
+                            else "countertrend reversal" if dirn in (BEARISH, BULLISH) else None)
     plan.trade = "SELL" if bear else "BUY"
     plan.expected_movement = "UP into resistance, then DOWN" if bear else "DOWN into support, then UP"
     if snap.adr is None:
@@ -474,7 +498,8 @@ def assess(settings: Any, snap: Snapshot, existing_levels: Any, calendar: list |
             f"({settings.planner.break_beyond_pips} pips beyond the zone {'top' if bear else 'bottom'})",
             f"a 4-hour close at or {'above' if bear else 'below'} {plain(struct_break)} "
             f"(beyond the last 4-hour swing {last_opp.kind} {plain(last_opp.price)})",
-            f"the 4-hour direction no longer {dirn}",
+            (f"the 4-hour direction no longer {dirn}" if trade is None else
+             f"(the 4-hour direction, {dirn}, is context only: OD-06)"),
             (f"price reaching the primary destination {plain(edge(majors[0]))} before the zone" if
              ahead(price, majors[0].low, majors[0].high, toward_low=bear) else
              f"(the primary destination {plain(edge(majors[0]))} lies between price and the zone: no 'reached first' check)")],
@@ -599,7 +624,7 @@ def observations(settings: Any, snap: Snapshot, st: Structure, d1: Structure, ex
     return o
 
 
-def plan_at(settings: Any, store: Any, as_of: datetime, calendar: list | None = None) -> Plan:
+def plan_at(settings: Any, store: Any, as_of: datetime, calendar: list | None = None, trade: str | None = None) -> Plan:
     """The plan at `as_of`, from the candle store and the existing levels as they stood then."""
     from analyser.direction import decide
     from analyser.indicators import last_candles
@@ -617,4 +642,4 @@ def plan_at(settings: Any, store: Any, as_of: datetime, calendar: list | None = 
         rule = {"side": d.side, "reason": d.reason}
     except Exception:                                    # noqa: BLE001  (context only)
         rule = None
-    return assess(settings, snap, existing, calendar, rule)
+    return assess(settings, snap, existing, calendar, rule, trade=trade)
