@@ -187,22 +187,6 @@ trade manager, stops, exits: unchanged; never read STP
 
 **No decision is open.** The design is closed unless the independent review finds a material defect.
 
----|---|---|
-| OD-30 (INV-1) | RSI stretch for STP-authorised ideas of the gated strategies: bypass or retain | **Bypass** (add `rsi_stretch` to `bypass_filters`); retaining it is a valid conservative choice |
-| OD-31 (INV-2) | Use the approved P-F7 = 3 hourly candles for the OD-07 failed-breakout return | **Yes** (BROKEN state as §6) |
-| OD-32 | Rule 11 key: keep each strategy's existing signal key and add the STP key, both checked (§10) | **Yes**: needed so the hourly bounce's protection is not weakened |
-| OD-33 | Acknowledge that when STP proposes both directions at one zone (price inside a Major zone), either direction is authorised there and the strategy's confirmation decides | **Acknowledge** (follows from OD-06 and OD-16; no rule added) |
-
----|---|---|---|
-| OD-16 | What makes an opportunity against the H4 direction credible | A. the same approved criteria as with-H4 (D-14, D-16, D-18, D-1), H4 recorded as context. B. A plus the dual forecaster's evidence score (unapproved numbers). C. new criteria | **A**: no new numbers |
-| OD-17 | New proposals per direction per re-plan | A. one per direction (D-16 applied on each side). B. every qualifying zone | **A**: opportunities build up anyway (OD-01, OD-02) |
-| OD-26 | How a zone becomes levels in the strategies' copy | A. the zone's two edges plus the fixed levels STP lists inside it. B. edges only. C. a "zone pierce" in the watcher | **A**. B misses a candle that rejects inside a wide zone at its reference level (e.g. the weekly pivot 1.31273). C changes the watcher's confirmation logic, which the owner excluded. |
-| OD-27 | Level Reversal's allowance at an STP-zone level (its rule 2 "how far past the level") | A. up to the zone's far edge: past = beyond the far edge by more than `near_level_within_pips`. B. a new allowance number. C. borrow the round-number allowance (5) | **A**: uses STP's own structure and an approved number; B is a new parameter; C has no structural basis. Stop (6 beyond the furthest point) and take profit (20) are unchanged. |
-| OD-28 | Level Reversal's own level types (S2, R2, 00) once STP zones are added | A. keep them alongside STP-zone levels (they still need an STP authorisation to trade). B. STP-zone levels only | **A**: no removal of existing behaviour; every gated entry still needs an STP opportunity |
-| OD-29 | Switch names and defaults | §18.3 | as listed |
-
-**Withdrawn with the removed mechanisms:** OD-18 reporting (OD-18 A, "no new exposure rule", stays), OD-19, OD-20 (replaced by OD-29), OD-21.
-
 ---
 
 ## 6. Opportunity lifecycle
@@ -499,7 +483,7 @@ The tracker runs after each completed 5-minute candle, seconds behind the engine
 | T-50 | Ungated strategies with switches on | identical decisions |
 | T-51 | EMA pullback with switches on | identical decisions |
 | T-52 | Gated strategy stop, take profit and size | identical to off for the same idea |
-| T-53 | Retained filters (RSI stretch, hours, news, risk, limits, rules 10, 11) still refuse gated ideas | refused as today |
+| T-53 | Retained filters (hours, news, risk, limits, rules 10, 11) still refuse STP-authorised gated ideas; RSI stretch still refuses gated ideas when STP authorisation is off | refused as today |
 | T-54 | Bypassed filters (state gating, rules 1, 3, 9) apply to ungated strategies | unchanged |
 | T-55 | Bound trade's opportunity becomes INVALIDATED, SUPERSEDED or COMPLETED | trade manager unchanged; no close sent |
 | T-58 | Hourly bounce authorised; a session sweep with the same direction and rejection-candle start | refused by rule 11 (existing key part), as today |
@@ -559,6 +543,7 @@ Rejection-watcher events are a code replay, not a live record.
 | 08:00 | 0000-17 INVALIDATED (destination before entry) — same as today |
 | 10:00 | 1000-19 added; **0900-18 kept** (different zone, H11) |
 | 10:00 | **BUY B1000 at 1.30621–1.30715** (the same Major zone as SELL 1000-19; price inside, NEAR both ways); primary 1.30750; COMPLETED at 11:00. The 10:05, 10:50 and 11:00 5m bounce BUY ideas interact with it (authorised by STP; today refused by the analyser state) |
+| 10:35 | hourly bounce SELL 1.30610 and 5m bounce SELL 1.30608 on one rejection at SELL 1000-19 (pierce 10:05–10:10, high 1.30711): **authorised by STP**; RSI stretch (25.8) bypassed for them (OD-30); one trade at most (shared key `1000-19#t1`, rule 11). Recorded today: both refused by RSI stretch |
 | 12:00 | 11:00 close 1.30891 beyond both pivot-area SELL zones by ≥ 3 pips → both BROKEN. **STP's 12:00 re-plan proposes BUY B1200 at 1.30750–1.30854** — the broken 0000-17/0900-18 resistance, now support — primary 1.31355 (FT-02, computed): continuation authorised only by STP's own proposal. The 12:35, 12:50 and 13:05 5m bounce BUYs interact with it |
 | 15:00 | no close back inside at 12:00, 13:00, 14:00 → both INVALIDATED "break held" |
 | 13:35 | 1300-20 INVALIDATED (destination before entry) |
@@ -566,16 +551,16 @@ Rejection-watcher events are a code replay, not a live record.
 | 14:40–14:50 | overshoot to 1.31168: no status change (H09) |
 | 15:00 | **1500-22 added; 1400-21 kept** |
 | 14:05 | B1200 COMPLETED: the 14:00 re-plan moved its primary to 1.31030 (same identity, updated in place) and the 14:05 high 1.31025 reached it |
-| 14:35–14:45 | Level Reversal BUYs at 1.31059–1.31151: **no live BUY opportunity there → refused by STP** (today refused by RSI stretch) |
+| 14:35–14:45 | Level Reversal BUYs at 1.31059–1.31151: **no live BUY opportunity there → refused by STP**; the RSI stretch bypass does not apply because they are not STP-authorised (recorded today: refused by RSI stretch) |
 | 15:30 | Level Reversal BUY (opened today): the only live BUY is B1500 at 1.30750–1.30854; its rejection candle (low 1.31023) is 17 pips away → **refused by STP** (FT-05, computed) |
-| 15:40, 16:35 | the R1 SELL zone levels are in the strategies' copy; a gated SELL confirmed there is **authorised by STP** (`1400-21#t<n>`), still subject to RSI stretch, hours, news and risk. FT-03 records which retained filter, if any, refuses |
+| 15:40, 16:35 | the R1 SELL zone levels are in the strategies' copy; a gated SELL confirmed there is **authorised by STP** (`1400-21#t<n>`); RSI stretch is bypassed for it (OD-30); it remains subject to hours, news, risk and rule 11. FT-03 records which retained filter, if any, refuses |
 | 16:00 | close beyond by 1.2 pips: "closed beyond" recorded; no break |
 | 17:00 | close 1.31117: reclaim recorded. 1700-23 added; 1400-21 and 1500-22 kept |
 | 17:05 | 1700-23 → Watch & Wait |
 | 18:00 | 17:00 close 1.31204 ≥ 1.31171 → 1400-21 BROKEN (window: the 18:00, 19:00 and 20:00 candles' closes). The 5m bounce BUY on the R1 retest triggered in the 18:00 candle (exact tick not stored). It is **refused** if it triggered before B1800 (1.31191–1.31286) was published at 18:00:03 and is **not retried**. It is authorised if it triggered after, since its rejection candle interacts with B1800 (§9.5, FT-R1). The bot does not create one because the reversal failed. The 18:35 BUY interacts with B1800 and is authorised. |
 | 19:00 | 18:00 close 1.31132 back below 1.31141 → 1400-21 back to Watch & Wait at that close (OD-31). STP proposes SELL 1900-24 and BUY B1900 both at R1 1.31026–1.31141 (B1900 ends at 19:05, destination 1.31191 reached in the same candle as the zone) |
 | 18:20 | 5m bounce SELL from 1700-23: rejection candle (18:10, high 1.31231) interacts; SELL; entry 1.31156 short of 1.31316; destination 1.30841 not touched in any candle or the forming candle; data fresh → **authorised** (`1700-23#t1`); RSI stretch (23.6) bypassed for it (OD-30), so it goes on to the retained checks (hours, news, risk, rule 11) |
-| 18:25 | 1400-21 BROKEN or INVALIDATED; 1500-22 WAITING; 1700-23 Watch & Wait; Level Reversal BUY untouched (H14); nothing expired |
+| 18:25 | 1400-21 BROKEN; 1500-22 WAITING; 1700-23 Watch & Wait; Level Reversal BUY untouched (H14); nothing expired |
 
 **Pass criteria:** no opportunity ends except by its own condition; no order without a gated strategy's own confirmation; no opposite-direction authorisation that STP did not propose; every status change and authorisation decision recorded with its time; no future data used.
 
@@ -678,6 +663,7 @@ Built from the 18:25 state, or 17:00 where noted, by appending synthetic candles
 | OD-23 | §7.1 | T-28 |
 | OD-24 | §11 | T-39 |
 | OD-25 | §9 | T-31 to T-38 |
+| OD-29 | §18.3 | T-03 (`STP_BIDIRECTIONAL` off), T-27 (`STP_AUTHORISES_ENTRIES` off: levels), T-39 (dependency check: authorisation refuses unless the other two are on), T-38 (fail-safe: missing or unreadable STP file refuses), T-43 (fail-safe: rule 11 off refuses), T-48 (all off: byte-identical) |
 | OD-30 | §7.2 | T-66, FT-A18 |
 | OD-31 | §6.3 | T-10 to T-12, FT-A4b, FT-A4c |
 | OD-33 | §7.3 | T-05, §14.2 10:00, 18:00, 19:00 |
@@ -711,15 +697,15 @@ Built from the 18:25 state, or 17:00 where noted, by appending synthetic candles
 
 Unchanged: D-01, D-02, D-04 to D-09, D-11 to D-15, D-17 to D-19, D-21, D-26 to D-28, D-30 to D-32, D-34 to D-36 (D-36 cadence unchanged: the lifecycle stays in the tracker), D-38.
 
-### 16.2 To revision-2 decisions (owner confirmation requested)
+### 16.2 To revision-2 decisions (all approved)
 
 | Item | Revision 2 | Revision 3 |
 |---|---|---|
-| OD-02 | H11 overrides "evidence changes" | unchanged; **still needs confirmation** |
+| OD-02 | H11 overrides "evidence changes" | **approved** (closed 24 Nov): new forecasts do not invalidate existing structurally valid opportunities |
 | OD-07 | P-F7 used for authorisation | approved (OD-31) |
-| OD-08 | continuation hypothesis inside each opportunity | continuation only via STP's own proposal in that direction |
-| OD-12 | in-process monitor on every price | tracker after each candle plus the catch-up at entry (§9.3) |
-| OD-14 | per-attempt and phase records | existing tracker events, status changes and authorisation decisions |
+| OD-08 | continuation hypothesis inside each opportunity | approved: continuation only via STP's own proposal in that direction |
+| OD-12 | in-process monitor on every price | approved: tracker after each candle plus the catch-up at entry (§9.3) |
+| OD-14 | per-attempt and phase records | approved: existing tracker events, status changes and authorisation decisions |
 | OD-18 | dashboard and summary conflict reporting | no reporting; A (no new rule) stands |
 | OD-19, OD-21 | continuation timing and merge | withdrawn |
 | OD-20 | `STP_OPPORTUNITY_MONITOR`, `STP_BIDIRECTIONAL`, `STP_AUTHORISES_ENTRIES` | OD-29: `STP_OPPORTUNITIES`, `STP_BIDIRECTIONAL`, `STP_AUTHORISES_ENTRIES` |
@@ -731,12 +717,12 @@ Unchanged: D-01, D-02, D-04 to D-09, D-11 to D-15, D-17 to D-19, D-21, D-26 to D
 
 | WP | Content | Depends on | Switch |
 |---|---|---|---|
-| WP-1 | Tracker: list of opportunities in `current.json` (old single-record format read on load); new proposals added; supersede only for the same identity; no invalidation on "evidence changed" or H4 change; no demotion; 4-hour structure-break check; BROKEN via `watch_after_break` (if INV-2 confirmed) | – | `STP_OPPORTUNITIES` |
+| WP-1 | Tracker: list of opportunities in `current.json` (old single-record format read on load); new proposals added; supersede only for the same identity; no invalidation on "evidence changed" or H4 change (OD-02); no demotion; 4-hour structure-break check; BROKEN via `watch_after_break` with P-F7 = 3 and Watch & Wait restored at the reclaim close (INV-2 complete, OD-31 approved) | – | `STP_OPPORTUNITIES` |
 | WP-2 | STP bidirectional proposals in `assess` | – | `STP_BIDIRECTIONAL` |
 | WP-3 | Strategies' level wrapper (OD-26); `stp_zone` in Level Reversal with the OD-27 allowance; rejection-candle context field in the 5m bounce and Level Reversal | WP-1 | `STP_AUTHORISES_ENTRIES` |
-| WP-4 | Authorisation check in `_place` with catch-up, freshness, composite signal key (rule 11 split on `|`), OD-05 bypasses, refusal records, prerequisite gate | WP-1 | `STP_AUTHORISES_ENTRIES` |
+| WP-4 | Authorisation check in `_place` with catch-up, freshness, composite signal key (rule 11 split on `|`, OD-32), oldest-first binding (§9.5), the OD-05 bypasses (analyser state, rules 1, 3, 9) **and the OD-30 RSI stretch bypass** for STP-authorised gated ideas only, refusal records, prerequisite gate (OD-24, OD-29) | WP-1 | `STP_AUTHORISES_ENTRIES` |
 | WP-5 | STP tab: list of opportunities with status (read only) | WP-1 | – |
-| WP-6 | Tests T-01 to T-61 and the FT fixtures, extended with recorded data after 18:25 | all | – |
+| WP-6 | All technical tests T-01 to T-66; all functional scenarios: the 24 Nov journey (§14.2), FT-A1 to FT-A18 (including FT-A2b, FT-A4b, FT-A4c), FT-R1 (R1-a to R1-f) and the computed FT-01, FT-02, FT-03, FT-05, FT-07; fixtures extended with recorded data after 18:25 | all | – |
 | WP-7 | Readiness pack: test results, the computed FT outputs, the switches-off byte-identical diff | WP-6 | – |
 
 Order: WP-1 and WP-2 in parallel → WP-3, WP-4 → WP-5 alongside → WP-6 → WP-7. Each on its own branch, pushed, not merged until approved.
