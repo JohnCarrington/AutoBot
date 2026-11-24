@@ -36,6 +36,7 @@ from prices.model import Candle, plain, uk_short
 from strategies.common import BUY, LEVEL_REVERSAL, SELL, Candidate
 
 ROUND_NUMBER = "round_number"
+STP_ZONE = "stp_zone"       # stp/levels.py: a live STP zone's level, only while STP_AUTHORISES_ENTRIES is on (OD-28)
 KEEP_CANDLES = 300          # more than any setup lasts (pierce, reversal and confirmation within a few candles)
 
 
@@ -46,12 +47,17 @@ class LevelReversal:
         self.side = settings.chart.price
         self.ppp = Decimal(settings.market.points_per_pip)
         self.candles: deque = deque(maxlen=KEEP_CANDLES)
+        self.stp = bool(getattr(getattr(settings, "switches", None), "stp_authorises_entries", False))
+        self.near = Decimal(settings.rejection.near_level_within_pips) * self.ppp
 
     def _h(self, c): return getattr(c, f"{self.side}_high")
     def _l(self, c): return getattr(c, f"{self.side}_low")
 
     def kind(self, what: str, price: Decimal) -> str | None:
-        """The level's name if it is one this strategy trades, else None."""
+        """The level's name if it is one this strategy trades, else None. A live STP zone's level counts while
+        STP_AUTHORISES_ENTRIES is on (OD-28: alongside level_reversal.level_types, which are unchanged)."""
+        if what == STP_ZONE:
+            return f"STP zone level {plain(price)}" if self.stp else None
         if what not in self.lr.level_types:
             return None
         if what == ROUND_NUMBER:
@@ -88,15 +94,25 @@ class LevelReversal:
         if not span:
             return None
         furthest = max(self._h(c) for c in span) if sell else min(self._l(c) for c in span)
-        order = sorted(st.pierced, key=lambda p: p["what"] == ROUND_NUMBER)      # S2 and R2 first
+        order = sorted(st.pierced, key=lambda p: (p["what"] == ROUND_NUMBER, p["what"] == STP_ZONE))  # S2 and R2 first
         for p in order:
             name = self.kind(p["what"], p["price"])
             if name is None:
                 continue
             past = (furthest - p["price"]) if sell else (p["price"] - furthest)
-            allowance = self.allowance(p["what"])
-            if past > Decimal(allowance) * self.ppp:
-                continue
+            if p["what"] == STP_ZONE:
+                # OD-27: up to the STP zone's far edge (its high for a sell, its low for a buy) plus
+                # rejection.near_level_within_pips; no new number
+                zone_low, zone_high = p["zone"]
+                far = zone_high if sell else zone_low
+                limit = ((far - p["price"]) if sell else (p["price"] - far)) + self.near
+                allowance = plain((limit / self.ppp).quantize(Decimal("0.1")))
+                if past > limit:
+                    continue
+            else:
+                allowance = self.allowance(p["what"])
+                if past > Decimal(allowance) * self.ppp:
+                    continue
             beyond = Decimal(self.lr.stop_beyond_furthest_pips) * self.ppp
             stop = furthest + beyond if sell else furthest - beyond
             word = "above" if sell else "below"
@@ -109,5 +125,6 @@ class LevelReversal:
                          f"take profit {self.lr.take_profit_pips} pips")
             return Candidate(LEVEL_REVERSAL, SELL if sell else BUY, e.time, e.price, steps,
                              context={"level": p["price"], "level_name": name, "furthest": furthest,
-                                      "past_level_pips": past / self.ppp, "stop_price": stop})
+                                      "past_level_pips": past / self.ppp, "stop_price": stop}
+                             | ({"rejection_candle": st.pierce.start.strftime("%Y-%m-%dT%H:%M:%SZ")} if self.stp else {}))
         return None

@@ -242,7 +242,11 @@ class RejectionWatcher:
         d = self.s.levels.level_decimals          # band prices are shown like levels (exact ones are compared)
         shown = [{"what": p["what"], "price": to_decimals(p["price"], d) if p["level"] is None else p["price"],
                   "level": p["level"], "how": p.get("how", "through")} for p in pierced]
-        st.pierced = [{"what": p["what"], "price": p["price"], "how": p["how"]} for p in shown]
+        # a live STP zone's level (stp/levels.py; only in the strategies' copy while STP_AUTHORISES_ENTRIES is on)
+        # also keeps its zone's edges, for the level reversal's allowance (OD-27); every other pierce is as before
+        st.pierced = [{"what": p["what"], "price": p["price"], "how": p["how"]}
+                      | ({"zone": (p["level"].zone_low, p["level"].zone_high)} if hasattr(p["level"], "zone_low") else {})
+                      for p in shown]
         groups = {}
         for p in pierced:
             lv = p["level"]

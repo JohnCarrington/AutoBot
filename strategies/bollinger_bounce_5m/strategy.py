@@ -33,8 +33,10 @@ from typing import Any
 from strategies.common import BOLLINGER_BOUNCE_5M, BUY, SELL, Candidate
 
 
-def from_rejection(watcher: Any, events: list, version: str, strategy: str) -> list[Candidate]:
-    """A candidate for each trigger of this version, with every step of its setup as the reason."""
+def from_rejection(watcher: Any, events: list, version: str, strategy: str, rejection_context: bool = False) -> list[Candidate]:
+    """A candidate for each trigger of this version, with every step of its setup as the reason. `rejection_context`
+    (STP_AUTHORISES_ENTRIES; owner, 24 November 2026, design 9.1): the candidate also carries its rejection candle,
+    the setup's pierce candle, in context["rejection_candle"] (a context field only: no rule here uses it)."""
     out = []
     for e in events:
         if e.version != version or e.kind != "trigger":
@@ -47,9 +49,10 @@ def from_rejection(watcher: Any, events: list, version: str, strategy: str) -> l
         if version == "bounce":
             steps.append(f"reversal watch window: {'inside' if st.in_watch_window else 'outside'}; the setup "
                          f"{'counts' if st.counts else 'does not count'} (a mark for the trade manager, not a filter)")
-        out.append(Candidate(strategy, SELL if e.direction == "sell" else BUY, e.time, e.price, steps))
+        ctx = {"rejection_candle": st.pierce.start.strftime("%Y-%m-%dT%H:%M:%SZ")} if rejection_context else {}
+        out.append(Candidate(strategy, SELL if e.direction == "sell" else BUY, e.time, e.price, steps, ctx))
     return out
 
 
-def candidates(watcher: Any, events: list) -> list[Candidate]:
-    return from_rejection(watcher, events, "bounce", BOLLINGER_BOUNCE_5M)
+def candidates(watcher: Any, events: list, rejection_context: bool = False) -> list[Candidate]:
+    return from_rejection(watcher, events, "bounce", BOLLINGER_BOUNCE_5M, rejection_context)

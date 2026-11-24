@@ -96,6 +96,23 @@ class StrategyRunner:
         self.hours = MarketHours(settings.market_hours)
         self.week_open = None
         self.done = 0
+        # STP_AUTHORISES_ENTRIES (owner, 24 November 2026; OD-22, OD-26): the live STP zones are added to these
+        # strategies' level list (stp/levels.py); None while it is off, and then nothing is read or added
+        from stp.source import source_for
+        self.stp = source_for(settings)
+
+    def levels_at(self, t: datetime, memo: Any = None) -> Any:
+        """The strategies' levels for the candle starting at t: the bot's levels (levels.current.build, from `memo`,
+        this call's view of the store by default), plus the live STP zones while STP_AUTHORISES_ENTRIES is on."""
+        lv = build(self.s, memo if memo is not None else self.memo, t)
+        if self.stp is not None:
+            from stp.levels import with_stp
+            lv = with_stp(lv, self.stp.state_at(t))
+        return lv
+
+    def stp_version(self) -> Any:
+        """What changes when STP's file changes (the engine renews its levels for the forming candle then)."""
+        return None if self.stp is None else self.stp.version()
 
     def _fresh(self) -> None:
         """A new view of the candle store for this call, as the analyser takes for each of its calls."""
@@ -165,11 +182,11 @@ class StrategyRunner:
         breakout, grind, pullback, reversal = fork(self.breakout), fork(self.grind), fork(self.pullback), fork(self.reversal)
         bounce = fork(self.bounce)
         sessions = [fork(x) for x in self.sessions]
-        events = watcher.on_candle(partial, band, levels if levels is not None else build(s, self.memo, partial.start))
+        events = watcher.on_candle(partial, band, levels if levels is not None else self.levels_at(partial.start))
         cands = (breakout.on_candle(partial, None, None, fast.get(partial.start), slow.get(partial.start))
                  + grind.on_candle(partial, sg_ema.get(partial.start))
                  + pullback.on_candle(partial, fast.get(partial.start), slow.get(partial.start))
-                 + bounce.on_candle(partial) + bounce_5m_candidates(watcher, events)
+                 + bounce.on_candle(partial) + bounce_5m_candidates(watcher, events, self.stp is not None)
                  + range_candidates(watcher, events)
                  + reversal.on_candle(partial, watcher, events)
                  + [x for strat in sessions for x in _session_candle(strat, partial, fast, slow)])
@@ -210,13 +227,13 @@ class StrategyRunner:
             changes = self.tracker.changes
             change_at = {ch.time: (k, ch) for k, ch in enumerate(changes)}
             band = Band(c.start, f.middle, f.upper, f.lower) if f.upper is not None else None
-            events = self.watcher.on_candle(c, band, build(s, self.memo, c.start))
+            events = self.watcher.on_candle(c, band, self.levels_at(c.start))
             kc = change_at.get(c.start)
             since = changes[kc[0] - 1].time if kc and kc[0] > 0 else None
             cands = (self.breakout.on_candle(c, kc[1] if kc else None, since, fast.get(c.start), slow.get(c.start))
                      + self.grind.on_candle(c, sg_ema.get(c.start))
                      + self.pullback.on_candle(c, fast.get(c.start), slow.get(c.start))
-                     + self.bounce.on_candle(c) + bounce_5m_candidates(self.watcher, events)
+                     + self.bounce.on_candle(c) + bounce_5m_candidates(self.watcher, events, self.stp is not None)
                      + range_candidates(self.watcher, events)
                      + self.reversal.on_candle(c, self.watcher, events)
                      + [x for strat in self.sessions for x in _session_candle(strat, c, fast, slow)])
