@@ -518,7 +518,7 @@ def test_a_trade_ig_closed_by_itself_is_found_after_the_next_candle_and_recorded
     e, ig, clock, cs = at_2015(S, monkeypatch)
     (t,) = e.manager.trades.values()
     deal = e.sender.trades[t.reference].deal_id
-    ig.system_close(deal, 13398.7, "2026-11-04T20:22:10", "WEB")
+    ig.system_close(deal, 13398.7, "2026-11-04T20:22:10", "DEALER")
     feed(e, clock, cs[1:2])                                                 # the next candle: the regular check
     assert not t.open and t.state == "closed at IG"
     closed = [r for r in trades_rows(e) if r["event"] == "closed"]
@@ -530,7 +530,7 @@ def test_a_trade_ig_closed_by_itself_is_found_after_the_next_candle_and_recorded
 def test_after_a_restart_a_trade_ig_closed_meanwhile_is_recorded_once(S, monkeypatch):
     e, ig, clock, cs = at_2015(S, monkeypatch)
     (t,) = e.manager.trades.values()
-    ig.system_close(e.sender.trades[t.reference].deal_id, 13399.0, "2026-11-04T20:21:00", "WEB")
+    ig.system_close(e.sender.trades[t.reference].deal_id, 13399.0, "2026-11-04T20:21:00", "DEALER")
     again, *_ = make(S, monkeypatch, cs[1:], {}, trading_on=True, ig=ig, clock=clock)
     again.start(U(2026, 11, 4, 20, 22))
     closed = [r for r in trades_rows(again) if r["event"] == "closed"]

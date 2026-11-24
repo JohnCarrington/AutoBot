@@ -32,9 +32,10 @@
     closed on a failed read) is closed in the record at IG's level and alerted; a size that differs and a position
     the bot did not open are recorded and alerted, once each. The owner's 9 and 10 November 2026 closes by hand
     (IG's channel SYSTEM, not the stop or limit) were missed before this.
-  * A trade found gone at IG whose close IG shows on channel SYSTEM but not at its stop or take profit (at or beyond
-    either) was closed by the owner by hand (owner, 11 November 2026): "closed by owner" at IG's price and time, a
-    short Telegram message (not a warning), and kept apart from the bot's own exits (closed_by_owner()).
+  * A trade found gone at IG whose close IG shows on channel SYSTEM or WEB but not at its stop or take profit (at or
+    beyond either) was closed by the owner by hand (owner, 11 November 2026 for SYSTEM; 23 November 2026 for WEB):
+    "closed by owner" at IG's price and time, a short Telegram message (not a warning), and kept apart from the bot's
+    own exits (closed_by_owner()).
   * It moves a Bollinger bounce's stop when the trade manager's trail says so (owner, 15 November 2026): the
     position's stop at IG becomes the level the trail gives (beyond the last 3 finished candles).
     IG's open position is read first (GET /positions/{dealId}, VERSION 2) for its take profit, then the position is
@@ -133,13 +134,17 @@ def _iso(t: datetime) -> str:
 
 
 CLOSED_BY_OWNER = "closed by owner"
+# IG's channels for the owner's closes by hand: SYSTEM (owner, 11 November 2026: the IG demo platform labels them so)
+# and WEB (owner, 23 November 2026: four closes on IG's web platform at 18:36 UTC that day).
+OWNER_CHANNELS = ("SYSTEM", "WEB")
 
 
 def closed_by_owner(direction: str, info: dict) -> bool:
-    """The owner's rule (11 November 2026): a close IG shows on channel SYSTEM that is not at the position's stop
-    or take profit is one the owner made by hand. At the stop means at it or beyond it (a stop can fill worse); at
-    the take profit means at it or beyond it. `info` is _ig_close_of's answer (IG's own stop and limit levels)."""
-    if info.get("ig_channel") != "SYSTEM" or info.get("ig_level") is None:
+    """The owner's rule (11 November 2026; WEB added 23 November 2026): a close IG shows on channel SYSTEM or WEB
+    that is not at the position's stop or take profit is one the owner made by hand. At the stop means at it or
+    beyond it (a stop can fill worse); at the take profit means at it or beyond it. `info` is _ig_close_of's answer
+    (IG's own stop and limit levels)."""
+    if info.get("ig_channel") not in OWNER_CHANNELS or info.get("ig_level") is None:
         return False
     level, stop, limit = info["ig_level"], info.get("ig_stop_level"), info.get("ig_limit_level")
     buy = direction == "buy"
@@ -334,7 +339,8 @@ class OrderSender:
         t.status = CLOSED
         owner = closed_by_owner(t.direction, info)
         what = CLOSED_BY_OWNER if owner else "gone at IG"
-        row = {"note": "closed by the owner at IG (IG's channel SYSTEM, not at the stop or take profit)" if owner
+        row = {"note": f"closed by the owner at IG (IG's channel {info.get('ig_channel')}, not at the stop or take profit)"
+               if owner
                else why} | {k: v for k, v in info.items() if v is not None}
         self._record(what, reference=t.reference, deal_id=t.deal_id, strategy=t.strategy, **row)
         r = self._gone_result(t, {k: (str(v) if isinstance(v, Decimal) else v) for k, v in row.items()}, what)

@@ -84,8 +84,8 @@ CLOSED_AT_IG, CLOSE_NOT_DONE = "closed at IG", "close not done"
 STOP_MOVED, STOP_NOT_MOVED = "stop moved", "stop not moved"
 # Who asked for a stop move: a strategy's trail, or Johnny's emerging-trend ladder (owner, 21 November 2026).
 BY_TRAIL, BY_LADDER = "trail", "emerging ladder"
-# Live only: the owner closed it by hand at IG (IG's channel SYSTEM, not at the stop or take profit; owner,
-# 11 November 2026). Kept apart from the bot's own exits in the records, the dashboard and the summaries.
+# Live only: the owner closed it by hand at IG (IG's channel SYSTEM or WEB, not at the stop or take profit; owner,
+# 11 November 2026, WEB 23 November 2026). Kept apart from the bot's own exits in the records, the dashboard and the summaries.
 CLOSED_BY_OWNER = "closed by owner"
 GONE = ("gone at IG", CLOSED_BY_OWNER)
 BOT_CLOSES = (HALF_CLOSE, CLOSE, FORCED_CLOSE)
