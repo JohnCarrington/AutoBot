@@ -13,6 +13,7 @@ import pytest
 
 from dashboard import auth
 from dashboard.server import HOST, Dashboard, handler_for
+from tests.technical.test_orders import Over
 from tests.technical.test_trading import C, S, feed, idea, make, tick  # noqa: F401  (S: the fixture)
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -271,6 +272,33 @@ def test_the_engine_writes_the_dashboards_status(S, monkeypatch):
     assert [a["switched_on"] for a in st["strategies_allowed"] if a["name"] in sessions] == [False, False, False]
     assert "Bollinger bounce" in names                         # the hourly-pierce bounce: in every state
     assert st["price"] == {"bid": "98.0", "offer": "99.5", "time_utc": t.strftime("%Y-%m-%dT%H:%M:%SZ")}
+
+
+def allowed_names(S, monkeypatch, state, trend_only):
+    """The dashboard's "strategies allowed" names with the analyser in `state`, EMA_PULLBACK_TREND_ONLY as given."""
+    s = Over(S, switches={"ema_pullback_trend_only": trend_only})
+    e, ig, tracker, clock, quote = make(s, monkeypatch, C, {})
+    tracker.machine = SimpleNamespace(now=SimpleNamespace(state=state, direction="down", trend_type=None,
+                                                          since=C[0].start))
+    e.start(C[0].start)
+    feed(e, clock, C[:2])
+    e.on_price(tick(C[2].start + timedelta(seconds=3), 98.0))
+    st = json.loads((Path(s.dashboard.status_folder) / "GBPUSD" / "status.json").read_text())
+    return [a["name"] for a in st["strategies_allowed"]]
+
+
+def test_with_ema_pullback_trend_only_on_the_dashboard_drops_it_in_an_emerging_trend(S, monkeypatch):
+    # owner, 25 November 2026: the list matches the rule (strategies/common.py, EMA_PULLBACK_TREND_ONLY)
+    names = allowed_names(S, monkeypatch, "emerging trend", True)
+    assert "EMA pullback" not in names and "breakout" in names and "level reversal" in names
+
+
+def test_with_ema_pullback_trend_only_on_the_dashboard_still_lists_it_in_a_trend(S, monkeypatch):
+    assert "EMA pullback" in allowed_names(S, monkeypatch, "trend", True)
+
+
+def test_with_ema_pullback_trend_only_off_the_dashboard_lists_it_in_an_emerging_trend_as_before(S, monkeypatch):
+    assert "EMA pullback" in allowed_names(S, monkeypatch, "emerging trend", False)
 
 
 def test_the_status_is_written_every_few_seconds_not_every_price(S, monkeypatch):

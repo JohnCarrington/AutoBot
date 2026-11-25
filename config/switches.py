@@ -62,6 +62,19 @@
   EMA_PULLBACK_ONE_AT_A_TIME  on or off (off if left out; owner, 21 November 2026): while an EMA pullback trade is
                               open, no other EMA pullback trade opens (limits.max_open_trades_per_strategy, 1, as the
                               other strategies); setups still form and are logged; a skipped one is logged as refused
+  EMA_PULLBACK_TREND_ONLY     on or off (off if left out; owner, 25 November 2026): the EMA pullback opens only when the
+                              analyser says "trend" in the trade's direction; "emerging trend" no longer allows it
+                              (strategies/common.py, allowed)
+  EMA_PULLBACK_SLOPE_DIRECTION on or off (off if left out; owner, 25 November 2026): step 0's 3-hour slope check also
+                              checks direction: each hourly 8/13/20 EMA higher than ema_pullback.hourly_slope_candles
+                              (3) hourly candles before for a buy, lower for a sell; the size check unchanged
+                              (strategies/ema_pullback/strategy.py, HourlyTrendReader)
+  EMA_PULLBACK_RECHECK_AT_OPEN on or off (off if left out; owner, 25 November 2026): the full hourly check (step 0) is
+                              run again when the entry price is reached, not only at the touch candle; if it fails
+                              the setup is cancelled (strategies/ema_pullback/strategy.py, EmaPullback)
+  EMA_PULLBACK_NO_R3_S3       on or off (off if left out; owner, 25 November 2026): no new EMA pullback buy when the
+                              entry price is at or above the day's R3, no new sell at or below the day's S3 (the
+                              bot's daily pivot levels; strategies/entry_filters.py)
   BOUNCE_ONLY_NEAR_TIMES      on or off (off if left out): while on, a Bollinger bounce opens only within
                               bounce.near_times_within_minutes (60) of bounce.near_times (10:00, 14:00,
                               16:00 UK) in settings.toml
@@ -151,6 +164,10 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "PULLBACK_ENTRY": ("pullback_entry", _on_off),
     "EMA_PULLBACK_TRADING_HOURS": ("ema_pullback_trading_hours", _on_off),
     "EMA_PULLBACK_ONE_AT_A_TIME": ("ema_pullback_one_at_a_time", _on_off),
+    "EMA_PULLBACK_TREND_ONLY": ("ema_pullback_trend_only", _on_off),
+    "EMA_PULLBACK_SLOPE_DIRECTION": ("ema_pullback_slope_direction", _on_off),
+    "EMA_PULLBACK_RECHECK_AT_OPEN": ("ema_pullback_recheck_at_open", _on_off),
+    "EMA_PULLBACK_NO_R3_S3": ("ema_pullback_no_r3_s3", _on_off),
     "HOURLY_CONTEXT": ("hourly_context", _on_off),
     "ENTRY_NEAR_EMA8": ("entry_near_ema8", _on_off),
     "RSI_STRETCH": ("rsi_stretch", _on_off),
@@ -177,6 +194,9 @@ OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_NEAR_TIMES": "off", "PLANNER_OBSERVE": 
                             # the breakout's and Asian range breakout's pullback entry (owner, 19 November 2026): ON
                             "PULLBACK_ENTRY": "on",
                             "EMA_PULLBACK_TRADING_HOURS": "off", "EMA_PULLBACK_ONE_AT_A_TIME": "off",
+                            # the EMA pullback's trend rules (owner, 25 November 2026): all OFF
+                            "EMA_PULLBACK_TREND_ONLY": "off", "EMA_PULLBACK_SLOPE_DIRECTION": "off",
+                            "EMA_PULLBACK_RECHECK_AT_OPEN": "off", "EMA_PULLBACK_NO_R3_S3": "off",
                             # the entry filters (owner, 21 November 2026): rule 1 ON; rule 2 OFF, replaced by
                             # rule 2b (RSI_STRETCH) ON, with the slow-grind trend day (TREND_DAY_RSI_OFF) ON
                             "HOURLY_CONTEXT": "on", "ENTRY_NEAR_EMA8": "off", "RSI_STRETCH": "on",

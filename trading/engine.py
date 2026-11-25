@@ -557,8 +557,8 @@ class Trading:
 
     def status(self, now: datetime) -> dict:
         """What the dashboard shows (written to its status file)."""
-        from analyser.states import ALLOWED
-        from strategies.common import SWITCH
+        from analyser.states import ALLOWED, TREND, switch_on
+        from strategies.common import EMA_PULLBACK, SWITCH
         tick = self._last_tick
         ppp = Decimal(self.s.market.points_per_pip)
         m = getattr(self.tracker, "machine", None)
@@ -572,6 +572,8 @@ class Trading:
             if t.open and t.expected_at_ig:
                 warnings.append(f"Trade {ref}: IG's {t.expected_at_ig[0]} expected but not yet confirmed by IG")
         allowed = list(ALLOWED.get(st.state, ())) if st is not None else []
+        if st is not None and st.state != TREND and switch_on(self.s, "ema_pullback_trend_only"):
+            allowed = [a for a in allowed if a != EMA_PULLBACK]   # trend only (EMA_PULLBACK_TREND_ONLY, 25 Nov 2026)
         allowed.append("Bollinger bounce")                  # in every state (owner, 15 November 2026)
         allowed += list(SESSION_STRATEGIES)                 # in every state (owner, 16 November 2026)
         by_name = {n.lower(): n for n in SWITCH}
