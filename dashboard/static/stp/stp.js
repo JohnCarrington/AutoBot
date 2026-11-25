@@ -103,6 +103,8 @@
   // ---- overview -------------------------------------------------------------------------------------------------
   function renderOverview() {
     const o = S.ov, f = o.freshness || {}, fc = o.forecast || {};
+    const flag = $q(".stp-observe");                    // Stage A observes; Stage B authorises entries (owner, 25 Nov)
+    if (flag && o.label) { flag.textContent = o.label; flag.classList.toggle("stp-authorising", !!(o.stp_mode && o.stp_mode.authorises_entries)); }
     const meta = $q(".stp-meta"); meta.textContent = "";
     const badge = el("span", "stp-badge " + (f.state || "UNAVAILABLE"), f.label || "UNAVAILABLE"); badge.title = f.detail || "";
     add(meta, badge);
@@ -146,6 +148,9 @@
     if (!box) { box = el("div", "stp-oppbox"); const ex = $q(".stp-explainbox"); ex.parentNode.insertBefore(box, ex.nextSibling); }
     box.textContent = "";
     box.appendChild(el("h3", "", "STP opportunities (" + list.length + ")"));
+    const auth = !!(S.ov.stp_mode && S.ov.stp_mode.authorises_entries);
+    box.appendChild(el("div", "stp-note", auth ? "Stage B: Waiting and Watch & Wait opportunities authorise entries of the gated strategies in their direction."
+                                               : "Stage A: observation only. No opportunity authorises a trade."));
     if (!list.length) { box.appendChild(el("div", "stp-note", "STP is tracking no opportunity.")); return; }
     const t = el("table", "stp-table"), hr = el("tr");
     ["Id", "Trade", "Status", "Zone", "Class", "Primary", "Zone break", "4-hour", "Created"].forEach((x) => hr.appendChild(el("th", "", x)));
