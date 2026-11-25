@@ -8,7 +8,9 @@ at a live STP opportunity in its direction.
 An idea is authorised only if ALL of these hold (any failure refuses, with every reason recorded):
   1. STP_OPPORTUNITIES and STP_BIDIRECTIONAL are on (OD-24, OD-29) and ONE_SIGNAL_ONE_TRADE is on (OD-32);
   2. fresh data: STP's file was written by a tracker run no more than [analyser] out_of_date_after_minutes (10) ago,
-     and the live price (or, with none, the latest stored 5-minute candle) is no older than that (D-21 b, FC-08);
+     that run marked itself current (its "current": fresh candles and re-checked at the latest hourly candle; design
+     section 4, "fail closed ... is not current"), and the live price (or, with none, the latest stored 5-minute
+     candle) is no older than that (D-21 b, FC-08);
   3. its rejection candle (context["rejection_candle"], the setup's pierce candle) interacts with the zone of a live
      opportunity (WAITING or Watch & Wait) in its direction, by the tracker's own rule (planner/zones.py interacts,
      rejection.near_level_within_pips; D-29 A). The entry itself may be outside the zone;
@@ -62,13 +64,25 @@ def _five(store: Any, start: datetime) -> Any:
 
 
 def which_test(settings: Any, store: Any, low: Decimal, high: Decimal, since: datetime | None,
-                rejection_start: datetime) -> int:
+                rejection_start: datetime, tests: dict | None = None) -> int:
     """The D-25 test (planner/zones.py count_tests: a finished hourly candle interacting with the zone starts a test;
     one wholly clear re-arms) that contains the rejection candle: the count over the finished hourly candles before
-    the rejection candle's hour, plus one if the count is armed then. A function of the rejection candle only."""
+    the rejection candle's hour, plus one if the count is armed then. A function of the rejection candle only.
+    `tests`: the opportunity's own record of the tests the tracker counted, each hourly candle against the zone in
+    force at that hour (review, 25 November 2026); those hours are taken from it, and only the hours after it are
+    counted here, against the current zone. Without it (a file written before it existed) every hour is counted
+    against the current zone, as before."""
     hour = rejection_start.replace(minute=0, second=0, microsecond=0)
     frm = since if since is not None else hour - timedelta(days=14)
     n, armed = 0, True
+    if tests is not None:
+        for at, kind in tests.get("events", []):
+            if parse_iso(at) < hour:
+                n, armed = (n + 1, False) if kind == "test" else (n, True)
+        if tests.get("through_utc"):
+            frm = max(frm, parse_iso(tests["through_utc"]))
+            if since is None or frm > since:
+                since = frm
     for c in store.read_range("1h", frm - timedelta(hours=1), hour):
         if c.end > hour or (since is not None and c.start < since):
             continue
@@ -145,6 +159,10 @@ def authorise(settings: Any, store: Any, idea: Any, now: datetime, source: Any, 
     if age > limit:
         return refuse(f"STP not current: its tracker last ran {int(age.total_seconds() // 60)} minutes ago "
                       f"(more than {limit.seconds // 60})")
+    if state.get("current") is not True:          # the tracker's own verdict on its last run (review, 25 Nov 2026):
+        why = "; ".join(state.get("not_current_reasons") or []) or (    # stale candles, or no re-plan at the latest
+            "its data is not fresh" if state.get("data_fresh") is False else "it is not marked current")  # hourly
+        return refuse(f"STP not current: the tracker's last run says {why}")
     if tick is not None:
         if now - tick.time > limit:
             return refuse(f"stale price: the live price is from {tick.time:%H:%M:%S} UTC")
@@ -187,7 +205,7 @@ def authorise(settings: Any, store: Any, idea: Any, now: datetime, source: Any, 
         lineage = o.get("lineage") or o["id"]
         since = o.get("lineage_created_utc") or o.get("created_utc")
         n = which_test(settings, store, _d(o["entry_zone"]["low"]), _d(o["entry_zone"]["high"]),
-                        parse_iso(since) if since else None, rc_start)
+                        parse_iso(since) if since else None, rc_start, tests=o.get("tests"))
         key = f"{lineage}#t{n}"
         existing = (getattr(idea, "context", None) or {}).get("signal")
         signal = f"{existing}|{key}" if existing else key

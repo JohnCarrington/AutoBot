@@ -362,7 +362,8 @@ def _b1800():
 def _states():
     f = lambda t: t.strftime("%Y-%m-%dT%H:%M:%SZ")      # noqa: E731
     before = {"opportunities": [], "written_utc": f(T(2026, 11, 24, 17, 55, 3)), "m5_checked_until": f(T(2026, 11, 24, 17, 55)),
-              "validated_h1_end": f(T(2026, 11, 24, 17, 0)), "h4_checked_until": f(T(2026, 11, 24, 16, 0))}
+              "validated_h1_end": f(T(2026, 11, 24, 17, 0)), "h4_checked_until": f(T(2026, 11, 24, 16, 0)),
+              "current": True, "data_fresh": True, "not_current_reasons": []}     # as the tracker marks a current run
     after = dict(before, opportunities=[_b1800()], written_utc=f(PUBLISHED), m5_checked_until=f(T(2026, 11, 24, 18, 0)),
                  validated_h1_end=f(T(2026, 11, 24, 18, 0)))
     return before, after

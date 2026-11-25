@@ -19,7 +19,11 @@ own, reused; only these change:
     relied on the direction change for this);
   * at the 00:00 UK re-plan (also the week's first), an opportunity whose daily or weekly fixed levels are no longer in
     the level map is INVALIDATED "structural levels changed" (OD-13, D-21);
-  * no time expiry anywhere (H16).
+  * no time expiry anywhere (H16);
+  * review, 25 November 2026: while BROKEN the single tracker's destination check still runs on every 5-minute candle
+    (not its zone activation), so a destination reached while BROKEN ends it before any reclaim; and the tracker keeps
+    each opportunity's D-25 tests ("tests": every finished hourly candle counted once, against the zone in force at
+    that hour; a successor inherits them), which stp.authorise.which_test reads for the duplicate key.
 Statuses: WAITING and ACTIVE ("Watch & Wait") authorise; BROKEN is tracked but does not; COMPLETED, INVALIDATED and
 SUPERSEDED end it.
 
@@ -39,7 +43,7 @@ from typing import Any
 from planner.keeper import (ACTIVE, BEFORE, COMPLETED, EVENT_BASIS, INVALIDATED, LIVE, SUPERSEDED, UTC, WAITING,
                             Keeper, _d, _iso, identity, overlaps, summary)
 from planner.measure import cl, freshness, hi, lo, ppp, side_of
-from planner.zones import interacts
+from planner.zones import interacts, wholly_clear
 from prices.model import UK, parse_iso, plain, uk_short
 
 BROKEN = "BROKEN"
@@ -145,6 +149,10 @@ class OpportunityKeeper(Keeper):
         if inherit:
             rec["ever_active"] = bool(inherit.get("ever_active"))
             rec["supersedes"] = inherit["id"]
+        # the D-25 tests of the lineage, as the tracker counted them (review, 25 November 2026): a successor keeps them
+        # (design 6.1, "the successor keeps its history and test count")
+        rec["tests"] = json.loads(json.dumps(inherit["tests"])) if inherit and inherit.get("tests") else \
+            {"events": [], "through_utc": None}
         if plan.get("relation_to_h4") is not None:
             rec["relation_to_h4"] = plan["relation_to_h4"]
         self.opportunities.append(rec)
@@ -153,12 +161,22 @@ class OpportunityKeeper(Keeper):
     # ---- the checks ---------------------------------------------------------------------------------------------------
 
     def five_minute(self, c: Any, at: datetime | None = None) -> None:
-        """The single tracker's 5-minute checks, on each opportunity that authorises (a BROKEN one waits for the
-        hourly closes)."""
+        """The single tracker's 5-minute checks, on each opportunity that authorises. A BROKEN one gets the single
+        tracker's destination check only (review, 25 November 2026): a primary destination reached while BROKEN ends
+        it, COMPLETED or INVALIDATED by the same rule, so a later reclaim cannot restore an opportunity whose
+        destination was already reached. It is never activated while BROKEN (its zone test applies only to WAITING)."""
         for rec in list(self.opportunities):
             if rec["status"] in AUTHORISING:
                 with self._slot(rec):
                     Keeper.five_minute(self, c, at)
+            elif rec["status"] == BROKEN:
+                with self._slot(rec):
+                    rec["status"] = ACTIVE          # the single tracker's checks run on a live record: as ACTIVE, only
+                    try:                            # its destination rule applies (the zone test needs WAITING)
+                        Keeper.five_minute(self, c, at)
+                    finally:
+                        if rec["status"] == ACTIVE:
+                            rec["status"] = BROKEN
 
     def hourly(self, c: Any) -> None:
         side = side_of(self.s)
@@ -166,6 +184,7 @@ class OpportunityKeeper(Keeper):
         window = self.s.planner.failed_breakout_within_candles
         for rec in list(self.opportunities):
             low, high = _d(rec["entry_zone"]["low"]), _d(rec["entry_zone"]["high"])
+            self._count_test(rec, c, low, high)
             bear = rec["trade"] == "SELL"
             edge = high if bear else low
             close = cl(c, side)
@@ -208,6 +227,24 @@ class OpportunityKeeper(Keeper):
             elif (ext > edge) if bear else (ext < edge):
                 self._note(rec, c.end, "wick sweep", f"the {uk_short(c.start)} hourly candle went to {plain(ext)}, "
                            f"beyond the zone edge {plain(edge)}, and closed back at {plain(close)} (recorded only)")
+
+    def _count_test(self, rec: dict, c: Any, low: Decimal, high: Decimal) -> None:
+        """D-25 (planner/zones.py count_tests, the rule stp.authorise.which_test applies): this finished hourly candle,
+        against the zone in force now, starts a test (it interacts with the zone, the count armed) or re-arms the count
+        (wholly clear). Each candle is counted once, so a later zone change or supersession never renumbers a test
+        already counted (design section 10: the key "is a function of the rejection candle alone")."""
+        t = rec.setdefault("tests", {"events": [], "through_utc": None})
+        since = rec.get("lineage_created_utc") or rec.get("created_utc")
+        if since and c.start < parse_iso(since):
+            return
+        if t.get("through_utc") and c.end <= parse_iso(t["through_utc"]):
+            return
+        armed = not t["events"] or t["events"][-1][1] == "rearm"
+        if armed and (interacts(self.s, c, low, high, True) or interacts(self.s, c, low, high, False)):
+            t["events"].append([_iso(c.start), "test"])
+        elif not armed and wholly_clear(self.s, c, low, high):
+            t["events"].append([_iso(c.start), "rearm"])
+        t["through_utc"] = _iso(c.end)
 
     def four_hour(self, c: Any) -> None:
         """ARCH 10.2: a 4-hour close at or beyond the opportunity's own structure-break price invalidates it."""

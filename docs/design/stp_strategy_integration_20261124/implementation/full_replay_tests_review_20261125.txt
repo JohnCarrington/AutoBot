@@ -1,0 +1,6 @@
+configfile: pytest.ini
+collected 33 items / 30 deselected / 3 selected
+
+tests/functional/test_stp_integration_20261124.py ...                    [100%]
+
+================= 3 passed, 30 deselected in 868.67s (0:14:28) =================

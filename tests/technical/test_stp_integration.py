@@ -459,7 +459,8 @@ def auth_state(*os_, written=AT - timedelta(minutes=1), m5=T(2026, 11, 17, 10, 0
                h4=T(2026, 11, 17, 8, 0)):
     f = lambda t: t.strftime("%Y-%m-%dT%H:%M:%SZ")      # noqa: E731
     return {"opportunities": list(os_), "written_utc": f(written), "m5_checked_until": f(m5),
-            "validated_h1_end": f(h1), "h4_checked_until": f(h4)}
+            "validated_h1_end": f(h1), "h4_checked_until": f(h4), "current": True, "data_fresh": True,
+            "not_current_reasons": []}
 
 
 def src(st):
