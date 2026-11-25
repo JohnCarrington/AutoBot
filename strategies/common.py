@@ -88,6 +88,9 @@ ALLOWED_IN = {
     # 7 November 2026); possible reversal -> either way
     BOLLINGER_BOUNCE_5M: {TREND: "against", POSSIBLE_REVERSAL: "any"},
 }
+# EMA_PULLBACK_TREND_ONLY (owner, 25 November 2026; off if left out): while on, the EMA pullback opens only when the
+# analyser says "trend" in the trade's direction; "emerging trend" no longer allows it.
+EMA_PULLBACK_TREND_ONLY_IN = {TREND: "trend"}
 # the session strategies: every state, either way, not checked (owner, 16 November 2026: "like the bounce")
 for _name in SESSION_STRATEGIES:
     ALLOWED_IN[_name] = dict(ALLOWED_IN[BOLLINGER_BOUNCE])
@@ -380,10 +383,13 @@ def allowed(settings: Any, strategy: str, direction: str, price: Decimal, state:
     if not getattr(settings.switches, SWITCH[strategy]):
         reasons.append(f"its switch STRATEGY_{SWITCH[strategy].upper()} is off")
     ok_in = ALLOWED_IN[strategy]
+    if strategy == EMA_PULLBACK and switch_on(settings, "ema_pullback_trend_only"):
+        ok_in = EMA_PULLBACK_TREND_ONLY_IN             # "trend" only, not "emerging trend" (owner, 25 November 2026)
     if strategy in WITHOUT_HINDRANCE:
         pass                                            # not checked against the state (owner, 15 and 16 November 2026)
     elif state.state not in ok_in:
-        reasons.append(f"the analyser's state is {state.state}, which does not allow {strategy}")
+        reasons.append(f"the analyser's state is {state.state}, which does not allow {strategy}"
+                       + (" (EMA_PULLBACK_TREND_ONLY: trend only)" if ok_in is EMA_PULLBACK_TREND_ONLY_IN else ""))
     elif ok_in[state.state] in ("trend", "against"):
         want = SELL if state.direction == DOWN else BUY if state.direction == UP else None
         if ok_in[state.state] == "against":

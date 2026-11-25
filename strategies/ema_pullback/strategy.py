@@ -15,6 +15,13 @@ Sell (bid) price for every indicator. Only the rules written in 3.2:
   4. The trade opens as soon as the live price reaches the entry price.
   5. If it has not opened within setup_expires_after_minutes (20), it expires.
 
+Switches in .env (owner, 25 November 2026), each off if left out:
+  * EMA_PULLBACK_SLOPE_DIRECTION: in step 0, each hourly EMA must also be higher than hourly_slope_candles (3)
+    hourly candles before for a buy, lower for a sell; the size check is unchanged;
+  * EMA_PULLBACK_RECHECK_AT_OPEN: step 0 is run again in full when the entry price is reached (step 4), from the
+    hourly candles finished by the start of that 5-minute candle; if it is not qualified the same way, the setup is
+    cancelled (noted) and nothing opens.
+
 Choices section 3.2 does not make (the simplest, adding no rule; listed for the owner):
   * the live 8 EMA moves with the price, and price is at or below it exactly
     when it is at or below the last finished candle's 8 EMA; so a candle whose
@@ -37,6 +44,7 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 from typing import Any, Sequence
 
+from analyser.states import switch_on
 from prices.indicators import ema
 from prices.model import Candle, plain, uk_short
 from strategies.common import BUY, EMA_PULLBACK, SELL, Candidate
@@ -91,6 +99,17 @@ class HourlyTrendReader:
                f"{self.e.hourly_min_slope_pips_per_hour}); gaps {plain(gaps[0].quantize(Decimal('0.01')))} and "
                f"{plain(gaps[1].quantize(Decimal('0.01')))} pips (min {self.e.hourly_min_gap_fast_mid_pips} and "
                f"{self.e.hourly_min_gap_mid_slow_pips})")
+        if switch_on(self.s, "ema_pullback_slope_direction"):
+            # EMA_PULLBACK_SLOPE_DIRECTION (owner, 25 November 2026): each hourly EMA also higher than n hourly
+            # candles before for a buy, lower for a sell; the size check above is unchanged
+            wrong = [name for name, x, y in (("8", f, fb), ("13", m, mb), ("20", s, sb))
+                     if not (x > y if d == BUY else x < y)]
+            if wrong:
+                ok = False
+                why += (f"; EMA_PULLBACK_SLOPE_DIRECTION: the {', '.join(wrong)} EMA not "
+                        f"{'higher' if d == BUY else 'lower'} than {n} hours before")
+            else:
+                why += f"; each {'higher' if d == BUY else 'lower'} than {n} hours before"
         return HourlyTrend(d, ok, why)
 
 
@@ -131,13 +150,27 @@ class EmaPullback:
                                                f"{self.e.setup_expires_after_minutes} minutes"))
                 continue
             if self._h(c) >= st.entry if buy else self._l(c) <= st.entry:   # 4.
+                recheck = None
+                if switch_on(self.s, "ema_pullback_recheck_at_open"):
+                    # EMA_PULLBACK_RECHECK_AT_OPEN (owner, 25 November 2026): the full hourly check (step 0) again
+                    # at the open, from the hourly candles finished by the start of the candle the entry is reached
+                    # in; if it fails, the setup is cancelled
+                    recheck = self.hourly.at(c.start)
+                    if recheck.direction != d or not recheck.qualified:
+                        self.setups.remove(st)
+                        self.notes.append((c.start, d, f"{tag}: reached the entry {plain(st.entry)}, but the hourly "
+                                                       f"check at the open failed ({recheck.why}): cancelled "
+                                                       "(EMA_PULLBACK_RECHECK_AT_OPEN)"))
+                        continue
                 opened = self._o(c) >= st.entry if buy else self._o(c) <= st.entry
                 price = self._o(c) if opened else st.entry
                 self.setups.remove(st)
                 self.notes.append((c.start, d, f"{tag}: reached the entry {plain(st.entry)}: entry {plain(price)}"))
                 out.append(Candidate(EMA_PULLBACK, d, c.start, price, st.steps + [
                     f"{uk_short(c.start)}: price reached the entry {plain(st.entry)}"
-                    + (f" (the candle opened past it, at {plain(price)})" if opened else " (during this candle)")]))
+                    + (f" (the candle opened past it, at {plain(price)})" if opened else " (during this candle)")]
+                    + ([f"hourly check again at the open (EMA_PULLBACK_RECHECK_AT_OPEN): {recheck.why}"]
+                       if recheck is not None else [])))
                 continue
             if slow is not None and ((self._c(c) < slow) if buy else (self._c(c) > slow)):   # 2.
                 self.setups.remove(st)

@@ -40,7 +40,7 @@ Every result gives: the market state, the direction (up, down or none), the type
 | State | Strategies allowed |
 | --- | --- |
 | Ranging | Range trade; level reversal (3.6), either way |
-| Emerging trend | EMA pullback, breakout (3.5), in the trend's direction only. Not the slow grind (owner, 8 November 2026). Level reversal (3.6), either way |
+| Emerging trend | EMA pullback (not while `EMA_PULLBACK_TREND_ONLY` is on, 3.2), breakout (3.5), in the trend's direction only. Not the slow grind (owner, 8 November 2026). Level reversal (3.6), either way |
 | Trend | Slow grind (either type of trend, slow grind or strong push; owner, 8 November 2026), EMA pullback, breakout (3.5), in the trend's direction only; level reversal (3.6), either way |
 | Possible reversal | Level reversal (3.6), either way |
 | Consolidation | None (not even the level reversal). Watch and wait for a break |
@@ -147,6 +147,12 @@ Price moves in a staircase: it pauses rather than bouncing back to the middle of
 
 EMAs: 8, 13 and 21 on the 5-minute chart. No fanning rule.
 
+**The trend rules** (owner, 25 November 2026), each behind its own switch in `.env`, off if left out (`docs/SETTINGS.md`):
+- `EMA_PULLBACK_TREND_ONLY`: only when the analyser says `trend` in the trade's direction; `emerging trend` no longer allows it (2.2).
+- `EMA_PULLBACK_SLOPE_DIRECTION`: step 0's 3-hour slope must also point the trade's way: each hourly EMA (8/13/20) higher than 3 hours before for a buy, lower for a sell. The size check stays as it is.
+- `EMA_PULLBACK_RECHECK_AT_OPEN`: step 0 is run again in full when the entry price is reached (step 4), not only at the touch candle; if it fails, the setup is cancelled.
+- `EMA_PULLBACK_NO_R3_S3`: no new buy when the entry price is at or above the day's R3, no new sell at or below the day's S3 (the bot's daily pivot levels). Checked with the entry filters (3.10).
+
 ### 3.3 Bollinger band bounce (sell) (owner, 15 November 2026)
 
 The bounce off the **hourly** Bollinger band, entered on the 5-minute chart. It replaced the earlier bounce (the 5-minute band or a level, the half close at the opposite band, the break-even, the close on a rejection at a level and the pace and target rule all went, owner, 15 November 2026). `strategies/bollinger_bounce/strategy.py`.
@@ -242,6 +248,8 @@ The rules in one module, `strategies/entry_filters.py`, checked once for every t
 **Rule 3's two changes** (owner, 24 November 2026), each behind its own switch, both on if left out. `COUNTER_TREND_EMERGING`: rule 3 also applies when the analyser's state is `emerging trend` (in its direction), not only `trend`. `COUNTER_TREND_HOURLY_CONFIRMED`: if the hourly histogram is on the bounce's side of zero because it never went to the trend's side, that is not tiring: the hourly has not confirmed the trend yet. A cross past zero counts as tiring only when the histogram was on the trend's side first, at an hourly candle since the analyser's current state began (the owner's answer); shrinking counts only while the histogram is on the trend's side (the owner's answer). The 5-minute zero-cross is unchanged. Rule 3 does not use the slow-grind trend day (the owner's answer: no link yet). The idea now carries when the analyser's state began, for this look-back.
 
 **Johnny's slow-grind trend day** (switch `TREND_DAY_RSI_OFF`, on if left out; owner, 21 November 2026; not the bot's own trend-day check in 2.4). It starts the first time a slow grind trade is in profit (more than 0 pips at the price IG would close it) at any moment from 06:00 up to 09:00 UK, in that trade's direction, and lasts until 20:30 UK. A slow grind trade the other way also in profit in that window cancels it for the rest of the day. On a trend day rule 2b does not apply to trades in the trend's direction; trades against it are still checked; rule 1 is unchanged. Live it is checked on every price, in a replay on the 5-minute candles. Its start (time, direction, the slow grind trade) and any cancel are recorded and shown on the dashboard; after a restart the day's record is read back.
+
+**The EMA pullback's R3/S3 rule** (switch `EMA_PULLBACK_NO_R3_S3`, off if left out; owner, 25 November 2026). The EMA pullback only: no buy when its entry price is at or above the day's R3, no sell when it is at or below the day's S3 (the bot's daily pivot levels, `levels/current.py`). Refused as rule "EMA pullback R3/S3"; if the levels have no R3 or S3, not checked (recorded).
 
 ## 4. Trade management
 

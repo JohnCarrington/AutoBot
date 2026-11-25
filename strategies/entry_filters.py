@@ -55,6 +55,10 @@ RULE 3. COUNTER-TREND TIRING (switch COUNTER_TREND_TIRING, on if left out; owner
     is not known, only the hourly candle before the last finished one is looked at. Everything else unchanged,
     including the 5-minute zero-cross. The slow-grind trend day is not used by rule 3 (the owner's answer: no link yet).
 
+EMA PULLBACK R3/S3 (switch EMA_PULLBACK_NO_R3_S3, off if left out; owner, 25 November 2026). The EMA pullback only: no
+  BUY when the entry price is at or above the day's R3, no SELL when it is at or below the day's S3, from the bot's
+  daily pivot levels (levels/current.py). No R3 (or S3) in the levels: not checked (recorded), as with the other rules.
+
 THE SLOW-GRIND TREND DAY (switch TREND_DAY_RSI_OFF, on if left out; owner, 21 November 2026). Johnny's trend day, not
 the bot's own trend-day check (analyser/trend_day.py). It starts the first time a slow grind trade is in profit (more
 than 0 pips at the price IG would close it: the sell price for a buy, the buy price for a sell) at any moment from
@@ -80,13 +84,13 @@ from decimal import Decimal
 from typing import Any
 
 from analyser.indicators import last_candles
-from analyser.states import EMERGING, TREND
+from analyser.states import EMERGING, TREND, switch_on
 from levels.current import build as build_levels
-from levels.rules import PIVOT
+from levels.rules import PIVOT, R3, S3
 from prices.indicators import ema, macd, needs_macd, rsi
 from prices.model import plain
-from strategies.common import (ASIAN_RANGE_BREAKOUT, BOLLINGER_BOUNCE, BOLLINGER_BOUNCE_5M, BREAKOUT, LEVEL_REVERSAL,
-                               NEW_YORK_OPEN_REVERSAL, SESSION_SWEEP, SLOW_GRIND)
+from strategies.common import (ASIAN_RANGE_BREAKOUT, BOLLINGER_BOUNCE, BOLLINGER_BOUNCE_5M, BREAKOUT, EMA_PULLBACK,
+                               LEVEL_REVERSAL, NEW_YORK_OPEN_REVERSAL, SESSION_SWEEP, SLOW_GRIND)
 
 HOURLY_CONTEXT = "hourly context"
 HOURLY_EXEMPT = (BREAKOUT, ASIAN_RANGE_BREAKOUT)                                   # owner, 21 November 2026
@@ -97,6 +101,7 @@ RSI_EXEMPT = (SLOW_GRIND, BREAKOUT, ASIAN_RANGE_BREAKOUT, SESSION_SWEEP)        
 COUNTER_TREND_TIRING = "counter-trend tiring"
 COUNTER_TREND_STRATEGIES = (BOLLINGER_BOUNCE, BOLLINGER_BOUNCE_5M, LEVEL_REVERSAL, SESSION_SWEEP,
                             NEW_YORK_OPEN_REVERSAL)                                 # owner, 23 November 2026
+EMA_PULLBACK_NO_R3_S3 = "EMA pullback R3/S3"                                      # owner, 25 November 2026
 TREND_DAY_STARTED, TREND_DAY_CANCELLED = "trend day started", "trend day cancelled"
 DOWN, UP = "down", "up"
 
@@ -381,6 +386,24 @@ def check(settings: Any, store: Any, idea: Any, trend: str | None = None) -> Ver
                             "macd_signal": f"{last.signal:.2f}",
                             "macd_candle_before": f"{before.candle_utc:%Y-%m-%dT%H:%MZ}",
                             "macd_histogram_before": f"{hb:.2f}"}, checked)
+
+    if idea.strategy == EMA_PULLBACK and switch_on(settings, "ema_pullback_no_r3_s3"):
+        # EMA_PULLBACK_NO_R3_S3 (owner, 25 November 2026): no EMA pullback buy at or above the day's R3, no sell at or
+        # below the day's S3 (the bot's daily pivot levels, levels/current.py), judged at the entry price
+        name = R3 if buy else S3
+        level = next((lv.price for lv in build_levels(settings, store, at).levels if lv.type == name), None)
+        if level is None:
+            checked.append(f"EMA pullback R3/S3: no {name} in the bot's levels: not checked")
+        else:
+            past = price >= level if buy else price <= level
+            where = f"{'above' if price > level else 'below' if price < level else 'at'} the day's {name} {plain(level)}"
+            line = f"the {idea.direction} entry {plain(price)} is {abs(price - level) / ppp:.1f} pips {where}"
+            if past:
+                return Verdict(False, EMA_PULLBACK_NO_R3_S3, f"no EMA pullback {idea.direction.upper()} at or "
+                               f"{'above' if buy else 'below'} the day's {name}: {line}: refused", {
+                                   "entry_price": str(price), "level": name, "level_price": str(level),
+                                   "pips_from_level": f"{(price - level) / ppp:.1f}"}, checked)
+            checked.append(f"EMA pullback R3/S3: {line}: allowed")
     return Verdict(True, checked=checked)
 
 
