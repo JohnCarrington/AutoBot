@@ -11,6 +11,10 @@
     show: {past: true}, placed: [], hoverItems: [],
     hist: {page: 1, size: 15, q: "", sort: "created", order: "desc", rows: [], total: 0, pages: 1},
     timer: null, loadingMore: false, root: null,
+    // review: true only after the owner chose a past recommendation in the history table (historical review);
+    // autoId: the recommendation the page chose itself (the live one, or the newest past one shown quietly);
+    // histCandles: the chart holds a historical review's candle range (owner, 25 November 2026)
+    review: false, autoId: null, histCandles: false,
   };
   // The chart always opens on H1 in the TRADE PLAN view (owner's brief, 18 November 2026); a timeframe chosen is kept
   // for the rest of the visit only.
@@ -278,8 +282,10 @@
     return best;
   }
 
-  // historical review: a selected recommendation that is not the live one (the live one is drawn as current)
-  function isHist() { return !!(S.selected && S.detail && !(S.ov && S.ov.recommendation && S.ov.recommendation.id === S.selected)); }
+  // historical review: only a past recommendation the owner chose in the history table (owner, 25 November 2026).
+  // The page's own choice (the live recommendation) never turns into a historical review when it ends or is
+  // replaced: the chart follows the current market and the live STP recommendation by default.
+  function isHist() { return !!(S.review && S.selected && S.detail && !(S.ov && S.ov.recommendation && S.ov.recommendation.id === S.selected)); }
   // what to draw: the live recommendation (or the selected historical one) and the latest analysis's levels
   function activePlan() {
     if (isHist()) { const c = S.detail.at_creation.card; return c && c.plan ? c.plan : null; }
@@ -560,26 +566,47 @@
     add(two, a, b); box.appendChild(two);
   }
 
-  async function select(id, scroll) {
-    S.selected = id;
-    try { S.detail = await get("recommendation?id=" + encodeURIComponent(id)); }
-    catch (e) { S.detail = null; $q(".stp-lifebox").textContent = ""; $q(".stp-lifebox").appendChild(el("div", "stp-err", "Could not load " + id + ": " + e.message)); return; }
+  // explicit: the owner chose it in the history table (a past one opens a historical review); otherwise the page
+  // chose it itself (the live recommendation), which never becomes a historical review
+  async function select(id, scroll, explicit) {
+    const live = !!(S.ov && S.ov.recommendation && S.ov.recommendation.id === id);
+    S.selected = id; S.review = !!explicit && !live;
+    if (!explicit) S.autoId = id;
+    let d;
+    try { d = await get("recommendation?id=" + encodeURIComponent(id)); }
+    catch (e) { if (S.selected !== id) return; S.detail = null; $q(".stp-lifebox").textContent = ""; $q(".stp-lifebox").appendChild(el("div", "stp-err", "Could not load " + id + ": " + e.message)); return; }
+    if (S.selected !== id) return;                       // a newer choice was made meanwhile
+    S.detail = d;
     renderLifecycle(); renderHistoryTable();
-    const live = S.ov && S.ov.recommendation && S.ov.recommendation.id === id;
-    if (live) { clearHistorical(false); return; }
+    if (!S.review) { clearHistorical(false); return; }
     showHistoricalOnChart();
     if (scroll) $q(".stp-chartcard").scrollIntoView({behavior: "smooth", block: "start"});
   }
   async function selectQuiet(id) {   // the lifecycle panel shows the newest one; the chart stays on the current view
-    S.selected = null;
-    try { S.detail = await get("recommendation?id=" + encodeURIComponent(id)); } catch (e) { S.detail = null; }
-    renderLifecycle();
+    S.selected = null; S.review = false; S.autoId = id;
+    let d = null; try { d = await get("recommendation?id=" + encodeURIComponent(id)); } catch (e) { d = null; }
+    if (S.review || S.autoId !== id) return;
+    S.detail = d;
+    renderLifecycle(); renderHistoryTable();
+    clearHistorical(false);
+  }
+  // the default view follows the live STP recommendation (owner, 25 November 2026): when it ends, is replaced or a
+  // new one appears, the page's own choice moves with it; a historical review the owner chose stays until "Back to
+  // current"
+  function followLive() {
+    if (S.review) return;
+    const live = S.ov && S.ov.recommendation;
+    const rows = S.hist.rows || [];
+    const newest = rows.length ? rows.slice().sort((a, b) => (b.created_utc || "").localeCompare(a.created_utc || ""))[0] : null;
+    const want = live ? live.id : (newest ? newest.id : null);
+    if (want !== S.autoId || S.selected !== (live ? live.id : null)) defaultSelection();
   }
   async function showHistoricalOnChart() {
     const st = S.detail.stages || {};
     const end = st.completed || st.invalidated || st.superseded;
     const span = {"4h": 24, "1h": 30, "5m": 40}[S.tf] * {"4h": 4 * 3600, "1h": 3600, "5m": 300}[S.tf] * 1000;
     const endAt = end ? new Date(Math.min(Date.now(), new Date(end).getTime() + span)).toISOString().replace(/\.\d{3}Z$/, "Z") : null;
+    S.histCandles = true;
     const slot = $q(".stp-histslot"); slot.textContent = "";
     const bn = el("div", "stp-histbanner"); bn.appendChild(el("span", "", "Historical review: " + S.detail.id + " — original plan as issued; candles after creation are what happened afterwards."));
     const back = el("button", "stp-tog", "Back to current"); back.type = "button"; back.addEventListener("click", () => clearHistorical(true)); bn.appendChild(back);
@@ -590,9 +617,10 @@
     if (i0 >= 0) S.chart.timeScale().setVisibleLogicalRange({from: Math.max(0, i0 - 28), to: S.candles.length + 4});
   }
   function clearHistorical(reload) {
-    const was = isHist();
+    const was = S.histCandles;
+    S.histCandles = false;
     $q(".stp-histslot").textContent = "";
-    if (reload) { S.selected = null; S.detail = null; renderLifecycle(); renderHistoryTable(); defaultSelection(); }
+    if (reload) { S.review = false; S.selected = null; S.detail = null; S.autoId = null; renderLifecycle(); renderHistoryTable(); defaultSelection(); }
     if (was || reload) loadCandles().then(fitRecent); else drawOverlays();
   }
 
@@ -628,7 +656,7 @@
           el("td", "hide-sm", r.opportunity || "–"), el("td", "", r.zone || "–"), el("td", "hide-sm", r.primary || "–"));
       const s = el("td"); s.appendChild(el("span", "stp-pill st-" + r.status, r.status_label + (r.live ? " · live" : ""))); tr.appendChild(s);
       add(tr, el("td", "hide-sm", r.outcome || "–"), el("td", "reason hide-sm", r.reason || ""));
-      tr.addEventListener("click", () => select(r.id, true));
+      tr.addEventListener("click", () => select(r.id, true, true));
       tb.appendChild(tr);
     });
     t.appendChild(tb);
@@ -649,9 +677,9 @@
   }
   function defaultSelection() {
     const live = S.ov && S.ov.recommendation;
-    if (live) select(live.id, false);
+    if (live) select(live.id, false, false);
     else if (S.hist.rows.length) { const newest = S.hist.rows.slice().sort((a, b) => (b.created_utc || "").localeCompare(a.created_utc || ""))[0]; selectQuiet(newest.id); }
-    else renderLifecycle();
+    else { S.selected = null; S.detail = null; S.autoId = null; renderLifecycle(); renderHistoryTable(); }
   }
 
   // ---- evaluation ---------------------------------------------------------------------------------------------------
@@ -727,11 +755,13 @@
       defaultSelection();
       loadEvaluation();
       if (S.chart) { await loadCandles(); fitRecent(); }
-    } else if (!isHist()) {
+    } else {
+      await loadHistory();
+      if (S.review) return;                              // a chosen historical review keeps its candles and plan
+      followLive();
       const rng = S.chart && S.chart.timeScale().getVisibleLogicalRange();
       const n = S.candles.length;
       if (S.chart && await loadCandles() && rng) { const dn = S.candles.length - n; S.chart.timeScale().setVisibleLogicalRange({from: rng.from + dn, to: rng.to + dn}); }
-      loadHistory();
     }
   }
 
