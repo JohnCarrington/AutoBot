@@ -1,7 +1,8 @@
 # Stage B: activation and rollback (STP authorises entries on IG DEMO)
 
-Prepared 25 November 2026. **Not activated.** Stage B needs the owner's explicit approval. It changes one switch;
-no code is deployed with it (the code is already in production: deploy-23nov at this commit's integration SHA).
+Prepared 25 November 2026. **Not activated.** Stage B needs the owner's explicit approval. It brings production from
+fc4db27 (Stage A) to the tip of stp-integration/wp8-review (the SHA in the hand-over; only the dashboard's Stage A/B
+label, tests and these documents change: no trading, strategy or planner code) and changes one switch.
 
 What Stage B does: the hourly Bollinger bounce, the Bollinger bounce 5m and the level reversal (stp_authorisation.strategies)
 open only when their rejection candle reached a live STP opportunity in their direction (stp/authorise.py); for those
@@ -22,6 +23,8 @@ Open trades: activation is safe with trades open (the restart takes them over, a
 prefer to activate with none open. Pending submissions must be 0.
 
 ## 2. Activate (the owner)
+    cd /opt/autobot && git fetch origin && git status --short | grep -v '^??'     # must print nothing
+    git merge --ff-only origin/stp-integration/wp8-review && git log --oneline -1  # the hand-over SHA
     cp -p /opt/autobot/.env /home/autobot/env-backups/env.$(date -u +%Y-%m-%d_%H%M%S)_pre-stage-b
     sed -i 's/^STP_AUTHORISES_ENTRIES=off$/STP_AUTHORISES_ENTRIES=on/' /opt/autobot/.env
     grep -n '^STP_' /opt/autobot/.env            # STP_OPPORTUNITIES=on, STP_BIDIRECTIONAL=on, STP_AUTHORISES_ENTRIES=on
@@ -35,7 +38,7 @@ The dashboard's STP tab and card now say "STAGE B — STP AUTHORISES ENTRIES: BO
 LEVEL REVERSAL" (blue) instead of "STAGE A — OBSERVE ONLY ..." (amber); Waiting and Watch & Wait opportunities show as
 authorising. Each gated idea then leaves an "STP authorised" or "STP refused" line in data/records/GBPUSD/decisions.jsonl.
 
-## 4. Rollback to Stage A (the owner; no code change)
+## 4. Rollback to Stage A (the owner; no code change needed: the newer code with the switch off is Stage A)
     cp -p /opt/autobot/.env /home/autobot/env-backups/env.$(date -u +%Y-%m-%d_%H%M%S)_stage-b
     sed -i 's/^STP_AUTHORISES_ENTRIES=on$/STP_AUTHORISES_ENTRIES=off/' /opt/autobot/.env
     sudo systemctl restart autobot-prices.service
