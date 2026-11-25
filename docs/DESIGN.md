@@ -154,6 +154,7 @@ EMAs: 8, 13 and 21 on the 5-minute chart. No fanning rule.
 - `EMA_PULLBACK_SLOPE_DIRECTION`: step 0's 3-hour slope must also point the trade's way: each hourly EMA (8/13/20) higher than 3 hours before for a buy, lower for a sell. The size check stays as it is.
 - `EMA_PULLBACK_RECHECK_AT_OPEN`: step 0 is run again in full when the entry price is reached (step 4), not only at the touch candle; if it fails, the setup is cancelled.
 - `EMA_PULLBACK_ENTRY_PULLBACK_CANDLE`: in place of step 3, the entry is when a later candle trades beyond the touch candle: below its low for a sell, above its high for a buy. The expiry, the 21 EMA cancel, the stop and the take profit are unchanged.
+- `EMA_PULLBACK_NO_HOURLY_GAP_MIN`: step 0 does not check the two minimum gaps between the hourly EMAs (161's values); the order, the 1-hour direction and the 3-hour slope are checked as before.
 - `EMA_PULLBACK_NO_R3_S3`: no new buy when the entry price is at or above the day's R3, no new sell at or below the day's S3 (the bot's daily pivot levels). Checked with the entry filters (3.10).
 
 ### 3.3 Bollinger band bounce (sell) (owner, 15 November 2026)

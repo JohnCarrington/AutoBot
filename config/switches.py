@@ -80,6 +80,10 @@
                               from a breakout is cancelled only by one close back past the 5-minute 100 EMA (above it
                               for a down trend, below it for an up trend), not by 2 closes back inside the Bollinger
                               bands; the level-rejection cancel is unchanged (analyser/states.py)
+  EMA_PULLBACK_NO_HOURLY_GAP_MIN on or off (off if left out; owner, 25 November 2026): the EMA pullback's hourly
+                              check (step 0) ignores the minimum gaps between the hourly EMAs (ema_pullback.
+                              hourly_min_gap_fast_mid_pips, hourly_min_gap_mid_slow_pips); order, 1-hour direction and
+                              3-hour slope unchanged (strategies/ema_pullback/strategy.py)
   EMA_PULLBACK_NO_R3_S3       on or off (off if left out; owner, 25 November 2026): no new EMA pullback buy when the
                               entry price is at or above the day's R3, no new sell at or below the day's S3 (the
                               bot's daily pivot levels; strategies/entry_filters.py)
@@ -178,6 +182,7 @@ SWITCHES: dict[str, tuple[str, Callable[[str], Any]]] = {
     "EMA_PULLBACK_NO_R3_S3": ("ema_pullback_no_r3_s3", _on_off),
     "EMA_PULLBACK_ENTRY_PULLBACK_CANDLE": ("ema_pullback_entry_pullback_candle", _on_off),
     "ANALYSER_TREND_HOLDS_TO_100EMA": ("analyser_trend_holds_to_100ema", _on_off),
+    "EMA_PULLBACK_NO_HOURLY_GAP_MIN": ("ema_pullback_no_hourly_gap_min", _on_off),
     "HOURLY_CONTEXT": ("hourly_context", _on_off),
     "ENTRY_NEAR_EMA8": ("entry_near_ema8", _on_off),
     "RSI_STRETCH": ("rsi_stretch", _on_off),
@@ -210,6 +215,8 @@ OPTIONAL: dict[str, str] = {"BOUNCE_ONLY_NEAR_TIMES": "off", "PLANNER_OBSERVE": 
                             # the EMA pullback's entry and the breakout emerging trend's cancel (owner, 25 November
                             # 2026): both OFF
                             "EMA_PULLBACK_ENTRY_PULLBACK_CANDLE": "off", "ANALYSER_TREND_HOLDS_TO_100EMA": "off",
+                            # the EMA pullback's hourly gap minimums not checked (owner, 25 November 2026): OFF
+                            "EMA_PULLBACK_NO_HOURLY_GAP_MIN": "off",
                             # the entry filters (owner, 21 November 2026): rule 1 ON; rule 2 OFF, replaced by
                             # rule 2b (RSI_STRETCH) ON, with the slow-grind trend day (TREND_DAY_RSI_OFF) ON
                             "HOURLY_CONTEXT": "on", "ENTRY_NEAR_EMA8": "off", "RSI_STRETCH": "on",

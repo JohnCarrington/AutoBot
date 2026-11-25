@@ -16,6 +16,9 @@ Sell (bid) price for every indicator. Only the rules written in 3.2:
   5. If it has not opened within setup_expires_after_minutes (20), it expires.
 
 Switches in .env (owner, 25 November 2026), each off if left out:
+  * EMA_PULLBACK_NO_HOURLY_GAP_MIN: step 0 does not check the two minimum gaps between the hourly EMAs
+    (hourly_min_gap_fast_mid_pips, hourly_min_gap_mid_slow_pips); the order, the 1-hour direction and the 3-hour
+    slope are checked as before;
   * EMA_PULLBACK_ENTRY_PULLBACK_CANDLE: in place of step 3, the entry is when a later candle trades beyond the touch
     candle itself: above the touch candle's high for a buy, below its low for a sell (a candle opening past it
     enters at its open). The expiry (5), the 21 EMA cancel (2), the stop and the take profit are unchanged;
@@ -95,13 +98,16 @@ class HourlyTrendReader:
                                             f"20 {plain(s.quantize(Decimal('0.1')))})")
         slopes = [abs(x - y) / n / self.ppp for x, y in ((f, fb), (m, mb), (s, sb))]
         gaps = (abs(f - m) / self.ppp, abs(m - s) / self.ppp)
+        no_gap_min = switch_on(self.s, "ema_pullback_no_hourly_gap_min")   # owner, 25 November 2026
         ok = (min(slopes) >= self.e.hourly_min_slope_pips_per_hour
-              and gaps[0] >= self.e.hourly_min_gap_fast_mid_pips and gaps[1] >= self.e.hourly_min_gap_mid_slow_pips)
+              and (no_gap_min or (gaps[0] >= self.e.hourly_min_gap_fast_mid_pips
+                                  and gaps[1] >= self.e.hourly_min_gap_mid_slow_pips)))
         why = (f"hourly 8/13/20 EMAs in order, {'rising' if d == BUY else 'falling'}; slopes "
                + ", ".join(plain(x.quantize(Decimal('0.01'))) for x in slopes) + " pips/hour (min "
                f"{self.e.hourly_min_slope_pips_per_hour}); gaps {plain(gaps[0].quantize(Decimal('0.01')))} and "
-               f"{plain(gaps[1].quantize(Decimal('0.01')))} pips (min {self.e.hourly_min_gap_fast_mid_pips} and "
-               f"{self.e.hourly_min_gap_mid_slow_pips})")
+               f"{plain(gaps[1].quantize(Decimal('0.01')))} pips "
+               + ("(not checked: EMA_PULLBACK_NO_HOURLY_GAP_MIN)" if no_gap_min else
+                  f"(min {self.e.hourly_min_gap_fast_mid_pips} and {self.e.hourly_min_gap_mid_slow_pips})"))
         if switch_on(self.s, "ema_pullback_slope_direction"):
             # EMA_PULLBACK_SLOPE_DIRECTION (owner, 25 November 2026): each hourly EMA also higher than n hourly
             # candles before for a buy, lower for a sell; the size check above is unchanged
