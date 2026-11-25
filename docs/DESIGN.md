@@ -84,6 +84,8 @@ Price pushes into a strong level, such as the daily pivot, is rejected, and step
 
 It becomes clear when the first bounce fails under the EMAs and middle band and price makes a new low on the lower band. Example: just before midnight on 5 November 2026, the rejection at the daily pivot.
 
+**How an emerging trend is cancelled** (owner, 7 November 2026; `docs/ANALYSER.md`): one that started from a rejection at a level, by 2 closes in a row back beyond that level; one that started from a breakout, by 2 closes in a row back inside the Bollinger bands. While `ANALYSER_TREND_HOLDS_TO_100EMA` is on (owner, 25 November 2026; off if left out), one that started from a breakout is instead cancelled only by one close back past the 5-minute 100 EMA (above it for a down trend, below it for an up trend); the level cancel and every other rule are unchanged.
+
 **Strong push** (for up; down is the mirror image): candles mostly green, closing higher one after another with hardly any pauses; price riding along or just outside the upper band; the bands opening up wide; the 7, 13 and 21 EMAs fanning wide apart and pointing steeply up; price pulling away from the 100 EMA. In a slow grind the bands slope but stay fairly even and the EMAs stay close together.
 
 ### 2.6 What points to a possible reversal
@@ -151,6 +153,7 @@ EMAs: 8, 13 and 21 on the 5-minute chart. No fanning rule.
 - `EMA_PULLBACK_TREND_ONLY`: only when the analyser says `trend` in the trade's direction; `emerging trend` no longer allows it (2.2).
 - `EMA_PULLBACK_SLOPE_DIRECTION`: step 0's 3-hour slope must also point the trade's way: each hourly EMA (8/13/20) higher than 3 hours before for a buy, lower for a sell. The size check stays as it is.
 - `EMA_PULLBACK_RECHECK_AT_OPEN`: step 0 is run again in full when the entry price is reached (step 4), not only at the touch candle; if it fails, the setup is cancelled.
+- `EMA_PULLBACK_ENTRY_PULLBACK_CANDLE`: in place of step 3, the entry is when a later candle trades beyond the touch candle: below its low for a sell, above its high for a buy. The expiry, the 21 EMA cancel, the stop and the take profit are unchanged.
 - `EMA_PULLBACK_NO_R3_S3`: no new buy when the entry price is at or above the day's R3, no new sell at or below the day's S3 (the bot's daily pivot levels). Checked with the entry filters (3.10).
 
 ### 3.3 Bollinger band bounce (sell) (owner, 15 November 2026)

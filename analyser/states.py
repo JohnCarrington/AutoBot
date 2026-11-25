@@ -41,7 +41,11 @@ this candle happen at once (they are proof in the price itself):
     (the owner's answers). Emerging trends are unchanged.
 An emerging trend is cancelled only by persistence_candles closes in a row back
 beyond the level it was rejected at (if it started from a level rejection), or
-back inside the Bollinger bands (if it started from a breakout).
+back inside the Bollinger bands (if it started from a breakout). While
+ANALYSER_TREND_HOLDS_TO_100EMA is on (owner, 25 November 2026; off if left out),
+one from a breakout is instead cancelled only by one close back past the
+5-minute 100 EMA (above it for a down trend, below it for an up trend); the
+level-rejection cancel is unchanged.
 Changes that depend on a CONDITION (ranging, consolidation, a trend ending
 beyond the 100 EMA) need it to hold for persistence_candles candles in a row.
 Evidence fades: an emerging trend, trend or possible reversal with nothing new
@@ -453,15 +457,26 @@ class StateMachine:
         if kind == "level":
             back = f.c > level if d == DOWN else f.c < level
             how = f"back {'above' if d == DOWN else 'below'} the {what} {self._p(level)} it was rejected at"
+            need = self.m.persistence_candles
+        elif switch_on(self.s, "analyser_trend_holds_to_100ema"):
+            # ANALYSER_TREND_HOLDS_TO_100EMA (owner, 25 November 2026): from a breakout, cancelled only by one close
+            # back past the 5-minute 100 EMA (above it for a down trend, below it for an up trend), not by closes
+            # back inside the Bollinger bands
+            back = f.ema100 is not None and (f.c > f.ema100 if d == DOWN else f.c < f.ema100)
+            how = (f"back {'above' if d == DOWN else 'below'} the 100 EMA "
+                   f"{'' if f.ema100 is None else self._p(f.ema100)} after the breakout")
+            need = 1
         else:
             back = f.lower is not None and f.lower < f.c < f.upper
             how = "back inside the Bollinger bands after the breakout"
+            need = self.m.persistence_candles
         self.back_count = self.back_count + 1 if back else 0
-        if self.back_count < self.m.persistence_candles:
+        if self.back_count < need:
             return None
         state, why = self.base(f)
         return self._change(f, state, NONE, None,
-                            f"the emerging {d} trend was cancelled: {self.back_count} closes in a row {how} "
+                            f"the emerging {d} trend was cancelled: "
+                            + ("a close" if need == 1 else f"{self.back_count} closes in a row") + f" {how} "
                             f"(last {self._p(f.c)})", [why])
 
     def _start_emerging(self, f: Features, d: str, reason: str, setup: Any) -> StateChange:
@@ -478,6 +493,10 @@ class StateMachine:
             self.origin = ("level", what, level)
             ev.append(f"rejected at the {what} {self._p(level)}: cancelled only by {self.m.persistence_candles} "
                       f"closes in a row back {'above' if d == DOWN else 'below'} it")
+        elif switch_on(self.s, "analyser_trend_holds_to_100ema"):
+            self.origin = ("breakout", None, None)
+            ev.append(f"a breakout: cancelled only by a close back {'above' if d == DOWN else 'below'} the 100 EMA "
+                      "(ANALYSER_TREND_HOLDS_TO_100EMA)")
         else:
             self.origin = ("breakout", None, None)
             ev.append(f"a breakout: cancelled only by {self.m.persistence_candles} closes in a row back inside "

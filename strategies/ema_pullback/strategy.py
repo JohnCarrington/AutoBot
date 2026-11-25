@@ -16,6 +16,9 @@ Sell (bid) price for every indicator. Only the rules written in 3.2:
   5. If it has not opened within setup_expires_after_minutes (20), it expires.
 
 Switches in .env (owner, 25 November 2026), each off if left out:
+  * EMA_PULLBACK_ENTRY_PULLBACK_CANDLE: in place of step 3, the entry is when a later candle trades beyond the touch
+    candle itself: above the touch candle's high for a buy, below its low for a sell (a candle opening past it
+    enters at its open). The expiry (5), the 21 EMA cancel (2), the stop and the take profit are unchanged;
   * EMA_PULLBACK_SLOPE_DIRECTION: in step 0, each hourly EMA must also be higher than hourly_slope_candles (3)
     hourly candles before for a buy, lower for a sell; the size check is unchanged;
   * EMA_PULLBACK_RECHECK_AT_OPEN: step 0 is run again in full when the entry price is reached (step 4), from the
@@ -119,6 +122,7 @@ class _Setup:
     touch: Candle
     entry: Decimal
     steps: list = field(default_factory=list)
+    beyond: bool = False        # EMA_PULLBACK_ENTRY_PULLBACK_CANDLE: price must trade beyond the entry, not just reach it
 
 
 class EmaPullback:
@@ -149,7 +153,11 @@ class EmaPullback:
                 self.notes.append((c.start, d, f"{tag}: expired, {plain(st.entry)} not reached within "
                                                f"{self.e.setup_expires_after_minutes} minutes"))
                 continue
-            if self._h(c) >= st.entry if buy else self._l(c) <= st.entry:   # 4.
+            if st.beyond:                                                   # 4. (past the touch candle)
+                reached = self._h(c) > st.entry if buy else self._l(c) < st.entry
+            else:                                                           # 4.
+                reached = self._h(c) >= st.entry if buy else self._l(c) <= st.entry
+            if reached:
                 recheck = None
                 if switch_on(self.s, "ema_pullback_recheck_at_open"):
                     # EMA_PULLBACK_RECHECK_AT_OPEN (owner, 25 November 2026): the full hourly check (step 0) again
@@ -162,7 +170,10 @@ class EmaPullback:
                                                        f"check at the open failed ({recheck.why}): cancelled "
                                                        "(EMA_PULLBACK_RECHECK_AT_OPEN)"))
                         continue
-                opened = self._o(c) >= st.entry if buy else self._o(c) <= st.entry
+                if st.beyond:
+                    opened = self._o(c) > st.entry if buy else self._o(c) < st.entry
+                else:
+                    opened = self._o(c) >= st.entry if buy else self._o(c) <= st.entry
                 price = self._o(c) if opened else st.entry
                 self.setups.remove(st)
                 self.notes.append((c.start, d, f"{tag}: reached the entry {plain(st.entry)}: entry {plain(price)}"))
@@ -193,19 +204,29 @@ class EmaPullback:
                                                    f"{q(self._c(c))} {'below' if buy else 'above'} the "
                                                    f"{self.e.slow_ema_periods} EMA {q(slow)}: cancelled"))
                     continue
-                before = self.done[-self.e.entry_lookback_candles:]
-                beyond = Decimal(self.e.entry_beyond_pips) * self.ppp
-                entry = (max(self._h(x) for x in before) + beyond) if buy else (min(self._l(x) for x in before) - beyond)
+                pullback_candle = switch_on(self.s, "ema_pullback_entry_pullback_candle")
+                if pullback_candle:
+                    # EMA_PULLBACK_ENTRY_PULLBACK_CANDLE (owner, 25 November 2026): the entry is when a later candle
+                    # trades beyond the touch candle itself: above its high for a buy, below its low for a sell
+                    entry = self._h(c) if buy else self._l(c)
+                    entry_step = (f"entry when a later candle trades {'above the touch candle high' if buy else 'below the touch candle low'} "
+                                  f"{plain(entry)} (EMA_PULLBACK_ENTRY_PULLBACK_CANDLE); expires "
+                                  f"{self.e.setup_expires_after_minutes} minutes after the touch")
+                else:
+                    before = self.done[-self.e.entry_lookback_candles:]
+                    beyond = Decimal(self.e.entry_beyond_pips) * self.ppp
+                    entry = (max(self._h(x) for x in before) + beyond) if buy else (min(self._l(x) for x in before) - beyond)
+                    entry_step = (f"entry {plain(entry)}: {self.e.entry_beyond_pips} pips {'above the highest high' if buy else 'below the lowest low'} "
+                                  f"of the {self.e.entry_lookback_candles} candles before the touch candle "
+                                  f"({uk_short(before[0].start)[-9:]} to {uk_short(before[-1].start)[-9:]}); expires "
+                                  f"{self.e.setup_expires_after_minutes} minutes after the touch")
                 self.setups.append(_Setup(d, c, entry, [
                     f"step 0, {trend.why}",
                     f"{uk_short(c.start)}: price {'dropped' if buy else 'rose'} to the 5-minute "
                     f"{self.e.fast_ema_periods} EMA {q(self.prev_fast)} ({'low' if buy else 'high'} "
                     f"{plain(self._l(c) if buy else self._h(c))}); closed {q(self._c(c))}, "
                     f"{'above' if buy else 'below'} the {self.e.slow_ema_periods} EMA {q(slow)}",
-                    f"entry {plain(entry)}: {self.e.entry_beyond_pips} pips {'above the highest high' if buy else 'below the lowest low'} "
-                    f"of the {self.e.entry_lookback_candles} candles before the touch candle "
-                    f"({uk_short(before[0].start)[-9:]} to {uk_short(before[-1].start)[-9:]}); expires "
-                    f"{self.e.setup_expires_after_minutes} minutes after the touch"]))
+                    entry_step], beyond=pullback_candle))
                 self.notes.append((c.start, d, f"setup: touched the 8 EMA {q(self.prev_fast)}, entry {plain(entry)}"))
         self.done.append(c)
         self.prev_fast = fast
