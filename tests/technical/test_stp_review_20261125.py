@@ -6,6 +6,7 @@ from __future__ import annotations
 from datetime import timedelta
 from decimal import Decimal as D
 from pathlib import Path
+from types import SimpleNamespace
 
 from planner.keeper import COMPLETED, INVALIDATED
 from planner.opportunities import ACTIVE, BROKEN
@@ -196,3 +197,117 @@ class _Pair:
 class _NoRun:
     def run(self, now):
         pass
+
+
+# ---- rule 3 and STP authorisation (owner, 25 November 2026; OD-05, OD-29, OD-30) -------------------------------------
+
+def _r3_settings(tmp_path, pretend_switches, authorises):
+    """The real settings: rule 3 on (as built 24 November), the other entry filters off, STP's switches as given."""
+    from config.settings_loader import load_settings
+    from tests.functional.test_counter_trend_tiring import OTHERS
+    text = "".join(l + "\n" for l in pretend_switches.read_text().splitlines()
+                   if not l.startswith(tuple(k + "=" for k in OTHERS + ("STP_OPPORTUNITIES", "STP_BIDIRECTIONAL",
+                                                                         "STP_AUTHORISES_ENTRIES", "ONE_SIGNAL_ONE_TRADE"))))
+    text += ("HOURLY_CONTEXT=off\nENTRY_NEAR_EMA8=off\nRSI_STRETCH=off\nTREND_DAY_RSI_OFF=off\nCOUNTER_TREND_TIRING=on\n"
+             "COUNTER_TREND_EMERGING=on\nCOUNTER_TREND_HOURLY_CONFIRMED=on\nSTP_OPPORTUNITIES=on\nSTP_BIDIRECTIONAL=on\n"
+             f"ONE_SIGNAL_ONE_TRADE=on\nSTP_AUTHORISES_ENTRIES={'on' if authorises else 'off'}\n")
+    p = tmp_path / f"r3_{authorises}.env"
+    p.write_text(text)
+    return load_settings(switches_from=p).for_pair("GBPUSD")
+
+
+def _r3_engine(s, store, monkeypatch, authorised):
+    """Trading._place, the real method, on a stub engine (as T-62): STP's check scripted, the order sender recorded."""
+    from trading import engine as eng
+    from stp.authorise import Verdict
+    calls, sent, book = [], [], []
+
+    def stp(settings, st, idea, now, source, partial=None, tick=None):
+        calls.append(idea.strategy)
+        if not authorised:
+            return Verdict(False, ["no live STP BUY opportunity whose zone the rejection candle reached"])
+        o = {"id": "STP-R3", "trade": "BUY"}
+        return Verdict(True, [], o, "STP-R3#t1", "STP-R3#t1", frozenset(settings.stp_authorisation.bypass_filters),
+                       ["STP authorised: test"])
+    monkeypatch.setattr("stp.authorise.authorise", stp)
+    monkeypatch.setattr(eng, "day_directions", lambda *a, **k: None)
+    e = SimpleNamespace(s=s, store=store, now=lambda: AT_R3, replay=False, partial=None, _last_tick=None,
+                        runner=SimpleNamespace(stp=None), calendar=None, _paused=lambda: False, _trend_on=lambda: False,
+                        trend_watch=SimpleNamespace(direction_at=lambda t: None),
+                        book=SimpleNamespace(decision=lambda kind, t, **k: book.append((kind, k))),
+                        sender=SimpleNamespace(place=lambda idea, **k: sent.append(idea) or SimpleNamespace(ok=True, what="opened", reference="R3", reasons=[], level=None)))
+    return e, calls, sent, book
+
+
+def _r3_idea(strategy):
+    from tests.functional.test_counter_trend_tiring import idea as ct_idea
+    i = ct_idea(strategy=strategy)               # a BUY against the analyser's "trend down", slow grind
+    i.steps, i.context = [], {}
+    return i
+
+
+from tests.functional.test_counter_trend_tiring import AT as AT_R3, GROWING_DOWN  # noqa: E402
+
+
+def test_R6_rule_3_is_bypassed_only_for_an_stp_authorised_entry(tmp_path, monkeypatch, pretend_switches):
+    """The hourly MACD histogram below zero and growing (rule 3's own fixture): rule 3 refuses a buy against the trend
+    down. Stage B: an STP-authorised gated entry is not refused by rule 3 (OD-05/OD-30 bypass_filters); a gated entry
+    STP does not authorise is refused by STP before any filter; an ungated reversal strategy (the session sweep) and
+    every gated strategy with STP_AUTHORISES_ENTRIES off are refused by rule 3 as before, and STP is not consulted."""
+    from trading import engine as eng
+    from strategies import entry_filters as ef
+    from tests.functional.test_counter_trend_tiring import store_of
+    store = store_of(tmp_path, GROWING_DOWN, "growing")
+    on = _r3_settings(tmp_path, pretend_switches, True)
+    assert "counter_trend_tiring" in on.stp_authorisation.bypass_filters
+    # Stage B, STP authorised: opens; rule 3 recorded as not applied
+    e, calls, sent, book = _r3_engine(on, store, monkeypatch, authorised=True)
+    i = _r3_idea("Bollinger bounce")
+    r = eng.Trading._place(e, i, None)
+    assert r.ok and calls == ["Bollinger bounce"] and sent == [i]
+    assert any("counter trend tiring: not applied: STP authorised" in x for x in i.steps)
+    # the same idea without the bypass (what a non-authorised entry would get): refused by rule 3
+    v = ef.check(on, store, _r3_idea("Bollinger bounce"))
+    assert not v.allowed and v.rule == ef.COUNTER_TREND_TIRING
+    # Stage B, a gated entry STP does not authorise: refused by STP, never sent
+    e, calls, sent, book = _r3_engine(on, store, monkeypatch, authorised=False)
+    r = eng.Trading._place(e, _r3_idea("Bollinger bounce 5m"), None)
+    assert not r.ok and r.what == "STP refused" and sent == []
+    # Stage B, an ungated reversal strategy: STP is not consulted, rule 3 refuses
+    e, calls, sent, book = _r3_engine(on, store, monkeypatch, authorised=True)
+    r = eng.Trading._place(e, _r3_idea("session sweep"), None)
+    assert not r.ok and r.what == "entry filter refused" and calls == [] and sent == []
+    assert any(k == "entry filter refused" and d.get("rule") == ef.COUNTER_TREND_TIRING for k, d in book)
+    # STP_AUTHORISES_ENTRIES off: every gated strategy is checked by rule 3 as before, and STP is not consulted
+    off = _r3_settings(tmp_path, pretend_switches, False)
+    for strategy in ("Bollinger bounce", "Bollinger bounce 5m", "level reversal"):
+        e, calls, sent, book = _r3_engine(off, store, monkeypatch, authorised=True)
+        r = eng.Trading._place(e, _r3_idea(strategy), None)
+        assert not r.ok and r.what == "entry filter refused" and calls == [] and sent == []
+
+
+# ---- the dashboard distinguishes Stage A observation from Stage B authorisation (owner, 25 November 2026) -------------
+
+def test_R7_the_dashboard_says_which_stage_stp_is_in_and_only_stage_b_authorises():
+    from dashboard import stp as d
+    gated = ["Bollinger bounce", "Bollinger bounce 5m", "level reversal"]
+    def S(o, b, a):
+        return SimpleNamespace(switches=SimpleNamespace(stp_opportunities=o, stp_bidirectional=b, stp_authorises_entries=a),
+                               stp_authorisation=SimpleNamespace(strategies=gated))
+    assert d.mode(S(False, False, False)) == {"stage": None, "authorises_entries": False, "label": d.LABEL}
+    a = d.mode(S(True, True, False))
+    assert a["stage"] == "A" and not a["authorises_entries"] and a["label"].startswith("STAGE A — OBSERVE ONLY")
+    b = d.mode(S(True, True, True))
+    assert b["stage"] == "B" and b["authorises_entries"]
+    assert b["label"] == "STAGE B — STP AUTHORISES ENTRIES: BOLLINGER BOUNCE, BOLLINGER BOUNCE 5M, LEVEL REVERSAL"
+    nr = d.mode(S(False, False, True))                   # authorisation on without the tracker: every gated entry refused
+    assert not nr["authorises_entries"] and "EVERY GATED ENTRY IS REFUSED" in nr["label"]
+    st = {"opportunities": [opp("BUY", (13047.3, 13055.1), oid="B1"), opp("SELL", (13084.1, 13093), oid="S1", status=ACTIVE)]}
+    px = SimpleNamespace(zone=lambda x, y: f"{x}-{y}", real=str)
+    assert [o["authorises"] for o in d.opportunities(st, px, a["authorises_entries"])] == [False, False]   # Stage A
+    assert [o["authorises"] for o in d.opportunities(st, px, b["authorises_entries"])] == [True, True]    # Stage B
+    # the STP tab and the main card show the server's label (never a fixed "observe only")
+    js = (Path(__file__).resolve().parents[2] / "dashboard" / "static" / "stp" / "stp.js").read_text()
+    html = (Path(__file__).resolve().parents[2] / "dashboard" / "static" / "index.html").read_text()
+    assert "flag.textContent = o.label" in js and "stp-authorising" in js and "Stage A: observation only" in js
+    assert "c.label || p.label" in html and "stpc-authorising" in html

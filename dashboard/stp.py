@@ -32,6 +32,27 @@ from typing import Any
 
 UTC = timezone.utc
 LABEL = "OBSERVE ONLY — DOES NOT CONTROL TRADING"
+STAGE_A_LABEL = "STAGE A — OBSERVE ONLY: STP TRACKS OPPORTUNITIES, DOES NOT CONTROL TRADING"
+STAGE_B_LABEL = "STAGE B — STP AUTHORISES ENTRIES: "
+NOT_READY_LABEL = ("STP_AUTHORISES_ENTRIES IS ON WITHOUT STP_OPPORTUNITIES AND STP_BIDIRECTIONAL: EVERY GATED ENTRY IS "
+                   "REFUSED")
+
+
+def mode(settings: Any) -> dict:
+    """What STP does to trading now, from the switches (owner, 25 November 2026): Stage A observes (STP_OPPORTUNITIES
+    on, STP_AUTHORISES_ENTRIES off); Stage B authorises the gated strategies' entries (all three on); otherwise the
+    single-tracker observation as before. Shown on the STP tab, its card and the panel."""
+    sw = getattr(settings, "switches", None)
+    opp, bi = bool(getattr(sw, "stp_opportunities", False)), bool(getattr(sw, "stp_bidirectional", False))
+    auth = bool(getattr(sw, "stp_authorises_entries", False))
+    if auth and opp and bi:
+        gated = ", ".join(getattr(getattr(settings, "stp_authorisation", None), "strategies", None) or [])
+        return {"stage": "B", "authorises_entries": True, "label": STAGE_B_LABEL + gated.upper()}
+    if auth:
+        return {"stage": "B (not ready)", "authorises_entries": False, "label": NOT_READY_LABEL}
+    if opp:
+        return {"stage": "A", "authorises_entries": False, "label": STAGE_A_LABEL}
+    return {"stage": None, "authorises_entries": False, "label": LABEL}
 _STATIC = Path(__file__).resolve().parent / "static"
 LIB = _STATIC / "vendor" / "lightweight-charts.standalone.production.js"
 STATIC = {"lightweight-charts.js": LIB, "stp.js": _STATIC / "stp" / "stp.js", "stp.css": _STATIC / "stp" / "stp.css"}
@@ -448,9 +469,10 @@ def card(settings: Any, now: datetime) -> dict:
     st = read_state(settings)
     fresh = freshness(settings, st, now)
     if st is None:
-        return {"available": False, "freshness": fresh, "label": LABEL}
+        return {"available": False, "freshness": fresh, "label": mode(settings)["label"], "stp_mode": mode(settings)}
     p, rec = st.get("last_plan") or {}, st.get("recommendation")
-    return {"available": True, "label": LABEL, "pair": settings.market.pair, "freshness": fresh,
+    return {"available": True, "label": mode(settings)["label"], "stp_mode": mode(settings), "pair": settings.market.pair,
+            "freshness": fresh,
             "dominant_direction": p.get("dominant_direction"), "condition": p.get("condition"),
             "expected_movement": movement_text(p.get("dominant_direction"), p.get("opportunity"), p.get("expected_movement")),
             "status": STATUS_LABEL.get(rec["status"], rec["status"]) if rec else "NO RECOMMENDATION",
@@ -463,7 +485,7 @@ def overview(settings: Any, now: datetime) -> dict:
     prices = Prices(settings)
     st = read_state(settings)
     fresh = freshness(settings, st, now)
-    out: dict = {"ok": True, "label": LABEL, "pair": settings.market.pair, "pair_text": _pair_text(settings.market.pair),
+    out: dict = {"ok": True, "label": mode(settings)["label"], "stp_mode": mode(settings), "pair": settings.market.pair, "pair_text": _pair_text(settings.market.pair),
                  "served_utc": _iso(now), "freshness": fresh, "price": current_price(settings, prices),
                  "available": st is not None}
     if st is None:
@@ -494,17 +516,18 @@ def overview(settings: Any, now: datetime) -> dict:
     out["overlays"] = overlays(p, rec, prices)
     out["technical"] = technical(st, p, prices)
     if isinstance(st.get("opportunities"), list):          # STP_OPPORTUNITIES (owner, 24 November 2026; WP-5)
-        out["opportunities"] = opportunities(st, prices)
+        out["opportunities"] = opportunities(st, prices, mode(settings)["authorises_entries"])
     out["recent"] = [{"id": x["id"], "trade": x["trade"], "zone": prices.zone(*x["zone"]), "status": x["status"],
                       "why": prices.text(x.get("why")), "created_utc": x.get("created_utc"), "ended_utc": x.get("ended_utc")}
                      for x in st.get("recent") or [] if isinstance(x, dict) and x.get("zone")]
     return out
 
 
-def opportunities(st: dict, prices: Prices) -> list[dict]:
+def opportunities(st: dict, prices: Prices, authorising: bool = True) -> list[dict]:
     """Every opportunity STP is tracking (STP_OPPORTUNITIES; planner/opportunities.py), newest first, read only:
     WAITING and Watch & Wait authorise (while STP_AUTHORISES_ENTRIES is on); BROKEN waits for the failed-breakout
-    window (OD-31) and authorises nothing."""
+    window (OD-31) and authorises nothing. `authorising`: whether STP authorises entries now (Stage B, mode()); in
+    Stage A nothing authorises a trade, so "authorises" is false for every row."""
     out = []
     for o in sorted((x for x in st.get("opportunities") or [] if isinstance(x, dict)),
                     key=lambda x: x.get("created_utc") or "", reverse=True):
@@ -513,7 +536,7 @@ def opportunities(st: dict, prices: Prices) -> list[dict]:
         prim = ((o.get("destinations") or {}).get("primary") or {}).get("price")
         out.append({"id": o.get("id"), "trade": o.get("trade"), "status": o.get("status"),
                     "label": "Watch & Wait" if o.get("status") == "ACTIVE" else (o.get("status") or "").capitalize(),
-                    "authorises": o.get("status") in ("WAITING", "ACTIVE"),
+                    "authorises": authorising and o.get("status") in ("WAITING", "ACTIVE"),
                     "zone": prices.zone(z.get("low"), z.get("high")), "zone_class": z.get("class"),
                     "primary": prices.real(prim) if prim is not None else None,
                     "zone_break": prices.real(inv.get("zone_break_close")) if inv.get("zone_break_close") else None,

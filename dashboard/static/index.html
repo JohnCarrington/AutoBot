@@ -88,6 +88,7 @@
   .stpc { margin: 0 16px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
   .stpc-flag { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; letter-spacing: .08em;
                color: var(--amber); border: 1px solid var(--amber); margin-bottom: 10px; }
+  .stpc-flag.stpc-authorising { color: var(--blue); border-color: var(--blue); background: var(--blue-dim); }
   .stpc-row { display: flex; justify-content: space-between; gap: 12px; font-size: 11px; padding: 3px 0; }
   .stpc-row span:first-child { color: var(--muted); white-space: nowrap; }
   .stpc-row span:last-child { text-align: right; overflow-wrap: anywhere; }
@@ -515,8 +516,10 @@ function renderPlanner(p) {
   $("stpsection").hidden = !p;
   if (!p) return;
   const box = $("stp"); box.textContent = "";
-  box.appendChild(el("div", "stpc-flag", "OBSERVE ONLY — DOES NOT CONTROL TRADING"));
   const c = p.card || {};
+  const flag = el("div", "stpc-flag", c.label || p.label || "OBSERVE ONLY — DOES NOT CONTROL TRADING");
+  if (c.stp_mode && c.stp_mode.authorises_entries) flag.classList.add("stpc-authorising");   // Stage B
+  box.appendChild(flag);
   const row = (k, v, cls) => { const r = el("div", "stpc-row"); r.appendChild(el("span", "", k));
     r.appendChild(el("span", cls || "", (v === null || v === undefined || v === "") ? "–" : String(v))); box.appendChild(r); };
   if (!p.available || c.available === false) {

@@ -111,7 +111,9 @@ class Dashboard:
             # its own file, read only. Off: the status has no "planner" at all and the page shows nothing of it.
             try:
                 from planner.panel import panel
+                from dashboard.stp import mode
                 extra["planner"] = panel(self.s, self.now())
+                extra["planner"]["label"] = mode(self.s)["label"]      # Stage A or B (owner, 25 November 2026)
                 try:                                    # the compact card for the main dashboard (STP tab's summary)
                     from dashboard.stp import card
                     extra["planner"]["card"] = card(self.s, self.now())
