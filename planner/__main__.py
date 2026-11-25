@@ -21,6 +21,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from config.env_file import env_path
 from config.settings_loader import load_settings
 from prices.model import parse_iso
 
@@ -61,7 +62,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--pair", default="GBPUSD")
     ap.add_argument("--at", default=None)
     a = ap.parse_args(argv)
-    settings = load_settings().for_pair(a.pair)
+    # the .env switches too (Stage A deployment check, 25 November 2026): STP_OPPORTUNITIES and STP_BIDIRECTIONAL choose
+    # the tracker (planner/opportunities.py make_keeper); without them the planner always ran the single tracker
+    settings = load_settings(switches_from=env_path()).for_pair(a.pair)
     from prices.store import CandleStore
     store = CandleStore(settings.candles.folder, settings.candles.compress_after_days)
     if a.what == "show":

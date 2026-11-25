@@ -154,3 +154,45 @@ def test_R4_the_dashboard_lists_several_opportunities_with_every_field_its_scrip
     assert used == {"id", "trade", "label", "authorises", "zone", "zone_class", "primary", "zone_break",
                     "relation_to_h4", "created_utc", "status"}
     assert all(used <= set(x) for x in shown)
+
+
+# ---- Stage A deployment check: the planner process reads the switches ------------------------------------------------
+
+def test_R5_the_planner_process_reads_the_stp_switches_from_env_and_runs_the_multi_opportunity_tracker(
+        tmp_path, monkeypatch, pretend_switches):
+    """The price service starts `python -m planner run` (planner/__main__.py). Its settings must carry the .env
+    switches, or make_keeper always picks the single tracker and STP_OPPORTUNITIES can never take effect."""
+    import planner.__main__ as main
+    import planner.opportunities as po
+    from config.env_file import ENV_PATH_VAR
+    from config.settings_loader import load_settings as real
+    from planner.keeper import Keeper
+    from planner.opportunities import OpportunityKeeper
+    from tests.technical.test_planner import with_folder
+    built = []
+    monkeypatch.setattr("housekeeping.logs.setup_logging", lambda *a, **k: None)
+    monkeypatch.setattr("planner.technical.write", lambda *a, **k: None)
+    monkeypatch.setattr(main, "load_settings", lambda **kw: _Pair(real(**kw), tmp_path, with_folder))
+    real_make = po.make_keeper
+    monkeypatch.setattr(po, "make_keeper", lambda s, st, *a: built.append(real_make(s, st, *a)) or _NoRun())
+    for value, kind in (("on", OpportunityKeeper), ("off", Keeper)):
+        env = tmp_path / f"{value}.env"
+        env.write_text(pretend_switches.read_text() + f"STP_OPPORTUNITIES={value}\nSTP_BIDIRECTIONAL={value}\n"
+                                                      "STP_AUTHORISES_ENTRIES=off\n")
+        monkeypatch.setenv(ENV_PATH_VAR, str(env))
+        assert main.main(["run"]) == 0
+        assert type(built[-1]) is kind
+    assert built[0].bidirectional is True and built[1].s.switches.stp_opportunities is False
+
+
+class _Pair:
+    def __init__(self, s, tmp, with_folder):
+        self.s, self.tmp, self.wf = s, tmp, with_folder
+
+    def for_pair(self, p):
+        return self.wf(self.s.for_pair(p), self.tmp / "planner")
+
+
+class _NoRun:
+    def run(self, now):
+        pass

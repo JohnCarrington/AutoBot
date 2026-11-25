@@ -162,7 +162,7 @@ def test_a_technical_failure_in_the_planner_run_never_stops_the_keeper(monkeypat
     calls = []
     monkeypatch.setattr("planner.keeper.Keeper.run", lambda self, now: calls.append("keeper"))
     monkeypatch.setattr(T, "write", lambda *a: (_ for _ in ()).throw(RuntimeError("boom")))
-    monkeypatch.setattr(pm, "load_settings", lambda: type("X", (), {"for_pair": lambda self, p: with_folder(S, tmp_path)})())
+    monkeypatch.setattr(pm, "load_settings", lambda **kw: type("X", (), {"for_pair": lambda self, p: with_folder(S, tmp_path)})())
     monkeypatch.setattr("housekeeping.logs.setup_logging", lambda *a, **k: None)
     assert pm.main(["run"]) == 0 and calls == ["keeper"]
 

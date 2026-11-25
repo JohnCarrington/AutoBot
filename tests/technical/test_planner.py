@@ -519,7 +519,7 @@ def test_the_planner_runs_last_after_the_trading_engine_and_only_when_switched_o
 
 def test_a_failed_planner_run_keeps_its_files_and_returns_an_error(tmp_path, monkeypatch):
     import planner.__main__ as main
-    monkeypatch.setattr(main, "load_settings", lambda: SimpleNamespace(for_pair=lambda p: with_folder(S, tmp_path / "pl")))
+    monkeypatch.setattr(main, "load_settings", lambda **kw: SimpleNamespace(for_pair=lambda p: with_folder(S, tmp_path / "pl")))
     monkeypatch.setattr(keeper_mod.Keeper, "run", lambda self, now: (_ for _ in ()).throw(RuntimeError("bad")))
     monkeypatch.setattr("housekeeping.logs.setup_logging", lambda *a, **k: None)
     assert main.main(["run"]) == 1
@@ -588,7 +588,7 @@ def test_a_planner_that_cannot_write_its_files_fails_alone(tmp_path, monkeypatch
     import planner.__main__ as main
     blocked = tmp_path / "not-a-folder"
     blocked.write_text("a file where the planner folder should be")
-    monkeypatch.setattr(main, "load_settings", lambda: SimpleNamespace(for_pair=lambda p: with_folder(S, blocked)))
+    monkeypatch.setattr(main, "load_settings", lambda **kw: SimpleNamespace(for_pair=lambda p: with_folder(S, blocked)))
     monkeypatch.setattr("housekeeping.logs.setup_logging", lambda *a, **k: None)
     with pytest.raises(OSError):                      # it cannot even make its own folder: it stops, nothing else is touched
         main.main(["run"])
