@@ -188,3 +188,10 @@ correction. The tests are in `tests/functional/test_order_recovery_review_202611
 - `ig_close_level_checks = 12`. This is one hour of 5-minute checks. The 18 Nov close was missing from IG's activity at the single moment the bot looked and present in a later IG check; how long IG lagged is not known. When the checks run out, the provisional price stays marked as the bot's and is escalated for IG's statement; nothing is guessed.
 
 **Regression.** Focused suites (orders, engine, trade manager, records, dashboard, STP review, both new test files): 250 passed. The full suite runs in the pre-commit hook of the commit that carries these corrections, and that commit exists only if every test passes; its exact count is given with the push.
+
+## 11. Owner decisions (27 November 2026)
+
+- `orders.unresolved_no_record_after_minutes = 30` and `orders.ig_close_level_checks = 12`: **approved by the owner**
+  (recorded in settings.toml and SETTINGS.md).
+- **Deployment remains blocked** until the owner's final independent code review of the branch is complete. No
+  deployment, restart, configuration change or broker-write operation is authorised before then.
