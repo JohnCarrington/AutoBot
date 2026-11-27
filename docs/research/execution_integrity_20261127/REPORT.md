@@ -1,8 +1,7 @@
 # Execution Integrity Remediation — Phase 1 (27 November 2026)
 
 Branch `exec-integrity`, built from production `fc127e1` (deploy-23nov). **Not deployed.** Nothing in strategies,
-STP, entry criteria, market-state assessment or trade-management methodology was changed. Commit references are in
-section 9.
+STP, entry criteria, market-state assessment or trade-management methodology was changed. Code commit **5902147** (pushed); rollback tag `pre-exec-integrity-20261127` = fc127e1 (pushed).
 
 ## 1. Summary
 
@@ -126,7 +125,7 @@ the old code lacks it), the defects reproduce exactly:
 |---|---|
 | Baseline: production fc127e1, clean checkout, full suite | **2783 passed, 3 skipped** (15 min 05 s) |
 | Branch, first full run (pre-commit hook) | 2803 passed, **1 failed**: `test_stp_review_20261125.py::test_R6_rule_3_is_bypassed_only_for_an_stp_authorised_entry` calls `Trading._place` on a stand-in object; the recovery context became a module function (`recovery_of`). The commit was blocked as intended. |
-| Branch, final full run (pre-commit hook of this commit) | all tests passed (2807 collected: 2783 existing + 17 new + 7 others counted from the branch, 3 skipped); the hook blocks a commit on any failure |
+| Branch, final full run (pre-commit hook of commit 5902147) | **2804 passed, 3 skipped** (13 min 49 s): the 2783 existing tests plus the new ones; the hook blocks a commit on any failure |
 
 An earlier full run during this work showed 85 failed and 919 errors. That was not the code: two pytest runs shared
 pytest's default temporary folders, and the second one cleared the first's (the clash recorded on 13 Nov). Every run
