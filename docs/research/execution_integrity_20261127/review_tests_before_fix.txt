@@ -1,0 +1,10 @@
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_recovery_review_20261127.py:47: AssertionError: assert ('gone at IG' not in ['funds', 'ready', 'sending', 'unclear', 'not found', 'adopted', ...])
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_recovery_review_20261127.py:68: KeyError: 'ig_level'
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_recovery_review_20261127.py:81: AssertionError: assert ([] == ['AB261104200500-c0628e09']
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_recovery_review_20261127.py:102: AssertionError: assert ([] == ['AB261104200500-c5792397']
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_recovery_review_20261127.py:114: AssertionError: assert [] == ['opened', 'closed']
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_recovery_review_20261127.py:146: ValueError: not enough values to unpack (expected 1, got 0)
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_recovery_review_20261127.py:156: ValueError: not enough values to unpack (expected 1, got 0)
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_recovery_review_20261127.py:176: AssertionError: assert ('not ours' not in ['funds', 'ready', 'sending', 'unclear', 'not found', 'not placed at IG', ...])
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_recovery_review_20261127.py:194: AssertionError: assert ('13400.9', '...9', '13420.9') == ('13400.9', '...4', '13420.9')
+9 failed, 1 passed in 0.52s

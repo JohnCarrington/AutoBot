@@ -112,6 +112,13 @@ class Book:
             return []
         return apply_corrections([json.loads(x) for x in self.trades_file.read_text().splitlines()])
 
+    def corrections_for(self, reference: str) -> list[dict]:
+        """The trade's "close corrected" lines, oldest first."""
+        if not self.trades_file.exists():
+            return []
+        rows = [json.loads(x) for x in self.trades_file.read_text().splitlines()]
+        return [r for r in rows if r.get("event") == "close corrected" and r.get("reference") == reference]
+
     def closed_row(self, reference: str) -> dict | None:
         """The trade's closed line as recorded (before any correction), or None."""
         if not self.trades_file.exists():

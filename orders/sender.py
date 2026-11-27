@@ -122,6 +122,7 @@ class Trade:
     once_a_day: str = ""                # the idea's once-a-day key (safety rule 10; owner, 16 November 2026)
     signal: str = ""                    # the idea's signal key (safety rule 11; owner, 18 November 2026)
     recovery: dict = field(default_factory=dict)   # what the engine needs to manage and record it (27 November 2026)
+    adopted: bool = False               # accounted for by IG only after it was sent (an "adopted" record)
 
     def as_open_trade(self, size_gbp_per_pip: Decimal) -> OpenTrade:
         part = Decimal("0.5") if self.half_closed else Decimal(1)
@@ -214,6 +215,8 @@ class OrderSender:
         self.corrections_new: list[dict] = []          # IG's own close found later (take_corrections)
         self.close_source: dict[str, str] = {}         # reference -> where its close level came from
         self._unresolved_noted: set[str] = set()       # unresolved orders already escalated by the regular check
+        self.not_placed: dict[str, dict] = {}          # orders recorded "not placed at IG": still the bot's if IG ever
+                                                        # shows a position with their reference (review R4)
         self.funds: AccountFunds | None = None
         self.ready = False
         self._lock = threading.RLock()
@@ -245,6 +248,7 @@ class OrderSender:
     def _read_record(self) -> None:
         """Rebuild the trades and the unresolved references from the record."""
         self.trades, self.unresolved, self.gone = {}, {}, {}
+        self.not_placed, self.corrections_new = {}, []
         if not self.journal.exists():
             return
         for line in self.journal.read_text().splitlines():
@@ -259,11 +263,21 @@ class OrderSender:
                                          r.get("deal_id", ""), _dec(r.get("level")),
                                          once_a_day=r.get("once_a_day") or sent.get("once_a_day") or "",
                                          signal=r.get("signal") or sent.get("signal") or "",
-                                         recovery=r.get("recovery") or sent.get("recovery") or {})
-            elif ev in ("refused", "not placed", NOT_PLACED_AT_IG):
+                                         recovery=r.get("recovery") or sent.get("recovery") or {},
+                                         adopted=ev == "adopted")
+                self.not_placed.pop(ref, None)
+            elif ev == NOT_PLACED_AT_IG:
+                sent = self.unresolved.pop(ref, None)
+                if sent is not None:
+                    self.not_placed[ref] = sent
+            elif ev in ("refused", "not placed"):
                 self.unresolved.pop(ref, None)
             elif ev in (IG_CLOSE_CONFIRMED, IG_CLOSE_NOT_FOUND):
                 self.pending_close.pop(ref, None)
+                if ev == IG_CLOSE_CONFIRMED and r.get("ig_level") is not None:   # handed on again after a restart: the
+                    self.close_source[ref] = IG_ACTIVITY                        # engine applies it once (review R3)
+                    self.corrections_new.append({"reference": ref, "close_price": Decimal(r["ig_level"]),
+                                                 "closed_utc": _when(r.get("ig_time_utc")), "price_source": IG_ACTIVITY})
             elif ev == "deal id changed" and ref in self.trades:
                 self.trades[ref].deal_id = r["deal_id"]
             elif ev == "stop moved" and ref in self.trades:
@@ -516,12 +530,23 @@ class OrderSender:
         is the reference the bot recorded before sending), with IG's deal ID, fill and open time, and the strategy and
         management context recorded with the order. `recovered`: found after place() returned (the regular check or
         a start-up): handed to the engine (take_recovered) and alerted."""
-        opened = opened_at or _when(pos.get("createdDateUTC")) or _when(pos.get("createdDate")) or self.now()
+        opened = (_when(pos.get("createdDateUTC")) or _when(pos.get("createdDate")) or opened_at
+                  or _when(sent.get("sent_utc")) or self.now())     # never later than IG opened it (review R1)
+        level = _dec(pos.get("level"))
+        stop_pips, tp = Decimal(str(sent["stop_pips"])), sent.get("take_profit_pips")
+        ig_stop, ig_limit = _dec(pos.get("stopLevel")), _dec(pos.get("limitLevel"))
+        if level is not None and ig_stop is not None:          # IG's own stop and limit, as attached (review)
+            stop_pips = abs(level - ig_stop) / self.ppp
+        if level is not None and ig_limit is not None:
+            tp = str(abs(ig_limit - level) / self.ppp)
         t = Trade(ref, sent["strategy"], sent["direction"], Decimal(str(pos.get("size") or sent["size"])),
-                  Decimal(str(sent["stop_pips"])), opened, pos.get("dealId", ""), _dec(pos.get("level")),
+                  stop_pips, opened, pos.get("dealId", ""), level,
                   once_a_day=sent.get("once_a_day") or "", signal=sent.get("signal") or "",
-                  recovery=dict(sent.get("recovery") or {}, take_profit_pips=sent.get("take_profit_pips"),
-                                idea_price=sent.get("idea_price"), sent_utc=sent.get("sent_utc")))
+                  recovery=dict(sent.get("recovery") or {}, take_profit_pips=tp, idea_price=sent.get("idea_price"),
+                                sent_utc=sent.get("sent_utc"), ig_stop_level=None if ig_stop is None else str(ig_stop),
+                                ig_limit_level=None if ig_limit is None else str(ig_limit)),
+                  adopted=True)
+        self.not_placed.pop(ref, None)
         self.trades[ref] = t
         self.unresolved.pop(ref, None)
         self._unresolved_noted.discard(ref)
@@ -589,11 +614,17 @@ class OrderSender:
           5. otherwise it stays unresolved: still counted in the safety rules (open_trades) and escalated.
         Returns the deal IDs of the positions adopted (they are the bot's, never "not ours")."""
         ours: set[str] = set()
-        if not self.unresolved:
-            return ours
         by_ref = {p["position"].get("dealReference"): p for p in positions}
         by_id = {p["position"].get("dealId"): p for p in positions}
         where = "at start-up" if at_start else f"by the regular check ({why})"
+        for ref, sent in list(self.not_placed.items()):        # review R4: IG shows it after all
+            p = by_ref.get(ref)
+            if p is not None:
+                ours.add(p["position"]["dealId"])
+                self._adopt(ref, sent, p["position"], f"IG shows it {where}, after it had been recorded not placed at "
+                                                      "IG", recovered=True)
+        if not self.unresolved:
+            return ours
         for ref, sent in list(self.unresolved.items()):
             p = by_ref.get(ref)
             if p is not None:
@@ -630,15 +661,24 @@ class OrderSender:
                     ours.add(deal)
                     self._adopt(ref, sent, pos, f"IG opened it as deal {deal}; found {where}", opened, recovered=True)
                     continue
+                # no position by list or by deal ID: recorded closed ONLY on IG's own evidence of the close (review R1:
+                # IG's position endpoints can lag behind its confirmation); otherwise it stays unresolved and counted
                 level = det.get("level") if act else (c or {}).get("level")
-                t = self._adopt(ref, sent, {"dealId": deal, "size": det.get("size") or sent["size"], "level": level},
+                probe = Trade(ref, sent["strategy"], sent["direction"], Decimal(str(sent["size"])),
+                              Decimal(str(sent["stop_pips"])), opened or _when(sent.get("sent_utc")) or self.now(), deal)
+                if (self._ig_close_of(probe) or {}).get("ig_level") is None:
+                    self._escalate_unresolved(ref, sent, at_start, f"IG accepted it as deal {deal}, but neither its "
+                                              "open position nor its close is visible at IG yet")
+                    continue
+                t = self._adopt(ref, sent, {"dealId": deal, "size": det.get("size") or sent["size"], "level": level,
+                                            "stopLevel": det.get("stopLevel"), "limitLevel": det.get("limitLevel")},
                                 f"IG opened it as deal {deal} and has closed it since; found {where}", opened,
                                 recovered=True)
                 self._gone(t, "IG opened it and then closed it while the bot did not know (an unclear order)")
                 continue
             age = self.now() - (_when(sent.get("sent_utc")) or self.now())
             if state == "absent" and readable and age >= timedelta(minutes=self.o.unresolved_no_record_after_minutes):
-                self.unresolved.pop(ref)
+                self.not_placed[ref] = self.unresolved.pop(ref)    # kept: recovered if IG ever shows it (review R4)
                 self._unresolved_noted.discard(ref)
                 self._record(NOT_PLACED_AT_IG, reference=ref, strategy=sent.get("strategy"),
                              note=f"no position, no confirmation and nothing in IG's activity "
@@ -647,7 +687,8 @@ class OrderSender:
                                     f"Order {ref} ({sent.get('strategy')} {sent.get('direction')}) was sent but IG has no "
                                     f"record of it: no position, no confirmation and nothing in its activity "
                                     f"{int(age.total_seconds() // 60)} minutes later. Recorded as not placed at IG; it "
-                                    "is not sent again and no longer counts as open.")
+                                    "is not sent again and no longer counts as open. If IG ever shows a position with "
+                                    "this reference, the bot adopts and manages it.")
                 continue
             self._escalate_unresolved(ref, sent, at_start, "IG has no open position, confirmation or activity for it yet")
         return ours

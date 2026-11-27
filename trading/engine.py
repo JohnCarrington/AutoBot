@@ -156,10 +156,12 @@ class Trading:
                 if self.manager.restore(mt, saved):         # its best pips so far, half close, watching
                     log.info("Trade %s: its saved best (%s pips) restored.", t.reference, mt.best)
                 self.manager.add(mt)
+            self._unbooked_recoveries()                     # from the journal, not a memory queue (review R2)
             self._take_recovered()                          # orders IG accounted for only after they were sent
             self._take_gone()                               # trades IG closed while the bot was away
             self._restore_trend_day(now)
             self._after_bars()
+            self._take_corrections()                        # IG's closes confirmed before a restart (review R3)
             if not self.replay:
                 self.tracker.replay(now)
                 self.runner.step()                          # the week so far: nothing is sent for the past
@@ -353,6 +355,23 @@ class Trading:
                            reference=r.reference, reasons=r.reasons, level=r.level)
         return r
 
+    def _unbooked_recoveries(self) -> None:
+        """After a restart (review R2): every adopted trade in the order journal that the records do not have yet is
+        handed over again (an "adopted" record written, the process stopped before the records): recorded as opened
+        once; and if IG had already closed it ("gone at IG" in the journal) and its close is not in the records, that
+        close is recorded too, at IG's level and time. The order journal and trades.jsonl are the only sources: the
+        hand-over never depends on a memory queue."""
+        closed_before = getattr(self, "_closed_before", set())
+        queued = {t.reference for t in self.sender.recovered_new}
+        gone_queued = {g.reference for g in self.sender.gone_new}
+        for ref, t in self.sender.trades.items():
+            if not t.adopted:
+                continue
+            if ref not in getattr(self, "_opened_before", set()) and ref not in self.meta and ref not in queued:
+                self.sender.recovered_new.append(t)
+            if ref in self.sender.gone and ref not in closed_before and ref not in gone_queued:
+                self.sender.gone_new.append(self.sender.gone[ref])
+
     def _take_recovered(self) -> None:
         """Orders IG accounted for only after they were sent (the order sender's regular check or start-up; the
         25 November 2026 18:02 slow grind): the bot's own trades, taken into the trade manager with the strategy's
@@ -382,8 +401,10 @@ class Trading:
             rec = {"reference": ref, "deal_id": t.deal_id, "pair": self.s.market.pair, "strategy": t.strategy,
                    "direction": t.direction, "size_gbp_per_pip": self.s.trade.size_gbp_per_pip,
                    "market_state": ctx.get("market_state") or "", "opened_utc": t.opened_at, "entry_price": entry,
-                   "open_price": t.level, "stop_pips": t.stop_pips, "stop_price": t.level - sign * t.stop_pips * ppp,
-                   "take_profit_pips": tp, "take_profit_price": t.level + sign * tp * ppp,
+                   "open_price": t.level, "stop_pips": t.stop_pips,
+                   "stop_price": Decimal(ctx["ig_stop_level"]) if ctx.get("ig_stop_level") else t.level - sign * t.stop_pips * ppp,
+                   "take_profit_pips": tp,
+                   "take_profit_price": Decimal(ctx["ig_limit_level"]) if ctx.get("ig_limit_level") else t.level + sign * tp * ppp,
                    "take_profit_kind": take_profit_kind(self.s, SimpleNamespace(strategy=t.strategy), tp, td),
                    "reason": f"{why} | {ctx.get('reason') or t.strategy}", "level": ctx.get("level") or "",
                    "steps": list(ctx.get("steps") or []) + [why], "recovered": True}
@@ -406,8 +427,14 @@ class Trading:
             from records.book import corrected_figures
             fig = corrected_figures(row, c["close_price"])
             when = c.get("closed_utc")
-            if fig["close_price"] == str(row.get("close_price")) and (when is None or _iso_utc(when) == row.get("closed_utc")):
-                continue                                    # IG's level is the one recorded
+            stamp = _iso_utc(when) if when is not None else row.get("closed_utc")
+            if any(x.get("close_price") == fig["close_price"] and x.get("closed_utc") == stamp
+                   for x in self.book.corrections_for(c["reference"])):
+                continue                                    # already applied (a restart hands it on again: review R3)
+            same = fig["close_price"] == str(row.get("close_price")) and stamp == row.get("closed_utc")
+            if same and row.get("price_source") == c.get("price_source"):
+                continue                                    # IG's level and source are the ones recorded
+            # the same figures as recorded: still written, so the source shows IG's evidence (review R3)
             self.book.corrected({"reference": c["reference"], "closed_utc": when or row.get("closed_utc"),
                                  "price_source": c.get("price_source")} | fig |
                                 {"before": {k: row.get(k) for k in ("close_price", "closed_utc", "pips", "gbp")}})
