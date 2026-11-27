@@ -1,0 +1,120 @@
+[
+ {
+  "reference": "AB261125170604-a4ec4a37",
+  "idea_time": "2026-11-25T17:06:04Z",
+  "stp_allowed": true,
+  "reasons": [],
+  "opportunity": "STP-GBPUSD-20261125-1700-34",
+  "key": "STP-GBPUSD-20261125-1700-34#t1",
+  "signal": "STP-GBPUSD-20261125-1700-34#t1",
+  "lineage": "STP-GBPUSD-20261125-1700-34",
+  "test": 1,
+  "rule_11": [],
+  "opened": true
+ },
+ {
+  "reference": "AB261125200515-c9049665",
+  "idea_time": "2026-11-25T20:05:14Z",
+  "stp_allowed": true,
+  "reasons": [],
+  "opportunity": "STP-GBPUSD-20261125-1800-35",
+  "key": "STP-GBPUSD-20261125-1800-35#t1",
+  "signal": "STP-GBPUSD-20261125-1800-35#t1",
+  "lineage": "STP-GBPUSD-20261125-1800-35",
+  "test": 1,
+  "rule_11": [],
+  "opened": true
+ },
+ {
+  "reference": "AB261126060101-987e099b",
+  "idea_time": "2026-11-26T06:01:00Z",
+  "stp_allowed": true,
+  "reasons": [],
+  "opportunity": "STP-GBPUSD-20261126-0000-36",
+  "key": "STP-GBPUSD-20261126-0000-36#t1",
+  "signal": "STP-GBPUSD-20261126-0000-36#t1",
+  "lineage": "STP-GBPUSD-20261126-0000-36",
+  "test": 1,
+  "rule_11": [],
+  "opened": true
+ },
+ {
+  "reference": "AB261126063004-aaea24e1",
+  "idea_time": "2026-11-26T06:30:02Z",
+  "stp_allowed": true,
+  "reasons": [],
+  "opportunity": "STP-GBPUSD-20261126-0400-37",
+  "key": "STP-GBPUSD-20261126-0400-37#t1",
+  "signal": "STP-GBPUSD-20261126-0400-37#t1",
+  "lineage": "STP-GBPUSD-20261126-0400-37",
+  "test": 1,
+  "rule_11": [],
+  "opened": true
+ },
+ {
+  "reference": "AB261126114004-bd34fb67",
+  "idea_time": "2026-11-26T11:40:01Z",
+  "stp_allowed": true,
+  "reasons": [],
+  "opportunity": "STP-GBPUSD-20261126-0000-36",
+  "key": "STP-GBPUSD-20261126-0000-36#t2",
+  "signal": "STP-GBPUSD-20261126-0000-36#t2",
+  "lineage": "STP-GBPUSD-20261126-0000-36",
+  "test": 2,
+  "rule_11": [],
+  "opened": true
+ },
+ {
+  "reference": "AB261126125133-d1518c12",
+  "idea_time": "2026-11-26T12:51:33Z",
+  "stp_allowed": true,
+  "reasons": [],
+  "opportunity": "STP-GBPUSD-20261126-0400-37",
+  "key": "STP-GBPUSD-20261126-0400-37#t2",
+  "signal": "STP-GBPUSD-20261126-0400-37#t2",
+  "lineage": "STP-GBPUSD-20261126-0400-37",
+  "test": 2,
+  "rule_11": [],
+  "opened": true
+ },
+ {
+  "reference": "AB261126142255-04805706",
+  "idea_time": "2026-11-26T14:22:55Z",
+  "stp_allowed": true,
+  "reasons": [],
+  "opportunity": "STP-GBPUSD-20261126-1400-43",
+  "key": "STP-GBPUSD-20261125-1800-35#t5",
+  "signal": "STP-GBPUSD-20261125-1800-35#t5",
+  "lineage": "STP-GBPUSD-20261125-1800-35",
+  "test": 5,
+  "rule_11": [],
+  "opened": true
+ },
+ {
+  "reference": "AB261127065505-8c11a4bc",
+  "idea_time": "2026-11-27T06:55:04Z",
+  "stp_allowed": true,
+  "reasons": [],
+  "opportunity": "STP-GBPUSD-20261127-0300-51",
+  "key": "STP-GBPUSD-20261127-0300-51#t1",
+  "signal": "STP-GBPUSD-20261127-0300-51#t1",
+  "lineage": "STP-GBPUSD-20261127-0300-51",
+  "test": 1,
+  "rule_11": [],
+  "opened": true
+ },
+ {
+  "reference": "AB261127120127-5755701a",
+  "idea_time": "2026-11-27T12:01:27Z",
+  "stp_allowed": false,
+  "reasons": [
+   "no live STP BUY opportunity whose zone the rejection candle (Fri 27 Nov 11:40 GMT) reached (live: none)"
+  ],
+  "opportunity": null,
+  "key": null,
+  "signal": null,
+  "lineage": null,
+  "test": null,
+  "opened": false
+ }
+]

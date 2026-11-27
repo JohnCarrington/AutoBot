@@ -1,0 +1,396 @@
+{
+ "ambiguous": [],
+ "as_of_utc": "2026-11-27T16:16:46Z",
+ "lineages_with_consumed_tests": {
+  "STP-GBPUSD-20261124-1700-23": {
+   "aliases": {
+    "2": [
+     "STP-GBPUSD-20261125-1800-35#t1"
+    ],
+    "6": [
+     "STP-GBPUSD-20261126-1400-44#t1"
+    ],
+    "9": [
+     "STP-GBPUSD-20261127-1500-59#t1"
+    ]
+   },
+   "consumed": {
+    "2": [
+     "AB261125200515-c9049665"
+    ],
+    "6": [
+     "AB261126142255-04805706"
+    ],
+    "9": [
+     "AB261127151117-d13449c1"
+    ]
+   },
+   "evidence": [
+    {
+     "alias": true,
+     "key": "STP-GBPUSD-20261125-1800-35#t1",
+     "lineage_key": "STP-GBPUSD-20261124-1700-23#t2",
+     "lineage_tests_before_the_rejection_hour": [
+      [
+       "2026-11-24T14:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-24T22:00:00Z",
+       "rearm"
+      ],
+      [
+       "2026-11-25T17:00:00Z",
+       "test"
+      ]
+     ],
+     "reference": "AB261125200515-c9049665",
+     "rejection_candle": "2026-11-25T19:45:00Z",
+     "state": "opened"
+    },
+    {
+     "alias": true,
+     "key": "STP-GBPUSD-20261126-1400-44#t1",
+     "lineage_key": "STP-GBPUSD-20261124-1700-23#t6",
+     "lineage_tests_before_the_rejection_hour": [
+      [
+       "2026-11-24T14:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-24T22:00:00Z",
+       "rearm"
+      ],
+      [
+       "2026-11-25T17:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-25T22:00:00Z",
+       "rearm"
+      ],
+      [
+       "2026-11-25T23:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-26T03:00:00Z",
+       "rearm"
+      ],
+      [
+       "2026-11-26T07:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-26T08:00:00Z",
+       "rearm"
+      ],
+      [
+       "2026-11-26T09:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-26T11:00:00Z",
+       "rearm"
+      ]
+     ],
+     "reference": "AB261126142255-04805706",
+     "rejection_candle": "2026-11-26T13:50:00Z",
+     "state": "opened"
+    },
+    {
+     "alias": true,
+     "key": "STP-GBPUSD-20261127-1500-59#t1",
+     "lineage_key": "STP-GBPUSD-20261124-1700-23#t9",
+     "lineage_tests_before_the_rejection_hour": [
+      [
+       "2026-11-24T14:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-24T22:00:00Z",
+       "rearm"
+      ],
+      [
+       "2026-11-25T17:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-25T22:00:00Z",
+       "rearm"
+      ],
+      [
+       "2026-11-25T23:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-26T03:00:00Z",
+       "rearm"
+      ],
+      [
+       "2026-11-26T07:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-26T08:00:00Z",
+       "rearm"
+      ],
+      [
+       "2026-11-26T09:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-26T11:00:00Z",
+       "rearm"
+      ],
+      [
+       "2026-11-26T13:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-26T17:00:00Z",
+       "rearm"
+      ],
+      [
+       "2026-11-26T21:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-26T22:00:00Z",
+       "rearm"
+      ],
+      [
+       "2026-11-26T23:00:00Z",
+       "test"
+      ]
+     ],
+     "reference": "AB261127151117-d13449c1",
+     "rejection_candle": "2026-11-27T14:45:00Z",
+     "state": "opened"
+    }
+   ],
+   "home_zone": {
+    "high": "13128.6",
+    "low": "13117.6"
+   },
+   "members": [
+    "STP-GBPUSD-20261124-1700-23",
+    "STP-GBPUSD-20261125-0000-26",
+    "STP-GBPUSD-20261125-1800-35",
+    "STP-GBPUSD-20261126-1100-40",
+    "STP-GBPUSD-20261126-1400-44",
+    "STP-GBPUSD-20261126-2000-46",
+    "STP-GBPUSD-20261126-2100-47",
+    "STP-GBPUSD-20261127-0000-50",
+    "STP-GBPUSD-20261127-0200-53",
+    "STP-GBPUSD-20261127-0300-55",
+    "STP-GBPUSD-20261127-1500-59"
+   ],
+   "trade": "SELL"
+  },
+  "STP-GBPUSD-20261125-1700-34": {
+   "aliases": {},
+   "consumed": {
+    "1": [
+     "AB261125170604-a4ec4a37"
+    ]
+   },
+   "evidence": [
+    {
+     "alias": false,
+     "key": "STP-GBPUSD-20261125-1700-34#t1",
+     "lineage_key": "STP-GBPUSD-20261125-1700-34#t1",
+     "lineage_tests_before_the_rejection_hour": [],
+     "reference": "AB261125170604-a4ec4a37",
+     "rejection_candle": "2026-11-25T16:50:00Z",
+     "state": "opened"
+    }
+   ],
+   "home_zone": {
+    "high": "13096.0",
+    "low": "13084.1"
+   },
+   "members": [
+    "STP-GBPUSD-20261125-1700-34",
+    "STP-GBPUSD-20261125-2100-36"
+   ],
+   "trade": "BUY"
+  },
+  "STP-GBPUSD-20261126-0000-37": {
+   "aliases": {},
+   "consumed": {
+    "1": [
+     "AB261126060101-987e099b"
+    ],
+    "2": [
+     "AB261126114004-bd34fb67"
+    ]
+   },
+   "evidence": [
+    {
+     "alias": false,
+     "key": "STP-GBPUSD-20261126-0000-37#t1",
+     "lineage_key": "STP-GBPUSD-20261126-0000-37#t1",
+     "lineage_tests_before_the_rejection_hour": [
+      [
+       "2026-11-26T03:00:00Z",
+       "test"
+      ]
+     ],
+     "reference": "AB261126060101-987e099b",
+     "rejection_candle": "2026-11-26T05:45:00Z",
+     "state": "opened"
+    },
+    {
+     "alias": false,
+     "key": "STP-GBPUSD-20261126-0000-37#t2",
+     "lineage_key": "STP-GBPUSD-20261126-0000-37#t2",
+     "lineage_tests_before_the_rejection_hour": [
+      [
+       "2026-11-26T03:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-26T10:00:00Z",
+       "rearm"
+      ]
+     ],
+     "reference": "AB261126114004-bd34fb67",
+     "rejection_candle": "2026-11-26T11:10:00Z",
+     "state": "opened"
+    }
+   ],
+   "home_zone": {
+    "high": "13103",
+    "low": "13093"
+   },
+   "members": [
+    "STP-GBPUSD-20261126-0000-37",
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45",
+    "STP-GBPUSD-20261126-2100-48",
+    "STP-GBPUSD-20261127-0100-52"
+   ],
+   "trade": "BUY"
+  },
+  "STP-GBPUSD-20261126-0400-38": {
+   "aliases": {},
+   "consumed": {
+    "1": [
+     "AB261126063004-aaea24e1"
+    ],
+    "2": [
+     "AB261126125133-d1518c12"
+    ]
+   },
+   "evidence": [
+    {
+     "alias": false,
+     "key": "STP-GBPUSD-20261126-0400-38#t1",
+     "lineage_key": "STP-GBPUSD-20261126-0400-38#t1",
+     "lineage_tests_before_the_rejection_hour": [
+      [
+       "2026-11-26T03:00:00Z",
+       "test"
+      ]
+     ],
+     "reference": "AB261126063004-aaea24e1",
+     "rejection_candle": "2026-11-26T06:00:00Z",
+     "state": "opened"
+    },
+    {
+     "alias": false,
+     "key": "STP-GBPUSD-20261126-0400-38#t2",
+     "lineage_key": "STP-GBPUSD-20261126-0400-38#t2",
+     "lineage_tests_before_the_rejection_hour": [
+      [
+       "2026-11-26T03:00:00Z",
+       "test"
+      ],
+      [
+       "2026-11-26T10:00:00Z",
+       "rearm"
+      ],
+      [
+       "2026-11-26T11:00:00Z",
+       "test"
+      ]
+     ],
+     "reference": "AB261126125133-d1518c12",
+     "rejection_candle": "2026-11-26T12:25:00Z",
+     "state": "opened"
+    }
+   ],
+   "home_zone": {
+    "high": "13103",
+    "low": "13093"
+   },
+   "members": [
+    "STP-GBPUSD-20261126-0400-38",
+    "STP-GBPUSD-20261126-1200-42",
+    "STP-GBPUSD-20261126-2300-49",
+    "STP-GBPUSD-20261127-0100-51"
+   ],
+   "trade": "SELL"
+  },
+  "STP-GBPUSD-20261127-0300-56": {
+   "aliases": {
+    "1": [
+     "STP-GBPUSD-20261127-1200-57#t1"
+    ]
+   },
+   "consumed": {
+    "1": [
+     "AB261127065505-8c11a4bc",
+     "AB261127120127-5755701a"
+    ]
+   },
+   "evidence": [
+    {
+     "alias": false,
+     "key": "STP-GBPUSD-20261127-0300-56#t1",
+     "lineage_key": "STP-GBPUSD-20261127-0300-56#t1",
+     "lineage_tests_before_the_rejection_hour": [
+      [
+       "2026-11-27T02:00:00Z",
+       "test"
+      ]
+     ],
+     "reference": "AB261127065505-8c11a4bc",
+     "rejection_candle": "2026-11-27T06:30:00Z",
+     "state": "opened"
+    },
+    {
+     "alias": true,
+     "key": "STP-GBPUSD-20261127-1200-57#t1",
+     "lineage_key": "STP-GBPUSD-20261127-0300-56#t1",
+     "lineage_tests_before_the_rejection_hour": [
+      [
+       "2026-11-27T02:00:00Z",
+       "test"
+      ]
+     ],
+     "reference": "AB261127120127-5755701a",
+     "rejection_candle": "2026-11-27T11:40:00Z",
+     "state": "opened"
+    }
+   ],
+   "home_zone": {
+    "high": "13130.9",
+    "low": "13121.3"
+   },
+   "members": [
+    "STP-GBPUSD-20261127-0300-56",
+    "STP-GBPUSD-20261127-1200-57",
+    "STP-GBPUSD-20261127-1305-58"
+   ],
+   "trade": "BUY"
+  }
+ },
+ "opportunity_lineage": {
+  "STP-GBPUSD-20261127-1305-58": "STP-GBPUSD-20261127-0300-56",
+  "STP-GBPUSD-20261127-1500-60": "STP-GBPUSD-20261127-0200-54"
+ }
+}

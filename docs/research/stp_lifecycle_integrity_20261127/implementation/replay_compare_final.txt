@@ -1,0 +1,9 @@
+CHANGED BUY 13084.1 13096.0 -1700-34 -> -1700-34 | prod end ('2026-11-25T18:20:00Z', 'invalidated', 'destination reached before entry: price reached 13127.3 (Wed 25 Nov 18') | new end ('2026-11-25T18:20:00Z', 'completed', 'price reached the primary destination 13127.3 (Wed 25 Nov 18:15 GMT) a')
+NOT ISSUED (new code) BUY 13084.1 13093 -2100-36 ('2026-11-26T00:00:04Z', 'invalidated', 'structural levels changed at the pivot rollover: daily pivot 13086.9 n')
+NOT ISSUED (new code) SELL 13115.1 13123.9 -2000-46 ('2026-11-26T22:00:00Z', 'invalidated', 'destination reached before entry: price reached 13103 (Thu 26 Nov 21:5')
+NOT ISSUED (new code) SELL 13115.1 13123.9 -2100-47 ('2026-11-26T22:00:00Z', 'invalidated', 'destination reached before entry: price reached 13103 (Thu 26 Nov 21:5')
+NOT ISSUED (new code) SELL 13108.5 13119.1 -0000-50 ('2026-11-27T00:10:00Z', 'invalidated', 'destination reached before entry: price reached 13103 (Fri 27 Nov 00:0')
+NOT ISSUED (new code) SELL 13108.5 13119.1 -0200-53 ('2026-11-27T09:00:00Z', 'invalidated', 'confirmed break held: no hourly close back below 13119.1 within 3 cand')
+NOT ISSUED (new code) BUY 13121.3 13130.3 -1200-57 ('2026-11-27T12:20:00Z', 'invalidated', 'destination reached before entry: price reached 13134.6 (Fri 27 Nov 12')
+NOT ISSUED (new code) BUY 13121.3 13130.3 -1305-58 None
+same lifecycle (ids aside): 23 of 31
