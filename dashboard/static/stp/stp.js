@@ -131,7 +131,7 @@
       tile("Preferred opportunity", (o.recommendation ? arrow(opp) : "") + opp, o.recommendation ? dirClass(opp) : "neutral",
            o.recommendation ? (o.recommendation.opportunity || "") : (fc.forecast_trade ? "Forecast direction " + fc.forecast_trade + " (" + (fc.opportunity || "") + "), but no live recommendation" : "No forecast direction to trade"));
       tile("Recommendation status", (o.status || {}).label || "–", "st-" + ((o.status || {}).code || "NONE"),
-           o.recommendation ? o.recommendation.id : "");
+           o.recommendation ? o.recommendation.id + ((o.live_count || 0) > 1 ? " (binds first of " + o.live_count + " live; the newest is not necessarily the one an entry uses)" : "") : "");
     }
     const ex = $q(".stp-explainbox"); ex.textContent = "";
     if (o.explanation) {
@@ -157,12 +157,18 @@
                                                : "Stage A: observation only. No opportunity authorises a trade."));
     if (!list.length) { box.appendChild(el("div", "stp-note", "STP is tracking no opportunity.")); return; }
     const t = el("table", "stp-table"), hr = el("tr");
-    ["Id", "Trade", "Status", "Zone", "Class", "Primary", "Zone break", "4-hour", "Created"].forEach((x) => hr.appendChild(el("th", "", x)));
+    ["Id", "Trade", "Status", "Zone", "Class", "Primary", "Zone break", "4-hour", "Lineage", "Test", "Consumed", "Created"].forEach((x) => hr.appendChild(el("th", "", x)));
     t.appendChild(hr);
     list.forEach((o) => {
       const r = el("tr");
-      [o.id, o.trade, o.label + (o.authorises ? "" : " (does not authorise)"), o.zone || "", o.zone_class || "",
-       o.primary || "–", o.zone_break || "–", o.relation_to_h4 || "–", o.created_utc ? when(o.created_utc) : "–"]
+      const ts = o.test || {};
+      const lin = (o.lineage && o.lineage !== o.id) ? o.lineage : "own";
+      const gap = (o.data_gaps && o.data_gaps.length) ? " · data gap, not authorising" : "";
+      [o.id + (o.binds_first ? " (binds first)" : ""), o.trade, o.label + (o.authorises ? "" : " (does not authorise)") + gap, o.zone || "", o.zone_class || "",
+       o.primary || "–", o.zone_break || "–", o.relation_to_h4 || "–", lin,
+       ts.test_now ? ("#" + ts.test_now + (ts.armed ? " (next touch)" : " (in progress)")) : "–",
+       (ts.consumed && ts.consumed.length) ? ts.consumed.map((n) => "#" + n).join(", ") : "none",
+       o.created_utc ? when(o.created_utc) : "–"]
         .forEach((x, i) => r.appendChild(el("td", i === 2 ? "st-" + o.status : "", String(x))));
       t.appendChild(r);
     });

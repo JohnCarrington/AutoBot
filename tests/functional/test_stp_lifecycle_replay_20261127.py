@@ -10,7 +10,10 @@ What the corrected code must do (FL-xx; the brief's mandatory scenarios):
   * the 27 Nov 12:01 BUY refused (test 1 of BUY 13121.3-13131 already traded at 06:55);
   * no republication of that test authorises another trade;
   * the 5-minute bounce and Level Reversal on one setup trade once;
-  * the publications that change are only reissues of a place whose destination was just achieved (PD-2)."""
+  * the publications that change are only reissues of a place whose destination was just achieved (PD-2);
+  * WP2: each STP-authorised trade is acknowledged once IG confirms it (orders/executions.py), and an opportunity whose
+    destination is reached after its trade ends COMPLETED "after a confirmed trade entry" (25 Nov 1700-34: production
+    recorded "destination reached before entry"); each other destination ending says which circumstance applied."""
 
 from __future__ import annotations
 
@@ -105,6 +108,7 @@ def test_FL_A8_only_reissues_of_a_place_whose_destination_was_just_achieved_are_
     key_n = {(t, *run["issued"][i][:2]) for i, t in created(run["events"]).items() if i in run["issued"]}
     assert key_n <= key_p                                              # nothing new is published
     assert sorted(key_p - key_n) == [
+        ("2026-11-25T21:00:03Z", "BUY", "13084.1"),                    # after 1700-34 completed with its trade (WP2)
         ("2026-11-26T20:00:03Z", "SELL", "13115.1"), ("2026-11-26T21:00:03Z", "SELL", "13115.1"),
         ("2026-11-27T00:00:04Z", "SELL", "13108.5"), ("2026-11-27T02:00:03Z", "SELL", "13108.5"),
         ("2026-11-27T12:00:03Z", "BUY", "13121.3"), ("2026-11-27T13:05:03Z", "BUY", "13121.3")]
@@ -166,3 +170,36 @@ def test_FL_M1_after_the_migration_the_live_1305_58_cannot_authorise_test_1_agai
     OpportunityKeeper(s, store).run(t)                                          # applied once: idempotent on restart
     evs = [json.loads(x) for x in (d / "recommendations.jsonl").read_text().splitlines()]
     assert sum(e["event"] == "lineage map applied" for e in evs) == 1
+
+
+# ---- WP2: lifecycle accuracy on the real days ---------------------------------------------------------------------------
+
+def _ends(run):
+    return {e["id"]: e for e in run["events"] if e.get("id") and e["event"] in ("completed", "invalidated")}
+
+
+def test_FL_B1_the_25_nov_1700_34_with_its_17_06_trade_ends_completed_after_a_confirmed_trade_entry(run):
+    e = _ends(run)["STP-GBPUSD-20261125-1700-34"]
+    assert e["event"] == "completed" and e["destination_case"] == "after_trade"
+    assert "AB261125170604-a4ec4a37" in e["why"] and e["time_utc"] == "2026-11-25T18:20:00Z"
+
+
+def test_FL_B2_every_destination_ending_names_its_circumstance_truthfully(run):
+    cases = {}
+    for e in _ends(run).values():
+        if e.get("destination_case"):
+            cases.setdefault(e["destination_case"], []).append(e)
+    assert set(cases) <= {"before_zone", "after_zone_at_or_before_creation", "after_zone", "after_trade"}
+    for e in cases.get("after_zone_at_or_before_creation", []):
+        assert "without reaching the zone" not in e["why"] and e["event"] == "invalidated"
+    traded = {o["opportunity"] for o in run["outcomes"] if o["opened"]}
+    for e in _ends(run).values():
+        if e["id"] in traded and e.get("destination_case"):
+            assert e["destination_case"] == "after_trade", e        # never "before entry" once a trade was entered
+
+
+def test_FL_B3_every_opened_trade_is_acknowledged_once_and_its_test_recorded_as_consumed(run):
+    snap = run["snapshots"][-1]
+    consumed = {ref for L in snap["lineages"].values() for refs in (L.get("consumed") or {}).values() for ref in refs}
+    opened = {o["reference"] for o in run["outcomes"] if o["opened"]}
+    assert opened == consumed and len(snap.get("acks_seen") or []) == len(opened)

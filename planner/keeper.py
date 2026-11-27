@@ -70,6 +70,39 @@ CANDIDATE, WAITING, ACTIVE, INVALIDATED, SUPERSEDED, COMPLETED = (
     "CANDIDATE", "WAITING", "ACTIVE", "INVALIDATED", "SUPERSEDED", "COMPLETED")
 LIVE = (WAITING, ACTIVE)
 BEFORE, OVERLAPPED, AFTER = "before creation", "overlapped creation", "after creation"
+# Phase 2 C-1 (owner, 27 November 2026): what came before the primary destination was reached (recorded as
+# destination_case on every ending at the destination). "before_creation" is the D-1 rule at issue (planner/assess.py):
+# nothing is issued.
+BEFORE_CREATION, BEFORE_ZONE, AT_CREATION, AFTER_ZONE, AFTER_TRADE = (
+    "before_creation", "before_zone", "after_zone_at_or_before_creation", "after_zone", "after_trade")
+
+
+def executed_before(rec: dict, end: datetime) -> list[dict]:
+    """The confirmed trade entries from this opportunity (STP execution acknowledgements, PD-1 C) executed before
+    `end` (the end of the candle that reached the destination: the authorisation's catch-up refuses an entry once the
+    destination was touched earlier in its candle, so an entry in that candle came first)."""
+    return [x for x in rec.get("executions") or [] if parse_iso(x["executed_utc"]) < end]
+
+
+def destination_end(rec: dict, when: str, end: datetime) -> tuple[str, str, str]:
+    """(status, destination_case, reason) for an opportunity whose primary destination was reached (`when`: which
+    candle, in words; `end`: its end). A confirmed trade entry before it: COMPLETED (PD-1 C). Activated after creation:
+    COMPLETED, as before. Reached the zone only at or before creation: INVALIDATED as before (not an activation, owner
+    18 November 2026), with the true reason (C-1). Neither: "destination reached before entry", unchanged."""
+    p = rec["destinations"]["primary"]["price"]
+    ex = executed_before(rec, end)
+    if ex:
+        x = ex[0]
+        return (COMPLETED, AFTER_TRADE, f"price reached the primary destination {p} ({when}) after a confirmed trade "
+                f"entry from it ({x['reference']}, {x.get('strategy')}, executed {x['executed_utc']}; PD-1)")
+    if rec.get("ever_active"):
+        return COMPLETED, AFTER_ZONE, f"price reached the primary destination {p} ({when}) after the zone"
+    if rec.get("zone_before_creation"):
+        b = rec["zone_before_creation"].get("basis", "before the opportunity existed")
+        return (INVALIDATED, AT_CREATION, f"destination reached before entry: price reached {p} ({when}) after "
+                f"reaching the zone only at or before the opportunity's creation ({b}; not an activation, owner 18 "
+                f"November 2026), with no trade entered from it")
+    return INVALIDATED, BEFORE_ZONE, f"destination reached before entry: price reached {p} ({when}) without reaching the zone"
 EVENT_BASIS = "5-minute candle (no finer price data is stored, so the moment inside the candle is not known)"
 OBSERVE_ONLY = "OBSERVE ONLY - DOES NOT CONTROL TRADING"
 
@@ -281,11 +314,15 @@ class Keeper:
         if timing == BEFORE:
             return
         applies = rec["invalidation"].get("destination_first_applies", True)
-        dest = interacts(self.s, c, dlow, dhigh, from_below=not bear) and (applies or rec["ever_active"])
+        dest = interacts(self.s, c, dlow, dhigh, from_below=not bear) and \
+            (applies or rec["ever_active"] or bool(executed_before(rec, c.end)))
         zone = rec["status"] == WAITING and interacts(self.s, c, low, high, from_below=bear)
         evidence = {"candle_start_utc": _iso(c.start), "candle_end_utc": _iso(c.end), "candle_timing": timing,
                     "qualifying_event_utc": None, "event_time_basis": EVENT_BASIS}
         if timing == OVERLAPPED:
+            if zone:                                    # recorded for the ending's reason only (C-1); never activates
+                rec.setdefault("zone_before_creation", {"basis": f"the {uk_short(c.start)} 5-minute candle, running "
+                                                                 f"at creation, reached it", "candle_start_utc": _iso(c.start)})
             seen = [w for w, yes in ((f"reached the primary destination {rec['destinations']['primary']['price']}", dest),
                                      (f"reached the zone {plain(low)}-{plain(high)}", zone)) if yes]
             if seen:
@@ -294,13 +331,8 @@ class Keeper:
                             f"whether that happened before or after: not used (recorded only)", **evidence)
             return
         if dest:
-            if rec["ever_active"]:
-                self._retire(at, COMPLETED, f"price reached the primary destination {rec['destinations']['primary']['price']} "
-                             f"({uk_short(c.start)}) after the zone", evidence=evidence)
-            else:
-                self._retire(at, INVALIDATED, f"destination reached before entry: price reached "
-                             f"{rec['destinations']['primary']['price']} ({uk_short(c.start)}) without reaching the zone",
-                             evidence=evidence)
+            status, case, why = destination_end(rec, uk_short(c.start), c.end)
+            self._retire(at, status, why, evidence=evidence | {"destination_case": case})
             return
         if zone:
             rec["status"], rec["ever_active"] = ACTIVE, True
@@ -443,6 +475,9 @@ class Keeper:
                     # recorded only (owner's correction, 18 November 2026): price before the recommendation existed
                     # never activates it; a candle after its creation must reach the zone
                     c = last5[-1]
+                    new.setdefault("zone_before_creation", {"basis": f"the {uk_short(c.start)} 5-minute candle before "
+                                                                     f"creation was at the zone",
+                                                            "candle_start_utc": _iso(c.start)})
                     self._event(now, "in zone at creation", f"the {uk_short(c.start)} 5-minute candle, finished before the "
                                 f"recommendation was created, was already at the zone: not an activation (only a candle "
                                 f"after creation can activate it; recorded only)", candle_start_utc=_iso(c.start),

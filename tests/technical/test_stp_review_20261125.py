@@ -153,7 +153,8 @@ def test_R4_the_dashboard_lists_several_opportunities_with_every_field_its_scrip
     body = js[js.index("function renderOpportunities()"):js.index("function renderPlan()")]
     used = set(re.findall(r"\bo\.([a-z_0-9]+)", body))
     assert used == {"id", "trade", "label", "authorises", "zone", "zone_class", "primary", "zone_break",
-                    "relation_to_h4", "created_utc", "status"}
+                    "relation_to_h4", "created_utc", "status",
+                    "lineage", "test", "binds_first", "data_gaps"}          # Phase 2 C-7 (owner, 27 November 2026)
     assert all(used <= set(x) for x in shown)
 
 

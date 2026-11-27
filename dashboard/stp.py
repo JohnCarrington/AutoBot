@@ -65,7 +65,7 @@ ID_RE = re.compile(r"^STP-[A-Z]{6}-\d{8}-\d{4}-\d{1,6}$")
 LEVEL_RE = re.compile(r"^(?P<name>.*?) (?P<price>\d+(?:\.\d+)?)(?: \((?P<role>[^()]*)\))?$")
 
 # The planner's own codes, with understandable labels (meaning unchanged).
-STATUS_LABEL = {"CANDIDATE": "CREATED", "WAITING": "WAITING FOR ENTRY ZONE", "ACTIVE": "ACTIVE (PRICE AT THE ZONE)",
+STATUS_LABEL = {"CANDIDATE": "CREATED", "WAITING": "WAITING FOR ENTRY ZONE", "ACTIVE": "WATCH & WAIT",
                 "COMPLETED": "COMPLETED", "INVALIDATED": "INVALIDATED", "SUPERSEDED": "SUPERSEDED"}
 CONDITION_TEXT = {
     "CONTINUATION": "the trend is extending normally (new extreme, momentum confirming)",
@@ -492,6 +492,9 @@ def overview(settings: Any, now: datetime) -> dict:
         out["explanation"] = explanation(None, fresh, prices)
         return out
     p, rec = st.get("last_plan") or {}, st.get("recommendation")
+    first = binds_first(st)
+    if first:                       # Phase 2 C-7: with several live, the card shows the one an entry binds first
+        rec = first[0]
     d = p.get("dominant_direction")
     out["forecast"] = {
         "as_of_utc": p.get("as_of_utc"), "market_data_utc": p.get("market_data_utc"),
@@ -517,10 +520,36 @@ def overview(settings: Any, now: datetime) -> dict:
     out["technical"] = technical(st, p, prices)
     if isinstance(st.get("opportunities"), list):          # STP_OPPORTUNITIES (owner, 24 November 2026; WP-5)
         out["opportunities"] = opportunities(st, prices, mode(settings)["authorises_entries"])
+        live = [o for o in st["opportunities"] if isinstance(o, dict) and o.get("status") in ("WAITING", "ACTIVE")]
+        out["live_count"] = len(live)
+        out["binds_first"] = {o["trade"]: o["id"] for o in reversed(first)} if first else {}
     out["recent"] = [{"id": x["id"], "trade": x["trade"], "zone": prices.zone(*x["zone"]), "status": x["status"],
                       "why": prices.text(x.get("why")), "created_utc": x.get("created_utc"), "ended_utc": x.get("ended_utc")}
                      for x in st.get("recent") or [] if isinstance(x, dict) and x.get("zone")]
     return out
+
+
+def binds_first(st: dict) -> list[dict]:
+    """The live opportunities an authorisation binds first, one per direction (the oldest lineage, then the oldest
+    opportunity: stp/authorise.py), oldest first. Display only."""
+    live = [o for o in st.get("opportunities") or [] if isinstance(o, dict) and o.get("status") in ("WAITING", "ACTIVE")]
+    out = {}
+    for o in sorted(live, key=lambda o: (o.get("lineage_created_utc") or o.get("created_utc") or "", o.get("created_utc") or "")):
+        out.setdefault(o.get("trade"), o)
+    return sorted(out.values(), key=lambda o: o.get("lineage_created_utc") or o.get("created_utc") or "")
+
+
+def test_state(st: dict, o: dict) -> dict:
+    """The lineage's D-25 state (planner/lineage.py): tests counted, whether armed (the next touch is a new test), and
+    the tests already consumed by a confirmed trade (STP execution acknowledgements)."""
+    L = (st.get("lineages") or {}).get(o.get("lineage") or "") or {}
+    t = L.get("tests") or o.get("tests") or {}
+    ev = t.get("events") or []
+    n = sum(1 for e in ev if e[1] == "test")
+    armed = not ev or ev[-1][1] == "rearm"
+    consumed = sorted(int(k) for k, v in (L.get("consumed") or {}).items() if v)
+    return {"tests_counted": n, "armed": armed, "test_now": n + 1 if armed else max(n, 1), "consumed": consumed,
+            "uncertain_hours": len(t.get("uncertain") or [])}
 
 
 def opportunities(st: dict, prices: Prices, authorising: bool = True) -> list[dict]:
@@ -541,7 +570,10 @@ def opportunities(st: dict, prices: Prices, authorising: bool = True) -> list[di
                     "primary": prices.real(prim) if prim is not None else None,
                     "zone_break": prices.real(inv.get("zone_break_close")) if inv.get("zone_break_close") else None,
                     "relation_to_h4": o.get("relation_to_h4"), "created_utc": o.get("created_utc"),
-                    "lineage": o.get("lineage"), "broken_utc": (o.get("broken") or {}).get("broken_utc")})
+                    "lineage": o.get("lineage"), "broken_utc": (o.get("broken") or {}).get("broken_utc"),
+                    "test": test_state(st, o), "executions": len(o.get("executions") or []),
+                    "binds_first": any(x.get("id") == o.get("id") for x in binds_first(st)),
+                    "data_gaps": [g for g in o.get("data_gaps") or [] if g.get("status") != "reconciled"]})
     return out
 
 

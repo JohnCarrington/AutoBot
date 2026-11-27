@@ -131,8 +131,23 @@ def start_state(s: Any) -> None:
     (d / "current.json").write_text((FIX / "initial_state_20261125_0915.json").read_text())
 
 
+def acknowledge(s: Any) -> Callable[[dict, Any, datetime], None]:
+    """What the order sender does once IG confirms a trade (orders/executions.py): the acknowledgement, with the STP
+    context the authorisation gave the idea, executed at the idea's own time (production's fills came within a second).
+    No price, size or result."""
+    from orders.executions import ExecutionAcks
+
+    def write(i: dict, v: Any, when: datetime) -> None:
+        acks = ExecutionAcks(Path(s.orders.folder) / s.market.pair, lambda: when)
+        t = SimpleNamespace(reference=i["reference"], deal_id="", strategy=i["strategy"], direction=i["direction"],
+                            opened_at=when, stp={"opportunity": v.opportunity["id"], "lineage": v.lineage, "test": v.test,
+                                                 "key": v.stp_key, "keys": list(v.keys)})
+        acks.record(t, when, "replay: as IG's deal confirmation ACCEPTED")
+    return write
+
+
 def replay(s: Any, end: datetime, store: AvailStore | None = None, ideas: list[dict] | None = None,
-           on_open: Callable[[dict, Any, datetime], None] | None = None) -> dict:
+           on_open: Callable[[dict, Any, datetime], None] | None = None, acks: bool = True) -> dict:
     """The tracker after every 5-minute candle from START to `end`, with the recorded STP trades' ideas offered at
     their own times. Returns the tracker's snapshots, its events and each idea's outcome."""
     from orders.sender import OrderSender
@@ -141,6 +156,11 @@ def replay(s: Any, end: datetime, store: AvailStore | None = None, ideas: list[d
     from stp.authorise import authorise
     store = store or fixture_store()
     start_state(s)
+    if on_open is None and acks:
+        try:
+            on_open = acknowledge(s)
+        except ImportError:                     # the code before WP2 has no acknowledgements
+            on_open = None
     planner = RecordedPlanner()
     folder = Path(s.planner.folder) / s.market.pair
     recorded = sorted(parse(k) for k in planner.p)

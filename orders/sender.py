@@ -123,6 +123,8 @@ class Trade:
     signal: str = ""                    # the idea's signal key (safety rule 11; owner, 18 November 2026)
     recovery: dict = field(default_factory=dict)   # what the engine needs to manage and record it (27 November 2026)
     adopted: bool = False               # accounted for by IG only after it was sent (an "adopted" record)
+    stp: dict = field(default_factory=dict)    # the STP opportunity, lineage, test and keys it was authorised on
+                                                # (Phase 2 WP2): acknowledged to STP once IG confirms it (executions.py)
 
     def as_open_trade(self, size_gbp_per_pip: Decimal) -> OpenTrade:
         part = Decimal("0.5") if self.half_closed else Decimal(1)
@@ -221,6 +223,8 @@ class OrderSender:
         self.funds: AccountFunds | None = None
         self.ready = False
         self._lock = threading.RLock()
+        from orders.executions import ExecutionAcks
+        self.acks = None if paper else ExecutionAcks(self.folder, self.now)   # STP's execution acknowledgements
 
     # ---- the record ---------------------------------------------------------------------------
 
@@ -265,7 +269,7 @@ class OrderSender:
                                          once_a_day=r.get("once_a_day") or sent.get("once_a_day") or "",
                                          signal=r.get("signal") or sent.get("signal") or "",
                                          recovery=r.get("recovery") or sent.get("recovery") or {},
-                                         adopted=ev == "adopted")
+                                         adopted=ev == "adopted", stp=r.get("stp") or sent.get("stp") or {})
                 self.not_placed.pop(ref, None)
             elif ev == ACCEPTED_AT_IG and ref in self.unresolved:
                 self.unresolved[ref]["accepted_deal_id"] = r.get("deal_id")
@@ -309,6 +313,7 @@ class OrderSender:
             self._read_record()
             if not self.paper:
                 self._recover()
+                self.acks.backfill(self.trades.values())   # never lost by a stop between the journal and the ack
             self._read_funds("start-up")
             self.ready = True
             self._record("ready", open_trades=len(self.open_trades()))
@@ -548,7 +553,7 @@ class OrderSender:
                   recovery=dict(sent.get("recovery") or {}, take_profit_pips=tp, idea_price=sent.get("idea_price"),
                                 sent_utc=sent.get("sent_utc"), ig_stop_level=None if ig_stop is None else str(ig_stop),
                                 ig_limit_level=None if ig_limit is None else str(ig_limit)),
-                  adopted=True)
+                  adopted=True, stp=sent.get("stp") or {})
         self.not_placed.pop(ref, None)
         self.trades[ref] = t
         self.unresolved.pop(ref, None)
@@ -557,6 +562,8 @@ class OrderSender:
                      stop_pips=t.stop_pips, opened_utc=t.opened_at, deal_id=t.deal_id, level=t.level, note=note,
                      recovery=t.recovery, **({"once_a_day": t.once_a_day} if t.once_a_day else {}),
                      **({"signal": t.signal} if t.signal else {}))
+        if getattr(self, "acks", None) is not None:   # IG's own open time: the confirmed execution chronology
+            self.acks.record(t, t.opened_at, "IG's records: an order IG accounted for after it was sent (recovered)")
         if recovered:
             self.recovered_new.append(t)
             self.alerts.problem(f"order-recovered-{ref}",
@@ -900,6 +907,8 @@ class OrderSender:
                    "take_profit_pips": tp, "idea_time": idea.time, "idea_price": idea.entry_price}
             row |= ({"once_a_day": once} if once else {}) | ({"signal": signal} if signal else {})
             row |= {"recovery": recovery} if recovery else {}
+            stp = (getattr(idea, "context", None) or {}).get("stp")
+            row |= {"stp": {k: stp.get(k) for k in ("opportunity", "lineage", "test", "key", "keys")}} if stp else {}
             self._record("sending", **row, body=body)              # written and flushed before IG is contacted
             self.unresolved[ref] = self._pending_of(json.loads(json.dumps(
                 {k: (str(v) if isinstance(v, Decimal) else _iso(v) if isinstance(v, datetime) else v)
@@ -950,7 +959,7 @@ class OrderSender:
             sent = self.unresolved[ref]
             t = Trade(ref, idea.strategy, idea.direction, Decimal(sent["size"]), Decimal(sent["stop_pips"]), self.now(),
                       c.get("dealId", ""), _dec(c.get("level")), once_a_day=sent.get("once_a_day") or "",
-                      signal=sent.get("signal") or "", recovery=sent.get("recovery") or {})
+                      signal=sent.get("signal") or "", recovery=sent.get("recovery") or {}, stp=sent.get("stp") or {})
             self.trades[ref] = t
             self.unresolved.pop(ref, None)
             self._record("opened", reference=ref, strategy=t.strategy, direction=t.direction, size=t.size,
@@ -958,6 +967,8 @@ class OrderSender:
                          stop_level=c.get("stopLevel"), limit_level=c.get("limitLevel"),
                          **({"once_a_day": t.once_a_day} if t.once_a_day else {}),
                      **({"signal": t.signal} if t.signal else {}))
+            if getattr(self, "acks", None) is not None:   # IG confirmed it ACCEPTED: an actual execution
+                self.acks.record(t, t.opened_at, "IG's deal confirmation: ACCEPTED")
             self._read_funds("a trade opened")
             return Result(True, "opened", ref, t.deal_id, t.level)
         return self._refused(ref, idea, order, c.get("reason") or c.get("dealStatus") or "no reason given")

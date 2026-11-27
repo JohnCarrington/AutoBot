@@ -36,13 +36,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+from pathlib import Path
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 from decimal import Decimal
 from typing import Any
 
-from planner.keeper import (ACTIVE, BEFORE, COMPLETED, EVENT_BASIS, INVALIDATED, LIVE, SUPERSEDED, UTC, WAITING,
-                            Keeper, _d, _iso, identity, overlaps, summary)
+from planner.keeper import (ACTIVE, AFTER_TRADE, BEFORE, COMPLETED, EVENT_BASIS, INVALIDATED, LIVE, SUPERSEDED, UTC,
+                            WAITING, Keeper, _d, _iso, destination_end, identity, overlaps, summary)
 from planner.lineage import count_gap, count_hour, new_tests, seed_tests, zones_overlap
 from planner.measure import cl, freshness, hi, lo, ppp, side_of
 from planner.zones import interacts, wholly_clear
@@ -82,6 +83,27 @@ def member(rec: dict) -> dict:
 
 
 LINEAGE_MAP = "lineage_map.json"
+# The execution side's acknowledgement file (orders/executions.py FILE; the file format is the one-way interface: STP
+# reads it here and never imports execution code, tests/functional/test_stp_final_validation_20261120.py test_10)
+ACKS_FILE = "stp_executions.jsonl"
+
+
+def read_acks(path: Path) -> list[dict]:
+    """Every acknowledgement, once per reference, in file order; a damaged (torn) last line is skipped."""
+    out, seen = [], set()
+    try:
+        lines = path.read_text().splitlines()
+    except OSError:
+        return []
+    for x in lines:
+        try:
+            a = json.loads(x)
+        except ValueError:
+            continue
+        if isinstance(a, dict) and a.get("reference") and a["reference"] not in seen:
+            seen.add(a["reference"])
+            out.append(a)
+    return out
 
 
 class OpportunityKeeper(Keeper):
@@ -169,7 +191,9 @@ class OpportunityKeeper(Keeper):
                 if m["id"] == rec["id"]:
                     m.update(ended_utc=rec["ended_utc"], status=status, effective_status=status,
                              zone={"low": rec["entry_zone"]["low"], "high": rec["entry_zone"]["high"]},
-                             destination_case=(evidence or {}).get("destination_case"))
+                             destination_case=(evidence or {}).get("destination_case"),
+                             destination_candle_end_utc=(evidence or {}).get("candle_end_utc") or rec["ended_utc"]
+                             if (evidence or {}).get("destination_case") else None)
         self.state["opportunities"] = [r for r in self.opportunities if r is not rec]
         self.state["recommendation"] = None
 
@@ -271,6 +295,10 @@ class OpportunityKeeper(Keeper):
             gap = count_gap(self.s, self.store, L["tests"], low, high, t)   # the hours nobody tracked it
         rec["lineage"], rec["lineage_created_utc"] = L["id"], L["created_utc"]
         rec["tests"] = _copy(L["tests"])
+        ev_ = L["tests"].get("events") or []
+        hour = t.replace(minute=0, second=0, microsecond=0)
+        if ev_ and ev_[-1][1] == "test" and parse_iso(ev_[-1][0]) < hour:     # a D-25 test already in progress
+            rec["zone_before_creation"] = {"basis": f"the D-25 test in progress since the {ev_[-1][0]} hourly candle"}
         L["members"].append(member(rec))
         if L["id"] != rec["id"] and not inherit:
             with self._slot(rec):
@@ -283,6 +311,54 @@ class OpportunityKeeper(Keeper):
             rec["relation_to_h4"] = plan["relation_to_h4"]
         self.opportunities.append(rec)
         return rec
+
+    def _take_acks(self, now: datetime) -> None:
+        """PD-1 C (owner 27 November 2026): the order sender's acknowledgements of trades IG confirmed open from an STP
+        opportunity (orders/executions.py; one-way, read only here, no financial figure). Each is taken once (by its
+        deal reference, persisted in acks_seen): the opportunity records the execution (it then ends COMPLETED if its
+        destination is reached after it), the lineage records the test as consumed. An acknowledgement that arrives
+        after its opportunity ended at its destination, for an execution before that destination, corrects the
+        ending's classification in a recorded event; the opportunity is never reopened."""
+        seen = self.state.setdefault("acks_seen", [])
+        orders = getattr(self.s, "orders", None)
+        if orders is None:
+            return
+        for a in read_acks(Path(orders.folder) / self.s.market.pair / ACKS_FILE):
+            if a["reference"] in seen:
+                continue
+            seen.append(a["reference"])
+            x = {k: a.get(k) for k in ("reference", "strategy", "executed_utc", "test", "key", "source")}
+            lid = a.get("lineage")
+            rec = next((r for r in self.opportunities if r["id"] == a.get("opportunity")), None)
+            if rec is not None:
+                lid = lid or rec.get("lineage")
+                rec.setdefault("executions", []).append(x)
+                self._note(rec, now, "trade executed", f"IG confirmed the trade {a['reference']} ({a.get('strategy')}) "
+                           f"opened from this opportunity at {a.get('executed_utc')}, on test {a.get('test')} "
+                           f"({a.get('key')}): recorded (PD-1)", reference=a["reference"],
+                           executed_utc=a.get("executed_utc"), test=a.get("test"))
+            L = self.lineages.get(lid) if lid else None
+            if L is None:
+                L = next((M for M in self.lineages.values()
+                          if any(m["id"] == a.get("opportunity") for m in M.get("members", []))), None)
+            if L is not None and a.get("test") is not None:
+                refs = L.setdefault("consumed", {}).setdefault(str(a["test"]), [])
+                if a["reference"] not in refs:
+                    refs.append(a["reference"])
+            if rec is None and L is not None:
+                m = next((m for m in L["members"] if m["id"] == a.get("opportunity")), None)
+                end = m and m.get("destination_candle_end_utc")
+                if m and end and m.get("destination_case") not in (None, AFTER_TRADE) and \
+                        parse_iso(a["executed_utc"]) < parse_iso(end):
+                    before = m["destination_case"]
+                    m.update(destination_case=AFTER_TRADE, effective_status=COMPLETED,
+                             corrected={"time_utc": _iso(now), "was": before, "reference": a["reference"]})
+                    self._append({"time_utc": _iso(now), "event": "classification corrected", "id": m["id"],
+                                  "why": f"a confirmed trade entry ({a['reference']}, executed {a['executed_utc']}) "
+                                         f"came before the destination ({end}): destination reached after a "
+                                         f"confirmed trade entry, not {before}; the ending stands, nothing reopened "
+                                         f"(PD-1)", "destination_case": AFTER_TRADE, "was": before,
+                                  "reference": a["reference"]})
 
     def _count_lineages(self, c: Any) -> None:
         """D-25 / P-C8, once per finished hourly candle per lineage with a tracked opportunity, against the zone of its
@@ -478,13 +554,8 @@ class OpportunityKeeper(Keeper):
                 for rec in list(self.opportunities):
                     if rec["status"] in AUTHORISING and rec["trade"] == p.get("trade") and \
                             _d(hit["primary"]) == _d(rec["destinations"]["primary"]["price"]):
-                        if rec["ever_active"]:
-                            self._end(rec, now, COMPLETED, f"price reached the primary destination "
-                                      f"{rec['destinations']['primary']['price']} after the zone (found at the hourly "
-                                      f"re-check: {hit['how']})")
-                        else:
-                            self._end(rec, now, INVALIDATED, f"destination reached before entry: {hit['how']}, without "
-                                      f"reaching the zone (found at the hourly re-check)")
+                        status, case, why = destination_end(rec, f"found at the hourly re-check: {hit['how']}", now)
+                        self._end(rec, now, status, why, {"destination_case": case})
             if p.get("no_recommendation") is not None or p.get("entry_zone") is None:
                 continue
             ident = identity(p)
@@ -523,6 +594,8 @@ class OpportunityKeeper(Keeper):
         low, high = _d(rec["entry_zone"]["low"]), _d(rec["entry_zone"]["high"])
         if last5 and interacts(self.s, last5[-1], low, high, from_below=rec["trade"] == "SELL"):
             c = last5[-1]
+            rec.setdefault("zone_before_creation", {"basis": f"the {uk_short(c.start)} 5-minute candle before "
+                                                             f"creation was at the zone", "candle_start_utc": _iso(c.start)})
             self._note(rec, now, "in zone at creation", f"the {uk_short(c.start)} 5-minute candle, finished before the "
                        f"opportunity was created, was already at the zone: not an activation (recorded only)",
                        candle_start_utc=_iso(c.start), candle_end_utc=_iso(c.end), candle_timing=BEFORE,
@@ -534,6 +607,7 @@ class OpportunityKeeper(Keeper):
         from analyser.indicators import last_candles
         now = now.astimezone(UTC)
         self._apply_lineage_map(now)
+        self._take_acks(now)
         h1 = last_candles(self.store, "1h", now, 1)
         h1_end = h1[-1].end if h1 else None
         fives_since = parse_iso(self.state["m5_checked_until"]) if self.state.get("m5_checked_until") else None
