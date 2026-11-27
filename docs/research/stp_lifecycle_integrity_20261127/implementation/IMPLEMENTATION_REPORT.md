@@ -410,3 +410,7 @@ GitHub: https://github.com/JohnCarrington/AutoBot/tree/stp-lifecycle-integrity
 ### 13.11 Independent review findings R1–R4
 
 See `REVIEW_R1_R4.md`. R1, R2 and R3 are confirmed defects, each reproduced and corrected. R4 is the fail-closed review procedure, with `python -m planner.review`.
+
+### 13.12 Review R3.1
+
+See `REVIEW_R3_1.md`: a confirmed defect (continuity inferred from adjacent timestamps; the engine's once-a-second sample). Corrected with the feed's record of every price and the stream's own connection state.

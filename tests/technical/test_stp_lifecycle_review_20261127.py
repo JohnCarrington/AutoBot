@@ -240,17 +240,22 @@ def test_TR3_05_a_candle_the_engine_saw_only_in_part_does_not_count(tmp_path):
     assert not v.allowed and any("PD-5" in r for r in v.reasons)
 
 
-def test_TR3_06_the_engine_keeps_the_finished_candle_and_knows_whether_it_saw_it_whole(tmp_path):
-    from trading.engine import Trading
-    e = SimpleNamespace(partial=None, previous_partial=None, partial_covered=False, previous_covered=False)
+def test_TR3_06_the_feeds_live_record_is_whole_only_on_an_unbroken_connection_from_before_the_candle(tmp_path):
+    """Review R3.1 replaces the engine's own bookkeeping (b84d6d6): prices/live.py, from every price."""
+    from prices.live import LiveCandles
+    lv = LiveCandles()
     tk = lambda t, p: SimpleNamespace(time=t, buy=D(p) + D("1.2"), sell=D(p))            # noqa: E731
-    Trading._forming(e, tk(T(2026, 11, 17, 9, 57), "13200"))          # first price after a start: not whole
-    assert e.partial_covered is False
-    Trading._forming(e, tk(T(2026, 11, 17, 10, 0, 1), "13201"))       # the 10:00 candle began with prices flowing
-    assert e.partial_covered is True and e.previous_partial.start == T(2026, 11, 17, 9, 55)
-    assert e.previous_covered is False                                # the 09:55 one was seen only in part
-    Trading._forming(e, tk(T(2026, 11, 17, 10, 5, 0, 200000), "13202"))
-    assert e.previous_partial.start == T(2026, 11, 17, 10, 0) and e.previous_covered is True
+    lv.add(tk(T(2026, 11, 17, 9, 57), "13200"))                       # first price on a connection: 09:55 part-way
+    lv.add(tk(T(2026, 11, 17, 10, 2), "13169"))
+    lv.add(tk(T(2026, 11, 17, 10, 2, 0, 400000), "13200"))           # inside one second: still counted
+    lv.add(tk(T(2026, 11, 17, 10, 5, 1), "13201"))
+    c, whole = lv.observed(T(2026, 11, 17, 10, 0))
+    assert whole and c.sell_low == D("13169") and c.sell_open == D("13200")
+    assert lv.observed(T(2026, 11, 17, 9, 55))[1] is False            # entered part-way
+    lv.interrupted()                                                  # a drop or a stall
+    assert lv.observed(T(2026, 11, 17, 10, 5))[1] is False
+    lv.add(tk(T(2026, 11, 17, 10, 7), "13202"))                       # back: whole again from 10:10 only
+    assert lv.observed(T(2026, 11, 17, 10, 5))[1] is False and lv.covered_from == T(2026, 11, 17, 10, 10)
 
 
 def test_TR3_07_a_published_candle_is_read_from_the_store_as_before(tmp_path):

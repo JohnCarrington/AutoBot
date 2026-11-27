@@ -141,11 +141,9 @@ class Trading:
         self.opened: list[tuple[Any, Any]] = []            # (idea, trade manager's trade), for checks
         self.fired: set = set()                             # (strategy, direction, candle start) sent live
         self.partial: Candle | None = None                  # the 5-minute candle forming now, from the live prices
-        # review R3 (27 November 2026): the candle just finished, from the live prices, until IG publishes it; and
-        # whether each was seen whole (prices flowing from the candle before it, not first seen mid-candle)
-        self.previous_partial: Candle | None = None
-        self.partial_covered = False
-        self.previous_covered = False
+        # review R3/R3.1 (27 November 2026): the price feed's own record of each 5-minute candle from EVERY price and
+        # whether the stream showed it whole (prices/live.py); set by the price service. None: never a stand-in
+        self.observed: Any = None
         self._levels: tuple | None = None                   # (candle start, its levels), for the live check
 
     # ---- start-up ------------------------------------------------------------------------------
@@ -323,6 +321,16 @@ class Trading:
             self._was_paused = paused
         return paused
 
+    def _observed_finished(self) -> Any:
+        """Review R3/R3.1: the 5-minute candle that has just finished, as the price feed saw it from every price, only
+        if the stream showed it WHOLE (one uninterrupted connection from before it began: prices/live.py); else None,
+        and the STP check then cannot use it in place of a candle IG has not published (it refuses, PD-5)."""
+        obs = getattr(self, "observed", None)
+        if obs is None or getattr(self, "replay", False):
+            return None
+        c, whole = obs(floor_5m(self.now()) - timedelta(minutes=5))
+        return c if whole else None
+
     def _place(self, idea: Any, td: str | None) -> Any:
         # STP_AUTHORISES_ENTRIES (owner, 24 November 2026; stp/authorise.py): an idea of a strategy STP authorises
         # opens only at a live STP opportunity in its direction; checked once, here, after the try was recorded
@@ -330,10 +338,7 @@ class Trading:
         if stp_gated(self.s, idea.strategy):
             from stp.authorise import authorise              # only while STP_AUTHORISES_ENTRIES is on
             sv = authorise(self.s, self.store, idea, self.now(), getattr(self.runner, "stp", None), None if self.replay else self.partial,
-                           None if self.replay else self._last_tick,
-                           previous=None if self.replay or not getattr(self, "previous_covered", False)
-                           else getattr(self, "previous_partial", None),
-                           partial_covered=bool(getattr(self, "partial_covered", False)) and not self.replay)
+                           None if self.replay else self._last_tick, previous=Trading._observed_finished(self))
             if not sv.allowed:
                 self.book.decision("STP refused", self.now(), strategy=idea.strategy, direction=idea.direction,
                                    idea_time=idea.time, entry_price=idea.entry_price, why="; ".join(sv.reasons))
@@ -647,9 +652,6 @@ class Trading:
         start = floor_5m(tick.time)
         p = self.partial
         if p is None or p.start != start:
-            self.previous_partial = p
-            self.previous_covered = bool(getattr(self, "partial_covered", False)) and p is not None
-            self.partial_covered = p is not None and p.end == start      # prices flowing into this candle from its start
             p = Candle("5m", start, start + timedelta(minutes=5),
                        tick.buy, tick.buy, tick.buy, tick.buy, tick.sell, tick.sell, tick.sell, tick.sell)
         else:

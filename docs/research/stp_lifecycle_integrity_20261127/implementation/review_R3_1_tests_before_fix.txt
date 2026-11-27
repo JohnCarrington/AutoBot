@@ -1,0 +1,5 @@
+FAILED tests/functional/test_stp_live_continuity_20261127.py::test_R31_01_a_disconnection_and_reconnection_inside_the_candle_refuses
+FAILED tests/functional/test_stp_live_continuity_20261127.py::test_R31_02_an_interruption_across_the_boundary_before_the_candle_refuses
+FAILED tests/functional/test_stp_live_continuity_20261127.py::test_R31_03_a_stall_inside_the_candle_refuses
+FAILED tests/functional/test_stp_live_continuity_20261127.py::test_R31_05_a_destination_touch_inside_one_second_is_seen
+========================= 4 failed, 5 passed in 0.49s ==========================

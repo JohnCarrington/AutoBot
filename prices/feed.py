@@ -89,6 +89,8 @@ class PriceFeed:
         self.bad_ticks = 0                    # ticks skipped, for any reason
         self.carried_forward = 0              # ticks that used a carried-forward price
         self.connections = 0                  # stream connections seen by the feed
+        from prices.live import LiveCandles
+        self.live = LiveCandles()             # every price, per 5-minute candle, and whether seen whole (review R3.1)
         # The last BID (sell) and OFR (buy) received on the current connection.
         self._sell: Decimal | None = None
         self._buy: Decimal | None = None
@@ -161,6 +163,11 @@ class PriceFeed:
         self.connections += 1
         self._sell = None
         self._buy = None
+        self.live.interrupted()
+
+    def interrupted(self) -> None:
+        """The stream reports a break in continuity (a drop or a stall): no candle seen across it counts as whole."""
+        self.live.interrupted()
 
     def on_tick(self, fields: dict) -> None:
         problems: list[str] = []
@@ -197,6 +204,7 @@ class PriceFeed:
         if self.first_tick is None:
             self.first_tick = tick
         self.last_tick = tick
+        self.live.add(tick)
 
     def on_candle(self, fields: dict) -> None:
         if str(fields.get("CONS_END") or "").strip() != "1":
