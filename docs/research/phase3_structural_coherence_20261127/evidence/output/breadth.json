@@ -1,0 +1,2914 @@
+[
+ {
+  "t": "2026-11-18T00:15:01Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13202",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T02:00:46Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13206.1",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-18T02:26:37Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13206.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T03:57:39Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13197.6",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-18T04:05:02Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13195.8",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-18T04:30:01Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13192.1",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-18T07:05:01Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13177.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T07:10:02Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13175",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T07:20:01Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13181.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T07:20:01Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13181.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T07:30:02Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13179.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T07:40:01Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13174.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T07:50:02Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13174.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T08:00:00Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13172.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T08:10:03Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13171.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T08:20:01Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13162.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T08:30:03Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13160.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T08:40:01Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13160.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T08:50:02Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13157.4",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T09:00:03Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13152",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T09:10:03Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13153.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T09:20:02Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13151.4",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T09:30:01Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13161.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T09:30:01Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13161.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T09:40:02Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13167.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T09:50:01Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13163.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T10:00:02Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13170.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T12:37:37Z",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13156.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T15:44:06Z",
+  "strategy": "breakout",
+  "dir": "sell",
+  "entry": "13153.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T16:20:25Z",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13140.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T16:37:27Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13138.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-18T19:50:58Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13135.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T03:25:01Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13127.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T04:05:02Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13126.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T07:35:02Z",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13155",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T08:00:02Z",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13154.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T08:15:01Z",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13153.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T08:40:00Z",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13154",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T08:50:02Z",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13153.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T09:00:03Z",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13154.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T09:10:00Z",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13159.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T09:20:03Z",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13154.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T11:00:17Z",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13169.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T12:10:01Z",
+  "strategy": "session sweep",
+  "dir": "sell",
+  "entry": "13150.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T14:40:02Z",
+  "strategy": "session sweep",
+  "dir": "sell",
+  "entry": "13148.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T15:40:00Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13116.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T17:20:03Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13105.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T17:20:18Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13106",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T18:40:00Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13106.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T19:33:16Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13102.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T19:50:03Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13098.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T19:51:09Z",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13094.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T20:05:32Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13100.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T20:38:48Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13097.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T21:05:00Z",
+  "strategy": "breakout",
+  "dir": "sell",
+  "entry": "13094.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T21:15:44Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13093.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T21:20:01Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13089.4",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T21:30:13Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13081.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T21:43:49Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13086",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T21:43:49Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13086",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T21:55:48Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13081.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T22:00:04Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13087.4",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T22:21:51Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13078.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T22:40:33Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13079.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-19T23:56:07Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13086.4",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T00:03:48Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13084.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T01:50:12Z",
+  "strategy": "breakout",
+  "dir": "sell",
+  "entry": "13084.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T04:04:19Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13101.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T04:18:33Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13104.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T04:23:09Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13104.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T05:50:02Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13102.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T06:07:42Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13109.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T06:10:06Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13112",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T07:15:01Z",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13120.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T07:20:01Z",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13118.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T07:25:06Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13114.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T07:30:00Z",
+  "strategy": "session sweep",
+  "dir": "sell",
+  "entry": "13113.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T07:40:02Z",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13118",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T07:50:02Z",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13119",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T08:00:02Z",
+  "strategy": "session sweep",
+  "dir": "sell",
+  "entry": "13113.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T09:30:11Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13105.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T09:41:26Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13108.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T11:16:29Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13108.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T11:22:06Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13110.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T13:10:24Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13126.2",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-20T13:25:12Z",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13126.9",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-20T13:30:03Z",
+  "strategy": "Bollinger bounce",
+  "dir": "sell",
+  "entry": "13119.6",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-20T13:30:03Z",
+  "strategy": "session sweep",
+  "dir": "sell",
+  "entry": "13119.6",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-20T13:32:09Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13118.9",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-20T13:45:02Z",
+  "strategy": "session sweep",
+  "dir": "sell",
+  "entry": "13114.6",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-20T14:04:08Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13111.9",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-20T14:45:07Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13107.4",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T17:55:30Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13096.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T18:25:20Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13095.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T18:30:39Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13095.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T18:42:26Z",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13092.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T18:45:03Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13089.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T19:31:49Z",
+  "strategy": "breakout",
+  "dir": "sell",
+  "entry": "13084.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T21:45:01Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13078.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-20T21:50:00Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13080.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T00:45:04Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13101.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T00:50:00Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13104.4",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T01:05:08Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13106.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T01:47:32Z",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13109.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T02:10:06Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13108.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T02:10:06Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13108.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T02:49:12Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13109.4",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T02:55:02Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13107.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T03:00:17Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13106.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T03:35:28Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13108.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T03:41:16Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13106.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T04:02:49Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13105.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T04:55:13Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13107.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T05:10:22Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13109.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T05:45:09Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13116.6",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-23T05:50:12Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13118.3",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-23T06:00:31Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13121.9",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-23T06:45:37Z",
+  "strategy": "EMA pullback",
+  "dir": "buy",
+  "entry": "13128.2",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-23T09:00:01Z",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13132.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T09:05:00Z",
+  "strategy": "Bollinger bounce",
+  "dir": "sell",
+  "entry": "13127.4",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-23T09:10:01Z",
+  "strategy": "session sweep",
+  "dir": "sell",
+  "entry": "13124.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T10:21:06Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13106.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T10:42:01Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13110.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T10:42:01Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13110.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T10:57:55Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13105.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T11:01:22Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13105",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T11:13:12Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13102.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T11:33:53Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13099.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T11:41:16Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13096.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T11:53:03Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13095.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T12:26:42Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13097.2",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-23T12:30:00Z",
+  "strategy": "session sweep",
+  "dir": "buy",
+  "entry": "13097.9",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-23T12:31:08Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13098.9",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-23T12:40:03Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13091.8",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-23T12:40:23Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13091.4",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-23T13:00:12Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13082.7",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-23T14:25:00Z",
+  "strategy": "New York open reversal",
+  "dir": "buy",
+  "entry": "13076.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T14:25:14Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13077.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T14:39:42Z",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13061.4",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T14:50:51Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13055.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T15:30:02Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13043.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T15:30:02Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13043.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T15:40:00Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13048.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T15:54:54Z",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13028.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T16:10:02Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13025.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T16:15:07Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13017.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T16:35:01Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13022.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T16:45:21Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13013.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T17:00:01Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13020.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T17:00:07Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13020.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T17:15:01Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13023.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T17:15:04Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13023.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T17:45:53Z",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13014.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T17:47:22Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13012.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T18:00:03Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13013.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T18:01:16Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13015.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T18:15:00Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13021.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-23T18:19:19Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13021.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T01:50:01Z",
+  "strategy": "breakout",
+  "dir": "buy",
+  "entry": "13044.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T05:50:00Z",
+  "strategy": "breakout",
+  "dir": "buy",
+  "entry": "13043.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T05:53:56Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13040.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T07:15:02Z",
+  "strategy": "session sweep",
+  "dir": "buy",
+  "entry": "13038.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T08:55:01Z",
+  "strategy": "breakout",
+  "dir": "buy",
+  "entry": "13050.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T08:55:01Z",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13050.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T08:55:13Z",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13050.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T09:46:36Z",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13062",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T10:35:01Z",
+  "strategy": "Bollinger bounce",
+  "dir": "sell",
+  "entry": "13061",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-24T10:35:04Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13060.8",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-24T10:59:23Z",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13069.7",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-24T12:39:17Z",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13089.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T12:41:21Z",
+  "strategy": "EMA pullback",
+  "dir": "buy",
+  "entry": "13092.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T13:20:03Z",
+  "strategy": "Bollinger bounce",
+  "dir": "sell",
+  "entry": "13096.4",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T13:32:21Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13093.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T13:32:21Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13093.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T14:15:01Z",
+  "strategy": "New York open reversal",
+  "dir": "sell",
+  "entry": "13094.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T14:35:23Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13105.9",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-24T14:38:36Z",
+  "strategy": "EMA pullback",
+  "dir": "buy",
+  "entry": "13109",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-24T14:40:16Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13113.3",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-24T15:30:26Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13113",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T16:17:36Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13115.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-24T17:06:42Z",
+  "strategy": "EMA pullback",
+  "dir": "buy",
+  "entry": "13115.6",
+  "sca": "S3_APPROACHING"
+ },
+ {
+  "t": "2026-11-24T18:20:35Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13115.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T01:11:09Z",
+  "strategy": "range trade",
+  "dir": "sell",
+  "entry": "13108.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T03:37:31Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13096.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T03:40:09Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13095.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T04:00:19Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13090.8",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-25T04:30:51Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13094.3",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-25T04:38:06Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13090.6",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-25T05:20:06Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13090.3",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-25T05:38:35Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13084.9",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-25T05:51:04Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13084.7",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-25T06:30:02Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13079.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T06:30:49Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13079.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T06:38:37Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13076.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T06:50:01Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13082.2",
+  "sca": "S3_APPROACHING"
+ },
+ {
+  "t": "2026-11-25T06:50:01Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13081.8",
+  "sca": "S3_APPROACHING"
+ },
+ {
+  "t": "2026-11-25T07:01:08Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13075.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T07:40:01Z",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13079.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T08:05:00Z",
+  "strategy": "breakout",
+  "dir": "sell",
+  "entry": "13071.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T10:10:02Z",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13063",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T10:10:15Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13063.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T11:00:10Z",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13065",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T11:35:27Z",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13059.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T12:25:01Z",
+  "strategy": "session sweep",
+  "dir": "buy",
+  "entry": "13076.3",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-25T13:10:00Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13058.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T13:25:11Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13070.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T13:35:16Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13078.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T14:31:04Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13060.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T14:40:19Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13055.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T15:00:02Z",
+  "strategy": "breakout",
+  "dir": "sell",
+  "entry": "13053.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T15:05:01Z",
+  "strategy": "session sweep",
+  "dir": "buy",
+  "entry": "13061.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T15:05:10Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13061.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T15:39:19Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13069.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T16:30:13Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13070.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T16:40:00Z",
+  "strategy": "session sweep",
+  "dir": "buy",
+  "entry": "13080.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T16:46:43Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13089.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T16:56:51Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13096.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T17:00:03Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13104.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T17:15:21Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13110.2",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T17:20:14Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13116.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T17:20:14Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13116.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T17:35:02Z",
+  "strategy": "session sweep",
+  "dir": "sell",
+  "entry": "13111.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T17:35:09Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13111.4",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T18:02:03Z",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13119",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-25T18:20:21Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13126.4",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-25T18:32:14Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13128.3",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-25T18:45:03Z",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13127.1",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-25T19:10:00Z",
+  "strategy": "EMA pullback",
+  "dir": "buy",
+  "entry": "13126.9",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-25T19:10:03Z",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13127",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-25T19:27:11Z",
+  "strategy": "EMA pullback",
+  "dir": "buy",
+  "entry": "13127.4",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-25T19:29:23Z",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13127.7",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-25T19:30:01Z",
+  "strategy": "EMA pullback",
+  "dir": "buy",
+  "entry": "13128.6",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-25T19:30:01Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13128.1",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-25T19:55:09Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13123.8",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-25T20:00:02Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13121.3",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-25T20:18:20Z",
+  "strategy": "EMA pullback",
+  "dir": "buy",
+  "entry": "13124.5",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-25T20:38:01Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13120.5",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-25T20:45:01Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13119.4",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-25T21:10:11Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13117.3",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-25T21:21:34Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13114.8",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-25T21:38:14Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13113.7",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-25T22:11:18Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13103.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-25T23:42:07Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13112.2",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-25T23:53:36Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13111.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-26T01:15:01Z",
+  "strategy": "breakout",
+  "dir": "buy",
+  "entry": "13115.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-26T01:25:24Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13113",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-26T01:30:02Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13110.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-26T01:44:26Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13107.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-26T02:01:46Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13110.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-26T02:11:07Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13111.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-26T02:50:36Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13112.4",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-26T03:00:21Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13107.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-26T03:37:06Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13101.8",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-26T04:06:56Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13100.8",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T04:25:01Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13102.6",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T04:25:01Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13102.6",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T05:20:12Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13102.5",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T05:20:12Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13102.5",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T05:41:29Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13098.8",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T05:41:29Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13098.8",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T05:55:00Z",
+  "strategy": "breakout",
+  "dir": "sell",
+  "entry": "13099.2",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-26T06:01:00Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13102.2",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T06:30:02Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13100.3",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T06:30:02Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13100.3",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T07:12:32Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13102.7",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T07:12:32Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13102.7",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T07:22:28Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13106.2",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T07:22:28Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13106.2",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T07:30:10Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13108.7",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T07:30:10Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13108.7",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T07:45:01Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13112.8",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-26T08:00:30Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13105.4",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T08:00:30Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13105.4",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T09:12:26Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13109.4",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T09:25:04Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13116.9",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-26T09:35:02Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13109.1",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-26T09:40:07Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13107.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-26T09:57:27Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13105.5",
+  "sca": "S3_APPROACHING"
+ },
+ {
+  "t": "2026-11-26T11:11:31Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13105.2",
+  "sca": "S3_APPROACHING"
+ },
+ {
+  "t": "2026-11-26T11:40:01Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13100.6",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-26T11:40:01Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13100.6",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-26T11:45:02Z",
+  "strategy": "breakout",
+  "dir": "sell",
+  "entry": "13099.1",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-26T11:52:11Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13097.9",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-26T11:52:11Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13097.9",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-26T11:55:14Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13096.7",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-26T12:08:36Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13103.5",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T12:08:36Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13103.5",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T12:10:02Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13104.2",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T12:28:54Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13106",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T12:28:54Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13106",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T12:32:03Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13107.3",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T12:32:03Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13107.3",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-26T12:51:33Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13104.6",
+  "sca": "S3_APPROACHING"
+ },
+ {
+  "t": "2026-11-26T13:35:33Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13108.9",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-26T13:35:33Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13108.9",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-26T13:44:13Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13110.7",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-26T13:44:13Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13110.7",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-26T13:53:52Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13115.8",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-26T14:00:06Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13118.5",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-26T14:20:02Z",
+  "strategy": "session sweep",
+  "dir": "sell",
+  "entry": "13116.8",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-26T14:22:55Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13114.8",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-26T14:30:03Z",
+  "strategy": "session sweep",
+  "dir": "sell",
+  "entry": "13113.8",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-26T14:31:01Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13113.5",
+  "sca": "S1_ALIGNED"
+ },
+ {
+  "t": "2026-11-26T14:40:35Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13108.3",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-26T14:52:19Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13104.2",
+  "sca": "S3_APPROACHING"
+ },
+ {
+  "t": "2026-11-26T15:05:01Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13113.2",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-26T15:05:01Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13113.2",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-26T15:17:11Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13106.4",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-26T15:20:07Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13103.9",
+  "sca": "S3_APPROACHING"
+ },
+ {
+  "t": "2026-11-26T15:50:14Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13106.3",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-26T15:50:14Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13106.3",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-26T16:05:14Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13110.5",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-26T16:38:46Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13106.6",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-26T16:46:23Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13104.1",
+  "sca": "S3_APPROACHING"
+ },
+ {
+  "t": "2026-11-26T17:56:33Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13105.4",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-26T17:56:33Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13105.4",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-26T18:00:50Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13108.4",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-26T18:00:50Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13108.4",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-26T18:30:07Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13107.4",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-26T18:47:19Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13107.9",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-26T19:40:38Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13106.4",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-26T19:50:35Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13106.6",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T00:00:06Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13106.9",
+  "sca": "S3_APPROACHING"
+ },
+ {
+  "t": "2026-11-27T00:16:13Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13098.9",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-27T00:37:06Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13098.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-27T00:37:06Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13098.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-27T00:40:00Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13096.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-27T00:40:00Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13096.5",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-27T00:50:10Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13094.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-27T00:50:10Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13094.7",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-27T01:10:32Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13101.6",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T01:35:23Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13106.3",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T01:35:23Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13106.3",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T01:45:52Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13108.3",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T01:45:52Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13108.3",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T01:50:55Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13109.9",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T01:50:55Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13109.9",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T02:00:04Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13114.9",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-27T02:30:44Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13119.9",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T02:44:12Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13126.8",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T03:00:03Z",
+  "strategy": "Bollinger bounce",
+  "dir": "sell",
+  "entry": "13124.5",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-27T03:06:47Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13128.8",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-27T03:10:06Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13129.6",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-27T03:20:03Z",
+  "strategy": "Bollinger bounce",
+  "dir": "sell",
+  "entry": "13124.3",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-27T03:22:30Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13124",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-27T03:22:30Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13124",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-27T03:45:02Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13121.2",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T03:45:02Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13121.2",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T03:51:38Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13120.2",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T04:02:08Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13116.8",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-27T04:10:15Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13115.4",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-27T04:25:04Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13118.5",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T04:55:47Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13117.8",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T05:10:06Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13121.1",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T05:22:13Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13123.1",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T05:30:23Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13128.9",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T05:55:02Z",
+  "strategy": "Bollinger bounce",
+  "dir": "sell",
+  "entry": "13123.1",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-27T06:07:05Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13122.9",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T06:55:04Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13124.3",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-27T07:16:24Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13124.7",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T07:16:24Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13124.7",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T07:26:11Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13121.7",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T07:26:11Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13121.7",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T07:31:32Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13120.6",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T07:31:32Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13120.6",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T07:47:05Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13122.9",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-27T07:50:23Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13124.7",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-27T08:40:04Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13116.3",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T08:40:04Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13116.3",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T08:58:03Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13123.9",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-27T09:05:25Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13127.6",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T09:20:03Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13120.9",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T09:20:03Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13120.9",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T09:47:09Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13127",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T09:50:00Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13129.6",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T10:00:00Z",
+  "strategy": "breakout",
+  "dir": "buy",
+  "entry": "13126.3",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T10:01:19Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13124.6",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T10:01:19Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13124.6",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T10:30:14Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13128.2",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T10:52:13Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13126.8",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T10:52:13Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13126.8",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T11:00:44Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13129.1",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T11:00:44Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13129.1",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T11:25:27Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13132.7",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T11:35:50Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13128.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-27T11:35:50Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13128.8",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-27T11:40:08Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13124",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-27T11:40:08Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13124",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-27T12:01:27Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13130",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T12:15:00Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13130",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T12:15:00Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13130",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T13:05:02Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13124.4",
+  "sca": "S2_NEUTRAL"
+ },
+ {
+  "t": "2026-11-27T13:10:08Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13121",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T13:20:15Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13110.6",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T13:20:15Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13110.6",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T13:30:03Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13107.7",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T13:45:07Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13114.9",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T13:50:27Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13119.3",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T13:55:02Z",
+  "strategy": "session sweep",
+  "dir": "buy",
+  "entry": "13121.5",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T14:05:56Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13117.8",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T14:10:54Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13113.8",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T14:10:54Z",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13113.8",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T14:23:58Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13111.6",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T15:00:49Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13110.3",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T15:11:16Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13106.5",
+  "sca": "S5_CONFIRMED_REJECTION"
+ },
+ {
+  "t": "2026-11-27T15:47:10Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13102.6",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T15:47:27Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13101.4",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T15:50:29Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13098.1",
+  "sca": "S4_WITHIN_OPPOSING"
+ },
+ {
+  "t": "2026-11-27T16:05:02Z",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13098.3",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-27T16:12:09Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13097.2",
+  "sca": "S6_CONFIRMED_BREAK"
+ },
+ {
+  "t": "2026-11-27T16:35:08Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13100.2",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T16:40:19Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13101.9",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T16:40:19Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13101.9",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T16:50:01Z",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13103.2",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T16:50:01Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13103.2",
+  "sca": "S7_CONTINUATION"
+ },
+ {
+  "t": "2026-11-27T17:34:35Z",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13106.8",
+  "sca": "S7_CONTINUATION"
+ }
+]

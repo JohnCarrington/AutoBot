@@ -1,0 +1,3263 @@
+[
+ {
+  "n": 1,
+  "t": "2026-11-18T07:30:02Z",
+  "ref": "AB261118073003-e0728f6f",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13179.8",
+  "fill": "13180.2",
+  "stop": 12.0,
+  "pips": "21.7",
+  "gbp": "217.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 30.7,
+  "mae": -1.4,
+  "ig_pips": "21.7"
+ },
+ {
+  "n": 2,
+  "t": "2026-11-18T09:30:01Z",
+  "ref": "AB261118093004-63abaf9b",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13161.5",
+  "fill": "13163.1",
+  "stop": 12.0,
+  "pips": "7.2",
+  "gbp": "72.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 12.5,
+  "mae": -0.4,
+  "ig_pips": "7.2"
+ },
+ {
+  "n": 3,
+  "t": "2026-11-18T12:37:37Z",
+  "ref": "AB261118123737-487acb12",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13156.2",
+  "fill": "13156.4",
+  "stop": 12.0,
+  "pips": "-12.6",
+  "gbp": "-126.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 5.2,
+  "mae": 10.6,
+  "ig_pips": -12.0
+ },
+ {
+  "n": 4,
+  "t": "2026-11-18T15:44:06Z",
+  "ref": "AB261118154406-7bfbc777",
+  "strategy": "breakout",
+  "dir": "sell",
+  "entry": "13153.7",
+  "fill": "13152.9",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 16.1,
+  "mae": 9.4,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 5,
+  "t": "2026-11-18T16:20:25Z",
+  "ref": "AB261118162026-27e65c6f",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13140.8",
+  "fill": "13141.1",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 3.5,
+  "mae": 9.4,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 6,
+  "t": "2026-11-18T16:37:27Z",
+  "ref": "AB261118163727-fdafdecc",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13138.2",
+  "fill": "13138.1",
+  "stop": 15.0,
+  "pips": "-15.0",
+  "gbp": "-150.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 0.5,
+  "mae": 12.4,
+  "ig_pips": "-15.0"
+ },
+ {
+  "n": 7,
+  "t": "2026-11-18T19:50:58Z",
+  "ref": "AB261118195058-28e04fad",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13135.7",
+  "fill": "13135.8",
+  "stop": 11.3,
+  "pips": "-11.3",
+  "gbp": "-113.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": -2.3,
+  "mae": 7.5,
+  "ig_pips": "-11.3"
+ },
+ {
+  "n": 8,
+  "t": "2026-11-19T07:35:02Z",
+  "ref": "AB261119073504-1cd81a72",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13155",
+  "fill": "13156.5",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 4.2,
+  "mae": 10.6,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 9,
+  "t": "2026-11-19T11:00:17Z",
+  "ref": "AB261119110017-826f83f2",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13169.7",
+  "fill": "13170.0",
+  "stop": 15.0,
+  "pips": "-15.0",
+  "gbp": "-150.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": -0.1,
+  "mae": 13.4,
+  "ig_pips": "-15.0"
+ },
+ {
+  "n": 10,
+  "t": "2026-11-19T12:10:01Z",
+  "ref": "AB261119121004-06cee287",
+  "strategy": "session sweep",
+  "dir": "sell",
+  "entry": "13150.9",
+  "fill": "13150.9",
+  "stop": 22.0,
+  "pips": "28.9",
+  "gbp": "289.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 42.2,
+  "mae": 15.0,
+  "ig_pips": "28.9"
+ },
+ {
+  "n": 11,
+  "t": "2026-11-19T15:40:00Z",
+  "ref": "AB261119154003-336f3612",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13116.3",
+  "fill": "13118.8",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#10 session sweep sell"
+  ],
+  "followup": [],
+  "mfe": 5.3,
+  "mae": 11.0,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 12,
+  "t": "2026-11-19T17:20:03Z",
+  "ref": "AB261119172004-31b742fb",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13105.9",
+  "fill": "13107.4",
+  "stop": 12.0,
+  "pips": "0.4",
+  "gbp": "4.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 5.6,
+  "mae": 2.6,
+  "ig_pips": "0.4"
+ },
+ {
+  "n": 13,
+  "t": "2026-11-19T19:33:16Z",
+  "ref": "AB261119193317-59303239",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13102.7",
+  "fill": "13104.4",
+  "stop": 12.6,
+  "pips": "-3.5",
+  "gbp": "-35.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": -1.9,
+  "mae": 12.2,
+  "ig_pips": "-3.5"
+ },
+ {
+  "n": 14,
+  "t": "2026-11-19T19:51:09Z",
+  "ref": "AB261119195110-e0617b7b",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13094.8",
+  "fill": "13094.5",
+  "stop": 12.0,
+  "pips": "-7.9",
+  "gbp": "-79.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#13 level reversal buy"
+  ],
+  "followup": [],
+  "mfe": -1.8,
+  "mae": 8.5,
+  "ig_pips": "-7.9"
+ },
+ {
+  "n": 15,
+  "t": "2026-11-20T06:07:42Z",
+  "ref": "AB261120060743-8a687f77",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13109.6",
+  "fill": "13111.4",
+  "stop": 17.3,
+  "pips": "-17.3",
+  "gbp": "-173.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 10.5,
+  "mae": 13.5,
+  "ig_pips": "-17.3"
+ },
+ {
+  "n": 16,
+  "t": "2026-11-20T07:15:01Z",
+  "ref": "AB261120071503-3ad0904c",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13120.8",
+  "fill": "13122.3",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": -1.0,
+  "mae": 11.0,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 17,
+  "t": "2026-11-20T07:25:06Z",
+  "ref": "AB261120072506-5c4d580c",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13114.8",
+  "fill": "13114.8",
+  "stop": 12.0,
+  "pips": "-1.7",
+  "gbp": "-17.00",
+  "by": "bot",
+  "how": "close",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#15 level reversal buy",
+   "#16 Asian range breakout buy"
+  ],
+  "followup": [],
+  "mfe": 2.0,
+  "mae": 6.3,
+  "ig_pips": "-1.7"
+ },
+ {
+  "n": 18,
+  "t": "2026-11-20T07:30:00Z",
+  "ref": "AB261120073004-c333d4a1",
+  "strategy": "session sweep",
+  "dir": "sell",
+  "entry": "13113.5",
+  "fill": "13113.5",
+  "stop": 12.0,
+  "pips": "7.5",
+  "gbp": "75.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#15 level reversal buy",
+   "#16 Asian range breakout buy"
+  ],
+  "followup": [],
+  "mfe": 13.6,
+  "mae": 9.3,
+  "ig_pips": "7.5"
+ },
+ {
+  "n": 19,
+  "t": "2026-11-20T13:10:24Z",
+  "ref": "AB261120131024-ae732e7c",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13126.2",
+  "fill": "13127.7",
+  "stop": 34.3,
+  "pips": "-26.1",
+  "gbp": "-261.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S4_WITHIN_OPPOSING",
+  "zones": [
+   {
+    "zone": [
+     13111.6,
+     13121.9
+    ],
+    "pos": "PAST",
+    "dist": -4.3,
+    "state": "S4_WITHIN_OPPOSING",
+    "members": [
+     "-1300-8 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": -0.5,
+  "mae": 31.5,
+  "ig_pips": "-26.1"
+ },
+ {
+  "n": 20,
+  "t": "2026-11-20T13:25:12Z",
+  "ref": "AB261120132513-2d6d85de",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13126.9",
+  "fill": "13128.3",
+  "stop": 15.0,
+  "pips": "-15.0",
+  "gbp": "-150.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S4_WITHIN_OPPOSING",
+  "zones": [
+   {
+    "zone": [
+     13111.6,
+     13121.9
+    ],
+    "pos": "PAST",
+    "dist": -5.0,
+    "state": "S4_WITHIN_OPPOSING",
+    "members": [
+     "-1300-8 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": -6.1,
+  "mae": 14.6,
+  "ig_pips": "-15.0"
+ },
+ {
+  "n": 21,
+  "t": "2026-11-20T13:30:03Z",
+  "ref": "AB261120133004-f725afeb",
+  "strategy": "Bollinger bounce",
+  "dir": "sell",
+  "entry": "13119.6",
+  "fill": "13120.1",
+  "stop": 12.0,
+  "pips": "2.9",
+  "gbp": "29.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S1_ALIGNED",
+  "zones": [
+   {
+    "zone": [
+     13111.6,
+     13121.9
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S1_ALIGNED",
+    "members": [
+     "-1300-8 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#19 level reversal buy",
+   "#20 slow grind buy"
+  ],
+  "followup": [],
+  "mfe": 13.0,
+  "mae": 2.8,
+  "ig_pips": "2.9"
+ },
+ {
+  "n": 22,
+  "t": "2026-11-20T13:32:09Z",
+  "ref": "AB261120133210-431f1ca5",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13118.9",
+  "fill": "13118.1",
+  "stop": 12.0,
+  "pips": "0.0",
+  "gbp": "0.00",
+  "by": "bot",
+  "how": "close",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S1_ALIGNED",
+  "zones": [
+   {
+    "zone": [
+     13111.6,
+     13121.9
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S1_ALIGNED",
+    "members": [
+     "-1300-8 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#19 level reversal buy",
+   "#20 slow grind buy"
+  ],
+  "followup": [],
+  "mfe": 11.0,
+  "mae": 4.8,
+  "ig_pips": "0.0"
+ },
+ {
+  "n": 23,
+  "t": "2026-11-20T13:35:02Z",
+  "ref": "AB261120133504-4986932a",
+  "strategy": "session sweep",
+  "dir": "sell",
+  "entry": "13116.2",
+  "fill": "13116.1",
+  "stop": 12.0,
+  "pips": "0.9",
+  "gbp": "9.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S1_ALIGNED",
+  "zones": [
+   {
+    "zone": [
+     13111.6,
+     13121.9
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S1_ALIGNED",
+    "members": [
+     "-1300-8 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#19 level reversal buy",
+   "#20 slow grind buy"
+  ],
+  "followup": [],
+  "mfe": 12.1,
+  "mae": 6.8,
+  "ig_pips": "0.9"
+ },
+ {
+  "n": 24,
+  "t": "2026-11-20T14:45:07Z",
+  "ref": "AB261120144507-978cf45d",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13107.4",
+  "fill": "13107.1",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13111.6,
+     13121.9
+    ],
+    "pos": "PAST",
+    "dist": -4.2,
+    "state": null,
+    "members": [
+     "-1300-8 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#19 level reversal buy"
+  ],
+  "followup": [],
+  "mfe": 3.1,
+  "mae": 9.7,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 25,
+  "t": "2026-11-20T17:55:30Z",
+  "ref": "AB261120175530-b7bfe87d",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13096.1",
+  "fill": "13096.0",
+  "stop": 13.0,
+  "pips": "2.9",
+  "gbp": "29.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13111.6,
+     13121.9
+    ],
+    "pos": "PAST",
+    "dist": -15.5,
+    "state": null,
+    "members": [
+     "-1300-8 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 0.9,
+  "mae": 6.4,
+  "ig_pips": "2.9"
+ },
+ {
+  "n": 26,
+  "t": "2026-11-20T18:42:26Z",
+  "ref": "AB261120184226-99d6c56c",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13092.3",
+  "fill": "13091.4",
+  "stop": 12.0,
+  "pips": "-1.4",
+  "gbp": "-14.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13111.6,
+     13121.9
+    ],
+    "pos": "PAST",
+    "dist": -19.3,
+    "state": null,
+    "members": [
+     "-1300-8 SELL WAITING"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 0.2,
+  "mae": 4.4,
+  "ig_pips": "-1.4"
+ },
+ {
+  "n": 27,
+  "t": "2026-11-20T18:45:03Z",
+  "ref": "AB261120184504-582cfcb9",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13089.7",
+  "fill": "13088.9",
+  "stop": 14.4,
+  "pips": "3.7",
+  "gbp": "37.00",
+  "by": "bot",
+  "how": "forced close",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13111.6,
+     13121.9
+    ],
+    "pos": "PAST",
+    "dist": -21.9,
+    "state": null,
+    "members": [
+     "-1300-8 SELL WAITING"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 5.4,
+  "mae": 9.6,
+  "ig_pips": "3.7"
+ },
+ {
+  "n": 28,
+  "t": "2026-11-20T19:31:49Z",
+  "ref": "AB261120193149-95b3af10",
+  "strategy": "breakout",
+  "dir": "sell",
+  "entry": "13084.7",
+  "fill": "13084.6",
+  "stop": 6.0,
+  "pips": "-6.0",
+  "gbp": "-60.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": -0.9,
+  "mae": 8.2,
+  "ig_pips": "-6.0"
+ },
+ {
+  "n": 29,
+  "t": "2026-11-23T01:47:32Z",
+  "ref": "AB261123014732-81475eda",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13109.1",
+  "fill": "13110.2",
+  "stop": 15.0,
+  "pips": "20.0",
+  "gbp": "200.00",
+  "by": "bot",
+  "how": "take profit hit at IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13113.2,
+     13121.9
+    ],
+    "pos": "AHEAD",
+    "dist": 4.1,
+    "state": null,
+    "members": [
+     "0100-10 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": {
+   "pips": 4.1,
+   "what": "13113.2-13121.9 [0100-10 SELL ACTIVE]"
+  },
+  "room_refuse": true,
+  "room_b": {
+   "pips": 4.1,
+   "what": "13113.2-13121.9 [0100-10 SELL ACTIVE]"
+  },
+  "room_b_refuse": true,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 17.2,
+  "mae": 7.2,
+  "ig_pips": "20.0"
+ },
+ {
+  "n": 30,
+  "t": "2026-11-23T06:00:31Z",
+  "ref": "AB261123060031-eec2673f",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13121.9",
+  "fill": "13123.7",
+  "stop": 14.6,
+  "pips": "-14.6",
+  "gbp": "-146.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S4_WITHIN_OPPOSING",
+  "zones": [
+   {
+    "zone": [
+     13113.2,
+     13123.7
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S4_WITHIN_OPPOSING",
+    "members": [
+     "0100-10 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [
+   {
+    "t": "2026-11-23T10:42:01Z",
+    "entry": "13110.9",
+    "sca": "S2_NEUTRAL",
+    "journal": [
+     [
+      "2026-11-23T10:42:02Z",
+      "safety refused",
+      [
+       "level reversal already has 1 trade(s) open (at most 1)"
+      ]
+     ]
+    ]
+   }
+  ],
+  "mfe": 18.4,
+  "mae": 13.6,
+  "ig_pips": "-14.6"
+ },
+ {
+  "n": 31,
+  "t": "2026-11-23T06:45:37Z",
+  "ref": "AB261123064537-bcb4dc53",
+  "strategy": "EMA pullback",
+  "dir": "buy",
+  "entry": "13128.2",
+  "fill": "13130.1",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S4_WITHIN_OPPOSING",
+  "zones": [
+   {
+    "zone": [
+     13113.2,
+     13123.7
+    ],
+    "pos": "PAST",
+    "dist": -4.5,
+    "state": "S4_WITHIN_OPPOSING",
+    "members": [
+     "0100-10 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 1.0,
+  "mae": 10.5,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 32,
+  "t": "2026-11-23T09:00:01Z",
+  "ref": "AB261123090004-6d012042",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13132.6",
+  "fill": "13133.6",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "consolidation",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": -4.2,
+  "mae": 10.9,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 33,
+  "t": "2026-11-23T09:05:00Z",
+  "ref": "AB261123090502-5ec87a89",
+  "strategy": "Bollinger bounce",
+  "dir": "sell",
+  "entry": "13127.4",
+  "fill": "13127.4",
+  "stop": 12.0,
+  "pips": "14.8",
+  "gbp": "148.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "consolidation",
+  "sca": "S1_ALIGNED",
+  "zones": [
+   {
+    "zone": [
+     13127.3,
+     13135.6
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S1_ALIGNED",
+    "members": [
+     "0900-11 SELL WAITING"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#30 level reversal buy",
+   "#32 Asian range breakout buy"
+  ],
+  "followup": [],
+  "mfe": 22.8,
+  "mae": 3.5,
+  "ig_pips": "14.8"
+ },
+ {
+  "n": 34,
+  "t": "2026-11-23T09:10:01Z",
+  "ref": "AB261123091003-48557508",
+  "strategy": "session sweep",
+  "dir": "sell",
+  "entry": "13124.7",
+  "fill": "13124.8",
+  "stop": 18.4,
+  "pips": "12.2",
+  "gbp": "122.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "consolidation",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#30 level reversal buy",
+   "#32 Asian range breakout buy"
+  ],
+  "followup": [],
+  "mfe": 20.2,
+  "mae": 5.6,
+  "ig_pips": "12.2"
+ },
+ {
+  "n": 35,
+  "t": "2026-11-23T10:21:06Z",
+  "ref": "AB261123102106-452376db",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13106.2",
+  "fill": "13105.7",
+  "stop": 19.9,
+  "pips": "20.0",
+  "gbp": "200.00",
+  "by": "bot",
+  "how": "take profit hit at IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 18.2,
+  "mae": 10.6,
+  "ig_pips": "20.0"
+ },
+ {
+  "n": 36,
+  "t": "2026-11-23T10:42:01Z",
+  "ref": "AB261123104201-f64c4f56",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13110.9",
+  "fill": "13112.6",
+  "stop": 12.0,
+  "pips": "-7.3",
+  "gbp": "-73.00",
+  "by": "bot",
+  "how": "close",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#35 level reversal sell"
+  ],
+  "followup": [],
+  "mfe": 2.2,
+  "mae": 8.7,
+  "ig_pips": "-7.3"
+ },
+ {
+  "n": 37,
+  "t": "2026-11-23T10:57:55Z",
+  "ref": "AB261123105755-b63046f0",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13105.8",
+  "fill": "13105.6",
+  "stop": 15.0,
+  "pips": "20.0",
+  "gbp": "200.00",
+  "by": "bot",
+  "how": "take profit hit at IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#36 Bollinger bounce 5m buy"
+  ],
+  "followup": [],
+  "mfe": 18.1,
+  "mae": 3.5,
+  "ig_pips": "20.0"
+ },
+ {
+  "n": 38,
+  "t": "2026-11-23T12:26:42Z",
+  "ref": "AB261123122642-7170a834",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13097.2",
+  "fill": "13098.9",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S4_WITHIN_OPPOSING",
+  "zones": [
+   {
+    "zone": [
+     13087.6,
+     13097.1
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S4_WITHIN_OPPOSING",
+    "members": [
+     "1200-13 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#35 level reversal sell",
+   "#37 slow grind sell"
+  ],
+  "followup": [
+   {
+    "t": "2026-11-23T15:30:02Z",
+    "entry": "13043.2",
+    "sca": "S2_NEUTRAL",
+    "journal": [
+     [
+      "2026-11-23T15:30:06Z",
+      "opened",
+      ""
+     ]
+    ]
+   }
+  ],
+  "mfe": 1.0,
+  "mae": 7.1,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 39,
+  "t": "2026-11-23T12:30:00Z",
+  "ref": "AB261123123003-58babe86",
+  "strategy": "session sweep",
+  "dir": "buy",
+  "entry": "13097.9",
+  "fill": "13099.4",
+  "stop": 13.5,
+  "pips": "-13.5",
+  "gbp": "-135.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S4_WITHIN_OPPOSING",
+  "zones": [
+   {
+    "zone": [
+     13087.6,
+     13097.1
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S4_WITHIN_OPPOSING",
+    "members": [
+     "1200-13 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#35 level reversal sell",
+   "#37 slow grind sell"
+  ],
+  "followup": [],
+  "mfe": 0.5,
+  "mae": 13.4,
+  "ig_pips": "-13.5"
+ },
+ {
+  "n": 40,
+  "t": "2026-11-23T13:00:12Z",
+  "ref": "AB261123130012-a83a95dd",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13082.7",
+  "fill": "13084.4",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S4_WITHIN_OPPOSING",
+  "zones": [
+   {
+    "zone": [
+     13075.0,
+     13084.1
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S4_WITHIN_OPPOSING",
+    "members": [
+     "1300-14 SELL WAITING"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [
+   {
+    "t": "2026-11-23T15:30:02Z",
+    "entry": "13043.2",
+    "sca": "S2_NEUTRAL",
+    "journal": [
+     [
+      "2026-11-23T15:30:06Z",
+      "opened",
+      ""
+     ]
+    ]
+   }
+  ],
+  "mfe": -0.5,
+  "mae": 12.8,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 41,
+  "t": "2026-11-23T14:25:00Z",
+  "ref": "AB261123142502-4a0c1159",
+  "strategy": "New York open reversal",
+  "dir": "buy",
+  "entry": "13076.8",
+  "fill": "13078.3",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 0.6,
+  "mae": 10.6,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 42,
+  "t": "2026-11-23T14:25:14Z",
+  "ref": "AB261123142515-8c2c6592",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13077.3",
+  "fill": "13078.4",
+  "stop": 21.4,
+  "pips": "-21.4",
+  "gbp": "-214.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": -3.0,
+  "mae": 17.0,
+  "ig_pips": "-21.4"
+ },
+ {
+  "n": 43,
+  "t": "2026-11-23T14:39:42Z",
+  "ref": "AB261123143942-449fbd1f",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13061.4",
+  "fill": "13061.7",
+  "stop": 12.0,
+  "pips": "30.0",
+  "gbp": "300.00",
+  "by": "bot",
+  "how": "take profit hit at IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#42 level reversal buy"
+  ],
+  "followup": [],
+  "mfe": 24.2,
+  "mae": 5.3,
+  "ig_pips": "30.0"
+ },
+ {
+  "n": 44,
+  "t": "2026-11-23T14:50:51Z",
+  "ref": "AB261123145052-8982b16c",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13055.2",
+  "fill": "13054.6",
+  "stop": 22.8,
+  "pips": "20.0",
+  "gbp": "200.00",
+  "by": "bot",
+  "how": "take profit hit at IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 17.1,
+  "mae": 5.4,
+  "ig_pips": "20.0"
+ },
+ {
+  "n": 45,
+  "t": "2026-11-23T15:30:02Z",
+  "ref": "AB261123153003-7c43b69e",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13043.8",
+  "fill": "13045.1",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 6.1,
+  "mae": 7.5,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 46,
+  "t": "2026-11-23T15:30:02Z",
+  "ref": "AB261123153005-6767aeeb",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13043.2",
+  "fill": "13045.3",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 5.9,
+  "mae": 7.7,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 47,
+  "t": "2026-11-23T15:54:54Z",
+  "ref": "AB261123155454-2435b2ba",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13028.5",
+  "fill": "13028.8",
+  "stop": 12.0,
+  "pips": "6.7",
+  "gbp": "67.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 17.3,
+  "mae": 4.3,
+  "ig_pips": "6.7"
+ },
+ {
+  "n": 48,
+  "t": "2026-11-23T16:10:02Z",
+  "ref": "AB261123161003-d400f0d7",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13025.5",
+  "fill": "13027.0",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#47 EMA pullback sell"
+  ],
+  "followup": [],
+  "mfe": -0.4,
+  "mae": 14.5,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 49,
+  "t": "2026-11-23T16:15:07Z",
+  "ref": "AB261123161507-66fe58e1",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13017.1",
+  "fill": "13016.0",
+  "stop": 15.0,
+  "pips": "-6.1",
+  "gbp": "-61.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#48 Bollinger bounce buy"
+  ],
+  "followup": [],
+  "mfe": 4.5,
+  "mae": 10.8,
+  "ig_pips": "-6.1"
+ },
+ {
+  "n": 50,
+  "t": "2026-11-23T16:35:01Z",
+  "ref": "AB261123163502-ac4d1f51",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13022.1",
+  "fill": "13023.3",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#47 EMA pullback sell",
+   "#49 slow grind sell"
+  ],
+  "followup": [],
+  "mfe": 2.0,
+  "mae": 11.9,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 51,
+  "t": "2026-11-23T17:00:07Z",
+  "ref": "AB261123170008-6d04ac42",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13020.7",
+  "fill": "13022.8",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#47 EMA pullback sell",
+   "#49 slow grind sell"
+  ],
+  "followup": [],
+  "mfe": 2.5,
+  "mae": 7.7,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 52,
+  "t": "2026-11-23T18:00:03Z",
+  "ref": "AB261123180005-c0221f21",
+  "strategy": "Bollinger bounce",
+  "dir": "buy",
+  "entry": "13013.8",
+  "fill": "13015.6",
+  "stop": 12.0,
+  "pips": "5.9",
+  "gbp": "59.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#47 EMA pullback sell",
+   "#49 slow grind sell"
+  ],
+  "followup": [],
+  "mfe": 6.7,
+  "mae": 2.4,
+  "ig_pips": "5.9"
+ },
+ {
+  "n": 53,
+  "t": "2026-11-23T18:01:16Z",
+  "ref": "AB261123180117-1762bfa4",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13015.8",
+  "fill": "13017.4",
+  "stop": 12.0,
+  "pips": "4.1",
+  "gbp": "41.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#47 EMA pullback sell",
+   "#49 slow grind sell"
+  ],
+  "followup": [],
+  "mfe": 4.9,
+  "mae": 4.2,
+  "ig_pips": "4.1"
+ },
+ {
+  "n": 54,
+  "t": "2026-11-24T07:15:02Z",
+  "ref": "AB261124071503-ff3833c9",
+  "strategy": "session sweep",
+  "dir": "buy",
+  "entry": "13038.3",
+  "fill": "13039.6",
+  "stop": 13.7,
+  "pips": "-2.3",
+  "gbp": "-23.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": false,
+  "analyser": "consolidation",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13075.0,
+     13084.1
+    ],
+    "pos": "AHEAD",
+    "dist": 36.7,
+    "state": null,
+    "members": [
+     "0000-17 SELL WAITING"
+    ]
+   }
+  ],
+  "room": {
+   "pips": 36.7,
+   "what": "13075.0-13084.1 [0000-17 SELL WAITING]"
+  },
+  "room_refuse": false,
+  "room_b": {
+   "pips": 36.7,
+   "what": "13075.0-13084.1 [0000-17 SELL WAITING]"
+  },
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 2.9,
+  "mae": 5.7,
+  "ig_pips": "-2.3"
+ },
+ {
+  "n": 55,
+  "t": "2026-11-24T08:55:01Z",
+  "ref": "AB261124085502-5093fa5b",
+  "strategy": "breakout",
+  "dir": "buy",
+  "entry": "13050.3",
+  "fill": "13051.8",
+  "stop": 6.0,
+  "pips": "50.0",
+  "gbp": "500.00",
+  "by": "bot",
+  "how": "take profit hit at IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 49.2,
+  "mae": 4.3,
+  "ig_pips": "50.0"
+ },
+ {
+  "n": 56,
+  "t": "2026-11-24T08:55:01Z",
+  "ref": "AB261124085503-411cb71c",
+  "strategy": "Asian range breakout",
+  "dir": "buy",
+  "entry": "13050.3",
+  "fill": "13052.4",
+  "stop": 12.0,
+  "pips": "8.4",
+  "gbp": "84.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 18.7,
+  "mae": 4.9,
+  "ig_pips": "8.4"
+ },
+ {
+  "n": 57,
+  "t": "2026-11-24T08:55:13Z",
+  "ref": "AB261124085513-52cc5ffb",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13050.9",
+  "fill": "13052.5",
+  "stop": 15.0,
+  "pips": "10.0",
+  "gbp": "100.00",
+  "by": "bot",
+  "how": "close",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 16.0,
+  "mae": 5.0,
+  "ig_pips": "10.0"
+ },
+ {
+  "n": 58,
+  "t": "2026-11-24T12:39:17Z",
+  "ref": "AB261124123918-7418df43",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13089.9",
+  "fill": "13091.5",
+  "stop": 15.0,
+  "pips": "8.9",
+  "gbp": "89.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 14.5,
+  "mae": 3.2,
+  "ig_pips": "8.9"
+ },
+ {
+  "n": 59,
+  "t": "2026-11-24T13:20:03Z",
+  "ref": "AB261124132005-6f7e6a24",
+  "strategy": "Bollinger bounce",
+  "dir": "sell",
+  "entry": "13096.4",
+  "fill": "13096.9",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "possible reversal",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13135.5,
+     13142.1
+    ],
+    "pos": "PAST",
+    "dist": -39.1,
+    "state": null,
+    "members": [
+     "1300-20 SELL WAITING"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#58 slow grind buy"
+  ],
+  "followup": [],
+  "mfe": 7.1,
+  "mae": 10.5,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 60,
+  "t": "2026-11-24T13:32:21Z",
+  "ref": "AB261124133222-f9ca1a29",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13093.9",
+  "fill": "13092.8",
+  "stop": 12.0,
+  "pips": "-8.2",
+  "gbp": "-82.00",
+  "by": "bot",
+  "how": "close",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13135.5,
+     13142.1
+    ],
+    "pos": "PAST",
+    "dist": -41.6,
+    "state": null,
+    "members": [
+     "1300-20 SELL WAITING"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#58 slow grind buy"
+  ],
+  "followup": [],
+  "mfe": 0.8,
+  "mae": 11.2,
+  "ig_pips": "-8.2"
+ },
+ {
+  "n": 61,
+  "t": "2026-11-24T13:32:21Z",
+  "ref": "AB261124133224-288a9389",
+  "strategy": "level reversal",
+  "dir": "sell",
+  "entry": "13093.9",
+  "fill": "13091.5",
+  "stop": 16.6,
+  "pips": "-16.6",
+  "gbp": "-166.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13135.5,
+     13142.1
+    ],
+    "pos": "PAST",
+    "dist": -41.6,
+    "state": null,
+    "members": [
+     "1300-20 SELL WAITING"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#58 slow grind buy"
+  ],
+  "followup": [],
+  "mfe": -0.5,
+  "mae": 15.9,
+  "ig_pips": "-16.6"
+ },
+ {
+  "n": 62,
+  "t": "2026-11-24T15:30:26Z",
+  "ref": "AB261124153026-da74a808",
+  "strategy": "level reversal",
+  "dir": "buy",
+  "entry": "13113",
+  "fill": "13114.2",
+  "stop": 18.3,
+  "pips": "1.4",
+  "gbp": "14.00",
+  "by": "bot",
+  "how": "forced close",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13135.5,
+     13142.1
+    ],
+    "pos": "AHEAD",
+    "dist": 22.5,
+    "state": null,
+    "members": [
+     "1500-22 SELL WAITING"
+    ]
+   }
+  ],
+  "room": {
+   "pips": 22.5,
+   "what": "13135.5-13142.1 [1500-22 SELL WAITING]"
+  },
+  "room_refuse": false,
+  "room_b": {
+   "pips": 22.5,
+   "what": "13135.5-13142.1 [1500-22 SELL WAITING]"
+  },
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 9.7,
+  "mae": 15.8,
+  "ig_pips": "1.4"
+ },
+ {
+  "n": 63,
+  "t": "2026-11-25T03:37:31Z",
+  "ref": "AB261125033731-acdbf824",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13096.5",
+  "fill": "13096.1",
+  "stop": 15.0,
+  "pips": "20.0",
+  "gbp": "200.00",
+  "by": "bot",
+  "how": "take profit hit at IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 19.1,
+  "mae": 1.5,
+  "ig_pips": "20.0"
+ },
+ {
+  "n": 64,
+  "t": "2026-11-25T07:40:01Z",
+  "ref": "AB261125074003-c9ab3c27",
+  "strategy": "Asian range breakout",
+  "dir": "sell",
+  "entry": "13079.1",
+  "fill": "13079.5",
+  "stop": 12.0,
+  "pips": "5.0",
+  "gbp": "50.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "consolidation",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13084.1,
+     13093.0
+    ],
+    "pos": "PAST",
+    "dist": -5.0,
+    "state": null,
+    "members": [
+     "0400-27 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 10.5,
+  "mae": 5.8,
+  "ig_pips": "5.0"
+ },
+ {
+  "n": 65,
+  "t": "2026-11-25T08:05:00Z",
+  "ref": "AB261125080502-26ab7b14",
+  "strategy": "breakout",
+  "dir": "sell",
+  "entry": "13071.6",
+  "fill": "13070.6",
+  "stop": 6.0,
+  "pips": "-6.0",
+  "gbp": "-60.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "consolidation",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13084.1,
+     13093.0
+    ],
+    "pos": "PAST",
+    "dist": -12.5,
+    "state": null,
+    "members": [
+     "0400-27 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": -0.8,
+  "mae": 6.2,
+  "ig_pips": "-6.0"
+ },
+ {
+  "n": 66,
+  "t": "2026-11-25T11:00:10Z",
+  "ref": "AB261125110011-b1bb366e",
+  "strategy": "EMA pullback",
+  "dir": "sell",
+  "entry": "13065",
+  "fill": "13066.9",
+  "stop": 12.0,
+  "pips": "-12.0",
+  "gbp": "-120.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13047.3,
+     13053.7
+    ],
+    "pos": "AHEAD",
+    "dist": 11.3,
+    "state": null,
+    "members": [
+     "1000-28 BUY WAITING"
+    ]
+   },
+   {
+    "zone": [
+     13082.6,
+     13093.0
+    ],
+    "pos": "PAST",
+    "dist": -17.6,
+    "state": null,
+    "members": [
+     "0400-27 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": {
+   "pips": 11.3,
+   "what": "13047.3-13053.7 [1000-28 BUY WAITING]"
+  },
+  "room_refuse": true,
+  "room_b": {
+   "pips": 11.3,
+   "what": "13047.3-13053.7 [1000-28 BUY WAITING]"
+  },
+  "room_b_refuse": true,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 10.4,
+  "mae": 10.9,
+  "ig_pips": "-12.0"
+ },
+ {
+  "n": 67,
+  "t": "2026-11-25T12:25:01Z",
+  "ref": "AB261125122503-cc0c3916",
+  "strategy": "session sweep",
+  "dir": "buy",
+  "entry": "13076.3",
+  "fill": "13078.5",
+  "stop": 25.1,
+  "pips": "-6.0",
+  "gbp": "-60.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": false,
+  "analyser": "consolidation",
+  "sca": "S4_WITHIN_OPPOSING",
+  "zones": [
+   {
+    "zone": [
+     13071.5,
+     13080.7
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S4_WITHIN_OPPOSING",
+    "members": [
+     "1200-29 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [
+   {
+    "t": "2026-11-25T15:05:01Z",
+    "entry": "13061.8",
+    "sca": "S2_NEUTRAL",
+    "journal": [
+     [
+      "2026-11-25T15:05:03Z",
+      "opened",
+      ""
+     ]
+    ]
+   }
+  ],
+  "mfe": -0.3,
+  "mae": 9.8,
+  "ig_pips": "-6.0"
+ },
+ {
+  "n": 68,
+  "t": "2026-11-25T15:00:02Z",
+  "ref": "AB261125150003-0d5a694b",
+  "strategy": "breakout",
+  "dir": "sell",
+  "entry": "13053.7",
+  "fill": "13053.1",
+  "stop": 6.0,
+  "pips": "-6.0",
+  "gbp": "-60.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": -2.1,
+  "mae": 10.3,
+  "ig_pips": "-6.0"
+ },
+ {
+  "n": 69,
+  "t": "2026-11-25T15:05:01Z",
+  "ref": "AB261125150503-8681c001",
+  "strategy": "session sweep",
+  "dir": "buy",
+  "entry": "13061.8",
+  "fill": "13063.2",
+  "stop": 18.2,
+  "pips": "61.4",
+  "gbp": "614.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "emerging trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13046.1,
+     13053.7
+    ],
+    "pos": "PAST",
+    "dist": -8.1,
+    "state": null,
+    "members": [
+     "1500-32 BUY WAITING"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 66.0,
+  "mae": 9.1,
+  "ig_pips": "61.4"
+ },
+ {
+  "n": 70,
+  "t": "2026-11-25T17:06:04Z",
+  "ref": "AB261125170604-a4ec4a37",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13106.9",
+  "fill": "13108.9",
+  "stop": 12.0,
+  "pips": "4.7",
+  "gbp": "47.00",
+  "by": "bot",
+  "how": "close",
+  "auth": true,
+  "analyser": "trend",
+  "sca": "S2_NEUTRAL",
+  "zones": [
+   {
+    "zone": [
+     13084.1,
+     13096.0
+    ],
+    "pos": "PAST",
+    "dist": -10.9,
+    "state": null,
+    "members": [
+     "1700-34 BUY WAITING"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 11.9,
+  "mae": 5.3,
+  "ig_pips": "4.7"
+ },
+ {
+  "n": 71,
+  "t": "2026-11-25T18:02:03Z",
+  "ref": "AB261125180203-7c0f9742",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13119",
+  "fill": "13120.5",
+  "stop": 15.0,
+  "pips": "-15.0",
+  "gbp": "-150.00",
+  "by": "bot",
+  "how": "closed at IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S4_WITHIN_OPPOSING",
+  "zones": [
+   {
+    "zone": [
+     13084.1,
+     13093.0
+    ],
+    "pos": "PAST",
+    "dist": -26.0,
+    "state": null,
+    "members": [
+     "1700-34 BUY WAITING"
+    ]
+   },
+   {
+    "zone": [
+     13115.1,
+     13123.9
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S4_WITHIN_OPPOSING",
+    "members": [
+     "1800-35 SELL WAITING"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 8.7,
+  "mae": 14.2,
+  "ig_pips": "-15.0"
+ },
+ {
+  "n": 72,
+  "t": "2026-11-25T18:45:03Z",
+  "ref": "AB261125184504-8224a564",
+  "strategy": "slow grind",
+  "dir": "buy",
+  "entry": "13127.1",
+  "fill": "13128.7",
+  "stop": 15.0,
+  "pips": "-5.1",
+  "gbp": "-51.00",
+  "by": "bot",
+  "how": "forced close",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S4_WITHIN_OPPOSING",
+  "zones": [
+   {
+    "zone": [
+     13115.1,
+     13123.9
+    ],
+    "pos": "PAST",
+    "dist": -3.2,
+    "state": "S4_WITHIN_OPPOSING",
+    "members": [
+     "1800-35 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 0.2,
+  "mae": 9.1,
+  "ig_pips": "-5.1"
+ },
+ {
+  "n": 73,
+  "t": "2026-11-25T19:10:00Z",
+  "ref": "AB261125191003-755e8cfa",
+  "strategy": "EMA pullback",
+  "dir": "buy",
+  "entry": "13126.9",
+  "fill": "13128.8",
+  "stop": 12.0,
+  "pips": "-5.7",
+  "gbp": "-57.00",
+  "by": "bot",
+  "how": "forced close",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S4_WITHIN_OPPOSING",
+  "zones": [
+   {
+    "zone": [
+     13115.1,
+     13123.9
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S4_WITHIN_OPPOSING",
+    "members": [
+     "1800-35 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 0.1,
+  "mae": 9.2,
+  "ig_pips": "-5.7"
+ },
+ {
+  "n": 74,
+  "t": "2026-11-25T20:05:14Z",
+  "ref": "AB261125200515-c9049665",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13120.2",
+  "fill": "13120.1",
+  "stop": 12.0,
+  "pips": "-4.4",
+  "gbp": "-44.00",
+  "by": "bot",
+  "how": "forced close",
+  "auth": true,
+  "analyser": "trend",
+  "sca": "S1_ALIGNED",
+  "zones": [
+   {
+    "zone": [
+     13115.1,
+     13123.9
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S1_ALIGNED",
+    "members": [
+     "1800-35 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#71 slow grind buy",
+   "#72 slow grind buy",
+   "#73 EMA pullback buy"
+  ],
+  "followup": [],
+  "mfe": -3.2,
+  "mae": 6.5,
+  "ig_pips": "-4.4"
+ },
+ {
+  "n": 75,
+  "t": "2026-11-26T06:01:00Z",
+  "ref": "AB261126060101-987e099b",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13102.2",
+  "fill": "13103.9",
+  "stop": 12.0,
+  "pips": "4.5",
+  "gbp": "45.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": true,
+  "analyser": "emerging trend",
+  "sca": "S5_CONFIRMED_REJECTION",
+  "zones": [
+   {
+    "zone": [
+     13093.0,
+     13103.0
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S5_CONFIRMED_REJECTION",
+    "members": [
+     "0000-37 BUY ACTIVE",
+     "0400-38 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 9.1,
+  "mae": 8.2,
+  "ig_pips": 5.0
+ },
+ {
+  "n": 76,
+  "t": "2026-11-26T06:30:02Z",
+  "ref": "AB261126063004-aaea24e1",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13100.3",
+  "fill": "13099.7",
+  "stop": 12.0,
+  "pips": "-7.3",
+  "gbp": "-73.00",
+  "by": "bot",
+  "how": "close",
+  "auth": true,
+  "analyser": "consolidation",
+  "sca": "S5_CONFIRMED_REJECTION",
+  "zones": [
+   {
+    "zone": [
+     13093.0,
+     13103.0
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S5_CONFIRMED_REJECTION",
+    "members": [
+     "0000-37 BUY ACTIVE",
+     "0400-38 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#75 Bollinger bounce 5m buy"
+  ],
+  "followup": [],
+  "mfe": 1.4,
+  "mae": 8.0,
+  "ig_pips": "-7.3"
+ },
+ {
+  "n": 77,
+  "t": "2026-11-26T11:40:01Z",
+  "ref": "AB261126114004-bd34fb67",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13100.6",
+  "fill": "13102.2",
+  "stop": 12.0,
+  "pips": "14.0",
+  "gbp": "140.00",
+  "by": "bot",
+  "how": "close",
+  "auth": true,
+  "analyser": "trend",
+  "sca": "S6_CONFIRMED_BREAK",
+  "zones": [
+   {
+    "zone": [
+     13093.0,
+     13103.0
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S6_CONFIRMED_BREAK",
+    "members": [
+     "0000-37 BUY ACTIVE",
+     "0400-38 SELL BROKEN brk-up",
+     "1000-39 BUY ACTIVE",
+     "1100-41 BUY ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 20.7,
+  "mae": 6.5,
+  "ig_pips": "14.0"
+ },
+ {
+  "n": 78,
+  "t": "2026-11-26T11:45:02Z",
+  "ref": "AB261126114503-109c7e82",
+  "strategy": "breakout",
+  "dir": "sell",
+  "entry": "13099.1",
+  "fill": "13099.1",
+  "stop": 6.0,
+  "pips": "-6.0",
+  "gbp": "-60.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S4_WITHIN_OPPOSING",
+  "zones": [
+   {
+    "zone": [
+     13093.0,
+     13103.0
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S4_WITHIN_OPPOSING",
+    "members": [
+     "0000-37 BUY ACTIVE",
+     "0400-38 SELL BROKEN brk-up",
+     "1000-39 BUY ACTIVE",
+     "1100-41 BUY ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#77 Bollinger bounce 5m buy"
+  ],
+  "followup": [],
+  "mfe": 1.9,
+  "mae": 5.9,
+  "ig_pips": "-6.0"
+ },
+ {
+  "n": 79,
+  "t": "2026-11-26T11:55:14Z",
+  "ref": "AB261126115514-8dfe288a",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13096.7",
+  "fill": "13096.7",
+  "stop": 15.0,
+  "pips": "-15.0",
+  "gbp": "-150.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S4_WITHIN_OPPOSING",
+  "zones": [
+   {
+    "zone": [
+     13093.0,
+     13103.0
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S4_WITHIN_OPPOSING",
+    "members": [
+     "0000-37 BUY ACTIVE",
+     "0400-38 SELL BROKEN brk-up",
+     "1000-39 BUY ACTIVE",
+     "1100-41 BUY ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#77 Bollinger bounce 5m buy"
+  ],
+  "followup": [],
+  "mfe": -1.6,
+  "mae": 14.1,
+  "ig_pips": "-15.0"
+ },
+ {
+  "n": 80,
+  "t": "2026-11-26T12:51:33Z",
+  "ref": "AB261126125133-d1518c12",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13104.6",
+  "fill": "13104.2",
+  "stop": 12.0,
+  "pips": "-6.4",
+  "gbp": "-64.00",
+  "by": "bot",
+  "how": "close",
+  "auth": true,
+  "analyser": "consolidation",
+  "sca": "S3_APPROACHING",
+  "zones": [
+   {
+    "zone": [
+     13093.0,
+     13103.0
+    ],
+    "pos": "NEAR_AHEAD",
+    "dist": 1.6,
+    "state": "S3_APPROACHING",
+    "members": [
+     "0000-37 BUY ACTIVE",
+     "0400-38 SELL ACTIVE",
+     "1000-39 BUY ACTIVE",
+     "1100-41 BUY ACTIVE",
+     "1200-42 SELL ACTIVE",
+     "1200-43 BUY ACTIVE"
+    ]
+   }
+  ],
+  "room": {
+   "pips": 1.6,
+   "what": "13093.0-13103.0 [0000-37 BUY ACTIVE, 1000-39 BUY ACTIVE, 1100-41 BUY ACTIVE, 1200-43 BUY ACTIVE]"
+  },
+  "room_refuse": true,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [
+   "#77 Bollinger bounce 5m buy"
+  ],
+  "followup": [
+   {
+    "t": "2026-11-26T14:22:55Z",
+    "entry": "13114.8",
+    "sca": "S1_ALIGNED",
+    "journal": [
+     [
+      "2026-11-26T14:22:57Z",
+      "opened",
+      ""
+     ]
+    ]
+   }
+  ],
+  "mfe": 4.7,
+  "mae": 8.0,
+  "ig_pips": "-6.4"
+ },
+ {
+  "n": 81,
+  "t": "2026-11-26T14:22:55Z",
+  "ref": "AB261126142255-04805706",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13114.8",
+  "fill": "13114.7",
+  "stop": 12.0,
+  "pips": "2.1",
+  "gbp": "21.00",
+  "by": "bot",
+  "how": "close",
+  "auth": true,
+  "analyser": "trend",
+  "sca": "S1_ALIGNED",
+  "zones": [
+   {
+    "zone": [
+     13093.0,
+     13103.0
+    ],
+    "pos": "AHEAD",
+    "dist": 11.8,
+    "state": null,
+    "members": [
+     "0000-37 BUY ACTIVE",
+     "0400-38 SELL BROKEN brk-up",
+     "1000-39 BUY ACTIVE",
+     "1100-41 BUY ACTIVE",
+     "1200-42 SELL BROKEN brk-up",
+     "1200-43 BUY ACTIVE"
+    ]
+   },
+   {
+    "zone": [
+     13115.1,
+     13123.9
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S1_ALIGNED",
+    "members": [
+     "1400-44 SELL ACTIVE"
+    ]
+   }
+  ],
+  "room": {
+   "pips": 11.8,
+   "what": "13093.0-13103.0 [0000-37 BUY ACTIVE, 1000-39 BUY ACTIVE, 1100-41 BUY ACTIVE, 1200-43 BUY ACTIVE]"
+  },
+  "room_refuse": true,
+  "room_b": {
+   "pips": 11.8,
+   "what": "13093.0-13103.0 [0000-37 BUY ACTIVE, 1000-39 BUY ACTIVE, 1100-41 BUY ACTIVE, 1200-43 BUY ACTIVE]"
+  },
+  "room_b_refuse": true,
+  "opposite_open": [
+   "#77 Bollinger bounce 5m buy"
+  ],
+  "followup": [],
+  "mfe": 10.6,
+  "mae": 3.3,
+  "ig_pips": "2.1"
+ },
+ {
+  "n": 82,
+  "t": "2026-11-27T06:55:04Z",
+  "ref": "AB261127065505-8c11a4bc",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13124.3",
+  "fill": "13125.9",
+  "stop": 12.0,
+  "pips": "-2.0",
+  "gbp": "-20.00",
+  "by": "bot",
+  "how": "close",
+  "auth": true,
+  "analyser": "emerging trend",
+  "sca": "S6_CONFIRMED_BREAK",
+  "zones": [
+   {
+    "zone": [
+     13093.0,
+     13103.0
+    ],
+    "pos": "PAST",
+    "dist": -21.3,
+    "state": "S7_CONTINUATION",
+    "members": [
+     "0400-38 SELL INVALIDATED held brk-up",
+     "1200-42 SELL INVALIDATED held brk-up",
+     "0100-51 SELL INVALIDATED held brk-up"
+    ]
+   },
+   {
+    "zone": [
+     13108.5,
+     13119.1
+    ],
+    "pos": "PAST",
+    "dist": -5.2,
+    "state": "S6_CONFIRMED_BREAK",
+    "members": [
+     "0200-53 SELL BROKEN brk-up"
+    ]
+   },
+   {
+    "zone": [
+     13121.3,
+     13130.6
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S1_ALIGNED",
+    "members": [
+     "0300-56 BUY ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 3.6,
+  "mae": 4.2,
+  "ig_pips": "-2.0"
+ },
+ {
+  "n": 83,
+  "t": "2026-11-27T10:00:00Z",
+  "ref": "AB261127100003-bb57a4f5",
+  "strategy": "breakout",
+  "dir": "buy",
+  "entry": "13126.3",
+  "fill": "13127.8",
+  "stop": 6.0,
+  "pips": "-6.0",
+  "gbp": "-60.00",
+  "by": "bot",
+  "how": "stopped by IG",
+  "auth": false,
+  "analyser": "consolidation",
+  "sca": "S7_CONTINUATION",
+  "zones": [
+   {
+    "zone": [
+     13093.0,
+     13103.0
+    ],
+    "pos": "PAST",
+    "dist": -23.3,
+    "state": "S7_CONTINUATION",
+    "members": [
+     "0400-38 SELL INVALIDATED held brk-up",
+     "1200-42 SELL INVALIDATED held brk-up",
+     "0100-51 SELL INVALIDATED held brk-up"
+    ]
+   },
+   {
+    "zone": [
+     13108.5,
+     13119.1
+    ],
+    "pos": "PAST",
+    "dist": -7.2,
+    "state": "S7_CONTINUATION",
+    "members": [
+     "0200-53 SELL INVALIDATED held brk-up"
+    ]
+   },
+   {
+    "zone": [
+     13121.3,
+     13130.4
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S1_ALIGNED",
+    "members": [
+     "0300-56 BUY ACTIVE"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": -1.2,
+  "mae": 8.0,
+  "ig_pips": "-6.0"
+ },
+ {
+  "n": 84,
+  "t": "2026-11-27T12:01:27Z",
+  "ref": "AB261127120127-5755701a",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "buy",
+  "entry": "13130",
+  "fill": "13132.0",
+  "stop": 12.0,
+  "pips": "-1.4",
+  "gbp": "-14.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": true,
+  "analyser": "emerging trend",
+  "sca": "S7_CONTINUATION",
+  "zones": [
+   {
+    "zone": [
+     13093.0,
+     13103.0
+    ],
+    "pos": "PAST",
+    "dist": -27.0,
+    "state": "S7_CONTINUATION",
+    "members": [
+     "0400-38 SELL INVALIDATED held brk-up",
+     "1200-42 SELL INVALIDATED held brk-up",
+     "0100-51 SELL INVALIDATED held brk-up"
+    ]
+   },
+   {
+    "zone": [
+     13108.5,
+     13119.1
+    ],
+    "pos": "PAST",
+    "dist": -10.9,
+    "state": "S7_CONTINUATION",
+    "members": [
+     "0200-53 SELL INVALIDATED held brk-up"
+    ]
+   },
+   {
+    "zone": [
+     13121.3,
+     13130.3
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S1_ALIGNED",
+    "members": [
+     "1200-57 BUY WAITING"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": null,
+  "mae": null,
+  "ig_pips": "-1.4"
+ },
+ {
+  "n": 85,
+  "t": "2026-11-27T15:11:16Z",
+  "ref": "AB261127151117-d13449c1",
+  "strategy": "Bollinger bounce 5m",
+  "dir": "sell",
+  "entry": "13106.5",
+  "fill": "13106.7",
+  "stop": 12.0,
+  "pips": "9.0",
+  "gbp": "90.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": true,
+  "analyser": "trend",
+  "sca": "S5_CONFIRMED_REJECTION",
+  "zones": [
+   {
+    "zone": [
+     13093.0,
+     13103.0
+    ],
+    "pos": "AHEAD",
+    "dist": 3.5,
+    "state": null,
+    "members": [
+     "0400-38 SELL INVALIDATED held brk-up",
+     "1200-42 SELL INVALIDATED held brk-up",
+     "0100-51 SELL INVALIDATED held brk-up"
+    ]
+   },
+   {
+    "zone": [
+     13108.5,
+     13119.1
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": "S5_CONFIRMED_REJECTION",
+    "members": [
+     "0200-53 SELL INVALIDATED held brk-up",
+     "1500-59 SELL ACTIVE",
+     "1500-60 BUY ACTIVE"
+    ]
+   },
+   {
+    "zone": [
+     13121.3,
+     13130.3
+    ],
+    "pos": "PAST",
+    "dist": -14.8,
+    "state": "S6_CONFIRMED_BREAK",
+    "members": [
+     "1305-58 BUY BROKEN brk-down"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [],
+  "mfe": 11.1,
+  "mae": 4.1,
+  "ig_pips": "9.0"
+ },
+ {
+  "n": 86,
+  "t": "2026-11-27T15:47:10Z",
+  "ref": "AB261127154711-e0f013ca",
+  "strategy": "slow grind",
+  "dir": "sell",
+  "entry": "13102.6",
+  "fill": "13102.0",
+  "stop": 15.0,
+  "pips": "4.3",
+  "gbp": "43.00",
+  "by": "owner",
+  "how": "closed by owner",
+  "auth": false,
+  "analyser": "trend",
+  "sca": "S4_WITHIN_OPPOSING",
+  "zones": [
+   {
+    "zone": [
+     13093.0,
+     13103.0
+    ],
+    "pos": "AT",
+    "dist": 0.0,
+    "state": null,
+    "members": [
+     "0400-38 SELL INVALIDATED held brk-up",
+     "1200-42 SELL INVALIDATED held brk-up",
+     "0100-51 SELL INVALIDATED held brk-up"
+    ]
+   },
+   {
+    "zone": [
+     13108.5,
+     13119.1
+    ],
+    "pos": "PAST",
+    "dist": -5.9,
+    "state": "S4_WITHIN_OPPOSING",
+    "members": [
+     "0200-53 SELL INVALIDATED held brk-up",
+     "1500-60 BUY ACTIVE"
+    ]
+   },
+   {
+    "zone": [
+     13121.3,
+     13130.3
+    ],
+    "pos": "PAST",
+    "dist": -18.7,
+    "state": "S6_CONFIRMED_BREAK",
+    "members": [
+     "1305-58 BUY BROKEN brk-down"
+    ]
+   }
+  ],
+  "room": null,
+  "room_refuse": false,
+  "room_b": null,
+  "room_b_refuse": false,
+  "opposite_open": [],
+  "followup": [
+   {
+    "t": "2026-11-27T16:05:02Z",
+    "entry": "13098.3",
+    "sca": "S6_CONFIRMED_BREAK",
+    "journal": [
+     [
+      "2026-11-27T16:05:03Z",
+      "safety refused",
+      [
+       "slow grind already has 1 trade(s) open (at most 1)"
+      ]
+     ]
+    ]
+   }
+  ],
+  "mfe": 6.4,
+  "mae": 6.3,
+  "ig_pips": "4.3"
+ }
+]
