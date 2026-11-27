@@ -109,7 +109,8 @@ def _keys(settings: Any, store: Any, state: dict, o: dict, rc_start: datetime) -
     return f"{lid}#t{n}", n, list((lin.get("aliases") or {}).get(str(n), []))
 
 
-def _catch_up(settings: Any, store: Any, state: dict, o: dict, now: datetime, partial: Any, tick: Any) -> list[str]:
+def _catch_up(settings: Any, store: Any, state: dict, o: dict, now: datetime, partial: Any, tick: Any,
+              previous: Any = None, partial_covered: bool = False) -> list[str]:
     """The tracker's own destination, zone-break and structure-break rules on what it has not yet seen."""
     side = side_of(settings)
     out: list[str] = []
@@ -123,6 +124,23 @@ def _catch_up(settings: Any, store: Any, state: dict, o: dict, now: datetime, pa
         seen = [c for c in store.read_range("5m", since, now) if c.start >= since and c.end <= now]
     if partial is not None and (since is None or partial.start >= since) and partial.start not in {c.start for c in seen}:
         seen.append(partial)
+    # review R3: every finished 5-minute interval after the tracker's last step, the most recent included, must be
+    # either stored or seen whole by the engine from the live prices (the candle IG has not yet published: its own
+    # timing); one neither stored nor seen whole is a gap the authorisation cannot check (PD-5)
+    unseen: list = []
+    if since is not None:
+        from planner.gaps import missing_fives
+        from prices.calendar import floor_5m
+        engine = [x for x, whole in ((previous, previous is not None), (partial, partial_covered)) if x is not None and whole]
+        for a, b in missing_fives(settings, store, since, floor_5m(now)):
+            s_ = a
+            while s_ < b:
+                got = next((x for x in engine if x.start == s_), None)
+                if got is None:
+                    unseen.append(s_)
+                elif got.start not in {c.start for c in seen}:
+                    seen.append(got)
+                s_ += timedelta(minutes=5)
     if tick is not None:
         seen.append(SimpleNamespace(start=tick.time, end=tick.time + timedelta(microseconds=1), tick=True,
                                     **{f"{k}_{x}": getattr(tick, k) for k in ("buy", "sell")
@@ -137,13 +155,9 @@ def _catch_up(settings: Any, store: Any, state: dict, o: dict, now: datetime, pa
                 out.append(f"the primary destination {o['destinations']['primary']['price']} was reached by {when}, "
                            f"after the tracker's last step: the opportunity has ended")
                 break
-    if since is not None:                             # PD-5: a candle the tracker has not seen and the store lacks
-        from planner.gaps import missing_fives
-        from prices.calendar import floor_5m
-        gap = missing_fives(settings, store, since, floor_5m(now) - timedelta(minutes=5))
-        if gap:
-            out.append(f"no 5-minute candles stored from {uk_short(gap[0][0])} to {uk_short(gap[-1][1])}, after the "
-                       f"tracker's last step: the opportunity's state is unknown (PD-5)")
+    if unseen:                                         # PD-5: a candle the tracker has not seen and nobody holds
+        out.append(f"no 5-minute candle stored or seen whole for {', '.join(uk_short(x) for x in unseen)}, after "
+                   f"the tracker's last step: the opportunity's state is unknown (PD-5)")
     inv = o.get("invalidation") or {}
     zb = inv.get("zone_break_close")
     h1_since = parse_iso(state["validated_h1_end"]) if state.get("validated_h1_end") else None
@@ -165,7 +179,7 @@ def _catch_up(settings: Any, store: Any, state: dict, o: dict, now: datetime, pa
 
 
 def authorise(settings: Any, store: Any, idea: Any, now: datetime, source: Any, partial: Any = None,
-              tick: Any = None) -> Verdict:
+              tick: Any = None, previous: Any = None, partial_covered: bool = False) -> Verdict:
     sw = settings.switches
     side = side_of(settings)
     sell = idea.direction == "sell"
@@ -217,7 +231,8 @@ def authorise(settings: Any, store: Any, idea: Any, now: datetime, source: Any, 
                              -CLASS_RANK.get(o["entry_zone"].get("class"), 0), abs(edge(o) - ext)))
     reasons: list[str] = []
     for o in near:
-        why = unreconciled(state, o) + _catch_up(settings, store, state, o, now, partial, tick)
+        why = unreconciled(state, o) + _catch_up(settings, store, state, o, now, partial, tick, previous,
+                                                 partial_covered)
         zb = (o.get("invalidation") or {}).get("zone_break_close")
         price = _d(idea.entry_price)
         if zb is not None and ((price >= _d(zb)) if sell else (price <= _d(zb))):

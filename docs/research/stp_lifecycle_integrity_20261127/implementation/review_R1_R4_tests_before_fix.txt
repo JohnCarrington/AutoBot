@@ -1,0 +1,21 @@
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR1_01_an_interrupted_write_then_a_backfill_never_glues_the_acknowledgement_to_the_fragment
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR1_02_later_executions_and_repeated_restarts_keep_every_acknowledgement_once
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR1_03_the_tracker_takes_the_backfilled_acknowledgement
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR1_04_the_order_journal_is_kept_whole_through_the_repair
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR2_01_the_lineage_records_the_destination_actually_achieved
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR2_02_a_republication_overlapping_the_revised_destination_is_withheld
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR2_03_a_republication_toward_a_genuinely_different_destination_is_issued
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR2_04_after_a_restart_the_achieved_destination_still_decides
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR2_05_the_migration_takes_a_recorded_destination_change
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR2_06_an_achieved_price_without_its_zone_still_matches_a_destination_zone_containing_it
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR3_01_just_after_a_boundary_a_destination_touch_in_the_unpublished_candle_refuses
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR3_02_normal_publication_timing_does_not_refuse_a_clean_candle
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR3_03_at_the_boundary_before_any_new_price_the_forming_candle_is_the_finished_one
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR3_04_a_genuine_gap_in_the_most_recent_interval_refuses
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR3_05_a_candle_the_engine_saw_only_in_part_does_not_count
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR3_06_the_engine_keeps_the_finished_candle_and_knows_whether_it_saw_it_whole
+FAILED tests/technical/test_stp_lifecycle_review_20261127.py::test_TR4_01_the_review_report_lists_only_the_blocked_opportunities_with_their_evidence
+========================= 17 failed, 2 passed in 0.74s =========================
+R1 on 087b8c3: after a torn write and 3 restarts with backfill, readable acknowledgements: ['AB-1']
+R1 file lines: ['{"reference": "AB-1"{"reference": "AB-1", "deal_id": "DIAAAX", "strategy": "Bollinger bounce 5m", "direction": "sell", "opportunity": "OPP-1", "lineage": "OPP-1", "test": 1, "key": "OPP-1#t1", "keys": ["OPP-1#t1"], "executed_utc": "2026-11-17T09:06:00Z", "recorded_utc": "2026-11-17T09:07:00Z", "source": "start-up: the order journal records it open at IG (written again after a stop before its acknowledgement)"}', '{"reference": "AB-1", "deal_id": "DIAAAX", "strategy": "Bollinger bounce 5m", "direction": "sell", "opportunity": "OPP-1", "lineage": "OPP-1", "test": 1, "key": "OPP-1#t1", "keys": ["OPP-1#t1"], "executed_utc": "2026-11-17T09:06:00Z", "recorded_utc": "2026-11-17T09:07:00Z", "source": "start-up: the order journal records it open at IG (written again after a stop before its acknowledgement)"}']
+R3 on 087b8c3: the 10:00 candle never stored, idea at 10:05:40 -> allowed

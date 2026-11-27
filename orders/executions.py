@@ -18,6 +18,9 @@ order), recorded_utc, source.
 Crash safety: the order journal is written (and flushed) first and is the source of truth; at every start-up the order
 sender writes the acknowledgement of any trade in its journal that carried STP context and has none yet (backfill), so
 a stop between the two can never lose one. A line written twice is harmless: readers take each reference once.
+Review R1 (27 November 2026): a stop in the middle of a write can leave a last line without its newline. Before each
+append the file's last byte is checked and, if it is not a newline, one is written first, so the damaged fragment stays
+alone on its own line (kept as evidence; readers skip it) and the new acknowledgement is never joined onto it.
 """
 
 from __future__ import annotations
@@ -69,8 +72,13 @@ class ExecutionAcks:
                "test": stp.get("test"), "key": stp.get("key"), "keys": list(stp.get("keys") or []),
                "executed_utc": _iso(executed or trade.opened_at), "recorded_utc": _iso(self.now()), "source": source}
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        with self.path.open("a") as f:
-            f.write(json.dumps(row) + "\n")
+        with self.path.open("ab+") as f:
+            f.seek(0, os.SEEK_END)
+            if f.tell() > 0:
+                f.seek(-1, os.SEEK_END)
+                if f.read(1) != b"\n":                 # a torn last line (review R1): end it first
+                    f.write(b"\n")
+            f.write((json.dumps(row) + "\n").encode())
             f.flush()
             os.fsync(f.fileno())
         self.seen.add(trade.reference)

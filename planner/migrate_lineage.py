@@ -53,6 +53,7 @@ UTC = timezone.utc
 KEY = re.compile(r"^(STP-[A-Z]{6}-\d{8}-\d{4}-\d+)#t(\d+)$")
 RC = re.compile(r"STP authorised: the rejection candle (\w+ \d+ \w+ \d\d:\d\d)")
 CHANGED = re.compile(r"zone edges ([\d.]+)-([\d.]+) to ([\d.]+)-([\d.]+)")
+PRIMARY = re.compile(r"primary destination ([\d.]+|None) to ([\d.]+)")
 SUPERSEDES = re.compile(r"^supersedes (STP-\S+?):")
 MONTHS = {m: i for i, m in enumerate(("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
                                       "Dec"), start=1)}
@@ -106,6 +107,9 @@ def history(planner_dir: Path, since: str) -> list[dict]:
                 if m:
                     o["zone"] = {"low": m.group(3), "high": m.group(4)}
                     o["zones"].append([e["time_utc"], m.group(3), m.group(4)])
+                pm = PRIMARY.search(e.get("why") or "")
+                if pm:                                  # review R2: the destination revised while live; its zone is
+                    o["primary"], o["primary_zone"] = pm.group(2), None     # not in the record (the price decides)
             elif e["event"] in ("completed", "invalidated", "superseded"):
                 o["ended_utc"], o["status"], o["ended_why"] = e["time_utc"], e["event"].upper(), e.get("why") or ""
     for oid, o in ops.items():

@@ -141,6 +141,11 @@ class Trading:
         self.opened: list[tuple[Any, Any]] = []            # (idea, trade manager's trade), for checks
         self.fired: set = set()                             # (strategy, direction, candle start) sent live
         self.partial: Candle | None = None                  # the 5-minute candle forming now, from the live prices
+        # review R3 (27 November 2026): the candle just finished, from the live prices, until IG publishes it; and
+        # whether each was seen whole (prices flowing from the candle before it, not first seen mid-candle)
+        self.previous_partial: Candle | None = None
+        self.partial_covered = False
+        self.previous_covered = False
         self._levels: tuple | None = None                   # (candle start, its levels), for the live check
 
     # ---- start-up ------------------------------------------------------------------------------
@@ -325,7 +330,10 @@ class Trading:
         if stp_gated(self.s, idea.strategy):
             from stp.authorise import authorise              # only while STP_AUTHORISES_ENTRIES is on
             sv = authorise(self.s, self.store, idea, self.now(), getattr(self.runner, "stp", None), None if self.replay else self.partial,
-                           None if self.replay else self._last_tick)
+                           None if self.replay else self._last_tick,
+                           previous=None if self.replay or not getattr(self, "previous_covered", False)
+                           else getattr(self, "previous_partial", None),
+                           partial_covered=bool(getattr(self, "partial_covered", False)) and not self.replay)
             if not sv.allowed:
                 self.book.decision("STP refused", self.now(), strategy=idea.strategy, direction=idea.direction,
                                    idea_time=idea.time, entry_price=idea.entry_price, why="; ".join(sv.reasons))
@@ -639,6 +647,9 @@ class Trading:
         start = floor_5m(tick.time)
         p = self.partial
         if p is None or p.start != start:
+            self.previous_partial = p
+            self.previous_covered = bool(getattr(self, "partial_covered", False)) and p is not None
+            self.partial_covered = p is not None and p.end == start      # prices flowing into this candle from its start
             p = Candle("5m", start, start + timedelta(minutes=5),
                        tick.buy, tick.buy, tick.buy, tick.buy, tick.sell, tick.sell, tick.sell, tick.sell)
         else:

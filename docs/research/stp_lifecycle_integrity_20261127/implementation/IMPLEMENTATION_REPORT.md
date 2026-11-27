@@ -308,6 +308,7 @@ The three Phase 1 historical financial corrections (−£23) were **not** applie
 |---|---|---|
 | `tests/technical/test_stp_integration.py::test_T12_a_break_held_for_three_closes_invalidates` | Its last assertion was "the reissue has its own lineage". It now asserts that the reissue has a **new id**, starts **WAITING** (not the broken one restored), and **continues the lineage** | The approved C-2 and brief §3.1, "invalidation and subsequent reissue" must not reset duplicate protection. Every other assertion of T12 is unchanged |
 | `tests/technical/test_stp_review_20261125.py::test_R4_...every_field_its_script_reads` | The set of fields the dashboard script reads gains `lineage`, `test`, `binds_first`, `data_gaps` | C-7 / PD-6: the page now shows them. The test's purpose (every field the script reads is supplied) is unchanged |
+| `tests/technical/test_stp_review_20261125.py::test_R6` (`_r3_engine` helper) | The stand-in for `stp.authorise.authorise` also takes `previous` and `partial_covered` | Review R3 extended the real function's signature, which the stand-in copies. The assertions are unchanged |
 | `tests/technical/test_stp_lifecycle_wp1_20261127.py::TW1-08` (new in WP1) | WP3 adds: no authorisation while the hour is uncertain. The test number is checked directly | The PD-5 B block, added on top of WP1's rule |
 
 No other existing test was changed. Every existing test passes unchanged (§8).
@@ -380,8 +381,8 @@ Also:
 | ID | Status |
 |---|---|
 | PD-0 to PD-6, OP-1, C-1, C-2 | approved (27 Nov) and implemented as §2. OP-1 scheduled for Saturday |
-| **D-R1 (new)** | open, for you: an IG-confirmed absent candle and reconciliation |
-| **D-R2 (new)** | open, for you: a review procedure for a recovered hour that conflicts with numbered tests |
+| **D-R1** | **approved (27 Nov): fail closed** where structural evidence is unavailable (REVIEW_R1_R4.md, R4) |
+| **D-R2** | **approved (27 Nov): fail closed** where a historical test's identity is uncertain (REVIEW_R1_R4.md, R4) |
 | Deployment of `stp-lifecycle-integrity` | not authorised; awaits independent review |
 | Re-activation of `STP_AUTHORISES_ENTRIES` | not authorised; a separate, explicit approval after deployment |
 
@@ -405,3 +406,7 @@ The trade STP authorised at 15:11:16 (AB261127151117, `1500-59#t1`, before your 
 | the final commit on `stp-lifecycle-integrity` | this report and the evidence files |
 
 GitHub: https://github.com/JohnCarrington/AutoBot/tree/stp-lifecycle-integrity
+
+### 13.11 Independent review findings R1–R4
+
+See `REVIEW_R1_R4.md`. R1, R2 and R3 are confirmed defects, each reproduced and corrected. R4 is the fail-closed review procedure, with `python -m planner.review`.

@@ -203,3 +203,21 @@ def test_FL_B3_every_opened_trade_is_acknowledged_once_and_its_test_recorded_as_
     consumed = {ref for L in snap["lineages"].values() for refs in (L.get("consumed") or {}).values() for ref in refs}
     opened = {o["reference"] for o in run["outcomes"] if o["opened"]}
     assert opened == consumed and len(snap.get("acks_seen") or []) == len(opened)
+
+
+# ---- review R2 on the real days: destinations revised while live -----------------------------------------------------
+
+def test_FL_D1_the_lineage_keeps_the_destination_each_opportunity_actually_reached(run):
+    """25 Nov: 0400-27 was published toward 13050 and revised to 13053.7, then completed at 11:45; 1200-29 toward
+    13053.7, revised to 13058.1, completed at 13:10. The lineage records the achieved ones (review R2)."""
+    snap = run["snapshots"][-1]
+    m = {x["id"]: x for L in snap["lineages"].values() for x in L["members"]}
+    assert m["STP-GBPUSD-20261125-0400-27"]["primary"] == "13053.7"
+    assert m["STP-GBPUSD-20261125-1200-29"]["primary"] == "13058.1"
+
+
+def test_FL_D2_the_migration_takes_the_revised_destinations_from_the_record():
+    from planner.migrate_lineage import history
+    h = {o["id"]: o for o in history(FIX / "migration" / "planner", "2026-11-24T00:00:00Z")}
+    assert h["STP-GBPUSD-20261125-0400-27"]["primary"] == "13053.7"
+    assert h["STP-GBPUSD-20261125-1200-29"]["primary"] == "13058.1"

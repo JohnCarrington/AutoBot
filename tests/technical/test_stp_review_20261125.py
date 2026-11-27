@@ -223,7 +223,7 @@ def _r3_engine(s, store, monkeypatch, authorised):
     from stp.authorise import Verdict
     calls, sent, book = [], [], []
 
-    def stp(settings, st, idea, now, source, partial=None, tick=None):
+    def stp(settings, st, idea, now, source, partial=None, tick=None, previous=None, partial_covered=False):  # review R3
         calls.append(idea.strategy)
         if not authorised:
             return Verdict(False, ["no live STP BUY opportunity whose zone the rejection candle reached"])

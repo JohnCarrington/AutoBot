@@ -194,6 +194,8 @@ class OpportunityKeeper(Keeper):
                         m["data_gaps"] = _copy([g for g in rec["data_gaps"] if g.get("status") != "reconciled"])
                         m["activated"] = bool(rec.get("ever_active"))
                         m["trade"], m["entry_zone_full"] = rec["trade"], _copy(rec["entry_zone"])
+                    price, pzone = _primary(rec)        # review R2: the destination as it stood at the end
+                    m.update(primary=price, primary_zone={"low": pzone["low"], "high": pzone["high"]} if pzone else None)
                     m.update(ended_utc=rec["ended_utc"], status=status, effective_status=status,
                              zone={"low": rec["entry_zone"]["low"], "high": rec["entry_zone"]["high"]},
                              destination_case=(evidence or {}).get("destination_case"),
@@ -250,6 +252,11 @@ class OpportunityKeeper(Keeper):
                 return None
             if (price is not None and m.get("primary") is not None and _d(price) == _d(m["primary"])) or \
                     zones_overlap(m.get("primary_zone"), pzone):
+                return m["id"]
+            # review R2: an achieved destination whose zone was not recorded (a revision in the historical map):
+            # the proposal's destination zone containing the achieved price
+            if m.get("primary_zone") is None and m.get("primary") is not None and pzone and \
+                    _d(pzone["low"]) <= _d(m["primary"]) <= _d(pzone["high"]):
                 return m["id"]
             return None
         le = self.state["ended_by_identity"].get(_key(identity(p)))
