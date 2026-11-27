@@ -418,3 +418,7 @@ See `REVIEW_R3_1.md`: a confirmed defect (continuity inferred from adjacent time
 ### 13.13 Review of fec364b (R3.2)
 
 See `REVIEW_R3_2.md`. IG's DISTINCT tick subscription with filtered dispatching does not guarantee every price change, so a locally built candle never stands in for IG's own. Until IG's completed candle is stored, the STP check refuses (PD-5). The R3.1 stand-in and its module are removed, and the stream, feed and service are back to production code.
+
+### 13.14 Saturday maintenance
+
+See `SATURDAY_MAINTENANCE_READINESS.md`.
