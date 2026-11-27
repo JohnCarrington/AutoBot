@@ -24,6 +24,13 @@ Binding (section 10): among the opportunities that pass, the OLDEST (earliest li
 then nearest to the rejection candle), so a newly published opportunity never displaces an existing binding.
 Key (OD-32): "<lineage id>#t<n>", n the D-25 test that contains the rejection candle; the idea's existing signal key
 (if any) is kept in front of it, joined by "|"; rule 11 refuses the idea if either part was already used.
+Phase 2 WP1 (owner, 27 November 2026): the lineage is the structural place (planner/lineage.py), so n is counted on
+the LINEAGE's record (state["lineages"]), which republication, reissue and supersession share. The key also carries
+  * the lineage's ALIAS keys for test n: keys of the same structural test issued under another id before the lineage
+    registry existed (PD-4, planner/migrate_lineage.py), so a test traded under an old key stays traded;
+  * the key of every OTHER live lineage of the same direction whose zone the rejection candle also reached (zones that
+    only share an edge stay separate lineages), at that lineage's own test number,
+so a trade consumes every key that names the structural test it used, and rule 11 refuses any later idea naming one.
 """
 
 from __future__ import annotations
@@ -35,6 +42,7 @@ from types import SimpleNamespace
 from typing import Any
 
 from planner.keeper import BEFORE, OVERLAPPED, candle_timing
+from planner.lineage import test_number
 from planner.measure import cl, ppp, side_of
 from planner.zones import CLASS_RANK, interacts, wholly_clear
 from prices.model import parse_iso, plain, uk_short
@@ -52,6 +60,9 @@ class Verdict:
     signal: str | None = None
     bypass: frozenset = frozenset()
     steps: list[str] = field(default_factory=list)
+    lineage: str | None = None
+    test: int | None = None
+    keys: list[str] = field(default_factory=list)
 
 
 def _d(x: Any) -> Decimal:
@@ -64,33 +75,26 @@ def _five(store: Any, start: datetime) -> Any:
 
 
 def which_test(settings: Any, store: Any, low: Decimal, high: Decimal, since: datetime | None,
-                rejection_start: datetime, tests: dict | None = None) -> int:
-    """The D-25 test (planner/zones.py count_tests: a finished hourly candle interacting with the zone starts a test;
-    one wholly clear re-arms) that contains the rejection candle: the count over the finished hourly candles before
-    the rejection candle's hour, plus one if the count is armed then. A function of the rejection candle only.
-    `tests`: the opportunity's own record of the tests the tracker counted, each hourly candle against the zone in
-    force at that hour (review, 25 November 2026); those hours are taken from it, and only the hours after it are
-    counted here, against the current zone. Without it (a file written before it existed) every hour is counted
-    against the current zone, as before."""
-    hour = rejection_start.replace(minute=0, second=0, microsecond=0)
-    frm = since if since is not None else hour - timedelta(days=14)
-    n, armed = 0, True
-    if tests is not None:
-        for at, kind in tests.get("events", []):
-            if parse_iso(at) < hour:
-                n, armed = (n + 1, False) if kind == "test" else (n, True)
-        if tests.get("through_utc"):
-            frm = max(frm, parse_iso(tests["through_utc"]))
-            if since is None or frm > since:
-                since = frm
-    for c in store.read_range("1h", frm - timedelta(hours=1), hour):
-        if c.end > hour or (since is not None and c.start < since):
-            continue
-        if armed and (interacts(settings, c, low, high, True) or interacts(settings, c, low, high, False)):
-            n, armed = n + 1, False
-        elif not armed and wholly_clear(settings, c, low, high):
-            armed = True
-    return n + 1 if armed else max(n, 1)
+               rejection_start: datetime, tests: dict | None = None) -> int:
+    """The D-25 test that contains the rejection candle (planner/lineage.py test_number, the tracker's own rule):
+    the tests recorded before the rejection candle's hour, the hours after the record counted against the current
+    zone, plus one if the count is armed then; 0 before the lineage's seeded history. Without a record (a file written
+    before it existed), every hour since `since` is counted against the current zone."""
+    return test_number(settings, store, low, high, tests, rejection_start, since)
+
+
+def _lineage(state: dict, o: dict) -> dict:
+    return (state.get("lineages") or {}).get(o.get("lineage") or o["id"]) or {}
+
+
+def _keys(settings: Any, store: Any, state: dict, o: dict, rc_start: datetime) -> tuple[str, int, list[str]]:
+    """The opportunity's lineage key for the rejection candle, its test number, and its alias keys for that test."""
+    lin = _lineage(state, o)
+    lid = o.get("lineage") or o["id"]
+    since = o.get("lineage_created_utc") or o.get("created_utc")
+    n = which_test(settings, store, _d(o["entry_zone"]["low"]), _d(o["entry_zone"]["high"]),
+                   parse_iso(since) if since else None, rc_start, tests=lin.get("tests") or o.get("tests"))
+    return f"{lid}#t{n}", n, list((lin.get("aliases") or {}).get(str(n), []))
 
 
 def _catch_up(settings: Any, store: Any, state: dict, o: dict, now: datetime, partial: Any, tick: Any) -> list[str]:
@@ -203,15 +207,19 @@ def authorise(settings: Any, store: Any, idea: Any, now: datetime, source: Any, 
             reasons += [f"{o['id']}: {w}" for w in why]
             continue
         lineage = o.get("lineage") or o["id"]
-        since = o.get("lineage_created_utc") or o.get("created_utc")
-        n = which_test(settings, store, _d(o["entry_zone"]["low"]), _d(o["entry_zone"]["high"]),
-                        parse_iso(since) if since else None, rc_start, tests=o.get("tests"))
-        key = f"{lineage}#t{n}"
+        key, n, aliases = _keys(settings, store, state, o, rc_start)
+        parts = [key] + aliases
+        for o2 in near:                                 # every other lineage this rejection candle reached
+            if (o2.get("lineage") or o2["id"]) != lineage:
+                k2, _, a2 = _keys(settings, store, state, o2, rc_start)
+                parts += [k2] + a2
+        parts = list(dict.fromkeys(parts))
         existing = (getattr(idea, "context", None) or {}).get("signal")
-        signal = f"{existing}|{key}" if existing else key
+        signal = "|".join(([existing] if existing else []) + parts)
         steps = [f"STP authorised: the rejection candle {uk_short(rc.start)} reached the live {want} opportunity "
                  f"{o['id']} ({o.get('label') or o['status']}, zone {o['entry_zone']['low']}-{o['entry_zone']['high']}); "
                  f"test {n}; duplicate key {signal}; filters not applied for it: "
                  f"{', '.join(settings.stp_authorisation.bypass_filters)}"]
-        return Verdict(True, [], o, key, signal, frozenset(settings.stp_authorisation.bypass_filters), steps)
+        return Verdict(True, [], o, key, signal, frozenset(settings.stp_authorisation.bypass_filters), steps,
+                       lineage=lineage, test=n, keys=parts)
     return Verdict(False, reasons)

@@ -336,7 +336,9 @@ class Trading:
                                    reference=r.reference, reasons=r.reasons, level=r.level)
                 return r
             idea.context = dict(idea.context) | {"signal": sv.signal, "stp": {
-                "opportunity": sv.opportunity["id"], "key": sv.stp_key, "bypass": sorted(sv.bypass)}}
+                "opportunity": sv.opportunity["id"], "key": sv.stp_key, "bypass": sorted(sv.bypass),
+                "lineage": getattr(sv, "lineage", None), "test": getattr(sv, "test", None),
+                "keys": list(getattr(sv, "keys", None) or [])}}
             idea.steps.extend(sv.steps)
             bypass = sv.bypass
             self.book.decision("STP authorised", self.now(), strategy=idea.strategy, direction=idea.direction,

@@ -1,0 +1,7157 @@
+{
+ "pair": "GBPUSD",
+ "recommendation": {
+  "id": "STP-GBPUSD-20261127-1305-58",
+  "instrument": "GBPUSD",
+  "created_utc": "2026-11-27T13:05:03Z",
+  "market_data_utc": "2026-11-27T13:05:00Z",
+  "status": "ACTIVE",
+  "status_reason": "Major zone (4 families: moving average, pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals",
+  "trade": "BUY",
+  "identity": [
+   "BUY",
+   [
+    [
+     "4-hour swing high",
+     "13123.9"
+    ],
+    [
+     "4-hour swing high",
+     "13128.6"
+    ],
+    [
+     "New York session high",
+     "13122.9"
+    ],
+    [
+     "daily R1",
+     "13121.3"
+    ],
+    [
+     "hourly swing high",
+     "13121.9"
+    ],
+    [
+     "hourly swing high",
+     "13122.9"
+    ],
+    [
+     "hourly swing high",
+     "13123.9"
+    ],
+    [
+     "hourly swing high",
+     "13128.6"
+    ],
+    [
+     "hourly swing high",
+     "13129.2"
+    ],
+    [
+     "previous day high",
+     "13122.9"
+    ],
+    [
+     "weekly pivot",
+     "13127.3"
+    ]
+   ]
+  ],
+  "far_edge": "13121.3",
+  "ever_active": true,
+  "history": [
+   {
+    "time_utc": "2026-11-27T13:05:03Z",
+    "event": "created",
+    "why": "Major zone (4 families: moving average, pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals",
+    "status": "CANDIDATE",
+    "plan": {
+     "direction": "NEUTRAL",
+     "condition": "CONTINUATION",
+     "opportunity": null,
+     "trade": "BUY",
+     "zone": {
+      "low": "13121.3",
+      "high": "13130.3",
+      "class": "Major",
+      "families": [
+       "moving average",
+       "pivot",
+       "session",
+       "structure"
+      ],
+      "levels": [
+       "daily R1 13121.3",
+       "hourly swing high 13121.9 (former resistance, now support)",
+       "previous day high 13122.9",
+       "hourly swing high 13122.9 (former resistance, now support)",
+       "New York session high 13122.9",
+       "4-hour swing high 13123.9 (former resistance, now support)",
+       "hourly swing high 13123.9 (former resistance, now support)",
+       "New York session low (so far) 13124.4",
+       "weekly pivot 13127.3",
+       "4-hour swing high 13128.6",
+       "hourly swing high 13128.6",
+       "hourly swing high 13129.2",
+       "H1 EMA200 13130.3"
+      ]
+     },
+     "reference": {
+      "price": "13127.3",
+      "level": "weekly pivot"
+     },
+     "reachability": "NEAR",
+     "primary": "13134.6",
+     "no_recommendation": null,
+     "fresh": true,
+     "market_data_utc": "2026-11-27T13:05:00Z",
+     "threshold_misses": [
+      {
+       "timeframe": "4h",
+       "kind": "high",
+       "price": "13129.2",
+       "candle_utc": "2026-11-25T16:00:00Z",
+       "moved_pips": "33.5",
+       "needed_pips": "40.0",
+       "note": "a 4h turn at 13129.2 moved 33.5 pips within 6 candles, short of the 40.0 needed: not counted as a swing (provisional threshold, recorded for review)"
+      }
+     ],
+     "warming_up": [
+      "4h EMA200 (498 of 592 candles)",
+      "1w EMA100 (210 of 296 candles)",
+      "1w EMA200 (210 of 592 candles)"
+     ]
+    }
+   },
+   {
+    "time_utc": "2026-11-27T13:05:03Z",
+    "event": "waiting",
+    "why": "issued on the first analysis with all the evidence (adjustment 1)",
+    "status": "WAITING"
+   },
+   {
+    "time_utc": "2026-11-27T13:05:03Z",
+    "event": "in zone at creation",
+    "why": "the Fri 27 Nov 13:00 GMT 5-minute candle, finished before the opportunity was created, was already at the zone: not an activation (recorded only)",
+    "candle_start_utc": "2026-11-27T13:00:00Z",
+    "candle_end_utc": "2026-11-27T13:05:00Z",
+    "candle_timing": "before creation",
+    "event_time_basis": "5-minute candle (no finer price data is stored, so the moment inside the candle is not known)"
+   },
+   {
+    "time_utc": "2026-11-27T13:10:00Z",
+    "event": "ambiguous",
+    "why": "the Fri 27 Nov 13:05 GMT 5-minute candle reached the zone 13121.3-13130.3, but it began before the recommendation was created (2026-11-27T13:05:03Z) and 5-minute candles cannot show whether that happened before or after: not used (recorded only)",
+    "candle_start_utc": "2026-11-27T13:05:00Z",
+    "candle_end_utc": "2026-11-27T13:10:00Z",
+    "candle_timing": "overlapped creation",
+    "qualifying_event_utc": null,
+    "event_time_basis": "5-minute candle (no finer price data is stored, so the moment inside the candle is not known)"
+   },
+   {
+    "time_utc": "2026-11-27T13:15:00Z",
+    "event": "active",
+    "why": "the Fri 27 Nov 13:10 GMT 5-minute candle reached the zone 13121.3-13130.3",
+    "status": "ACTIVE",
+    "candle_start_utc": "2026-11-27T13:10:00Z",
+    "candle_end_utc": "2026-11-27T13:15:00Z",
+    "candle_timing": "after creation",
+    "qualifying_event_utc": null,
+    "event_time_basis": "5-minute candle (no finer price data is stored, so the moment inside the candle is not known)"
+   },
+   {
+    "time_utc": "2026-11-27T14:00:00Z",
+    "event": "closed beyond",
+    "why": "the Fri 27 Nov 13:00 GMT hourly candle closed 13120.1, beyond the zone edge 13121.3 by less than 3 pips (recorded only)"
+   }
+  ],
+  "dominant_direction": "NEUTRAL",
+  "condition": "CONTINUATION",
+  "opportunity": null,
+  "expected_movement": "DOWN into support, then UP",
+  "entry_zone": {
+   "low": "13121.3",
+   "high": "13130.3",
+   "class": "Major",
+   "families": [
+    "moving average",
+    "pivot",
+    "session",
+    "structure"
+   ],
+   "daily_or_weekly_level": true,
+   "tests": 10,
+   "reference": {
+    "price": "13127.3",
+    "name": "weekly pivot",
+    "role": "",
+    "family": "pivot",
+    "timeframe": "weekly",
+    "origin_utc": "2026-11-15T00:00:00Z",
+    "daily_or_weekly": true,
+    "fixed": true,
+    "note": "weekly candle Sun 15 Nov 00:00 GMT"
+   },
+   "levels": [
+    {
+     "price": "13121.3",
+     "name": "daily R1",
+     "role": "",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-26T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "daily candle Thu 26 Nov (sell H 13122.9 L 13095.7 C 13106.9)"
+    },
+    {
+     "price": "13121.9",
+     "name": "hourly swing high",
+     "role": "former resistance, now support",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 07:00 GMT high (sell)"
+    },
+    {
+     "price": "13122.9",
+     "name": "previous day high",
+     "role": "",
+     "family": "session",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-26T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "daily candle Thu 26 Nov (sell)"
+    },
+    {
+     "price": "13122.9",
+     "name": "hourly swing high",
+     "role": "former resistance, now support",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-26T14:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Thu 26 Nov 14:00 GMT high (sell)"
+    },
+    {
+     "price": "13122.9",
+     "name": "New York session high",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-26T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "New York session previous Thu 26 Nov 12:00-21:00 UTC"
+    },
+    {
+     "price": "13123.9",
+     "name": "4-hour swing high",
+     "role": "former resistance, now support",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-24T16:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing high 13123.9 (Tue 24 Nov 16:00 GMT)"
+    },
+    {
+     "price": "13123.9",
+     "name": "hourly swing high",
+     "role": "former resistance, now support",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-24T18:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Tue 24 Nov 18:00 GMT high (sell)"
+    },
+    {
+     "price": "13124.4",
+     "name": "New York session low (so far)",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-27T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": "New York session today Fri 27 Nov 12:00-21:00 UTC, so far (to 13:05 UTC)"
+    },
+    {
+     "price": "13127.3",
+     "name": "weekly pivot",
+     "role": "",
+     "family": "pivot",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    {
+     "price": "13128.6",
+     "name": "4-hour swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "4h swing high 13128.6 (Fri 20 Nov 12:00 GMT)"
+    },
+    {
+     "price": "13128.6",
+     "name": "hourly swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T13:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 13:00 GMT high (sell)"
+    },
+    {
+     "price": "13129.2",
+     "name": "hourly swing high",
+     "role": "",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-25T18:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Wed 25 Nov 18:00 GMT high (sell)"
+    },
+    {
+     "price": "13130.3",
+     "name": "H1 EMA200",
+     "role": "",
+     "family": "moving average",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-27T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": ""
+    }
+   ]
+  },
+  "reference_entry": {
+   "price": "13127.3",
+   "level": "weekly pivot"
+  },
+  "reachability": "NEAR",
+  "selection_reason": "Major zone (4 families: moving average, pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals",
+  "destinations": {
+   "intermediate": {
+    "price": "13134.6",
+    "zone": {
+     "low": "13134.6",
+     "high": "13142.1",
+     "class": "Major",
+     "families": [
+      "higher-timeframe structure",
+      "pivot",
+      "session",
+      "structure"
+     ],
+     "levels": [
+      "London session high 13134.6",
+      "New York session high (so far) 13134.7",
+      "hourly swing low 13135.5 (former support, now resistance)",
+      "daily swing low 13135.6 (former support, now resistance)",
+      "4-hour swing low 13135.6 (former support, now resistance)",
+      "daily R2 13135.7",
+      "historical daily swing low 13139.4 (former support, now resistance)",
+      "historical daily swing low 13139.7 (former support, now resistance)",
+      "daily swing low 13139.9 (former support, now resistance)",
+      "4-hour swing high 13142.1",
+      "hourly swing high 13142.1"
+     ]
+    }
+   },
+   "primary": {
+    "price": "13134.6",
+    "zone": {
+     "low": "13134.6",
+     "high": "13142.1",
+     "class": "Major",
+     "families": [
+      "higher-timeframe structure",
+      "pivot",
+      "session",
+      "structure"
+     ],
+     "levels": [
+      "London session high 13134.6",
+      "New York session high (so far) 13134.7",
+      "hourly swing low 13135.5 (former support, now resistance)",
+      "daily swing low 13135.6 (former support, now resistance)",
+      "4-hour swing low 13135.6 (former support, now resistance)",
+      "daily R2 13135.7",
+      "historical daily swing low 13139.4 (former support, now resistance)",
+      "historical daily swing low 13139.7 (former support, now resistance)",
+      "daily swing low 13139.9 (former support, now resistance)",
+      "4-hour swing high 13142.1",
+      "hourly swing high 13142.1"
+     ]
+    }
+   },
+   "extended": {
+    "price": "13148",
+    "zone": {
+     "low": "13148",
+     "high": "13158.5",
+     "class": "Major",
+     "families": [
+      "higher-timeframe structure",
+      "pivot",
+      "psychological",
+      "structure"
+     ],
+     "levels": [
+      "hourly swing low 13148 (former support, now resistance)",
+      "daily R3 13148.5",
+      "round number 13150",
+      "hourly swing high 13153.3",
+      "daily swing low 13158.5 (former support, now resistance)"
+     ]
+    }
+   }
+  },
+  "invalidation": {
+   "zone_break_close": "13118.3",
+   "zone_break_timeframe": "1h",
+   "structure_break_close": "13043.1",
+   "structure_break_timeframe": "4h",
+   "destination_first": "13134.6",
+   "destination_first_applies": true,
+   "conditions": [
+    "an hourly close at or below 13118.3 (3 pips beyond the zone bottom)",
+    "a 4-hour close at or below 13043.1 (beyond the last 4-hour swing low 13046.1)",
+    "(the 4-hour direction, NEUTRAL, is context only: OD-06)",
+    "price reaching the primary destination 13134.6 before the zone"
+   ]
+  },
+  "observations": {
+   "supporting": [
+    "4-hour EMA 7/13/21 stack: 7 > 13 > 21 (up)",
+    "4-hour close 13129.9 below the EMA100 13184.1",
+    "4-hour EMA200: warming up (not used)",
+    "4-hour EMA100 falling 8.7 pips over 6 candles"
+   ],
+   "h4_ema_stack": "7 > 13 > 21 (up)",
+   "h4_ema100": "13184.1",
+   "h4_ema200": "warming up",
+   "h4_ema100_slope_pips": "-8.7",
+   "h4_macd": {
+    "line": "-10.59",
+    "signal": "-16.01",
+    "histogram": "5.41"
+   },
+   "h4_rsi": "91.0",
+   "h4_band": {
+    "upper": "13146.2",
+    "middle": "13098.8",
+    "lower": "13051.3",
+    "width_pips": "94.9",
+    "close": "inside the bands"
+   },
+   "h4_same_colour_candles": "3 up",
+   "distance_from_h4_ema21_adr": "0.34",
+   "distance_from_h4_ema100_adr": "-0.70",
+   "daily_structure": "mixed: swing highs 13418.6 then 13503.1, swing lows 13272.5 then 13010.1",
+   "adr_pips": "77.2",
+   "today_range_pips": "41.4",
+   "today_range_adr": "0.54",
+   "remaining_room_pips": "35.8",
+   "vs_daily_pivot": "above the daily pivot 13108.5",
+   "vs_weekly_pivot": "below the weekly pivot 13127.3",
+   "direction_rule_5m": {
+    "side": "buy side",
+    "reason": "price 13124.9 is above the pivot 13108.5 and above the 5m 100 EMA 13124.7"
+   },
+   "uk_time": "13:05",
+   "minutes_from": {
+    "10:00": 185,
+    "14:00": -55,
+    "16:00": -175
+   },
+   "big_news_today": [],
+   "impulse_pips": "88.6",
+   "impulse_adr": "1.15",
+   "reward_to_invalidation": "0.8",
+   "primary_distance_pips": "9.7",
+   "primary_distance_adr": "0.13"
+  },
+  "direction_evidence": [
+   "4-hour structure: mixed: swing highs 13142.1 then 13123.9, swing lows 13010.1 then 13046.1",
+   "4-hour EMA 7/13/21 stack: 7 > 13 > 21 (up)",
+   "4-hour close 13129.9 below the EMA100 13184.1",
+   "4-hour EMA200: warming up (not used)",
+   "4-hour EMA100 falling 8.7 pips over 6 candles"
+  ],
+  "condition_evidence": [
+   "impulse from the 4h swing low 13046.1 (Wed 25 Nov 12:00 GMT) to the high 13134.7 (Fri 27 Nov 12:00 GMT)",
+   "new high: 13134.7 beyond the previous swing high 13123.9",
+   "4-hour MACD line -10.59, histogram 5.41, moving away from zero",
+   "4-hour RSI 91.0",
+   "4-hour MACD line still below zero: momentum has not yet confirmed the new 4-hour uptrend (supporting evidence only, not a veto)",
+   "continuation: new highs, momentum building, close above the middle band"
+  ],
+  "alternative": {
+   "low": "13108.5",
+   "high": "13119.1",
+   "class": "Major",
+   "families": [
+    "pivot",
+    "session",
+    "structure"
+   ],
+   "levels": [
+    "daily pivot 13108.5",
+    "hourly swing high 13115.1 (former resistance, now support)",
+    "London session low 13115.4",
+    "hourly swing high 13117.3 (former resistance, now support)",
+    "London session high 13117.3",
+    "hourly swing high 13118.3 (former resistance, now support)",
+    "hourly swing low 13119.1"
+   ],
+   "reachability": "PLAUSIBLE"
+  },
+  "six_factors": {
+   "1_structural_level": {
+    "zone": [
+     "13121.3",
+     "13130.3"
+    ],
+    "families": [
+     "moving average",
+     "pivot",
+     "session",
+     "structure"
+    ],
+    "levels": [
+     "daily R1 13121.3",
+     "hourly swing high 13121.9 (former resistance, now support)",
+     "previous day high 13122.9",
+     "hourly swing high 13122.9 (former resistance, now support)",
+     "New York session high 13122.9",
+     "4-hour swing high 13123.9 (former resistance, now support)",
+     "hourly swing high 13123.9 (former resistance, now support)",
+     "New York session low (so far) 13124.4",
+     "weekly pivot 13127.3",
+     "4-hour swing high 13128.6",
+     "hourly swing high 13128.6",
+     "hourly swing high 13129.2",
+     "H1 EMA200 13130.3"
+    ]
+   },
+   "2_higher_timeframe_direction": "NEUTRAL",
+   "3_daily_extension": {
+    "today_range_adr": "0.54",
+    "adr_pips": "77.2"
+   },
+   "4_sweep_and_rejection": "recorded in the history as wick sweep / closed beyond / reclaim / confirmed break",
+   "5_tests": 10,
+   "6_time_of_day": {
+    "uk_time": "13:05",
+    "minutes_from": {
+     "10:00": 185,
+     "14:00": -55,
+     "16:00": -175
+    }
+   }
+  },
+  "lineage": "STP-GBPUSD-20261127-1305-58",
+  "lineage_created_utc": "2026-11-27T13:05:03Z",
+  "tests": {
+   "events": [],
+   "through_utc": null
+  },
+  "relation_to_h4": "none (NEUTRAL)",
+  "label": "Watch & Wait",
+  "activation": {
+   "candle_start_utc": "2026-11-27T13:10:00Z",
+   "candle_end_utc": "2026-11-27T13:15:00Z",
+   "candle_timing": "after creation",
+   "qualifying_event_utc": null,
+   "event_time_basis": "5-minute candle (no finer price data is stored, so the moment inside the candle is not known)"
+  },
+  "beyond_close_utc": "2026-11-27T14:00:00Z"
+ },
+ "validated_h1_end": "2026-11-27T14:00:00Z",
+ "m5_checked_until": "2026-11-27T14:20:00Z",
+ "last_plan": {
+  "pair": "GBPUSD",
+  "as_of_utc": "2026-11-27T14:00:03Z",
+  "market_data_utc": "2026-11-27T14:00:00Z",
+  "fresh": true,
+  "dominant_direction": "NEUTRAL",
+  "direction_evidence": [
+   "4-hour structure: mixed: swing highs 13142.1 then 13123.9, swing lows 13010.1 then 13046.1",
+   "4-hour EMA 7/13/21 stack: 7 > 13 > 21 (up)",
+   "4-hour close 13129.9 below the EMA100 13184.1",
+   "4-hour EMA200: warming up (not used)",
+   "4-hour EMA100 falling 8.7 pips over 6 candles"
+  ],
+  "condition": "CONTINUATION",
+  "condition_evidence": [
+   "impulse from the 4h swing low 13046.1 (Wed 25 Nov 12:00 GMT) to the high 13134.7 (Fri 27 Nov 12:00 GMT)",
+   "new high: 13134.7 beyond the previous swing high 13123.9",
+   "4-hour MACD line -10.59, histogram 5.41, moving away from zero",
+   "4-hour RSI 91.0",
+   "4-hour MACD line still below zero: momentum has not yet confirmed the new 4-hour uptrend (supporting evidence only, not a veto)",
+   "continuation: new highs, momentum building, close above the middle band"
+  ],
+  "opportunity": null,
+  "trade": "SELL",
+  "expected_movement": "UP into resistance, then DOWN",
+  "entry_zone": null,
+  "reference_entry": null,
+  "reachability": null,
+  "selection_reason": "",
+  "destinations": {},
+  "invalidation": {},
+  "observations": {
+   "supporting": [
+    "4-hour EMA 7/13/21 stack: 7 > 13 > 21 (up)",
+    "4-hour close 13129.9 below the EMA100 13184.1",
+    "4-hour EMA200: warming up (not used)",
+    "4-hour EMA100 falling 8.7 pips over 6 candles"
+   ],
+   "h4_ema_stack": "7 > 13 > 21 (up)",
+   "h4_ema100": "13184.1",
+   "h4_ema200": "warming up",
+   "h4_ema100_slope_pips": "-8.7",
+   "h4_macd": {
+    "line": "-10.59",
+    "signal": "-16.01",
+    "histogram": "5.41"
+   },
+   "h4_rsi": "91.0",
+   "h4_band": {
+    "upper": "13146.2",
+    "middle": "13098.8",
+    "lower": "13051.3",
+    "width_pips": "94.9",
+    "close": "inside the bands"
+   },
+   "h4_same_colour_candles": "3 up",
+   "distance_from_h4_ema21_adr": "0.34",
+   "distance_from_h4_ema100_adr": "-0.70",
+   "daily_structure": "mixed: swing highs 13418.6 then 13503.1, swing lows 13272.5 then 13010.1",
+   "adr_pips": "77.2",
+   "today_range_pips": "41.4",
+   "today_range_adr": "0.54",
+   "remaining_room_pips": "35.8",
+   "vs_daily_pivot": "above the daily pivot 13108.5",
+   "vs_weekly_pivot": "below the weekly pivot 13127.3",
+   "direction_rule_5m": {
+    "side": "no clear direction",
+    "reason": "price 13120.1 is above the pivot 13108.5 and below the 5m 100 EMA 13122.8: they disagree"
+   },
+   "uk_time": "14:00",
+   "minutes_from": {
+    "10:00": 240,
+    "14:00": 0,
+    "16:00": -120
+   },
+   "big_news_today": [],
+   "impulse_pips": "88.6",
+   "impulse_adr": "1.15"
+  },
+  "candidates": [
+   {
+    "low": "13121.3",
+    "high": "13130.2",
+    "class": "Major",
+    "families": [
+     "moving average",
+     "pivot",
+     "session",
+     "structure"
+    ],
+    "levels": [
+     "daily R1 13121.3",
+     "hourly swing high 13121.9",
+     "previous day high 13122.9",
+     "hourly swing high 13122.9",
+     "New York session high 13122.9",
+     "4-hour swing high 13123.9",
+     "hourly swing high 13123.9",
+     "weekly pivot 13127.3",
+     "4-hour swing high 13128.6",
+     "hourly swing high 13128.6",
+     "hourly swing high 13129.2",
+     "H1 EMA200 13130.2"
+    ],
+    "reachability": "NEAR",
+    "distance_pips": "1.2",
+    "distance_adr": "0.02",
+    "tests": 10,
+    "rejected_because": null,
+    "chosen": true
+   },
+   {
+    "low": "13134.6",
+    "high": "13142.1",
+    "class": "Major",
+    "families": [
+     "higher-timeframe structure",
+     "pivot",
+     "session",
+     "structure"
+    ],
+    "levels": [
+     "London session high 13134.6",
+     "New York session high (so far) 13134.7",
+     "hourly swing low 13135.5 (former support, now resistance)",
+     "daily swing low 13135.6 (former support, now resistance)",
+     "4-hour swing low 13135.6 (former support, now resistance)",
+     "daily R2 13135.7",
+     "historical daily swing low 13139.4 (former support, now resistance)",
+     "historical daily swing low 13139.7 (former support, now resistance)",
+     "daily swing low 13139.9 (former support, now resistance)",
+     "4-hour swing high 13142.1",
+     "hourly swing high 13142.1"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "14.5",
+    "distance_adr": "0.19",
+    "tests": 9,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13148",
+    "high": "13158.5",
+    "class": "Major",
+    "families": [
+     "higher-timeframe structure",
+     "pivot",
+     "psychological",
+     "structure"
+    ],
+    "levels": [
+     "hourly swing low 13148 (former support, now resistance)",
+     "daily R3 13148.5",
+     "round number 13150",
+     "hourly swing high 13153.3",
+     "daily swing low 13158.5 (former support, now resistance)"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "27.9",
+    "distance_adr": "0.36",
+    "tests": 4,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13168",
+    "high": "13179.5",
+    "class": "Moderate",
+    "families": [
+     "pivot",
+     "structure"
+    ],
+    "levels": [
+     "4-hour swing low 13168 (former support, now resistance)",
+     "hourly swing low 13168 (former support, now resistance)",
+     "4-hour swing high 13171.9",
+     "hourly swing high 13171.9",
+     "hourly swing low 13172.8 (former support, now resistance)",
+     "weekly R1 13179.5"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "47.9",
+    "distance_adr": "0.62",
+    "tests": 7,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13179.6",
+    "high": "13189.7",
+    "class": "Major",
+    "families": [
+     "higher-timeframe structure",
+     "moving average",
+     "structure"
+    ],
+    "levels": [
+     "historical daily swing low 13179.6 (former support, now resistance)",
+     "hourly swing low 13181.3 (former support, now resistance)",
+     "hourly swing low 13182.1 (former support, now resistance)",
+     "4-hour swing low 13183.8 (former support, now resistance)",
+     "H4 EMA100 13184.1",
+     "4-hour swing low 13189.7 (former support, now resistance)"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "59.5",
+    "distance_adr": "0.77",
+    "tests": 11,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13193.2",
+    "high": "13204.4",
+    "class": "Moderate",
+    "families": [
+     "psychological",
+     "structure"
+    ],
+    "levels": [
+     "4-hour swing low 13193.2 (former support, now resistance)",
+     "4-hour swing low 13198.6 (former support, now resistance)",
+     "round number 13200",
+     "4-hour swing low 13200.9 (former support, now resistance)",
+     "hourly swing high 13202.5",
+     "hourly swing high 13204.4"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "73.1",
+    "distance_adr": "0.95",
+    "tests": 16,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13205.2",
+    "high": "13215.5",
+    "class": "Moderate",
+    "families": [
+     "higher-timeframe structure",
+     "structure"
+    ],
+    "levels": [
+     "hourly swing high 13205.2",
+     "4-hour swing low 13205.6 (former support, now resistance)",
+     "historical daily swing high 13207.4",
+     "historical daily swing high 13214.7",
+     "daily swing low 13215.5 (former support, now resistance)"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "85.1",
+    "distance_adr": "1.10",
+    "tests": 27,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13218.5",
+    "high": "13227.9",
+    "class": "Moderate",
+    "families": [
+     "session",
+     "structure"
+    ],
+    "levels": [
+     "hourly swing high 13218.5",
+     "4-hour swing high 13224.5",
+     "hourly swing high 13224.5",
+     "previous week high 13227.9",
+     "4-hour swing high 13227.9",
+     "hourly swing high 13227.9"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "98.4",
+    "distance_adr": "1.27",
+    "tests": 4,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13233.1",
+    "high": "13233.1",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "historical daily swing low 13233.1 (former support, now resistance)"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "113.0",
+    "distance_adr": "1.46",
+    "tests": 38,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13248.3",
+    "high": "13252.9",
+    "class": "Major",
+    "families": [
+     "higher-timeframe structure",
+     "psychological",
+     "structure"
+    ],
+    "levels": [
+     "4-hour swing high 13248.3",
+     "historical daily swing low 13248.5 (former support, now resistance)",
+     "round number 13250",
+     "4-hour swing high 13250.0",
+     "4-hour swing high 13250.9",
+     "historical daily swing low 13251.0 (former support, now resistance)",
+     "daily swing low 13252.9 (former support, now resistance)"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "128.2",
+    "distance_adr": "1.66",
+    "tests": 37,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13261.2",
+    "high": "13272.5",
+    "class": "Moderate",
+    "families": [
+     "higher-timeframe structure",
+     "structure"
+    ],
+    "levels": [
+     "4-hour swing high 13261.2",
+     "daily swing low 13272.5 (former support, now resistance)",
+     "4-hour swing low 13272.5 (former support, now resistance)"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "141.1",
+    "distance_adr": "1.83",
+    "tests": 10,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13272.9",
+    "high": "13282.5",
+    "class": "Major",
+    "families": [
+     "higher-timeframe structure",
+     "pivot",
+     "structure"
+    ],
+    "levels": [
+     "daily swing low 13272.9 (former support, now resistance)",
+     "4-hour swing high 13274.7",
+     "weekly R2 13280.2",
+     "daily swing low 13282.5 (former support, now resistance)"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "152.8",
+    "distance_adr": "1.98",
+    "tests": 18,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13285.0",
+    "high": "13296.0",
+    "class": "Moderate",
+    "families": [
+     "higher-timeframe structure",
+     "structure"
+    ],
+    "levels": [
+     "4-hour swing high 13285.0",
+     "historical daily swing low 13287.2 (former support, now resistance)",
+     "4-hour swing low 13291.1 (former support, now resistance)",
+     "4-hour swing low 13296.0 (former support, now resistance)"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "164.9",
+    "distance_adr": "2.14",
+    "tests": 13,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13300.6",
+    "high": "13311.6",
+    "class": "Moderate",
+    "families": [
+     "higher-timeframe structure",
+     "structure"
+    ],
+    "levels": [
+     "4-hour swing low 13300.6 (former support, now resistance)",
+     "daily swing low 13302.0 (former support, now resistance)",
+     "daily swing low 13305.7 (former support, now resistance)",
+     "daily swing high 13311.1",
+     "historical daily swing low 13311.6 (former support, now resistance)"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "180.5",
+    "distance_adr": "2.34",
+    "tests": 20,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13312.2",
+    "high": "13323.1",
+    "class": "Moderate",
+    "families": [
+     "higher-timeframe structure",
+     "structure"
+    ],
+    "levels": [
+     "4-hour swing low 13312.2 (former support, now resistance)",
+     "daily swing low 13322.0 (former support, now resistance)",
+     "historical daily swing low 13323.1 (former support, now resistance)"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "192.1",
+    "distance_adr": "2.49",
+    "tests": 15,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13332.4",
+    "high": "13341.7",
+    "class": "Major",
+    "families": [
+     "higher-timeframe structure",
+     "pivot",
+     "structure"
+    ],
+    "levels": [
+     "weekly R3 13332.4",
+     "historical daily swing low 13332.8 (former support, now resistance)",
+     "daily swing low 13334.0 (former support, now resistance)",
+     "4-hour swing low 13334 (former support, now resistance)",
+     "4-hour swing high 13337.6",
+     "daily swing low 13340.1 (former support, now resistance)",
+     "4-hour swing high 13341.7"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "212.3",
+    "distance_adr": "2.75",
+    "tests": 26,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13344.8",
+    "high": "13354.9",
+    "class": "Moderate",
+    "families": [
+     "higher-timeframe structure",
+     "structure"
+    ],
+    "levels": [
+     "daily swing high 13344.8",
+     "4-hour swing low 13354.9 (former support, now resistance)"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "224.7",
+    "distance_adr": "2.91",
+    "tests": 19,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13364.8",
+    "high": "13373.9",
+    "class": "Moderate",
+    "families": [
+     "higher-timeframe structure",
+     "structure"
+    ],
+    "levels": [
+     "historical daily swing low 13364.8 (former support, now resistance)",
+     "daily swing low 13366.7 (former support, now resistance)",
+     "historical daily swing high 13369.1",
+     "historical daily swing low 13370.3 (former support, now resistance)",
+     "4-hour swing high 13370.8",
+     "4-hour swing low 13373.9 (former support, now resistance)"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "244.7",
+    "distance_adr": "3.17",
+    "tests": 23,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13387.8",
+    "high": "13396.1",
+    "class": "Moderate",
+    "families": [
+     "higher-timeframe structure",
+     "structure"
+    ],
+    "levels": [
+     "historical daily swing low 13387.8 (former support, now resistance)",
+     "4-hour swing low 13396.1 (former support, now resistance)"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "267.7",
+    "distance_adr": "3.47",
+    "tests": 25,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13402.0",
+    "high": "13409.2",
+    "class": "Moderate",
+    "families": [
+     "higher-timeframe structure",
+     "structure"
+    ],
+    "levels": [
+     "daily swing low 13402.0 (former support, now resistance)",
+     "historical daily swing high 13402.4",
+     "4-hour swing high 13403.2",
+     "4-hour swing high 13407.4",
+     "4-hour swing high 13409.2"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "281.9",
+    "distance_adr": "3.65",
+    "tests": 25,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13414.0",
+    "high": "13423.1",
+    "class": "Moderate",
+    "families": [
+     "higher-timeframe structure",
+     "structure"
+    ],
+    "levels": [
+     "daily swing low 13414.0 (former support, now resistance)",
+     "historical daily swing low 13414.8 (former support, now resistance)",
+     "historical daily swing low 13416.5 (former support, now resistance)",
+     "daily swing high 13418.6",
+     "4-hour swing high 13418.6",
+     "historical daily swing high 13423.1"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "293.9",
+    "distance_adr": "3.81",
+    "tests": 10,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13433.3",
+    "high": "13443.2",
+    "class": "Moderate",
+    "families": [
+     "higher-timeframe structure",
+     "structure"
+    ],
+    "levels": [
+     "daily swing low 13433.3 (former support, now resistance)",
+     "4-hour swing high 13433.7",
+     "historical daily swing high 13437.3",
+     "historical daily swing high 13443.2"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "313.2",
+    "distance_adr": "4.06",
+    "tests": 13,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13447.8",
+    "high": "13458.6",
+    "class": "Moderate",
+    "families": [
+     "higher-timeframe structure",
+     "structure"
+    ],
+    "levels": [
+     "daily swing low 13447.8 (former support, now resistance)",
+     "4-hour swing high 13448.0",
+     "daily swing high 13451.8",
+     "daily swing low 13453.3 (former support, now resistance)",
+     "historical daily swing high 13454.9",
+     "historical daily swing low 13455.9 (former support, now resistance)",
+     "4-hour swing high 13458.6"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "327.7",
+    "distance_adr": "4.24",
+    "tests": 10,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13460.7",
+    "high": "13470.9",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "daily swing high 13460.7",
+     "historical daily swing high 13470.9"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "340.6",
+    "distance_adr": "4.41",
+    "tests": 15,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13474.5",
+    "high": "13482.8",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "daily swing low 13474.5 (former support, now resistance)",
+     "daily swing high 13479.0",
+     "daily swing high 13482.6",
+     "daily swing high 13482.8"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "354.4",
+    "distance_adr": "4.59",
+    "tests": 28,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13494.2",
+    "high": "13503.1",
+    "class": "Moderate",
+    "families": [
+     "higher-timeframe structure",
+     "structure"
+    ],
+    "levels": [
+     "daily swing high 13494.2",
+     "4-hour swing high 13500.4",
+     "daily swing high 13503.1",
+     "4-hour swing high 13503.1"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "374.1",
+    "distance_adr": "4.84",
+    "tests": 34,
+    "rejected_because": "beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13507.2",
+    "high": "13509.0",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "daily swing low 13507.2 (former support, now resistance)",
+     "daily swing high 13509.0"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "387.1",
+    "distance_adr": "5.01",
+    "tests": 27,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13526.7",
+    "high": "13533.2",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "historical daily swing high 13526.7",
+     "daily swing high 13529.9",
+     "historical daily swing high 13533.2"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "406.6",
+    "distance_adr": "5.26",
+    "tests": 35,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13543.4",
+    "high": "13549.5",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "historical daily swing high 13543.4",
+     "historical daily swing high 13549.5"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "423.3",
+    "distance_adr": "5.48",
+    "tests": 26,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13557.9",
+    "high": "13567.9",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "daily swing high 13557.9",
+     "historical daily swing low 13561.9 (former support, now resistance)",
+     "daily swing high 13567.0",
+     "daily swing high 13567.9"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "437.8",
+    "distance_adr": "5.67",
+    "tests": 13,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13575.1",
+    "high": "13575.1",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "daily swing high 13575.1"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "455.0",
+    "distance_adr": "5.89",
+    "tests": 4,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13588.1",
+    "high": "13598.3",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "historical daily swing high 13588.1",
+     "historical daily swing high 13592.8",
+     "historical daily swing high 13594.8",
+     "daily swing high 13598.3"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "468.0",
+    "distance_adr": "6.06",
+    "tests": 8,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13616.0",
+    "high": "13616.0",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "historical daily swing high 13616.0"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "495.9",
+    "distance_adr": "6.42",
+    "tests": 9,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13631.5",
+    "high": "13642.5",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "historical daily swing high 13631.5",
+     "daily swing high 13642.5"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "511.4",
+    "distance_adr": "6.62",
+    "tests": 11,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13652.7",
+    "high": "13657.2",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "daily swing high 13652.7",
+     "daily swing high 13657.2"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "532.6",
+    "distance_adr": "6.90",
+    "tests": 8,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13675.5",
+    "high": "13675.5",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "daily swing high 13675.5"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "555.4",
+    "distance_adr": "7.19",
+    "tests": 1,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13712.0",
+    "high": "13712.0",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "daily swing high 13712.0"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "591.9",
+    "distance_adr": "7.66",
+    "tests": 0,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13726.3",
+    "high": "13733.2",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "historical daily swing high 13726.3",
+     "daily swing high 13733.2"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "606.2",
+    "distance_adr": "7.85",
+    "tests": 0,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13770.5",
+    "high": "13770.5",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "historical daily swing high 13770.5"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "650.4",
+    "distance_adr": "8.42",
+    "tests": 0,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13788.5",
+    "high": "13788.5",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "historical daily swing high 13788.5"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "668.4",
+    "distance_adr": "8.65",
+    "tests": 0,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   },
+   {
+    "low": "13869.0",
+    "high": "13869.0",
+    "class": "Minor",
+    "families": [
+     "higher-timeframe structure"
+    ],
+    "levels": [
+     "daily swing high 13869.0"
+    ],
+    "reachability": "UNLIKELY",
+    "distance_pips": "748.9",
+    "distance_adr": "9.70",
+    "tests": 0,
+    "rejected_because": "Minor is below the minimum class Moderate; beyond the last 4-hour swing high 13123.9"
+   }
+  ],
+  "alternative": null,
+  "no_recommendation": "the primary destination 13119.1 is already reached (the Fri 27 Nov 13:55 GMT 5-minute candle reached 13119.8, within 3 pips of the destination zone 13108.5-13119.1); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13121.3-13130.2 is not recommended",
+  "warming_up": [
+   "4h EMA200 (498 of 592 candles)",
+   "1w EMA100 (210 of 296 candles)",
+   "1w EMA200 (210 of 592 candles)"
+  ],
+  "threshold_misses": [
+   {
+    "timeframe": "4h",
+    "kind": "high",
+    "price": "13129.2",
+    "candle_utc": "2026-11-25T16:00:00Z",
+    "moved_pips": "33.5",
+    "needed_pips": "40.0",
+    "note": "a 4h turn at 13129.2 moved 33.5 pips within 6 candles, short of the 40.0 needed: not counted as a swing (provisional threshold, recorded for review)"
+   }
+  ],
+  "h4_last_swing": {
+   "kind": "high",
+   "price": "13123.9",
+   "candle_utc": "2026-11-24T16:00:00Z"
+  },
+  "destination_reached": {
+   "primary": "13119.1",
+   "zone": [
+    "13108.5",
+    "13119.1"
+   ],
+   "zone_candidate": [
+    "13121.3",
+    "13130.2"
+   ],
+   "how": "the Fri 27 Nov 13:55 GMT 5-minute candle reached 13119.8, within 3 pips of the destination zone 13108.5-13119.1",
+   "candle_utc": "2026-11-27T13:55:00Z"
+  },
+  "structure": {
+   "levels": [
+    {
+     "price": "12099.0",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-01-13T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12248.5",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-02-03T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12305.5",
+     "name": "historical daily swing high",
+     "role": "former resistance, now support",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-01-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12332.2",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-02-11T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12351.6",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-01-02T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12474.7",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2024-12-20T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12486.7",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2024-11-22T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12522.9",
+     "name": "historical daily swing high",
+     "role": "former resistance, now support",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-01-27T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12549.5",
+     "name": "historical daily swing high",
+     "role": "former resistance, now support",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-02-05T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12558.9",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-02-28T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12563.0",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-02-19T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12575.4",
+     "name": "historical daily swing high",
+     "role": "former resistance, now support",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-01-07T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12596.8",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2024-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12606.5",
+     "name": "historical daily swing high",
+     "role": "former resistance, now support",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2024-12-30T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12616.7",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2024-12-02T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12707.1",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-04-06T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12714.0",
+     "name": "historical daily swing high",
+     "role": "former resistance, now support",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2024-11-20T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12715.5",
+     "name": "historical daily swing high",
+     "role": "former resistance, now support",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-02-26T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12728.0",
+     "name": "historical daily swing high",
+     "role": "former resistance, now support",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2024-12-17T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12749.5",
+     "name": "historical daily swing high",
+     "role": "former resistance, now support",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2024-11-29T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12810.5",
+     "name": "historical daily swing high",
+     "role": "former resistance, now support",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2024-12-06T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12861.2",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-03-10T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12869.9",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-03-26T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "12873.7",
+     "name": "weekly S3",
+     "family": "pivot",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "weekly R/S"
+    },
+    {
+     "price": "12974.4",
+     "name": "weekly S2",
+     "family": "pivot",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "weekly R/S"
+    },
+    {
+     "price": "12991.8",
+     "name": "historical daily swing high",
+     "role": "former resistance, now support",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-03-27T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13000",
+     "name": "round number",
+     "family": "psychological",
+     "timeframe": "intraday",
+     "origin_utc": null,
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "psychological"
+    },
+    {
+     "price": "13009.7",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-04T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13010.1",
+     "name": "daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-23T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13010.1",
+     "name": "4-hour swing low",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-23T16:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13010.1",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-23T17:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13014.2",
+     "name": "historical daily swing high",
+     "role": "former resistance, now support",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-03-20T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13016.9",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-23T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13026.6",
+     "name": "weekly S1",
+     "family": "pivot",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "weekly R/S"
+    },
+    {
+     "price": "13027.1",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-24T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13037.3",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-20T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13046.1",
+     "name": "4-hour swing low",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-25T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13046.1",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-25T14:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13047.3",
+     "name": "hourly swing high",
+     "role": "former resistance, now support",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-24T01:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13050",
+     "name": "round number",
+     "family": "psychological",
+     "timeframe": "intraday",
+     "origin_utc": null,
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "psychological"
+    },
+    {
+     "price": "13053.7",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-25T10:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13066.9",
+     "name": "daily S3",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-26T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily R/S"
+    },
+    {
+     "price": "13071.5",
+     "name": "4-hour swing low",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-22T20:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13071.5",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-22T21:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13075",
+     "name": "previous week low",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "previous week high/low"
+    },
+    {
+     "price": "13077",
+     "name": "4-hour swing low",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13077",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13077.5",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T22:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13081.3",
+     "name": "daily S2",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-26T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily R/S"
+    },
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13093",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T11:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13093.3",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-27T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13094.1",
+     "name": "daily S1",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-26T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily R/S"
+    },
+    {
+     "price": "13095.7",
+     "name": "previous day low",
+     "family": "session",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-26T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "previous day high/low"
+    },
+    {
+     "price": "13095.7",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-26T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13095.7",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-26T11:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13095.7",
+     "name": "London session low",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-26T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "session high/low"
+    },
+    {
+     "price": "13096.2",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-26T03:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13096.8",
+     "name": "New York session low",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-26T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "session high/low"
+    },
+    {
+     "price": "13098.8",
+     "name": "H4 Bollinger middle",
+     "family": "moving average",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-27T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "kind": "moving average"
+    },
+    {
+     "price": "13100",
+     "name": "round number",
+     "family": "psychological",
+     "timeframe": "intraday",
+     "origin_utc": null,
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "psychological"
+    },
+    {
+     "price": "13103",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-23T04:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13106.4",
+     "name": "H1 EMA100",
+     "family": "moving average",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-27T13:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "kind": "moving average"
+    },
+    {
+     "price": "13107.3",
+     "name": "New York session low (so far)",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-27T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "kind": "session high/low"
+    },
+    {
+     "price": "13108.5",
+     "name": "daily pivot",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-26T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily pivot"
+    },
+    {
+     "price": "13115.1",
+     "name": "hourly swing high",
+     "role": "former resistance, now support",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-25T02:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13115.4",
+     "name": "London session low",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-27T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "session high/low"
+    },
+    {
+     "price": "13117.3",
+     "name": "hourly swing high",
+     "role": "former resistance, now support",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-26T09:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13117.3",
+     "name": "London session high",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-26T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "session high/low"
+    },
+    {
+     "price": "13118.3",
+     "name": "hourly swing high",
+     "role": "former resistance, now support",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-26T01:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13119.1",
+     "name": "hourly swing low",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T03:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13121.3",
+     "name": "daily R1",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-26T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily R/S"
+    },
+    {
+     "price": "13121.9",
+     "name": "hourly swing high",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13122.9",
+     "name": "previous day high",
+     "family": "session",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-26T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "previous day high/low"
+    },
+    {
+     "price": "13122.9",
+     "name": "hourly swing high",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-26T14:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13122.9",
+     "name": "New York session high",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-26T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "session high/low"
+    },
+    {
+     "price": "13123.9",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-24T16:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13123.9",
+     "name": "hourly swing high",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-24T18:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13127.3",
+     "name": "weekly pivot",
+     "family": "pivot",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "weekly pivot"
+    },
+    {
+     "price": "13128.6",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-20T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13128.6",
+     "name": "hourly swing high",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T13:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13129.2",
+     "name": "hourly swing high",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-25T18:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13130.2",
+     "name": "H1 EMA200",
+     "family": "moving average",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-27T13:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "kind": "moving average"
+    },
+    {
+     "price": "13134.6",
+     "name": "London session high",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-27T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "session high/low"
+    },
+    {
+     "price": "13134.7",
+     "name": "New York session high (so far)",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-27T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "kind": "session high/low"
+    },
+    {
+     "price": "13135.5",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-18T16:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13135.6",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-10-13T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13135.6",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-14T15:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13135.7",
+     "name": "daily R2",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-26T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily R/S"
+    },
+    {
+     "price": "13139.4",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-05-11T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13139.7",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-07-31T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13139.9",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-06-23T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13142.1",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-23T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13142.1",
+     "name": "hourly swing high",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-23T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13148",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-18T09:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13148.5",
+     "name": "daily R3",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-26T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily R/S"
+    },
+    {
+     "price": "13150",
+     "name": "round number",
+     "family": "psychological",
+     "timeframe": "intraday",
+     "origin_utc": null,
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "psychological"
+    },
+    {
+     "price": "13153.3",
+     "name": "hourly swing high",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13158.5",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-03-30T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13168",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-17T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13168",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-17T01:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13171.9",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-19T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13171.9",
+     "name": "hourly swing high",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-19T10:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13172.8",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-17T13:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13179.5",
+     "name": "weekly R1",
+     "family": "pivot",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "weekly R/S"
+    },
+    {
+     "price": "13179.6",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-12-02T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13181.3",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-17T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13182.1",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-16T11:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13183.8",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-08T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13184.1",
+     "name": "H4 EMA100",
+     "family": "moving average",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-27T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "kind": "moving average"
+    },
+    {
+     "price": "13189.7",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-05T11:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13193.2",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-07T11:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13198.6",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-12T19:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13200",
+     "name": "round number",
+     "family": "psychological",
+     "timeframe": "intraday",
+     "origin_utc": null,
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "psychological"
+    },
+    {
+     "price": "13200.9",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-06T03:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13202.5",
+     "name": "hourly swing high",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-17T05:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13204.4",
+     "name": "hourly swing high",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-17T09:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13205.2",
+     "name": "hourly swing high",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-16T13:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13205.6",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-09T11:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13207.4",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-04-02T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13214.7",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-13T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13215.5",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-03-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13218.5",
+     "name": "hourly swing high",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-16T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13224.5",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-16T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13224.5",
+     "name": "hourly swing high",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-16T09:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13227.9",
+     "name": "previous week high",
+     "family": "session",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "previous week high/low"
+    },
+    {
+     "price": "13227.9",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-17T16:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13227.9",
+     "name": "hourly swing high",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-17T18:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "hourly swing"
+    },
+    {
+     "price": "13233.1",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-04-21T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13248.3",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-08T11:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13248.5",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-10-13T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13250",
+     "name": "round number",
+     "family": "psychological",
+     "timeframe": "intraday",
+     "origin_utc": null,
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "psychological"
+    },
+    {
+     "price": "13250.0",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-09T03:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13250.9",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-13T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13251.0",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-05-03T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13252.9",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-03-03T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13261.2",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-12T03:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13272.5",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-10-28T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13272.5",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-28T04:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13272.9",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-07-27T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13274.7",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-14T03:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13280.2",
+     "name": "weekly R2",
+     "family": "pivot",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "weekly R/S"
+    },
+    {
+     "price": "13282.5",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-03-09T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13285.0",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-06T15:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13287.2",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-12-09T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13291.1",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-19T19:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13296.0",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-29T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13300.6",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-18T19:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13302.0",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-05-17T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13305.7",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-06-07T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13311.1",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-09-29T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13311.6",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-12-17T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13312.2",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-10T16:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13322.0",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-07-07T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13323.1",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-09-24T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13332.4",
+     "name": "weekly R3",
+     "family": "pivot",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "weekly R/S"
+    },
+    {
+     "price": "13332.8",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-09-02T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13334.0",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-01-18T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13334",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-08T20:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13337.6",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-28T16:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13340.1",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-07-12T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13341.7",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-19T11:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13344.8",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-03-31T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13354.9",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-22T11:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13364.8",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-07-15T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13366.7",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-05-27T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13369.1",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-10-28T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13370.3",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-06-22T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13370.8",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-16T11:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13373.9",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-30T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13387.8",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-08-21T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13396.1",
+     "name": "4-hour swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-03T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13402.0",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-12-31T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13402.4",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-05-05T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13403.2",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-21T11:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13407.4",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-22T23:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13409.2",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-20T11:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13414.0",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-01-05T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13414.8",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-05-28T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13416.5",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-08-26T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13418.6",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-10-21T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13418.6",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-22T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13423.1",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-04-21T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13433.3",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-02-19T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13433.7",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-10-30T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13437.3",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-12-11T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13443.2",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-04-27T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13447.8",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-04-22T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13448.0",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-02T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13451.8",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-07-09T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13453.3",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-04-29T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13454.9",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-12-16T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13455.9",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-06-09T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13458.6",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-10T08:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13460.7",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-06-14T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13470.9",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-10-16T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13474.5",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-08-12T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13479.0",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-03-23T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13482.6",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-06-04T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13482.8",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-03-10T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13494.2",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-01-13T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13500.4",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-05T04:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13503.1",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-04T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13503.1",
+     "name": "4-hour swing high",
+     "family": "structure",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-04T12:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "kind": "4-hour swing"
+    },
+    {
+     "price": "13507.2",
+     "name": "daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-02-06T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13509.0",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-05-24T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13526.7",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-09-30T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13529.9",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-12-30T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13533.2",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-12-24T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13543.4",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-08-21T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13549.5",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-08-31T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13557.9",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-07-14T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13561.9",
+     "name": "historical daily swing low",
+     "role": "former support, now resistance",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-07-01T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13567.0",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-01-06T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13567.9",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-09-08T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13575.1",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-02-26T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13588.1",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-07-23T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13592.8",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-05-25T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13594.8",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-08-13T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13598.3",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-04-16T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13616.0",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-06-04T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13631.5",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-06-12T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13642.5",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-05-05T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13652.7",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-05-10T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13657.2",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-04-30T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13675.5",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-08-20T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13712.0",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-02-11T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13726.3",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-09-16T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13733.2",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-02-04T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13770.5",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-06-25T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13788.5",
+     "name": "historical daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-06-30T23:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    },
+    {
+     "price": "13869.0",
+     "name": "daily swing high",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2026-01-27T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "kind": "daily swing"
+    }
+   ],
+   "zones": [
+    {
+     "low": "12099.0",
+     "high": "12099.0",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing low 12099.0"
+     ]
+    },
+    {
+     "low": "12248.5",
+     "high": "12248.5",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing low 12248.5"
+     ]
+    },
+    {
+     "low": "12305.5",
+     "high": "12305.5",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing high 12305.5 (former resistance, now support)"
+     ]
+    },
+    {
+     "low": "12332.2",
+     "high": "12332.2",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing low 12332.2"
+     ]
+    },
+    {
+     "low": "12351.6",
+     "high": "12351.6",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing low 12351.6"
+     ]
+    },
+    {
+     "low": "12474.7",
+     "high": "12474.7",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing low 12474.7"
+     ]
+    },
+    {
+     "low": "12486.7",
+     "high": "12486.7",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing low 12486.7"
+     ]
+    },
+    {
+     "low": "12522.9",
+     "high": "12522.9",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing high 12522.9 (former resistance, now support)"
+     ]
+    },
+    {
+     "low": "12549.5",
+     "high": "12558.9",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing high 12549.5 (former resistance, now support)",
+      "historical daily swing low 12558.9"
+     ]
+    },
+    {
+     "low": "12563.0",
+     "high": "12563.0",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing low 12563.0"
+     ]
+    },
+    {
+     "low": "12575.4",
+     "high": "12575.4",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing high 12575.4 (former resistance, now support)"
+     ]
+    },
+    {
+     "low": "12596.8",
+     "high": "12606.5",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing low 12596.8",
+      "historical daily swing high 12606.5 (former resistance, now support)"
+     ]
+    },
+    {
+     "low": "12616.7",
+     "high": "12616.7",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing low 12616.7"
+     ]
+    },
+    {
+     "low": "12707.1",
+     "high": "12715.5",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing low 12707.1",
+      "historical daily swing high 12714.0 (former resistance, now support)",
+      "historical daily swing high 12715.5 (former resistance, now support)"
+     ]
+    },
+    {
+     "low": "12728.0",
+     "high": "12728.0",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing high 12728.0 (former resistance, now support)"
+     ]
+    },
+    {
+     "low": "12749.5",
+     "high": "12749.5",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing high 12749.5 (former resistance, now support)"
+     ]
+    },
+    {
+     "low": "12810.5",
+     "high": "12810.5",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing high 12810.5 (former resistance, now support)"
+     ]
+    },
+    {
+     "low": "12861.2",
+     "high": "12869.9",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing low 12861.2",
+      "historical daily swing low 12869.9"
+     ]
+    },
+    {
+     "low": "12873.7",
+     "high": "12873.7",
+     "class": "Minor",
+     "families": [
+      "pivot"
+     ],
+     "tests": 0,
+     "levels": [
+      "weekly S3 12873.7"
+     ]
+    },
+    {
+     "low": "12974.4",
+     "high": "12974.4",
+     "class": "Minor",
+     "families": [
+      "pivot"
+     ],
+     "tests": 0,
+     "levels": [
+      "weekly S2 12974.4"
+     ]
+    },
+    {
+     "low": "12991.8",
+     "high": "13000",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "psychological"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing high 12991.8 (former resistance, now support)",
+      "round number 13000"
+     ]
+    },
+    {
+     "low": "13009.7",
+     "high": "13016.9",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "structure"
+     ],
+     "tests": 2,
+     "levels": [
+      "historical daily swing low 13009.7",
+      "daily swing low 13010.1",
+      "4-hour swing low 13010.1",
+      "hourly swing low 13010.1",
+      "historical daily swing high 13014.2 (former resistance, now support)",
+      "hourly swing low 13016.9"
+     ]
+    },
+    {
+     "low": "13026.6",
+     "high": "13037.3",
+     "class": "Major",
+     "families": [
+      "higher-timeframe structure",
+      "pivot",
+      "structure"
+     ],
+     "tests": 1,
+     "levels": [
+      "weekly S1 13026.6",
+      "hourly swing low 13027.1",
+      "historical daily swing low 13037.3"
+     ]
+    },
+    {
+     "low": "13046.1",
+     "high": "13053.7",
+     "class": "Moderate",
+     "families": [
+      "psychological",
+      "structure"
+     ],
+     "tests": 5,
+     "levels": [
+      "4-hour swing low 13046.1",
+      "hourly swing low 13046.1",
+      "hourly swing high 13047.3 (former resistance, now support)",
+      "round number 13050",
+      "hourly swing low 13053.7"
+     ]
+    },
+    {
+     "low": "13066.9",
+     "high": "13077.5",
+     "class": "Major",
+     "families": [
+      "pivot",
+      "session",
+      "structure"
+     ],
+     "tests": 6,
+     "levels": [
+      "daily S3 13066.9",
+      "4-hour swing low 13071.5",
+      "hourly swing low 13071.5",
+      "previous week low 13075",
+      "4-hour swing low 13077",
+      "hourly swing low 13077",
+      "hourly swing low 13077.5"
+     ]
+    },
+    {
+     "low": "13081.3",
+     "high": "13084.1",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "pivot"
+     ],
+     "tests": 7,
+     "levels": [
+      "daily S2 13081.3",
+      "historical daily swing low 13084.1"
+     ]
+    },
+    {
+     "low": "13093",
+     "high": "13103",
+     "class": "Major",
+     "families": [
+      "moving average",
+      "pivot",
+      "psychological",
+      "session",
+      "structure"
+     ],
+     "tests": 12,
+     "levels": [
+      "hourly swing low 13093",
+      "hourly swing low 13093.3",
+      "daily S1 13094.1",
+      "previous day low 13095.7",
+      "hourly swing low 13095.7",
+      "hourly swing low 13095.7",
+      "London session low 13095.7",
+      "hourly swing low 13096.2",
+      "New York session low 13096.8",
+      "H4 Bollinger middle 13098.8",
+      "round number 13100",
+      "hourly swing low 13103"
+     ]
+    },
+    {
+     "low": "13106.4",
+     "high": "13107.3",
+     "class": "Moderate",
+     "families": [
+      "moving average",
+      "session"
+     ],
+     "tests": 13,
+     "levels": [
+      "H1 EMA100 13106.4",
+      "New York session low (so far) 13107.3"
+     ]
+    },
+    {
+     "low": "13108.5",
+     "high": "13119.1",
+     "class": "Major",
+     "families": [
+      "pivot",
+      "session",
+      "structure"
+     ],
+     "tests": 9,
+     "levels": [
+      "daily pivot 13108.5",
+      "hourly swing high 13115.1 (former resistance, now support)",
+      "London session low 13115.4",
+      "hourly swing high 13117.3 (former resistance, now support)",
+      "London session high 13117.3",
+      "hourly swing high 13118.3 (former resistance, now support)",
+      "hourly swing low 13119.1"
+     ]
+    },
+    {
+     "low": "13121.3",
+     "high": "13130.2",
+     "class": "Major",
+     "families": [
+      "moving average",
+      "pivot",
+      "session",
+      "structure"
+     ],
+     "tests": 10,
+     "levels": [
+      "daily R1 13121.3",
+      "hourly swing high 13121.9",
+      "previous day high 13122.9",
+      "hourly swing high 13122.9",
+      "New York session high 13122.9",
+      "4-hour swing high 13123.9",
+      "hourly swing high 13123.9",
+      "weekly pivot 13127.3",
+      "4-hour swing high 13128.6",
+      "hourly swing high 13128.6",
+      "hourly swing high 13129.2",
+      "H1 EMA200 13130.2"
+     ]
+    },
+    {
+     "low": "13134.6",
+     "high": "13142.1",
+     "class": "Major",
+     "families": [
+      "higher-timeframe structure",
+      "pivot",
+      "session",
+      "structure"
+     ],
+     "tests": 9,
+     "levels": [
+      "London session high 13134.6",
+      "New York session high (so far) 13134.7",
+      "hourly swing low 13135.5 (former support, now resistance)",
+      "daily swing low 13135.6 (former support, now resistance)",
+      "4-hour swing low 13135.6 (former support, now resistance)",
+      "daily R2 13135.7",
+      "historical daily swing low 13139.4 (former support, now resistance)",
+      "historical daily swing low 13139.7 (former support, now resistance)",
+      "daily swing low 13139.9 (former support, now resistance)",
+      "4-hour swing high 13142.1",
+      "hourly swing high 13142.1"
+     ]
+    },
+    {
+     "low": "13148",
+     "high": "13158.5",
+     "class": "Major",
+     "families": [
+      "higher-timeframe structure",
+      "pivot",
+      "psychological",
+      "structure"
+     ],
+     "tests": 4,
+     "levels": [
+      "hourly swing low 13148 (former support, now resistance)",
+      "daily R3 13148.5",
+      "round number 13150",
+      "hourly swing high 13153.3",
+      "daily swing low 13158.5 (former support, now resistance)"
+     ]
+    },
+    {
+     "low": "13168",
+     "high": "13179.5",
+     "class": "Moderate",
+     "families": [
+      "pivot",
+      "structure"
+     ],
+     "tests": 7,
+     "levels": [
+      "4-hour swing low 13168 (former support, now resistance)",
+      "hourly swing low 13168 (former support, now resistance)",
+      "4-hour swing high 13171.9",
+      "hourly swing high 13171.9",
+      "hourly swing low 13172.8 (former support, now resistance)",
+      "weekly R1 13179.5"
+     ]
+    },
+    {
+     "low": "13179.6",
+     "high": "13189.7",
+     "class": "Major",
+     "families": [
+      "higher-timeframe structure",
+      "moving average",
+      "structure"
+     ],
+     "tests": 11,
+     "levels": [
+      "historical daily swing low 13179.6 (former support, now resistance)",
+      "hourly swing low 13181.3 (former support, now resistance)",
+      "hourly swing low 13182.1 (former support, now resistance)",
+      "4-hour swing low 13183.8 (former support, now resistance)",
+      "H4 EMA100 13184.1",
+      "4-hour swing low 13189.7 (former support, now resistance)"
+     ]
+    },
+    {
+     "low": "13193.2",
+     "high": "13204.4",
+     "class": "Moderate",
+     "families": [
+      "psychological",
+      "structure"
+     ],
+     "tests": 16,
+     "levels": [
+      "4-hour swing low 13193.2 (former support, now resistance)",
+      "4-hour swing low 13198.6 (former support, now resistance)",
+      "round number 13200",
+      "4-hour swing low 13200.9 (former support, now resistance)",
+      "hourly swing high 13202.5",
+      "hourly swing high 13204.4"
+     ]
+    },
+    {
+     "low": "13205.2",
+     "high": "13215.5",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "structure"
+     ],
+     "tests": 27,
+     "levels": [
+      "hourly swing high 13205.2",
+      "4-hour swing low 13205.6 (former support, now resistance)",
+      "historical daily swing high 13207.4",
+      "historical daily swing high 13214.7",
+      "daily swing low 13215.5 (former support, now resistance)"
+     ]
+    },
+    {
+     "low": "13218.5",
+     "high": "13227.9",
+     "class": "Moderate",
+     "families": [
+      "session",
+      "structure"
+     ],
+     "tests": 4,
+     "levels": [
+      "hourly swing high 13218.5",
+      "4-hour swing high 13224.5",
+      "hourly swing high 13224.5",
+      "previous week high 13227.9",
+      "4-hour swing high 13227.9",
+      "hourly swing high 13227.9"
+     ]
+    },
+    {
+     "low": "13233.1",
+     "high": "13233.1",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 38,
+     "levels": [
+      "historical daily swing low 13233.1 (former support, now resistance)"
+     ]
+    },
+    {
+     "low": "13248.3",
+     "high": "13252.9",
+     "class": "Major",
+     "families": [
+      "higher-timeframe structure",
+      "psychological",
+      "structure"
+     ],
+     "tests": 37,
+     "levels": [
+      "4-hour swing high 13248.3",
+      "historical daily swing low 13248.5 (former support, now resistance)",
+      "round number 13250",
+      "4-hour swing high 13250.0",
+      "4-hour swing high 13250.9",
+      "historical daily swing low 13251.0 (former support, now resistance)",
+      "daily swing low 13252.9 (former support, now resistance)"
+     ]
+    },
+    {
+     "low": "13261.2",
+     "high": "13272.5",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "structure"
+     ],
+     "tests": 10,
+     "levels": [
+      "4-hour swing high 13261.2",
+      "daily swing low 13272.5 (former support, now resistance)",
+      "4-hour swing low 13272.5 (former support, now resistance)"
+     ]
+    },
+    {
+     "low": "13272.9",
+     "high": "13282.5",
+     "class": "Major",
+     "families": [
+      "higher-timeframe structure",
+      "pivot",
+      "structure"
+     ],
+     "tests": 18,
+     "levels": [
+      "daily swing low 13272.9 (former support, now resistance)",
+      "4-hour swing high 13274.7",
+      "weekly R2 13280.2",
+      "daily swing low 13282.5 (former support, now resistance)"
+     ]
+    },
+    {
+     "low": "13285.0",
+     "high": "13296.0",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "structure"
+     ],
+     "tests": 13,
+     "levels": [
+      "4-hour swing high 13285.0",
+      "historical daily swing low 13287.2 (former support, now resistance)",
+      "4-hour swing low 13291.1 (former support, now resistance)",
+      "4-hour swing low 13296.0 (former support, now resistance)"
+     ]
+    },
+    {
+     "low": "13300.6",
+     "high": "13311.6",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "structure"
+     ],
+     "tests": 20,
+     "levels": [
+      "4-hour swing low 13300.6 (former support, now resistance)",
+      "daily swing low 13302.0 (former support, now resistance)",
+      "daily swing low 13305.7 (former support, now resistance)",
+      "daily swing high 13311.1",
+      "historical daily swing low 13311.6 (former support, now resistance)"
+     ]
+    },
+    {
+     "low": "13312.2",
+     "high": "13323.1",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "structure"
+     ],
+     "tests": 15,
+     "levels": [
+      "4-hour swing low 13312.2 (former support, now resistance)",
+      "daily swing low 13322.0 (former support, now resistance)",
+      "historical daily swing low 13323.1 (former support, now resistance)"
+     ]
+    },
+    {
+     "low": "13332.4",
+     "high": "13341.7",
+     "class": "Major",
+     "families": [
+      "higher-timeframe structure",
+      "pivot",
+      "structure"
+     ],
+     "tests": 26,
+     "levels": [
+      "weekly R3 13332.4",
+      "historical daily swing low 13332.8 (former support, now resistance)",
+      "daily swing low 13334.0 (former support, now resistance)",
+      "4-hour swing low 13334 (former support, now resistance)",
+      "4-hour swing high 13337.6",
+      "daily swing low 13340.1 (former support, now resistance)",
+      "4-hour swing high 13341.7"
+     ]
+    },
+    {
+     "low": "13344.8",
+     "high": "13354.9",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "structure"
+     ],
+     "tests": 19,
+     "levels": [
+      "daily swing high 13344.8",
+      "4-hour swing low 13354.9 (former support, now resistance)"
+     ]
+    },
+    {
+     "low": "13364.8",
+     "high": "13373.9",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "structure"
+     ],
+     "tests": 23,
+     "levels": [
+      "historical daily swing low 13364.8 (former support, now resistance)",
+      "daily swing low 13366.7 (former support, now resistance)",
+      "historical daily swing high 13369.1",
+      "historical daily swing low 13370.3 (former support, now resistance)",
+      "4-hour swing high 13370.8",
+      "4-hour swing low 13373.9 (former support, now resistance)"
+     ]
+    },
+    {
+     "low": "13387.8",
+     "high": "13396.1",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "structure"
+     ],
+     "tests": 25,
+     "levels": [
+      "historical daily swing low 13387.8 (former support, now resistance)",
+      "4-hour swing low 13396.1 (former support, now resistance)"
+     ]
+    },
+    {
+     "low": "13402.0",
+     "high": "13409.2",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "structure"
+     ],
+     "tests": 25,
+     "levels": [
+      "daily swing low 13402.0 (former support, now resistance)",
+      "historical daily swing high 13402.4",
+      "4-hour swing high 13403.2",
+      "4-hour swing high 13407.4",
+      "4-hour swing high 13409.2"
+     ]
+    },
+    {
+     "low": "13414.0",
+     "high": "13423.1",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "structure"
+     ],
+     "tests": 10,
+     "levels": [
+      "daily swing low 13414.0 (former support, now resistance)",
+      "historical daily swing low 13414.8 (former support, now resistance)",
+      "historical daily swing low 13416.5 (former support, now resistance)",
+      "daily swing high 13418.6",
+      "4-hour swing high 13418.6",
+      "historical daily swing high 13423.1"
+     ]
+    },
+    {
+     "low": "13433.3",
+     "high": "13443.2",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "structure"
+     ],
+     "tests": 13,
+     "levels": [
+      "daily swing low 13433.3 (former support, now resistance)",
+      "4-hour swing high 13433.7",
+      "historical daily swing high 13437.3",
+      "historical daily swing high 13443.2"
+     ]
+    },
+    {
+     "low": "13447.8",
+     "high": "13458.6",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "structure"
+     ],
+     "tests": 10,
+     "levels": [
+      "daily swing low 13447.8 (former support, now resistance)",
+      "4-hour swing high 13448.0",
+      "daily swing high 13451.8",
+      "daily swing low 13453.3 (former support, now resistance)",
+      "historical daily swing high 13454.9",
+      "historical daily swing low 13455.9 (former support, now resistance)",
+      "4-hour swing high 13458.6"
+     ]
+    },
+    {
+     "low": "13460.7",
+     "high": "13470.9",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 15,
+     "levels": [
+      "daily swing high 13460.7",
+      "historical daily swing high 13470.9"
+     ]
+    },
+    {
+     "low": "13474.5",
+     "high": "13482.8",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 28,
+     "levels": [
+      "daily swing low 13474.5 (former support, now resistance)",
+      "daily swing high 13479.0",
+      "daily swing high 13482.6",
+      "daily swing high 13482.8"
+     ]
+    },
+    {
+     "low": "13494.2",
+     "high": "13503.1",
+     "class": "Moderate",
+     "families": [
+      "higher-timeframe structure",
+      "structure"
+     ],
+     "tests": 34,
+     "levels": [
+      "daily swing high 13494.2",
+      "4-hour swing high 13500.4",
+      "daily swing high 13503.1",
+      "4-hour swing high 13503.1"
+     ]
+    },
+    {
+     "low": "13507.2",
+     "high": "13509.0",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 27,
+     "levels": [
+      "daily swing low 13507.2 (former support, now resistance)",
+      "daily swing high 13509.0"
+     ]
+    },
+    {
+     "low": "13526.7",
+     "high": "13533.2",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 35,
+     "levels": [
+      "historical daily swing high 13526.7",
+      "daily swing high 13529.9",
+      "historical daily swing high 13533.2"
+     ]
+    },
+    {
+     "low": "13543.4",
+     "high": "13549.5",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 26,
+     "levels": [
+      "historical daily swing high 13543.4",
+      "historical daily swing high 13549.5"
+     ]
+    },
+    {
+     "low": "13557.9",
+     "high": "13567.9",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 13,
+     "levels": [
+      "daily swing high 13557.9",
+      "historical daily swing low 13561.9 (former support, now resistance)",
+      "daily swing high 13567.0",
+      "daily swing high 13567.9"
+     ]
+    },
+    {
+     "low": "13575.1",
+     "high": "13575.1",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 4,
+     "levels": [
+      "daily swing high 13575.1"
+     ]
+    },
+    {
+     "low": "13588.1",
+     "high": "13598.3",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 8,
+     "levels": [
+      "historical daily swing high 13588.1",
+      "historical daily swing high 13592.8",
+      "historical daily swing high 13594.8",
+      "daily swing high 13598.3"
+     ]
+    },
+    {
+     "low": "13616.0",
+     "high": "13616.0",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 9,
+     "levels": [
+      "historical daily swing high 13616.0"
+     ]
+    },
+    {
+     "low": "13631.5",
+     "high": "13642.5",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 11,
+     "levels": [
+      "historical daily swing high 13631.5",
+      "daily swing high 13642.5"
+     ]
+    },
+    {
+     "low": "13652.7",
+     "high": "13657.2",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 8,
+     "levels": [
+      "daily swing high 13652.7",
+      "daily swing high 13657.2"
+     ]
+    },
+    {
+     "low": "13675.5",
+     "high": "13675.5",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 1,
+     "levels": [
+      "daily swing high 13675.5"
+     ]
+    },
+    {
+     "low": "13712.0",
+     "high": "13712.0",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "daily swing high 13712.0"
+     ]
+    },
+    {
+     "low": "13726.3",
+     "high": "13733.2",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing high 13726.3",
+      "daily swing high 13733.2"
+     ]
+    },
+    {
+     "low": "13770.5",
+     "high": "13770.5",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing high 13770.5"
+     ]
+    },
+    {
+     "low": "13788.5",
+     "high": "13788.5",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "historical daily swing high 13788.5"
+     ]
+    },
+    {
+     "low": "13869.0",
+     "high": "13869.0",
+     "class": "Minor",
+     "families": [
+      "higher-timeframe structure"
+     ],
+     "tests": 0,
+     "levels": [
+      "daily swing high 13869.0"
+     ]
+    }
+   ],
+   "swings": {
+    "4h": [
+     {
+      "kind": "low",
+      "price": "13272.5",
+      "timeframe": "4h",
+      "candle_utc": "2026-10-28T04:00:00Z",
+      "known_utc": "2026-10-28T20:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13337.6",
+      "timeframe": "4h",
+      "candle_utc": "2026-10-28T16:00:00Z",
+      "known_utc": "2026-10-29T12:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13296.0",
+      "timeframe": "4h",
+      "candle_utc": "2026-10-29T08:00:00Z",
+      "known_utc": "2026-10-30T00:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13433.7",
+      "timeframe": "4h",
+      "candle_utc": "2026-10-30T08:00:00Z",
+      "known_utc": "2026-10-30T21:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13373.9",
+      "timeframe": "4h",
+      "candle_utc": "2026-10-30T12:00:00Z",
+      "known_utc": "2026-11-02T08:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13448.0",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-02T08:00:00Z",
+      "known_utc": "2026-11-03T00:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13396.1",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-03T00:00:00Z",
+      "known_utc": "2026-11-04T04:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13503.1",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-04T12:00:00Z",
+      "known_utc": "2026-11-05T04:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13500.4",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-05T04:00:00Z",
+      "known_utc": "2026-11-05T20:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13334",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-08T20:00:00Z",
+      "known_utc": "2026-11-09T12:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13458.6",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-10T08:00:00Z",
+      "known_utc": "2026-11-11T00:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13312.2",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-10T16:00:00Z",
+      "known_utc": "2026-11-11T08:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13250.9",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-13T12:00:00Z",
+      "known_utc": "2026-11-16T00:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13224.5",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-16T08:00:00Z",
+      "known_utc": "2026-11-17T00:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13168",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-17T00:00:00Z",
+      "known_utc": "2026-11-17T16:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13227.9",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-17T16:00:00Z",
+      "known_utc": "2026-11-18T08:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13171.9",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-19T08:00:00Z",
+      "known_utc": "2026-11-20T00:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13077",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-20T00:00:00Z",
+      "known_utc": "2026-11-20T16:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13128.6",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-20T12:00:00Z",
+      "known_utc": "2026-11-23T00:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13071.5",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-22T20:00:00Z",
+      "known_utc": "2026-11-23T12:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13142.1",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-23T08:00:00Z",
+      "known_utc": "2026-11-24T00:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13010.1",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-23T16:00:00Z",
+      "known_utc": "2026-11-24T12:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13123.9",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-24T16:00:00Z",
+      "known_utc": "2026-11-25T08:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13046.1",
+      "timeframe": "4h",
+      "candle_utc": "2026-11-25T12:00:00Z",
+      "known_utc": "2026-11-26T04:00:00Z"
+     }
+    ],
+    "1d": [
+     {
+      "kind": "low",
+      "price": "13340.1",
+      "timeframe": "1d",
+      "candle_utc": "2026-07-12T23:00:00Z",
+      "known_utc": "2026-07-16T23:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13557.9",
+      "timeframe": "1d",
+      "candle_utc": "2026-07-14T23:00:00Z",
+      "known_utc": "2026-07-20T23:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13272.9",
+      "timeframe": "1d",
+      "candle_utc": "2026-07-27T23:00:00Z",
+      "known_utc": "2026-07-31T21:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13474.5",
+      "timeframe": "1d",
+      "candle_utc": "2026-08-12T23:00:00Z",
+      "known_utc": "2026-08-19T23:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13675.5",
+      "timeframe": "1d",
+      "candle_utc": "2026-08-20T23:00:00Z",
+      "known_utc": "2026-08-28T21:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13567.9",
+      "timeframe": "1d",
+      "candle_utc": "2026-09-08T23:00:00Z",
+      "known_utc": "2026-09-16T23:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13311.1",
+      "timeframe": "1d",
+      "candle_utc": "2026-09-29T23:00:00Z",
+      "known_utc": "2026-10-04T23:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13135.6",
+      "timeframe": "1d",
+      "candle_utc": "2026-10-13T23:00:00Z",
+      "known_utc": "2026-10-18T23:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13418.6",
+      "timeframe": "1d",
+      "candle_utc": "2026-10-21T23:00:00Z",
+      "known_utc": "2026-10-28T00:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13272.5",
+      "timeframe": "1d",
+      "candle_utc": "2026-10-28T00:00:00Z",
+      "known_utc": "2026-11-02T00:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13503.1",
+      "timeframe": "1d",
+      "candle_utc": "2026-11-04T00:00:00Z",
+      "known_utc": "2026-11-09T00:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13010.1",
+      "timeframe": "1d",
+      "candle_utc": "2026-11-23T00:00:00Z",
+      "known_utc": "2026-11-27T00:00:00Z"
+     }
+    ],
+    "1h": [
+     {
+      "kind": "low",
+      "price": "13077.5",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-19T22:00:00Z",
+      "known_utc": "2026-11-20T04:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13077",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-20T02:00:00Z",
+      "known_utc": "2026-11-20T06:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13121.9",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-20T07:00:00Z",
+      "known_utc": "2026-11-20T11:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13093",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-20T11:00:00Z",
+      "known_utc": "2026-11-20T15:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13128.6",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-20T13:00:00Z",
+      "known_utc": "2026-11-20T17:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13071.5",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-22T21:00:00Z",
+      "known_utc": "2026-11-23T01:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13103",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-23T04:00:00Z",
+      "known_utc": "2026-11-23T08:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13142.1",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-23T08:00:00Z",
+      "known_utc": "2026-11-23T12:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13010.1",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-23T17:00:00Z",
+      "known_utc": "2026-11-23T21:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13016.9",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-23T22:00:00Z",
+      "known_utc": "2026-11-24T02:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13047.3",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-24T01:00:00Z",
+      "known_utc": "2026-11-24T08:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13027.1",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-24T07:00:00Z",
+      "known_utc": "2026-11-24T11:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13123.9",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-24T18:00:00Z",
+      "known_utc": "2026-11-24T23:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13115.1",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-25T02:00:00Z",
+      "known_utc": "2026-11-25T06:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13053.7",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-25T10:00:00Z",
+      "known_utc": "2026-11-25T14:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13046.1",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-25T14:00:00Z",
+      "known_utc": "2026-11-25T18:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13129.2",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-25T18:00:00Z",
+      "known_utc": "2026-11-25T22:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13118.3",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-26T01:00:00Z",
+      "known_utc": "2026-11-26T05:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13096.2",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-26T03:00:00Z",
+      "known_utc": "2026-11-26T10:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13095.7",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-26T07:00:00Z",
+      "known_utc": "2026-11-26T11:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13117.3",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-26T09:00:00Z",
+      "known_utc": "2026-11-26T13:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13095.7",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-26T11:00:00Z",
+      "known_utc": "2026-11-26T15:00:00Z"
+     },
+     {
+      "kind": "high",
+      "price": "13122.9",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-26T14:00:00Z",
+      "known_utc": "2026-11-26T18:00:00Z"
+     },
+     {
+      "kind": "low",
+      "price": "13093.3",
+      "timeframe": "1h",
+      "candle_utc": "2026-11-27T00:00:00Z",
+      "known_utc": "2026-11-27T04:00:00Z"
+     }
+    ]
+   }
+  },
+  "condition_unclassified": false,
+  "relation_to_h4": "none (NEUTRAL)"
+ },
+ "recent": [
+  {
+   "id": "STP-GBPUSD-20261127-1200-57",
+   "trade": "BUY",
+   "zone": [
+    "13121.3",
+    "13130.3"
+   ],
+   "status": "INVALIDATED",
+   "why": "destination reached before entry: price reached 13134.6 (Fri 27 Nov 12:15 GMT) without reaching the zone",
+   "created_utc": "2026-11-27T12:00:03Z",
+   "ended_utc": "2026-11-27T12:20:00Z"
+  },
+  {
+   "id": "STP-GBPUSD-20261127-0300-56",
+   "trade": "BUY",
+   "zone": [
+    "13121.3",
+    "13131.4"
+   ],
+   "status": "COMPLETED",
+   "why": "price reached the primary destination 13135.5 (Fri 27 Nov 11:00 GMT) after the zone",
+   "created_utc": "2026-11-27T03:00:03Z",
+   "ended_utc": "2026-11-27T11:05:00Z"
+  },
+  {
+   "id": "STP-GBPUSD-20261127-0200-53",
+   "trade": "SELL",
+   "zone": [
+    "13108.5",
+    "13119.1"
+   ],
+   "status": "INVALIDATED",
+   "why": "confirmed break held: no hourly close back below 13119.1 within 3 candles of the break (2026-11-27T06:00:00Z)",
+   "created_utc": "2026-11-27T02:00:03Z",
+   "ended_utc": "2026-11-27T09:00:00Z"
+  },
+  {
+   "id": "STP-GBPUSD-20261127-0100-51",
+   "trade": "SELL",
+   "zone": [
+    "13093",
+    "13103"
+   ],
+   "status": "INVALIDATED",
+   "why": "confirmed break held: no hourly close back below 13103 within 3 candles of the break (2026-11-27T02:00:00Z)",
+   "created_utc": "2026-11-27T01:00:03Z",
+   "ended_utc": "2026-11-27T05:00:00Z"
+  },
+  {
+   "id": "STP-GBPUSD-20261127-0300-55",
+   "trade": "SELL",
+   "zone": [
+    "13121.3",
+    "13130.9"
+   ],
+   "status": "COMPLETED",
+   "why": "price reached the primary destination 13119.1 (Fri 27 Nov 03:20 GMT) after the zone",
+   "created_utc": "2026-11-27T03:00:03Z",
+   "ended_utc": "2026-11-27T03:25:00Z"
+  }
+ ],
+ "counter": 58,
+ "last_replan_uk_day": "2026-11-27",
+ "data_fresh": true,
+ "current": true,
+ "not_current_reasons": [],
+ "last_analysis_utc": "2026-11-27T14:00:03Z",
+ "last_run_utc": "2026-11-27T14:20:03Z",
+ "written_utc": "2026-11-27T14:20:03Z",
+ "observe_only": "OBSERVE ONLY - DOES NOT CONTROL TRADING",
+ "watch_after_break": null,
+ "last_ended": {
+  "id": "STP-GBPUSD-20261127-1200-57",
+  "status": "INVALIDATED",
+  "identity": [
+   "BUY",
+   [
+    [
+     "4-hour swing high",
+     "13123.9"
+    ],
+    [
+     "4-hour swing high",
+     "13128.6"
+    ],
+    [
+     "New York session high",
+     "13122.9"
+    ],
+    [
+     "daily R1",
+     "13121.3"
+    ],
+    [
+     "hourly swing high",
+     "13121.9"
+    ],
+    [
+     "hourly swing high",
+     "13122.9"
+    ],
+    [
+     "hourly swing high",
+     "13123.9"
+    ],
+    [
+     "hourly swing high",
+     "13128.6"
+    ],
+    [
+     "hourly swing high",
+     "13129.2"
+    ],
+    [
+     "previous day high",
+     "13122.9"
+    ],
+    [
+     "weekly pivot",
+     "13127.3"
+    ]
+   ]
+  ],
+  "primary": "13134.6"
+ },
+ "opportunities": [
+  {
+   "id": "STP-GBPUSD-20261127-1305-58",
+   "instrument": "GBPUSD",
+   "created_utc": "2026-11-27T13:05:03Z",
+   "market_data_utc": "2026-11-27T13:05:00Z",
+   "status": "ACTIVE",
+   "status_reason": "Major zone (4 families: moving average, pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals",
+   "trade": "BUY",
+   "identity": [
+    "BUY",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "4-hour swing high",
+      "13128.6"
+     ],
+     [
+      "New York session high",
+      "13122.9"
+     ],
+     [
+      "daily R1",
+      "13121.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13122.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing high",
+      "13128.6"
+     ],
+     [
+      "hourly swing high",
+      "13129.2"
+     ],
+     [
+      "previous day high",
+      "13122.9"
+     ],
+     [
+      "weekly pivot",
+      "13127.3"
+     ]
+    ]
+   ],
+   "far_edge": "13121.3",
+   "ever_active": true,
+   "history": [
+    {
+     "time_utc": "2026-11-27T13:05:03Z",
+     "event": "created",
+     "why": "Major zone (4 families: moving average, pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals",
+     "status": "CANDIDATE",
+     "plan": {
+      "direction": "NEUTRAL",
+      "condition": "CONTINUATION",
+      "opportunity": null,
+      "trade": "BUY",
+      "zone": {
+       "low": "13121.3",
+       "high": "13130.3",
+       "class": "Major",
+       "families": [
+        "moving average",
+        "pivot",
+        "session",
+        "structure"
+       ],
+       "levels": [
+        "daily R1 13121.3",
+        "hourly swing high 13121.9 (former resistance, now support)",
+        "previous day high 13122.9",
+        "hourly swing high 13122.9 (former resistance, now support)",
+        "New York session high 13122.9",
+        "4-hour swing high 13123.9 (former resistance, now support)",
+        "hourly swing high 13123.9 (former resistance, now support)",
+        "New York session low (so far) 13124.4",
+        "weekly pivot 13127.3",
+        "4-hour swing high 13128.6",
+        "hourly swing high 13128.6",
+        "hourly swing high 13129.2",
+        "H1 EMA200 13130.3"
+       ]
+      },
+      "reference": {
+       "price": "13127.3",
+       "level": "weekly pivot"
+      },
+      "reachability": "NEAR",
+      "primary": "13134.6",
+      "no_recommendation": null,
+      "fresh": true,
+      "market_data_utc": "2026-11-27T13:05:00Z",
+      "threshold_misses": [
+       {
+        "timeframe": "4h",
+        "kind": "high",
+        "price": "13129.2",
+        "candle_utc": "2026-11-25T16:00:00Z",
+        "moved_pips": "33.5",
+        "needed_pips": "40.0",
+        "note": "a 4h turn at 13129.2 moved 33.5 pips within 6 candles, short of the 40.0 needed: not counted as a swing (provisional threshold, recorded for review)"
+       }
+      ],
+      "warming_up": [
+       "4h EMA200 (498 of 592 candles)",
+       "1w EMA100 (210 of 296 candles)",
+       "1w EMA200 (210 of 592 candles)"
+      ]
+     }
+    },
+    {
+     "time_utc": "2026-11-27T13:05:03Z",
+     "event": "waiting",
+     "why": "issued on the first analysis with all the evidence (adjustment 1)",
+     "status": "WAITING"
+    },
+    {
+     "time_utc": "2026-11-27T13:05:03Z",
+     "event": "in zone at creation",
+     "why": "the Fri 27 Nov 13:00 GMT 5-minute candle, finished before the opportunity was created, was already at the zone: not an activation (recorded only)",
+     "candle_start_utc": "2026-11-27T13:00:00Z",
+     "candle_end_utc": "2026-11-27T13:05:00Z",
+     "candle_timing": "before creation",
+     "event_time_basis": "5-minute candle (no finer price data is stored, so the moment inside the candle is not known)"
+    },
+    {
+     "time_utc": "2026-11-27T13:10:00Z",
+     "event": "ambiguous",
+     "why": "the Fri 27 Nov 13:05 GMT 5-minute candle reached the zone 13121.3-13130.3, but it began before the recommendation was created (2026-11-27T13:05:03Z) and 5-minute candles cannot show whether that happened before or after: not used (recorded only)",
+     "candle_start_utc": "2026-11-27T13:05:00Z",
+     "candle_end_utc": "2026-11-27T13:10:00Z",
+     "candle_timing": "overlapped creation",
+     "qualifying_event_utc": null,
+     "event_time_basis": "5-minute candle (no finer price data is stored, so the moment inside the candle is not known)"
+    },
+    {
+     "time_utc": "2026-11-27T13:15:00Z",
+     "event": "active",
+     "why": "the Fri 27 Nov 13:10 GMT 5-minute candle reached the zone 13121.3-13130.3",
+     "status": "ACTIVE",
+     "candle_start_utc": "2026-11-27T13:10:00Z",
+     "candle_end_utc": "2026-11-27T13:15:00Z",
+     "candle_timing": "after creation",
+     "qualifying_event_utc": null,
+     "event_time_basis": "5-minute candle (no finer price data is stored, so the moment inside the candle is not known)"
+    },
+    {
+     "time_utc": "2026-11-27T14:00:00Z",
+     "event": "closed beyond",
+     "why": "the Fri 27 Nov 13:00 GMT hourly candle closed 13120.1, beyond the zone edge 13121.3 by less than 3 pips (recorded only)"
+    }
+   ],
+   "dominant_direction": "NEUTRAL",
+   "condition": "CONTINUATION",
+   "opportunity": null,
+   "expected_movement": "DOWN into support, then UP",
+   "entry_zone": {
+    "low": "13121.3",
+    "high": "13130.3",
+    "class": "Major",
+    "families": [
+     "moving average",
+     "pivot",
+     "session",
+     "structure"
+    ],
+    "daily_or_weekly_level": true,
+    "tests": 10,
+    "reference": {
+     "price": "13127.3",
+     "name": "weekly pivot",
+     "role": "",
+     "family": "pivot",
+     "timeframe": "weekly",
+     "origin_utc": "2026-11-15T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "weekly candle Sun 15 Nov 00:00 GMT"
+    },
+    "levels": [
+     {
+      "price": "13121.3",
+      "name": "daily R1",
+      "role": "",
+      "family": "pivot",
+      "timeframe": "daily",
+      "origin_utc": "2026-11-26T00:00:00Z",
+      "daily_or_weekly": true,
+      "fixed": true,
+      "note": "daily candle Thu 26 Nov (sell H 13122.9 L 13095.7 C 13106.9)"
+     },
+     {
+      "price": "13121.9",
+      "name": "hourly swing high",
+      "role": "former resistance, now support",
+      "family": "structure",
+      "timeframe": "1h",
+      "origin_utc": "2026-11-20T07:00:00Z",
+      "daily_or_weekly": false,
+      "fixed": true,
+      "note": "hourly candle Fri 20 Nov 07:00 GMT high (sell)"
+     },
+     {
+      "price": "13122.9",
+      "name": "previous day high",
+      "role": "",
+      "family": "session",
+      "timeframe": "daily",
+      "origin_utc": "2026-11-26T00:00:00Z",
+      "daily_or_weekly": true,
+      "fixed": true,
+      "note": "daily candle Thu 26 Nov (sell)"
+     },
+     {
+      "price": "13122.9",
+      "name": "hourly swing high",
+      "role": "former resistance, now support",
+      "family": "structure",
+      "timeframe": "1h",
+      "origin_utc": "2026-11-26T14:00:00Z",
+      "daily_or_weekly": false,
+      "fixed": true,
+      "note": "hourly candle Thu 26 Nov 14:00 GMT high (sell)"
+     },
+     {
+      "price": "13122.9",
+      "name": "New York session high",
+      "role": "",
+      "family": "session",
+      "timeframe": "intraday",
+      "origin_utc": "2026-11-26T12:00:00Z",
+      "daily_or_weekly": false,
+      "fixed": true,
+      "note": "New York session previous Thu 26 Nov 12:00-21:00 UTC"
+     },
+     {
+      "price": "13123.9",
+      "name": "4-hour swing high",
+      "role": "former resistance, now support",
+      "family": "structure",
+      "timeframe": "4h",
+      "origin_utc": "2026-11-24T16:00:00Z",
+      "daily_or_weekly": false,
+      "fixed": true,
+      "note": "4h swing high 13123.9 (Tue 24 Nov 16:00 GMT)"
+     },
+     {
+      "price": "13123.9",
+      "name": "hourly swing high",
+      "role": "former resistance, now support",
+      "family": "structure",
+      "timeframe": "1h",
+      "origin_utc": "2026-11-24T18:00:00Z",
+      "daily_or_weekly": false,
+      "fixed": true,
+      "note": "hourly candle Tue 24 Nov 18:00 GMT high (sell)"
+     },
+     {
+      "price": "13124.4",
+      "name": "New York session low (so far)",
+      "role": "",
+      "family": "session",
+      "timeframe": "intraday",
+      "origin_utc": "2026-11-27T12:00:00Z",
+      "daily_or_weekly": false,
+      "fixed": false,
+      "note": "New York session today Fri 27 Nov 12:00-21:00 UTC, so far (to 13:05 UTC)"
+     },
+     {
+      "price": "13127.3",
+      "name": "weekly pivot",
+      "role": "",
+      "family": "pivot",
+      "timeframe": "weekly",
+      "origin_utc": "2026-11-15T00:00:00Z",
+      "daily_or_weekly": true,
+      "fixed": true,
+      "note": "weekly candle Sun 15 Nov 00:00 GMT"
+     },
+     {
+      "price": "13128.6",
+      "name": "4-hour swing high",
+      "role": "",
+      "family": "structure",
+      "timeframe": "4h",
+      "origin_utc": "2026-11-20T12:00:00Z",
+      "daily_or_weekly": false,
+      "fixed": true,
+      "note": "4h swing high 13128.6 (Fri 20 Nov 12:00 GMT)"
+     },
+     {
+      "price": "13128.6",
+      "name": "hourly swing high",
+      "role": "",
+      "family": "structure",
+      "timeframe": "1h",
+      "origin_utc": "2026-11-20T13:00:00Z",
+      "daily_or_weekly": false,
+      "fixed": true,
+      "note": "hourly candle Fri 20 Nov 13:00 GMT high (sell)"
+     },
+     {
+      "price": "13129.2",
+      "name": "hourly swing high",
+      "role": "",
+      "family": "structure",
+      "timeframe": "1h",
+      "origin_utc": "2026-11-25T18:00:00Z",
+      "daily_or_weekly": false,
+      "fixed": true,
+      "note": "hourly candle Wed 25 Nov 18:00 GMT high (sell)"
+     },
+     {
+      "price": "13130.3",
+      "name": "H1 EMA200",
+      "role": "",
+      "family": "moving average",
+      "timeframe": "1h",
+      "origin_utc": "2026-11-27T12:00:00Z",
+      "daily_or_weekly": false,
+      "fixed": false,
+      "note": ""
+     }
+    ]
+   },
+   "reference_entry": {
+    "price": "13127.3",
+    "level": "weekly pivot"
+   },
+   "reachability": "NEAR",
+   "selection_reason": "Major zone (4 families: moving average, pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals",
+   "destinations": {
+    "intermediate": {
+     "price": "13134.6",
+     "zone": {
+      "low": "13134.6",
+      "high": "13142.1",
+      "class": "Major",
+      "families": [
+       "higher-timeframe structure",
+       "pivot",
+       "session",
+       "structure"
+      ],
+      "levels": [
+       "London session high 13134.6",
+       "New York session high (so far) 13134.7",
+       "hourly swing low 13135.5 (former support, now resistance)",
+       "daily swing low 13135.6 (former support, now resistance)",
+       "4-hour swing low 13135.6 (former support, now resistance)",
+       "daily R2 13135.7",
+       "historical daily swing low 13139.4 (former support, now resistance)",
+       "historical daily swing low 13139.7 (former support, now resistance)",
+       "daily swing low 13139.9 (former support, now resistance)",
+       "4-hour swing high 13142.1",
+       "hourly swing high 13142.1"
+      ]
+     }
+    },
+    "primary": {
+     "price": "13134.6",
+     "zone": {
+      "low": "13134.6",
+      "high": "13142.1",
+      "class": "Major",
+      "families": [
+       "higher-timeframe structure",
+       "pivot",
+       "session",
+       "structure"
+      ],
+      "levels": [
+       "London session high 13134.6",
+       "New York session high (so far) 13134.7",
+       "hourly swing low 13135.5 (former support, now resistance)",
+       "daily swing low 13135.6 (former support, now resistance)",
+       "4-hour swing low 13135.6 (former support, now resistance)",
+       "daily R2 13135.7",
+       "historical daily swing low 13139.4 (former support, now resistance)",
+       "historical daily swing low 13139.7 (former support, now resistance)",
+       "daily swing low 13139.9 (former support, now resistance)",
+       "4-hour swing high 13142.1",
+       "hourly swing high 13142.1"
+      ]
+     }
+    },
+    "extended": {
+     "price": "13148",
+     "zone": {
+      "low": "13148",
+      "high": "13158.5",
+      "class": "Major",
+      "families": [
+       "higher-timeframe structure",
+       "pivot",
+       "psychological",
+       "structure"
+      ],
+      "levels": [
+       "hourly swing low 13148 (former support, now resistance)",
+       "daily R3 13148.5",
+       "round number 13150",
+       "hourly swing high 13153.3",
+       "daily swing low 13158.5 (former support, now resistance)"
+      ]
+     }
+    }
+   },
+   "invalidation": {
+    "zone_break_close": "13118.3",
+    "zone_break_timeframe": "1h",
+    "structure_break_close": "13043.1",
+    "structure_break_timeframe": "4h",
+    "destination_first": "13134.6",
+    "destination_first_applies": true,
+    "conditions": [
+     "an hourly close at or below 13118.3 (3 pips beyond the zone bottom)",
+     "a 4-hour close at or below 13043.1 (beyond the last 4-hour swing low 13046.1)",
+     "(the 4-hour direction, NEUTRAL, is context only: OD-06)",
+     "price reaching the primary destination 13134.6 before the zone"
+    ]
+   },
+   "observations": {
+    "supporting": [
+     "4-hour EMA 7/13/21 stack: 7 > 13 > 21 (up)",
+     "4-hour close 13129.9 below the EMA100 13184.1",
+     "4-hour EMA200: warming up (not used)",
+     "4-hour EMA100 falling 8.7 pips over 6 candles"
+    ],
+    "h4_ema_stack": "7 > 13 > 21 (up)",
+    "h4_ema100": "13184.1",
+    "h4_ema200": "warming up",
+    "h4_ema100_slope_pips": "-8.7",
+    "h4_macd": {
+     "line": "-10.59",
+     "signal": "-16.01",
+     "histogram": "5.41"
+    },
+    "h4_rsi": "91.0",
+    "h4_band": {
+     "upper": "13146.2",
+     "middle": "13098.8",
+     "lower": "13051.3",
+     "width_pips": "94.9",
+     "close": "inside the bands"
+    },
+    "h4_same_colour_candles": "3 up",
+    "distance_from_h4_ema21_adr": "0.34",
+    "distance_from_h4_ema100_adr": "-0.70",
+    "daily_structure": "mixed: swing highs 13418.6 then 13503.1, swing lows 13272.5 then 13010.1",
+    "adr_pips": "77.2",
+    "today_range_pips": "41.4",
+    "today_range_adr": "0.54",
+    "remaining_room_pips": "35.8",
+    "vs_daily_pivot": "above the daily pivot 13108.5",
+    "vs_weekly_pivot": "below the weekly pivot 13127.3",
+    "direction_rule_5m": {
+     "side": "buy side",
+     "reason": "price 13124.9 is above the pivot 13108.5 and above the 5m 100 EMA 13124.7"
+    },
+    "uk_time": "13:05",
+    "minutes_from": {
+     "10:00": 185,
+     "14:00": -55,
+     "16:00": -175
+    },
+    "big_news_today": [],
+    "impulse_pips": "88.6",
+    "impulse_adr": "1.15",
+    "reward_to_invalidation": "0.8",
+    "primary_distance_pips": "9.7",
+    "primary_distance_adr": "0.13"
+   },
+   "direction_evidence": [
+    "4-hour structure: mixed: swing highs 13142.1 then 13123.9, swing lows 13010.1 then 13046.1",
+    "4-hour EMA 7/13/21 stack: 7 > 13 > 21 (up)",
+    "4-hour close 13129.9 below the EMA100 13184.1",
+    "4-hour EMA200: warming up (not used)",
+    "4-hour EMA100 falling 8.7 pips over 6 candles"
+   ],
+   "condition_evidence": [
+    "impulse from the 4h swing low 13046.1 (Wed 25 Nov 12:00 GMT) to the high 13134.7 (Fri 27 Nov 12:00 GMT)",
+    "new high: 13134.7 beyond the previous swing high 13123.9",
+    "4-hour MACD line -10.59, histogram 5.41, moving away from zero",
+    "4-hour RSI 91.0",
+    "4-hour MACD line still below zero: momentum has not yet confirmed the new 4-hour uptrend (supporting evidence only, not a veto)",
+    "continuation: new highs, momentum building, close above the middle band"
+   ],
+   "alternative": {
+    "low": "13108.5",
+    "high": "13119.1",
+    "class": "Major",
+    "families": [
+     "pivot",
+     "session",
+     "structure"
+    ],
+    "levels": [
+     "daily pivot 13108.5",
+     "hourly swing high 13115.1 (former resistance, now support)",
+     "London session low 13115.4",
+     "hourly swing high 13117.3 (former resistance, now support)",
+     "London session high 13117.3",
+     "hourly swing high 13118.3 (former resistance, now support)",
+     "hourly swing low 13119.1"
+    ],
+    "reachability": "PLAUSIBLE"
+   },
+   "six_factors": {
+    "1_structural_level": {
+     "zone": [
+      "13121.3",
+      "13130.3"
+     ],
+     "families": [
+      "moving average",
+      "pivot",
+      "session",
+      "structure"
+     ],
+     "levels": [
+      "daily R1 13121.3",
+      "hourly swing high 13121.9 (former resistance, now support)",
+      "previous day high 13122.9",
+      "hourly swing high 13122.9 (former resistance, now support)",
+      "New York session high 13122.9",
+      "4-hour swing high 13123.9 (former resistance, now support)",
+      "hourly swing high 13123.9 (former resistance, now support)",
+      "New York session low (so far) 13124.4",
+      "weekly pivot 13127.3",
+      "4-hour swing high 13128.6",
+      "hourly swing high 13128.6",
+      "hourly swing high 13129.2",
+      "H1 EMA200 13130.3"
+     ]
+    },
+    "2_higher_timeframe_direction": "NEUTRAL",
+    "3_daily_extension": {
+     "today_range_adr": "0.54",
+     "adr_pips": "77.2"
+    },
+    "4_sweep_and_rejection": "recorded in the history as wick sweep / closed beyond / reclaim / confirmed break",
+    "5_tests": 10,
+    "6_time_of_day": {
+     "uk_time": "13:05",
+     "minutes_from": {
+      "10:00": 185,
+      "14:00": -55,
+      "16:00": -175
+     }
+    }
+   },
+   "lineage": "STP-GBPUSD-20261127-1305-58",
+   "lineage_created_utc": "2026-11-27T13:05:03Z",
+   "tests": {
+    "events": [],
+    "through_utc": null
+   },
+   "relation_to_h4": "none (NEUTRAL)",
+   "label": "Watch & Wait",
+   "activation": {
+    "candle_start_utc": "2026-11-27T13:10:00Z",
+    "candle_end_utc": "2026-11-27T13:15:00Z",
+    "candle_timing": "after creation",
+    "qualifying_event_utc": null,
+    "event_time_basis": "5-minute candle (no finer price data is stored, so the moment inside the candle is not known)"
+   },
+   "beyond_close_utc": "2026-11-27T14:00:00Z"
+  }
+ ],
+ "ended_by_identity": {
+  "[\"SELL\", [[\"London session high\", \"13091.1\"], [\"daily pivot\", \"13086.9\"], [\"historical daily swing low\", \"13084.1\"], [\"hourly swing low\", \"13093\"]]]": {
+   "id": "STP-GBPUSD-20261125-0400-27",
+   "status": "COMPLETED",
+   "identity": [
+    "SELL",
+    [
+     [
+      "London session high",
+      "13091.1"
+     ],
+     [
+      "daily pivot",
+      "13086.9"
+     ],
+     [
+      "historical daily swing low",
+      "13084.1"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ]
+    ]
+   ],
+   "primary": "13053.7"
+  },
+  "[\"BUY\", [[\"London session low\", \"13053.7\"], [\"daily S1\", \"13050.0\"], [\"hourly swing high\", \"13047.3\"], [\"round number\", \"13050\"]]]": {
+   "id": "STP-GBPUSD-20261125-1200-30",
+   "status": "INVALIDATED",
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session low",
+      "13053.7"
+     ],
+     [
+      "daily S1",
+      "13050.0"
+     ],
+     [
+      "hourly swing high",
+      "13047.3"
+     ],
+     [
+      "round number",
+      "13050"
+     ]
+    ]
+   ],
+   "primary": "13071.5"
+  },
+  "[\"BUY\", [[\"daily S1\", \"13050.0\"], [\"hourly swing high\", \"13047.3\"], [\"round number\", \"13050\"]]]": {
+   "id": "STP-GBPUSD-20261125-1000-28",
+   "status": "COMPLETED",
+   "identity": [
+    "BUY",
+    [
+     [
+      "daily S1",
+      "13050.0"
+     ],
+     [
+      "hourly swing high",
+      "13047.3"
+     ],
+     [
+      "round number",
+      "13050"
+     ]
+    ]
+   ],
+   "primary": "13082.6"
+  },
+  "[\"SELL\", [[\"4-hour swing low\", \"13071.5\"], [\"4-hour swing low\", \"13077\"], [\"New York session low\", \"13080.7\"], [\"hourly swing low\", \"13071.5\"], [\"hourly swing low\", \"13077\"], [\"hourly swing low\", \"13077.5\"], [\"previous week low\", \"13075\"]]]": {
+   "id": "STP-GBPUSD-20261125-1200-29",
+   "status": "COMPLETED",
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing low",
+      "13071.5"
+     ],
+     [
+      "4-hour swing low",
+      "13077"
+     ],
+     [
+      "New York session low",
+      "13080.7"
+     ],
+     [
+      "hourly swing low",
+      "13071.5"
+     ],
+     [
+      "hourly swing low",
+      "13077"
+     ],
+     [
+      "hourly swing low",
+      "13077.5"
+     ],
+     [
+      "previous week low",
+      "13075"
+     ]
+    ]
+   ],
+   "primary": "13058.1"
+  },
+  "[\"BUY\", [[\"London session low\", \"13053.7\"], [\"daily S1\", \"13050.0\"], [\"hourly swing high\", \"13047.3\"], [\"hourly swing low\", \"13053.7\"], [\"round number\", \"13050\"]]]": {
+   "id": "STP-GBPUSD-20261125-1600-33",
+   "status": "COMPLETED",
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session low",
+      "13053.7"
+     ],
+     [
+      "daily S1",
+      "13050.0"
+     ],
+     [
+      "hourly swing high",
+      "13047.3"
+     ],
+     [
+      "hourly swing low",
+      "13053.7"
+     ],
+     [
+      "round number",
+      "13050"
+     ]
+    ]
+   ],
+   "primary": "13071.5"
+  },
+  "[\"BUY\", [[\"London session high\", \"13084.3\"], [\"London session high\", \"13091.1\"], [\"daily pivot\", \"13086.9\"], [\"historical daily swing low\", \"13084.1\"], [\"hourly swing low\", \"13093\"]]]": {
+   "id": "STP-GBPUSD-20261125-2100-36",
+   "status": "INVALIDATED",
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session high",
+      "13084.3"
+     ],
+     [
+      "London session high",
+      "13091.1"
+     ],
+     [
+      "daily pivot",
+      "13086.9"
+     ],
+     [
+      "historical daily swing low",
+      "13084.1"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ]
+    ]
+   ],
+   "primary": "13127.3"
+  },
+  "[\"SELL\", [[\"4-hour swing high\", \"13123.9\"], [\"New York session high\", \"13123.9\"], [\"hourly swing high\", \"13115.1\"], [\"hourly swing high\", \"13121.9\"], [\"hourly swing high\", \"13123.9\"], [\"hourly swing low\", \"13119.1\"], [\"previous day high\", \"13123.9\"]]]": {
+   "id": "STP-GBPUSD-20261125-1800-35",
+   "status": "INVALIDATED",
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "New York session high",
+      "13123.9"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ],
+     [
+      "previous day high",
+      "13123.9"
+     ]
+    ]
+   ],
+   "primary": "13093"
+  },
+  "[\"SELL\", [[\"4-hour swing high\", \"13123.9\"], [\"hourly swing high\", \"13115.1\"], [\"hourly swing high\", \"13118.3\"], [\"hourly swing high\", \"13121.9\"], [\"hourly swing high\", \"13123.9\"], [\"hourly swing low\", \"13119.1\"]]]": {
+   "id": "STP-GBPUSD-20261126-1100-40",
+   "status": "INVALIDATED",
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13118.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ]
+    ]
+   ],
+   "primary": "13103"
+  },
+  "[\"SELL\", [[\"4-hour swing high\", \"13123.9\"], [\"London session high\", \"13117.3\"], [\"hourly swing high\", \"13115.1\"], [\"hourly swing high\", \"13117.3\"], [\"hourly swing high\", \"13118.3\"], [\"hourly swing high\", \"13121.9\"], [\"hourly swing high\", \"13123.9\"], [\"hourly swing low\", \"13119.1\"]]]": {
+   "id": "STP-GBPUSD-20261126-1400-44",
+   "status": "COMPLETED",
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "London session high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13118.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ]
+    ]
+   ],
+   "primary": "13103"
+  },
+  "[\"SELL\", [[\"daily pivot\", \"13095.4\"], [\"hourly swing low\", \"13093\"], [\"hourly swing low\", \"13103\"], [\"round number\", \"13100\"]]]": {
+   "id": "STP-GBPUSD-20261126-0400-38",
+   "status": "INVALIDATED",
+   "identity": [
+    "SELL",
+    [
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13084.3"
+  },
+  "[\"SELL\", [[\"London session low\", \"13095.7\"], [\"daily pivot\", \"13095.4\"], [\"hourly swing low\", \"13093\"], [\"hourly swing low\", \"13095.7\"], [\"hourly swing low\", \"13096.2\"], [\"hourly swing low\", \"13103\"], [\"round number\", \"13100\"]]]": {
+   "id": "STP-GBPUSD-20261126-1200-42",
+   "status": "INVALIDATED",
+   "identity": [
+    "SELL",
+    [
+     [
+      "London session low",
+      "13095.7"
+     ],
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13084.3"
+  },
+  "[\"SELL\", [[\"4-hour swing high\", \"13123.9\"], [\"London session high\", \"13117.3\"], [\"hourly swing high\", \"13115.1\"], [\"hourly swing high\", \"13117.3\"], [\"hourly swing high\", \"13118.3\"], [\"hourly swing high\", \"13121.9\"], [\"hourly swing high\", \"13122.9\"], [\"hourly swing high\", \"13123.9\"], [\"hourly swing low\", \"13119.1\"]]]": {
+   "id": "STP-GBPUSD-20261126-2000-46",
+   "status": "INVALIDATED",
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "London session high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13118.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13122.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ]
+    ]
+   ],
+   "primary": "13103"
+  },
+  "[\"SELL\", [[\"4-hour swing high\", \"13123.9\"], [\"London session high\", \"13117.3\"], [\"New York session high\", \"13122.9\"], [\"hourly swing high\", \"13115.1\"], [\"hourly swing high\", \"13117.3\"], [\"hourly swing high\", \"13118.3\"], [\"hourly swing high\", \"13121.9\"], [\"hourly swing high\", \"13122.9\"], [\"hourly swing high\", \"13123.9\"], [\"hourly swing low\", \"13119.1\"]]]": {
+   "id": "STP-GBPUSD-20261126-2100-47",
+   "status": "INVALIDATED",
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "London session high",
+      "13117.3"
+     ],
+     [
+      "New York session high",
+      "13122.9"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13118.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13122.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ]
+    ]
+   ],
+   "primary": "13103"
+  },
+  "[\"BUY\", [[\"daily pivot\", \"13095.4\"], [\"hourly swing low\", \"13093\"], [\"hourly swing low\", \"13103\"], [\"round number\", \"13100\"]]]": {
+   "id": "STP-GBPUSD-20261126-0000-37",
+   "status": "INVALIDATED",
+   "identity": [
+    "BUY",
+    [
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13127.3"
+  },
+  "[\"BUY\", [[\"daily pivot\", \"13095.4\"], [\"hourly swing low\", \"13093\"], [\"hourly swing low\", \"13096.2\"], [\"hourly swing low\", \"13103\"], [\"round number\", \"13100\"]]]": {
+   "id": "STP-GBPUSD-20261126-1000-39",
+   "status": "INVALIDATED",
+   "identity": [
+    "BUY",
+    [
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13127.3"
+  },
+  "[\"BUY\", [[\"daily pivot\", \"13095.4\"], [\"hourly swing low\", \"13093\"], [\"hourly swing low\", \"13095.7\"], [\"hourly swing low\", \"13096.2\"], [\"hourly swing low\", \"13103\"], [\"round number\", \"13100\"]]]": {
+   "id": "STP-GBPUSD-20261126-1100-41",
+   "status": "INVALIDATED",
+   "identity": [
+    "BUY",
+    [
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13127.3"
+  },
+  "[\"BUY\", [[\"London session low\", \"13095.7\"], [\"daily pivot\", \"13095.4\"], [\"hourly swing low\", \"13093\"], [\"hourly swing low\", \"13095.7\"], [\"hourly swing low\", \"13096.2\"], [\"hourly swing low\", \"13103\"], [\"round number\", \"13100\"]]]": {
+   "id": "STP-GBPUSD-20261126-1200-43",
+   "status": "INVALIDATED",
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session low",
+      "13095.7"
+     ],
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13127.3"
+  },
+  "[\"BUY\", [[\"London session low\", \"13095.7\"], [\"daily pivot\", \"13095.4\"], [\"hourly swing low\", \"13093\"], [\"hourly swing low\", \"13095.7\"], [\"hourly swing low\", \"13095.7\"], [\"hourly swing low\", \"13096.2\"], [\"hourly swing low\", \"13103\"], [\"round number\", \"13100\"]]]": {
+   "id": "STP-GBPUSD-20261126-1500-45",
+   "status": "INVALIDATED",
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session low",
+      "13095.7"
+     ],
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13127.3"
+  },
+  "[\"BUY\", [[\"London session low\", \"13095.7\"], [\"New York session low\", \"13096.8\"], [\"daily pivot\", \"13095.4\"], [\"hourly swing low\", \"13093\"], [\"hourly swing low\", \"13095.7\"], [\"hourly swing low\", \"13095.7\"], [\"hourly swing low\", \"13096.2\"], [\"hourly swing low\", \"13103\"], [\"round number\", \"13100\"]]]": {
+   "id": "STP-GBPUSD-20261126-2100-48",
+   "status": "INVALIDATED",
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session low",
+      "13095.7"
+     ],
+     [
+      "New York session low",
+      "13096.8"
+     ],
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13127.3"
+  },
+  "[\"SELL\", [[\"London session low\", \"13095.7\"], [\"New York session low\", \"13096.8\"], [\"daily pivot\", \"13095.4\"], [\"hourly swing low\", \"13093\"], [\"hourly swing low\", \"13095.7\"], [\"hourly swing low\", \"13095.7\"], [\"hourly swing low\", \"13096.2\"], [\"hourly swing low\", \"13103\"], [\"round number\", \"13100\"]]]": {
+   "id": "STP-GBPUSD-20261126-2300-49",
+   "status": "INVALIDATED",
+   "identity": [
+    "SELL",
+    [
+     [
+      "London session low",
+      "13095.7"
+     ],
+     [
+      "New York session low",
+      "13096.8"
+     ],
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13084.3"
+  },
+  "[\"SELL\", [[\"London session high\", \"13117.3\"], [\"daily pivot\", \"13108.5\"], [\"hourly swing high\", \"13115.1\"], [\"hourly swing high\", \"13117.3\"], [\"hourly swing high\", \"13118.3\"], [\"hourly swing low\", \"13119.1\"]]]": {
+   "id": "STP-GBPUSD-20261127-0200-53",
+   "status": "INVALIDATED",
+   "identity": [
+    "SELL",
+    [
+     [
+      "London session high",
+      "13117.3"
+     ],
+     [
+      "daily pivot",
+      "13108.5"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13118.3"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ]
+    ]
+   ],
+   "primary": "13103"
+  },
+  "[\"BUY\", [[\"London session low\", \"13095.7\"], [\"New York session low\", \"13096.8\"], [\"daily S1\", \"13094.1\"], [\"hourly swing low\", \"13093\"], [\"hourly swing low\", \"13095.7\"], [\"hourly swing low\", \"13095.7\"], [\"hourly swing low\", \"13096.2\"], [\"hourly swing low\", \"13103\"], [\"previous day low\", \"13095.7\"], [\"round number\", \"13100\"]]]": {
+   "id": "STP-GBPUSD-20261127-0100-52",
+   "status": "COMPLETED",
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session low",
+      "13095.7"
+     ],
+     [
+      "New York session low",
+      "13096.8"
+     ],
+     [
+      "daily S1",
+      "13094.1"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "previous day low",
+      "13095.7"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13108.5"
+  },
+  "[\"BUY\", [[\"London session high\", \"13117.3\"], [\"daily pivot\", \"13108.5\"], [\"hourly swing high\", \"13115.1\"], [\"hourly swing high\", \"13117.3\"], [\"hourly swing high\", \"13118.3\"], [\"hourly swing low\", \"13119.1\"]]]": {
+   "id": "STP-GBPUSD-20261127-0200-54",
+   "status": "INVALIDATED",
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session high",
+      "13117.3"
+     ],
+     [
+      "daily pivot",
+      "13108.5"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13118.3"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ]
+    ]
+   ],
+   "primary": "13121.3"
+  },
+  "[\"SELL\", [[\"4-hour swing high\", \"13123.9\"], [\"4-hour swing high\", \"13128.6\"], [\"New York session high\", \"13122.9\"], [\"daily R1\", \"13121.3\"], [\"hourly swing high\", \"13121.9\"], [\"hourly swing high\", \"13122.9\"], [\"hourly swing high\", \"13123.9\"], [\"hourly swing high\", \"13128.6\"], [\"hourly swing high\", \"13129.2\"], [\"previous day high\", \"13122.9\"], [\"weekly pivot\", \"13127.3\"]]]": {
+   "id": "STP-GBPUSD-20261127-0300-55",
+   "status": "COMPLETED",
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "4-hour swing high",
+      "13128.6"
+     ],
+     [
+      "New York session high",
+      "13122.9"
+     ],
+     [
+      "daily R1",
+      "13121.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13122.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing high",
+      "13128.6"
+     ],
+     [
+      "hourly swing high",
+      "13129.2"
+     ],
+     [
+      "previous day high",
+      "13122.9"
+     ],
+     [
+      "weekly pivot",
+      "13127.3"
+     ]
+    ]
+   ],
+   "primary": "13119.1"
+  },
+  "[\"SELL\", [[\"London session low\", \"13095.7\"], [\"New York session low\", \"13096.8\"], [\"daily S1\", \"13094.1\"], [\"hourly swing low\", \"13093\"], [\"hourly swing low\", \"13095.7\"], [\"hourly swing low\", \"13095.7\"], [\"hourly swing low\", \"13096.2\"], [\"hourly swing low\", \"13103\"], [\"previous day low\", \"13095.7\"], [\"round number\", \"13100\"]]]": {
+   "id": "STP-GBPUSD-20261127-0100-51",
+   "status": "INVALIDATED",
+   "identity": [
+    "SELL",
+    [
+     [
+      "London session low",
+      "13095.7"
+     ],
+     [
+      "New York session low",
+      "13096.8"
+     ],
+     [
+      "daily S1",
+      "13094.1"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "previous day low",
+      "13095.7"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13085.8"
+  },
+  "[\"BUY\", [[\"4-hour swing high\", \"13123.9\"], [\"4-hour swing high\", \"13128.6\"], [\"New York session high\", \"13122.9\"], [\"daily R1\", \"13121.3\"], [\"hourly swing high\", \"13121.9\"], [\"hourly swing high\", \"13122.9\"], [\"hourly swing high\", \"13123.9\"], [\"hourly swing high\", \"13128.6\"], [\"hourly swing high\", \"13129.2\"], [\"previous day high\", \"13122.9\"], [\"weekly pivot\", \"13127.3\"]]]": {
+   "id": "STP-GBPUSD-20261127-1200-57",
+   "status": "INVALIDATED",
+   "identity": [
+    "BUY",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "4-hour swing high",
+      "13128.6"
+     ],
+     [
+      "New York session high",
+      "13122.9"
+     ],
+     [
+      "daily R1",
+      "13121.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13122.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing high",
+      "13128.6"
+     ],
+     [
+      "hourly swing high",
+      "13129.2"
+     ],
+     [
+      "previous day high",
+      "13122.9"
+     ],
+     [
+      "weekly pivot",
+      "13127.3"
+     ]
+    ]
+   ],
+   "primary": "13134.6"
+  }
+ },
+ "mode": "opportunities",
+ "h4_checked_until": "2026-11-27T12:00:00Z",
+ "last_plans": {
+  "SELL": {
+   "direction": "NEUTRAL",
+   "condition": "CONTINUATION",
+   "opportunity": null,
+   "trade": "SELL",
+   "zone": null,
+   "reference": null,
+   "reachability": null,
+   "primary": null,
+   "no_recommendation": "the primary destination 13119.1 is already reached (the Fri 27 Nov 13:55 GMT 5-minute candle reached 13119.8, within 3 pips of the destination zone 13108.5-13119.1); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13121.3-13130.2 is not recommended",
+   "fresh": true,
+   "market_data_utc": "2026-11-27T14:00:00Z",
+   "threshold_misses": [
+    {
+     "timeframe": "4h",
+     "kind": "high",
+     "price": "13129.2",
+     "candle_utc": "2026-11-25T16:00:00Z",
+     "moved_pips": "33.5",
+     "needed_pips": "40.0",
+     "note": "a 4h turn at 13129.2 moved 33.5 pips within 6 candles, short of the 40.0 needed: not counted as a swing (provisional threshold, recorded for review)"
+    }
+   ],
+   "warming_up": [
+    "4h EMA200 (498 of 592 candles)",
+    "1w EMA100 (210 of 296 candles)",
+    "1w EMA200 (210 of 592 candles)"
+   ]
+  },
+  "BUY": {
+   "direction": "NEUTRAL",
+   "condition": "CONTINUATION",
+   "opportunity": null,
+   "trade": "BUY",
+   "zone": null,
+   "reference": null,
+   "reachability": null,
+   "primary": null,
+   "no_recommendation": "the primary destination 13121.3 is already reached (the Fri 27 Nov 13:55 GMT 5-minute candle reached 13124.3, within 3 pips of the destination zone 13121.3-13130.2); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13108.5-13119.1 is not recommended",
+   "fresh": true,
+   "market_data_utc": "2026-11-27T14:00:00Z",
+   "threshold_misses": [
+    {
+     "timeframe": "4h",
+     "kind": "high",
+     "price": "13129.2",
+     "candle_utc": "2026-11-25T16:00:00Z",
+     "moved_pips": "33.5",
+     "needed_pips": "40.0",
+     "note": "a 4h turn at 13129.2 moved 33.5 pips within 6 candles, short of the 40.0 needed: not counted as a swing (provisional threshold, recorded for review)"
+    }
+   ],
+   "warming_up": [
+    "4h EMA200 (498 of 592 candles)",
+    "1w EMA100 (210 of 296 candles)",
+    "1w EMA200 (210 of 592 candles)"
+   ]
+  }
+ },
+ "duplicate_noted": "STP-GBPUSD-20261127-0300-55"
+}

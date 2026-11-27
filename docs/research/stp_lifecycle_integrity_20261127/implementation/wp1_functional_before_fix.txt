@@ -1,0 +1,6 @@
+FAILED tests/functional/test_stp_lifecycle_replay_20261127.py::test_FL_A3_the_duplicate_12_01_buy_is_refused
+FAILED tests/functional/test_stp_lifecycle_replay_20261127.py::test_FL_A4_no_republication_authorises_another_trade_on_the_consumed_test
+FAILED tests/functional/test_stp_lifecycle_replay_20261127.py::test_FL_A5_the_27_nov_06_55_buy_and_the_26_nov_11_40_buy_remain_valid
+FAILED tests/functional/test_stp_lifecycle_replay_20261127.py::test_FL_A8_only_reissues_of_a_place_whose_destination_was_just_achieved_are_withheld
+FAILED tests/functional/test_stp_lifecycle_replay_20261127.py::test_FL_M1_after_the_migration_the_live_1305_58_cannot_authorise_test_1_again
+========================= 5 failed, 5 passed in 51.49s =========================

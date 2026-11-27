@@ -1,0 +1,106 @@
+STP lifecycle audit: 42 opportunities created from 24 Nov 2026 (Stage B from 2026-11-25T13:10:00Z)
+
+id | trade | created | zone | primary | zone at/before creation | activated | end | case | auths | trades
+61124-0000-17 | SELL | 11-24T00:00 | 13075-13084.1 | 13014.2 | - |  | INVALIDATED 11-24T08:00 supporting evidence changed: the primary destination 13037.3 | 2 | 0 | -
+61124-0900-18 | SELL | 11-24T09:00 | 13075-13084.1 | 13037.3 | - |  | SUPERSEDED 11-24T10:00 a zone that does not overlap the previous one (13075-13084.1 | - | 0 | -
+61124-1000-19 | SELL | 11-24T10:00 | 13062.1-13071.5 | 13037.3 | in zone at creation,ambiguous | 11-24T10:10 | INVALIDATED 11-24T12:00 confirmed break: the Tue 24 Nov 11:00 GMT hourly candle clos | - | 0 | -
+61124-1300-20 | SELL | 11-24T13:00 | 13135.5-13142.1 | 13085.4 | - |  | INVALIDATED 11-24T13:35 destination reached before entry: price reached 13085.4 (Tue | 2 | 0 | -
+61124-1400-21 | SELL | 11-24T14:00 | 13103-13114.1 | 13085.4 | ambiguous | 11-24T14:10 | SUPERSEDED 11-24T15:00 a zone that does not overlap the previous one (13103-13114.1 | - | 0 | -
+61124-1500-22 | SELL | 11-24T15:00 | 13135.5-13142.1 | 13085.4 | - |  | SUPERSEDED 11-24T17:00 a zone that does not overlap the previous one (13135.5-13142 | - | 0 | -
+61124-1700-23 | SELL | 11-24T17:00 | 13117.6-13128.6 | 13084.1 | - | 11-24T17:10 | SUPERSEDED 11-24T19:00 a zone that does not overlap the previous one (13119.1-13128 | - | 0 | -
+61124-1900-24 | SELL | 11-24T19:00 | 13102.6-13114.1 | 13084.1 | in zone at creation,ambiguous | 11-24T19:10 | INVALIDATED 11-24T20:00 supporting evidence changed: the primary destination 13114.1 | 3 | 0 | -
+61124-2100-25 | SELL | 11-24T21:00 | 13103-13114.1 | 13084.1 | in zone at creation,ambiguous | 11-24T21:10 | SUPERSEDED 11-25T00:00 a zone that does not overlap the previous one (13103-13114.1 | - | 0 | -
+61125-0000-26 | SELL | 11-25T00:00 | 13119.1-13128.6 | 13093 | - |  | INVALIDATED 11-25T03:15 destination reached before entry: price reached 13093 (Wed 2 | 2 | 0 | -
+61125-0400-27 | SELL | 11-25T04:00 | 13084.1-13093 | 13050 | in zone at creation,ambiguous | 11-25T04:10 | COMPLETED 11-25T11:45 price reached the primary destination 13053.7 (Wed 25 Nov 11 | 3 | 0 | -
+61125-1000-28 | BUY | 11-25T10:00 | 13047.3-13055.1 | 13082.6 | in zone at creation,ambiguous | 11-25T11:45 | COMPLETED 11-25T12:25 price reached the primary destination 13082.6 (Wed 25 Nov 12 | 3 | 0 | -
+61125-1200-29 | SELL | 11-25T12:00 | 13071.5-13080.7 | 13053.7 | - | 11-25T12:15 | COMPLETED 11-25T13:10 price reached the primary destination 13058.1 (Wed 25 Nov 13 | 3 | 0 | -
+61125-1200-30 | BUY | 11-25T12:00 | 13047.3-13053.7 | 13071.5 | - |  | INVALIDATED 11-25T12:15 destination reached before entry: price reached 13071.5 (Wed | 2 | 0 | -
+61125-1400-31 | BUY | 11-25T14:00 | 13047.3-13057.9 | 13071.5 | in zone at creation,ambiguous |  | INVALIDATED 11-25T14:10 destination reached before entry: price reached 13071.5 (Wed | 3 | 0 | -
+61125-1500-32 | BUY | 11-25T15:00 | 13046.1-13053.7 | 13071.5 | in zone at creation,ambiguous |  | INVALIDATED 11-25T15:10 destination reached before entry: price reached 13071.5 (Wed | 3 | 0 | -
+61125-1600-33 | BUY | 11-25T16:00 | 13046.1-13053.7 | 13071.5 | in zone at creation | 11-25T16:15 | COMPLETED 11-25T16:30 price reached the primary destination 13071.5 (Wed 25 Nov 16 | 3 | 0 | -
+61125-1700-34 | BUY | 11-25T17:00 | 13084.1-13096.0 | 13127.3 | in zone at creation |  | INVALIDATED 11-25T18:20 destination reached before entry: price reached 13127.3 (Wed | 4 | 2 | AB261125170604-a4ec4a37
+61125-1800-35 | SELL | 11-25T18:00 | 13115.1-13123.9 | 13093 | in zone at creation,ambiguous | 11-25T18:10 | INVALIDATED 11-26T00:00 structural levels changed at the pivot rollover: previous da | - | 10 | AB261125200515-c9049665
+61125-2100-36 | BUY | 11-25T21:00 | 13084.1-13093 | 13127.3 | - |  | INVALIDATED 11-26T00:00 structural levels changed at the pivot rollover: daily pivot | - | 0 | -
+61126-0000-37 | BUY | 11-26T00:00 | 13093-13103 | 13127.3 | - | 11-26T03:05 | INVALIDATED 11-27T00:00 structural levels changed at the pivot rollover: daily pivot | - | 53 | AB261126060101-987e099b, AB261126114004-bd34fb67
+61126-0400-38 | SELL | 11-26T04:00 | 13093-13103 | 13084.3 | in zone at creation,ambiguous | 11-26T04:10 | INVALIDATED 11-26T16:00 confirmed break held: no hourly close back below 13103 withi | - | 7 | AB261126063004-aaea24e1, AB261126125133-d1518c12
+61126-1000-39 | BUY | 11-26T10:00 | 13093-13103 | 13127.3 | in zone at creation | 11-26T11:10 | INVALIDATED 11-27T00:00 structural levels changed at the pivot rollover: daily pivot | - | 0 | -
+61126-1100-40 | SELL | 11-26T11:00 | 13115.1-13123.9 | 13103 | in zone at creation |  | INVALIDATED 11-26T11:10 destination reached before entry: price reached 13103 (Thu 2 | 3 | 0 | -
+61126-1100-41 | BUY | 11-26T11:00 | 13093-13103 | 13127.3 | - | 11-26T11:10 | INVALIDATED 11-27T00:00 structural levels changed at the pivot rollover: daily pivot | - | 0 | -
+61126-1200-42 | SELL | 11-26T12:00 | 13093-13103 | 13084.3 | in zone at creation,ambiguous | 11-26T12:10 | INVALIDATED 11-26T16:00 confirmed break held: no hourly close back below 13103 withi | - | 0 | -
+61126-1200-43 | BUY | 11-26T12:00 | 13093-13103 | 13127.3 | in zone at creation,ambiguous | 11-26T12:10 | INVALIDATED 11-27T00:00 structural levels changed at the pivot rollover: daily pivot | - | 0 | -
+61126-1400-44 | SELL | 11-26T14:00 | 13115.1-13123.9 | 13103 | in zone at creation,ambiguous | 11-26T14:10 | COMPLETED 11-26T14:45 price reached the primary destination 13103 (Thu 26 Nov 14:4 | 4 | 4 | AB261126142255-04805706
+61126-1500-45 | BUY | 11-26T15:00 | 13093-13103 | 13127.3 | in zone at creation | 11-26T15:20 | INVALIDATED 11-27T00:00 structural levels changed at the pivot rollover: daily pivot | - | 0 | -
+61126-2000-46 | SELL | 11-26T20:00 | 13115.1-13123.9 | 13103 | - |  | INVALIDATED 11-26T22:00 destination reached before entry: price reached 13103 (Thu 2 | 2 | 0 | -
+61126-2100-47 | SELL | 11-26T21:00 | 13115.1-13123.9 | 13103 | - |  | INVALIDATED 11-26T22:00 destination reached before entry: price reached 13103 (Thu 2 | 2 | 0 | -
+61126-2100-48 | BUY | 11-26T21:00 | 13093-13103 | 13127.3 | - | 11-26T22:00 | INVALIDATED 11-27T00:00 structural levels changed at the pivot rollover: daily pivot | - | 0 | -
+61126-2300-49 | SELL | 11-26T23:00 | 13093-13103 | 13084.3 | in zone at creation,ambiguous |  | INVALIDATED 11-27T00:00 structural levels changed at the pivot rollover: daily pivot | - | 0 | -
+61127-0000-50 | SELL | 11-27T00:00 | 13108.5-13119.1 | 13103 | in zone at creation,ambiguous |  | INVALIDATED 11-27T00:10 destination reached before entry: price reached 13103 (Fri 2 | 3 | 0 | -
+61127-0100-51 | SELL | 11-27T01:00 | 13093-13103 | 13085.8 | in zone at creation,ambiguous | 11-27T01:10 | INVALIDATED 11-27T05:00 confirmed break held: no hourly close back below 13103 withi | - | 0 | -
+61127-0100-52 | BUY | 11-27T01:00 | 13093-13103 | 13108.5 | in zone at creation,ambiguous | 11-27T01:10 | COMPLETED 11-27T01:35 price reached the primary destination 13108.5 (Fri 27 Nov 01 | 3 | 2 | -
+61127-0200-53 | SELL | 11-27T02:00 | 13108.5-13119.1 | 13103 | in zone at creation,ambiguous | 11-27T02:10 | INVALIDATED 11-27T09:00 confirmed break held: no hourly close back below 13119.1 wit | - | 1 | -
+61127-0200-54 | BUY | 11-27T02:00 | 13108.5-13119.1 | 13121.3 | in zone at creation,ambiguous |  | INVALIDATED 11-27T02:10 destination reached before entry: price reached 13121.3 (Fri | 3 | 1 | -
+61127-0300-55 | SELL | 11-27T03:00 | 13121.3-13130.9 | 13119.1 | in zone at creation,ambiguous | 11-27T03:10 | COMPLETED 11-27T03:25 price reached the primary destination 13119.1 (Fri 27 Nov 03 | 3 | 3 | -
+61127-0300-56 | BUY | 11-27T03:00 | 13121.3-13130.9 | 13135.5 | in zone at creation,ambiguous | 11-27T03:10 | COMPLETED 11-27T11:05 price reached the primary destination 13135.5 (Fri 27 Nov 11 | 4 | 11 | AB261127065505-8c11a4bc
+61127-1200-57 | BUY | 11-27T12:00 | 13121.3-13130.3 | 13134.6 | in zone at creation |  | INVALIDATED 11-27T12:20 destination reached before entry: price reached 13134.6 (Fri | 4 | 1 | AB261127120127-5755701a
+61127-1305-58 | BUY | 11-27T13:05 | 13121.3-13130.3 | 13134.6 | in zone at creation,ambiguous | 11-27T13:15 | LIVE   | - | 0 | -
+
+Endings at the primary destination, by circumstance:
+  case 2: 6; of which labelled 'destination reached before entry': 5  ['61124-0000-17', '61124-1300-20', '61125-0000-26', '61125-1200-30', '61126-2000-46', '61126-2100-47']
+  case 3: 12; of which labelled 'destination reached before entry': 5  ['61124-1900-24', '61125-0400-27', '61125-1000-28', '61125-1200-29', '61125-1400-31', '61125-1500-32', '61125-1600-33', '61126-1100-40', '61127-0000-50', '61127-0100-52', '61127-0200-54', '61127-0300-55']
+  case 4: 4; of which labelled 'destination reached before entry': 2  ['61125-1700-34', '61126-1400-44', '61127-0300-56', '61127-1200-57']
+  case 1 (not issued, D-1 at the analysis): 28 analyses
+
+Reissues of an ended identity:
+  61124-0000-17 (INVALIDATED 11-24T08:00) -> 61124-0900-18 +1.0h; primary 13014.2 -> 13037.3 (same price False, zones overlap False); re-armed between: ['2026-11-24T01:00Z', '2026-11-24T02:00Z', '2026-11-24T03:00Z', '2026-11-24T04:00Z', '2026-11-24T05:00Z', '2026-11-24T06:00Z', '2026-11-24T07:00Z', '2026-11-24T08:00Z']; predecessor trades -; reissue trades -
+  61124-1300-20 (INVALIDATED 11-24T13:35) -> 61124-1500-22 +1.42h; primary 13085.4 -> 13085.4 (same price True, zones overlap True); re-armed between: ['2026-11-24T14:00Z']; predecessor trades -; reissue trades -
+  61124-1900-24 (INVALIDATED 11-24T20:00) -> 61124-2100-25 +1.0h; primary 13084.1 -> 13084.1 (same price True, zones overlap True); re-armed between: NO; predecessor trades -; reissue trades -
+  61125-1400-31 (INVALIDATED 11-25T14:10) -> 61125-1500-32 +0.83h; primary 13071.5 -> 13071.5 (same price True, zones overlap True); re-armed between: NO; predecessor trades -; reissue trades -
+  61125-1500-32 (INVALIDATED 11-25T15:10) -> 61125-1600-33 +0.83h; primary 13071.5 -> 13071.5 (same price True, zones overlap True); re-armed between: NO; predecessor trades -; reissue trades -
+  61125-1700-34 (INVALIDATED 11-25T18:20) -> 61125-2100-36 +2.67h; primary 13127.3 -> 13127.3 (same price True, zones overlap True); re-armed between: ['2026-11-25T18:00Z', '2026-11-25T19:00Z', '2026-11-25T20:00Z']; predecessor trades ['AB261125170604-a4ec4a37']; reissue trades -
+  61127-0000-50 (INVALIDATED 11-27T00:10) -> 61127-0200-53 +1.83h; primary 13103 -> 13103 (same price True, zones overlap True); re-armed between: NO; predecessor trades -; reissue trades -
+  61127-0300-56 (COMPLETED 11-27T11:05) -> 61127-1200-57 +0.92h; primary 13135.5 -> 13134.6 (same price False, zones overlap True); re-armed between: NO; predecessor trades ['AB261127065505-8c11a4bc']; reissue trades ['AB261127120127-5755701a']
+  61127-1200-57 (INVALIDATED 11-27T12:20) -> 61127-1305-58 +0.75h; primary 13134.6 -> 13134.6 (same price True, zones overlap True); re-armed between: NO; predecessor trades ['AB261127120127-5755701a']; reissue trades -
+
+STP-authorised trades, D-25 test of the rejection candle:
+  AB261125170604-a4ec4a37 key STP-GBPUSD-20261125-1700-34#t1: rejection 11-25T16:50; test under bound lineage 1, under the identity's first lineage 61125-1700-34 1; 4.7 pips, close
+  AB261125200515-c9049665 key STP-GBPUSD-20261125-1800-35#t1: rejection 11-25T19:45; test under bound lineage 1, under the identity's first lineage 61125-1800-35 1; -4.4 pips, forced close
+  AB261126060101-987e099b key STP-GBPUSD-20261126-0000-37#t1: rejection 11-26T05:45; test under bound lineage 1, under the identity's first lineage 61126-0000-37 1; 4.5 pips, stopped by IG
+  AB261126114004-bd34fb67 key STP-GBPUSD-20261126-0000-37#t2: rejection 11-26T11:10; test under bound lineage 2, under the identity's first lineage 61126-0000-37 2; 14.0 pips, close
+  AB261126063004-aaea24e1 key STP-GBPUSD-20261126-0400-38#t1: rejection 11-26T06:00; test under bound lineage 1, under the identity's first lineage 61126-0400-38 1; -7.3 pips, close
+  AB261126125133-d1518c12 key STP-GBPUSD-20261126-0400-38#t2: rejection 11-26T12:25; test under bound lineage 2, under the identity's first lineage 61126-0400-38 2; -6.4 pips, close
+  AB261126142255-04805706 key STP-GBPUSD-20261126-1400-44#t1: rejection 11-26T13:50; test under bound lineage 1, under the identity's first lineage 61126-1400-44 1; 2.1 pips, close
+  AB261127065505-8c11a4bc key STP-GBPUSD-20261127-0300-56#t1: rejection 11-27T06:30; test under bound lineage 1, under the identity's first lineage 61127-0300-56 1; -2.0 pips, close
+  AB261127120127-5755701a key STP-GBPUSD-20261127-1200-57#t1: rejection 11-27T11:40; test under bound lineage 1, under the identity's first lineage 61127-0300-56 1; -1.4 pips, closed by owner
+
+Authorisations with another live same-direction opportunity at an overlapping zone: 31
+  11-26T11:40 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41']
+  11-26T11:40 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41']
+  11-26T12:08 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43']
+  11-26T12:08 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43']
+  11-26T12:10 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43']
+  11-26T12:28 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43']
+  11-26T12:28 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43']
+  11-26T12:32 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43']
+  11-26T12:32 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43']
+  11-26T13:35 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43']
+  11-26T13:35 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43']
+  11-26T13:44 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43']
+  11-26T13:44 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43']
+  11-26T13:45 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43']
+  11-26T15:05 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T15:05 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T15:50 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T15:50 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T15:55 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T15:55 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T16:05 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T17:56 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T17:56 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T18:00 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T18:00 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T18:30 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T18:47 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T19:40 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T19:50 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T19:57 bound 61126-0000-37; also live ['61126-1000-39', '61126-1100-41', '61126-1200-43', '61126-1500-45']
+  11-26T12:51 bound 61126-0400-38; also live ['61126-1200-42']

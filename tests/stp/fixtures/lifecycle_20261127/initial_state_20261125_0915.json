@@ -1,0 +1,347 @@
+{
+ "pair": "GBPUSD",
+ "recommendation": {
+  "id": "STP-GBPUSD-20261125-0400-27",
+  "instrument": "GBPUSD",
+  "created_utc": "2026-11-25T04:00:02Z",
+  "market_data_utc": "2026-11-25T04:00:00Z",
+  "status": "ACTIVE",
+  "status_reason": "Major zone (5 families: higher-timeframe structure, moving average, pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals",
+  "trade": "SELL",
+  "identity": [
+   "SELL",
+   [
+    [
+     "London session high",
+     "13091.1"
+    ],
+    [
+     "daily pivot",
+     "13086.9"
+    ],
+    [
+     "historical daily swing low",
+     "13084.1"
+    ],
+    [
+     "hourly swing low",
+     "13093"
+    ]
+   ]
+  ],
+  "far_edge": "13093",
+  "ever_active": true,
+  "dominant_direction": "BEARISH",
+  "condition": "CORRECTION_ACTIVE",
+  "opportunity": "corrective reversal",
+  "expected_movement": "UP into resistance, then DOWN",
+  "entry_zone": {
+   "low": "13084.1",
+   "high": "13093",
+   "class": "Major",
+   "families": [
+    "higher-timeframe structure",
+    "moving average",
+    "pivot",
+    "session",
+    "structure"
+   ],
+   "daily_or_weekly_level": true,
+   "tests": 6,
+   "reference": {
+    "price": "13086.9",
+    "name": "daily pivot",
+    "role": "",
+    "family": "pivot",
+    "timeframe": "daily",
+    "origin_utc": "2026-11-24T00:00:00Z",
+    "daily_or_weekly": true,
+    "fixed": true,
+    "note": "daily candle Tue 24 Nov (sell H 13123.9 L 13027.1 C 13109.8)"
+   },
+   "levels": [
+    {
+     "price": "13084.1",
+     "name": "historical daily swing low",
+     "role": "",
+     "family": "higher-timeframe structure",
+     "timeframe": "daily",
+     "origin_utc": "2025-11-12T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "1d swing low 13084.1 (Wed 12 Nov 00:00 GMT)"
+    },
+    {
+     "price": "13084.2",
+     "name": "H4 Bollinger middle",
+     "role": "",
+     "family": "moving average",
+     "timeframe": "4h",
+     "origin_utc": "2026-11-25T00:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": false,
+     "note": ""
+    },
+    {
+     "price": "13086.9",
+     "name": "daily pivot",
+     "role": "",
+     "family": "pivot",
+     "timeframe": "daily",
+     "origin_utc": "2026-11-24T00:00:00Z",
+     "daily_or_weekly": true,
+     "fixed": true,
+     "note": "daily candle Tue 24 Nov (sell H 13123.9 L 13027.1 C 13109.8)"
+    },
+    {
+     "price": "13091.1",
+     "name": "London session high",
+     "role": "",
+     "family": "session",
+     "timeframe": "intraday",
+     "origin_utc": "2026-11-24T07:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "London session previous Tue 24 Nov 07:00-12:00 UTC"
+    },
+    {
+     "price": "13093",
+     "name": "hourly swing low",
+     "role": "former support, now resistance",
+     "family": "structure",
+     "timeframe": "1h",
+     "origin_utc": "2026-11-20T11:00:00Z",
+     "daily_or_weekly": false,
+     "fixed": true,
+     "note": "hourly candle Fri 20 Nov 11:00 GMT low (sell)"
+    }
+   ]
+  },
+  "reference_entry": {
+   "price": "13086.9",
+   "level": "daily pivot"
+  },
+  "reachability": "NEAR",
+  "selection_reason": "Major zone (5 families: higher-timeframe structure, moving average, pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals",
+  "destinations": {
+   "intermediate": {
+    "price": "13080.7",
+    "zone": {
+     "low": "13071.5",
+     "high": "13080.7",
+     "class": "Moderate",
+     "families": [
+      "session",
+      "structure"
+     ],
+     "levels": [
+      "4-hour swing low 13071.5",
+      "hourly swing low 13071.5",
+      "previous week low 13075",
+      "4-hour swing low 13077",
+      "hourly swing low 13077",
+      "hourly swing low 13077.5",
+      "New York session low 13080.7"
+     ]
+    }
+   },
+   "primary": {
+    "price": "13050",
+    "zone": {
+     "low": "13047.3",
+     "high": "13050",
+     "class": "Major",
+     "families": [
+      "pivot",
+      "psychological",
+      "structure"
+     ],
+     "levels": [
+      "hourly swing high 13047.3 (former resistance, now support)",
+      "daily S1 13050.0",
+      "round number 13050"
+     ]
+    }
+   },
+   "extended": {
+    "price": "13037.3",
+    "zone": {
+     "low": "13026.6",
+     "high": "13037.3",
+     "class": "Major",
+     "families": [
+      "higher-timeframe structure",
+      "pivot",
+      "session",
+      "structure"
+     ],
+     "levels": [
+      "weekly S1 13026.6",
+      "previous day low 13027.1",
+      "hourly swing low 13027.1",
+      "London session low 13027.1",
+      "historical daily swing low 13037.3"
+     ]
+    }
+   }
+  },
+  "invalidation": {
+   "zone_break_close": "13096",
+   "zone_break_timeframe": "1h",
+   "structure_break_close": "13145.1",
+   "structure_break_timeframe": "4h",
+   "destination_first": "13050",
+   "destination_first_applies": true,
+   "conditions": [
+    "an hourly close at or above 13096 (3 pips beyond the zone top)",
+    "a 4-hour close at or above 13145.1 (beyond the last 4-hour swing high 13142.1)",
+    "the 4-hour direction no longer BEARISH",
+    "price reaching the primary destination 13050 before the zone"
+   ]
+  },
+  "observations": {
+   "supporting": [
+    "4-hour EMA 7/13/21 stack: mixed",
+    "4-hour close 13091.2 below the EMA100 13210.5",
+    "4-hour EMA200: warming up (not used)",
+    "4-hour EMA100 falling 14.9 pips over 6 candles",
+    "warning: the daily structure (up) is against the 4-hour structure (down)"
+   ],
+   "h4_ema_stack": "mixed",
+   "h4_ema100": "13210.5",
+   "h4_ema200": "warming up",
+   "h4_ema100_slope_pips": "-14.9",
+   "h4_macd": {
+    "line": "-18.27",
+    "signal": "-19.05",
+    "histogram": "0.78"
+   },
+   "h4_rsi": "43.4",
+   "h4_band": {
+    "upper": "13147.3",
+    "middle": "13084.2",
+    "lower": "13021.1",
+    "width_pips": "126.2",
+    "close": "inside the bands"
+   },
+   "h4_same_colour_candles": "2 down",
+   "distance_from_h4_ema21_adr": "-0.05",
+   "distance_from_h4_ema100_adr": "-1.50",
+   "daily_structure": "higher highs and higher lows: swing highs 13418.6 then 13503.1, swing lows 13135.6 then 13272.5; broken down",
+   "adr_pips": "79.6",
+   "today_range_pips": "24.3",
+   "today_range_adr": "0.31",
+   "remaining_room_pips": "55.3",
+   "vs_daily_pivot": "above the daily pivot 13086.9",
+   "vs_weekly_pivot": "below the weekly pivot 13127.3",
+   "direction_rule_5m": {
+    "side": "no clear direction",
+    "reason": "price 13091.2 is above the pivot 13086.9 and below the 5m 100 EMA 13105.5: they disagree"
+   },
+   "uk_time": "04:00",
+   "minutes_from": {
+    "10:00": -360,
+    "14:00": -600,
+    "16:00": -720
+   },
+   "big_news_today": [],
+   "h4_sweep": {
+    "swing": "high",
+    "price": "13142.1",
+    "beyond": "13128.6",
+    "candle_utc": "2026-11-23T08:00:00Z",
+    "resolve_beyond": "13071.5",
+    "state": "rejected",
+    "rejected_by_close_utc": "2026-11-23T12:00:00Z"
+   },
+   "impulse_pips": "132.0",
+   "impulse_adr": "1.66",
+   "reward_to_invalidation": "4.1",
+   "primary_distance_pips": "41.2",
+   "primary_distance_adr": "0.52"
+  },
+  "direction_evidence": [
+   "4-hour structure: lower highs and lower lows confirmed: swing high 13142.1 went above the previous swing high 13128.6 by a wick only (no 4-hour close 3 pips beyond it); then the Mon 23 Nov 12:00 GMT 4-hour candle closed 13018.5, beyond the swing low 13071.5: the sweep was rejected (observed swings: swing highs 13128.6 then 13142.1, swing lows 13071.5 then 13010.1)",
+   "4-hour EMA 7/13/21 stack: mixed",
+   "4-hour close 13091.2 below the EMA100 13210.5",
+   "4-hour EMA200: warming up (not used)",
+   "4-hour EMA100 falling 14.9 pips over 6 candles",
+   "warning: the daily structure (up) is against the 4-hour structure (down)"
+  ],
+  "condition_evidence": [
+   "impulse from the 4h swing high 13142.1 (Mon 23 Nov 08:00 GMT) to the low 13010.1 (Mon 23 Nov 16:00 GMT)",
+   "new low: 13010.1 beyond the previous swing low 13071.5",
+   "4-hour MACD line -18.27, histogram 0.78",
+   "4-hour RSI 43.4 (back inside its line after the impulse)",
+   "4-hour close back inside the Bollinger band after closing outside it in the impulse",
+   "correction under way: an hourly close above the hourly Bollinger middle (Tue 24 Nov 07:00 GMT) after the impulse low, 4-hour structure intact"
+  ],
+  "alternative": {
+   "low": "13119.1",
+   "high": "13128.6",
+   "class": "Major",
+   "families": [
+    "pivot",
+    "session",
+    "structure"
+   ],
+   "levels": [
+    "hourly swing low 13119.1 (former support, now resistance)",
+    "hourly swing high 13121.9",
+    "previous day high 13123.9",
+    "hourly swing high 13123.9",
+    "New York session high 13123.9",
+    "weekly pivot 13127.3",
+    "4-hour swing high 13128.6",
+    "hourly swing high 13128.6"
+   ],
+   "reachability": "PLAUSIBLE"
+  },
+  "six_factors": {
+   "1_structural_level": {
+    "zone": [
+     "13084.1",
+     "13093"
+    ],
+    "families": [
+     "higher-timeframe structure",
+     "moving average",
+     "pivot",
+     "session",
+     "structure"
+    ],
+    "levels": [
+     "historical daily swing low 13084.1",
+     "H4 Bollinger middle 13084.2",
+     "daily pivot 13086.9",
+     "London session high 13091.1",
+     "hourly swing low 13093 (former support, now resistance)"
+    ]
+   },
+   "2_higher_timeframe_direction": "BEARISH",
+   "3_daily_extension": {
+    "today_range_adr": "0.31",
+    "adr_pips": "79.6"
+   },
+   "4_sweep_and_rejection": "recorded in the history as wick sweep / closed beyond / reclaim / confirmed break",
+   "5_tests": 6,
+   "6_time_of_day": {
+    "uk_time": "04:00",
+    "minutes_from": {
+     "10:00": -360,
+     "14:00": -600,
+     "16:00": -720
+    }
+   }
+  },
+  "history": []
+ },
+ "validated_h1_end": "2026-11-25T09:00:00Z",
+ "m5_checked_until": "2026-11-25T09:15:00Z",
+ "counter": 27,
+ "last_replan_uk_day": "2026-11-25",
+ "recent": [],
+ "last_plan": null,
+ "h4_checked_until": "2026-11-25T08:00:00Z",
+ "note": "the single tracker's state as the first OpportunityKeeper run took it over (25 Nov 09:15 UTC): STP-GBPUSD-20261125-0400-27 SELL ACTIVE since 04:10; its record as issued (issued.jsonl), structural snapshot left out"
+}

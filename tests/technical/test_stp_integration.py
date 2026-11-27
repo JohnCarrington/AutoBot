@@ -243,8 +243,10 @@ def test_T12_a_break_held_for_three_closes_invalidates(tmp_path):
     held = [e for e in ev(tmp_path) if e["id"] == first and "confirmed break held" in (e.get("why") or "")]
     assert held and held[0]["event"] == "invalidated" and first not in [o["id"] for o in opps(tmp_path)]
     # the scripted planner proposes the same zone again at the next re-plan: that is STP's own new proposal, a new
-    # opportunity with its own lineage (never the broken one coming back)
-    assert all(o["lineage"] != first for o in opps(tmp_path))
+    # opportunity (never the broken one coming back: a new id, starting as WAITING). Phase 2 C-2 (owner, 27 November
+    # 2026): it continues the same structural LINEAGE, so its duplicate keys and D-25 test count carry on
+    new = opps(tmp_path)
+    assert new and all(o["id"] != first and o["status"] == WAITING and o["lineage"] == first for o in new)
 
 
 def test_T13_a_4_hour_close_beyond_the_structure_break_invalidates(tmp_path):

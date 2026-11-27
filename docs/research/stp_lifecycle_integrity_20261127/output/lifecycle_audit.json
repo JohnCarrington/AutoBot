@@ -1,0 +1,5062 @@
+{
+ "opportunities": [
+  {
+   "id": "STP-GBPUSD-20261124-0000-17",
+   "trade": "SELL",
+   "created_utc": "2026-11-24T00:00:03Z",
+   "stage_b": false,
+   "zone": [
+    "13075",
+    "13084.1"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing low",
+      "13077"
+     ],
+     [
+      "historical daily swing low",
+      "13084.1"
+     ],
+     [
+      "hourly swing low",
+      "13077"
+     ],
+     [
+      "hourly swing low",
+      "13077.5"
+     ],
+     [
+      "previous week low",
+      "13075"
+     ]
+    ]
+   ],
+   "primary": "13014.2",
+   "primary_zone": [
+    "13009.7",
+    "13014.2"
+   ],
+   "zone_at_or_before_creation": [],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-24T08:00:03Z",
+    "why": "supporting evidence changed: the primary destination 13037.3 is already reached (the Tue 24 Nov 07:55 GMT 5-minute candle reached 13037, within 3 pips of the destination zone 13026.6-13037.3); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13075-13084.1 is not recommended"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 2,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-24T00:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-24T00:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-24T01:00:02Z",
+     "supported"
+    ],
+    [
+     "2026-11-24T02:00:01Z",
+     "changed"
+    ],
+    [
+     "2026-11-24T03:00:02Z",
+     "supported"
+    ],
+    [
+     "2026-11-24T04:00:02Z",
+     "supported"
+    ],
+    [
+     "2026-11-24T05:00:01Z",
+     "supported"
+    ],
+    [
+     "2026-11-24T06:00:05Z",
+     "supported"
+    ],
+    [
+     "2026-11-24T07:00:02Z",
+     "supported"
+    ],
+    [
+     "2026-11-24T08:00:03Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261124-0900-18",
+   "trade": "SELL",
+   "created_utc": "2026-11-24T09:00:02Z",
+   "stage_b": false,
+   "zone": [
+    "13075",
+    "13084.1"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing low",
+      "13077"
+     ],
+     [
+      "historical daily swing low",
+      "13084.1"
+     ],
+     [
+      "hourly swing low",
+      "13077"
+     ],
+     [
+      "hourly swing low",
+      "13077.5"
+     ],
+     [
+      "previous week low",
+      "13075"
+     ]
+    ]
+   ],
+   "primary": "13037.3",
+   "primary_zone": [
+    "13026.6",
+    "13037.3"
+   ],
+   "zone_at_or_before_creation": [],
+   "activated_utc": null,
+   "end": {
+    "status": "SUPERSEDED",
+    "time_utc": "2026-11-24T10:00:03Z",
+    "why": "a zone that does not overlap the previous one (13075-13084.1 to 13062.1-13071.5): Major zone (3 families: pivot, session, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-24T09:00:02Z",
+     "created"
+    ],
+    [
+     "2026-11-24T09:00:02Z",
+     "waiting"
+    ],
+    [
+     "2026-11-24T10:00:03Z",
+     "superseded"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261124-1000-19",
+   "trade": "SELL",
+   "created_utc": "2026-11-24T10:00:03Z",
+   "stage_b": false,
+   "zone": [
+    "13062.1",
+    "13071.5"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing low",
+      "13071.5"
+     ],
+     [
+      "daily pivot",
+      "13062.1"
+     ],
+     [
+      "hourly swing low",
+      "13071.5"
+     ]
+    ]
+   ],
+   "primary": "13037.3",
+   "primary_zone": [
+    "13026.6",
+    "13037.3"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-24T10:10:00Z",
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-24T12:00:00Z",
+    "why": "confirmed break: the Tue 24 Nov 11:00 GMT hourly candle closed at 13089.1, 17.6 pips beyond the zone's top 13071.5"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-24T10:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-24T10:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-24T10:00:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-24T10:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-24T10:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-24T11:00:03Z",
+     "supported"
+    ],
+    [
+     "2026-11-24T12:00:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261124-1300-20",
+   "trade": "SELL",
+   "created_utc": "2026-11-24T13:00:03Z",
+   "stage_b": false,
+   "zone": [
+    "13135.5",
+    "13142.1"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13142.1"
+     ],
+     [
+      "4-hour swing low",
+      "13135.6"
+     ],
+     [
+      "London session high",
+      "13142.1"
+     ],
+     [
+      "daily swing low",
+      "13135.6"
+     ],
+     [
+      "daily swing low",
+      "13139.9"
+     ],
+     [
+      "historical daily swing low",
+      "13139.4"
+     ],
+     [
+      "historical daily swing low",
+      "13139.7"
+     ],
+     [
+      "hourly swing high",
+      "13142.1"
+     ],
+     [
+      "hourly swing low",
+      "13135.5"
+     ],
+     [
+      "previous day high",
+      "13142.1"
+     ]
+    ]
+   ],
+   "primary": "13085.4",
+   "primary_zone": [
+    "13075",
+    "13085.4"
+   ],
+   "zone_at_or_before_creation": [],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-24T13:35:00Z",
+    "why": "destination reached before entry: price reached 13085.4 (Tue 24 Nov 13:30 GMT) without reaching the zone"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 2,
+   "label_says_before_entry": true,
+   "events": [
+    [
+     "2026-11-24T13:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-24T13:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-24T13:35:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261124-1400-21",
+   "trade": "SELL",
+   "created_utc": "2026-11-24T14:00:04Z",
+   "stage_b": false,
+   "zone": [
+    "13103",
+    "13114.1"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "daily R1",
+      "13114.1"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ]
+    ]
+   ],
+   "primary": "13085.4",
+   "primary_zone": [
+    "13075",
+    "13085.4"
+   ],
+   "zone_at_or_before_creation": [
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-24T14:10:00Z",
+   "end": {
+    "status": "SUPERSEDED",
+    "time_utc": "2026-11-24T15:00:03Z",
+    "why": "a zone that does not overlap the previous one (13103-13114.1 to 13135.5-13142.1): Major zone (3 families: higher-timeframe structure, session, structure) 23.4 pips away, PLAUSIBLE; the strongest class among the reachable zones"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-24T14:00:04Z",
+     "created"
+    ],
+    [
+     "2026-11-24T14:00:04Z",
+     "waiting"
+    ],
+    [
+     "2026-11-24T14:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-24T14:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-24T15:00:00Z",
+     "wick sweep"
+    ],
+    [
+     "2026-11-24T15:00:03Z",
+     "superseded"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261124-1500-22",
+   "trade": "SELL",
+   "created_utc": "2026-11-24T15:00:03Z",
+   "stage_b": false,
+   "zone": [
+    "13135.5",
+    "13142.1"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13142.1"
+     ],
+     [
+      "4-hour swing low",
+      "13135.6"
+     ],
+     [
+      "London session high",
+      "13142.1"
+     ],
+     [
+      "daily swing low",
+      "13135.6"
+     ],
+     [
+      "daily swing low",
+      "13139.9"
+     ],
+     [
+      "historical daily swing low",
+      "13139.4"
+     ],
+     [
+      "historical daily swing low",
+      "13139.7"
+     ],
+     [
+      "hourly swing high",
+      "13142.1"
+     ],
+     [
+      "hourly swing low",
+      "13135.5"
+     ],
+     [
+      "previous day high",
+      "13142.1"
+     ]
+    ]
+   ],
+   "primary": "13085.4",
+   "primary_zone": [
+    "13075",
+    "13085.4"
+   ],
+   "zone_at_or_before_creation": [],
+   "activated_utc": null,
+   "end": {
+    "status": "SUPERSEDED",
+    "time_utc": "2026-11-24T17:00:02Z",
+    "why": "a zone that does not overlap the previous one (13135.5-13142.1 to 13117.6-13128.6): Major zone (3 families: pivot, session, structure) 5.9 pips away, PLAUSIBLE; the strongest class among the reachable zones"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-24T15:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-24T15:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-24T16:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-24T17:00:02Z",
+     "superseded"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261124-1700-23",
+   "trade": "SELL",
+   "created_utc": "2026-11-24T17:00:02Z",
+   "stage_b": false,
+   "zone": [
+    "13117.6",
+    "13128.6"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13128.6"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13128.6"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ],
+     [
+      "weekly pivot",
+      "13127.3"
+     ]
+    ]
+   ],
+   "primary": "13084.1",
+   "primary_zone": [
+    "13075",
+    "13084.1"
+   ],
+   "zone_at_or_before_creation": [],
+   "activated_utc": "2026-11-24T17:10:00Z",
+   "end": {
+    "status": "SUPERSEDED",
+    "time_utc": "2026-11-24T19:00:02Z",
+    "why": "a zone that does not overlap the previous one (13119.1-13128.6 to 13102.6-13114.1): Major zone (3 families: moving average, pivot, structure) containing price, NEAR; the strongest class among the reachable zones, and the nearer of equals"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-24T17:00:02Z",
+     "created"
+    ],
+    [
+     "2026-11-24T17:00:02Z",
+     "waiting"
+    ],
+    [
+     "2026-11-24T17:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-24T18:00:03Z",
+     "changed"
+    ],
+    [
+     "2026-11-24T19:00:02Z",
+     "superseded"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261124-1900-24",
+   "trade": "SELL",
+   "created_utc": "2026-11-24T19:00:02Z",
+   "stage_b": false,
+   "zone": [
+    "13102.6",
+    "13114.1"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "daily R1",
+      "13114.1"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ]
+    ]
+   ],
+   "primary": "13084.1",
+   "primary_zone": [
+    "13075",
+    "13084.1"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-24T19:10:00Z",
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-24T20:00:02Z",
+    "why": "supporting evidence changed: the primary destination 13114.1 is already reached (the Tue 24 Nov 19:55 GMT 5-minute candle reached 13114.4, within 3 pips of the destination zone 13102.8-13114.1); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13119.1-13128.6 is not recommended"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 3,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-24T19:00:02Z",
+     "created"
+    ],
+    [
+     "2026-11-24T19:00:02Z",
+     "waiting"
+    ],
+    [
+     "2026-11-24T19:00:02Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-24T19:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-24T19:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-24T20:00:00Z",
+     "closed beyond"
+    ],
+    [
+     "2026-11-24T20:00:02Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261124-2100-25",
+   "trade": "SELL",
+   "created_utc": "2026-11-24T21:00:03Z",
+   "stage_b": false,
+   "zone": [
+    "13103",
+    "13114.1"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "daily R1",
+      "13114.1"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ]
+    ]
+   ],
+   "primary": "13084.1",
+   "primary_zone": [
+    "13075",
+    "13084.1"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-24T21:10:00Z",
+   "end": {
+    "status": "SUPERSEDED",
+    "time_utc": "2026-11-25T00:00:04Z",
+    "why": "a zone that does not overlap the previous one (13103-13114.1 to 13119.1-13128.6): Major zone (3 families: pivot, session, structure) 9.3 pips away, PLAUSIBLE; the strongest class among the reachable zones"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-24T21:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-24T21:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-24T21:00:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-24T21:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-24T21:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-24T22:00:00Z",
+     "wick sweep"
+    ],
+    [
+     "2026-11-24T22:00:04Z",
+     "supported"
+    ],
+    [
+     "2026-11-24T23:00:03Z",
+     "supported"
+    ],
+    [
+     "2026-11-25T00:00:00Z",
+     "wick sweep"
+    ],
+    [
+     "2026-11-25T00:00:04Z",
+     "superseded"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261125-0000-26",
+   "trade": "SELL",
+   "created_utc": "2026-11-25T00:00:04Z",
+   "stage_b": false,
+   "zone": [
+    "13119.1",
+    "13128.6"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13128.6"
+     ],
+     [
+      "New York session high",
+      "13123.9"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing high",
+      "13128.6"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ],
+     [
+      "previous day high",
+      "13123.9"
+     ],
+     [
+      "weekly pivot",
+      "13127.3"
+     ]
+    ]
+   ],
+   "primary": "13093",
+   "primary_zone": [
+    "13083.9",
+    "13093"
+   ],
+   "zone_at_or_before_creation": [],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-25T03:15:00Z",
+    "why": "destination reached before entry: price reached 13093 (Wed 25 Nov 03:10 GMT) without reaching the zone"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 2,
+   "label_says_before_entry": true,
+   "events": [
+    [
+     "2026-11-25T00:00:04Z",
+     "created"
+    ],
+    [
+     "2026-11-25T00:00:04Z",
+     "waiting"
+    ],
+    [
+     "2026-11-25T01:00:03Z",
+     "changed"
+    ],
+    [
+     "2026-11-25T02:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-25T03:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-25T03:15:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261125-0400-27",
+   "trade": "SELL",
+   "created_utc": "2026-11-25T04:00:02Z",
+   "stage_b": false,
+   "zone": [
+    "13084.1",
+    "13093"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "London session high",
+      "13091.1"
+     ],
+     [
+      "daily pivot",
+      "13086.9"
+     ],
+     [
+      "historical daily swing low",
+      "13084.1"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ]
+    ]
+   ],
+   "primary": "13050",
+   "primary_zone": [
+    "13047.3",
+    "13050"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-25T04:10:00Z",
+   "end": {
+    "status": "COMPLETED",
+    "time_utc": "2026-11-25T11:45:00Z",
+    "why": "price reached the primary destination 13053.7 (Wed 25 Nov 11:40 GMT) after the zone"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 3,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-25T04:00:02Z",
+     "created"
+    ],
+    [
+     "2026-11-25T04:00:02Z",
+     "waiting"
+    ],
+    [
+     "2026-11-25T04:00:02Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-25T04:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-25T04:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-25T05:00:00Z",
+     "wick sweep"
+    ],
+    [
+     "2026-11-25T05:00:02Z",
+     "supported"
+    ],
+    [
+     "2026-11-25T06:00:05Z",
+     "supported"
+    ],
+    [
+     "2026-11-25T07:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-25T08:00:02Z",
+     "kept"
+    ],
+    [
+     "2026-11-25T09:00:04Z",
+     "kept"
+    ],
+    [
+     "2026-11-25T11:00:05Z",
+     "changed"
+    ],
+    [
+     "2026-11-25T11:45:00Z",
+     "completed"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261125-1000-28",
+   "trade": "BUY",
+   "created_utc": "2026-11-25T10:00:04Z",
+   "stage_b": false,
+   "zone": [
+    "13047.3",
+    "13055.1"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "daily S1",
+      "13050.0"
+     ],
+     [
+      "hourly swing high",
+      "13047.3"
+     ],
+     [
+      "round number",
+      "13050"
+     ]
+    ]
+   ],
+   "primary": "13082.6",
+   "primary_zone": [
+    "13082.6",
+    "13093"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-25T11:45:00Z",
+   "end": {
+    "status": "COMPLETED",
+    "time_utc": "2026-11-25T12:25:00Z",
+    "why": "price reached the primary destination 13082.6 (Wed 25 Nov 12:20 GMT) after the zone"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 3,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-25T10:00:04Z",
+     "created"
+    ],
+    [
+     "2026-11-25T10:00:04Z",
+     "waiting"
+    ],
+    [
+     "2026-11-25T10:00:04Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-25T10:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-25T11:00:05Z",
+     "changed"
+    ],
+    [
+     "2026-11-25T11:45:00Z",
+     "active"
+    ],
+    [
+     "2026-11-25T12:25:00Z",
+     "completed"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261125-1200-29",
+   "trade": "SELL",
+   "created_utc": "2026-11-25T12:00:04Z",
+   "stage_b": false,
+   "zone": [
+    "13071.5",
+    "13080.7"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing low",
+      "13071.5"
+     ],
+     [
+      "4-hour swing low",
+      "13077"
+     ],
+     [
+      "New York session low",
+      "13080.7"
+     ],
+     [
+      "hourly swing low",
+      "13071.5"
+     ],
+     [
+      "hourly swing low",
+      "13077"
+     ],
+     [
+      "hourly swing low",
+      "13077.5"
+     ],
+     [
+      "previous week low",
+      "13075"
+     ]
+    ]
+   ],
+   "primary": "13053.7",
+   "primary_zone": [
+    "13047.3",
+    "13053.7"
+   ],
+   "zone_at_or_before_creation": [],
+   "activated_utc": "2026-11-25T12:15:00Z",
+   "end": {
+    "status": "COMPLETED",
+    "time_utc": "2026-11-25T13:10:00Z",
+    "why": "price reached the primary destination 13058.1 (Wed 25 Nov 13:05 GMT) after the zone"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 3,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-25T12:00:04Z",
+     "created"
+    ],
+    [
+     "2026-11-25T12:00:04Z",
+     "waiting"
+    ],
+    [
+     "2026-11-25T12:15:00Z",
+     "active"
+    ],
+    [
+     "2026-11-25T13:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-25T13:10:00Z",
+     "completed"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261125-1200-30",
+   "trade": "BUY",
+   "created_utc": "2026-11-25T12:00:04Z",
+   "stage_b": false,
+   "zone": [
+    "13047.3",
+    "13053.7"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session low",
+      "13053.7"
+     ],
+     [
+      "daily S1",
+      "13050.0"
+     ],
+     [
+      "hourly swing high",
+      "13047.3"
+     ],
+     [
+      "round number",
+      "13050"
+     ]
+    ]
+   ],
+   "primary": "13071.5",
+   "primary_zone": [
+    "13071.5",
+    "13080.7"
+   ],
+   "zone_at_or_before_creation": [],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-25T12:15:00Z",
+    "why": "destination reached before entry: price reached 13071.5 (Wed 25 Nov 12:10 GMT) without reaching the zone"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 2,
+   "label_says_before_entry": true,
+   "events": [
+    [
+     "2026-11-25T12:00:04Z",
+     "created"
+    ],
+    [
+     "2026-11-25T12:00:04Z",
+     "waiting"
+    ],
+    [
+     "2026-11-25T12:15:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261125-1400-31",
+   "trade": "BUY",
+   "created_utc": "2026-11-25T14:00:02Z",
+   "stage_b": true,
+   "zone": [
+    "13047.3",
+    "13057.9"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session low",
+      "13053.7"
+     ],
+     [
+      "daily S1",
+      "13050.0"
+     ],
+     [
+      "hourly swing high",
+      "13047.3"
+     ],
+     [
+      "hourly swing low",
+      "13053.7"
+     ],
+     [
+      "round number",
+      "13050"
+     ]
+    ]
+   ],
+   "primary": "13071.5",
+   "primary_zone": [
+    "13071.5",
+    "13080.7"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-25T14:10:00Z",
+    "why": "destination reached before entry: price reached 13071.5 (Wed 25 Nov 14:05 GMT) without reaching the zone"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 3,
+   "label_says_before_entry": true,
+   "events": [
+    [
+     "2026-11-25T14:00:02Z",
+     "created"
+    ],
+    [
+     "2026-11-25T14:00:02Z",
+     "waiting"
+    ],
+    [
+     "2026-11-25T14:00:02Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-25T14:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-25T14:10:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261125-1500-32",
+   "trade": "BUY",
+   "created_utc": "2026-11-25T15:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13046.1",
+    "13053.7"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session low",
+      "13053.7"
+     ],
+     [
+      "daily S1",
+      "13050.0"
+     ],
+     [
+      "hourly swing high",
+      "13047.3"
+     ],
+     [
+      "hourly swing low",
+      "13053.7"
+     ],
+     [
+      "round number",
+      "13050"
+     ]
+    ]
+   ],
+   "primary": "13071.5",
+   "primary_zone": [
+    "13071.5",
+    "13080.7"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-25T15:10:00Z",
+    "why": "destination reached before entry: price reached 13071.5 (Wed 25 Nov 15:05 GMT) without reaching the zone"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 3,
+   "label_says_before_entry": true,
+   "events": [
+    [
+     "2026-11-25T15:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-25T15:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-25T15:00:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-25T15:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-25T15:10:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261125-1600-33",
+   "trade": "BUY",
+   "created_utc": "2026-11-25T16:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13046.1",
+    "13053.7"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session low",
+      "13053.7"
+     ],
+     [
+      "daily S1",
+      "13050.0"
+     ],
+     [
+      "hourly swing high",
+      "13047.3"
+     ],
+     [
+      "hourly swing low",
+      "13053.7"
+     ],
+     [
+      "round number",
+      "13050"
+     ]
+    ]
+   ],
+   "primary": "13071.5",
+   "primary_zone": [
+    "13071.5",
+    "13080.7"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation"
+   ],
+   "activated_utc": "2026-11-25T16:15:00Z",
+   "end": {
+    "status": "COMPLETED",
+    "time_utc": "2026-11-25T16:30:00Z",
+    "why": "price reached the primary destination 13071.5 (Wed 25 Nov 16:25 GMT) after the zone"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 3,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-25T16:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-25T16:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-25T16:00:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-25T16:15:00Z",
+     "active"
+    ],
+    [
+     "2026-11-25T16:30:00Z",
+     "completed"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261125-1700-34",
+   "trade": "BUY",
+   "created_utc": "2026-11-25T17:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13084.1",
+    "13096.0"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session high",
+      "13084.3"
+     ],
+     [
+      "London session high",
+      "13091.1"
+     ],
+     [
+      "daily pivot",
+      "13086.9"
+     ],
+     [
+      "historical daily swing low",
+      "13084.1"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ]
+    ]
+   ],
+   "primary": "13127.3",
+   "primary_zone": [
+    "13127.3",
+    "13135.6"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation"
+   ],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-25T18:20:00Z",
+    "why": "destination reached before entry: price reached 13127.3 (Wed 25 Nov 18:15 GMT) without reaching the zone"
+   },
+   "authorisations": [
+    {
+     "time_utc": "2026-11-25T17:06:04Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261125-1700-34#t1"
+    },
+    {
+     "time_utc": "2026-11-25T17:15:21Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261125-1700-34#t1"
+    }
+   ],
+   "trades": [
+    {
+     "reference": "AB261125170604-a4ec4a37",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "opened_utc": "2026-11-25T17:06:04Z",
+     "rejection_candle": "Wed 25 Nov 16:50 GMT",
+     "status_at_authorisation": "Waiting",
+     "test": 1,
+     "key": "STP-GBPUSD-20261125-1700-34#t1",
+     "pips": "4.7",
+     "gbp": "47.00",
+     "how_closed": "close",
+     "closed_by": "bot"
+    }
+   ],
+   "destination_case": 4,
+   "label_says_before_entry": true,
+   "events": [
+    [
+     "2026-11-25T17:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-25T17:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-25T17:00:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-25T18:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-25T18:20:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261125-1800-35",
+   "trade": "SELL",
+   "created_utc": "2026-11-25T18:00:02Z",
+   "stage_b": true,
+   "zone": [
+    "13115.1",
+    "13123.9"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "New York session high",
+      "13123.9"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ],
+     [
+      "previous day high",
+      "13123.9"
+     ]
+    ]
+   ],
+   "primary": "13093",
+   "primary_zone": [
+    "13084.1",
+    "13093"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-25T18:10:00Z",
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-26T00:00:04Z",
+    "why": "structural levels changed at the pivot rollover: previous day high 13123.9 no longer in the level map (D-21, OD-13)"
+   },
+   "authorisations": [
+    {
+     "time_utc": "2026-11-25T20:05:15Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261125-1800-35#t1"
+    },
+    {
+     "time_utc": "2026-11-25T20:38:01Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261125-1800-35#t1"
+    },
+    {
+     "time_utc": "2026-11-25T20:45:02Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261125-1800-35#t1"
+    },
+    {
+     "time_utc": "2026-11-25T21:10:12Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261125-1800-35#t1"
+    },
+    {
+     "time_utc": "2026-11-25T21:21:34Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261125-1800-35#t1"
+    },
+    {
+     "time_utc": "2026-11-25T21:38:14Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261125-1800-35#t1"
+    },
+    {
+     "time_utc": "2026-11-25T22:11:18Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261125-1800-35#t1"
+    },
+    {
+     "time_utc": "2026-11-25T23:42:07Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261125-1800-35#t2"
+    },
+    {
+     "time_utc": "2026-11-25T23:53:36Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261125-1800-35#t2"
+    },
+    {
+     "time_utc": "2026-11-25T23:55:04Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261125-1800-35#t2"
+    }
+   ],
+   "trades": [
+    {
+     "reference": "AB261125200515-c9049665",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "opened_utc": "2026-11-25T20:05:14Z",
+     "rejection_candle": "Wed 25 Nov 19:45 GMT",
+     "status_at_authorisation": "Watch & Wait",
+     "test": 1,
+     "key": "STP-GBPUSD-20261125-1800-35#t1",
+     "pips": "-4.4",
+     "gbp": "-44.00",
+     "how_closed": "forced close",
+     "closed_by": "bot"
+    }
+   ],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-25T18:00:02Z",
+     "created"
+    ],
+    [
+     "2026-11-25T18:00:02Z",
+     "waiting"
+    ],
+    [
+     "2026-11-25T18:00:02Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-25T18:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-25T18:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-25T19:00:00Z",
+     "wick sweep"
+    ],
+    [
+     "2026-11-25T19:00:02Z",
+     "supported"
+    ],
+    [
+     "2026-11-25T20:00:00Z",
+     "wick sweep"
+    ],
+    [
+     "2026-11-25T20:00:02Z",
+     "supported"
+    ],
+    [
+     "2026-11-25T21:00:00Z",
+     "wick sweep"
+    ],
+    [
+     "2026-11-25T21:00:03Z",
+     "supported"
+    ],
+    [
+     "2026-11-25T22:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-25T23:00:03Z",
+     "supported"
+    ],
+    [
+     "2026-11-26T00:00:04Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261125-2100-36",
+   "trade": "BUY",
+   "created_utc": "2026-11-25T21:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13084.1",
+    "13093"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session high",
+      "13084.3"
+     ],
+     [
+      "London session high",
+      "13091.1"
+     ],
+     [
+      "daily pivot",
+      "13086.9"
+     ],
+     [
+      "historical daily swing low",
+      "13084.1"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ]
+    ]
+   ],
+   "primary": "13127.3",
+   "primary_zone": [
+    "13127.3",
+    "13135.6"
+   ],
+   "zone_at_or_before_creation": [],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-26T00:00:04Z",
+    "why": "structural levels changed at the pivot rollover: daily pivot 13086.9 no longer in the level map (D-21, OD-13)"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-25T21:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-25T21:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-25T22:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-25T23:00:03Z",
+     "changed"
+    ],
+    [
+     "2026-11-26T00:00:04Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261126-0000-37",
+   "trade": "BUY",
+   "created_utc": "2026-11-26T00:00:04Z",
+   "stage_b": true,
+   "zone": [
+    "13093",
+    "13103"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13127.3",
+   "primary_zone": [
+    "13127.3",
+    "13135.6"
+   ],
+   "zone_at_or_before_creation": [],
+   "activated_utc": "2026-11-26T03:05:00Z",
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-27T00:00:04Z",
+    "why": "structural levels changed at the pivot rollover: daily pivot 13095.4 no longer in the level map (D-21, OD-13)"
+   },
+   "authorisations": [
+    {
+     "time_utc": "2026-11-26T04:06:56Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T04:25:03Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T04:25:03Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T05:20:13Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T05:20:13Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T06:01:01Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T07:12:33Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T07:12:33Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T07:15:09Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T07:15:09Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T07:22:28Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T07:22:28Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T07:25:03Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T07:25:04Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T07:30:10Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T07:30:10Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T07:37:00Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T08:00:31Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T08:06:00Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T08:06:00Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T09:12:26Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T09:25:05Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t1"
+    },
+    {
+     "time_utc": "2026-11-26T11:40:03Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T11:40:05Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T12:08:36Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T12:08:36Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T12:10:04Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T12:28:54Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T12:28:55Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T12:32:03Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T12:32:03Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T13:35:33Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T13:35:33Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T13:44:14Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T13:44:14Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T13:45:30Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T15:05:03Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T15:05:03Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T15:50:15Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T15:50:15Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T15:55:03Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T15:55:03Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T16:05:15Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T17:56:34Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T17:56:34Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T18:00:51Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T18:00:51Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T18:30:08Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T18:47:20Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T19:40:38Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T19:50:36Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-26T19:57:56Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t2"
+    },
+    {
+     "time_utc": "2026-11-27T00:00:06Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261126-0000-37#t3"
+    }
+   ],
+   "trades": [
+    {
+     "reference": "AB261126060101-987e099b",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "opened_utc": "2026-11-26T06:01:00Z",
+     "rejection_candle": "Thu 26 Nov 05:45 GMT",
+     "status_at_authorisation": "Watch & Wait",
+     "test": 1,
+     "key": "STP-GBPUSD-20261126-0000-37#t1",
+     "pips": "4.5",
+     "gbp": "45.00",
+     "how_closed": "stopped by IG",
+     "closed_by": "bot"
+    },
+    {
+     "reference": "AB261126114004-bd34fb67",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "opened_utc": "2026-11-26T11:40:01Z",
+     "rejection_candle": "Thu 26 Nov 11:10 GMT",
+     "status_at_authorisation": "Watch & Wait",
+     "test": 2,
+     "key": "STP-GBPUSD-20261126-0000-37#t2",
+     "pips": "14.0",
+     "gbp": "140.00",
+     "how_closed": "close",
+     "closed_by": "bot"
+    }
+   ],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-26T00:00:04Z",
+     "created"
+    ],
+    [
+     "2026-11-26T00:00:04Z",
+     "waiting"
+    ],
+    [
+     "2026-11-26T01:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-26T02:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-26T03:00:02Z",
+     "supported"
+    ],
+    [
+     "2026-11-26T03:05:00Z",
+     "active"
+    ],
+    [
+     "2026-11-26T04:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-26T05:00:15Z",
+     "supported"
+    ],
+    [
+     "2026-11-26T06:00:02Z",
+     "supported"
+    ],
+    [
+     "2026-11-26T07:00:03Z",
+     "supported"
+    ],
+    [
+     "2026-11-26T08:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-26T09:00:02Z",
+     "supported"
+    ],
+    [
+     "2026-11-27T00:00:04Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261126-0400-38",
+   "trade": "SELL",
+   "created_utc": "2026-11-26T04:00:02Z",
+   "stage_b": true,
+   "zone": [
+    "13093",
+    "13103"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13084.3",
+   "primary_zone": [
+    "13075",
+    "13084.3"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-26T04:10:00Z",
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-26T16:00:00Z",
+    "why": "confirmed break held: no hourly close back below 13103 within 3 candles of the break (2026-11-26T13:00:00Z)"
+   },
+   "authorisations": [
+    {
+     "time_utc": "2026-11-26T05:41:29Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261126-0400-38#t1"
+    },
+    {
+     "time_utc": "2026-11-26T05:41:29Z",
+     "strategy": "level reversal",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261126-0400-38#t1"
+    },
+    {
+     "time_utc": "2026-11-26T05:45:45Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261126-0400-38#t1"
+    },
+    {
+     "time_utc": "2026-11-26T06:30:04Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261126-0400-38#t1"
+    },
+    {
+     "time_utc": "2026-11-26T06:30:05Z",
+     "strategy": "level reversal",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261126-0400-38#t1"
+    },
+    {
+     "time_utc": "2026-11-26T06:35:05Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261126-0400-38#t1"
+    },
+    {
+     "time_utc": "2026-11-26T12:51:33Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261126-0400-38#t2"
+    }
+   ],
+   "trades": [
+    {
+     "reference": "AB261126063004-aaea24e1",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "opened_utc": "2026-11-26T06:30:02Z",
+     "rejection_candle": "Thu 26 Nov 06:00 GMT",
+     "status_at_authorisation": "Watch & Wait",
+     "test": 1,
+     "key": "STP-GBPUSD-20261126-0400-38#t1",
+     "pips": "-7.3",
+     "gbp": "-73.00",
+     "how_closed": "close",
+     "closed_by": "bot"
+    },
+    {
+     "reference": "AB261126125133-d1518c12",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "opened_utc": "2026-11-26T12:51:33Z",
+     "rejection_candle": "Thu 26 Nov 12:25 GMT",
+     "status_at_authorisation": "Watch & Wait",
+     "test": 2,
+     "key": "STP-GBPUSD-20261126-0400-38#t2",
+     "pips": "-6.4",
+     "gbp": "-64.00",
+     "how_closed": "close",
+     "closed_by": "bot"
+    }
+   ],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-26T04:00:02Z",
+     "created"
+    ],
+    [
+     "2026-11-26T04:00:02Z",
+     "waiting"
+    ],
+    [
+     "2026-11-26T04:00:02Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-26T04:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-26T04:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-26T05:00:00Z",
+     "wick sweep"
+    ],
+    [
+     "2026-11-26T05:00:15Z",
+     "supported"
+    ],
+    [
+     "2026-11-26T06:00:02Z",
+     "supported"
+    ],
+    [
+     "2026-11-26T07:00:00Z",
+     "wick sweep"
+    ],
+    [
+     "2026-11-26T07:00:03Z",
+     "supported"
+    ],
+    [
+     "2026-11-26T08:00:00Z",
+     "closed beyond"
+    ],
+    [
+     "2026-11-26T09:00:00Z",
+     "closed beyond"
+    ],
+    [
+     "2026-11-26T10:00:00Z",
+     "broken"
+    ],
+    [
+     "2026-11-26T12:00:00Z",
+     "failed breakout"
+    ],
+    [
+     "2026-11-26T13:00:00Z",
+     "broken"
+    ],
+    [
+     "2026-11-26T16:00:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261126-1000-39",
+   "trade": "BUY",
+   "created_utc": "2026-11-26T10:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13093",
+    "13103"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13127.3",
+   "primary_zone": [
+    "13127.3",
+    "13135.6"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation"
+   ],
+   "activated_utc": "2026-11-26T11:10:00Z",
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-27T00:00:04Z",
+    "why": "structural levels changed at the pivot rollover: daily pivot 13095.4 no longer in the level map (D-21, OD-13)"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-26T10:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-26T10:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-26T10:00:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-26T11:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-27T00:00:04Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261126-1100-40",
+   "trade": "SELL",
+   "created_utc": "2026-11-26T11:00:02Z",
+   "stage_b": true,
+   "zone": [
+    "13115.1",
+    "13123.9"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13118.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ]
+    ]
+   ],
+   "primary": "13103",
+   "primary_zone": [
+    "13093",
+    "13103"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation"
+   ],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-26T11:10:00Z",
+    "why": "destination reached before entry: price reached 13103 (Thu 26 Nov 11:05 GMT) without reaching the zone"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 3,
+   "label_says_before_entry": true,
+   "events": [
+    [
+     "2026-11-26T11:00:02Z",
+     "created"
+    ],
+    [
+     "2026-11-26T11:00:02Z",
+     "waiting"
+    ],
+    [
+     "2026-11-26T11:00:02Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-26T11:10:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261126-1100-41",
+   "trade": "BUY",
+   "created_utc": "2026-11-26T11:00:02Z",
+   "stage_b": true,
+   "zone": [
+    "13093",
+    "13103"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13127.3",
+   "primary_zone": [
+    "13127.3",
+    "13135.6"
+   ],
+   "zone_at_or_before_creation": [],
+   "activated_utc": "2026-11-26T11:10:00Z",
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-27T00:00:04Z",
+    "why": "structural levels changed at the pivot rollover: daily pivot 13095.4 no longer in the level map (D-21, OD-13)"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-26T11:00:02Z",
+     "created"
+    ],
+    [
+     "2026-11-26T11:00:02Z",
+     "waiting"
+    ],
+    [
+     "2026-11-26T11:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-27T00:00:04Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261126-1200-42",
+   "trade": "SELL",
+   "created_utc": "2026-11-26T12:00:04Z",
+   "stage_b": true,
+   "zone": [
+    "13093",
+    "13103"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "London session low",
+      "13095.7"
+     ],
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13084.3",
+   "primary_zone": [
+    "13075",
+    "13084.3"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-26T12:10:00Z",
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-26T16:00:00Z",
+    "why": "confirmed break held: no hourly close back below 13103 within 3 candles of the break (2026-11-26T13:00:00Z)"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-26T12:00:04Z",
+     "created"
+    ],
+    [
+     "2026-11-26T12:00:04Z",
+     "waiting"
+    ],
+    [
+     "2026-11-26T12:00:04Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-26T12:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-26T12:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-26T13:00:00Z",
+     "broken"
+    ],
+    [
+     "2026-11-26T16:00:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261126-1200-43",
+   "trade": "BUY",
+   "created_utc": "2026-11-26T12:00:04Z",
+   "stage_b": true,
+   "zone": [
+    "13093",
+    "13103"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session low",
+      "13095.7"
+     ],
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13127.3",
+   "primary_zone": [
+    "13127.3",
+    "13135.6"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-26T12:10:00Z",
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-27T00:00:04Z",
+    "why": "structural levels changed at the pivot rollover: daily pivot 13095.4 no longer in the level map (D-21, OD-13)"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-26T12:00:04Z",
+     "created"
+    ],
+    [
+     "2026-11-26T12:00:04Z",
+     "waiting"
+    ],
+    [
+     "2026-11-26T12:00:04Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-26T12:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-26T12:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-26T13:00:03Z",
+     "changed"
+    ],
+    [
+     "2026-11-26T14:00:04Z",
+     "changed"
+    ],
+    [
+     "2026-11-27T00:00:04Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261126-1400-44",
+   "trade": "SELL",
+   "created_utc": "2026-11-26T14:00:04Z",
+   "stage_b": true,
+   "zone": [
+    "13115.1",
+    "13123.9"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "London session high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13118.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ]
+    ]
+   ],
+   "primary": "13103",
+   "primary_zone": [
+    "13093",
+    "13103"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-26T14:10:00Z",
+   "end": {
+    "status": "COMPLETED",
+    "time_utc": "2026-11-26T14:45:00Z",
+    "why": "price reached the primary destination 13103 (Thu 26 Nov 14:40 GMT) after the zone"
+   },
+   "authorisations": [
+    {
+     "time_utc": "2026-11-26T14:22:55Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261126-1400-44#t1"
+    },
+    {
+     "time_utc": "2026-11-26T14:31:02Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261126-1400-44#t1"
+    },
+    {
+     "time_utc": "2026-11-26T14:37:54Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261126-1400-44#t1"
+    },
+    {
+     "time_utc": "2026-11-26T14:40:36Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261126-1400-44#t1"
+    }
+   ],
+   "trades": [
+    {
+     "reference": "AB261126142255-04805706",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "opened_utc": "2026-11-26T14:22:55Z",
+     "rejection_candle": "Thu 26 Nov 13:50 GMT",
+     "status_at_authorisation": "Watch & Wait",
+     "test": 1,
+     "key": "STP-GBPUSD-20261126-1400-44#t1",
+     "pips": "2.1",
+     "gbp": "21.00",
+     "how_closed": "close",
+     "closed_by": "bot"
+    }
+   ],
+   "destination_case": 4,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-26T14:00:04Z",
+     "created"
+    ],
+    [
+     "2026-11-26T14:00:04Z",
+     "waiting"
+    ],
+    [
+     "2026-11-26T14:00:04Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-26T14:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-26T14:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-26T14:45:00Z",
+     "completed"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261126-1500-45",
+   "trade": "BUY",
+   "created_utc": "2026-11-26T15:00:02Z",
+   "stage_b": true,
+   "zone": [
+    "13093",
+    "13103"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session low",
+      "13095.7"
+     ],
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13127.3",
+   "primary_zone": [
+    "13127.3",
+    "13135.6"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation"
+   ],
+   "activated_utc": "2026-11-26T15:20:00Z",
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-27T00:00:04Z",
+    "why": "structural levels changed at the pivot rollover: daily pivot 13095.4 no longer in the level map (D-21, OD-13)"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-26T15:00:02Z",
+     "created"
+    ],
+    [
+     "2026-11-26T15:00:02Z",
+     "waiting"
+    ],
+    [
+     "2026-11-26T15:00:02Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-26T15:20:00Z",
+     "active"
+    ],
+    [
+     "2026-11-26T16:00:03Z",
+     "supported"
+    ],
+    [
+     "2026-11-26T17:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-26T18:00:04Z",
+     "changed"
+    ],
+    [
+     "2026-11-26T19:00:02Z",
+     "supported"
+    ],
+    [
+     "2026-11-26T20:00:03Z",
+     "supported"
+    ],
+    [
+     "2026-11-27T00:00:04Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261126-2000-46",
+   "trade": "SELL",
+   "created_utc": "2026-11-26T20:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13115.1",
+    "13123.9"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "London session high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13118.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13122.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ]
+    ]
+   ],
+   "primary": "13103",
+   "primary_zone": [
+    "13093",
+    "13103"
+   ],
+   "zone_at_or_before_creation": [],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-26T22:00:00Z",
+    "why": "destination reached before entry: price reached 13103 (Thu 26 Nov 21:55 GMT) without reaching the zone"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 2,
+   "label_says_before_entry": true,
+   "events": [
+    [
+     "2026-11-26T20:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-26T20:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-26T22:00:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261126-2100-47",
+   "trade": "SELL",
+   "created_utc": "2026-11-26T21:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13115.1",
+    "13123.9"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "London session high",
+      "13117.3"
+     ],
+     [
+      "New York session high",
+      "13122.9"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13118.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13122.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ]
+    ]
+   ],
+   "primary": "13103",
+   "primary_zone": [
+    "13093",
+    "13103"
+   ],
+   "zone_at_or_before_creation": [],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-26T22:00:00Z",
+    "why": "destination reached before entry: price reached 13103 (Thu 26 Nov 21:55 GMT) without reaching the zone"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 2,
+   "label_says_before_entry": true,
+   "events": [
+    [
+     "2026-11-26T21:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-26T21:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-26T22:00:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261126-2100-48",
+   "trade": "BUY",
+   "created_utc": "2026-11-26T21:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13093",
+    "13103"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session low",
+      "13095.7"
+     ],
+     [
+      "New York session low",
+      "13096.8"
+     ],
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13127.3",
+   "primary_zone": [
+    "13127.3",
+    "13135.6"
+   ],
+   "zone_at_or_before_creation": [],
+   "activated_utc": "2026-11-26T22:00:00Z",
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-27T00:00:04Z",
+    "why": "structural levels changed at the pivot rollover: daily pivot 13095.4 no longer in the level map (D-21, OD-13)"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-26T21:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-26T21:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-26T22:00:00Z",
+     "active"
+    ],
+    [
+     "2026-11-26T22:00:03Z",
+     "changed"
+    ],
+    [
+     "2026-11-26T23:00:03Z",
+     "supported"
+    ],
+    [
+     "2026-11-27T00:00:04Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261126-2300-49",
+   "trade": "SELL",
+   "created_utc": "2026-11-26T23:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13093",
+    "13103"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "London session low",
+      "13095.7"
+     ],
+     [
+      "New York session low",
+      "13096.8"
+     ],
+     [
+      "daily pivot",
+      "13095.4"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13084.3",
+   "primary_zone": [
+    "13075",
+    "13084.3"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-27T00:00:04Z",
+    "why": "structural levels changed at the pivot rollover: daily pivot 13095.4 no longer in the level map (D-21, OD-13)"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-26T23:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-26T23:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-26T23:00:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-26T23:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-27T00:00:00Z",
+     "broken"
+    ],
+    [
+     "2026-11-27T00:00:04Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261127-0000-50",
+   "trade": "SELL",
+   "created_utc": "2026-11-27T00:00:04Z",
+   "stage_b": true,
+   "zone": [
+    "13108.5",
+    "13119.1"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "London session high",
+      "13117.3"
+     ],
+     [
+      "daily pivot",
+      "13108.5"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13118.3"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ]
+    ]
+   ],
+   "primary": "13103",
+   "primary_zone": [
+    "13093",
+    "13103"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-27T00:10:00Z",
+    "why": "destination reached before entry: price reached 13103 (Fri 27 Nov 00:05 GMT) without reaching the zone"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": 3,
+   "label_says_before_entry": true,
+   "events": [
+    [
+     "2026-11-27T00:00:04Z",
+     "created"
+    ],
+    [
+     "2026-11-27T00:00:04Z",
+     "waiting"
+    ],
+    [
+     "2026-11-27T00:00:04Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-27T00:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-27T00:10:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261127-0100-51",
+   "trade": "SELL",
+   "created_utc": "2026-11-27T01:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13093",
+    "13103"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "London session low",
+      "13095.7"
+     ],
+     [
+      "New York session low",
+      "13096.8"
+     ],
+     [
+      "daily S1",
+      "13094.1"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "previous day low",
+      "13095.7"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13085.8",
+   "primary_zone": [
+    "13081.3",
+    "13085.8"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-27T01:10:00Z",
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-27T05:00:00Z",
+    "why": "confirmed break held: no hourly close back below 13103 within 3 candles of the break (2026-11-27T02:00:00Z)"
+   },
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-27T01:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-27T01:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-27T01:00:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-27T01:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-27T01:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-27T02:00:00Z",
+     "broken"
+    ],
+    [
+     "2026-11-27T05:00:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261127-0100-52",
+   "trade": "BUY",
+   "created_utc": "2026-11-27T01:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13093",
+    "13103"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session low",
+      "13095.7"
+     ],
+     [
+      "New York session low",
+      "13096.8"
+     ],
+     [
+      "daily S1",
+      "13094.1"
+     ],
+     [
+      "hourly swing low",
+      "13093"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13095.7"
+     ],
+     [
+      "hourly swing low",
+      "13096.2"
+     ],
+     [
+      "hourly swing low",
+      "13103"
+     ],
+     [
+      "previous day low",
+      "13095.7"
+     ],
+     [
+      "round number",
+      "13100"
+     ]
+    ]
+   ],
+   "primary": "13108.5",
+   "primary_zone": [
+    "13108.5",
+    "13119.1"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-27T01:10:00Z",
+   "end": {
+    "status": "COMPLETED",
+    "time_utc": "2026-11-27T01:35:00Z",
+    "why": "price reached the primary destination 13108.5 (Fri 27 Nov 01:30 GMT) after the zone"
+   },
+   "authorisations": [
+    {
+     "time_utc": "2026-11-27T01:10:32Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-0100-52#t1"
+    },
+    {
+     "time_utc": "2026-11-27T01:15:08Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-0100-52#t1"
+    }
+   ],
+   "trades": [],
+   "destination_case": 3,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-27T01:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-27T01:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-27T01:00:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-27T01:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-27T01:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-27T01:35:00Z",
+     "completed"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261127-0200-53",
+   "trade": "SELL",
+   "created_utc": "2026-11-27T02:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13108.5",
+    "13119.1"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "London session high",
+      "13117.3"
+     ],
+     [
+      "daily pivot",
+      "13108.5"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13118.3"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ]
+    ]
+   ],
+   "primary": "13103",
+   "primary_zone": [
+    "13093",
+    "13103"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-27T02:10:00Z",
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-27T09:00:00Z",
+    "why": "confirmed break held: no hourly close back below 13119.1 within 3 candles of the break (2026-11-27T06:00:00Z)"
+   },
+   "authorisations": [
+    {
+     "time_utc": "2026-11-27T04:10:16Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261127-0200-53#t1"
+    }
+   ],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-27T02:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-27T02:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-27T02:00:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-27T02:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-27T02:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-27T03:00:00Z",
+     "broken"
+    ],
+    [
+     "2026-11-27T04:00:00Z",
+     "failed breakout"
+    ],
+    [
+     "2026-11-27T04:00:03Z",
+     "changed"
+    ],
+    [
+     "2026-11-27T05:00:00Z",
+     "wick sweep"
+    ],
+    [
+     "2026-11-27T05:00:03Z",
+     "supported"
+    ],
+    [
+     "2026-11-27T06:00:00Z",
+     "broken"
+    ],
+    [
+     "2026-11-27T09:00:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261127-0200-54",
+   "trade": "BUY",
+   "created_utc": "2026-11-27T02:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13108.5",
+    "13119.1"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "London session high",
+      "13117.3"
+     ],
+     [
+      "daily pivot",
+      "13108.5"
+     ],
+     [
+      "hourly swing high",
+      "13115.1"
+     ],
+     [
+      "hourly swing high",
+      "13117.3"
+     ],
+     [
+      "hourly swing high",
+      "13118.3"
+     ],
+     [
+      "hourly swing low",
+      "13119.1"
+     ]
+    ]
+   ],
+   "primary": "13121.3",
+   "primary_zone": [
+    "13121.3",
+    "13131.0"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-27T02:10:00Z",
+    "why": "destination reached before entry: price reached 13121.3 (Fri 27 Nov 02:05 GMT) without reaching the zone"
+   },
+   "authorisations": [
+    {
+     "time_utc": "2026-11-27T02:05:38Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-0200-54#t1"
+    }
+   ],
+   "trades": [],
+   "destination_case": 3,
+   "label_says_before_entry": true,
+   "events": [
+    [
+     "2026-11-27T02:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-27T02:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-27T02:00:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-27T02:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-27T02:10:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261127-0300-55",
+   "trade": "SELL",
+   "created_utc": "2026-11-27T03:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13121.3",
+    "13130.9"
+   ],
+   "identity": [
+    "SELL",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "4-hour swing high",
+      "13128.6"
+     ],
+     [
+      "New York session high",
+      "13122.9"
+     ],
+     [
+      "daily R1",
+      "13121.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13122.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing high",
+      "13128.6"
+     ],
+     [
+      "hourly swing high",
+      "13129.2"
+     ],
+     [
+      "previous day high",
+      "13122.9"
+     ],
+     [
+      "weekly pivot",
+      "13127.3"
+     ]
+    ]
+   ],
+   "primary": "13119.1",
+   "primary_zone": [
+    "13108.5",
+    "13119.1"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-27T03:10:00Z",
+   "end": {
+    "status": "COMPLETED",
+    "time_utc": "2026-11-27T03:25:00Z",
+    "why": "price reached the primary destination 13119.1 (Fri 27 Nov 03:20 GMT) after the zone"
+   },
+   "authorisations": [
+    {
+     "time_utc": "2026-11-27T03:20:04Z",
+     "strategy": "Bollinger bounce",
+     "direction": "sell",
+     "signal": "sell 2026-11-27T03:10:00Z|STP-GBPUSD-20261127-0300-55#t1"
+    },
+    {
+     "time_utc": "2026-11-27T03:22:31Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261127-0300-55#t1"
+    },
+    {
+     "time_utc": "2026-11-27T03:22:31Z",
+     "strategy": "level reversal",
+     "direction": "sell",
+     "signal": "STP-GBPUSD-20261127-0300-55#t1"
+    }
+   ],
+   "trades": [],
+   "destination_case": 3,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-27T03:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-27T03:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-27T03:00:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-27T03:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-27T03:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-27T03:25:00Z",
+     "completed"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261127-0300-56",
+   "trade": "BUY",
+   "created_utc": "2026-11-27T03:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13121.3",
+    "13130.9"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "4-hour swing high",
+      "13128.6"
+     ],
+     [
+      "New York session high",
+      "13122.9"
+     ],
+     [
+      "daily R1",
+      "13121.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13122.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing high",
+      "13128.6"
+     ],
+     [
+      "hourly swing high",
+      "13129.2"
+     ],
+     [
+      "previous day high",
+      "13122.9"
+     ],
+     [
+      "weekly pivot",
+      "13127.3"
+     ]
+    ]
+   ],
+   "primary": "13135.5",
+   "primary_zone": [
+    "13135.5",
+    "13142.1"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-27T03:10:00Z",
+   "end": {
+    "status": "COMPLETED",
+    "time_utc": "2026-11-27T11:05:00Z",
+    "why": "price reached the primary destination 13135.5 (Fri 27 Nov 11:00 GMT) after the zone"
+   },
+   "authorisations": [
+    {
+     "time_utc": "2026-11-27T03:06:47Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-0300-56#t1"
+    },
+    {
+     "time_utc": "2026-11-27T03:10:07Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-0300-56#t1"
+    },
+    {
+     "time_utc": "2026-11-27T06:55:05Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-0300-56#t1"
+    },
+    {
+     "time_utc": "2026-11-27T07:47:05Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-0300-56#t1"
+    },
+    {
+     "time_utc": "2026-11-27T08:58:04Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-0300-56#t1"
+    },
+    {
+     "time_utc": "2026-11-27T09:05:25Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-0300-56#t1"
+    },
+    {
+     "time_utc": "2026-11-27T09:47:10Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-0300-56#t1"
+    },
+    {
+     "time_utc": "2026-11-27T09:50:03Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-0300-56#t1"
+    },
+    {
+     "time_utc": "2026-11-27T10:30:14Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-0300-56#t1"
+    },
+    {
+     "time_utc": "2026-11-27T11:00:44Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-0300-56#t1"
+    },
+    {
+     "time_utc": "2026-11-27T11:00:45Z",
+     "strategy": "level reversal",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-0300-56#t1"
+    }
+   ],
+   "trades": [
+    {
+     "reference": "AB261127065505-8c11a4bc",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "opened_utc": "2026-11-27T06:55:04Z",
+     "rejection_candle": "Fri 27 Nov 06:30 GMT",
+     "status_at_authorisation": "Watch & Wait",
+     "test": 1,
+     "key": "STP-GBPUSD-20261127-0300-56#t1",
+     "pips": "-2.0",
+     "gbp": "-20.00",
+     "how_closed": "close",
+     "closed_by": "bot"
+    }
+   ],
+   "destination_case": 4,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-27T03:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-27T03:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-27T03:00:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-27T03:05:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-27T03:10:00Z",
+     "active"
+    ],
+    [
+     "2026-11-27T04:00:00Z",
+     "broken"
+    ],
+    [
+     "2026-11-27T06:00:00Z",
+     "failed breakout"
+    ],
+    [
+     "2026-11-27T06:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-27T07:00:00Z",
+     "wick sweep"
+    ],
+    [
+     "2026-11-27T07:00:02Z",
+     "changed"
+    ],
+    [
+     "2026-11-27T08:00:00Z",
+     "closed beyond"
+    ],
+    [
+     "2026-11-27T09:00:00Z",
+     "reclaim"
+    ],
+    [
+     "2026-11-27T09:00:04Z",
+     "changed"
+    ],
+    [
+     "2026-11-27T10:00:00Z",
+     "wick sweep"
+    ],
+    [
+     "2026-11-27T10:00:03Z",
+     "changed"
+    ],
+    [
+     "2026-11-27T11:00:00Z",
+     "wick sweep"
+    ],
+    [
+     "2026-11-27T11:00:03Z",
+     "changed"
+    ],
+    [
+     "2026-11-27T11:05:00Z",
+     "completed"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261127-1200-57",
+   "trade": "BUY",
+   "created_utc": "2026-11-27T12:00:03Z",
+   "stage_b": true,
+   "zone": [
+    "13121.3",
+    "13130.3"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "4-hour swing high",
+      "13128.6"
+     ],
+     [
+      "New York session high",
+      "13122.9"
+     ],
+     [
+      "daily R1",
+      "13121.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13122.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing high",
+      "13128.6"
+     ],
+     [
+      "hourly swing high",
+      "13129.2"
+     ],
+     [
+      "previous day high",
+      "13122.9"
+     ],
+     [
+      "weekly pivot",
+      "13127.3"
+     ]
+    ]
+   ],
+   "primary": "13134.6",
+   "primary_zone": [
+    "13134.6",
+    "13142.1"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation"
+   ],
+   "activated_utc": null,
+   "end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-27T12:20:00Z",
+    "why": "destination reached before entry: price reached 13134.6 (Fri 27 Nov 12:15 GMT) without reaching the zone"
+   },
+   "authorisations": [
+    {
+     "time_utc": "2026-11-27T12:01:27Z",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "signal": "STP-GBPUSD-20261127-1200-57#t1"
+    }
+   ],
+   "trades": [
+    {
+     "reference": "AB261127120127-5755701a",
+     "strategy": "Bollinger bounce 5m",
+     "direction": "buy",
+     "opened_utc": "2026-11-27T12:01:27Z",
+     "rejection_candle": "Fri 27 Nov 11:40 GMT",
+     "status_at_authorisation": "Waiting",
+     "test": 1,
+     "key": "STP-GBPUSD-20261127-1200-57#t1",
+     "pips": "-1.4",
+     "gbp": "-14.00",
+     "how_closed": "closed by owner",
+     "closed_by": "owner"
+    }
+   ],
+   "destination_case": 4,
+   "label_says_before_entry": true,
+   "events": [
+    [
+     "2026-11-27T12:00:03Z",
+     "created"
+    ],
+    [
+     "2026-11-27T12:00:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-27T12:00:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-27T12:20:00Z",
+     "invalidated"
+    ]
+   ]
+  },
+  {
+   "id": "STP-GBPUSD-20261127-1305-58",
+   "trade": "BUY",
+   "created_utc": "2026-11-27T13:05:03Z",
+   "stage_b": true,
+   "zone": [
+    "13121.3",
+    "13130.3"
+   ],
+   "identity": [
+    "BUY",
+    [
+     [
+      "4-hour swing high",
+      "13123.9"
+     ],
+     [
+      "4-hour swing high",
+      "13128.6"
+     ],
+     [
+      "New York session high",
+      "13122.9"
+     ],
+     [
+      "daily R1",
+      "13121.3"
+     ],
+     [
+      "hourly swing high",
+      "13121.9"
+     ],
+     [
+      "hourly swing high",
+      "13122.9"
+     ],
+     [
+      "hourly swing high",
+      "13123.9"
+     ],
+     [
+      "hourly swing high",
+      "13128.6"
+     ],
+     [
+      "hourly swing high",
+      "13129.2"
+     ],
+     [
+      "previous day high",
+      "13122.9"
+     ],
+     [
+      "weekly pivot",
+      "13127.3"
+     ]
+    ]
+   ],
+   "primary": "13134.6",
+   "primary_zone": [
+    "13134.6",
+    "13142.1"
+   ],
+   "zone_at_or_before_creation": [
+    "in zone at creation",
+    "ambiguous"
+   ],
+   "activated_utc": "2026-11-27T13:15:00Z",
+   "end": null,
+   "authorisations": [],
+   "trades": [],
+   "destination_case": null,
+   "label_says_before_entry": false,
+   "events": [
+    [
+     "2026-11-27T13:05:03Z",
+     "created"
+    ],
+    [
+     "2026-11-27T13:05:03Z",
+     "waiting"
+    ],
+    [
+     "2026-11-27T13:05:03Z",
+     "in zone at creation"
+    ],
+    [
+     "2026-11-27T13:10:00Z",
+     "ambiguous"
+    ],
+    [
+     "2026-11-27T13:15:00Z",
+     "active"
+    ],
+    [
+     "2026-11-27T14:00:00Z",
+     "closed beyond"
+    ]
+   ]
+  }
+ ],
+ "reissues": [
+  {
+   "reissue": "STP-GBPUSD-20261124-0900-18",
+   "predecessor": "STP-GBPUSD-20261124-0000-17",
+   "predecessor_end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-24T08:00:03Z",
+    "why": "supporting evidence changed: the primary destination 13037.3 is already reached (the Tue 24 Nov 07:55 GMT 5-minute candle reached 13037, within 3 pips of the destination zone 13026.6-13037.3); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13075-13084.1 is not recommended"
+   },
+   "predecessor_trades": [],
+   "same_primary_price": false,
+   "primary_zones_overlap": false,
+   "primary": [
+    "13014.2",
+    "13037.3"
+   ],
+   "hours_after_end": 1.0,
+   "zone_rearmed_between": [
+    "2026-11-24T01:00Z",
+    "2026-11-24T02:00Z",
+    "2026-11-24T03:00Z",
+    "2026-11-24T04:00Z",
+    "2026-11-24T05:00Z",
+    "2026-11-24T06:00Z",
+    "2026-11-24T07:00Z",
+    "2026-11-24T08:00Z"
+   ],
+   "reissue_trades": [],
+   "duplicate_rule_blocked_it": false
+  },
+  {
+   "reissue": "STP-GBPUSD-20261124-1500-22",
+   "predecessor": "STP-GBPUSD-20261124-1300-20",
+   "predecessor_end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-24T13:35:00Z",
+    "why": "destination reached before entry: price reached 13085.4 (Tue 24 Nov 13:30 GMT) without reaching the zone"
+   },
+   "predecessor_trades": [],
+   "same_primary_price": true,
+   "primary_zones_overlap": true,
+   "primary": [
+    "13085.4",
+    "13085.4"
+   ],
+   "hours_after_end": 1.42,
+   "zone_rearmed_between": [
+    "2026-11-24T14:00Z"
+   ],
+   "reissue_trades": [],
+   "duplicate_rule_blocked_it": false
+  },
+  {
+   "reissue": "STP-GBPUSD-20261124-2100-25",
+   "predecessor": "STP-GBPUSD-20261124-1900-24",
+   "predecessor_end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-24T20:00:02Z",
+    "why": "supporting evidence changed: the primary destination 13114.1 is already reached (the Tue 24 Nov 19:55 GMT 5-minute candle reached 13114.4, within 3 pips of the destination zone 13102.8-13114.1); no recommendation is issued for a destination price has already reached (D-1 correction), so the zone 13119.1-13128.6 is not recommended"
+   },
+   "predecessor_trades": [],
+   "same_primary_price": true,
+   "primary_zones_overlap": true,
+   "primary": [
+    "13084.1",
+    "13084.1"
+   ],
+   "hours_after_end": 1.0,
+   "zone_rearmed_between": [],
+   "reissue_trades": [],
+   "duplicate_rule_blocked_it": false
+  },
+  {
+   "reissue": "STP-GBPUSD-20261125-1500-32",
+   "predecessor": "STP-GBPUSD-20261125-1400-31",
+   "predecessor_end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-25T14:10:00Z",
+    "why": "destination reached before entry: price reached 13071.5 (Wed 25 Nov 14:05 GMT) without reaching the zone"
+   },
+   "predecessor_trades": [],
+   "same_primary_price": true,
+   "primary_zones_overlap": true,
+   "primary": [
+    "13071.5",
+    "13071.5"
+   ],
+   "hours_after_end": 0.83,
+   "zone_rearmed_between": [],
+   "reissue_trades": [],
+   "duplicate_rule_blocked_it": false
+  },
+  {
+   "reissue": "STP-GBPUSD-20261125-1600-33",
+   "predecessor": "STP-GBPUSD-20261125-1500-32",
+   "predecessor_end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-25T15:10:00Z",
+    "why": "destination reached before entry: price reached 13071.5 (Wed 25 Nov 15:05 GMT) without reaching the zone"
+   },
+   "predecessor_trades": [],
+   "same_primary_price": true,
+   "primary_zones_overlap": true,
+   "primary": [
+    "13071.5",
+    "13071.5"
+   ],
+   "hours_after_end": 0.83,
+   "zone_rearmed_between": [],
+   "reissue_trades": [],
+   "duplicate_rule_blocked_it": false
+  },
+  {
+   "reissue": "STP-GBPUSD-20261125-2100-36",
+   "predecessor": "STP-GBPUSD-20261125-1700-34",
+   "predecessor_end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-25T18:20:00Z",
+    "why": "destination reached before entry: price reached 13127.3 (Wed 25 Nov 18:15 GMT) without reaching the zone"
+   },
+   "predecessor_trades": [
+    "AB261125170604-a4ec4a37"
+   ],
+   "same_primary_price": true,
+   "primary_zones_overlap": true,
+   "primary": [
+    "13127.3",
+    "13127.3"
+   ],
+   "hours_after_end": 2.67,
+   "zone_rearmed_between": [
+    "2026-11-25T18:00Z",
+    "2026-11-25T19:00Z",
+    "2026-11-25T20:00Z"
+   ],
+   "reissue_trades": [],
+   "duplicate_rule_blocked_it": false
+  },
+  {
+   "reissue": "STP-GBPUSD-20261127-0200-53",
+   "predecessor": "STP-GBPUSD-20261127-0000-50",
+   "predecessor_end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-27T00:10:00Z",
+    "why": "destination reached before entry: price reached 13103 (Fri 27 Nov 00:05 GMT) without reaching the zone"
+   },
+   "predecessor_trades": [],
+   "same_primary_price": true,
+   "primary_zones_overlap": true,
+   "primary": [
+    "13103",
+    "13103"
+   ],
+   "hours_after_end": 1.83,
+   "zone_rearmed_between": [],
+   "reissue_trades": [],
+   "duplicate_rule_blocked_it": false
+  },
+  {
+   "reissue": "STP-GBPUSD-20261127-1200-57",
+   "predecessor": "STP-GBPUSD-20261127-0300-56",
+   "predecessor_end": {
+    "status": "COMPLETED",
+    "time_utc": "2026-11-27T11:05:00Z",
+    "why": "price reached the primary destination 13135.5 (Fri 27 Nov 11:00 GMT) after the zone"
+   },
+   "predecessor_trades": [
+    "AB261127065505-8c11a4bc"
+   ],
+   "same_primary_price": false,
+   "primary_zones_overlap": true,
+   "primary": [
+    "13135.5",
+    "13134.6"
+   ],
+   "hours_after_end": 0.92,
+   "zone_rearmed_between": [],
+   "reissue_trades": [
+    "AB261127120127-5755701a"
+   ],
+   "duplicate_rule_blocked_it": false
+  },
+  {
+   "reissue": "STP-GBPUSD-20261127-1305-58",
+   "predecessor": "STP-GBPUSD-20261127-1200-57",
+   "predecessor_end": {
+    "status": "INVALIDATED",
+    "time_utc": "2026-11-27T12:20:00Z",
+    "why": "destination reached before entry: price reached 13134.6 (Fri 27 Nov 12:15 GMT) without reaching the zone"
+   },
+   "predecessor_trades": [
+    "AB261127120127-5755701a"
+   ],
+   "same_primary_price": true,
+   "primary_zones_overlap": true,
+   "primary": [
+    "13134.6",
+    "13134.6"
+   ],
+   "hours_after_end": 0.75,
+   "zone_rearmed_between": [],
+   "reissue_trades": [],
+   "duplicate_rule_blocked_it": false
+  }
+ ],
+ "parallel_lineages_at_authorisation": [
+  {
+   "time_utc": "2026-11-26T11:40:03Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T11:40:05Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T12:08:36Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T12:08:36Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T12:10:04Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T12:28:54Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T12:28:55Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T12:32:03Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T12:32:03Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T13:35:33Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T13:35:33Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T13:44:14Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T13:44:14Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T13:45:30Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T15:05:03Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T15:05:03Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T15:50:15Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T15:50:15Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T15:55:03Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T15:55:03Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T16:05:15Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T17:56:34Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T17:56:34Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T18:00:51Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T18:00:51Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T18:30:08Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T18:47:20Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T19:40:38Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T19:50:36Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T19:57:56Z",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1000-39",
+    "STP-GBPUSD-20261126-1100-41",
+    "STP-GBPUSD-20261126-1200-43",
+    "STP-GBPUSD-20261126-1500-45"
+   ]
+  },
+  {
+   "time_utc": "2026-11-26T12:51:33Z",
+   "bound": "STP-GBPUSD-20261126-0400-38",
+   "also_live_same_zone": [
+    "STP-GBPUSD-20261126-1200-42"
+   ]
+  }
+ ],
+ "circumstance_1_not_issued": [
+  "2026-11-24T08:00:03Z",
+  "2026-11-24T12:00:03Z",
+  "2026-11-24T20:00:02Z",
+  "2026-11-25T10:00:04Z",
+  "2026-11-25T13:00:02Z",
+  "2026-11-25T14:00:02Z",
+  "2026-11-25T15:00:03Z",
+  "2026-11-25T16:00:03Z",
+  "2026-11-25T17:00:03Z",
+  "2026-11-25T19:00:02Z",
+  "2026-11-25T20:00:02Z",
+  "2026-11-26T08:00:02Z",
+  "2026-11-26T09:00:02Z",
+  "2026-11-26T10:00:03Z",
+  "2026-11-26T13:00:03Z",
+  "2026-11-26T15:00:02Z",
+  "2026-11-26T17:00:02Z",
+  "2026-11-26T18:00:04Z",
+  "2026-11-26T19:00:02Z",
+  "2026-11-26T22:00:03Z",
+  "2026-11-27T00:00:04Z",
+  "2026-11-27T04:00:03Z",
+  "2026-11-27T05:00:03Z",
+  "2026-11-27T08:00:02Z",
+  "2026-11-27T08:00:02Z",
+  "2026-11-27T09:00:04Z",
+  "2026-11-27T14:00:03Z",
+  "2026-11-27T14:00:03Z"
+ ],
+ "trade_tests": [
+  {
+   "trade": "AB261125170604-a4ec4a37",
+   "bound": "STP-GBPUSD-20261125-1700-34",
+   "key": "STP-GBPUSD-20261125-1700-34#t1",
+   "rejection_candle_utc": "2026-11-25T16:50:00Z",
+   "test_under_bound_lineage": 1,
+   "identity_first_lineage": "STP-GBPUSD-20261125-1700-34",
+   "test_under_identity_first_lineage": 1,
+   "pips": "4.7",
+   "how_closed": "close"
+  },
+  {
+   "trade": "AB261125200515-c9049665",
+   "bound": "STP-GBPUSD-20261125-1800-35",
+   "key": "STP-GBPUSD-20261125-1800-35#t1",
+   "rejection_candle_utc": "2026-11-25T19:45:00Z",
+   "test_under_bound_lineage": 1,
+   "identity_first_lineage": "STP-GBPUSD-20261125-1800-35",
+   "test_under_identity_first_lineage": 1,
+   "pips": "-4.4",
+   "how_closed": "forced close"
+  },
+  {
+   "trade": "AB261126060101-987e099b",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "key": "STP-GBPUSD-20261126-0000-37#t1",
+   "rejection_candle_utc": "2026-11-26T05:45:00Z",
+   "test_under_bound_lineage": 1,
+   "identity_first_lineage": "STP-GBPUSD-20261126-0000-37",
+   "test_under_identity_first_lineage": 1,
+   "pips": "4.5",
+   "how_closed": "stopped by IG"
+  },
+  {
+   "trade": "AB261126114004-bd34fb67",
+   "bound": "STP-GBPUSD-20261126-0000-37",
+   "key": "STP-GBPUSD-20261126-0000-37#t2",
+   "rejection_candle_utc": "2026-11-26T11:10:00Z",
+   "test_under_bound_lineage": 2,
+   "identity_first_lineage": "STP-GBPUSD-20261126-0000-37",
+   "test_under_identity_first_lineage": 2,
+   "pips": "14.0",
+   "how_closed": "close"
+  },
+  {
+   "trade": "AB261126063004-aaea24e1",
+   "bound": "STP-GBPUSD-20261126-0400-38",
+   "key": "STP-GBPUSD-20261126-0400-38#t1",
+   "rejection_candle_utc": "2026-11-26T06:00:00Z",
+   "test_under_bound_lineage": 1,
+   "identity_first_lineage": "STP-GBPUSD-20261126-0400-38",
+   "test_under_identity_first_lineage": 1,
+   "pips": "-7.3",
+   "how_closed": "close"
+  },
+  {
+   "trade": "AB261126125133-d1518c12",
+   "bound": "STP-GBPUSD-20261126-0400-38",
+   "key": "STP-GBPUSD-20261126-0400-38#t2",
+   "rejection_candle_utc": "2026-11-26T12:25:00Z",
+   "test_under_bound_lineage": 2,
+   "identity_first_lineage": "STP-GBPUSD-20261126-0400-38",
+   "test_under_identity_first_lineage": 2,
+   "pips": "-6.4",
+   "how_closed": "close"
+  },
+  {
+   "trade": "AB261126142255-04805706",
+   "bound": "STP-GBPUSD-20261126-1400-44",
+   "key": "STP-GBPUSD-20261126-1400-44#t1",
+   "rejection_candle_utc": "2026-11-26T13:50:00Z",
+   "test_under_bound_lineage": 1,
+   "identity_first_lineage": "STP-GBPUSD-20261126-1400-44",
+   "test_under_identity_first_lineage": 1,
+   "pips": "2.1",
+   "how_closed": "close"
+  },
+  {
+   "trade": "AB261127065505-8c11a4bc",
+   "bound": "STP-GBPUSD-20261127-0300-56",
+   "key": "STP-GBPUSD-20261127-0300-56#t1",
+   "rejection_candle_utc": "2026-11-27T06:30:00Z",
+   "test_under_bound_lineage": 1,
+   "identity_first_lineage": "STP-GBPUSD-20261127-0300-56",
+   "test_under_identity_first_lineage": 1,
+   "pips": "-2.0",
+   "how_closed": "close"
+  },
+  {
+   "trade": "AB261127120127-5755701a",
+   "bound": "STP-GBPUSD-20261127-1200-57",
+   "key": "STP-GBPUSD-20261127-1200-57#t1",
+   "rejection_candle_utc": "2026-11-27T11:40:00Z",
+   "test_under_bound_lineage": 1,
+   "identity_first_lineage": "STP-GBPUSD-20261127-0300-56",
+   "test_under_identity_first_lineage": 1,
+   "pips": "-1.4",
+   "how_closed": "closed by owner"
+  }
+ ]
+}
