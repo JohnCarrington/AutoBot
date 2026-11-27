@@ -195,3 +195,40 @@ correction. The tests are in `tests/functional/test_order_recovery_review_202611
   (recorded in settings.toml and SETTINGS.md).
 - **Deployment remains blocked** until the owner's final independent code review of the branch is complete. No
   deployment, restart, configuration change or broker-write operation is authorised before then.
+
+## 12. Pre-deployment verification of bd21821 (27 November 2026)
+
+Tests: `tests/functional/test_order_recovery_broker_context_20261127.py` (4). Before the fix
+(`broker_context_tests_before_fix.txt`) 3 of 4 failed on b456873; all pass after it.
+
+| Item | Finding | Correction |
+|---|---|---|
+| 1. IG's actual position size | **Defect confirmed.** The trade manager never uses size, and closes at IG already sent the trade's own (IG's) size. But the recorded size and every booked £ (`Trading._after_bars`) used the configured £10 a pip, and so did the safety rules' exposure (`Trade.as_open_trade`). A recovered £5 position would have been booked and counted at £10. | The opened record of a recovered trade carries IG's size. `_after_bars` books £ at each trade's own recorded size. `open_trades()` counts every trade, and every unresolved order, at its actual size (after a half close, the rest). For every trade the bot opens normally these equal the configured size, so nothing changes for them. Test: an IG position of £5 is counted at £5 (risk £75 on 15 pips), closed in full at IG's size, and booked −10.5 pips × £5 = −£52.50. |
+| 2. IG's actual stop and limit in the trade manager | The **stop** was already IG's (the stop distance from IG's attached stop, since bd21821). **The limit was not:** the manager kept the strategy's take-profit. **Defect confirmed.** | `broker_exits` gives a recovered trade the take-profit distance of IG's attached limit, at recovery and after every restart. Test: IG's 8-pip stop and 10-pip limit against the strategy's 15 and 20: the manager runs 8 and 10, the same after a restart, and expects IG's take profit when the bid reaches 13410.5. **Never loosened:** the stop distance is IG's, whatever the strategy's; the trail and the ladder only ever send a level closer than the stop IG holds (the existing check in `move_stop`); tested: no stop move below IG's stop. Every other trade is unchanged. |
+| 3. Accepted-order evidence | **Defect confirmed.** An order IG had confirmed as accepted was recorded "not placed at IG" after 30 minutes once IG's confirmation answered 404 and no position or activity was visible. | The first time IG's confirmation or activity shows an unresolved order accepted, an "accepted at IG" record (with IG's deal ID) is journalled and kept through restarts. Such an order is never "not placed": it stays unresolved, counted and escalated, is looked for by its deal ID too, and is adopted when IG shows it. Test: accepted at 3 minutes, silent at 40 and 90 minutes and after a restart, then found by deal ID alone. |
+| 4. Historical reconciliation | Prepared, **not applied** (no owner authorisation for record amendments). | `historical_corrections.py`: three append-only "close corrected" lines at IG's figures, with the evidence. Dry run in `historical_corrections_dry_run.txt`: 11 Nov £1.00 → **−£33.00**; 18 Nov −£126.00 → **−£120.00**; 26 Nov £45.00 → **+£50.00**. The records' bot total moves by −£23.00. `--apply` needs `--i-have-the-owners-authorisation`, backs trades.jsonl up first and refuses a second application. |
+| 5. Thresholds | Confirmed as approved by the owner in settings.toml, SETTINGS.md and section 11 (commit b456873). | — |
+
+**One deployment effect needs the owner's acknowledgement.** The 25 Nov order AB261125180203-7c0f9742 is still
+unresolved in the production order journal. On the branch's first start-up it is settled from IG's activity, by
+design: "accepted at IG", "adopted" and "gone at IG". trades.jsonl then gains an opened and a closed line for it
+(25 Nov 18:02:03 at 13120.5, closed 22:00:00 at 13105.5, −£150.00, IG's activity), with the matching Telegram
+messages. This is the real trade IG made, recorded from IG's own records, not one of the three historical
+corrections above. If the owner prefers it not to be written before they authorise record amendments, they should
+say so before deployment.
+
+**Deployment (owner's approval and final independent review needed; not done):**
+
+1. The owner stops both services.
+2. Back up `.env`, `data/orders`, `data/records` and `data/trade_manager`.
+3. `git -C /opt/autobot merge --ff-only exec-integrity` (deploy-23nov is at fc127e1, this branch's base). No `.env` change.
+4. The owner starts both services.
+
+Post-checks:
+
+- orders.jsonl at start-up: "accepted at IG", "adopted" and "gone at IG" for AB261125180203-7c0f9742 (ig_level 13105.5, level_source IG's activity).
+- trades.jsonl: one opened and one closed line for it.
+- No "not ours", no "still unresolved", 0 open positions.
+- The dashboard's history shows the 25 Nov trade.
+
+Rollback: stop, `git -C /opt/autobot reset --hard pre-exec-integrity-20261127` (fc127e1), start. The older code ignores the new journal and record lines safely.

@@ -72,6 +72,14 @@ def _iso_utc(t: datetime) -> str:
     return t.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def broker_exits(mt: Any, t: Any) -> None:
+    """A recovered trade (accounted for by IG only after it was sent) is managed on IG's ACTUAL attached exits: its
+    stop distance comes from IG's stop already (orders/sender.py _adopt), and here its take-profit distance from
+    IG's limit, where IG gave one (pre-deployment verification, 27 November 2026). Every other trade unchanged."""
+    if getattr(t, "adopted", False) and (t.recovery or {}).get("ig_limit_level") and (t.recovery or {}).get("take_profit_pips"):
+        mt.take_profit_pips = Decimal(str(t.recovery["take_profit_pips"]))
+
+
 def recovery_of(idea: Any, td: str | None) -> dict:
     """What the records and the trade manager need if IG accounts for this order only later (owner, 27 November
     2026): recorded with the order before IG is contacted (orders/sender.py place)."""
@@ -152,6 +160,7 @@ class Trading:
                     mt.half_done, mt.state = True, "half close"
                 if t.stop_level is not None:                # the bounce's stop already moved by its trail at IG
                     mt.stop_level = t.stop_level
+                broker_exits(mt, t)                         # a recovered trade: IG's own attached limit
                 mt.bars = 1                                 # already open: no entry-candle rule
                 if self.manager.restore(mt, saved):         # its best pips so far, half close, watching
                     log.info("Trade %s: its saved best (%s pips) restored.", t.reference, mt.best)
@@ -392,6 +401,7 @@ class Trading:
                           td, market_state=ctx.get("market_state"))
                 mt.bars = 1                                 # already open: every later price is after it
                 self.manager.add(mt)
+            broker_exits(mt, t)
             if ref in self.meta or ref in getattr(self, "_opened_before", set()):
                 continue                                    # already in the records: never twice
             sign = Decimal(1) if t.direction == "buy" else Decimal(-1)
@@ -399,7 +409,7 @@ class Trading:
             why = (f"recovered: IG had not confirmed this order when it was sent; found at IG as deal {t.deal_id}, "
                    f"opened {t.opened_at:%H:%M:%S} UTC at {t.level}")
             rec = {"reference": ref, "deal_id": t.deal_id, "pair": self.s.market.pair, "strategy": t.strategy,
-                   "direction": t.direction, "size_gbp_per_pip": self.s.trade.size_gbp_per_pip,
+                   "direction": t.direction, "size_gbp_per_pip": t.size * ppp,      # IG's actual size
                    "market_state": ctx.get("market_state") or "", "opened_utc": t.opened_at, "entry_price": entry,
                    "open_price": t.level, "stop_pips": t.stop_pips,
                    "stop_price": Decimal(ctx["ig_stop_level"]) if ctx.get("ig_stop_level") else t.level - sign * t.stop_pips * ppp,
@@ -478,11 +488,13 @@ class Trading:
     def _after_bars(self) -> None:
         """Every trade the trade manager has just finished: to the records, and Telegram (real trades)."""
         from alerts.trades import PartClose, TradeClosed
-        size = Decimal(self.s.trade.size_gbp_per_pip)
         for ref, mt in self.manager.trades.items():
             rec = self.meta.get(ref)
             if mt.open or rec is None or rec.get("closed"):
                 continue
+            # the trade's own size as recorded at its open (IG's actual size for a recovered trade; the configured
+            # size for every other, which is the size sent)
+            size = Decimal(str(rec.get("size_gbp_per_pip") or self.s.trade.size_gbp_per_pip))
             last = mt.decisions[-1]
             pips = mt.total_pips()
             # the owner's closes by hand are kept apart from the bot's own exits (owner, 11 November 2026)

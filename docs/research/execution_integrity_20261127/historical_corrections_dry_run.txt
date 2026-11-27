@@ -1,0 +1,5 @@
+AB261111065505-6d002d16: 13336.2 2026-11-11T07:30:00Z 0.1 pips £1.00  ->  13332.8 2026-11-11T07:35:01Z -3.3 pips £-33.00  (IG activity: closed 07:35:01 at 13332.8 (PUBLIC_WEB_API); IG transaction £-33.00 (ig_check_result.2026-11-11_rest.json))
+AB261118123737-487acb12: 13169.0 2026-11-18T13:07:56Z -12.6 pips £-126.00  ->  13168.4 2026-11-18T13:07:56Z -12.0 pips £-120.00  (IG activity: closed 13:07:56 at 13168.4 (SYSTEM, stop); IG transaction £-120.00 (ig_check_result.2026-11-18_1230_to_now.json))
+AB261126060101-987e099b: 13108.4 2026-11-26T09:20:00Z 4.5 pips £45.00  ->  13108.9 2026-11-26T09:35:01Z 5.0 pips £50.00  (IG activity: closed 09:35:01 at 13108.9 (SYSTEM, moved stop); orders.jsonl closed at IG ig_level 13108.9)
+bot total in the records: £-2808.00 -> £-2831.00 (-23.00)
+dry run: nothing written

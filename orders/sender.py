@@ -153,6 +153,7 @@ CLOSED_BY_OWNER = "closed by owner"
 IG_ACTIVITY, IG_CONFIRMATION, BOT_PRICE, PAPER_PRICE = (
     "IG's activity", "IG's confirmation", "the bot's price (IG's level not yet known)", "paper")
 NOT_PLACED_AT_IG, IG_CLOSE_CONFIRMED, IG_CLOSE_NOT_FOUND = "not placed at IG", "IG close confirmed", "IG close not found"
+ACCEPTED_AT_IG = "accepted at IG"       # IG's own evidence that an unresolved order was accepted (kept for good)
 # IG's channels for the owner's closes by hand: SYSTEM (owner, 11 November 2026: the IG demo platform labels them so)
 # and WEB (owner, 23 November 2026: four closes on IG's web platform at 18:36 UTC that day).
 OWNER_CHANNELS = ("SYSTEM", "WEB")
@@ -266,6 +267,8 @@ class OrderSender:
                                          recovery=r.get("recovery") or sent.get("recovery") or {},
                                          adopted=ev == "adopted")
                 self.not_placed.pop(ref, None)
+            elif ev == ACCEPTED_AT_IG and ref in self.unresolved:
+                self.unresolved[ref]["accepted_deal_id"] = r.get("deal_id")
             elif ev == NOT_PLACED_AT_IG:
                 sent = self.unresolved.pop(ref, None)
                 if sent is not None:
@@ -645,6 +648,11 @@ class OrderSender:
             deal = (c or {}).get("dealId") if state == "accepted" else None
             deal = deal or next((x.get("affectedDealId") for x in det.get("actions") or []
                                  if x.get("actionType") == "POSITION_OPENED"), None) or (act or {}).get("dealId")
+            if deal and not sent.get("accepted_deal_id"):        # IG's evidence of acceptance, journalled once: an
+                sent["accepted_deal_id"] = deal                  # accepted order is never "not placed" afterwards
+                self._record(ACCEPTED_AT_IG, reference=ref, deal_id=deal,
+                             source="IG's confirmation" if state == "accepted" else "IG's activity")
+            deal = deal or sent.get("accepted_deal_id")
             if deal:
                 pos = by_id.get(deal, {}).get("position")
                 if pos is None:
@@ -753,10 +761,14 @@ class OrderSender:
         """The bot's open trades for the safety rules, AND every order sent that IG has not yet accounted for: an
         uncertain submission may be open at IG, so it counts towards every limit and the risk until IG's own records
         settle it (owner, 27 November 2026: the 25 November 18:45 slow grind opened beside an unrecorded one)."""
-        out = [t.as_open_trade(self.size_gbp) for t in self.trades.values() if t.status == OPEN]
+        # each at its ACTUAL size at IG (£ a point x points a pip; already the rest after a half close), not the
+        # configured size: a recovered position can differ (pre-deployment verification, 27 November 2026)
+        out = [OpenTrade(t.strategy, t.direction, t.opened_at, t.stop_pips, t.size * self.ppp, t.deal_id)
+               for t in self.trades.values() if t.status == OPEN]
         for u in self.unresolved.values():
             out.append(OpenTrade(u["strategy"], u["direction"], _when(u.get("sent_utc")) or self.now(),
-                                 Decimal(str(u["stop_pips"])), self.size_gbp, ""))
+                                 Decimal(str(u["stop_pips"])), Decimal(str(u.get("size") or self.size_gbp / self.ppp))
+                                 * self.ppp, ""))
         return out
 
     def unresolved_orders(self) -> list[dict]:
