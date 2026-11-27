@@ -664,13 +664,18 @@ class TradeManager:
         t.decisions[-1] = new
         return new
 
-    def closed_at_ig(self, reference: str) -> None:
-        """The order sender found the trade closed at IG (its stop or take profit): stop managing it."""
+    def closed_at_ig(self, reference: str, found: Any = None) -> None:
+        """The order sender found the trade closed at IG (its stop or take profit): stop managing it. `found`: the
+        order sender's answer; IG's own level and time in it replace the price and time the trade manager expected
+        (owner, 27 November 2026: the 26 November 06:01 bounce was recorded at the bot's 09:20 reading, 13108.4,
+        instead of IG's fill at 09:35:01, 13108.9)."""
         t = self.trades.get(reference)
         if t is not None and t.open:
             expected = getattr(t, "expected_at_ig", None)
             d = expected[2] if expected else Decision(STOPPED_BY_IG, why="closed at IG (found by the order sender)")
             t.decisions.append(d)
+            if found is not None:
+                d = self._at_igs_level(t, d, found)
             t.state = d.kind
             self._record(t, d)
             self.save_state()

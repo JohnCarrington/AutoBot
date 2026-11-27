@@ -138,11 +138,15 @@ class Dashboard:
                 lines = path.read_text().splitlines()
             except FileNotFoundError:
                 continue
+            parsed = []
             for line in lines:
                 try:
-                    r = json.loads(line)
-                    if r.get("event") != "closed":
-                        continue
+                    parsed.append(json.loads(line))
+                except ValueError:
+                    continue                                # a line that cannot be read is left out, never guessed
+            from records.book import apply_corrections      # IG's own close found later (27 November 2026)
+            for r in apply_corrections(parsed):
+                try:
                     closed = datetime.fromisoformat(r["closed_utc"].replace("Z", "+00:00"))
                     pips, gbp = Decimal(str(r["pips"])), Decimal(str(r["gbp"]))
                 except (ValueError, KeyError, TypeError, InvalidOperation, AttributeError):

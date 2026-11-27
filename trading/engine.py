@@ -68,6 +68,18 @@ log = logging.getLogger("autobot.trading")
 UTC = timezone.utc
 
 
+def _iso_utc(t: datetime) -> str:
+    return t.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def recovery_of(idea: Any, td: str | None) -> dict:
+    """What the records and the trade manager need if IG accounts for this order only later (owner, 27 November
+    2026): recorded with the order before IG is contacted (orders/sender.py place)."""
+    return {"entry_price": str(idea.entry_price),
+            "market_state": f"{idea.state} {idea.state_direction}" + (f", {idea.trend_type}" if idea.trend_type else ""),
+            "reason": one_line(idea), "level": level_note(idea), "steps": list(idea.steps), "trend_day": td}
+
+
 def analyser_rejections(watcher: Any, at: datetime) -> list[Rejection]:
     """The analyser's confirmed rejections at levels that count, triggered in the candle starting at `at`."""
     out = []
@@ -144,6 +156,7 @@ class Trading:
                 if self.manager.restore(mt, saved):         # its best pips so far, half close, watching
                     log.info("Trade %s: its saved best (%s pips) restored.", t.reference, mt.best)
                 self.manager.add(mt)
+            self._take_recovered()                          # orders IG accounted for only after they were sent
             self._take_gone()                               # trades IG closed while the bot was away
             self._restore_trend_day(now)
             self._after_bars()
@@ -216,8 +229,10 @@ class Trading:
             self._sync_ig()
             if self.trading_on:
                 self.sender.reconcile("after the candle")   # the bot's open trades against IG's open positions
+            self._take_recovered()
             self._take_gone()
             self._after_bars()
+            self._take_corrections()
 
     def _take_new_candles(self) -> None:
         hist = self.tracker.history
@@ -332,10 +347,74 @@ class Trading:
         if v.checked:
             idea.steps.append("entry filters: " + "; ".join(v.checked))
         day = day_directions(self.s, self.store, idea.time, self.calendar, td)     # the day's directions (safety rule 9)
-        r = self.sender.place(idea, paused=self._paused(), trend_day=td, calendar=self.calendar, day=day)
+        r = self.sender.place(idea, paused=self._paused(), trend_day=td, calendar=self.calendar, day=day,
+                              recovery=recovery_of(idea, td))
         self.book.decision("order", self.now(), strategy=idea.strategy, direction=idea.direction, result=r.what,
                            reference=r.reference, reasons=r.reasons, level=r.level)
         return r
+
+    def _take_recovered(self) -> None:
+        """Orders IG accounted for only after they were sent (the order sender's regular check or start-up; the
+        25 November 2026 18:02 slow grind): the bot's own trades, taken into the trade manager with the strategy's
+        own management (its stop and take profit are IG's, as sent) and recorded as opened, once."""
+        from types import SimpleNamespace
+        ppp = Decimal(self.s.market.points_per_pip)
+        for t in self.sender.take_recovered():
+            ref, ctx = t.reference, t.recovery or {}
+            if t.level is None:
+                self.alerts.problem(f"recovered-no-fill-{ref}", f"Order {ref} ({t.strategy}) is the bot's at IG (deal "
+                                    f"{t.deal_id}) but IG's fill is not known: it is not managed; please check it at IG.")
+                continue
+            entry = Decimal(str(ctx.get("entry_price") or ctx.get("idea_price") or t.level))
+            td = ctx.get("trend_day")
+            mt = self.manager.trades.get(ref)
+            if mt is None:
+                mt = plan(self.s, ref, t.strategy, t.direction, t.opened_at, entry, t.level, t.stop_pips, self.calendar,
+                          td, market_state=ctx.get("market_state"))
+                mt.bars = 1                                 # already open: every later price is after it
+                self.manager.add(mt)
+            if ref in self.meta or ref in getattr(self, "_opened_before", set()):
+                continue                                    # already in the records: never twice
+            sign = Decimal(1) if t.direction == "buy" else Decimal(-1)
+            tp = Decimal(str(ctx.get("take_profit_pips") or mt.take_profit_pips))
+            why = (f"recovered: IG had not confirmed this order when it was sent; found at IG as deal {t.deal_id}, "
+                   f"opened {t.opened_at:%H:%M:%S} UTC at {t.level}")
+            rec = {"reference": ref, "deal_id": t.deal_id, "pair": self.s.market.pair, "strategy": t.strategy,
+                   "direction": t.direction, "size_gbp_per_pip": self.s.trade.size_gbp_per_pip,
+                   "market_state": ctx.get("market_state") or "", "opened_utc": t.opened_at, "entry_price": entry,
+                   "open_price": t.level, "stop_pips": t.stop_pips, "stop_price": t.level - sign * t.stop_pips * ppp,
+                   "take_profit_pips": tp, "take_profit_price": t.level + sign * tp * ppp,
+                   "take_profit_kind": take_profit_kind(self.s, SimpleNamespace(strategy=t.strategy), tp, td),
+                   "reason": f"{why} | {ctx.get('reason') or t.strategy}", "level": ctx.get("level") or "",
+                   "steps": list(ctx.get("steps") or []) + [why], "recovered": True}
+            self.meta[ref] = rec
+            self.book.opened(rec)
+            self.book.decision("order recovered", self.now(), reference=ref, strategy=t.strategy, direction=t.direction,
+                               deal_id=t.deal_id, level=t.level, opened_utc=t.opened_at)
+            if self.trading_on:
+                self.alerts.trade_opened(self._opened_message(rec))
+
+    def _take_corrections(self) -> None:
+        """IG's own close level and time found after a close was recorded at the bot's price: one "close corrected"
+        record (owner, 27 November 2026); one not yet in the records is kept for the next candle."""
+        keep = []
+        for c in self.sender.take_corrections():
+            row = self.book.closed_row(c["reference"])
+            if row is None:
+                keep.append(c)
+                continue
+            from records.book import corrected_figures
+            fig = corrected_figures(row, c["close_price"])
+            when = c.get("closed_utc")
+            if fig["close_price"] == str(row.get("close_price")) and (when is None or _iso_utc(when) == row.get("closed_utc")):
+                continue                                    # IG's level is the one recorded
+            self.book.corrected({"reference": c["reference"], "closed_utc": when or row.get("closed_utc"),
+                                 "price_source": c.get("price_source")} | fig |
+                                {"before": {k: row.get(k) for k in ("close_price", "closed_utc", "pips", "gbp")}})
+            self.alerts.info(f"AutoBot: IG's own close of {row.get('strategy')} {row.get('direction')} "
+                             f"{c['reference']} was {fig['close_price']} (the records had {row.get('close_price')}): "
+                             f"now {fig['pips']} pips, £{fig['gbp']}.")
+        self.sender.corrections_new[:0] = keep
 
     def _opened(self, idea: Any, r: Any, opened_at: datetime, td: str | None) -> None:
         """A trade the order sender opened: to the trade manager, the records, and Telegram (real trades)."""
@@ -405,6 +484,7 @@ class Trading:
                 "levels_lined_up": lined,
                 "half_close": None if half is None else vars(half), "rest": None if rest is None else vars(rest),
                 "closed_by": by, "stop_moves": list(mt.stop_moves)}
+            row["price_source"] = self.sender.close_source.get(ref, "")
             self.book.closed(row)
             if self.trading_on and by == "bot":            # the owner's close: the order sender's short message
                 today = self.book.today(closed_at)
@@ -423,6 +503,7 @@ class Trading:
                     opened[r["reference"]] = r
                 elif r.get("event") == "closed":
                     closed.add(r["reference"])
+        self._opened_before = set(opened)
         for ref, r in opened.items():
             if ref in closed or ref in self.meta:
                 continue
@@ -465,7 +546,7 @@ class Trading:
                 if r.ok and r.what == "closed by owner":     # not IG's stop or limit: the owner closed it
                     self.manager.gone_at_ig(r)              # (found again in _take_gone: already finished)
                 elif r.ok:
-                    self.manager.closed_at_ig(ref)
+                    self.manager.closed_at_ig(ref, r)       # at IG's own level and time (27 November 2026)
 
     def daily_summary(self, now: datetime) -> None:
         """At trading.daily_summary_at (20:35 UK) each weekday, once: the daily and weekly summaries are written and
@@ -571,6 +652,9 @@ class Trading:
         for ref, t in self.manager.trades.items():
             if t.open and t.expected_at_ig:
                 warnings.append(f"Trade {ref}: IG's {t.expected_at_ig[0]} expected but not yet confirmed by IG")
+        for u in self.sender.unresolved_orders():
+            warnings.append(f"Order {u['reference']} ({u.get('strategy')} {u.get('direction')}) sent but not yet "
+                            "accounted for by IG: counted as an open trade until IG's records settle it")
         allowed = list(ALLOWED.get(st.state, ())) if st is not None else []
         if st is not None and st.state != TREND and switch_on(self.s, "ema_pullback_trend_only"):
             allowed = [a for a in allowed if a != EMA_PULLBACK]   # trend only (EMA_PULLBACK_TREND_ONLY, 25 Nov 2026)

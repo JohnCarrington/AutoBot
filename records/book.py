@@ -20,6 +20,10 @@ rewritten or added at IG's figures; the file as it was is kept as trades.jsonl.b
 the bot's own 19 closes of 9 to 11 November whose price or time differed from IG's were corrected to IG's close
 time, level and booked £ (each with its "before_correction"); the file before that is
 trades.jsonl.before-2026-11-11-ig-prices. Since then every live close is recorded at IG's price and time.
+IG is the authority for realised results (owner, 27 November 2026): every closed line carries "price_source" (IG's
+activity, IG's confirmation, or the bot's own price when IG had not yet given its level). When IG's own level is
+found later, one "close corrected" line is appended (never a rewrite) and every reader of the closed trades applies
+it (apply_corrections: Book.closed_trades, the summaries, the dashboard's history).
 A second correction by hand (owner, 23 November 2026): four trades the owner closed on IG's web platform at 18:36 UTC
 that day (channel WEB), recorded by the bot as "closed at IG" while it was restarting, were rewritten as "closed by
 owner" (each with its "before_correction"); the file as it was is trades.jsonl.before-2026-11-23-correction.
@@ -97,10 +101,23 @@ class Book:
     def closed(self, record: dict) -> None:
         self._append(self.trades_file, {"event": "closed", "paper": self.paper} | record)
 
+    def corrected(self, record: dict) -> None:
+        """IG's own close level and time found after a close was recorded at the bot's price (owner, 27 November
+        2026): one "close corrected" line, appended; the closed line is never rewritten. Every reader of the closed
+        trades (closed_trades, the summaries, the dashboard's history) applies it (apply_corrections)."""
+        self._append(self.trades_file, {"event": "close corrected", "paper": self.paper} | record)
+
     def closed_trades(self) -> list[dict]:
         if not self.trades_file.exists():
             return []
-        return [r for r in (json.loads(x) for x in self.trades_file.read_text().splitlines()) if r["event"] == "closed"]
+        return apply_corrections([json.loads(x) for x in self.trades_file.read_text().splitlines()])
+
+    def closed_row(self, reference: str) -> dict | None:
+        """The trade's closed line as recorded (before any correction), or None."""
+        if not self.trades_file.exists():
+            return None
+        rows = [json.loads(x) for x in self.trades_file.read_text().splitlines()]
+        return next((r for r in rows if r.get("event") == "closed" and r.get("reference") == reference), None)
 
     # ---- decisions --------------------------------------------------------------------------------
 
@@ -150,6 +167,54 @@ class Book:
         tmp = path.with_suffix(".tmp")
         tmp.write_text(json.dumps(data, indent=1) + "\n")
         tmp.replace(path)
+
+
+def corrected_figures(row: dict, close_price: Any) -> dict:
+    """A closed trade's pips, £ and result at another close level (IG's), as the trade manager works them out: the
+    whole trade, or for a trade closed by half first, the half as recorded and the rest at the new level."""
+    q1, q2 = Decimal("0.1"), Decimal("0.01")
+    level, opened = Decimal(str(close_price)), Decimal(str(row["open_price"]))
+    size = Decimal(str(row.get("size_gbp_per_pip") or 10))
+    pips = (opened - level) if row["direction"] == "sell" else (level - opened)
+    out: dict = {"close_price": str(level)}
+    half = row.get("half_close")
+    if half:
+        share = Decimal("0.5")
+        rest_gbp = (pips * size * (1 - share)).quantize(q2)
+        out["rest"] = dict(row.get("rest") or {}, pips=str(pips.quantize(q1)), gbp=str(rest_gbp), price=str(level))
+        total_pips = Decimal(str(half["pips"])) * share + pips * (1 - share)
+        gbp = Decimal(str(half["gbp"])) + rest_gbp
+    else:
+        total_pips, gbp = pips, (pips * size).quantize(q2)
+    out |= {"pips": str(total_pips.quantize(q1)), "gbp": str(gbp.quantize(q2)),
+            "result": "win" if gbp > 0 else "loss" if gbp < 0 else "break even"}
+    return out
+
+
+def apply_corrections(rows: list[dict]) -> list[dict]:
+    """The closed lines of a trades.jsonl, each with its latest "close corrected" line applied (IG's own level and
+    time found later; owner, 27 November 2026): its close price and time, pips, £ and result, the source of the
+    price, and what it was before ("before_correction")."""
+    rows = [r for r in rows if isinstance(r, dict)]
+    fixes: dict = {}
+    for r in rows:
+        if r.get("event") == "close corrected" and r.get("reference"):
+            fixes[r["reference"]] = r
+    out = []
+    for r in rows:
+        if r.get("event") != "closed":
+            continue
+        f = fixes.get(r.get("reference"))
+        if f is not None:
+            before = {k: r.get(k) for k in ("close_price", "closed_utc", "pips", "gbp", "result", "price_source")}
+            try:
+                r = dict(r) | corrected_figures(r, f["close_price"]) | {
+                    "closed_utc": f.get("closed_utc") or r.get("closed_utc"),
+                    "price_source": f.get("price_source") or "IG's activity", "before_correction": before}
+            except (KeyError, TypeError, ArithmeticError, ValueError):
+                pass                                        # a correction that cannot be applied leaves the line as it is
+        out.append(r)
+    return out
 
 
 def is_owner_close(r: dict) -> bool:

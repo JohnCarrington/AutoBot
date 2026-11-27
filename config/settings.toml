@@ -86,6 +86,13 @@ unclear_check_wait_seconds = 2
 # many times, this many seconds apart, while IG answers 404 (not there yet): as AutoBot 161.
 confirm_attempts = 5
 confirm_wait_seconds = 1
+# An order IG has not accounted for (no confirmation, no open position) keeps counting as an open trade for the
+# safety rules, and is looked for again at every regular check (its position, confirmation and IG's activity). If
+# IG has no record of it at all this many minutes after it was sent, it was never placed (owner, 27 November 2026).
+unresolved_no_record_after_minutes = 30
+# A close recorded at the bot's own price because IG's activity did not show IG's level yet is looked for again at
+# this many regular checks (one a 5-minute candle), then escalated: IG's statement is needed (owner, 27 November 2026).
+ig_close_level_checks = 12
 # A close IG refuses (or does not answer clearly) leaves the trade open; the trade manager tries the
 # close again after this many seconds, for as long as the position is open at IG.
 close_retry_seconds = 30

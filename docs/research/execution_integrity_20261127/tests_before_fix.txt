@@ -1,0 +1,24 @@
+E   AssertionError: assert ('not ours' not in ['funds', 'ready', 'sending', 'unclear', 'not found', 'not ours'])
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_reconciliation_20261127.py:95: AssertionError: assert ('not ours' not in ['funds', 'ready', 'sending', 'unclear', 'not found', 'not ours'])
+E   AssertionError: assert ('not found' == 'safety refused'
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_reconciliation_20261127.py:108: AssertionError: assert ('not found' == 'safety refused'
+E   AssertionError: assert ('still unresolved' not in ['funds', 'ready', 'sending', 'unclear', 'not found', 'still unresolved', ...])
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_reconciliation_20261127.py:117: AssertionError: assert ('still unresolved' not in ['funds', 'ready', 'sending', 'unclear', 'not found', 'still unresolved', ...])
+E   AssertionError: assert [] == ['breakout']
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_reconciliation_20261127.py:132: AssertionError: assert [] == ['breakout']
+E   AssertionError: assert {'DIX1': None, 'DIX2': None} == {'DIX1': True, 'DIX2': False}
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_reconciliation_20261127.py:148: AssertionError: assert {'DIX1': None, 'DIX2': None} == {'DIX1': True, 'DIX2': False}
+E   TypeError: OrderSender.place() got an unexpected keyword argument 'recovery'
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_reconciliation_20261127.py:166: TypeError: OrderSender.place() got an unexpected keyword argument 'recovery'
+E   AssertionError: assert ('AB261104200500-629b752c' in {})
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_reconciliation_20261127.py:192: AssertionError: assert ('AB261104200500-629b752c' in {})
+E   AssertionError: assert [] == ['opened', 'closed']
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_reconciliation_20261127.py:211: AssertionError: assert [] == ['opened', 'closed']
+E   AssertionError: assert ('13415.5', '...00Z', '-15.0') == ('13416.3', '...40Z', '-15.8')
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_reconciliation_20261127.py:242: AssertionError: assert ('13415.5', '...00Z', '-15.0') == ('13416.3', '...40Z', '-15.8')
+E   KeyError: 'price_source'
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_reconciliation_20261127.py:252: KeyError: 'price_source'
+E   ImportError: cannot import name 'apply_corrections' from 'records.book' (/home/autobot/worktrees/autobot-exec-integrity/records/book.py)
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_reconciliation_20261127.py:268: ImportError: cannot import name 'apply_corrections' from 'records.book' (/home/autobot/worktrees/autobot-exec-integrity/records/book.py)
+E   ImportError: cannot import name 'apply_corrections' from 'records.book' (/home/autobot/worktrees/autobot-exec-integrity/records/book.py)
+/home/autobot/worktrees/autobot-exec-integrity/tests/functional/test_order_reconciliation_20261127.py:280: ImportError: cannot import name 'apply_corrections' from 'records.book' (/home/autobot/worktrees/autobot-exec-integrity/records/book.py)

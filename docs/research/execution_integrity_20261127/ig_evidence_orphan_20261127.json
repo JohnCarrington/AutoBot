@@ -1,0 +1,100 @@
+{
+ "request": {
+  "from_utc": "2026-11-25T17:55:00Z",
+  "to_utc": "2026-11-26T06:05:00Z",
+  "deal_ids": [
+   "DIAAAAYXVXWHCBR"
+  ]
+ },
+ "asked_utc": "2026-11-27T09:02:25Z",
+ "open_positions": [],
+ "funds": {
+  "balance": 96820.61,
+  "available": 96820.61,
+  "profitLoss": 0.0,
+  "deposit": 0.0
+ },
+ "orphan_activity": [
+  {
+   "date": "2026-11-25T22:00:00",
+   "epic": "CS.D.GBPUSD.TODAY.IP",
+   "period": "DFB",
+   "dealId": "DIAAAAYXVX4K5A9",
+   "channel": "SYSTEM",
+   "type": "POSITION",
+   "status": "ACCEPTED",
+   "description": "Position/s closed: XVXWHCBR",
+   "details": {
+    "dealReference": null,
+    "actions": [
+     {
+      "actionType": "POSITION_CLOSED",
+      "affectedDealId": "DIAAAAYXVXWHCBR"
+     }
+    ],
+    "marketName": "GBP/USD",
+    "goodTillDate": null,
+    "currency": "GBP",
+    "size": 10,
+    "direction": "SELL",
+    "level": 13105.5,
+    "stopLevel": 13105.5,
+    "stopDistance": 15,
+    "guaranteedStop": false,
+    "trailingStopDistance": null,
+    "trailingStep": null,
+    "limitLevel": 13140.5,
+    "limitDistance": 20
+   }
+  },
+  {
+   "date": "2026-11-25T18:02:03",
+   "epic": "CS.D.GBPUSD.TODAY.IP",
+   "period": "DFB",
+   "dealId": "DIAAAAYXVXWHCBR",
+   "channel": "PUBLIC_WEB_API",
+   "type": "POSITION",
+   "status": "ACCEPTED",
+   "description": "Position opened: XVXWHCBR",
+   "details": {
+    "dealReference": "AB261125180203-7c0f9742",
+    "actions": [
+     {
+      "actionType": "POSITION_OPENED",
+      "affectedDealId": "DIAAAAYXVXWHCBR"
+     }
+    ],
+    "marketName": "GBP/USD",
+    "goodTillDate": null,
+    "currency": "GBP",
+    "size": 10,
+    "direction": "BUY",
+    "level": 13120.5,
+    "stopLevel": 13105.5,
+    "stopDistance": 15,
+    "guaranteedStop": false,
+    "trailingStopDistance": null,
+    "trailingStep": null,
+    "limitLevel": 13140.5,
+    "limitDistance": 20
+   }
+  }
+ ],
+ "orphan_transaction": [
+  {
+   "date": "2026-11-25",
+   "dateUtc": "2026-11-25T22:00:00",
+   "openDateUtc": "2026-11-25T18:02:03",
+   "instrumentName": "GBP/USD",
+   "period": "DFB",
+   "profitAndLoss": "\u00a3-150.00",
+   "transactionType": "DEAL",
+   "reference": "DIAAAAYXVX4K5A9",
+   "openLevel": "13120.5",
+   "closeLevel": "13105.5",
+   "size": "+10",
+   "currency": "\u00a3",
+   "cashTransaction": false
+  }
+ ]
+}

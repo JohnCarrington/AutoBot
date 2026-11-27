@@ -317,6 +317,8 @@ SCHEMA: dict[str, dict[str, Callable[[Any], Any]]] = {
         "unclear_check_wait_seconds": _whole_number(0, 60),
         "confirm_attempts": _whole_number(1, 20),
         "confirm_wait_seconds": _whole_number(0, 60),
+        "unresolved_no_record_after_minutes": _whole_number(5, 1440),
+        "ig_close_level_checks": _whole_number(1, 288),
         "close_retry_seconds": _whole_number(5, 600),
         "stop_move_attempts": _whole_number(1, 20),
     },
