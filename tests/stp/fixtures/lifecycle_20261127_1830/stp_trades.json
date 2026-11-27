@@ -1,0 +1,122 @@
+[
+ {
+  "reference": "AB261125170604-a4ec4a37",
+  "strategy": "Bollinger bounce 5m",
+  "direction": "buy",
+  "idea_time": "2026-11-25T17:06:04Z",
+  "opened_utc": "2026-11-25T17:06:04Z",
+  "entry_price": "13106.9",
+  "rejection_candle": "2026-11-25T16:50:00Z",
+  "recorded_opportunity": "STP-GBPUSD-20261125-1700-34",
+  "recorded_test": 1,
+  "recorded_signal": "STP-GBPUSD-20261125-1700-34#t1"
+ },
+ {
+  "reference": "AB261125200515-c9049665",
+  "strategy": "Bollinger bounce 5m",
+  "direction": "sell",
+  "idea_time": "2026-11-25T20:05:14Z",
+  "opened_utc": "2026-11-25T20:05:14Z",
+  "entry_price": "13120.2",
+  "rejection_candle": "2026-11-25T19:45:00Z",
+  "recorded_opportunity": "STP-GBPUSD-20261125-1800-35",
+  "recorded_test": 1,
+  "recorded_signal": "STP-GBPUSD-20261125-1800-35#t1"
+ },
+ {
+  "reference": "AB261126060101-987e099b",
+  "strategy": "Bollinger bounce 5m",
+  "direction": "buy",
+  "idea_time": "2026-11-26T06:01:00Z",
+  "opened_utc": "2026-11-26T06:01:00Z",
+  "entry_price": "13102.2",
+  "rejection_candle": "2026-11-26T05:45:00Z",
+  "recorded_opportunity": "STP-GBPUSD-20261126-0000-37",
+  "recorded_test": 1,
+  "recorded_signal": "STP-GBPUSD-20261126-0000-37#t1"
+ },
+ {
+  "reference": "AB261126063004-aaea24e1",
+  "strategy": "Bollinger bounce 5m",
+  "direction": "sell",
+  "idea_time": "2026-11-26T06:30:02Z",
+  "opened_utc": "2026-11-26T06:30:02Z",
+  "entry_price": "13100.3",
+  "rejection_candle": "2026-11-26T06:00:00Z",
+  "recorded_opportunity": "STP-GBPUSD-20261126-0400-38",
+  "recorded_test": 1,
+  "recorded_signal": "STP-GBPUSD-20261126-0400-38#t1"
+ },
+ {
+  "reference": "AB261126114004-bd34fb67",
+  "strategy": "Bollinger bounce 5m",
+  "direction": "buy",
+  "idea_time": "2026-11-26T11:40:01Z",
+  "opened_utc": "2026-11-26T11:40:01Z",
+  "entry_price": "13100.6",
+  "rejection_candle": "2026-11-26T11:10:00Z",
+  "recorded_opportunity": "STP-GBPUSD-20261126-0000-37",
+  "recorded_test": 2,
+  "recorded_signal": "STP-GBPUSD-20261126-0000-37#t2"
+ },
+ {
+  "reference": "AB261126125133-d1518c12",
+  "strategy": "Bollinger bounce 5m",
+  "direction": "sell",
+  "idea_time": "2026-11-26T12:51:33Z",
+  "opened_utc": "2026-11-26T12:51:33Z",
+  "entry_price": "13104.6",
+  "rejection_candle": "2026-11-26T12:25:00Z",
+  "recorded_opportunity": "STP-GBPUSD-20261126-0400-38",
+  "recorded_test": 2,
+  "recorded_signal": "STP-GBPUSD-20261126-0400-38#t2"
+ },
+ {
+  "reference": "AB261126142255-04805706",
+  "strategy": "Bollinger bounce 5m",
+  "direction": "sell",
+  "idea_time": "2026-11-26T14:22:55Z",
+  "opened_utc": "2026-11-26T14:22:55Z",
+  "entry_price": "13114.8",
+  "rejection_candle": "2026-11-26T13:50:00Z",
+  "recorded_opportunity": "STP-GBPUSD-20261126-1400-44",
+  "recorded_test": 1,
+  "recorded_signal": "STP-GBPUSD-20261126-1400-44#t1"
+ },
+ {
+  "reference": "AB261127065505-8c11a4bc",
+  "strategy": "Bollinger bounce 5m",
+  "direction": "buy",
+  "idea_time": "2026-11-27T06:55:04Z",
+  "opened_utc": "2026-11-27T06:55:04Z",
+  "entry_price": "13124.3",
+  "rejection_candle": "2026-11-27T06:30:00Z",
+  "recorded_opportunity": "STP-GBPUSD-20261127-0300-56",
+  "recorded_test": 1,
+  "recorded_signal": "STP-GBPUSD-20261127-0300-56#t1"
+ },
+ {
+  "reference": "AB261127120127-5755701a",
+  "strategy": "Bollinger bounce 5m",
+  "direction": "buy",
+  "idea_time": "2026-11-27T12:01:27Z",
+  "opened_utc": "2026-11-27T12:01:27Z",
+  "entry_price": "13130",
+  "rejection_candle": "2026-11-27T11:40:00Z",
+  "recorded_opportunity": "STP-GBPUSD-20261127-1200-57",
+  "recorded_test": 1,
+  "recorded_signal": "STP-GBPUSD-20261127-1200-57#t1"
+ },
+ {
+  "reference": "AB261127151117-d13449c1",
+  "strategy": "Bollinger bounce 5m",
+  "direction": "sell",
+  "idea_time": "2026-11-27T15:11:16Z",
+  "opened_utc": "2026-11-27T15:11:16Z",
+  "entry_price": "13106.5",
+  "rejection_candle": "2026-11-27T14:45:00Z",
+  "recorded_opportunity": "STP-GBPUSD-20261127-1500-59",
+  "recorded_test": 1,
+  "recorded_signal": "STP-GBPUSD-20261127-1500-59#t1"
+ }
+]

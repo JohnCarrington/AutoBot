@@ -414,3 +414,7 @@ See `REVIEW_R1_R4.md`. R1, R2 and R3 are confirmed defects, each reproduced and 
 ### 13.12 Review R3.1
 
 See `REVIEW_R3_1.md`: a confirmed defect (continuity inferred from adjacent timestamps; the engine's once-a-second sample). Corrected with the feed's record of every price and the stream's own connection state.
+
+### 13.13 Review of fec364b (R3.2)
+
+See `REVIEW_R3_2.md`. IG's DISTINCT tick subscription with filtered dispatching does not guarantee every price change, so a locally built candle never stands in for IG's own. Until IG's completed candle is stored, the STP check refuses (PD-5). The R3.1 stand-in and its module are removed, and the stream, feed and service are back to production code.

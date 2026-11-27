@@ -1,0 +1,20 @@
+{
+ "opportunities": [
+  {
+   "id": "STP-GBPUSD-20261127-1500-60",
+   "trade": "BUY",
+   "entry_zone": {
+    "low": "13108.5",
+    "high": "13119.1"
+   }
+  },
+  {
+   "id": "STP-GBPUSD-20261127-1700-61",
+   "trade": "SELL",
+   "entry_zone": {
+    "low": "13093",
+    "high": "13103"
+   }
+  }
+ ]
+}

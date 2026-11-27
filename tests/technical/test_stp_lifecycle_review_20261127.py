@@ -192,70 +192,46 @@ def _state(m5):
 B = T(2026, 11, 17, 10, 5)                                           # a 5-minute boundary
 
 
-def test_TR3_01_just_after_a_boundary_a_destination_touch_in_the_unpublished_candle_refuses(tmp_path):
+def test_TR3_01_just_after_a_boundary_an_unpublished_candle_refuses_whatever_the_engine_saw(tmp_path):
+    """Review R3, as amended by the review of fec364b: IG's own completed candle, or refuse (PD-5)."""
     from stp.authorise import authorise
     now = B + timedelta(milliseconds=400)                            # IG has not yet sent the 10:00 candle's end
     st = _store_until(B, drop={T(2026, 11, 17, 10, 0)})
-    prev = five(T(2026, 11, 17, 10, 0), 13200, 13200, 13169, 13185)   # the engine's own candle: 13170 touched
-    v = authorise(auth_settings(tmp_path), st, _sell_idea(now), now, src(_state(T(2026, 11, 17, 10, 0))),
-                  partial=None, previous=prev)
-    assert not v.allowed and "primary destination 13170 was reached" in " ".join(v.reasons)
+    part = five(T(2026, 11, 17, 10, 5), 13200, 13201, 13199, 13200)  # the new forming candle: no help
+    v = authorise(auth_settings(tmp_path), st, _sell_idea(now), now, src(_state(T(2026, 11, 17, 10, 0))), partial=part)
+    assert not v.allowed and any("PD-5" in r for r in v.reasons) and "is not stored yet" in " ".join(v.reasons)
 
 
-def test_TR3_02_normal_publication_timing_does_not_refuse_a_clean_candle(tmp_path):
+def test_TR3_02_once_ig_publishes_a_clean_candle_the_authorisation_proceeds(tmp_path):
     from stp.authorise import authorise
-    now = B + timedelta(milliseconds=400)
-    st = _store_until(B, drop={T(2026, 11, 17, 10, 0)})
-    prev = five(T(2026, 11, 17, 10, 0), 13200, 13201, 13199, 13200)
-    v = authorise(auth_settings(tmp_path), st, _sell_idea(now), now, src(_state(T(2026, 11, 17, 10, 0))),
-                  partial=None, previous=prev)
+    now = B + timedelta(seconds=1)
+    v = authorise(auth_settings(tmp_path), _store_until(B), _sell_idea(now), now, src(_state(T(2026, 11, 17, 10, 0))))
     assert v.allowed, v.reasons
 
 
-def test_TR3_03_at_the_boundary_before_any_new_price_the_forming_candle_is_the_finished_one(tmp_path):
+def test_TR3_03_at_the_boundary_before_any_new_price_the_forming_candle_does_not_stand_in(tmp_path):
     from stp.authorise import authorise
     st = _store_until(B, drop={T(2026, 11, 17, 10, 0)})
-    part = five(T(2026, 11, 17, 10, 0), 13200, 13200, 13169, 13185)
-    v = authorise(auth_settings(tmp_path), st, _sell_idea(B), B, src(_state(T(2026, 11, 17, 10, 0))),
-                  partial=part, previous=None, partial_covered=True)
-    assert not v.allowed and "primary destination 13170 was reached" in " ".join(v.reasons)
+    part = five(T(2026, 11, 17, 10, 0), 13200, 13201, 13199, 13200)  # the just-finished candle, from live prices
+    v = authorise(auth_settings(tmp_path), st, _sell_idea(B), B, src(_state(T(2026, 11, 17, 10, 0))), partial=part)
+    assert not v.allowed and any("PD-5" in r for r in v.reasons)
 
 
 def test_TR3_04_a_genuine_gap_in_the_most_recent_interval_refuses(tmp_path):
     from stp.authorise import authorise
     now = B + timedelta(seconds=40)
-    st = _store_until(B, drop={T(2026, 11, 17, 10, 0)})               # never stored; the engine has no full candle
-    v = authorise(auth_settings(tmp_path), st, _sell_idea(now), now, src(_state(T(2026, 11, 17, 10, 0))),
-                  partial=None, previous=None)
-    assert not v.allowed and any("PD-5" in r for r in v.reasons)
-
-
-def test_TR3_05_a_candle_the_engine_saw_only_in_part_does_not_count(tmp_path):
-    from stp.authorise import authorise
-    now = B + timedelta(seconds=2)
     st = _store_until(B, drop={T(2026, 11, 17, 10, 0)})
-    part = five(T(2026, 11, 17, 10, 0), 13200, 13201, 13199, 13200)  # began after a restart mid-candle
-    v = authorise(auth_settings(tmp_path), st, _sell_idea(B), B, src(_state(T(2026, 11, 17, 10, 0))),
-                  partial=part, previous=None, partial_covered=False)
+    v = authorise(auth_settings(tmp_path), st, _sell_idea(now), now, src(_state(T(2026, 11, 17, 10, 0))))
     assert not v.allowed and any("PD-5" in r for r in v.reasons)
 
 
-def test_TR3_06_the_feeds_live_record_is_whole_only_on_an_unbroken_connection_from_before_the_candle(tmp_path):
-    """Review R3.1 replaces the engine's own bookkeeping (b84d6d6): prices/live.py, from every price."""
-    from prices.live import LiveCandles
-    lv = LiveCandles()
-    tk = lambda t, p: SimpleNamespace(time=t, buy=D(p) + D("1.2"), sell=D(p))            # noqa: E731
-    lv.add(tk(T(2026, 11, 17, 9, 57), "13200"))                       # first price on a connection: 09:55 part-way
-    lv.add(tk(T(2026, 11, 17, 10, 2), "13169"))
-    lv.add(tk(T(2026, 11, 17, 10, 2, 0, 400000), "13200"))           # inside one second: still counted
-    lv.add(tk(T(2026, 11, 17, 10, 5, 1), "13201"))
-    c, whole = lv.observed(T(2026, 11, 17, 10, 0))
-    assert whole and c.sell_low == D("13169") and c.sell_open == D("13200")
-    assert lv.observed(T(2026, 11, 17, 9, 55))[1] is False            # entered part-way
-    lv.interrupted()                                                  # a drop or a stall
-    assert lv.observed(T(2026, 11, 17, 10, 5))[1] is False
-    lv.add(tk(T(2026, 11, 17, 10, 7), "13202"))                       # back: whole again from 10:10 only
-    assert lv.observed(T(2026, 11, 17, 10, 5))[1] is False and lv.covered_from == T(2026, 11, 17, 10, 10)
+def test_TR3_05_the_engine_passes_the_stp_check_nothing_but_its_forming_candle_and_the_live_price():
+    import inspect
+    from stp.authorise import authorise
+    from trading import engine as eng
+    assert list(inspect.signature(authorise).parameters) == ["settings", "store", "idea", "now", "source", "partial",
+                                                             "tick"]
+    assert "previous" not in inspect.getsource(eng.Trading._place)
 
 
 def test_TR3_07_a_published_candle_is_read_from_the_store_as_before(tmp_path):

@@ -1,0 +1,3 @@
+FAILED tests/functional/test_stp_live_continuity_20261127.py::test_R31_10_after_a_whole_quiet_interval_the_next_unpublished_candle_is_not_rebuilt_without_its_carried_open
+FAILED tests/functional/test_stp_live_continuity_20261127.py::test_R31_11_a_finished_candle_ig_has_not_published_is_never_replaced_by_a_local_one
+======================= 2 failed, 9 deselected in 0.35s ========================

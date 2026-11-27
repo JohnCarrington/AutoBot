@@ -33,6 +33,13 @@ FIX = Path(__file__).resolve().parent / "fixtures" / "lifecycle_20261127"
 START = datetime(2026, 11, 25, 9, 15, tzinfo=UTC)
 
 
+def use_fixtures(path: Path) -> Path:
+    """Point the replay at another fixture set (e.g. fixtures/lifecycle_20261127_1830); returns the previous one."""
+    global FIX
+    old, FIX = FIX, Path(path)
+    return old
+
+
 def plans() -> dict:
     return json.loads(gzip.decompress((FIX / "plans.json.gz").read_bytes()))["plans"]
 
@@ -211,7 +218,7 @@ def replay(s: Any, end: datetime, store: AvailStore | None = None, ideas: list[d
         outcomes.append(out)
     events = [json.loads(x) for x in (folder / "recommendations.jsonl").read_text().splitlines()]
     issued = {}
-    for x in (folder / "issued.jsonl").read_text().splitlines():
+    for x in ((folder / "issued.jsonl").read_text().splitlines() if (folder / "issued.jsonl").exists() else []):
         r = json.loads(x)
         issued[r["id"]] = (r["trade"], r["entry_zone"]["low"], r["entry_zone"]["high"])
     return {"snapshots": snaps, "events": events, "outcomes": outcomes, "store": store, "issued": issued}

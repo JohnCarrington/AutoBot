@@ -107,11 +107,9 @@ def test_FL_A8_only_reissues_of_a_place_whose_destination_was_just_achieved_are_
     key_p = {(t, *prod_iss[i][:2]) for i, t in created(prod).items() if i in prod_iss}
     key_n = {(t, *run["issued"][i][:2]) for i, t in created(run["events"]).items() if i in run["issued"]}
     assert key_n <= key_p                                              # nothing new is published
-    assert sorted(key_p - key_n) == [
-        ("2026-11-25T21:00:03Z", "BUY", "13084.1"),                    # after 1700-34 completed with its trade (WP2)
-        ("2026-11-26T20:00:03Z", "SELL", "13115.1"), ("2026-11-26T21:00:03Z", "SELL", "13115.1"),
-        ("2026-11-27T00:00:04Z", "SELL", "13108.5"), ("2026-11-27T02:00:03Z", "SELL", "13108.5"),
-        ("2026-11-27T12:00:03Z", "BUY", "13121.3"), ("2026-11-27T13:05:03Z", "BUY", "13121.3")]
+    # review of fec364b: a completed place's republication is withheld only until its zone re-arms (D-25 / P-C8); the
+    # only ones left are the reissues of 0300-56's test 1, which never re-armed (12:00 and 13:05 on 27 Nov)
+    assert sorted(key_p - key_n) == [("2026-11-27T12:00:03Z", "BUY", "13121.3"), ("2026-11-27T13:05:03Z", "BUY", "13121.3")]
 
 
 def test_FL_A9_the_session_sweep_and_every_ungated_strategy_never_reach_stp():
@@ -221,3 +219,37 @@ def test_FL_D2_the_migration_takes_the_revised_destinations_from_the_record():
     h = {o["id"]: o for o in history(FIX / "migration" / "planner", "2026-11-24T00:00:00Z")}
     assert h["STP-GBPUSD-20261125-0400-27"]["primary"] == "13053.7"
     assert h["STP-GBPUSD-20261125-1200-29"]["primary"] == "13058.1"
+
+
+# ---- review of fec364b: a genuinely new structural test after a completion stays tradable ------------------------------
+
+@pytest.fixture(scope="module")
+def run1830(tmp_path_factory):
+    """The replay to 18:30 on the 18:29 production copies (fixtures/lifecycle_20261127_1830), the outage as lived."""
+    from tests.stp import lifecycle_replay as R
+    old = R.use_fixtures(R.FIX.parent / "lifecycle_20261127_1830")
+    try:
+        return R.replay(R.settings(tmp_path_factory.mktemp("r1830")), datetime(2026, 11, 27, 18, 30, tzinfo=UTC),
+                        down=(datetime(2026, 11, 27, 12, 1, 58, tzinfo=UTC), datetime(2026, 11, 27, 12, 20, tzinfo=UTC)))
+    finally:
+        R.use_fixtures(old)
+
+
+def test_FL_E1_the_27_nov_15_00_sell_on_a_new_test_after_many_re_arms_is_published_and_fails_closed_on_the_gap(run1830):
+    """SELL 13108.5-13119.1 toward 13103 at 15:00 on 27 Nov: the place's last completion toward 13103 was on 26 Nov at
+    14:45, and the zone re-armed many times since: a genuinely new structural test, which the duplicate rule must not
+    withhold (brief, section 2), so it is PUBLISHED. Its lineage's D-25 count, though, passes through the 27 Nov 12:00
+    hour, built from 9 of 12 candles with its stored part clear of the zone: the missing candles could hide a test or
+    a re-arm, so the 15:11 idea is refused (D-R2, fail closed) until IG's candles are recovered (Saturday, OP-1)."""
+    pub = [e for e in run1830["events"] if e["event"] == "created" and e["time_utc"] == "2026-11-27T15:00:02Z"
+           and run1830["issued"].get(e["id"], ("",))[0] == "SELL"]
+    assert pub, "the 15:00 SELL is published"
+    o = {x["reference"]: x for x in run1830["outcomes"]}["AB261127151117-d13449c1"]
+    assert not o["opened"] and "uncertain hour(s) 2026-11-27T12:00:00Z" in " ".join(o["reasons"]), o
+
+
+def test_FL_E2_the_republications_of_the_still_unre_armed_test_1_stay_withheld(run1830):
+    o = {x["reference"]: x for x in run1830["outcomes"]}
+    assert o["AB261127120127-5755701a"]["opened"] is False
+    created = [(e["time_utc"], run1830["issued"].get(e["id"])) for e in run1830["events"] if e["event"] == "created"]
+    assert not [c for c in created if c[0] in ("2026-11-27T12:00:03Z", "2026-11-27T13:05:03Z") and c[1] and c[1][0] == "BUY"]

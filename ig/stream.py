@@ -67,12 +67,6 @@ class Connected:
 
 
 @dataclass(frozen=True)
-class Stalled:
-    """IG's streaming library reports no data for a while (review R3.1): continuity is broken from now."""
-    how: str
-
-
-@dataclass(frozen=True)
 class Dropped:
     why: str
 
@@ -132,7 +126,6 @@ class PriceStream:
                  transport_factory: Callable[[], Transport], *,
                  on_tick: Callable[[str, dict], None], on_candle: Callable[[str, dict], None],
                  on_new_connection: Callable[[], None] = lambda: None,
-                 on_interruption: Callable[[], None] = lambda: None,
                  market_open_since: Callable[[datetime], datetime | None] = lambda now: now,
                  now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
                  wait: Callable[[float], None] | None = None,
@@ -148,7 +141,6 @@ class PriceStream:
         self.transport_factory = transport_factory
         self.on_tick, self.on_candle = on_tick, on_candle
         self.on_new_connection = on_new_connection
-        self.on_interruption = on_interruption      # a drop or a stall: the feed's live coverage ends (review R3.1)
         self.market_open_since = market_open_since
         self.now = now
         self._stop = threading.Event()
@@ -212,7 +204,6 @@ class PriceStream:
 
     def _reconnect(self, why: str) -> None:
         self.stats.drops += 1
-        self.on_interruption()
         self._close()
         wait = self.waits[min(self.next_wait, len(self.waits) - 1)]
         self.next_wait += 1
@@ -250,8 +241,6 @@ class PriceStream:
             self.on_candle(ev.epic, ev.fields)
         elif isinstance(ev, Dropped):
             self._reconnect(ev.why)
-        elif isinstance(ev, Stalled):
-            self.on_interruption()
         elif isinstance(ev, SubscriptionFailed):
             self._reconnect(f"IG refused the subscription to {ev.item}: error {ev.code} {ev.why}")
         elif isinstance(ev, Refused):
@@ -358,7 +347,6 @@ class LightstreamerTransport:
                     threading.Timer(2.0, later).start()
                 elif status == "STALLED":
                     log.warning("Price stream stalled (no data for a while); the library is checking it.")
-                    emit(Stalled(status))
 
             def onServerError(self, code, message):
                 transport._server_error.set()

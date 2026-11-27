@@ -180,3 +180,21 @@ def test_TW3_10_reconciliation_is_idempotent_and_writes_nothing_but_the_trackers
     assert sum(e["event"] == "data gap reconciled" for e in ev(tmp_path)) == 1
     written = {p.relative_to(tmp_path).parts[0] for p in tmp_path.rglob("*") if p.is_file()}
     assert written == {"planner"}                                 # no order, decision or record of any kind
+
+
+def test_TW3_11_an_uncertain_hour_met_when_a_lineage_is_seeded_is_reconciled_once_its_candle_is_complete(tmp_path):
+    """Review of fec364b (PD-5 C): an uncertain hour not tied to any opportunity's recorded gap (met while seeding or
+    rejoining a lineage) is re-checked too once the store holds its complete candle; until then it blocks (D-R2)."""
+    inc = C("1h", at(8), 1, 13200, 13201, 13199, 13200)
+    inc = type(inc)(**{**inc.__dict__, "parts": 9, "expected_parts": 12})
+    pre = [hour(at(7), 13200, 13201, 13199, 13200), inc]            # 08:00 incomplete, its stored parts clear
+    plans = Bi(SELL=[pd()])
+    run(tmp_path, store_with(NOW, extra1=pre), NOW, plans)          # seeded at 09:00:03 over the 08:00 hour
+    a = opps(tmp_path)[0]["lineage"]
+    assert state(tmp_path)["lineages"][a]["tests"]["uncertain"] == ["2026-11-17T08:00:00Z"]
+    full = hour(at(8), 13200, 13201, 13199, 13200)                  # the 08:00 hour rebuilt from recovered candles
+    run(tmp_path, store_with(at(9, 10), extra1=[pre[0], full]), at(9, 10), plans)
+    t = state(tmp_path)["lineages"][a]["tests"]
+    assert t["uncertain"] == [] and t.get("reconciled")
+    rej = five(at(9, 5), 13230, 13241, 13229, 13238)
+    assert check(tmp_path, store_with(at(9, 11), extra1=[pre[0], full], extra5=[rej]), at(9, 5), at(9, 11)).allowed

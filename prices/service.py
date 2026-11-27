@@ -195,7 +195,6 @@ def serve(settings: Any = None, *, client: Any = None, transport_factory: Callab
                              on_tick=lambda epic, fields: feeds[epic].on_tick(fields),
                              on_candle=lambda epic, fields: feeds[epic].on_candle(fields),
                              on_new_connection=new_connection,
-                             on_interruption=lambda: [f.interrupted() for f in feeds.values()],
                              market_open_since=any_feed.market_open_since, now=now, warn=any_feed.warn,
                              on_quiet=lambda m: alerts.problem("stream-quiet", m))
         if stop.is_set():
@@ -251,7 +250,6 @@ def _start_trading(ps: Any, feed: Any, client: Any, alerts: Any, now: Callable[[
         return t.sell, t.buy
     try:
         engine = Trading(ps, feed.store, client, alerts, trading_on=trading_on, now=now, quote=quote)
-        engine.observed = feed.live.observed       # review R3.1: the feed's record from every price, with coverage
         engine.start(now())
         return engine
     except Exception as e:                      # never stop the price service

@@ -120,6 +120,14 @@ def last_rearm_before(settings: Any, store: Any, low: Decimal, high: Decimal, up
     return None
 
 
+def rearmed_since(settings: Any, store: Any, low: Any, high: Any, since: datetime, upto: datetime) -> bool:
+    """Whether the zone re-armed (D-25 / P-C8: a COMPLETE finished hourly candle wholly clear of it) in an hourly
+    candle starting at or after `since` and finished by `upto`."""
+    low, high = _d(low), _d(high)
+    return any(complete(c) and wholly_clear(settings, c, low, high) for c in _hours(store, since, upto)
+               if c.start >= since)
+
+
 def seed_tests(settings: Any, store: Any, low: Any, high: Any, created: datetime) -> dict:
     """A new lineage's D-25 count: from its zone's last re-arm before the creation hour, every finished hour up to the
     creation hour counted; the creation hour is counted by the tracker when it finishes."""

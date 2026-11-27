@@ -1,0 +1,2 @@
+start_utc,end_utc,buy_open,buy_high,buy_low,buy_close,sell_open,sell_high,sell_low,sell_close,parts,expected_parts
+2026-11-22T20:00:00Z,2026-11-23T00:00:00Z,13100,13111.6,13091.3,13095.7,13079,13097.1,13071.5,13094.2,32,36

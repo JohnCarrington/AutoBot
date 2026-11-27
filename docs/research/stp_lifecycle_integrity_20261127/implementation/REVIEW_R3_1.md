@@ -1,5 +1,7 @@
 # Review R3.1: live price continuity (review of `b84d6d6`, 27 November 2026)
 
+> **Superseded in part by `REVIEW_R3_2.md` (review of `fec364b`):** a candle built from the live prices never stands in for IG's candle, because its completeness cannot be established. The local record and the stall wiring described below were removed.
+
 **Verdict: confirmed defect, in two parts, both corrected.** Reproduced with failing functional tests on `b84d6d6` (`review_R3_1_tests_before_fix.txt`).
 
 No strategy confirmation, forecasting, entry zone, stop, take profit or trade management changed. Nothing is deployed.

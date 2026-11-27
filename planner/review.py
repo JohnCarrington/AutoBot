@@ -36,7 +36,7 @@ def blocked(state: dict) -> list[dict]:
     for o in state.get("opportunities") or []:
         L = lins.get(o.get("lineage") or o.get("id")) or {}
         gaps = [g for g in o.get("data_gaps") or [] if g.get("status") != "reconciled"]
-        unc = list((L.get("tests") or {}).get("uncertain") or [])
+        unc = list((L.get("tests") or {}).get("uncertain") or []) + list((L.get("tests") or {}).get("review_hours") or [])
         if gaps or unc:
             out.append({"id": o["id"], "trade": o.get("trade"), "status": o.get("status"), "lineage": o.get("lineage"),
                         "gaps": gaps, "uncertain_hours": unc, "consumed": L.get("consumed") or {},

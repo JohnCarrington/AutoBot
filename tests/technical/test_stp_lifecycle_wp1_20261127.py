@@ -349,3 +349,16 @@ def test_TW1_18_alias_keys_survive_a_restart_and_an_unresolved_submission_holdin
     used = OrderSender.used_signals(SimpleNamespace(trades={}, unresolved={
         "AB-unsettled": {"signal": "OLD-ID#t1", "strategy": "Bollinger bounce 5m"}}))
     assert rule11(used)(v.signal) == ["same signal already traded by Bollinger bounce 5m"]
+
+
+def test_TW1_19_after_a_re_arm_a_republication_toward_the_achieved_destination_is_a_new_test_and_is_issued(tmp_path):
+    """Review of fec364b: the completed-opportunity duplicate rule withholds a republication only while the zone has
+    not re-armed since the completion (D-25 / P-C8: a complete hourly candle wholly clear of it)."""
+    plans = Bi(SELL=[pd(primary=13170), pd(primary=13170), pd(primary=13170)])
+    down = _completed(tmp_path, plans)
+    run(tmp_path, at(10, 0, 3), plans, price=13236, extra5=down, extra1=near_hours(at(8), at(10)))
+    assert opps(tmp_path) == []                                   # no re-arm yet: withheld
+    hrs = near_hours(at(8), at(10)) + [hour(at(10), 13200, 13201, 13199, 13200)] + near_hours(at(11), at(12))
+    run(tmp_path, at(12, 0, 3), plans, price=13236, extra5=down, extra1=hrs)    # 10:00 wholly clear: re-armed
+    o = opps(tmp_path)
+    assert len(o) == 1 and o[0]["lineage"] != o[0]["id"]           # issued, in the same lineage, as a new test

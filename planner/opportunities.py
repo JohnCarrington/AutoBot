@@ -45,7 +45,7 @@ from typing import Any
 from planner.keeper import (ACTIVE, AFTER_TRADE, BEFORE, COMPLETED, EVENT_BASIS, INVALIDATED, LIVE, SUPERSEDED, UTC,
                             WAITING, Keeper, _d, _iso, destination_end, identity, overlaps, summary)
 from planner.gaps import filled, missing_fives
-from planner.lineage import complete, count_gap, count_hour, new_tests, seed_tests, zones_overlap
+from planner.lineage import complete, count_gap, count_hour, new_tests, rearmed_since, seed_tests, zones_overlap
 from planner.measure import cl, freshness, hi, lo, ppp, side_of
 from planner.zones import interacts, wholly_clear
 from prices.model import UK, parse_iso, plain, uk_short
@@ -239,7 +239,7 @@ class OpportunityKeeper(Keeper):
                         best, best_l = m, L
         return best, best_l
 
-    def _duplicate_of(self, p: dict) -> str | None:
+    def _duplicate_of(self, p: dict, now: datetime | None = None) -> str | None:
         """The completed-opportunity duplicate rule (FC-05, D-1; owner 19 November 2026), with PD-2 (owner 27 November
         2026): the most recently ended opportunity of the same direction with the proposal's identity or an entry zone
         overlapping it COMPLETED (or reached its destination after a confirmed trade entry), and the proposal's primary
@@ -249,6 +249,13 @@ class OpportunityKeeper(Keeper):
         m, _ = self._ended_match(p, lineage_rule=False)
         if m is not None:
             if m.get("effective_status") != COMPLETED:
+                return None
+            # review of fec364b (brief, section 2): a genuinely new structural test stays tradable. Once the zone has
+            # re-armed since the completion (D-25 / P-C8), the republication is a new test of the place, not the
+            # completed one again; it is issued (and joins the lineage, so its keys carry on)
+            z = m.get("zone") or {}
+            if z and now is not None and rearmed_since(self.s, self.store, z["low"], z["high"],
+                                                       parse_iso(m["ended_utc"]), now):
                 return None
             if (price is not None and m.get("primary") is not None and _d(price) == _d(m["primary"])) or \
                     zones_overlap(m.get("primary_zone"), pzone):
@@ -356,6 +363,7 @@ class OpportunityKeeper(Keeper):
         ineligible. Never an order, never a reopened opportunity, never a rewritten event."""
         side = side_of(self.s)
         self._reconcile_ended(now)
+        self._reconcile_uncertain(now)
         for rec in list(self.opportunities):
             for g in list(rec.get("data_gaps") or []):
                 if g.get("status") != "open" or not filled(self.s, self.store, g):
@@ -388,7 +396,10 @@ class OpportunityKeeper(Keeper):
                         if (close >= _d(zb)) if rec["trade"] == "SELL" else (close <= _d(zb)):
                             review.append(f"the rebuilt {uk_short(h.start)} hourly candle closed at {plain(close)}, "
                                           f"beyond the zone break {zb}: its break window cannot be replayed")
-                    if L is not None and _iso(h.start) in (L["tests"].get("uncertain") or []):
+                    if L is not None and _iso(h.start) in (L["tests"].get("review_hours") or []):
+                        review.append(f"the rebuilt {uk_short(h.start)} hourly candle would change the D-25 count, but "
+                                      f"later tests are already numbered: not renumbered")
+                    elif L is not None and _iso(h.start) in (L["tests"].get("uncertain") or []):
                         z = rec["entry_zone"]
                         low, high = _d(z["low"]), _d(z["high"])
                         later = [e for e in L["tests"].get("events", []) if parse_iso(e[0]) > h.start]
@@ -411,6 +422,41 @@ class OpportunityKeeper(Keeper):
                                       f"were re-checked in time order: status {before} -> {after}"
                                       + (f"; left for review: {'; '.join(review)}" if review else
                                          "; eligible again for authorisation" if rec in self.opportunities else ""))})
+
+    def _reconcile_uncertain(self, now: datetime) -> None:
+        """PD-5 C (review of fec364b): every lineage's uncertain hour, whatever met it (an opportunity's gap, the seeding
+        or a rejoin), is re-checked once the store holds that hour's COMPLETE candle (IG's recovered candles, rebuilt):
+        its D-25 verdict is applied if no later test is numbered, otherwise the hour is left for review (it keeps the
+        lineage's opportunities ineligible: D-R2, fail closed). Every outcome is a new event; nothing is renumbered."""
+        for L in self.lineages.values():
+            t = L.get("tests") or {}
+            for hs in list(t.get("uncertain") or []):
+                h = next((c for c in self.store.read_range("1h", parse_iso(hs), parse_iso(hs) + timedelta(hours=1))
+                          if _iso(c.start) == hs), None)
+                if h is None or not complete(h):
+                    continue
+                tracked = sorted((r for r in self.opportunities if r.get("lineage") == L["id"] and r["status"] in TRACKED),
+                                 key=lambda r: (r["created_utc"], r["id"]))
+                z = tracked[0]["entry_zone"] if tracked else (L.get("home_zone") or {})
+                if not z:
+                    continue
+                later = [e for e in t.get("events", []) if parse_iso(e[0]) > h.start]
+                probe = {"events": [e for e in t.get("events", []) if parse_iso(e[0]) < h.start], "through_utc": None,
+                         "uncertain": []}
+                what = count_hour(self.s, probe, h, _d(z["low"]), _d(z["high"]))
+                t["uncertain"] = [x for x in t["uncertain"] if x != hs]
+                if what in ("test", "rearm") and later:
+                    t.setdefault("review_hours", []).append(hs)
+                    outcome = f"a {what} for the D-25 count, but later tests are already numbered: left for review"
+                else:
+                    if what in ("test", "rearm"):
+                        t["events"] = sorted(t["events"] + [[hs, what]], key=lambda e: e[0])
+                    outcome = f"{what or 'no change'} for the D-25 count"
+                t.setdefault("reconciled", []).append([hs, what or "no change"])
+                self._append({"time_utc": _iso(now), "event": "uncertain hour reconciled", "id": None,
+                              "lineage": L["id"], "hour_utc": hs,
+                              "why": f"the {uk_short(h.start)} hourly candle is now complete (IG's recovered candles): "
+                                     f"{outcome} (PD-5)"})
 
     def _reconcile_ended(self, now: datetime) -> None:
         """C, for an opportunity that ENDED with a gap still open: once the gap's candles are stored, the zone touch
@@ -716,7 +762,7 @@ class OpportunityKeeper(Keeper):
                           f"({oz['low']}-{oz['high']} to {nz['low']}-{nz['high']}): " + (p.get("selection_reason") or ""))
                 new = self._new_opp(now, p, f"supersedes {old['id']}: {p.get('selection_reason')}", inherit=old)
             else:
-                dup = self._duplicate_of(p)
+                dup = self._duplicate_of(p, now)
                 if dup is not None:
                     why = (f"not issued: the same identity and primary destination {p['destinations']['primary']['price']} "
                            f"as {dup}, which already reached it")

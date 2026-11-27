@@ -1,0 +1,9 @@
+FAILED tests/functional/test_stp_lifecycle_replay_20261127.py::test_FL_E1_the_27_nov_15_11_sell_on_a_new_test_after_many_re_arms_is_still_authorised
+================= 1 failed, 1 passed, 38 deselected in 59.28s ==================
+FAILED tests/technical/test_stp_lifecycle_wp1_20261127.py::test_TW1_19_after_a_re_arm_a_republication_toward_the_achieved_destination_is_a_new_test_and_is_issued
+======================= 1 failed, 22 deselected in 0.30s =======================
+E       AssertionError: assert (['2026-11-17T08:00:00Z'] == []
+E         
+E         Left contains one more item: '2026-11-17T08:00:00Z'
+E         Use -v to get more diff)
+FAILED tests/technical/test_stp_lifecycle_wp3_20261127.py::test_TW3_11_an_uncertain_hour_met_when_a_lineage_is_seeded_is_reconciled_once_its_candle_is_complete
