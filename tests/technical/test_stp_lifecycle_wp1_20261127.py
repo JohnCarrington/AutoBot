@@ -200,9 +200,13 @@ def test_TW1_08_an_incomplete_hourly_candle_cannot_re_arm_the_count(tmp_path):
         ok(tmp_path, store_with(t, extra1=hrs), plans).run(t)
     rej = [five(at(10, 30), 13230, 13241, 13229, 13235)]
     store = store_with(at(11, 1), extra5=rej, extra1=hrs)
-    assert check(tmp_path, store, at(10, 30), at(11, 1)).stp_key == f"{a}#t1"  # not #t2: no re-arm from missing data
     lin = state(tmp_path)["lineages"][a]
+    from planner.lineage import test_number
+    assert test_number(KS(tmp_path), store, D("13240"), D("13250"),
+                       lin["tests"], at(10, 30)) == 1                         # not 2: no re-arm from missing data
     assert "2026-11-17T09:00:00Z" in lin["tests"]["uncertain"]
+    v = check(tmp_path, store, at(10, 30), at(11, 1))                          # WP3 (PD-5 B): nor any authorisation
+    assert not v.allowed and "uncertain" in v.reasons[0]                       # until that hour is reconciled
 
 
 # ---- C-3 / PD-2: the completed-opportunity duplicate rule on destination zones ------------------------------------------
@@ -324,3 +328,24 @@ def test_TW1_17_a_mapped_alias_key_is_protected_as_well(tmp_path):
     v = check(tmp_path, store, at(9, 5), at(9, 15))
     assert v.allowed and "OLD-ID#t1" in v.signal.split("|")
     assert rule11(used_from("OLD-ID#t1"))(v.signal)
+
+
+def test_TW1_18_alias_keys_survive_a_restart_and_an_unresolved_submission_holding_one_refuses(tmp_path):
+    """PD-4: after the map is applied, a fresh tracker process (restart) still carries the alias in its own state, and
+    an order sent with the old key but never settled at IG (Phase 1: unresolved, counted by rule 11) refuses the test."""
+    from orders.sender import OrderSender
+    plans = Bi(SELL=[pd()])
+    run(tmp_path, NOW, plans, price=13236)
+    a = opps(tmp_path)[0]["id"]
+    (tmp_path / "planner" / "GBPUSD" / "lineage_map.json").write_text(json.dumps(
+        {"version": 1, "lineages": {a: {"trade": "SELL", "aliases": {"1": ["OLD-ID#t1"]}}}, "opportunity_lineage": {}}))
+    run(tmp_path, at(9, 10), plans, price=13236)
+    (tmp_path / "planner" / "GBPUSD" / "lineage_map.json").unlink()          # the file gone: the state keeps it
+    for m in (15, 20):                                                         # two more processes (restarts)
+        run(tmp_path, at(9, m), plans, price=13236)
+    assert state(tmp_path)["lineages"][a]["aliases"] == {"1": ["OLD-ID#t1"]}
+    v = check(tmp_path, store_with(at(9, 25), 13236), at(9, 5), at(9, 25))
+    assert v.allowed and "OLD-ID#t1" in v.signal.split("|")
+    used = OrderSender.used_signals(SimpleNamespace(trades={}, unresolved={
+        "AB-unsettled": {"signal": "OLD-ID#t1", "strategy": "Bollinger bounce 5m"}}))
+    assert rule11(used)(v.signal) == ["same signal already traded by Bollinger bounce 5m"]

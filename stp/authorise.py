@@ -83,6 +83,18 @@ def which_test(settings: Any, store: Any, low: Decimal, high: Decimal, since: da
     return test_number(settings, store, low, high, tests, rejection_start, since)
 
 
+def unreconciled(state: dict, o: dict) -> list[str]:
+    """PD-5 B (owner, 27 November 2026): why this opportunity's history cannot be relied on yet: a recorded data gap
+    in its life not yet re-checked on recovered candles, or an uncertain hour in its lineage's D-25 count."""
+    out = [f"STP data gap {g['from_utc']} to {g['to_utc']} not reconciled" + (" (left for review)"
+                                                                            if g.get("status") == "review" else "")
+           for g in o.get("data_gaps") or [] if g.get("status") != "reconciled"]
+    t = (_lineage(state, o).get("tests") or {})
+    if t.get("uncertain"):
+        out.append(f"STP data gap: the D-25 count of its lineage has uncertain hour(s) {', '.join(t['uncertain'])}")
+    return out
+
+
 def _lineage(state: dict, o: dict) -> dict:
     return (state.get("lineages") or {}).get(o.get("lineage") or o["id"]) or {}
 
@@ -125,6 +137,13 @@ def _catch_up(settings: Any, store: Any, state: dict, o: dict, now: datetime, pa
                 out.append(f"the primary destination {o['destinations']['primary']['price']} was reached by {when}, "
                            f"after the tracker's last step: the opportunity has ended")
                 break
+    if since is not None:                             # PD-5: a candle the tracker has not seen and the store lacks
+        from planner.gaps import missing_fives
+        from prices.calendar import floor_5m
+        gap = missing_fives(settings, store, since, floor_5m(now) - timedelta(minutes=5))
+        if gap:
+            out.append(f"no 5-minute candles stored from {uk_short(gap[0][0])} to {uk_short(gap[-1][1])}, after the "
+                       f"tracker's last step: the opportunity's state is unknown (PD-5)")
     inv = o.get("invalidation") or {}
     zb = inv.get("zone_break_close")
     h1_since = parse_iso(state["validated_h1_end"]) if state.get("validated_h1_end") else None
@@ -198,7 +217,7 @@ def authorise(settings: Any, store: Any, idea: Any, now: datetime, source: Any, 
                              -CLASS_RANK.get(o["entry_zone"].get("class"), 0), abs(edge(o) - ext)))
     reasons: list[str] = []
     for o in near:
-        why = _catch_up(settings, store, state, o, now, partial, tick)
+        why = unreconciled(state, o) + _catch_up(settings, store, state, o, now, partial, tick)
         zb = (o.get("invalidation") or {}).get("zone_break_close")
         price = _d(idea.entry_price)
         if zb is not None and ((price >= _d(zb)) if sell else (price <= _d(zb))):

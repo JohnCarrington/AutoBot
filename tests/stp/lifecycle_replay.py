@@ -125,10 +125,11 @@ def settings(folder: Path, **sw: bool) -> Any:
     return Over(s, folder)
 
 
-def start_state(s: Any) -> None:
+def start_state(s: Any, initial: dict | None = None) -> None:
     d = Path(s.planner.folder) / s.market.pair
     d.mkdir(parents=True, exist_ok=True)
-    (d / "current.json").write_text((FIX / "initial_state_20261125_0915.json").read_text())
+    (d / "current.json").write_text(json.dumps(initial) if initial is not None else
+                                    (FIX / "initial_state_20261125_0915.json").read_text())
 
 
 def acknowledge(s: Any) -> Callable[[dict, Any, datetime], None]:
@@ -147,7 +148,9 @@ def acknowledge(s: Any) -> Callable[[dict, Any, datetime], None]:
 
 
 def replay(s: Any, end: datetime, store: AvailStore | None = None, ideas: list[dict] | None = None,
-           on_open: Callable[[dict, Any, datetime], None] | None = None, acks: bool = True) -> dict:
+           on_open: Callable[[dict, Any, datetime], None] | None = None, acks: bool = True,
+           start: datetime = START, initial: dict | None = None,
+           down: tuple[datetime, datetime] | None = None) -> dict:
     """The tracker after every 5-minute candle from START to `end`, with the recorded STP trades' ideas offered at
     their own times. Returns the tracker's snapshots, its events and each idea's outcome."""
     from orders.sender import OrderSender
@@ -155,7 +158,7 @@ def replay(s: Any, end: datetime, store: AvailStore | None = None, ideas: list[d
     from safety.rules import _one_signal
     from stp.authorise import authorise
     store = store or fixture_store()
-    start_state(s)
+    start_state(s, initial)
     if on_open is None and acks:
         try:
             on_open = acknowledge(s)
@@ -164,10 +167,12 @@ def replay(s: Any, end: datetime, store: AvailStore | None = None, ideas: list[d
     planner = RecordedPlanner()
     folder = Path(s.planner.folder) / s.market.pair
     recorded = sorted(parse(k) for k in planner.p)
-    runs, t = [], START
+    runs, t = [], start
     while t <= end:
         exact = next((r for r in recorded if t <= r < t + timedelta(minutes=1)), None)
-        runs.append(exact or t + timedelta(seconds=3))       # the recorded analysis time where production had one
+        when = exact or t + timedelta(seconds=3)              # the recorded analysis time where production had one
+        if down is None or not (down[0] <= when < down[1]):   # `down`: the price service was stopped (no tracker run)
+            runs.append(when)
         t += timedelta(minutes=5)
     ideas = sorted(ideas if ideas is not None else trades(), key=lambda x: x["idea_time"])
     queue = sorted([(r, "run", None) for r in runs] +

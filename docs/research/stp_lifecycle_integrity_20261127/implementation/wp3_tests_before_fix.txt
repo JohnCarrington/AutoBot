@@ -1,0 +1,10 @@
+FAILED tests/technical/test_stp_lifecycle_wp3_20261127.py::test_TW3_01_a_gap_in_an_opportunitys_life_is_recorded_and_stops_its_authorisations
+FAILED tests/technical/test_stp_lifecycle_wp3_20261127.py::test_TW3_03_the_weekend_is_never_a_gap
+FAILED tests/technical/test_stp_lifecycle_wp3_20261127.py::test_TW3_04_after_recovery_a_missed_zone_touch_is_reconciled_and_authorisation_resumes
+FAILED tests/technical/test_stp_lifecycle_wp3_20261127.py::test_TW3_05_after_recovery_a_destination_reached_in_the_gap_ends_it
+FAILED tests/technical/test_stp_lifecycle_wp3_20261127.py::test_TW3_06_a_gap_still_missing_keeps_it_ineligible_without_any_expiry
+FAILED tests/technical/test_stp_lifecycle_wp3_20261127.py::test_TW3_07_an_uncertain_hour_blocks_until_rebuilt_and_is_then_reconciled
+FAILED tests/technical/test_stp_lifecycle_wp3_20261127.py::test_TW3_08_a_rebuilt_hour_that_would_renumber_a_test_is_left_for_review
+FAILED tests/technical/test_stp_lifecycle_wp3_20261127.py::test_TW3_09_a_missing_candle_after_the_trackers_last_step_refuses_at_entry
+FAILED tests/technical/test_stp_lifecycle_wp3_20261127.py::test_TW3_10_reconciliation_is_idempotent_and_writes_nothing_but_the_trackers_own_files
+========================= 9 failed, 1 passed in 0.47s ==========================

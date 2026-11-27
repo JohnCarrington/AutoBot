@@ -44,7 +44,8 @@ from typing import Any
 
 from planner.keeper import (ACTIVE, AFTER_TRADE, BEFORE, COMPLETED, EVENT_BASIS, INVALIDATED, LIVE, SUPERSEDED, UTC,
                             WAITING, Keeper, _d, _iso, destination_end, identity, overlaps, summary)
-from planner.lineage import count_gap, count_hour, new_tests, seed_tests, zones_overlap
+from planner.gaps import filled, missing_fives
+from planner.lineage import complete, count_gap, count_hour, new_tests, seed_tests, zones_overlap
 from planner.measure import cl, freshness, hi, lo, ppp, side_of
 from planner.zones import interacts, wholly_clear
 from prices.model import UK, parse_iso, plain, uk_short
@@ -189,6 +190,10 @@ class OpportunityKeeper(Keeper):
         if L is not None:
             for m in L["members"]:
                 if m["id"] == rec["id"]:
+                    if rec.get("data_gaps"):
+                        m["data_gaps"] = _copy([g for g in rec["data_gaps"] if g.get("status") != "reconciled"])
+                        m["activated"] = bool(rec.get("ever_active"))
+                        m["trade"], m["entry_zone_full"] = rec["trade"], _copy(rec["entry_zone"])
                     m.update(ended_utc=rec["ended_utc"], status=status, effective_status=status,
                              zone={"low": rec["entry_zone"]["low"], "high": rec["entry_zone"]["high"]},
                              destination_case=(evidence or {}).get("destination_case"),
@@ -311,6 +316,135 @@ class OpportunityKeeper(Keeper):
             rec["relation_to_h4"] = plan["relation_to_h4"]
         self.opportunities.append(rec)
         return rec
+
+    # ---- missing market data (WP3, PD-5 A+B+C; planner/gaps.py) -------------------------------------------------------
+
+    def _record_gaps(self, since: datetime, now: datetime) -> None:
+        """A: the expected 5-minute candles (market hours only) from the last step to now that the store does not
+        hold, recorded on every tracked opportunity that existed during them."""
+        from prices.calendar import floor_5m
+        for a, b in missing_fives(self.s, self.store, since, floor_5m(now)):
+            for rec in self.opportunities:
+                if rec["status"] not in TRACKED or parse_iso(rec["created_utc"]) >= b:
+                    continue
+                gaps = rec.setdefault("data_gaps", [])
+                if any(g["from_utc"] == _iso(a) and g["to_utc"] == _iso(b) for g in gaps):
+                    continue
+                run_on = next((g for g in gaps if g["status"] == "open" and g["to_utc"] == _iso(a)), None)
+                if run_on is not None:                  # the same outage, seen over several steps: one interval
+                    run_on["to_utc"] = _iso(b)
+                    continue
+                gaps.append({"from_utc": _iso(a), "to_utc": _iso(b), "found_utc": _iso(now), "status": "open"})
+                self._note(rec, now, "data gap", f"no 5-minute candles stored from {uk_short(a)} to {uk_short(b)} while "
+                           f"the market was open: what price did then is unknown to STP, so this opportunity "
+                           f"authorises nothing until the candles are recovered from IG and re-checked (PD-5)",
+                           from_utc=_iso(a), to_utc=_iso(b))
+
+    def _reconcile_gaps(self, now: datetime) -> None:
+        """C: a recorded gap whose candles the store now holds (IG's own, by the approved recovery) is re-checked on
+        them, in time order, by the tracker's own rules, for that opportunity only. A missed zone touch activates it at
+        that candle; a missed destination ends it (four-way rule, the trade's own time deciding); the rebuilt hourly
+        candles are checked for its D-25 count and its zone break. What cannot be placed without changing a decision
+        already taken (a test already numbered, a break window already passed) is left for review and keeps it
+        ineligible. Never an order, never a reopened opportunity, never a rewritten event."""
+        side = side_of(self.s)
+        self._reconcile_ended(now)
+        for rec in list(self.opportunities):
+            for g in list(rec.get("data_gaps") or []):
+                if g.get("status") != "open" or not filled(self.s, self.store, g):
+                    continue
+                a, b = parse_iso(g["from_utc"]), parse_iso(g["to_utc"])
+                before = rec["status"]
+                for c in self.store.read_range("5m", a, b):
+                    if rec not in self.opportunities:
+                        break
+                    with self._slot(rec):
+                        if rec["status"] in AUTHORISING:
+                            Keeper.five_minute(self, c, now)
+                        elif rec["status"] == BROKEN:
+                            rec["status"] = ACTIVE
+                            try:
+                                Keeper.five_minute(self, c, now)
+                            finally:
+                                if rec["status"] == ACTIVE:
+                                    rec["status"] = BROKEN
+                review = []
+                L = self.lineages.get(rec.get("lineage"))
+                hour0 = a.replace(minute=0, second=0, microsecond=0)
+                for h in self.store.read_range("1h", hour0, b):
+                    if not complete(h):
+                        review.append(f"the {uk_short(h.start)} hourly candle is still incomplete")
+                        continue
+                    zb = (rec.get("invalidation") or {}).get("zone_break_close")
+                    if zb is not None and rec in self.opportunities and rec["status"] in AUTHORISING:
+                        close = cl(h, side)
+                        if (close >= _d(zb)) if rec["trade"] == "SELL" else (close <= _d(zb)):
+                            review.append(f"the rebuilt {uk_short(h.start)} hourly candle closed at {plain(close)}, "
+                                          f"beyond the zone break {zb}: its break window cannot be replayed")
+                    if L is not None and _iso(h.start) in (L["tests"].get("uncertain") or []):
+                        z = rec["entry_zone"]
+                        low, high = _d(z["low"]), _d(z["high"])
+                        later = [e for e in L["tests"].get("events", []) if parse_iso(e[0]) > h.start]
+                        probe = {"events": [e for e in L["tests"].get("events", []) if parse_iso(e[0]) < h.start],
+                                 "through_utc": None, "uncertain": []}
+                        what = count_hour(self.s, probe, h, low, high)
+                        if what in ("test", "rearm") and later:
+                            review.append(f"the rebuilt {uk_short(h.start)} hourly candle is a {what} for the D-25 "
+                                          f"count, but later tests are already numbered: not renumbered")
+                        elif what in ("test", "rearm"):
+                            L["tests"]["events"].append([_iso(h.start), what])
+                        L["tests"]["uncertain"] = [x for x in L["tests"]["uncertain"] if x != _iso(h.start)]
+                        L["tests"].setdefault("reconciled", []).append([_iso(h.start), what or "no change"])
+                g["status"] = "review" if review else "reconciled"
+                g["reconciled_utc"] = _iso(now)
+                after = rec["status"] if rec in self.opportunities else rec.get("status")
+                self._append({"time_utc": _iso(now), "event": "data gap reconciled" if not review else "data gap review",
+                              "id": rec["id"], "from_utc": g["from_utc"], "to_utc": g["to_utc"],
+                              "why": (f"the candles from {uk_short(a)} to {uk_short(b)} are now stored (IG's own) and "
+                                      f"were re-checked in time order: status {before} -> {after}"
+                                      + (f"; left for review: {'; '.join(review)}" if review else
+                                         "; eligible again for authorisation" if rec in self.opportunities else ""))})
+
+    def _reconcile_ended(self, now: datetime) -> None:
+        """C, for an opportunity that ENDED with a gap still open: once the gap's candles are stored, the zone touch
+        they show before its destination (after its creation, by the tracker's own touch rule) corrects the ending's
+        classification to "after_zone" in a recorded event (it is then a completed opportunity for the duplicate rule);
+        the ending, its time and every recorded event stand; nothing is reopened."""
+        from planner.keeper import AFTER_ZONE, AT_CREATION, BEFORE_ZONE, OVERLAPPED, candle_timing
+        for L in self.lineages.values():
+            for m in L.get("members", []):
+                for g in m.get("data_gaps") or []:
+                    if g.get("status") != "open" or not filled(self.s, self.store, g):
+                        continue
+                    a, b = parse_iso(g["from_utc"]), parse_iso(g["to_utc"])
+                    z = m.get("entry_zone_full") or {"low": m["zone"]["low"], "high": m["zone"]["high"]}
+                    end = parse_iso(m["destination_candle_end_utc"]) if m.get("destination_candle_end_utc") else None
+                    touched = None
+                    for c in self.store.read_range("5m", a, b):
+                        if end is not None and c.end > end:
+                            break
+                        if candle_timing(c, m.get("created_utc")) in (BEFORE, OVERLAPPED):
+                            continue
+                        if interacts(self.s, c, _d(z["low"]), _d(z["high"]), from_below=m.get("trade") == "SELL"):
+                            touched = c
+                            break
+                    g["status"], g["reconciled_utc"] = "reconciled", _iso(now)
+                    note = f"the candles from {uk_short(a)} to {uk_short(b)} are now stored (IG's own) and were re-checked"
+                    if touched is not None and m.get("destination_case") in (BEFORE_ZONE, AT_CREATION):
+                        was = m["destination_case"]
+                        m.update(destination_case=AFTER_ZONE, effective_status=COMPLETED,
+                                 corrected={"time_utc": _iso(now), "was": was, "basis": "data recovery",
+                                            "candle_start_utc": _iso(touched.start)})
+                        self._append({"time_utc": _iso(now), "event": "classification corrected", "id": m["id"],
+                                      "why": f"{note}: the {uk_short(touched.start)} candle reached the zone after "
+                                             f"creation and before the destination, so the destination was reached "
+                                             f"after the zone, not {was}; the ending stands, nothing reopened (PD-5)",
+                                      "destination_case": AFTER_ZONE, "was": was,
+                                      "candle_start_utc": _iso(touched.start)})
+                    else:
+                        self._append({"time_utc": _iso(now), "event": "data gap reconciled", "id": m["id"],
+                                      "from_utc": g["from_utc"], "to_utc": g["to_utc"],
+                                      "why": f"{note}: the ending's classification stands"})
 
     def _take_acks(self, now: datetime) -> None:
         """PD-1 C (owner 27 November 2026): the order sender's acknowledgements of trades IG confirmed open from an STP
@@ -608,10 +742,12 @@ class OpportunityKeeper(Keeper):
         now = now.astimezone(UTC)
         self._apply_lineage_map(now)
         self._take_acks(now)
+        self._reconcile_gaps(now)
         h1 = last_candles(self.store, "1h", now, 1)
         h1_end = h1[-1].end if h1 else None
         fives_since = parse_iso(self.state["m5_checked_until"]) if self.state.get("m5_checked_until") else None
         if fives_since is not None and self.opportunities:
+            self._record_gaps(fives_since, now)          # before the candles after it: the gap came first
             for c in self.store.read_range("5m", fives_since, now):
                 if c.end <= now and c.start >= fives_since:
                     self.five_minute(c)
