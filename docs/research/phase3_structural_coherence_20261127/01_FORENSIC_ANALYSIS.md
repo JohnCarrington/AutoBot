@@ -37,8 +37,8 @@ Observed facts and interpretation are separated: tables A and B are observed or 
 | 15:11 | Bounce 5m SELL 13106.7 (STP-authorised, 1500-59) | BUY zone 13121.3–130.3 broken downwards (D-20, 15:00). Contested zone 13108.5–119.1: SELL 1500-59 and BUY 1500-60 both Watch & Wait. | owner close +9.0 at 16:20 |
 | 15:47 | Slow grind SELL 13102.0 | 5.9 pips below BUY 1500-60 (13108.5–119.1), which STP held in Watch & Wait. Its D-20 break came at 16:00, 13 minutes later. | owner close +4.3 at 16:20 |
 
-The Friday ideas that never became trades matter more for Phase 3 than Friday's trades. 37 of Friday's 94
-confirmed ideas sat inside or beyond an unresolved opposing STP zone (§6.3). Most were bounce 5m and
+The Friday ideas that never became trades matter more for Phase 3 than Friday's trades. 44 of Friday's 94
+confirmed ideas sat inside or beyond an unresolved opposing STP zone (§6.3; 37 in revision 1, see §10). Most were bounce 5m and
 level-reversal SELLs at the BUY zone 13121.3–130.x between 03:45 and 10:52. That zone held: three hourly wick
 sweeps closed back inside it, and 0300-56 completed at 11:05. The entry filters (RSI stretch, counter-trend
 tiring) refused those SELLs, so none of them opened.
@@ -107,7 +107,7 @@ tiring) refused those SELLs, so none of them opened.
 
 ## 1.7 Table B1 — structural context at the entry, 25–27 Nov (only what was known then)
 
-SCA state = the proposed assessment (§3), computed by `evidence/scripts/classify2.py`. Positions are measured in the trade's own direction: *ahead* = in the trade's path; *at* = inside, or within NEAR (3 pips) past the far edge; *past* = more than NEAR beyond the far edge; *near ahead* = within NEAR before the near edge. Members list each STP opportunity on the zone: id suffix, its trade label, status, `held` = the break was held, `brk-up/down` = the direction of STP's D-20 break. Room R is the separate room rule (§3.9): room to the nearest live opposing zone ahead vs the trade's own stop.
+SCA state = the proposed assessment (§3), computed by `evidence/scripts/classify2.py`. *Revision 2: the amended per-opportunity rules (`classify3.py`, §10) give the same state for all 86 trades (`evidence/output/classify3_trades.txt`). The zone and member columns below are rev 1's group view. One position label differs: 25 Nov 19:10 is PAST 1800-35 under the opportunity's own break price; it is still S4.* Positions are measured in the trade's own direction: *ahead* = in the trade's path; *at* = inside, or within NEAR (3 pips) past the far edge; *past* = more than NEAR beyond the far edge; *near ahead* = within NEAR before the near edge. Members list each STP opportunity on the zone: id suffix, its trade label, status, `held` = the break was held, `brk-up/down` = the direction of STP's D-20 break. Room R is the separate room rule (§3.9): room to the nearest live opposing zone ahead vs the trade's own stop.
 
 | # | Opened | Strategy | Dir | Analyser | SCA state | Zones at/near the entry (members: id, label, status) | Room R (pips vs stop) | Opposite bot position open |
 |---|---|---|---|---|---|---|---|---|

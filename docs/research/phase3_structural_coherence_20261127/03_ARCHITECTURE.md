@@ -16,8 +16,9 @@ Design only. Nothing here is built. "SCA" = the Structural Coherence Assessment.
    opposing STP *label* alone is never a reason to refuse. A refusal needs the entry to sit at, inside, or
    through an opposing zone that STP still holds unresolved.
 4. **Restrict only the unresolved case.** Of the seven states, only S4 (and, as an option, S3) changes anything.
-   Every other state permits, so STP cannot become a blanket veto. With STP silent, every trade is S2 and
-   permitted.
+   Every other state permits, so STP cannot become a blanket veto. When STP is current and has no
+   opportunities, every trade is S2 and permitted. When STP is unavailable, every trade is UNKNOWN and permitted
+   (§3.6). A permit is structural permission only. Admission still needs every other layer (§3.11).
 5. **Watch & Wait without delayed entry.** A deferred idea is refused, as today's filters refuse. It is not
    queued, re-sent or timed. A later trade needs the strategy's own fresh setup, assessed afresh. This reuses
    rev 3.2 §9.5: a setup triggered and refused stays refused; a new setup is a fresh confirmation.
@@ -46,29 +47,76 @@ binding opportunity and treat a same-zone pair correctly.
 
 ## 3.3 States (the seven the brief asks for)
 
+*Revision 2 (review R1–R5, 28 Nov):*
+- *each opportunity is judged on its own;*
+- *PAST uses the opportunity's own break price;*
+- *ended opportunities are never barriers (the rev 1 24-hour look-back is removed);*
+- *unreconciled evidence never resolves a conflict;*
+- *UNKNOWN is kept separate from S2.*
+
+*Reasoning and evidence: [10_REVIEW_CLARIFICATIONS.md](10_REVIEW_CLARIFICATIONS.md).*
+
 For an idea of direction *d* at entry *e* and time *T*, the SCA reads every STP opportunity that is live at *T*
-(WAITING, ACTIVE, BROKEN), plus any ended in the last 24 h with STP's "confirmed break held". It groups them by
-zone overlap (PD-2 overlap, edge-only contact excluded, as PD-3). For each group:
+(WAITING, ACTIVE, BROKEN) and **judges each one separately** (§3.3.1). Ended opportunities (COMPLETED,
+INVALIDATED, SUPERSEDED) are never barriers and never resolve one. For each live opportunity *o*:
 
-- **Opposing** members: trade label ≠ *d*. **Agreeing** members: trade label = *d*.
-- **Position**, measured in the trade's own direction:
-  - AHEAD: the zone is more than NEAR in front of the entry.
+- **Opposing**: *o*'s trade label ≠ *d*. It can only break in *d*'s direction (a SELL zone breaks up, a BUY zone
+  down). **Agreeing**: label = *d*. It can only break against *d*.
+- **Position** of the entry against *o*'s own zone, in the trade's own direction:
+  - AHEAD: the zone is more than NEAR in front of the entry (STP's `interacts`, NEAR = 3).
   - NEAR_AHEAD: the zone is within NEAR in front.
-  - AT: the entry is inside the zone, or within NEAR past its far edge.
-  - PAST: the entry is more than NEAR past the far edge.
-- **Break**: STP's D-20 status BROKEN, or "confirmed break held", with STP's break direction (zone top = up,
-  bottom = down). A pending break still counts: an hourly close ≥ `zone_break_close` that the tracker has not
-  processed yet, through `_catch_up`.
+  - AT: the entry is inside the zone, or past its far edge but short of *o*'s `zone_break_close`.
+  - PAST: the entry is at or beyond *o*'s own `invalidation.zone_break_close`, read at decision time. This is the
+    price STP's D-20 rule uses, so no distance of the SCA's own is involved (R1).
+- **Break**: *o*'s STP status BROKEN, or a pending break that `_catch_up` reports on complete data (§3.10).
+  Ended "confirmed break held" opportunities only name S7.
 
-| State | Rule (first match wins: S4 > S3 > S5 > S6 > S7 > S1 > S2) | Verdict |
+| State | Per-opportunity rule | Verdict |
 |---|---|---|
-| **S1 Aligned** | The entry is AT a live agreeing zone, and no opposing state applies. | permit |
-| **S2 Neutral** | No live zone AT, PAST-unresolved or NEAR_AHEAD. Also the state when STP is unavailable (§3.6). | permit |
-| **S3 Approaching opposing** | A live opposing zone is NEAR_AHEAD (within 3 pips in front). | permit and record (option S3-WW: Watch & Wait) |
-| **S4 Within unresolved opposing** | Any of: (a) AT a live opposing zone with no break in *d*; (b) PAST an opposing zone that STP holds ACTIVE (touched, unresolved) with no D-20 break in *d*, i.e. continuation through a barrier not yet overcome; (c) AT or PAST a zone STP has BROKEN *against* *d* (trading against a confirmed break). | **Watch & Wait** |
-| **S5 Confirmed rejection** | An exception to S4(a): a reversal-family idea (bounces, level reversal, session sweep, NY open reversal, range) whose own rejection candle reached the zone, where the zone also carries a live opportunity in *d* (an OD-33 contested zone, where STP recognises both outcomes). The strategy's rejection is the resolving evidence. | permit |
-| **S6 Confirmed breakout / breakdown** | AT or PAST an opposing zone whose D-20 break is in *d* (BROKEN). | permit |
-| **S7 Continuation after a break** | AT or PAST a zone whose break in *d* STP has held (3 hourly closes, no reclaim), including a retest from the broken side. | permit |
+| **S1 Aligned** | AT a live (WAITING/ACTIVE) agreeing opportunity. | permit |
+| **S2 Neutral** | STP is available and current, and no opportunity gives any other state. | permit |
+| **S3 Approaching opposing** | A live opposing opportunity is NEAR_AHEAD. | permit and record (option D-2: Watch & Wait) |
+| **S4 Within unresolved opposing** | (a) AT a live opposing opportunity that this trade's evidence does not resolve. (b) PAST an opposing opportunity STP holds ACTIVE, with no D-20 break: continuation through a barrier not yet overcome. (c) AT or PAST an agreeing opportunity STP holds BROKEN: trading against a live break, within STP's 3-candle window. (d) Any of these where the resolving evidence is unreconciled: *resolution unverifiable* (§3.10). | **Watch & Wait** |
+| **S5 Confirmed rejection** | Resolves one opposing opportunity *O* that would give S4(a)/(b). Conditions: a reversal-family idea (bounces, level reversal, session sweep, NY open reversal, range) whose own rejection candle interacts with *O*'s zone; a live agreeing opportunity *A* (WAITING/ACTIVE) whose zone **directly** overlaps *O*'s (PD-2 strict, not edge-only, not via a third zone) and was reached by the same candle (an OD-33 contested pair); neither *O* nor *A* unreconciled. | permit, unless another opportunity gives S4 |
+| **S6 Confirmed breakout / breakdown** | AT or PAST an opposing opportunity that STP has BROKEN (its own D-20, in *d*). Resolves that opportunity only. | permit, unless another opportunity gives S4 |
+| **S7 Continuation after a break** | Naming only: AT or PAST an *ended* opposing opportunity whose break in *d* STP held, with no later live opportunity on an overlapping zone. It changes no verdict. | permit |
+| **UNKNOWN** (not a structural state) | STP unavailable (§3.6). | permit (fail open), shown and counted apart from S2 |
+
+### 3.3.1 Per-opportunity judgement and precedence (R2)
+
+1. Each live opportunity gets its own finding: S1, S3, S4, S5, S6 or none.
+2. **The verdict is Watch & Wait if any opportunity's finding is S4.** The reported state is the highest finding
+   in S4 > S3 > S5 > S6 > S7 > S1 > S2. Every finding is journalled.
+3. **A resolution belongs only to the opportunity it resolves.**
+   - S6 resolves only the opportunity STP broke.
+   - S5 resolves only the opposing opportunity the rejection reached, paired with a directly overlapping agreeing
+     one.
+   - Neither clears another opportunity's S4.
+4. **S5 never resolves S4(c).** Only STP's failed-breakout rule restores a broken agreeing zone.
+5. **Indirect overlap gives no pair.** If A overlaps B and B overlaps O, but A does not overlap O, then A and O
+   are not a pair.
+6. **The verdict does not depend on the order of the opportunities in `current.json`.**
+
+The real multi-opportunity cases (26 Nov 06:01/06:30 and 11:40–11:55; 27 Nov 01:10–01:50, 15:11 and 15:47) are in
+§10 R2 and FS-04/05/13/14. The synthetic overlap cases are FS-15 to FS-21.
+
+### 3.3.2 Why an old ACTIVE zone cannot block continuation further away (R1)
+
+S4(b) requires the entry to be at or beyond *O*'s own break price. STP judges every live opportunity at every
+hourly close, with no distance or age limit. At the close of the hour in which S4(b) arises, there are two cases:
+
+- The close is beyond the break price. *O* is BROKEN, and the SCA gives S6 through `_catch_up`, even before the
+  tracker runs.
+- The close is back inside. STP records a wick sweep, a "closed beyond" or a reclaim: its own evidence that the
+  zone was not overcome.
+
+After a break, a failed breakout puts price back at the zone, and a held break ends *O*, which is then never a
+barrier. STP's other endings (destination reached, 4-hour structure break, rollover, supersession) also remove it.
+S4(c) lasts at most STP's 3-candle break window.
+
+**Evidence, 18–27 Nov:** 35 S4(b) ideas in 14 hour-episodes. Every one was settled at that hour's close: 7 by a
+D-20 break and 7 by a close back inside the band. The longest was 1305-58, two hours on 27 Nov 13:00–15:00
+(§10 R1). The only residual case is unreconciled data (§3.10).
 
 How the brief's distinctions map to existing STP evidence:
 
@@ -87,10 +135,14 @@ How the brief's distinctions map to existing STP evidence:
   usual `order` record. This copies engine.py:349–357 exactly.
 - **No deferred execution.** The idea is consumed. The engine's one-try-per-strategy/direction/candle rule
   already prevents a retry, and a rule-11 key is not consumed because no trade opened.
-- **What releases it.** Only structure, never time. STP's D-20 break in the trade's direction (→ S6). A held
-  break (→ S7). The opposing opportunity ending (COMPLETED, INVALIDATED, SUPERSEDED). Price leaving the zone so
-  that a later setup is no longer AT/PAST (→ S2/S3/S1). An agreeing opportunity appearing on the zone together
-  with a reversal rejection (→ S5).
+- **What releases it.** Only structure, never time. Each item applies to the specific opportunity that gave S4
+  (§3.3.1):
+  - that opportunity's own D-20 break in the trade's direction, on reconciled data (→ S6);
+  - that opportunity ending (COMPLETED, INVALIDATED, SUPERSEDED; a held break names S7);
+  - price leaving it, so that a later setup is no longer AT or PAST it (→ S2/S3/S1);
+  - a directly overlapping agreeing opportunity, together with a reversal rejection that reached both (→ S5).
+
+  Each hour's close settles any S4(b) (§3.3.2). Phase 2 reconciling a gap lets normal judgement resume (§3.10).
 - **Fresh confirmation.** A trade is permitted only on a *new* idea of the strategy: a new setup with its own
   trigger, assessed afresh at its own time. Observed releases: 25 Nov 12:25 sweep deferred → fresh 15:05 sweep
   (+61.4). 26 Nov 12:51 bounce SELL (S3) → fresh 14:22 SELL (S1). 27 Nov 15:47 slow grind (S4) → fresh 16:05
@@ -103,7 +155,7 @@ How the brief's distinctions map to existing STP evidence:
 | Opportunities | `current.json opportunities[]` | same | the zone groups. Use `opportunities[]`, never `recommendation` (newest vs oldest, L-6). |
 | Lineage | not present | `lineages{}`: members' `effective_status`, `destination_case` | membership. A member COMPLETED `after_trade` is ended. |
 | Pending break | `_catch_up` hourly close ≥ `zone_break_close` since `validated_h1_end` | same, plus missing-5m refusals | S6 before the tracker runs; avoids a race at :00 |
-| Data gaps | — | `unreconciled()` | an unreconciled opposing opportunity **still counts as a barrier**. An unreconciled agreeing one **cannot** give S5. Structure does not disappear because data is missing. |
+| Data gaps | — | `unreconciled()`; `_catch_up`'s PD-5 missing-candle reason | an unreconciled opportunity **still counts as a barrier** and **cannot be resolved** (no S5, no S6, no pending break). An unreconciled agreeing one cannot give S5. Structure does not disappear because data is missing, and it is not declared overcome on incomplete data (§3.10). |
 | Break levels | `invalidation.zone_break_close` (overwritten on "changed") | same | read at decision time |
 | Strategy rejection | `context.rejection_candle` (emitted only while the gate is on) | same | S5. The build emits it always (WP-2). A context field, not a confirmation change. |
 
@@ -113,11 +165,34 @@ twice.
 
 ## 3.6 Failure behaviour
 
-STP unavailable, `current` false, `written_utc` > 10 min old, or the file unreadable: **SCA = S2 (unknown) and
-permit, journalled as `structure unknown`.** This is option F-1, recommended. The SCA restricts trades; it does
-not authorise them. If it failed closed, a planner outage would stop all ten strategies, the blanket veto the
-brief rules out. The STP gate keeps its own fail-closed behaviour for the three gated strategies. The decision
-is D-9 in the register.
+**When STP is unavailable**, the SCA gives the state **UNKNOWN**, not S2, and permits (option F-1, retained).
+"Unavailable" means the same checks as the gate's `authorise()` steps 1–2, with the same settings:
+- the file is missing or unreadable;
+- `written_utc` is older than `analyser.out_of_date_after_minutes` (rev 1's "10 min" is this setting, not a new
+  number);
+- `current` is not True;
+- the live price or the latest 5m candle is older than that limit.
+
+An equivalence test pins the SCA's checks to the gate's refusals (TS-30). This avoids changing Phase 2's
+`stp/authorise.py` to share a helper.
+
+| | S2 neutral | UNKNOWN |
+|---|---|---|
+| Meaning | STP is current; its lifecycle shows nothing in a conflicting position | there is no STP verdict to read |
+| Verdict | permit | permit (fail open) |
+| Journal | `idea.steps` "structure: neutral" | decision `structure unknown` with the reason in the gate's words; `idea.steps` "structure: unknown (STP unavailable: …), permitted" |
+| Dashboard and daily summary | "Neutral" | "Structure unknown", shown distinctly; counted separately; never folded into S2 in any figure |
+
+**Why fail open, and why the gate stays fail-closed.**
+- The SCA only restricts; it never authorises. If it failed closed, a planner outage would stop all ten
+  strategies, the blanket veto the brief rules out.
+- **The STP gate keeps its fail-closed behaviour unchanged.** With the gate on and STP unavailable, the three gated
+  strategies are refused at the gate, with the same journal text as today, before the SCA runs. Only the ungated
+  strategies reach the SCA, where they get UNKNOWN and are permitted (TS-29).
+- An UNKNOWN permit can never let a gated idea past the gate.
+
+A per-opportunity data gap, while STP is otherwise current, is a different case. It is R3 (§3.10), not R5. These
+decisions are D-9 and D-14 in the register.
 
 ## 3.7 Interaction with the STP gate (when re-activated)
 
@@ -147,3 +222,47 @@ with a structural conflict are already caught by S4 (e.g. 26 Nov 11:45 and 11:55
 - **Assessment.** The evidence does not support adopting R now (D-7). The ROOM_TO_LEVEL branch (pivot levels,
   breakouts only) is a separate, already-approved item that is still not merged. Phase 1 showed that the wider
   pivot, own-primary or candidate-zone room variants refuse the +£200 and +£614 winners.
+
+## 3.10 Unreconciled structural evidence (R3)
+
+The SCA reuses Phase 2's data-integrity semantics unchanged. It has no interpretation of breaks of its own.
+
+1. **Nothing is recomputed.** Lifecycle, status and breaks come from STP's `current.json` (opportunities and
+   lineages). For what the tracker has not processed yet, the SCA calls `stp.authorise._catch_up` and
+   `stp.authorise.unreconciled` exactly as the gate does. It reads no hourly candle itself.
+2. **A resolution needs reconciled evidence.** An opposing opportunity is resolved (S6 from BROKEN, S6 from a
+   pending break, or S5) only when:
+   - `unreconciled(state, o)` is empty, and for S5 it is also empty for the agreeing member;
+   - for a pending break, `_catch_up` reports the zone break and does **not** report the PD-5 "IG's 5-minute
+     candle … is not stored yet" reason.
+3. **Otherwise the conflict stays unresolved.** If the entry is AT or PAST the opportunity, the state is S4(d),
+   *resolution unverifiable*, and Phase 2's reasons go word for word into the journal.
+4. **A gap is not an ending.** An opportunity with an open gap is still live, so it is still a barrier when the
+   entry is AT or PAST it. If it is AHEAD, it has no effect beyond S3 recording.
+5. **Endings stand, as in Phase 2.** Phase 2 never reopens an ended opportunity (`_reconcile_ended` only corrects
+   a classification). The SCA neither reopens an ended opportunity nor reads it as a barrier.
+6. **The adapter is pinned.** `_catch_up` returns text reasons. WP-1 reads the zone-break and PD-5 lines through
+   an adapter that a test pins to Phase 2's exact wording (TS-27). Tagged reasons would mean changing Phase 2 code,
+   so they are not proposed.
+7. **Real case.** On the Phase 2 build before OP-1, the 27 Nov 15:11 bounce SELL is S4(d). Its agreeing pair
+   member 1500-59 has the uncertain 12:00 hour in its lineage, so it gives no S5. Phase 2 refuses the same idea
+   under D-R2 (§10 R3).
+8. **Bound.** While a gap is unreconciled, STP's own endings still run on the opportunity. A gap Phase 2 leaves
+   "for review" holds until the owner's D-R2 procedure (`planner/review.py`).
+
+## 3.11 Structural permission versus trade admission (R4)
+
+- **Admission is every layer of `_place` in order:** STP gate → entry filters → **SCA** → (room) →
+  day_directions → OrderSender → safety rules (incl. rule 11) → IG.
+- **The SCA can only refuse or continue.** It has no "admit" or "bypass" outcome and is not in the gate's bypass
+  list. A structural *permit* is necessary for admission but never sufficient.
+- **Duplicate protection is untouched and has the last word.**
+  - A gate refusal (Phase 2 PD-2: no live opportunity) returns before the SCA runs.
+  - A rule-11 refusal (Phase 2 lineage keys and aliases) comes after it.
+  - Either way, the SCA cannot re-admit the idea.
+  - **27 Nov 12:01 BUY:** SCA S7 permit, Phase 2 refuses, overall refused (§10 R4, FS-09).
+  - **26 Nov 11:40 BUY (+14.0, a genuine re-armed test, `0000-37#t2`):** SCA S6 permit, Phase 2 admits, overall
+    admitted (FS-12).
+- **The journal and reports keep the two apart.** The `idea.steps` structure line records the SCA's state and
+  verdict. `order.result` records the overall admission, naming the layer that refused.
+- **The historical impact (§6) reports both columns.**

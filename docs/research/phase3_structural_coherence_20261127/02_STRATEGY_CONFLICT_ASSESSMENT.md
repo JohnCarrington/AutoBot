@@ -72,9 +72,11 @@ are defined in §3.3.
   13093–103).
 - **Reversals kept.** S5 26 Nov 06:01 BUY +5.0, S5 06:30 SELL −7.3, S6 26 Nov 11:40 BUY **+14.0** (inside the
   zone after STP's upward D-20 break of SELL 0400-38: a retest of broken resistance), S1 25 Nov 20:05, 26 Nov
-  14:22 (+2.1), S7 27 Nov 12:01, S5 27 Nov 15:11 (owner +9.0).
-- **Ideas.** 167, the noisiest: 51 S2, 38 S4, 24 S7, 20 S5, 13 S1, 13 S6, 8 S3.
-- **Assessment.** This is the strategy most exposed to the SCA. 38 of its ideas would be deferred, most of them
+  14:22 (+2.1), S5 27 Nov 15:11 (owner +9.0). The 26 Nov 11:40 BUY is also the genuine re-armed new test
+  (`0000-37#t2`). *Rev 1 listed 27 Nov 12:01 (S7) here as kept. Its SCA state is S7 (permit), but it is the
+  duplicate of `0300-56#t1`, which Phase 2 refuses (§10 R4).*
+- **Ideas.** 167, the noisiest: 51 S2, 41 S4, 21 S5, 20 S7, 13 S1, 13 S6, 8 S3 (revision 2; rev 1 had 38 S4, 24 S7, 20 S5).
+- **Assessment.** This is the strategy most exposed to the SCA. 41 of its ideas would be deferred, most of them
   SELLs at the 27 Nov BUY zone that held. The contested-zone exception (S5) keeps its OD-33 behaviour. A
   rejection candle must reach the zone. In production the strategy sets `context.rejection_candle` only while
   STP authorisation is on, so the build must always emit it (§8 WP-2). That is a context field, not a change to
@@ -86,7 +88,7 @@ are defined in §3.3.
 - **Conflicts.** 12 trades. **S4: 23 Nov 06:00 BUY −14.6** (inside SELL 0100-10). **20 Nov 13:10 BUY**, owner
   close −26.1 (past SELL 1300-8, stop 34.3).
 - **Reversals kept.** 23 Nov 10:21 SELL +20, 23 Nov 14:50 SELL +20, 20 Nov 18:45 SELL +3.7 (all S2).
-- **Ideas.** 109: 59 S2, 18 S4, 12 S5, 10 S7, 5 S1, 5 S6.
+- **Ideas.** 109: 59 S2, 22 S4, 12 S5, 6 S7, 5 S1, 5 S6 (revision 2; rev 1 had 18 S4, 10 S7).
 - **Assessment.** The SCA applies. Its biggest losses (20 Nov 06:07 −17.3, 23 Nov 14:25 −21.4, 24 Nov 13:32
   −16.6) are S2. They come from its uncapped stop, a stop question outside Phase 3 (constraint: stop
   methodology unchanged). A room rule would not help either: the room check compares against the stop, so a
@@ -140,8 +142,8 @@ are defined in §3.3.
 | EMA pullback | 9 | 2 (−12.0, −5.7) | 0 | 1 (−12.0) | 17 | 6 |
 | Slow grind | 13 | 4 (−15, −15, −5.1, −15) + 1 owner | 0 | 1 (+20.0) | 30 | 9 |
 | Bollinger bounce (1h) | 10 | 0 | 0 | 0 | 27 | 0 |
-| Bollinger bounce 5m | 20 | 2 (−12, −12) | 1 (−6.4) | 2 (−6.4, +2.1) | 167 | 38 |
-| Level reversal | 12 | 1 (−14.6) + 1 owner | 0 | 0 | 109 | 18 |
+| Bollinger bounce 5m | 20 | 2 (−12, −12) | 1 (−6.4) | 2 (−6.4, +2.1) | 167 | 41 |
+| Level reversal | 12 | 1 (−14.6) + 1 owner | 0 | 0 | 109 | 22 |
 | Range trade | 0 | 0 | 0 | 0 | 1 | 0 |
 | Breakout | 7 | 1 (−6.0) | 0 | 0 | 13 | 2 |
 | Asian range breakout | 6 | 0 | 0 | 0 | 34 | 0 |

@@ -17,8 +17,13 @@
 2. Rollback tag `pre-structural-coherence-<date>` on the live commit, pushed.
 3. Fast-forward /opt/autobot to the reviewed commit. Add the switch line to `.env` as decided (D-10).
 4. The owner stops and starts `autobot-prices`. The dashboard restart is separate and the owner's (WP-4 only).
-5. Verify: the start-up journal; the first `idea` lines carry the SCA step; for the first hour, every
-   `structure refused` is checked against current.json by hand.
+5. Verify:
+   - the start-up journal;
+   - the first `idea` lines carry the SCA step;
+   - for the first hour, every `structure refused` is checked by hand against current.json, including that a
+     refusal names the unresolved opportunity and, if *unverifiable*, Phase 2's reason;
+   - any `structure unknown` line matches a gate-style unavailability reason, and the dashboard shows it as
+     "Structure unknown", not "Neutral".
 
 No shadow running, no parallel comparison (constraint 7). Only the live demo decides the effect.
 

@@ -20,15 +20,15 @@
 | Losing bot trades prevented (11) | 20 Nov 13:25 slow grind BUY −15.0 · 23 Nov 06:00 level reversal BUY −14.6 · 06:45 EMA pullback BUY −12.0 · 12:26 bounce BUY −12.0 · 12:30 sweep BUY −13.5 · 13:00 bounce 5m BUY −12.0 · 25 Nov 18:02 slow grind BUY −15.0 (orphan, IG) · 18:45 slow grind BUY −5.1 · 19:10 EMA pullback BUY −5.7 · 26 Nov 11:45 breakout SELL −6.0 · 11:55 slow grind SELL −15.0 |
 | Winning bot trades prevented | **none** in the window |
 | Owner closes affected (3) | 20 Nov 13:10 level reversal BUY −26.1 · 25 Nov 12:25 sweep BUY −6.0 · 27 Nov 15:47 slow grind SELL +4.3 (closed by hand at 16:20; after-close path unknown) |
-| Legitimate trades unaffected | the 61.4-pip sweep (S2) · EMA pullback 23 Nov 14:39 +30.0 (S2) · slow grind +20 ×3 (S2) · breakout 24 Nov 08:55 +50.0 (S2) · bounce 5m 26 Nov 11:40 +14.0 (S6, retest of a broken zone) · reversals at structure 23 Nov 09:05 +14.8 (S1), 26 Nov 06:01 +5.0 (S5), 27 Nov 15:11 (S5) · re-armed tests 27 Nov 12:01 (S7, re-issued 1200-57) |
-| Unintended consequences | (1) Break continuations wait for the hourly D-20 close. On 27 Nov, SELL ideas from 13:20 to 14:23 (13110.6 → 13111.6) were deferred until STP broke BUY 1305-58 at 15:00, which is later entry or no entry. (2) A breakout into an unresolved zone is effectively refused, because its pullback window expires first. (3) Opportunities created seconds before an entry (23 Nov 13:00:12 vs 13:00:03) decide the state, so ordering matters (TS-12). (4) A bad STP zone becomes a bad deferral: the SCA inherits STP's errors in both directions. (5) The noisiest strategy (bounce 5m) carries most deferrals (38 of 75 ideas). |
-| Tests | TS-01…TS-14, FS-01…FS-10 (§7) |
+| Legitimate trades unaffected | the 61.4-pip sweep (S2) · EMA pullback 23 Nov 14:39 +30.0 (S2) · slow grind +20 ×3 (S2) · breakout 24 Nov 08:55 +50.0 (S2) · bounce 5m 26 Nov 11:40 +14.0 (S6, retest of a broken zone) · reversals at structure 23 Nov 09:05 +14.8 (S1), 26 Nov 06:01 +5.0 (S5), 27 Nov 15:11 (S5) · a genuine new test after re-arming, 26 Nov 11:40 (+14.0, `0000-37#t2`, S6). *Rev 1 wrongly cited 27 Nov 12:01 here: that was the duplicate of `0300-56#t1`, which Phase 2 refuses whatever its SCA state (§6.5).* |
+| Unintended consequences | (1) Break continuations wait for the hourly D-20 close. On 27 Nov, SELL ideas from 13:20 to 14:23 (13110.6 → 13111.6) were deferred until STP broke BUY 1305-58 at 15:00, which is later entry or no entry. (2) A breakout into an unresolved zone is effectively refused, because its pullback window expires first. (3) Opportunities created seconds before an entry (23 Nov 13:00:12 vs 13:00:03) decide the state, so ordering matters (TS-12). (4) A bad STP zone becomes a bad deferral: the SCA inherits STP's errors in both directions. (5) The noisiest strategy (bounce 5m) carries the most deferrals (41 of 82 ideas). (6) On the Phase 2 build, an opposing opportunity with an unreconciled data gap cannot be resolved, so it can hold back trades at or past it until Phase 2 reconciles the gap (R3, D-14; not measurable in this window, O-6). |
+| Tests | TS-01…TS-14, TS-22…TS-33, FS-01…FS-24 (§7) |
 
 ### SCA-S5 (contested-zone rejection exemption, option C-1)
 
 | Item | Evidence |
 |---|---|
-| Defect addressed | Without it, S4 would veto every reversal at a two-direction zone (OD-33): option C-2, a near-blanket veto from 24 Nov. |
+| Defect addressed | Without it, S4 would veto every reversal at a two-direction zone (OD-33): option C-2, a near-blanket veto from 24 Nov. Revision 2: S5 resolves only the opposing opportunity whose zone the rejection reached, paired with a directly overlapping agreeing one, and never another opportunity's S4 (R2). |
 | Trades it keeps | 26 Nov 06:01 bounce 5m BUY +5.0 · 06:30 SELL −7.3 · 27 Nov 15:11 SELL (owner +9.0) |
 | Losers it lets through | 26 Nov 06:30 −7.3 |
 | Unintended consequences | The strategy's rejection candle must be emitted for every reversal strategy (WP-2). A rejection that only reached the zone by a NEAR allowance counts. |
@@ -60,25 +60,31 @@
 
 ## 6.3 Breadth over ideas (STP must not become a blanket veto)
 
-416 confirmed ideas (passed `common.check`), one per strategy, direction and 10 minutes:
+416 confirmed ideas (passed `common.check`), one per strategy, direction and 10 minutes. These are revision 2
+figures (`classify3.py`: each opportunity judged on its own, no 24-hour look-back). Revision 1's figures are
+in brackets. 8 ideas changed and no trades (§10). S2 here is "neutral as reconstructed": STP's historical
+availability cannot be rebuilt, so UNKNOWN (R5) cannot be counted for the past.
 
 | State | Ideas | Share |
 |---|---|---|
 | S2 neutral | 212 | 51% |
-| S4 within unresolved opposing (deferred) | 75 | 18% |
-| S7 continuation | 36 | 9% |
-| S5 confirmed rejection | 34 | 8% |
+| S4 within unresolved opposing (deferred) | **82** (75) | **20%** (18%) |
+| S5 confirmed rejection | 35 (34) | 8% |
 | S1 aligned | 29 | 7% |
+| S7 continuation (naming only) | 28 (36) | 7% (9%) |
 | S6 confirmed break | 20 | 5% |
 | S3 approaching | 10 | 2% |
 
-- **Not directional.** The deferred ideas are 39 BUY and 36 SELL. By day: 18 Nov 1, 20 Nov 2, 23 Nov 8,
-  24 Nov 4, 25 Nov 14 (all BUY, against the evening SELL zone 1800-35), 26 Nov 9, 27 Nov 37 (30 SELL at the BUY
-  zone that held, 7 BUY).
+- **Not directional.** The deferred ideas are 46 BUY and 36 SELL. By day: 18 Nov 1, 20 Nov 2, 23 Nov 8,
+  24 Nov 4, 25 Nov 14 (all BUY, against the evening SELL zone 1800-35), 26 Nov 9, 27 Nov 44 (30 SELL at the BUY
+  zone that held, 14 BUY).
 - **On days with no live STP structure (18–19 Nov) the SCA defers nothing** (1 idea on 18 Nov).
-- **Friday 27 Nov is the heaviest day.** 37 of 94 ideas were deferred. They cluster in two places:
-  the 13121–130 BUY zone 03:45–10:52 (which held: three wick sweeps back inside, completed 11:05), and the
-  13:20–14:23 SELLs past BUY 1305-58 before its 15:00 D-20 break.
+- **Friday 27 Nov is the heaviest day.** 44 of 94 ideas were deferred. They cluster in three places:
+  - the 13121–130 BUY zone 03:45–10:52, which held: three wick sweeps closed back inside, and it completed at
+    11:05;
+  - the 13:20–14:23 SELLs past BUY 1305-58, before its 15:00 D-20 break;
+  - new in revision 2: the 01:35–01:50 BUYs past the new SELL 0100-51, before its 02:00 break, and 17:34 past
+    SELL 1700-61.
 
 ## 6.4 Watch & Wait releases observed (fresh confirmation)
 
@@ -91,3 +97,22 @@
 | 27 Nov 15:47 slow grind SELL (S4) | BUY 1500-60 D-20 break 16:00 | 16:05 SELL 13098.3, S6. The safety limit refused it (15:47 trade open). |
 
 No deferred idea is ever executed later. Each release is a new setup of the strategy's own.
+
+## 6.5 Structural permission versus overall admission (R4)
+
+- The SCA gives **structural permission** only. **Admission** needs every layer of `_place` (§3.11).
+- Every trade figure above is the SCA's own effect, i.e. what the SCA refuses. It never claims that an SCA permit
+  admits a trade.
+- None of the 11 S4 bot trades was STP-authorised: they predate Stage B, or are ungated strategies. Phase 2 does
+  not change them, so for these the SCA refusal is the overall result.
+
+| Trade / idea | SCA state (permission) | Phase 2 (gate on) | Other layers | Overall admission (Phase 2 + SCA) |
+|---|---|---|---|---|
+| 25 Nov 15:05 sweep BUY (+61.4) | S2 permit | not gated | passed (recorded) | admitted |
+| 26 Nov 06:01 bounce 5m BUY (+5.0) | S5 permit | `0000-37#t1` admitted | passed | admitted |
+| 26 Nov 11:40 bounce 5m BUY (+14.0) | S6 permit | `0000-37#t2` admitted (genuine re-armed test, FL-A5) | passed | admitted |
+| **27 Nov 12:01 bounce 5m BUY (owner −1.4)** | **S7 permit** | **refused**: 1200-57 withheld (PD-2); rule 11 alias `0300-56#t1` (FL-A3, FL-M1) | — | **refused (Phase 2)** |
+| 27 Nov 15:11 bounce 5m SELL (owner +9.0) | production data: S5 permit. **Phase 2 build, before OP-1: S4(d) unverifiable**, because the agreeing 1500-59's lineage count runs through the uncertain 12:00 hour, so no S5 (R3). | **refused under D-R2** until the 12:00–12:10 candles are recovered and reconciled (Saturday pack §8) | — | refused (Phase 2, and the SCA agrees); re-decided after OP-1 |
+| 25 Nov 18:45 slow grind BUY (−5.1) | **S4** | not gated | passed (recorded) | refused (SCA) |
+| 23 Nov 10:42 level reversal BUY (fresh idea after a deferral) | S2 permit | not gated in the window | **safety limit** (06:00 trade open) | refused (safety) |
+| 27 Nov 16:05 slow grind SELL (fresh idea) | S6 permit | not gated | **safety limit** (15:47 trade open) | refused (safety) |

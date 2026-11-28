@@ -24,7 +24,7 @@ confirmed ideas, 18–27 Nov. The trade lists are evidence of mechanism. They ar
 | Option | Rule | Effect |
 |---|---|---|
 | **C-1 S5 exemption (recommended)** | A reversal-family idea whose rejection reached a zone that also carries a live same-direction opportunity is permitted. | 26 Nov 06:01 BUY +5.0 and 06:30 SELL −7.3, and 27 Nov 15:11 SELL (owner +9.0), are permitted. It preserves OD-33 (STP lets the strategy's confirmation decide). |
-| C-2 No exemption (≈ Phase 1 C-a) | Any live opposing member at the zone defers. | It defers all three above. In effect it vetoes reversals at every two-direction zone, and from 24 Nov most zones are two-direction. That is close to a blanket veto: the 26 Nov and 27 Nov S5 ideas (34) would all be deferred. |
+| C-2 No exemption (≈ Phase 1 C-a) | Any live opposing member at the zone defers. | It defers all three above. In effect it vetoes reversals at every two-direction zone, and from 24 Nov most zones are two-direction. That is close to a blanket veto: the 26 Nov and 27 Nov S5 ideas (35 in revision 2) would all be deferred. |
 | C-3 Exemption for every family | Continuation and breakout ideas at a contested zone are also exempt. | In the window no trade differs from C-1. 26 Nov 11:45 breakout SELL −6.0 and 11:55 slow grind SELL −15.0 stay S4(c), against STP's upward break. It removes protection with no evidence for it. |
 
 ## D. Approaching an opposing zone (S3)

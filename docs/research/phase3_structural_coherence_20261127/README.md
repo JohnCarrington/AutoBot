@@ -17,6 +17,16 @@ the Phase 2 freeze is untouched.** Branch `research/phase3-structural-coherence-
 | 7 | [07_TEST_SPECIFICATION.md](07_TEST_SPECIFICATION.md) | Technical and functional tests |
 | 8 | [08_WORK_PACKAGES.md](08_WORK_PACKAGES.md) | Implementation work packages |
 | 9 | [09_DEPLOYMENT_ROLLBACK.md](09_DEPLOYMENT_ROLLBACK.md) | Deployment and rollback approach |
+| 10 | [10_REVIEW_CLARIFICATIONS.md](10_REVIEW_CLARIFICATIONS.md) | **Revision 2:** answers to the independent review R1–R5, evidence, errata |
+
+**Revision 2 (28 Nov)** answers the review of `c7ba045`:
+- R1: an old zone cannot block continuation further away;
+- R2: S4 takes precedence over S5, judged per opportunity;
+- R3: no resolution from unreconciled data;
+- R4: structural permission is not admission;
+- R5: UNKNOWN is separate from neutral.
+
+No trade changes state. 8 of 416 ideas do. Errata are in 05.
 
 Evidence: `evidence/scripts` (read-only analysis), `evidence/output` (JSON, tables, source hashes),
 `evidence/inventory` (code inventories with file:line at fadf228 and 9e0ffd5).
@@ -29,13 +39,14 @@ Evidence: `evidence/scripts` (read-only analysis), `evidence/output` (JSON, tabl
    defect. 28 of the 45 bot losers are structurally neutral, so no structural check can touch them.
 2. **One assessment at one point (`Trading._place`, after the entry filters), reusing STP only.** It uses STP's
    opportunities, labels, lifecycle, D-20 break and NEAR. Seven states. Only "within an unresolved opposing
-   zone" (S4) defers. Everything else permits, so STP is not a blanket veto. Deferred ideas split 39 BUY / 36 SELL,
+   zone" (S4) defers. Everything else permits, so STP is not a blanket veto. Deferred ideas (82 of 416, rev 2) split 46 BUY / 36 SELL,
    and days with no STP structure see no deferral.
 3. **Watch & Wait is a refusal, not a queue.** A later trade needs the strategy's own fresh setup. On 25 Nov the
    deferred 12:25 sweep is followed by the fresh 15:05 sweep that made 61.4 pips.
 4. **Preserved, shown trade by trade.** The 61.4-pip sweep (S2). EMA pullback +30.0 (S2). Healthy slow-grind
    pullbacks +20 ×3. The breakout +50.0. Reversals at structure (S1/S5). The retest of a broken zone (26 Nov 11:40
-   +14.0, S6). New tests after re-arming (27 Nov 12:01, S7).
+   +14.0, S6), which is also the genuine new test after re-arming (`0000-37#t2`). The 27 Nov 12:01 BUY is a
+   duplicate: S7 structurally, but refused by Phase 2 (rev 1 erratum E-1).
 5. **The main cost** is later entry for break continuations, which wait for STP's hourly D-20 close (27 Nov
    13:20–15:00). Breakouts into an unresolved zone are effectively refused.
 6. **Room to level is kept separate and not recommended now.** The evidence is 2 bot winners vs 2 losers. An
@@ -53,6 +64,7 @@ No IG session was opened. Production data was read from a copy taken after the 2
 
 Copy the data snapshot (records, orders, planner, candles) to a folder `S` (`S/data/...`, `S/store/GBPUSD`)
 and copy the scripts into `S`. Then, from a worktree at fadf228 with its `.venv`, run:
-`python forensic2.py S`, then `classify2.py S`, `impact.py S`, `breadth.py S` and `gen_tables.py S`.
+`python forensic2.py S`, then `classify2.py S`, `impact.py S`, `breadth.py S` and `gen_tables.py S`. For
+revision 2, run `classify3.py S` and then `r1_evidence.py S` (it needs breadth.json).
 `forensic2.py` also needs `S/switches.env` (the non-secret switch lines of .env). The source files' hashes are
 in `evidence/output/SOURCE_SHA256.txt`.
