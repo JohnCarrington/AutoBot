@@ -1,0 +1,30 @@
+===== lived events sha256 867b3cb6e57362f2 {'active': 22, 'ambiguous': 20, 'analysis': 114, 'broken': 9, 'changed': 22, 'closed beyond': 3, 'completed': 11, 'created': 33, 'data gap': 2, 'duplicate': 6, 'failed breakout': 3, 'in zone at creation': 25, 'invalidated': 21, 'lineage': 25, 'reclaim': 1, 'supported': 18, 'trade executed': 8, 'waiting': 33, 'wick sweep': 10}
+  AB261125170604 11-25T17:06 STP True  opened True  key STP-GBPUSD-20261125-1700-34#t1 lineage STP-GBPUSD-20261125-1700-34 test 1 | 
+  AB261125200515 11-25T20:05 STP True  opened True  key STP-GBPUSD-20261125-1800-35#t1 lineage STP-GBPUSD-20261125-1800-35 test 1 | 
+  AB261126060101 11-26T06:01 STP True  opened True  key STP-GBPUSD-20261126-0000-37#t1 lineage STP-GBPUSD-20261126-0000-37 test 1 | 
+  AB261126063004 11-26T06:30 STP True  opened True  key STP-GBPUSD-20261126-0400-38#t1 lineage STP-GBPUSD-20261126-0400-38 test 1 | 
+  AB261126114004 11-26T11:40 STP True  opened True  key STP-GBPUSD-20261126-0000-37#t2 lineage STP-GBPUSD-20261126-0000-37 test 2 | 
+  AB261126125133 11-26T12:51 STP True  opened True  key STP-GBPUSD-20261126-0400-38#t2 lineage STP-GBPUSD-20261126-0400-38 test 2 | 
+  AB261126142255 11-26T14:22 STP True  opened True  key STP-GBPUSD-20261125-1800-35#t5 lineage STP-GBPUSD-20261125-1800-35 test 5 | 
+  AB261127065505 11-27T06:55 STP True  opened True  key STP-GBPUSD-20261127-0300-56#t1 lineage STP-GBPUSD-20261127-0300-56 test 1 | 
+  AB261127120127 11-27T12:01 STP False opened False key None lineage None test None | no live STP BUY opportunity whose zone the rejection candle (Fri 27 Nov 11:40 GMT) reached (live: none)
+  AB261127151117 11-27T15:11 STP False opened False key None lineage None test None | STP-GBPUSD-20261127-1500-57: STP data gap: the D-25 count of its lineage has uncertain hour(s) 2026-11-27T12:0
+===== recovered events sha256 bec0ca46fe6c73ae {'active': 22, 'ambiguous': 20, 'analysis': 114, 'broken': 9, 'changed': 22, 'closed beyond': 3, 'completed': 11, 'created': 33, 'data gap': 2, 'duplicate': 5, 'failed breakout': 3, 'in zone at creation': 25, 'invalidated': 21, 'lineage': 25, 'reclaim': 1, 'supported': 18, 'trade executed': 9, 'waiting': 33, 'wick sweep': 10}
+  AB261125170604 11-25T17:06 STP True  opened True  key STP-GBPUSD-20261125-1700-34#t1 lineage STP-GBPUSD-20261125-1700-34 test 1 | 
+  AB261125200515 11-25T20:05 STP True  opened True  key STP-GBPUSD-20261125-1800-35#t1 lineage STP-GBPUSD-20261125-1800-35 test 1 | 
+  AB261126060101 11-26T06:01 STP True  opened True  key STP-GBPUSD-20261126-0000-37#t1 lineage STP-GBPUSD-20261126-0000-37 test 1 | 
+  AB261126063004 11-26T06:30 STP True  opened True  key STP-GBPUSD-20261126-0400-38#t1 lineage STP-GBPUSD-20261126-0400-38 test 1 | 
+  AB261126114004 11-26T11:40 STP True  opened True  key STP-GBPUSD-20261126-0000-37#t2 lineage STP-GBPUSD-20261126-0000-37 test 2 | 
+  AB261126125133 11-26T12:51 STP True  opened True  key STP-GBPUSD-20261126-0400-38#t2 lineage STP-GBPUSD-20261126-0400-38 test 2 | 
+  AB261126142255 11-26T14:22 STP True  opened True  key STP-GBPUSD-20261125-1800-35#t5 lineage STP-GBPUSD-20261125-1800-35 test 5 | 
+  AB261127065505 11-27T06:55 STP True  opened True  key STP-GBPUSD-20261127-0300-56#t1 lineage STP-GBPUSD-20261127-0300-56 test 1 | 
+  AB261127120127 11-27T12:01 STP False opened False key None lineage None test None | no live STP BUY opportunity whose zone the rejection candle (Fri 27 Nov 11:40 GMT) reached (live: none)
+  AB261127151117 11-27T15:11 STP True  opened True  key STP-GBPUSD-20261125-1800-35#t8 lineage STP-GBPUSD-20261125-1800-35 test 8 | 
+===== lived then reconciled (Saturday run):
+   {'time_utc': '2026-11-27T18:30:03Z', 'event': 'uncertain hour reconciled', 'id': None, 'lineage': 'STP-GBPUSD-20261125-1800-35', 'hour_utc': '2026-11-27T12:00:00Z', 'destination_case': None, 'why': "the Fri 27 Nov 12:00 GMT hourly candle is now complete (IG's recovered candles): no change for the D-25 count (PD-5)"}
+   {'time_utc': '2026-11-27T18:30:03Z', 'event': 'uncertain hour reconciled', 'id': None, 'lineage': 'STP-GBPUSD-20261126-0000-37', 'hour_utc': '2026-11-27T12:00:00Z', 'destination_case': None, 'why': "the Fri 27 Nov 12:00 GMT hourly candle is now complete (IG's recovered candles): no change for the D-25 count (PD-5)"}
+   {'time_utc': '2026-11-27T18:30:03Z', 'event': 'uncertain hour reconciled', 'id': None, 'lineage': 'STP-GBPUSD-20261126-0400-38', 'hour_utc': '2026-11-27T12:00:00Z', 'destination_case': None, 'why': "the Fri 27 Nov 12:00 GMT hourly candle is now complete (IG's recovered candles): no change for the D-25 count (PD-5)"}
+   {'time_utc': '2026-11-27T18:30:03Z', 'event': 'uncertain hour reconciled', 'id': None, 'lineage': 'STP-GBPUSD-20261127-0200-54', 'hour_utc': '2026-11-27T12:00:00Z', 'destination_case': None, 'why': "the Fri 27 Nov 12:00 GMT hourly candle is now complete (IG's recovered candles): no change for the D-25 count (PD-5)"}
+control (computed plans on pre-fill store == recorded plans): True
+re-plans the recovered run made that production did not record: ['2026-11-27T13:00:03Z']
+deterministic: lived True recovered True

@@ -1,0 +1,3 @@
+tests/test_stp_structural_zone_horizon_20261120.py ..                    [100%]
+
+================= 2924 passed, 3 skipped in 968.16s (0:16:08) ==================

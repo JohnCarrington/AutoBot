@@ -1,0 +1,37 @@
+5m added: ['2026-11-16T22:55:00Z', '2026-11-16T23:00:00Z', '2026-11-19T18:35:00Z', '2026-11-20T11:20:00Z', '2026-11-27T12:00:00Z', '2026-11-27T12:05:00Z', '2026-11-27T12:10:00Z']
+  == expected 7 timestamps: True
+  5m changed rows: 0  removed: 0
+1h added: [] removed: []
+   changed 2026-11-16T23:00:00Z {'buy_open': ('13185.7', '13194.3'), 'buy_high': ('13187.6', '13194.3'), 'sell_open': ('13182.2', '13179.9'), 'sell_high': ('13185.5', '13187.0'), 'sell_low': ('13182.2', '13179.1'), 'parts': ('11', '12')}
+   changed 2026-11-16T22:00:00Z {'buy_close': ('13194.6', '13196.5'), 'sell_close': ('13177.7', '13179.6'), 'parts': ('11', '12')}
+   changed 2026-11-19T18:00:00Z {'parts': ('11', '12')}
+   changed 2026-11-20T11:00:00Z {'parts': ('11', '12')}
+   changed 2026-11-27T12:00:00Z {'buy_open': ('13135.7', '13131.3'), 'sell_open': ('13134.2', '13129.8'), 'parts': ('9', '12')}
+4h added: [] removed: []
+   changed 2026-11-16T20:00:00Z {'parts': ('46', '48')}
+   changed 2026-11-19T16:00:00Z {'parts': ('47', '48')}
+   changed 2026-11-20T08:00:00Z {'parts': ('47', '48')}
+   changed 2026-11-27T12:00:00Z {'buy_open': ('13135.7', '13131.3'), 'sell_open': ('13134.2', '13129.8'), 'parts': ('45', '48')}
+1d added: ['2026-11-27T00:00:00Z'] removed: []
+   changed 2026-11-16T00:00:00Z {'parts': ('286', '288')}
+   changed 2026-11-19T00:00:00Z {'parts': ('287', '288')}
+   changed 2026-11-20T00:00:00Z {'parts': ('263', '264')}
+1w added: ['2026-11-22T00:00:00Z'] removed: []
+   changed 2026-11-15T00:00:00Z {'parts': ('1442', '1446')}
+files new: ['1d/2026-11-27.csv', '1w/2026-11-22.csv']  files gone: []
+5m/2026-11-16: rows 288 ordered True duplicates False on-5m-boundary True
+5m/2026-11-19: rows 288 ordered True duplicates False on-5m-boundary True
+5m/2026-11-20: rows 264 ordered True duplicates False on-5m-boundary True
+5m/2026-11-27: rows 264 ordered True duplicates False on-5m-boundary True
+  recovered 2026-11-16T22:55:00Z -> 2026-11-16T23:00:00Z buy 13195.0 13196.5 13192.8 13196.5 sell 13178.1 13180.9 13177.3 13179.6 parts 1 1
+  recovered 2026-11-16T23:00:00Z -> 2026-11-16T23:05:00Z buy 13194.3 13194.3 13185.5 13186.1 sell 13179.9 13187.0 13179.1 13181.7 parts 1 1
+  recovered 2026-11-19T18:35:00Z -> 2026-11-19T18:40:00Z buy 13104.9 13108.4 13104.3 13108.3 sell 13103.4 13106.9 13102.8 13106.8 parts 1 1
+  recovered 2026-11-20T11:20:00Z -> 2026-11-20T11:25:00Z buy 13111.5 13114.5 13109.5 13113.3 sell 13110.0 13113.0 13108.0 13111.1 parts 1 1
+  recovered 2026-11-27T12:00:00Z -> 2026-11-27T12:05:00Z buy 13131.3 13133.6 13130.1 13132.3 sell 13129.8 13132.1 13128.6 13130.8 parts 1 1
+  recovered 2026-11-27T12:05:00Z -> 2026-11-27T12:10:00Z buy 13132.4 13133.4 13131.7 13132.8 sell 13130.9 13131.9 13130.2 13131.3 parts 1 1
+  recovered 2026-11-27T12:10:00Z -> 2026-11-27T12:15:00Z buy 13132.9 13136.1 13131.7 13135.8 sell 13131.4 13134.6 13130.2 13134.3 parts 1 1
+  not supplied 2026-11-22T21:05:00Z in store: False
+  not supplied 2026-11-22T21:25:00Z in store: False
+  not supplied 2026-11-22T21:45:00Z in store: False
+  not supplied 2026-11-22T21:50:00Z in store: False
+ALL CHECKS PASS

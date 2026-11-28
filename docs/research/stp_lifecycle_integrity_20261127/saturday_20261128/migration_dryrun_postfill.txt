@@ -1,0 +1,19 @@
+deterministic (two builds identical): True sha256 4d79e0cc9a74a2d95d633ad0182f1fbaf2df48e364c9fc96e2f867a8d78a0a5f
+61124-1700-23 SELL: consumed {'2': ['AB261125200515-c9049665'], '6': ['AB261126142255-04805706'], '9': ['AB261127151117-d13449c1']}; aliases {'2': ['STP-GBPUSD-20261125-1800-35#t1'], '6': ['STP-GBPUSD-20261126-1400-44#t1'], '9': ['STP-GBPUSD-20261127-1500-59#t1']}; uncertain []
+61125-1700-34 BUY: consumed {'1': ['AB261125170604-a4ec4a37']}; aliases -; uncertain []
+61126-0000-37 BUY: consumed {'1': ['AB261126060101-987e099b'], '2': ['AB261126114004-bd34fb67']}; aliases -; uncertain []
+61126-0400-38 SELL: consumed {'1': ['AB261126063004-aaea24e1'], '2': ['AB261126125133-d1518c12']}; aliases -; uncertain []
+61127-0300-56 BUY: consumed {'1': ['AB261127065505-8c11a4bc', 'AB261127120127-5755701a']}; aliases {'1': ['STP-GBPUSD-20261127-1200-57#t1']}; uncertain []
+  AB261125200515 key 25-1800-35#t1 -> 24-1700-23#t2 alias True
+  AB261126142255 key 26-1400-44#t1 -> 24-1700-23#t6 alias True
+  AB261127151117 key 27-1500-59#t1 -> 24-1700-23#t9 alias True
+  AB261125170604 key 25-1700-34#t1 -> 25-1700-34#t1 alias False
+  AB261126060101 key 26-0000-37#t1 -> 26-0000-37#t1 alias False
+  AB261126114004 key 26-0000-37#t2 -> 26-0000-37#t2 alias False
+  AB261126063004 key 26-0400-38#t1 -> 26-0400-38#t1 alias False
+  AB261126125133 key 26-0400-38#t2 -> 26-0400-38#t2 alias False
+  AB261127065505 key 27-0300-56#t1 -> 27-0300-56#t1 alias False
+  AB261127120127 key 27-1200-57#t1 -> 27-0300-56#t1 alias True
+live: {'STP-GBPUSD-20261127-1700-61': 'STP-GBPUSD-20261126-0400-38', 'STP-GBPUSD-20261127-2200-63': 'STP-GBPUSD-20261124-0000-17'}
+ambiguous: none
+uncertain hours (all lineages): []

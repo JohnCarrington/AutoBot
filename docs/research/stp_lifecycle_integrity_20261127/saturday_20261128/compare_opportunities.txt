@@ -1,0 +1,32 @@
+SUMMARY
+  production 35; branch as lived 33; branch recovered 33
+  not issued by the branch: [('11-27T12:00', 'BUY', '-1200-57'), ('11-27T13:05', 'BUY', '-1305-58')]
+  issued by the branch only: []
+  end (time, event) differs production -> as lived: [('11-25T17:00', 'BUY', '-1700-34', ('11-25T18:20', 'invalidated'), ('11-25T18:20', 'completed'))]
+  end (time, event) differs as lived -> recovered: []
+  destination case differs as lived -> recovered: [('11-27T15:00', 'SELL', '-1500-59', 'after_zone', 'after_trade')]
+  same end (time, event) in all three: 32 of 33
+
+opportunities: production 35, branch as lived 33, branch recovered 33
+branch as lived vs branch recovered: identical lifecycle end for 32 of 33
+differences (creation, direction, zone | production id | production end | as lived end | recovered end):
+  11-25T10:00 BUY 13047.3-13055.1 | -1000-28 | ('11-25T12:25', 'completed', 'price reached the primary destination 13082.6 (Wed 25 Nov 12') | ('11-25T12:25', 'completed', 'after_zone') | ('11-25T12:25', 'completed', 'after_zone')
+  11-25T12:00 BUY 13047.3-13053.7 | -1200-30 | ('11-25T12:15', 'invalidated', 'destination reached before entry: price reached 13071.5 (Wed') | ('11-25T12:15', 'invalidated', 'after_zone_at_or_before_creation') | ('11-25T12:15', 'invalidated', 'after_zone_at_or_before_creation')
+  11-25T12:00 SELL 13071.5-13080.7 | -1200-29 | ('11-25T13:10', 'completed', 'price reached the primary destination 13058.1 (Wed 25 Nov 13') | ('11-25T13:10', 'completed', 'after_zone') | ('11-25T13:10', 'completed', 'after_zone')
+  11-25T14:00 BUY 13047.3-13057.9 | -1400-31 | ('11-25T14:10', 'invalidated', 'destination reached before entry: price reached 13071.5 (Wed') | ('11-25T14:10', 'invalidated', 'after_zone_at_or_before_creation') | ('11-25T14:10', 'invalidated', 'after_zone_at_or_before_creation')
+  11-25T15:00 BUY 13046.1-13053.7 | -1500-32 | ('11-25T15:10', 'invalidated', 'destination reached before entry: price reached 13071.5 (Wed') | ('11-25T15:10', 'invalidated', 'after_zone_at_or_before_creation') | ('11-25T15:10', 'invalidated', 'after_zone_at_or_before_creation')
+  11-25T16:00 BUY 13046.1-13053.7 | -1600-33 | ('11-25T16:30', 'completed', 'price reached the primary destination 13071.5 (Wed 25 Nov 16') | ('11-25T16:30', 'completed', 'after_zone') | ('11-25T16:30', 'completed', 'after_zone')
+  11-25T17:00 BUY 13084.1-13096.0 | -1700-34 | ('11-25T18:20', 'invalidated', 'destination reached before entry: price reached 13127.3 (Wed') | ('11-25T18:20', 'completed', 'after_trade') | ('11-25T18:20', 'completed', 'after_trade')
+  11-26T11:00 SELL 13115.1-13123.9 | -1100-40 | ('11-26T11:10', 'invalidated', 'destination reached before entry: price reached 13103 (Thu 2') | ('11-26T11:10', 'invalidated', 'after_zone_at_or_before_creation') | ('11-26T11:10', 'invalidated', 'after_zone_at_or_before_creation')
+  11-26T14:00 SELL 13115.1-13123.9 | -1400-44 | ('11-26T14:45', 'completed', 'price reached the primary destination 13103 (Thu 26 Nov 14:4') | ('11-26T14:45', 'completed', 'after_trade') | ('11-26T14:45', 'completed', 'after_trade')
+  11-26T20:00 SELL 13115.1-13123.9 | -2000-46 | ('11-26T22:00', 'invalidated', 'destination reached before entry: price reached 13103 (Thu 2') | ('11-26T22:00', 'invalidated', 'before_zone') | ('11-26T22:00', 'invalidated', 'before_zone')
+  11-26T21:00 SELL 13115.1-13123.9 | -2100-47 | ('11-26T22:00', 'invalidated', 'destination reached before entry: price reached 13103 (Thu 2') | ('11-26T22:00', 'invalidated', 'before_zone') | ('11-26T22:00', 'invalidated', 'before_zone')
+  11-27T00:00 SELL 13108.5-13119.1 | -0000-50 | ('11-27T00:10', 'invalidated', 'destination reached before entry: price reached 13103 (Fri 2') | ('11-27T00:10', 'invalidated', 'after_zone_at_or_before_creation') | ('11-27T00:10', 'invalidated', 'after_zone_at_or_before_creation')
+  11-27T01:00 BUY 13093-13103 | -0100-52 | ('11-27T01:35', 'completed', 'price reached the primary destination 13108.5 (Fri 27 Nov 01') | ('11-27T01:35', 'completed', 'after_zone') | ('11-27T01:35', 'completed', 'after_zone')
+  11-27T02:00 BUY 13108.5-13119.1 | -0200-54 | ('11-27T02:10', 'invalidated', 'destination reached before entry: price reached 13121.3 (Fri') | ('11-27T02:10', 'invalidated', 'after_zone_at_or_before_creation') | ('11-27T02:10', 'invalidated', 'after_zone_at_or_before_creation')
+  11-27T03:00 BUY 13121.3-13130.9 | -0300-56 | ('11-27T11:05', 'completed', 'price reached the primary destination 13135.5 (Fri 27 Nov 11') | ('11-27T11:05', 'completed', 'after_trade') | ('11-27T11:05', 'completed', 'after_trade')
+  11-27T03:00 SELL 13121.3-13130.9 | -0300-55 | ('11-27T03:25', 'completed', 'price reached the primary destination 13119.1 (Fri 27 Nov 03') | ('11-27T03:25', 'completed', 'after_zone') | ('11-27T03:25', 'completed', 'after_zone')
+  11-27T12:00 BUY 13121.3-13130.3 | -1200-57 | ('11-27T12:20', 'invalidated', 'destination reached before entry: price reached 13134.6 (Fri') | NOT ISSUED | NOT ISSUED
+  11-27T13:05 BUY 13121.3-13130.3 | -1305-58 | ('11-27T18:00', 'invalidated', 'confirmed break held: no hourly close back above 13121.3 wit') | NOT ISSUED | NOT ISSUED
+  11-27T15:00 SELL 13108.5-13119.1 | -1500-59 | ('11-27T15:15', 'completed', 'price reached the primary destination 13103 (Fri 27 Nov 15:1') | ('11-27T15:15', 'completed', 'after_zone') | ('11-27T15:15', 'completed', 'after_trade')
+  11-27T17:00 BUY 13093-13103 | -1700-62 | ('11-27T17:25', 'completed', 'price reached the primary destination 13108.5 (Fri 27 Nov 17') | ('11-27T17:25', 'completed', 'after_zone') | ('11-27T17:25', 'completed', 'after_zone')
